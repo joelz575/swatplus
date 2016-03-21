@@ -57,11 +57,11 @@
       real :: chg_val, absmin, absmax
       integer :: num_db, mx_elem
 
-      prog = "SWAT+ Mar 7 2016    MODULAR Rev 10"
+      prog = "SWAT+ Mar 9 2016    MODULAR Rev 11"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "           Revision 10 - Mar 7         ",/,            &
+     &          "           Revision 11 - Mar 9         ",/,            &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)

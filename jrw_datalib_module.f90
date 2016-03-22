@@ -491,7 +491,13 @@
         character(len=16) :: chg_typ    !! type of change (absval,abschg,pctchg)
         real :: val                     !! value of change
         integer :: conds                !! number of conditions
-        integer :: num_tot = 0          !! total number
+        integer :: lyr1                 !! first layer in range for soil variables (0 assumes all layers are modified)
+        integer :: lyr2                 !! last layer in range for soil variables (0 assumes through last layer)
+        integer :: year                 !! year for precip and temp
+        integer :: day1                 !! first day in range for precip and temp
+        integer :: day2                 !! last day in range for precip and temp
+        integer :: num_tot = 0          !! total number of integers read in
+        integer :: num_elem = 0         !! total number of elements modified (ie - 1 -5 18; num_tot=3 and num_elem=6)
         integer, dimension(:), allocatable :: num
         integer :: num_cond
         type (calibration_conditions), dimension(:), allocatable :: cond  
@@ -733,11 +739,11 @@
       type soil_profile_db
         character(len=20) :: snam = " "       !! NA            |soil series name 
         integer ::  nly  = 1                  !! none          |number of soil layers  
-        character(len=1) :: hydgrp = "A"      !! NA            |hydrologic soil group
+        character(len=16) :: hydgrp = "A"      !! NA            |hydrologic soil group
         real :: zmx = 1500.                   !! mm            |maximum rooting depth
         real :: anion_excl = 0.5              !! none          |fraction of porosity from which anions are excluded
         real :: crk = 0.01                    !! none          |crack volume potential of soil
-        character(len=20) :: texture = " "    !!               |texture of soil
+        character(len=16) :: texture = " "    !!               |texture of soil
       end type soil_profile_db
       
       type soil_database

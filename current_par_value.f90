@@ -1,4 +1,4 @@
-      subroutine current_par_value (ielem, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
+      subroutine current_par_value (ielem, ly, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine finds the current paramter value based on 
@@ -30,7 +30,7 @@
 
       character(len=16), intent (in) :: chg_parm, chg_typ
       real, intent (in) :: chg_val, absmin, absmax
-      integer, intent (in) :: ielem, num_db
+      integer, intent (in) :: ielem, num_db, ly
 
       select case (chg_parm)
           
@@ -132,88 +132,60 @@
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
          
       case ("z")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%phys(ly)%d = chg_par(soil(ielem)%phys(ly)%d,      &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("bd")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%phys(ly)%bd = chg_par(soil(ielem)%phys(ly)%bd,    &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("awc")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%phys(ly)%awc = chg_par(soil(ielem)%phys(ly)%awc,  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("k")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%phys(ly)%k = chg_par(soil(ielem)%phys(ly)%k,      &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("cbn")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%cbn(ly)%cbn = chg_par(soil(ielem)%cbn(ly)%cbn,    &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("clay")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%phys(ly)%clay = chg_par(soil(ielem)%phys(ly)%clay, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("silt")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%phys(ly)%silt = chg_par(soil(ielem)%phys(ly)%silt, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("sand")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%phys(ly)%sand = chg_par(soil(ielem)%phys(ly)%sand, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("rock")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%phys(ly)%rock = chg_par(soil(ielem)%phys(ly)%rock, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
-         
+
       case ("alb")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%ly(ly)%alb = chg_par(soil(ielem)%ly(ly)%alb,       &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
-         
+
       case ("usle_k")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%ly(ly)%usle_k = chg_par(soil(ielem)%ly(ly)%usle_k, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
-         
+
       case ("ec")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%ly(ly)%ec = chg_par(soil(ielem)%ly(ly)%ec,         &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
          
       case ("cal")
-        do ly = 1, hru(ielem)%sol%nly
           soil(ielem)%ly(ly)%cal = chg_par(soil(ielem)%ly(ly)%cal,       &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
       
       case ("ph")
-        do ly = 1, hru(ielem)%sol%nly
            soil(ielem)%ly(ly)%ph = chg_par(soil(ielem)%ly(ly)%ph,        &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        end do
         
        
        !! BSN

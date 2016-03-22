@@ -171,7 +171,7 @@
                     absmin = cal_parms(upd_sched(isce)%upd_prm(ichg_par)%num_db)%absmin
                     absmax = cal_parms(upd_sched(isce)%upd_prm(ichg_par)%num_db)%absmax
                     num_db = upd_sched(isce)%upd_prm(ichg_par)%num_db
-                    call current_par_value (ielem, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
+                    call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
                   end do
                 end do
               else if (upd_sched(isce)%typ == 'structure') then

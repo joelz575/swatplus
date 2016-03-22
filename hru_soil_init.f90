@@ -257,6 +257,9 @@
       sol(isol)%phys(1)%por - 0.000799 * sol(isol)%phys(1)%sand ** 2 *      & 
       sol(isol)%phys(1)%por)
         hru(ihru)%sol = sol(isol)%s
+        soil(ihru)%snam = sol(isol)%s%snam
+        soil(ihru)%hydgrp = sol(isol)%s%hydgrp
+        soil(ihru)%texture = sol(isol)%s%texture
         nly = hru(ihru)%sol%nly
         allocate (hru(ihru)%ly(nly))
         allocate (soil(ihru)%phys(nly))
@@ -265,6 +268,7 @@
         allocate (soil(ihru)%ly(nly))     !!  nbs
         !! set hru soils to appropriate database soil layers
         do ly = 1, nly
+          
           hru(ihru)%ly(ly) = sol(isol)%ly(ly)
           soil(ihru)%phys(ly) = sol(isol)%phys(ly)
           soil(ihru)%nut(ly) = sol(isol)%nut(ly)

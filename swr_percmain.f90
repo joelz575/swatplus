@@ -69,16 +69,10 @@
 
       !! initialize water entering first soil layer
 
-      if (bsn_cc%crk == 1) then
-        sepday = Max(0., inflpcp - voltot)
-      else
-        sepday = inflpcp
-      end if
+      !if (j == 1) then
+      !  inflpcp = 100.
+      !end if
 
-!!  add irrigation water
-	if (aird(j)>0) then
-	  j=j
-      end if
       !ht1%flo is infiltration from overland flow routing
       sepday = inflpcp + aird(j) + pot(j)%seep + ht1%flo
       pot(j)%seep = 0.
@@ -124,7 +118,7 @@
           !! percolation (sepday)
           call swr_percmicro(j1)
 
-          soil(j)%phys(j1)%st=soil(j)%phys(j1)%st-sepday-latlyr-lyrtile
+          soil(j)%phys(j1)%st = soil(j)%phys(j1)%st - sepday - latlyr - lyrtile
           soil(j)%phys(j1)%st = Max(1.e-6,soil(j)%phys(j1)%st)
 
           !! redistribute soil water if above field capacity (high water table)

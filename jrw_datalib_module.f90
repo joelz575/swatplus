@@ -477,17 +477,26 @@
         character(len=16) :: units      !! units used for each parameter
       end type calibration_parameters
       type (calibration_parameters), dimension (:), allocatable :: cal_parms    !dimensioned to db_mx%cal_parms_tot
+      
+      type calibration_conditions
+        character(len=16) :: var
+        character(len=16) :: alt
+        real :: targ
+        character(len=16) :: targc
+      end type calibration_conditions   
 
       type update_parameters
         character(len=16) :: name       !! cn2, terrace, land use, mgt, etc.
         integer :: num_db = 0           !! crosswalk number of parameter, structure or land use to get database array number
         character(len=16) :: chg_typ    !! type of change (absval,abschg,pctchg)
-        character(len=16) :: cond       !! points to ruleset in conditional.ctl for changing the parameter
-                                        !! if cond = 'null' then input val, num_tot and num()
         real :: val                     !! value of change
+        integer :: conds                !! number of conditions
         integer :: num_tot = 0          !! total number
         integer, dimension(:), allocatable :: num
+        integer :: num_cond
+        type (calibration_conditions), dimension(:), allocatable :: cond  
       end type update_parameters
+
       type (update_parameters), dimension (:), allocatable :: cal_upd   !dimensioned to db_mx%cal_parms
       type (update_parameters) :: chg
 

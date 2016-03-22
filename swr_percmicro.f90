@@ -66,32 +66,26 @@
         end if
 
         dg = soil(j)%phys(ly1)%d - yy
-        if (soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc==0.) then
-          ho=0.
+        if (soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc == 0.) then
+          ho = 0.
         else
-          ho=2.*sw_excess/((soil(j)%phys(ly1)%ul-                    &
-                 soil(j)%phys(ly1)%fc)/dg)
+          ho = 2. * sw_excess / ((soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc) / dg)
         end if
-        latlyr = adjf * ho * soil(j)%phys(ly1)%k * hru(j)%topo%slope /    &
-                    hru(j)%topo%lat_len * .024
+        latlyr = adjf * ho * soil(j)%phys(ly1)%k * hru(j)%topo%slope / hru(j)%topo%lat_len * .024
 
       if (latlyr < 0.) latlyr = 0. 
       if (latlyr > sw_excess) latlyr = sw_excess
 
-      soil(j)%phys(ly1)%hk=(soil(j)%phys(ly1)%ul-soil(j)%phys(ly1)%fc)/   &
-                                             soil(j)%phys(ly1)%k
+      soil(j)%phys(ly1)%hk = (soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc) / soil(j)%phys(ly1)%k
 
       !! septic changes 1/28/09 
       if (ly1 == i_sep(j)) then
          if (sep(isep)%opt  == 1) then !active system
-           sol_k_sep = soil(j)%phys(ly1)%k *                          &
-                   (soil(j)%phys(ly1)%st - soil(j)%phys(ly1)%fc)/     &
-                   (soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc)
+           sol_k_sep = soil(j)%phys(ly1)%k * (soil(j)%phys(ly1)%st - soil(j)%phys(ly1)%fc) /     &
+                                              (soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc)
            sol_k_sep = Max(1.e-6, sol_k_sep)
            sol_k_sep = Min(soil(j)%phys(ly1)%k, sol_k_sep)
-           
-           soil(j)%phys(ly1)%hk = (soil(j)%phys(ly1)%hk -             &
-               soil(j)%phys(ly1)%fc) / sol_k_sep
+           soil(j)%phys(ly1)%hk = (soil(j)%phys(ly1)%hk - soil(j)%phys(ly1)%fc) / sol_k_sep
          
          elseif (sep(isep)%opt  == 2) then !failing system
            soil(j)%phys(ly1)%hk = 1.e10

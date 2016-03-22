@@ -20,12 +20,12 @@
       type soiltest_db
         character(len=13) :: name = 'default'
         real :: exp_co = .001         !	     |depth coefficient to adjust concentrations for depth
-        real :: totaln = 13.          !ppm     |total N in soil
-        real :: inorgn = 6.           !ppm     |inorganic N in soil surface
-        real :: orgn = 3.             !ppm     |organic N in soil surface
-        real :: totalp = 3.           !ppm     |total P in soil surface
-        real :: inorgp = 3.5          !ppm     |inorganic P in soil surface
-        real :: orgp = .4             !ppm     |organic P in soil surface
+        real :: totaln = 500.         !ppm     |total N in soil
+        real :: inorgn = 60.          !ppm     |inorganic N in soil surface
+        real :: orgn = 440.           !ppm     |organic N in soil surface
+        real :: totalp = 30.          !ppm     |total P in soil surface
+        real :: inorgp = 5.           !ppm     |inorganic P in soil surface
+        real :: orgp = 25.            !ppm     |organic P in soil surface
         real :: watersol_p = .15      !ppm     |water soluble P in soil surface    
         real :: h3a_p = .25           !ppm     |h3a P in soil surface        
         real :: mehlich_p = 1.2       !ppm     |Mehlich P in soil surface

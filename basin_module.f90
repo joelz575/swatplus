@@ -40,7 +40,7 @@
         integer :: wq = 0        !! stream water quality code
                                  !!   0 do not model
                                  !!   1 model (QUAL2E)
-        integer :: rtpest = 0    !! redeinfed to the sequence number
+        integer :: rtpest = 0    !! redeinfed to the sequence number  -- changed to no nutrient stress
                                  !!   of pest in NPNO(:) to be routed
                                  !!   through the watershed
         integer :: cn = 0        !! CN method flag
@@ -63,7 +63,7 @@
         integer :: uhyd = 1      !! Unit hydrograph method: 
                                  !!   1 = triangular UH
                                  !!   2 = gamma function UH
-        integer :: sed_ch        !! Instream sediment model
+        integer :: sed_ch = 0    !! Instream sediment model
                                  !!   0 = Bagnold model
                                  !!   1 = Brownlie model
                                  !!   2 = Yang model
@@ -73,17 +73,17 @@
         integer :: wtdn = 0      !! water table depth algorithms code
                                  !!   1 = sim wt_shall using sub new water table depth routine
                                  !!   0 = sim wt_shall using sub orig water table depth routine
-        integer :: sol_p_model   !! 1 = new soil P model
+        integer :: sol_p_model=0 !! 1 = new soil P model
         integer :: abstr = 0     !! Initial abstraction on impervious cover (mm) 
         integer :: atmo = 0      !! atmospheric deposition code
                                  !!   1 = average annual 
                                  !!   2 = monthly
-        integer :: smax          !! max depressional storage selection code
+        integer :: smax = 0      !! max depressional storage selection code
                                  !!   1 = dynamic stmaxd computed as a cunfction of random
                                  !!          roughness and rain intensity
                                  !!   0 = static stmaxd read from .bsn for the global value or .sdr
                                  !! for specific hrus 
-        integer :: i_subhw       !! headwater code (0=do not route; 1=route)
+        integer :: i_subhw = 0   !! headwater code (0=do not route; 1=route) 
       end type basin_control_codes
       type (basin_control_codes) :: bsn_cc
 

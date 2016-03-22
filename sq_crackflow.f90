@@ -35,7 +35,6 @@
       integer :: j, ii
       real :: voli
 
-      j = 0
       j = ihru
 
       !! subtract crack flow from surface runoff

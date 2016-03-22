@@ -48,14 +48,14 @@
       do i = 1, mcal
 
         read (107,*,iostat=eof) cal_upd(i)%name, cal_upd(i)%chg_typ,    &
-            cal_upd(i)%cond, cal_upd(i)%val, nspu
+          cal_upd(i)%val, cal_upd(i)%conds, nspu
         allocate (elem_cnt(nspu))
         
         if (eof < 0) exit
         if (nspu > 0) then
           backspace (107)
           read (107,*,iostat=eof) cal_upd(i)%name, cal_upd(i)%chg_typ,  &
-              cal_upd(i)%cond, cal_upd(i)%val, cal_upd(i)%num_tot, (elem_cnt(isp), isp = 1, nspu)
+              cal_upd(i)%val, cal_upd(i)%conds, cal_upd(i)%num_tot, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
           
           !! crosswalk name with calibration parameter db
@@ -77,7 +77,7 @@
             else
               ie2 = elem_cnt(ii+1)
               if (ie2 > 0) then
-                ielem = ielem + 1
+                ielem = ielem + 2
               else
                 ielem = ielem + (abs(ie2) - ie1) + 1
               end if
@@ -98,6 +98,8 @@
               ie2 = elem_cnt(ii+1)
               if (ie2 > 0) then
                 ielem = ielem + 1
+                cal_upd(i)%num(ielem) = ie1
+                ielem = ielem + 1
                 cal_upd(i)%num(ielem) = ie2
               else
                 ie2 = abs(ie2)
@@ -111,11 +113,21 @@
           end do
         end if
         deallocate (elem_cnt)
+        
+        nconds = cal_upd(i)%conds
+        allocate (cal_upd(i)%cond(nconds))
+        
+        do icond = 1, nconds
+          read (107,*,iostat=eof) cal_upd(i)%cond(icond)
+          if (eof < 0) exit
+        end do 
+        
       end do
       exit
-      end do
-      end if         
-     
+         
+      end do     
+      end if
+        
       db_mx%cal_upd = mcal
       return
       end subroutine update_parm_read

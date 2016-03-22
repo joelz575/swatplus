@@ -172,6 +172,7 @@
         hru(ihru)%topo%dis_stream = topo_db(itopohd_db)%dis_stream
         hru(ihru)%hyd%biomix = hyd_db(ihyd_db)%biomix
         hru(ihru)%hyd%dep_imp = hyd_db(ihyd_db)%dep_imp
+        if (hru(ihru)%hyd%dep_imp < 1.e-6) hru(ihru)%hyd%dep_imp = 6000.
         hru(ihru)%hyd%lat_orgn = hyd_db(ihyd_db)%lat_orgn
         hru(ihru)%hyd%lat_orgp = hyd_db(ihyd_db)%lat_orgp
         ! set field data

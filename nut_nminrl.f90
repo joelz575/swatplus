@@ -164,13 +164,13 @@
             !do ipl = 1, npl(j)        !! we need to decomp each plant**
               
             if (npl(j) > 0) then
-              decr = rsdco_plcom(j) * ca *csf
+              decr = rsdco_plcom(j) * ca * csf
             else
               decr = 0.05
             end if
             decr = Max(bsn_prm%decr_min, decr)
             decr = Min(decr, 1.)
-            soil(j)%ly(k)%rsd = amax1(1.e-6,soil(j)%ly(k)%rsd)
+            soil(j)%ly(k)%rsd = amax1(1.e-6, soil(j)%ly(k)%rsd)
             rdc = decr * soil(j)%ly(k)%rsd
             soil(j)%ly(k)%rsd = soil(j)%ly(k)%rsd - rdc
             if (soil(j)%ly(k)%rsd < 0.) soil(j)%ly(k)%rsd = 0.
@@ -179,7 +179,7 @@
             rmp = decr * soil(j)%nut(k)%fop
 
             soil(j)%nut(k)%fop = soil(j)%nut(k)%fop - rmp
-            soil(j)%nut(k)%fon  = amax1(1.e-6,soil(j)%nut(k)%fon )
+            soil(j)%nut(k)%fon  = amax1(1.e-6,soil(j)%nut(k)%fon)
             soil(j)%nut(k)%fon  = soil(j)%nut(k)%fon  - rmn1
             soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 + .8 * rmn1
             soil(j)%nut(k)%aorgn = soil(j)%nut(k)%aorgn + .2 * rmn1
@@ -201,9 +201,7 @@
 ! septic changes 1/28/09 gsm
 
 !			call nut_denit(k,j,cdg,wdn,0.05)
-	!!	end if
 
-          !! summary calculations
         end if
       end do
       return

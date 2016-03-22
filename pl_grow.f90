@@ -169,6 +169,13 @@
           call pl_nup
           call pl_pup
 
+          !! new code to turn off nutrient stress
+          if (bsn_cc%rtpest == 1) then
+            pcom(j)%plstr(ipl)%strsn = 1.
+            pcom(j)%plstr(ipl)%strsp = 1.
+            pcom(j)%plstr(ipl)%strsa = 1.
+          end if
+          
           !! reduce predicted biomass due to stress on plant
           reg = Min(pcom(j)%plstr(ipl)%strsw, pcom(j)%plstr(ipl)%strst,   &
             pcom(j)%plstr(ipl)%strsn, pcom(j)%plstr(ipl)%strsp,           &

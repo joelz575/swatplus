@@ -141,29 +141,32 @@
           ob(i)%dfn_tot = sub_d(isub)%num_tot
           
           ielem = 0
-          do ii = 1, nspu
+          ii = 1
+          do while (ii <= nspu)
             ie1 = elem_cnt(ii)
-            ie2 = ie2
             if (ii == nspu) then
               ielem = ielem + 1
+              ii = ii + 1
               sub_d(isub)%num(ielem) = ie1
             else
-              if (elem_cnt(ii+1) < 0) then
-                ie2 = abs(elem_cnt(ii+1))
+              ie2 = elem_cnt(ii+1)
+              if (ie2 > 0) then
+                ielem = ielem + 1
+                sub_d(isub)%num(ielem) = ie1
+                ielem = ielem + 1
+                sub_d(isub)%num(ielem) = ie2
+              else
+                ie2 = abs(ie2)
                 do ie = ie1, ie2
                   ielem = ielem + 1
                   sub_d(isub)%num(ielem) = ie
                 end do
-                if (ii+1 == nspu) exit
-              else
-                ielem = ielem + 1
-                sub_d(isub)%num(ielem) = ie1
               end if
+              ii = ii + 2
             end if
-            if (ii == nspu .and. elem_cnt(ii) < 0) exit
           end do
-          if (ie2 < ie1) ie2 = ie1
-          
+ !       end if
+     
           do ii = ie1, ie2
             iobtyp = sub_elem(ii)%obtyp       !object type in sub
             select case (iobtyp)

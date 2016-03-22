@@ -10,7 +10,7 @@
 !!                 2 = monthly
 !!                 3 = daily
                
-!   output_waterbal - SWAT-DEG
+!   output_waterbal - SWAT-DEG0140
         sdwb_d(isd)%precip = precip             
         sdwb_d(isd)%snofall = snowfall     
         sdwb_d(isd)%snomlt = snowmelt           

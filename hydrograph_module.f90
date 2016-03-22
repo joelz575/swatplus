@@ -167,6 +167,24 @@
       end type object_connectivity
       type (object_connectivity), dimension(:),allocatable, save :: ob
       
+     type water_right_elements
+        character(len=16) :: name
+        integer :: obj = 1              !object number
+        character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
+        integer :: right                !0-100
+        integer :: obtypno = 0          !2-number of hru_lte's or 1st hru_lte command
+        integer,  dimension(:), allocatable :: wro   !water rights object the element is in
+      end type water_right_elements
+      
+      type water_rights_object
+        character(len=16) :: name
+        integer :: num_src
+        character(len=16), dimension(:), allocatable :: typ_src
+        integer, dimension(:), allocatable :: num_elem
+        type (water_right_elements), dimension(:), allocatable :: wro_elem
+        real, dimension(:), allocatable :: demand
+      end type water_rights_object
+      
       !water rights elements (objects) within the water rights object
       type water_rights_elements
         character (len=16) :: name
@@ -250,7 +268,7 @@
       type (subbasin_elements), dimension(:), allocatable :: sub_elem
       
       integer,  dimension(:), allocatable :: ielem_sub   !sequential counter for subbasin the hru is in
-      
+            
       !channel-surface element linkage for overbank flooding
       type channel_surface_elements
         character(len=16) :: name

@@ -40,10 +40,8 @@
       integer :: j, ly
       real :: crklch = 0.5, xx
 
-      j = 0
       j = ihru
 
-      sepcrk = 0.
       sepcrk = Min(voltot, inflpcp)
       sepcrktot = sepcrk
       if (sepcrk > 1.e-4) then

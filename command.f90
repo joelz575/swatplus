@@ -69,17 +69,16 @@
             !if routing over an hru, it can only be in one subbasin
             !element type should be an hru if routing over - if element is a channel use incoming directly
             !CEAP uses representative 1st order streams as elements to define upland sub
-              if (ob(icmd)%subs_tot > 0) then
-                if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "hru_lte") then
-                  ielem = ob(icmd)%elem
-                  isub = sub_elem(ielem)%sub(1) !can only be in one subbasin if routing over
-                  isub = sp_ob1%sub + isub - 1  !object number of the subbasin
-                  iob = ob(isub)%obj_in(in)
-                  ihyd = ob(isub)%htyp_in(in)
-                  ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)  !fraction of hydrograph
-                  ht1 = sub_elem(ielem)%frac * ht1               !fraction of hru in subbasin
-                end if
-
+            if (ob(icmd)%subs_tot > 0) then
+              if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "hru_lte") then
+                ielem = ob(icmd)%elem
+                isub = sub_elem(ielem)%sub(1) !can only be in one subbasin if routing over
+                isub = sp_ob1%sub + isub - 1  !object number of the subbasin
+                iob = ob(isub)%obj_in(in)
+                ihyd = ob(isub)%htyp_in(in)
+                ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)  !fraction of hydrograph
+                ht1 = sub_elem(ielem)%frac * ht1               !fraction of hru in subbasin
+              end if
             else
               iob = ob(icmd)%obj_in(in)
               if (iob == 4) then

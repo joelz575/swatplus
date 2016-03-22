@@ -107,16 +107,15 @@
       !! set day length threshold for dormancy
       dormhr(j) = wgn_pms(iwgn)%daylth
 
-!!    compare maximum rooting depth in soil to maximum rooting depth of
-!!    plant
+!!    compare maximum rooting depth in soil to maximum rooting depth of plant
       if (hru(j)%sol%zmx<= 0.001) hru(j)%sol%zmx = soil(j)%phys(nly)%d
       plt_zmx = 0.
       do ipl = 1, npl(j)
         idp = pcom(j)%plcur(ipl)%idplt
-	  if (idp > 0) then
+	    if (idp > 0) then
           if (pldb(idp)%idc > 0) then
             !! set initial residue by summing each plant
-            soil(j)%ly(1)%rsd=soil(j)%ly(1)%rsd+hru(j)%rsd_flt(ipl)%mass
+            soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + hru(j)%rsd_flt(ipl)%mass
             plt_zmxp = plt_zmx
             plt_zmx = 1000. * pldb(idp)%rdmx
             plt_zmx = amax1(plt_zmx,plt_zmxp)

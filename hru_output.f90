@@ -33,8 +33,9 @@
         hwb_d(j)%surq_cont = surfq(j)
         hwb_d(j)%cn = cnday(j)
         hwb_d(j)%sw = hru(j)%sol%sw
-        hwb_d(j)%pet_day = pet_day
+        hwb_d(j)%pet = pet
         hwb_d(j)%qtile = qtile
+        hwb_d(j)%irr = aird(j)
 
 !    output_nutbal
         hnb_d(j)%cfertn = cfertn
@@ -72,6 +73,7 @@
         hpw_d(j)%tmn = tmn(j)
         hpw_d(j)%tmpav = tmpav(j)
         hpw_d(j)%solrad = hru_ra(j)
+        hpw_d(j)%phubase0 = phubase(j)
 
 !    output_losses
         hls_d(j)%sedyld = sedyld(j) / hru(j)%area_ha
@@ -102,6 +104,8 @@
       end if
 
 !!!!! daily print
+        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
           if (pco%wb_hru == 3) then
             write (4000,100) time%day, time%yrc, j, hwb_d(j)  !! waterbal
              if (pco%csvout == 1 .and. pco%wb_hru == 3) then
@@ -126,6 +130,7 @@
                 write (4021,'(*(G0.3,:","))') time%day, time%yrc, j, hpw_d(j)  !! plant weather
               end if 
           end if
+        end if
 
         !! check end of month
         if (time%end_mo == 1) then
@@ -134,7 +139,6 @@
           !hwb_m(j) = hwb_m(j) // const
           hwb_m(j)%cn = hwb_m(j)%cn / const 
           hwb_m(j)%sw = hwb_m(j)%sw / const
-          hwb_m(j)%pet_day = hwb_m(j)%pet_day / const
           hwb_y(j) = hwb_y(j) + hwb_m(j)
           hnb_y(j) = hnb_y(j) + hnb_m(j)
           hls_y(j) = hls_y(j) + hls_m(j)
@@ -178,7 +182,6 @@
           !hwb_y(j) = hwb_y(j) // 12.
           hwb_y(j)%cn = hwb_y(j)%cn / 12. 
           hwb_y(j)%sw = hwb_y(j)%sw / 12.
-          hwb_y(j)%pet_day = hwb_y(j)%pet_day / 12.
           hwb_a(j) = hwb_a(j) + hwb_y(j)
           hnb_a(j) = hnb_a(j) + hnb_y(j)
           hls_a(j) = hls_a(j) + hls_y(j)

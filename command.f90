@@ -38,6 +38,7 @@
       use aquifer_module
       use sd_channel_module
       use reservoir_module
+      use organic_mineral_mass_module
       !use recall_apex_daily
       !use recall_daily
       !use recmon_module

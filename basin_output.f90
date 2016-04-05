@@ -19,30 +19,33 @@
         bpw_m = bpw_m + bpw_d
         
 !!!!! daily print - SUBBASIN
-        if (pco%wb_bsn == 3) then
-          write (4300,100) time%day, time%yrc, iz, bwb_d  !! waterbal
-          if (pco%csvout == 1 .and. pco%wb_bsn == 3) then 
-            write (4039,'(*(G0.3,:","))') time%day, time%yrc, iz, bwb_d  !! waterbal
-          end if
-        end if 
-        if (pco%nb_bsn == 3) then
-          write (4301,100) time%day, time%yrc, iz, bnb_d  !! nutrient bal
-          if (pco%csvout == 1 .and. pco%nb_bsn == 3) then 
-            write (4041,'(*(G0.3,:","))') time%day, time%yrc, iz, bnb_d  !! nutrient bal
-          end if
-        end if
-        if (pco%ls_bsn == 3) then
-          write (4302,100) time%day, time%yrc, iz, bls_d  !! losses
-          if (pco%csvout == 1 .and. pco%ls_bsn == 3) then 
-            write (4043,'(*(G0.3,:","))') time%day, time%yrc, iz, bls_d  !! losses
+        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+          if (pco%wb_bsn == 3) then
+            write (4300,100) time%day, time%yrc, iz, bwb_d  !! waterbal
+            if (pco%csvout == 1 .and. pco%wb_bsn == 3) then 
+              write (4039,'(*(G0.3,:","))') time%day, time%yrc, iz, bwb_d  !! waterbal
+            end if
           end if 
-        end if
-        if (pco%pw_bsn == 3) then
-          write (4303,100) time%day, time%yrc, iz, bpw_d  !! plant weather
-          if (pco%csvout == 1 .and. pco%pw_bsn == 3) then 
-            write (4045,'(*(G0.3,:","))') time%day, time%yrc, iz, bpw_d  !! plant weather
+          if (pco%nb_bsn == 3) then
+            write (4301,100) time%day, time%yrc, iz, bnb_d  !! nutrient bal
+            if (pco%csvout == 1 .and. pco%nb_bsn == 3) then 
+              write (4041,'(*(G0.3,:","))') time%day, time%yrc, iz, bnb_d  !! nutrient bal
+            end if
           end if
-        end if 
+          if (pco%ls_bsn == 3) then
+            write (4302,100) time%day, time%yrc, iz, bls_d  !! losses
+            if (pco%csvout == 1 .and. pco%ls_bsn == 3) then 
+              write (4043,'(*(G0.3,:","))') time%day, time%yrc, iz, bls_d  !! losses
+            end if 
+          end if
+          if (pco%pw_bsn == 3) then
+            write (4303,100) time%day, time%yrc, iz, bpw_d  !! plant weather
+            if (pco%csvout == 1 .and. pco%pw_bsn == 3) then 
+              write (4045,'(*(G0.3,:","))') time%day, time%yrc, iz, bpw_d  !! plant weather
+            end if
+          end if
+        end if
 
       !! zero daily basin outputs
       bwb_d = hwbz
@@ -57,7 +60,6 @@
           !bwb_m = bwb_m // const
           bwb_m%cn = bwb_m%cn / const 
           bwb_m%sw = bwb_m%sw / const
-          bwb_m%pet_day = bwb_m%pet_day / const
           bwb_y = bwb_y + bwb_m
           bnb_y = bnb_y + bnb_m
           bls_y = bls_y + bls_m
@@ -99,7 +101,6 @@
            !bwb_y = bwb_y // 12.
            bwb_y%cn = bwb_y%cn / 12. 
            bwb_y%sw = bwb_y%sw / 12.
-           bwb_y%pet_day = bwb_y%pet_day / 12.
            bwb_a = bwb_a + bwb_y
            bnb_a = bnb_a + bnb_y
            bls_a = bls_a + bls_y

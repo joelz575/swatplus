@@ -15,12 +15,15 @@
         aqu_m(iaq) = aqu_m(iaq) + aqu(iaq)
         
         !! daily print - AQUIFER
-        if (pco%aqu == 3) then
-          write (4500,100) time%day, time%yrc, iaq, aqu(iaq)
-          if (pco%csvout == 1) then
-            write (4502,'(*(G0.3,:","))') time%day, time%yrc, iaq, aqu(iaq)
+        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+          if (pco%aqu == 3) then
+            write (4500,100) time%day, time%yrc, iaq, aqu(iaq)
+            if (pco%csvout == 1) then
+              write (4502,'(*(G0.3,:","))') time%day, time%yrc, iaq, aqu(iaq)
+            end if
           end if
-        end if 
+        end if
 
         !! monthly print - AQUIFER
         if (time%end_mo == 1) then

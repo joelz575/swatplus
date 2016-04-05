@@ -105,8 +105,7 @@
 
       do ipl = 1, npl(j)
         !! plant will not undergo stress if dormant
-        if (pcom(j)%plcur(ipl)%idorm == 0.and.pcom(j)%plcur(ipl)%gro==1)  &
-                                                                   then
+        if (pcom(j)%plcur(ipl)%idorm == 0.and.pcom(j)%plcur(ipl)%gro==1) then
         idp = pcom(j)%plcur(ipl)%idplt
  
         !! if plant hasn't reached maturity
@@ -127,11 +126,9 @@
 
           !! calculate optimal biomass
           !! adjust radiation-use efficiency for CO2
-          beadj = 0.
           if (hru(j)%parms%co2 > 330.) then
             beadj = 100. * hru(j)%parms%co2 / (hru(j)%parms%co2 +        &
-              Exp(plcp(idp)%ruc1 - hru(j)%parms%co2 *                    &
-                                                  plcp(idp)%ruc2))
+                Exp(plcp(idp)%ruc1 - hru(j)%parms%co2 * plcp(idp)%ruc2))
           else
             beadj = pldb(idp)%bio_e
           end if
@@ -139,7 +136,6 @@
           !! adjust radiation-use efficiency for vapor pressure deficit
           !!assumes vapor pressure threshold of 1.0 kPa
           if (vpd > 1.0) then
-            ruedecl = 0.
             ruedecl = vpd - 1.0
             beadj = beadj - pldb(idp)%wavp * ruedecl
             beadj = Max(beadj, 0.27 * pldb(idp)%bio_e)
@@ -151,12 +147,9 @@
 
           !! auto fertilization-nitrogen demand (non-legumes only)
           select case (pldb(idp)%idc)
-            case (4, 5, 6, 7)
+            case (4, 5, 6, 7)    !non-legumes
             if (auto_nstrs(j) > 0.) then
               call pl_anfert
-              !call bac_apply_hrucon  THIS SHOULD BE CALLED FROM AN HRU CONTROL MODULE
-              !hru(j)%ly(1)%bacsol(ibac) = sol_bacsol
-              !hru(j)%ly(1)%bacsor(ibac) = sol_bacsor
             end if
           end select
 
@@ -178,32 +171,31 @@
           
           !! reduce predicted biomass due to stress on plant
           reg = Min(pcom(j)%plstr(ipl)%strsw, pcom(j)%plstr(ipl)%strst,   &
-            pcom(j)%plstr(ipl)%strsn, pcom(j)%plstr(ipl)%strsp,           &
-            pcom(j)%plstr(ipl)%strsa)
+            pcom(j)%plstr(ipl)%strsn, pcom(j)%plstr(ipl)%strsp, pcom(j)%plstr(ipl)%strsa)
           if (reg < 0.) reg = 0.
           if (reg > 1.) reg = 1.
-          !reg = 1.  !testing 4-3-2014
-
 
           if (bio_targ(j) > 1.e-2) then
-            bioday = bioday * (bio_targ(j) - pcom(j)%plm(ipl)%mass) /    &
-                                               bio_targ(j)
+            bioday = bioday * (bio_targ(j) - pcom(j)%plm(ipl)%mass) / bio_targ(j)
             reg = 1.
           end if
  
           pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass + bioday * reg
-          
-          if (pldb(idp)%idc == 7 .and. igrotree(j) == 0) then
+
+          !!maximum lai and bioimass for perrenials
+          select case (pldb(idp)%idc)
+            case (3, 6, 7)  ! all perenials
             if (pldb(idp)%mat_yrs > 0) then
-              rto = float(pcom(j)%plcur(ipl)%curyr_mat + 1) /            &
-                                               float(pldb(idp)%mat_yrs)
+              rto = float(pcom(j)%plcur(ipl)%curyr_mat + 1) / float(pldb(idp)%mat_yrs)
               rto = Min(rto, 1.)
-              biomxyr = rto * pldb(idp)%bmx_trees *1000.  !t/ha -> kg/ha
-              pcom(j)%plm(ipl)%mass = Min(pcom(j)%plm(ipl)%mass,biomxyr)
             else
               rto = 1.
             end if
-          end if
+            biomxyr = rto * pldb(idp)%bmx_peren * 1000.  !t/ha -> kg/ha
+            if (biomxyr > 1.e-6 .and. pcom(j)%plm(ipl)%mass > biomxyr) then
+              pcom(j)%plm(ipl)%mass = biomxyr
+            end if
+          end select
 
           pcom(j)%plm(ipl)%mass = Max(pcom(j)%plm(ipl)%mass,0.)
 
@@ -219,8 +211,7 @@
           pcom(j)%plg(ipl)%rwt = .4 - .2 * pcom(j)%plcur(ipl)%phuacc
 
           f = pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +     &
-              Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 *                    &
-              pcom(j)%plcur(ipl)%phuacc))
+              Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc))
           ff = f - pcom(j)%plg(ipl)%laimxfr
           pcom(j)%plg(ipl)%laimxfr = f
 
@@ -237,8 +228,7 @@
             deltalai = 0.
             if (pldb(idp)%idc == 7) then
               if (pcom(j)%plcur(ipl)%curyr_mat < 1) pcom(j)%plcur(ipl)%curyr_mat = 1
-              rto = float(pcom(j)%plcur(ipl)%curyr_mat) /                 &
-                                               float(pldb(idp)%mat_yrs)
+              rto = float(pcom(j)%plcur(ipl)%curyr_mat) / float(pldb(idp)%mat_yrs)
               rto = alog10 (rto)
               lai_exp = rto * pldb(idp)%laixco_tree
               laimax = pcom(j)%plg(ipl)%laimx_pop * 10. ** lai_exp
@@ -253,27 +243,23 @@
                            (float(pldb(idp)%mat_yrs) - 1.)
             end if
             
-            if (pcom(j)%plg(ipl)%lai > laimax)                          & 
-                  pcom(j)%plg(ipl)%lai = laimax
+            if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
             deltalai = ff * laimax * (1.0 - Exp(5.0 *                   &                   
                 (pcom(j)%plg(ipl)%lai - laimax))) * Sqrt(reg)
             !! adjust lai increment for plant competition
             sumlaiht = 0.
             do jpl = 1, npl(j)
-              sumlaiht=sumlaiht+pcom(j)%plg(ipl)%lai *                  & 
-                              pcom(j)%plg(jpl)%cht
+              sumlaiht=sumlaiht+pcom(j)%plg(ipl)%lai * pcom(j)%plg(jpl)%cht
             end do
             if (sumlaiht > 1.e-6) then
-              rto = (pcom(j)%plg(ipl)%lai * pcom(j)%plg(ipl)%cht) /     & 
-                                                     sumlaiht
+              rto = (pcom(j)%plg(ipl)%lai * pcom(j)%plg(ipl)%cht) / sumlaiht
             else
               rto = 1.
             end if
             deltalai = deltalai * rto
             pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai + deltalai
             
-            if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai =    & 
-                                                          laimax
+            if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
             pcom(j)%plg(ipl)%olai = pcom(j)%plg(ipl)%lai
             if (sumlai > lai_yrmx(j)) lai_yrmx(j) = sumlai
           else
@@ -291,8 +277,7 @@
           !! calculate plant ET values
           if (pcom(j)%plcur(ipl)%phuacc > 0.5 .and.                     & 
                  pcom(j)%plcur(ipl)%phuacc < pldb(idp)%dlai) then 
-            pcom(j)%plg(ipl)%plet = pcom(j)%plg(ipl)%plet + ep_day +    & 
-            es_day
+            pcom(j)%plg(ipl)%plet = pcom(j)%plg(ipl)%plet + ep_day + es_day
             pcom(j)%plg(ipl)%plpet = pcom(j)%plg(ipl)%plpet + pet_day
           end if
 

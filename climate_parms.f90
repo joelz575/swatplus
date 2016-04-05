@@ -94,44 +94,18 @@
             
       type weather_codes_station
         integer :: wgn = 1        !!  weather generator station number
-        integer :: pcpsim = 2     !!  rainfall input code
-        integer :: tmpsim = 2     !!  temperature input code
-                                  !!   1 daily max/min read for each subbasin
-                                  !!   2 daily max/min simulated for each subbasin  
-        integer :: rhsim = 2      !!  relative humidity input code
-                                  !!   1 measured data read for each subbasin
-                                  !!   2 data simulated for each subbasin
-        integer :: slrsim = 2     !!  solar radiation input code
-                                  !!   1 measured data read for each subbasin
-                                  !!   2 data simulated for each subbasin
-        integer :: wndsim = 2     !!  windspeed input code
-                                  !!   1 measured data read for each subbasin
-                                  !!   2 data simulated for each subbasin
-        integer :: pgage = 0      !!  gage number for rainfall 
-        integer :: tgage = 0      !!  gage number fo temperature
-        integer :: sgage = 0      !!  gage number for solar radiation
-        integer :: hgage = 0      !!  gage number for relative humidity
-        integer :: wgage = 0      !!  gage number for windspeed
+        integer :: pgage = 0      !!  gage number for rainfall (sim if generating)
+        integer :: tgage = 0      !!  gage number fo temperature (sim if generating)
+        integer :: sgage = 0      !!  gage number for solar radiation (sim if generating) 
+        integer :: hgage = 0      !!  gage number for relative humidity (sim if generating)
+        integer :: wgage = 0      !!  gage number for windspeed (sim if generating)
         integer :: wndir = 0      !!  number of wind direction gage (.dir) files used in sim
         integer :: atmodep = 0    !!  atmospheric depostion data file locator
       end type weather_codes_station
       
       type weather_codes_station_char
         character (len=16) ::  wgn = ""       !!  weather generator station number
-        character (len=4) :: pcpsim = ""     !!  rainfall input code
-        character (len=4) :: tmpsim = ""     !!  temperature input code
-                                  !!   meas - daily max/min read for each subbasin
-                                  !!   sim  - daily max/min simulated for each subbasin  
-        character (len=4) :: rhsim = ""      !!  relative humidity input code
-                                  !!   meas - measured data read for each subbasin
-                                  !!   sim  - data simulated for each subbasin
-        character (len=4) :: slrsim = ""     !!  solar radiation input code
-                                  !!   meas - measured data read for each subbasin
-                                  !!   sim  - data simulated for each subbasin
-        character (len=4) :: wndsim = ""     !!  windspeed input code
-                                  !!   meas - measured data read for each subbasin
-                                  !!   sim  - data simulated for each subbasin
-        character (len=16) :: pgage = ""         !!  gage name for rainfall 
+        character (len=16) :: pgage = ""      !!  gage name for rainfall 
         character (len=16) :: tgage = ""      !!  gage name for temperature
         character (len=16) :: sgage = ""      !!  gage name for solar radiation
         character (len=16) :: hgage = ""      !!  gage name for relative humidity

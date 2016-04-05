@@ -16,7 +16,6 @@
         sdwb_d(isd)%snomlt = snowmelt           
         sdwb_d(isd)%surq_gen = runoff   
         sdwb_d(isd)%latq = flowlat + sd(isd)%gwflow
-        !sdwb_d(isd)%rchrg =  rchrg(isd)
         sdwb_d(isd)%wateryld = chflow
         sdwb_d(isd)%perc = perc                
         sdwb_d(isd)%et = aet                   
@@ -26,8 +25,9 @@
         sdwb_d(isd)%surq_cont = 0.
         sdwb_d(isd)%cn = cn_sd
         sdwb_d(isd)%sw = sd(isd)%sw             
-        sdwb_d(isd)%pet_day = pet             
+        sdwb_d(isd)%pet = pet             
         sdwb_d(isd)%qtile = 0.
+        sdwb_d(isd)%irr = air
         
 !    output_nutbal - no nutrients currently in SWAT-DEG
 !        sdnb_d(isd)%cfertn = 0.   !! cfertn
@@ -64,23 +64,23 @@
         sdls_d(isd)%tileno3 = 0.   !! tileno3(isd)
         
 !    output_plantweather - SWAT-DEG
-        sdpw_d(isd)%lai =  sd(isd)%alai  !! lai
-        sdpw_d(isd)%bioms =  sd(isd)%dm  !! total biomass
-        sdpw_d(isd)%yield =  0.      !! crop uield
-        sdpw_d(isd)%residue =  0.    !! residue
-        sdpw_d(isd)%sol_tmp =  0.    !! soil(isd)%phys(2))%tmp
-        sdpw_d(isd)%strsw = ws       !! (1.-strsw_av(isd))
-        sdpw_d(isd)%strstmp = tstress  !! (1.-strstmp_av)
-        sdpw_d(isd)%strsn = 0.       !! (1.-strsn_av)        
-        sdpw_d(isd)%strsp = 0.       !! (1.-strsp_av)
-        sdpw_d(isd)%nplnt = 0.       !! nplnt(isd)
-        sdpw_d(isd)%percn = 0.       !! percn(isd)
-        sdpw_d(isd)%pplnt = 0.       !! pplnt(isd)
-        sdpw_d(isd)%tmx = tmax       !! tmx(isd)
-        sdpw_d(isd)%tmn = tmin       !! tmn(isd)
-        sdpw_d(isd)%tmpav = tave     !! tmpav(isd)
-        sdpw_d(isd)%solrad = raobs   !! hru_ra(isd)
-
+        sdpw_d(isd)%lai =  sd(isd)%alai   !! lai
+        sdpw_d(isd)%bioms =  sd(isd)%dm   !! total biomass
+        sdpw_d(isd)%yield =  0.           !! crop uield
+        sdpw_d(isd)%residue =  0.         !! residue
+        sdpw_d(isd)%sol_tmp =  0.         !! soil(isd)%phys(2))%tmp
+        sdpw_d(isd)%strsw = ws            !! (1.-strsw_av(isd))
+        sdpw_d(isd)%strstmp = tstress     !! (1.-strstmp_av)
+        sdpw_d(isd)%strsn = 0.            !! (1.-strsn_av)        
+        sdpw_d(isd)%strsp = 0.            !! (1.-strsp_av)
+        sdpw_d(isd)%nplnt = 0.            !! nplnt(isd)
+        sdpw_d(isd)%percn = 0.            !! percn(isd)
+        sdpw_d(isd)%pplnt = 0.            !! pplnt(isd)
+        sdpw_d(isd)%tmx = tmax            !! tmx(isd)
+        sdpw_d(isd)%tmn = tmin            !! tmn(isd)
+        sdpw_d(isd)%tmpav = tave          !! tmpav(isd)
+        sdpw_d(isd)%solrad = raobs        !! hru_ra(isd)
+        sdpw_d(isd)%phubase0 = phubase0   !! base zero potential heat units
         
         sdwb_m(isd) = sdwb_m(isd) + sdwb_d(isd)
         sdnb_m(isd) = sdnb_m(isd) + sdnb_d(isd)
@@ -98,6 +98,8 @@
       end if
 
 !!!!! daily print
+        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
           if (pco%wb_sd == 3) then
             write (4100,100) time%day, time%yrc, isd, sdwb_d(isd)  !! waterbal
               if (pco%csvout == 1 .and. pco%wb_sd == 3) then 
@@ -122,15 +124,14 @@
                 write (4029,'(*(G0.3,:","))') time%day, time%yrc, isd, sdpw_d(isd)  !! plant weather 
               end if 
           end if
-
+        end if
+                                                    
         !! check end of month
         if (time%end_mo == 1) then
           const = float (ndays(time%mo + 1) - ndays(time%mo))
           sdpw_m(isd) = sdpw_m(isd) // const
-          !sdwb_m(isd) = sdwb_m(isd) // const
           sdwb_m(isd)%cn = sdwb_m(isd)%cn / const 
           sdwb_m(isd)%sw = sdwb_m(isd)%sw / const
-          !sdwb_m(isd)%pet_day = sdwb_m(isd)%pet_day / const
           sdwb_y(isd) = sdwb_y(isd) + sdwb_m(isd)
           sdnb_y(isd) = sdnb_y(isd) + sdnb_m(isd)
           sdls_y(isd) = sdls_y(isd) + sdls_m(isd)
@@ -171,10 +172,8 @@
         !! check end of year
         if (time%end_yr == 1) then
           sdpw_y(isd) = sdpw_y(isd) // 12.
-          !sdwb_y(isd) = sdwb_y(isd) // 12.
           sdwb_y(isd)%cn = sdwb_y(isd)%cn / 12. 
           sdwb_y(isd)%sw = sdwb_y(isd)%sw / 12.
-          !sdwb_y(isd)%pet_day = sdwb_y(isd)%pet_day / 12.
           sdwb_a(isd) = sdwb_a(isd) + sdwb_y(isd)
           sdnb_a(isd) = sdnb_a(isd) + sdnb_y(isd)
           sdls_a(isd) = sdls_a(isd) + sdls_y(isd)

@@ -60,7 +60,6 @@
       cnop = 0.
       cpst_id = 0
       curbden = 0.
-      igrotree = 0
       dc = 0.
       deptil = 0.
       dirtmx = 0.

@@ -18,39 +18,40 @@
         spw_m(isub) = spw_m(isub) + spw_d(isub)
         
 !!!!! daily print - SUBBASIN
-        if (pco%wb_sub == 3) then
-          write (4200,100) time%day, time%yrc, isub, swb_d(isub)  !! waterbal
-            if (pco%csvout == 1 .and. pco%wb_sub == 3) then 
-              write (4031,'(*(G0.3,:","))') time%day, time%yrc, isub, swb_d(isub)  !! waterbal
+        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+          if (pco%wb_sub == 3) then
+            write (4200,100) time%day, time%yrc, isub, swb_d(isub)  !! waterbal
+              if (pco%csvout == 1 .and. pco%wb_sub == 3) then 
+                write (4031,'(*(G0.3,:","))') time%day, time%yrc, isub, swb_d(isub)  !! waterbal
+              end if 
+          end if 
+          if (pco%nb_sub == 3) then
+            write (4201,100) time%day, time%yrc, isub, snb_d(isub)  !! nutrient bal
+            if (pco%csvout == 1 .and. pco%nb_sub == 3) then 
+              write (4033,'(*(G0.3,:","))') time%day, time%yrc, isub, snb_d(isub)  !! nutrient bal
             end if 
-        end if 
-        if (pco%nb_sub == 3) then
-          write (4201,100) time%day, time%yrc, isub, snb_d(isub)  !! nutrient bal
-          if (pco%csvout == 1 .and. pco%nb_sub == 3) then 
-            write (4033,'(*(G0.3,:","))') time%day, time%yrc, isub, snb_d(isub)  !! nutrient bal
-          end if 
-        end if
-        if (pco%ls_sub == 3) then
-          write (4202,100) time%day, time%yrc, isub, sls_d(isub)  !! losses
-          if (pco%csvout == 1 .and. pco%ls_sub == 3) then 
-            write (4035,'(*(G0.3,:","))') time%day, time%yrc, isub, sls_d(isub)  !! losses
-          end if 
-        end if
-        if (pco%pw_sub == 3) then
-          write (4203,100) time%day, time%yrc, isub, spw_d(isub)  !! plant weather
-          if (pco%csvout == 1 .and. pco%pw_sub == 3) then 
-            write (4037,'(*(G0.3,:","))') time%day, time%yrc, isub, spw_d(isub)  !! plant weather 
           end if
-        end if 
+          if (pco%ls_sub == 3) then
+            write (4202,100) time%day, time%yrc, isub, sls_d(isub)  !! losses
+            if (pco%csvout == 1 .and. pco%ls_sub == 3) then 
+              write (4035,'(*(G0.3,:","))') time%day, time%yrc, isub, sls_d(isub)  !! losses
+            end if 
+          end if
+          if (pco%pw_sub == 3) then
+            write (4203,100) time%day, time%yrc, isub, spw_d(isub)  !! plant weather
+            if (pco%csvout == 1 .and. pco%pw_sub == 3) then 
+              write (4037,'(*(G0.3,:","))') time%day, time%yrc, isub, spw_d(isub)  !! plant weather 
+            end if
+          end if 
+       end if
 
 !!!!! monthly print - SUBBASIN
         if (time%end_mo == 1) then
           const = float (ndays(time%mo + 1) - ndays(time%mo)) 
           spw_m(isub) = spw_m(isub) // const
-          !swb_m(isub) = swb_m(isub) // const
           swb_m(isub)%cn = swb_m(isub)%cn / const 
           swb_m(isub)%sw = swb_m(isub)%sw / const
-          !swb_m(isub)%pet_day = swb_m(isub)%pet_day / const
           swb_y(isub) = swb_y(isub) + swb_m(isub)
           snb_y(isub) = snb_y(isub) + snb_m(isub)
           sls_y(isub) = sls_y(isub) + sls_m(isub)
@@ -89,10 +90,8 @@
 !!!!! yearly print - SUBBASIN
         if (time%end_yr == 1) then
            spw_y(isub) = spw_y(isub) // 12.
-           !swb_y(isub) = swb_y(isub) // 12.
            swb_y(isub)%cn = swb_y(isub)%cn / 12. 
            swb_y(isub)%sw = swb_y(isub)%sw / 12.
-           !swb_y(isub)%pet_day = swb_y(isub)%pet_day / 12.
            swb_a(isub) = swb_a(isub) + swb_y(isub)
            snb_a(isub) = snb_a(isub) + snb_y(isub)
            sls_a(isub) = sls_a(isub) + sls_y(isub)

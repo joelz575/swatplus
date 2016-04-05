@@ -37,7 +37,8 @@
       do ii = 1, imax
         read (107,*,iostat=eof) i
         backspace (107)
-        read (107,*,iostat = eof) k, rec_om(i)%name, rec_om(i)%typ, rec_om(i)%filename
+ !       read (107,*,iostat = eof) k, rec_om(i)%name, rec_om(i)%typ, rec_om(i)%filename
+        read (107,*,iostat = eof) k, recall(i)%name, recall(i)%typ, recall(i)%filename
         if (eof < 0) exit
         open (108,file = recall(i)%filename)
         read (108,*,iostat=eof) titldum
@@ -47,9 +48,11 @@
         read (108,*,iostat=eof) header
         if (eof < 0) exit
         
-        select case (rec_om(i)%typ)
+!        select case (rec_om(i)%typ)
+        select case (recall(i)%typ)
            case (1) !! daily
-            allocate (rec_om(i)%hd_om(366,nbyr))
+!            allocate (rec_om(i)%hd_om(366,nbyr))
+            allocate (recall(i)%hd(366,nbyr))
             
            case (2) !! monthly
             allocate (rec_om(i)%hd_om(12,nbyr))
@@ -70,10 +73,11 @@
        iyrs = 1
        
        do 
-         read (108,*,iostat=eof) iyr, istep, rec_om(i)%hd_om(istep,iyrs)
+ !        read (108,*,iostat=eof) iyr, istep, rec_om(i)%hd_om(istep,iyrs)
+          read (108,*,iostat=eof) iyr, istep, recall(i)%hd(istep,iyrs)
          if (eof < 0) exit
          !call hyd_convert_mass (rec_om(i)%hd_om(istep,iyrs))
-         if (iyr /= iyr_prev) then
+         if (iyr /= iyr_prev) then  
            iyr_prev = iyr
            iyrs = iyrs + 1
          endif
@@ -185,12 +189,14 @@
       
       do ipc = 1, db_mx%pestcom
          read (107,*,iostat=eof) pest_init(i,ipc)
-      enddo 
+         if (pestcom_db(i)%exco_df /= 'null') then
+           read (107,*,iostat=eof) exco_pest(i,ipc)
+         endif 
+         read (107,*,iostat=eof) dr_pest(i,ipc)
+      enddo
+      
       end do
       end if
-       if (pestcom_db(i)%exco_df /= 'null') then
-         read (107,*,iostat=eof) exco_pest(i,ipc)
-       endif 
-         read (107,*,iostat=eof) dr_pest(i,ipc)
+       
       return
       end subroutine recall_read

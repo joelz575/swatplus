@@ -156,7 +156,6 @@
 !!    crops grown per year, and HRUs
       allocate (hi_targ(mhru))  
       allocate (nstress(mhru))
-      allocate (igrotree(mhru))
       allocate (tnyld(mhru))
       allocate (tnylda(mhru))
 

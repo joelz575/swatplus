@@ -15,8 +15,9 @@
         real :: surq_cont = 0.        !mm H2O        |amt of surf runoff gen during mon in HRU
         real :: cn = 0.               !none          |CN values during mon in HRU
         real :: sw = 0.               !mm H2O        |sum of daily soil water values used to calc the curve number
-        real :: pet_day = 0.          !mm H2O        |pot et on current day in HRU
+        real :: pet = 0.              !mm H2O        |pot et on current day in HRU
         real :: qtile = 0.            !mm H2O        |drainage tile flow contrib to main channel from HRU in mon
+        real :: irr = 0.              !mm H2O        |amount of water applied to HRU 
       end type output_waterbal
        
       type (output_waterbal), dimension (:), allocatable :: hwb_d
@@ -58,8 +59,9 @@
         character (len=12) :: surq_cont ='sq_cont_mm  '
         character (len=12) :: cn =       '       cn   '
         character (len=12) :: sw =       '    sw_mm   '
-        character (len=12) :: pet_day =  'pet_daymm   '
+        character (len=12) :: pet     =  '   pet_mm   '
         character (len=12) :: qtile =    ' qtile_mm   '
+        character (len=12) :: irr =      '   irr_mm   '
       end type output_waterbal_header
       
       type (output_waterbal_header) :: wb_hdr
@@ -217,6 +219,7 @@
         real :: tmn = 0.                   !deg C         |minimum temperature for the day in HRU
         real :: tmpav = 0.                 !deg C         |average air temperature on current day in HRU
         real :: solrad = 0.                !MJ/m^2        |solar radiation for the day in HRU
+        real :: phubase0 = 0.              !              |base zero potential heat units
       end type output_plantweather
       
       type (output_plantweather), dimension (:), allocatable :: hpw_d
@@ -260,6 +263,7 @@
         character (len=12) :: tmn =       ' tmn_degc   '
         character (len=12) :: tmpav =     'tave_degc   '
         character (len=12) :: solrad =    'sr_mj/m^2   '
+        character (len=12) :: phubase0  = 'phubase     '
       end type output_plantweather_header
       
       type (output_plantweather_header) :: pw_hdr
@@ -327,8 +331,9 @@
         hru3%surq_cont = hru1%surq_cont + hru2%surq_cont
         hru3%cn = hru1%cn + hru2%cn
         hru3%sw = hru1%sw + hru2%sw
-        hru3%pet_day = hru1%pet_day + hru2%pet_day
+        hru3%pet = hru1%pet + hru2%pet
         hru3%qtile = hru1%qtile + hru2%qtile
+        hru3%irr = hru1%irr + hru2%irr       
       end function hruout_waterbal_add
       
       function hruout_nutbal_add (hru1, hru2) result (hru3)
@@ -391,6 +396,7 @@
         hru3%tmn = hru1%tmn + hru2%tmn
         hru3%tmpav = hru1%tmpav + hru2%tmpav
         hru3%solrad = hru1%solrad + hru2%solrad
+        hru3%phubase0 = hru1%phubase0 + hru2%phubase0
       end function hruout_plantweather_add
 
       function hruout_waterbal_div (hru1,const) result (hru2)
@@ -411,8 +417,9 @@
         hru2%surq_cont = hru1%surq_cont / const 
         hru2%cn = hru1%cn / const 
         hru2%sw = hru1%sw / const
-        hru2%pet_day = hru1%pet_day / const 
+        hru2%pet = hru1%pet / const 
         hru2%qtile = hru1%qtile / const 
+        hru2%irr = hru1%irr / const 
       end function hruout_waterbal_div
       
       function hruout_waterbal_ave (hru1,const) result (hru2)
@@ -421,7 +428,7 @@
         type (output_waterbal) :: hru2   
         hru2%cn = hru1%cn / const 
         hru2%sw = hru1%sw / const
-        hru2%pet_day = hru1%pet_day / const
+        hru2%pet = hru1%pet / const
       end function hruout_waterbal_ave
 
       function hruout_nutbal_div (hru1,const) result (hru2)
@@ -486,6 +493,7 @@
         hru2%tmn = hru1%tmn / const
         hru2%tmpav = hru1%tmpav / const
         hru2%solrad = hru1%solrad / const
+        hru2%phubase0 = hru1%phubase0 / const
       end function hruout_plantweather_div
                   
       function hruout_plantweather_ave (hru1,const) result (hru2)
@@ -509,6 +517,7 @@
         hru2%tmn = hru1%tmn / const
         hru2%tmpav = hru1%tmpav / const
         hru2%solrad = hru1%solrad / const
+        hru2%phubase0 = hru1%phubase0 / const
       end function hruout_plantweather_ave
                             
       end module output_landscape_module

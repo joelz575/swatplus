@@ -9,18 +9,21 @@
       !!  3 = daily  
 
 !!!!! daily print
-        if (pco%hyd == 3) then
-          write (5001,101) time%day, time%yrs, icmd, ob(icmd)%typ,        &
-           ob(icmd)%props, ob(icmd)%obtyp_out(iout),                      &
-           ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),           &
-           ob(icmd)%obj_out(iout), ht1
-          if (pco%csvout == 1 .and. pco%hyd == 3) then
-            write (5007,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,   &
-             ob(icmd)%props, ob(icmd)%obtyp_out(iout),                              &
-             ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),                   &
-             ob(icmd)%obj_out(iout), ht1  
-          end if 
-        end if
+        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+          if (pco%hyd == 3) then
+            write (5001,101) time%day, time%yrs, icmd, ob(icmd)%typ,        &
+             ob(icmd)%props, ob(icmd)%obtyp_out(iout),                      &
+             ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),           &
+             ob(icmd)%obj_out(iout), ht1
+            if (pco%csvout == 1 .and. pco%hyd == 3) then
+              write (5007,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,   &
+               ob(icmd)%props, ob(icmd)%obtyp_out(iout),                              &
+               ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),                   &
+               ob(icmd)%obj_out(iout), ht1  
+            end if 
+          end if
+        endif
         ob(icmd)%hout_m(iout) = ob(icmd)%hout_m(iout) + ht1
 
 !!!!! monthly print

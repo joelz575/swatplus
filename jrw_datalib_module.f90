@@ -753,7 +753,7 @@
       type (soil_database), dimension(:), allocatable :: soildb
       
       type plant_db
-        character(len=4) :: plantnm = 'FRSD ' !N/A    |4 letter char code represents crop name
+        character(len=4) :: plantnm = 'frsd ' !N/A    |4 letter char code represents crop name
         integer :: idc = 7        !none               |crop/landcoover category
                                   !                   |1 warm annual legume
                                   !                   |2 cold season annual legume
@@ -803,7 +803,7 @@
         real :: alai_min = 0.75          !m**2/m**2         |min LAI during winter dormant period
         real :: laixco_tree = 0.3        !none              |coefficient to estimate max lai during tree growth
         integer :: mat_yrs = 10          !years             |year to maturity  
-        real :: bmx_trees = 1000.        !metric tons/ha    |max biomass for forest (trees only)
+        real :: bmx_peren = 1000.        !metric tons/ha    |max biomass for forest (trees only)
         real :: ext_coef = 0.65          !                  |light extinction coefficient
         real :: bm_dieoff = 1.           !frac              |above ground biomass that dies off at dormancy
         real :: rsr1 = 0.                !                  |initial root to shoot ratio at the beg of growing season
@@ -816,7 +816,7 @@
                                          !                             population lai curve
         real :: frlai2 = 0.              !frac              |frac of max leaf area index corresponding to the 2nd 
                                          !                     point on the leaf area development curve
-        real :: frsw_gro = 0.            !frac              |frac of field capacity to initiate growth of tropical 
+        real :: frsw_gro = .5            !frac              |frac of field capacity to initiate growth of tropical 
                                          !                     plants during monsoon season - pcom()%plcur()%iseason
         real :: wind_stl = 0.            !                  |wind erosion factor for standing live biomass
         real :: wind_std = 0.            !                  |wind erosion factor for standing dead residue
@@ -858,7 +858,6 @@
       character (len=20), dimension(:), allocatable :: till_xw
       character (len=20), dimension(:), allocatable :: irrm_xw      
       character (len=20), dimension(:), allocatable :: fert_xw
-      character (len=20), dimension(:), allocatable :: fertops_xw
       character (len=20), dimension(:), allocatable :: frta_xw  
       character (len=20), dimension(:), allocatable :: frtc_xw    
       character (len=20), dimension(:), allocatable :: pest_xw
@@ -1142,6 +1141,10 @@
         real :: psetlr2               !m/day         |phos settling rate for remainder of year (read in as m/year and converted to m/day)
         real :: chlar = 1.            !none          |chlorophyll-a production coeff for res
         real :: seccir = 1.0          !none          |water clarity coeff for res
+        real :: theta_n = 1.          !none          |temperature adjustment for nitrogen loss (settling)
+        real :: theta_p = 1.          !none          |temperature adjustment for phosphorus loss (settling)
+        real :: conc_nmin = .1        !ppm           |minimum nitrogen concentration for settling
+        real :: conc_pmin = .01       !ppm           |minimum phosphorus concentration for settling
       end type reservoir_nut_data
       type (reservoir_nut_data), dimension(:), allocatable :: res_nut
           

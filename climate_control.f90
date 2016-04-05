@@ -90,7 +90,7 @@
         iwst = wst_pointer(ii)
         iwgn = wst(iwst)%wco%wgn
         ipg = wst(iwst)%wco%pgage
-        if (wst(iwst)%wco_c%pcpsim == "sim") then
+        if (wst(iwst)%wco_c%pgage == "sim") then
           !! simulated precip
           call cli_pgen(iwgn)
           if (time%step > 0) call cli_pgenhr(iwgn)
@@ -125,7 +125,7 @@
         iwst = wst_pointer(ii)
         iwgn = wst(iwst)%wco%wgn
         call cli_weatgn(iwgn)
-        if (wst(iwst)%wco_c%tmpsim == "sim") then
+        if (wst(iwst)%wco_c%tgage == "sim") then
           call cli_tgen(iwgn)
         else
           ig = wst(iwst)%wco%tgage
@@ -145,7 +145,7 @@
         iwst = wst_pointer(ii)
         iwgn = wst(iwst)%wco%wgn
         call cli_clgen(iwgn)
-        if (wst(iwst)%wco_c%slrsim == "sim") then
+        if (wst(iwst)%wco_c%sgage== "sim") then
           call cli_slrgen(iwgn)
         else
           ig = wst(iwst)%wco%sgage
@@ -160,7 +160,7 @@
       do ii = 1, mwst
         iwst = wst_pointer(ii)
         iwgn = wst(iwst)%wco%wgn
-        if (wst(iwst)%wco_c%rhsim == "sim") then
+        if (wst(iwst)%wco_c%hgage == "sim") then
           call cli_rhgen(iwgn)
         else
           ig = wst(iwst)%wco%hgage
@@ -175,7 +175,7 @@
       do ii = 1, mwst
         iwst = wst_pointer(ii)
         iwgn = wst(iwst)%wco%wgn
-        if (wst(iwst)%wco_c%wndsim == "sim") then
+        if (wst(iwst)%wco_c%wgage == "sim") then
           call cli_wndgen(iwgn)
         else
           ig = wst(iwst)%wco%wgage

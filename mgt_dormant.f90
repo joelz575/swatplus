@@ -101,7 +101,6 @@
           !! beginning of forest dormant period
           case (7)
             pcom(j)%plcur(ipl)%idorm = 1
-            resnew = 0.
             resnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%bio_leaf
             
             !!add by zhang

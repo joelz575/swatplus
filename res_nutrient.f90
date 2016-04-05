@@ -28,14 +28,16 @@
         psetlr = res_nut(inut)%psetlr2
       endif
 
-      !! settling rate/mean depth
-      !! part of equation 29.1.3 in SWAT manual
-      phosk = 0.
-      nitrok = 0.
-      phosk = psetlr * ressa * 10000. / (res(jres)%flo + resflwo)
-      phosk = Min(phosk, 1.)
-      nitrok = nsetlr * ressa * 10000. / (res(jres)%flo + resflwo)
+      !! n and p concentrations
+      conc_n = (res(jres)%orgn + res(jres)%no3 + res(jres)%nh3 + res(jres)%no2) / res(jres)%flo
+      conc_p = (res(jres)%sedp + res(jres)%solp) / res(jres)%flo
+      
+      !! new inputs thetn, thetap, conc_pmin, conc_nmin
+      !! new equations from Charles Ikenberry for wetlands
+      nitrok = 10000. * ressa * (conc_n - res_nut(inut)%conc_nmin) * Theta(pstlr, res_nut(inut)%theta_n, tair_av)
       nitrok = Min(nitrok, 1.)
+      phosk = 10000. * ressa * (conc_p - res_nut(inut)%conc_pmin) * Theta(pstlr, res_nut(inut)%theta_p, tair_av)
+      phosk = Min(phosk, 1.)
 
       !! remove nutrients from reservoir by settling
       !! other part of equation 29.1.3 in SWAT manual

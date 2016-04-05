@@ -14,13 +14,16 @@
       resflwi = ob(icmd)%hin%flo
       pet_day = wst(iwst)%weat%pet
       respcp = wst(iwst)%weat%precip
+      tair_mx = wst(iwst)%weat%tmax
+      tair_mn = wst(iwst)%weat%tmin
+      tair_av = wst(iwst)%weat%tave
       ressedi = ob(icmd)%hin%sed 
       ressani = ob(icmd)%hin%san 
       ressili = ob(icmd)%hin%sil 
-	resclai = ob(icmd)%hin%cla 
-	ressagi = ob(icmd)%hin%sag 
-	reslagi = ob(icmd)%hin%lag 
-	resgrai = ob(icmd)%hin%grv 
+	  resclai = ob(icmd)%hin%cla 
+	  ressagi = ob(icmd)%hin%sag 
+	  reslagi = ob(icmd)%hin%lag 
+	  resgrai = ob(icmd)%hin%grv 
       solpesti = ob(icmd)%hin%psol
       sorpesti = ob(icmd)%hin%psor
 

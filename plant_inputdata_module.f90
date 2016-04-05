@@ -51,7 +51,7 @@
         real :: alai_min = 0.75          !m**2/m**2         |min LAI during winter dormant period
         real :: laixco_tree = 0.3        !none              |coefficient to estimate max lai during tree growth
         integer :: mat_yrs = 10          !years             |year to maturity  
-        real :: bmx_trees = 1000.        !metric tons/ha    |max biomass for forest (trees only)
+        real :: bmx_peren = 1000.        !metric tons/ha    |max biomass for forest (trees only)
         real :: ext_coef = 0.65          !                  |light extinction coefficient
         real :: bm_dieoff = 1.           !frac              |above ground biomass that dies off at dormancy
         real :: rsr1 = 0.                !                  |initial root to shoot ratio at the beg of growing season

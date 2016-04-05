@@ -69,20 +69,22 @@
  
       j = ihru
 
-	!! 22 January 2008	
+	  !! 22 January 2008	
       resnew = pcom(j)%plm(ipl)%mass * (1. - pcom(j)%plg(ipl)%rwt)
-	rtresnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%rwt
-	call pl_rootfr
+	  rtresnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%rwt
+	  call pl_rootfr
 
-	!! update residue, N, P on soil surface
+	  !! update residue, N, P on soil surface
+      ff1 = (1 - hiad1) / (1 - hiad1 + pcom(j)%plg(ipl)%rwt)
       hru(j)%rsd_flt(ipl)%mass = resnew + hru(j)%rsd_flt(ipl)%mass
-      hru(j)%rsd_flt(ipl)%nmass = hru(j)%rsd_flt(ipl)%nmass + FF1 *     &
+      
+      hru(j)%rsd_flt(ipl)%nmass = hru(j)%rsd_flt(ipl)%nmass + ff1 *     &
                                   (pcom(j)%plm(ipl)%nmass - yieldn)
-      hru(j)%rsd_flt(ipl)%pmass = hru(j)%rsd_flt(ipl)%pmass + FF1 *     & 
+      hru(j)%rsd_flt(ipl)%pmass = hru(j)%rsd_flt(ipl)%pmass + ff1 *     & 
                                   (pcom(j)%plm(ipl)%pmass - yieldp)
       hru(j)%rsd_flt(ipl)%mass = Max(hru(j)%rsd_flt(ipl)%mass, 0.)
-	hru(j)%rsd_flt(ipl)%nmass = Max(hru(j)%rsd_flt(ipl)%nmass, 0.)
-	hru(j)%rsd_flt(ipl)%pmass = Max(hru(j)%rsd_flt(ipl)%pmass, 0.)
+	  hru(j)%rsd_flt(ipl)%nmass = Max(hru(j)%rsd_flt(ipl)%nmass, 0.)
+	  hru(j)%rsd_flt(ipl)%pmass = Max(hru(j)%rsd_flt(ipl)%pmass, 0.)
 
             !!insert new biomss by zhang
             !!=================================

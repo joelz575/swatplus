@@ -12,15 +12,19 @@
       integer :: iin  !1==surf 2==lateral
       
 !!!!! daily print
-      if (pco%hyd == 3) then
-          write (5004,101) time%day, time%yrs, icmd, ob(icmd)%typ,            &
-             ob(icmd)%props, surlat, ht1
-            if (pco%csvout == 1 .and. pco%hyd == 3) then
-              write (5008,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,     &
+      if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+        if (pco%hyd == 3) then
+            write (5004,101) time%day, time%yrs, icmd, ob(icmd)%typ,            &
                ob(icmd)%props, surlat, ht1
-            end if       
-      endif
-        ob(icmd)%hin_m(iin) = ob(icmd)%hin_m(iin) + ht1
+              if (pco%csvout == 1 .and. pco%hyd == 3) then
+                write (5008,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,     &
+                ob(icmd)%props, surlat, ht1
+              end if       
+        endif
+      end if
+                                                    
+      ob(icmd)%hin_m(iin) = ob(icmd)%hin_m(iin) + ht1
 
 !!!!! monthly print
       if (time%end_mo == 1) then

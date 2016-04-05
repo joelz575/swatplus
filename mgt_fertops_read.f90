@@ -14,7 +14,6 @@
        inquire (file=in_ops%fert_ops, exist=i_exist)
        if (i_exist == 0 .or. in_ops%fert_ops == 'null') then
          allocate (fertop_db(0:0))
-         allocate (fertops_xw(0:0))
        else
        do
          open (107,file=in_ops%fert_ops)
@@ -29,15 +28,12 @@
           end do
           
          allocate (fertop_db(0:imax))
-         allocate (fertops_xw(0:imax))
          rewind (107)
          read (107,*) titldum
          read (107,*) header 
          
          do ifertop = 1, imax
            read (107,*,iostat=eof) fertop_db(ifertop)
-           !! fert
-           fertops_xw(ifertop) = fertop_db(ifertop)%name
            if (eof < 0) exit
          end do
 

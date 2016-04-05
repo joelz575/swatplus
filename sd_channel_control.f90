@@ -2,6 +2,10 @@
       
       ich = isdch
       isd_db = ob(icmd)%props
+      erode_btm = 0.
+      erode_bank = 0.
+      deg_btm = 0.
+      deg_bank = 0.
       
       !! set incoming flow and sediment
       chflow_m3 = ob(icmd)%hin%flo
@@ -191,10 +195,6 @@
           end if
 
         if (sd_ch(ich)%chs > sd_chd(ich)%chseq) then
-          erode_btm = 0.
-          erode_bank = 0.
-          deg_btm = 0.
-          deg_bank = 0.
           !break hydrograph into maxint segments and compute deg at each flow increment
           do ihval = 1, maxint
           !! downcutting bottom

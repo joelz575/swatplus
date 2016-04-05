@@ -210,7 +210,7 @@
               if (j /= iph) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
               iph = j
             case ("hlt")   !hru_lte
-              ob(i)%obj_out(ii) = sp_ob1%hru_lte+ob(i)%obtypno_out(ii)-1
+              ob(i)%obj_out(ii) = sp_ob1%hru_lte+ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
               if (j /= iphl) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
@@ -225,7 +225,7 @@
                 ielem = sub_d(isub)%num(kk)
                 iob = sub_elem(ielem)%obj
                 ob(iob)%rcv_tot = ob(iob)%rcv_tot + 1
-                if (j /= ipsub) ob(iob)%rcvob_tot = ob(iob)%rcvob_tot +1
+                if (j /= ipsub) ob(iob)%rcvob_tot = ob(iob)%rcvob_tot + 1
               end do
               ipsub = j
             case ("mfl")   !modflow
@@ -250,20 +250,20 @@
                   ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
                 end do
               else
-                ob(i)%obj_out(ii) = sp_ob1%chan +ob(i)%obtypno_out(ii)-1
+                ob(i)%obj_out(ii) = sp_ob1%chan +ob(i)%obtypno_out(ii) - 1
                 j = ob(i)%obj_out(ii)
                 ob(j)%rcv_tot = ob(j)%rcv_tot + 1
                 if (j /= ipcha) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
                 ipcha = j
               end if
             case ("res")   !reservoir
-              ob(i)%obj_out(ii) = sp_ob1%res + ob(i)%obtypno_out(ii) -1
+              ob(i)%obj_out(ii) = sp_ob1%res + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
               if (j /= ipres) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
               ipres = j
             case ("exc")   !export coefficients
-              ob(i)%obj_out(ii) = sp_ob1%exco + ob(i)%obtypno_out(ii) -1
+              ob(i)%obj_out(ii) = sp_ob1%exco + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
               if (j /= ipec) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
@@ -275,13 +275,13 @@
               if (j /= ipdr) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
               ipdr = j
             case ("out")   !outlet
-              ob(i)%obj_out(ii) = sp_ob1%outlet +ob(i)%obtypno_out(ii)-1
+              ob(i)%obj_out(ii) = sp_ob1%outlet + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
               if (j /= ipo) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
               ipo = j
             case ("sdc")   !swat-deg channel
-              ob(i)%obj_out(ii) = sp_ob1%chandeg+ob(i)%obtypno_out(ii)-1
+              ob(i)%obj_out(ii) = sp_ob1%chandeg+ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
               if (j /= ipsdc) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1

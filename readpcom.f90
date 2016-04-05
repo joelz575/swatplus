@@ -59,7 +59,7 @@
            
           pcom_xw(icom)%pl_name(iplt) = pcomdb(icom)%pl(iplt)%cpnm
           
-          do ipr = 1, db_mx%plantcom
+          do ipldb = 1, db_mx%plantparm
             if (pcomdb(icom)%pl(iplt)%cpnm == pldb(ipldb)%plantnm) then 
               pcomdb(icom)%pl(iplt)%db_num = ipldb
               exit

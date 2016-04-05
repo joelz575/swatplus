@@ -76,8 +76,8 @@
           end do
 
           case ("fert")
-          do idb = 1, db_mx%fertop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == fertops_xw(idb)) then
+          do idb = 1, db_mx%fertparm
+              if (sched(isched)%mgt_ops(iop)%op_char == fertdb(idb)%fertnm) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif

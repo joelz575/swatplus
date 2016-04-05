@@ -10,7 +10,7 @@
       real :: solpesto, sorpesto, resev, ressep, respcp, resorgno
       real :: resorgpo, resno3o, resno2o, resnh3o, ressolpo, reschlao
       real :: resorgpc, ressolpc,resornc, resno3c, resno2c, resnh3c
-      real :: ressa
+      real :: ressa, tair_mx, tair_mn, tair_av
 
       type reservoir
         character(len=13) :: name = "default"

@@ -75,6 +75,76 @@
       j = ihru
       nactfr = .02
 
+      !! mineralization can occur only if temp above 0 deg
+      if (soil(j)%phys(1)%tmp > 0.) then
+      !! compute residue decomp and mineralization of fresh organic n and p of flat residue
+        do ipl = 1, npl(j)        !! we need to decompose each plant
+          rmn1 = 0.
+          rmp = 0.
+          r4 = .58 * hru(j)%rsd_flt(ipl)%mass
+          if (hru(j)%rsd_flt(ipl)%nmass + soil(j)%nut(1)%no3 > 1.e-4) then
+            cnr = r4 / (hru(j)%rsd_flt(ipl)%nmass  + soil(j)%nut(1)%no3)
+            if (cnr > 500.) cnr = 500.
+            cnrf = Exp(-.693 * (cnr - 25.) / 25.)
+          else
+            cnrf = 1.
+          end if
+            
+          if (hru(j)%rsd_flt(ipl)%pmass + soil(j)%nut(1)%solp > 1.e-4) then
+            cpr = r4 / (hru(j)%rsd_flt(ipl)%pmass + soil(j)%nut(1)%solp)
+            if (cpr > 5000.) cpr = 5000.
+            cprf = Exp(-.693 * (cpr - 200.) / 200.)
+          else
+            cprf = 1.
+          end if
+        
+          !! compute soil water factor
+          sut = 0.
+	      !! change for domain error 1/29/09 gsm check with Jeff !!!
+	      if (soil(j)%phys(1)%st < 0.) soil(j)%phys(1)%st = .0000001
+          sut = .1 + .9 * Sqrt(soil(j)%phys(1)%st/soil(j)%phys(1)%fc)
+          sut = Max(.05, sut)
+
+          !!compute soil temperature factor
+          xx = soil(j)%phys(1)%tmp
+          cdg = .9 * xx / (xx + Exp(9.93 - .312 * xx)) + .1
+          cdg = Max(.1, cdg)
+
+          !! compute combined factor
+          xx = cdg * sut
+          if (xx < 0.) xx = 0.
+          if (xx > 1.e6) xx = 1.e6
+          csf = Sqrt(xx)
+          ca = Min(cnrf, cprf, 1.)
+          !! compute residue decomp and mineralization for each plant
+          if (npl(j) > 0) then
+            idp = pcom(j)%plcur(ipl)%idplt
+            decr = pldb(idp)%rsdco_pl * ca * csf
+          else
+            decr = 0.05
+          end if
+          decr = Max(bsn_prm%decr_min, decr)
+          decr = Min(decr, 1.)
+          hru(j)%rsd_flt(ipl)%mass = amax1(1.e-6, hru(j)%rsd_flt(ipl)%mass)
+          rdc = decr * hru(j)%rsd_flt(ipl)%mass
+          hru(j)%rsd_flt(ipl)%mass = hru(j)%rsd_flt(ipl)%mass - rdc
+          if (hru(j)%rsd_flt(ipl)%mass < 0.) hru(j)%rsd_flt(ipl)%mass = 0.
+          rmn1 = decr * hru(j)%rsd_flt(ipl)%nmass 
+          hru(j)%rsd_flt(ipl)%pmass = amax1(1.e-6,hru(j)%rsd_flt(ipl)%pmass)
+          rmp = decr * hru(j)%rsd_flt(ipl)%pmass
+
+          hru(j)%rsd_flt(ipl)%pmass = hru(j)%rsd_flt(ipl)%pmass - rmp
+          hru(j)%rsd_flt(ipl)%nmass  = amax1(1.e-6,hru(j)%rsd_flt(ipl)%nmass)
+          hru(j)%rsd_flt(ipl)%nmass  = hru(j)%rsd_flt(ipl)%nmass  - rmn1
+          soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 + .8 * rmn1
+          soil(j)%nut(1)%aorgn = soil(j)%nut(1)%aorgn + .2 * rmn1
+          soil(j)%nut(1)%solp = soil(j)%nut(1)%solp + .8 * rmp
+          soil(j)%nut(1)%orgp = soil(j)%nut(1)%orgp + .2 * rmp
+        end do
+      end if
+          
+      !! compute residue decomp and mineralization of fresh organic n and p
+      !! root and incorporated residue 
       do k = 1, hru(j)%sol%nly
 
         if (k == 1) then
@@ -105,8 +175,7 @@
           csf = Sqrt(xx)
 
           !! compute flow from active to stable pools
-          rwn = .1e-4 * (soil(j)%nut(k)%aorgn * (1. / nactfr - 1.) -     &
-                                                  soil(j)%nut(k)%orgn)
+          rwn = .1e-4 * (soil(j)%nut(k)%aorgn * (1. / nactfr - 1.) - soil(j)%nut(k)%orgn)
           if (rwn > 0.) then
             rwn = Min(rwn, soil(j)%nut(k)%aorgn)
           else
@@ -191,8 +260,7 @@
         wdn = 0.   
 	  if (i_sep(j) /= k .or. sep(isep)%opt  /= 1) then
 	    if (sut >= bsn_prm%sdnco) then
-	      wdn = soil(j)%nut(k)%no3 * (1.-Exp(-bsn_prm%cdn * cdg *           &
-                   soil(j)%cbn(k)%cbn))
+	      wdn = soil(j)%nut(k)%no3 * (1.-Exp(-bsn_prm%cdn * cdg * soil(j)%cbn(k)%cbn))
 	    else
 	      wdn = 0.
 	    endif

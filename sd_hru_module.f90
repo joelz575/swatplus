@@ -8,7 +8,7 @@
     
       real :: a1, a2
       real :: precip, snowfall, snowmelt, runoff, flowlat, chflow, perc
-      real :: tmax, tmin, tave, raobs, tstress, ws, biomass
+      real :: tmax, tmin, tave, raobs, tstress, ws, biomass, phubase0
       real :: cn_sd, aet, pet, sedin
       real, dimension(:), allocatable :: sd_qday, sd_qfdc, pr, be
       real, dimension(12) :: awct = 0.

@@ -50,7 +50,7 @@
             icom = pcom(j)%pcomdb
             do ipl = 1, npl(j)
               idp = pcomdb(icom)%pl(ipl)%db_num
-              if (mgt%op2 == 0 .or. mgt%op2 == ipl) then
+              if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 pcom(j)%plcur(ipl)%gro = 1
                 pcom(j)%plcur(ipl)%idorm = 0
               end if
@@ -93,7 +93,7 @@
             if (harveff <= 0.) harveff = 1.0 
 
             do ipl = 1, npl(j)
-            if (ihk == 0 .or. ihk == ipl) then
+            if (mgt%op_plant == pcomdb(icom)%pl(ipl)%cpnm) then
             
             !harvest specific type
             select case (harvop%typ)
@@ -126,7 +126,7 @@
               ihk = mgt%op1
               
               do ipl = 1, npl(j)
-                if (ihk == 0 .or. ihk == ipl) then
+                if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 call mgt_killop
   
               if (pco%mgtout ==  1) then 
@@ -148,7 +148,7 @@
             
             do ipl = 1, npl(j)
               biomass = pcom(j)%plm(ipl)%mass
-              if (mgt%op2 == 0 .or. mgt%op2 == ipl) then
+              if (mgt%op_plant == pcomdb(icom)%pl(ipl)%cpnm) then
                           
               !harvest specific type
               select case (harvop%typ)

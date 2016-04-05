@@ -4,7 +4,7 @@
 
       integer :: ic
       
-      do ic = 1, mpl
+      do ic = 1, db_mx%plantparm
         if (pldb(ic)%bm_dieoff <= 1.e-6) pldb(ic)%bm_dieoff = 1.00
 
         !! set default value

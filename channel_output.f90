@@ -86,12 +86,15 @@
       ch_m(jrch) = ch_m(jrch) + ch_d(jrch)
       
 !!!!! daily print
-      if (pco%chan == 3) then
-        write (4400,100) time%day, time%yrc, jrch, ch_d(jrch)
-        if (pco%csvout == 1) then
-          write (4402,'(*(g0.3,:","))') time%day, time%yrc, jrch, ch_d(jrch)
+      if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+        if (pco%chan == 3) then
+          write (4400,100) time%day, time%yrc, jrch, ch_d(jrch)
+          if (pco%csvout == 1) then
+            write (4402,'(*(g0.3,:","))') time%day, time%yrc, jrch, ch_d(jrch)
+          end if 
         end if 
-      end if 
+      end if
 
 !!!!! monthly print
       if (time%end_mo == 1) then

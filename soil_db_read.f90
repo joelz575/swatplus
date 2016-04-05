@@ -45,7 +45,7 @@
          allocate (soildb(isol)%ly(mlyr)) 
        
          backspace 107
-       read (107,*,iostat=eof) soildb(isol)%s%snam, soildb(isol)%s%nly,  &                         &
+       read (107,*,iostat=eof) soildb(isol)%s%snam, soildb(isol)%s%nly,  &
         soildb(isol)%s%hydgrp, soildb(isol)%s%zmx,                       &           
         soildb(isol)%s%anion_excl, soildb(isol)%s%crk,                   &           
         soildb(isol)%s%texture, (soildb(isol)%ly(j)%z,                   &           

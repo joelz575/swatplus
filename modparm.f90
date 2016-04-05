@@ -927,7 +927,6 @@
       integer, dimension (:), allocatable :: nfert
       integer, dimension (:), allocatable :: nirr
       integer, dimension (:), allocatable :: iafrttyp, nstress
-      integer, dimension (:), allocatable :: igrotree
       !! burn
       integer, dimension (:), allocatable :: grz_days
       integer, dimension (:), allocatable :: icr

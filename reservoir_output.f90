@@ -7,12 +7,16 @@
 !!    this subroutine outputs reservoir output variables    
 
 !!!!! daily print
-        if (pco%res == 3) then
-          write (5002,100) time%day, time%yrs, j, res(j)%flo, resd(j)
-           if (pco%csvout == 1) then
-             write (5006,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, resd(j) 
-           end if
+        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+          if (pco%res == 3) then
+            write (5002,100) time%day, time%yrs, j, res(j)%flo, resd(j)
+             if (pco%csvout == 1) then
+               write (5006,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, resd(j) 
+             end if
+          end if 
         end if 
+                                                    
         resm(j) = resm(j) + resd(j)
         resd(j) = resmz
         

@@ -9,15 +9,19 @@
       !!  3 = daily  
 
 !!!!! daily print
-      if (pco%hyd == 3) then
-          write (5005,101) time%day, time%yrs, icmd, ob(icmd)%typ,       &
-            ob(icmd)%props, ht1
-        if (pco%csvout == 1 .and. pco%hyd == 3) then
-          write (5009,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,       &
-            ob(icmd)%props, ht1
-        end if 
-      endif
-        ob(icmd)%hdep_m = ob(icmd)%hdep_m + ht1
+      if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+        if (pco%hyd == 3) then
+            write (5005,101) time%day, time%yrs, icmd, ob(icmd)%typ,       &
+              ob(icmd)%props, ht1
+          if (pco%csvout == 1 .and. pco%hyd == 3) then
+            write (5009,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,       &
+              ob(icmd)%props, ht1
+          end if 
+        endif
+      end if
+                                                    
+      ob(icmd)%hdep_m = ob(icmd)%hdep_m + ht1
 
 !!!!! monthly print
       if (time%end_mo == 1) then

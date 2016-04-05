@@ -9,23 +9,29 @@
 
       isd_db = ob(icmd)%props
       iwst = ob(icmd)%wst
+      iwgn = wst(iwst)%wco%wgn
       iplt = sd(isd)%iplant
       precip = wst(iwst)%weat%precip
       tmax = wst(iwst)%weat%tmax
       tmin = wst(iwst)%weat%tmin
       raobs = wst(iwst)%weat%solrad
+      rmx = wst(iwst)%weat%solradmx
+      
+      tave  = (tmax + tmin) / 2. 
+      !calculate base 0 heat units
+      if (time%day == 1) phubase0 = 0.
+      if (tave > 0.) phubase0 = phubase0 + tave / wgn_pms(iwgn)%phutot
       
       snowfall = 0.
       snowmelt = 0.
-          tave  = (tmax + tmin) / 2. 
           IF (tave .lt.0.) THEN 
-!           IF ave temp < 0  compute snowfall    
+            ! IF ave temp < 0  compute snowfall    
             snowfall = precip 
             sd(isd)%snow = sd(isd)%snow + precip 
             runoff = 0. 
           ELSE
             snowfall = 0.     
-!           IF ave temp > 0  compute runoff                             
+            ! IF ave temp > 0  compute runoff                             
             snowmelt = 4.57 * tave  
             IF (snowmelt > sd(isd)%snow) THEN 
               snowmelt = sd(isd)%snow 
@@ -58,25 +64,15 @@
           ELSE 
             h = 0. 
           END IF 
-!          ys = sd(isd)%yls * SIN(ssd) 
-!          yc = sd(isd)%ylc * COS(ssd) 
-!          dd = 1. + .0335 * SIN((xxi+88.2)/58.13) 
-!          rmx=30. * dd*( h* sd(isd)%yls * SIN(ssd) + sd(isd)%ylc *      
-!     &              COS(ssd)*SIN(h)) 
-!          raobs = .21 * rmx * sqrt(tmax-tmin) 
-          IF (sd_db(isd_db)%ipet.eq.0) THEN 
-!                                                                       
-!           compute potential et with Hargrove Method                   
-!                                                                       
+          
+          IF (sd_db(isd_db)%ipet.eq.0) THEN                                                                        
+            ! compute potential et with Hargrove Method                                                                                          
             ramm = rmx / (2.5 - .0022 * tave ) 
             pet = .0032 * ramm * (tave +17.8) * (tmax - tmin) ** .6                                       
-          ELSE 
-!                                                                       
-!           compute potential et with Preistley-Taylor Method           
-!                                                                       
+          ELSE                                                            
+            ! compute potential et with Preistley-Taylor Method                                                              
             tk = tave  + 273. 
             alb = .23 
-
             d = EXP(21.255-5304./tk) * 5304. / tk ** 2 
             gma = d / (d +.68) 
             ho = 23.9 * raobs * (1.-alb) / 58.3 
@@ -270,34 +266,7 @@
 	    qssubconc = 500.
 	    qssub = qssubconc * (flowlat + sd(isd)%gwflow) * sd_db(isd_db)%dakm2 / 1000.
 	    sedin = sedin + qssub
-          
-          tbase = 1.5 * sd_db(isd_db)%tc
-          iv = intval
-          
-          if (peakr > 1.e-6) then
-          do k = 1, 1000
-            if (iv < peakrbf) then
-              timeint(k) = 1.0 + timeint(k)
-            else              
-              if (iv < peakr) then
-                tb = ((peakr - peakrbf - iv) * tbase) / peakr
-                timeint(k) = (tbase - tb) / 86400. + timeint(k)
-              else
-                tb = (peakr - (iv - intval)) * (1.5 * sd_db(isd_db)%tc) / peakr
-!                timeint(k) = tb / 86400. + timeint(k)
-              end if
-            
-            endif
-            if (iv > peakr) exit
-            iv = iv + intval
-            tbase = tb
-          end do
-          end if
-          
-          !iiday = time%day
-	    !pr(iiday) = peakr                   <-------- note to jga this line
-	    !sd_qday(iiday) = chflow_m3 / 86400. ! m3/s, Jaehak
-          
+
           cnv = sd_db(isd_db)%dakm2 * 1000.
           
          !! set values for outflow hydrograph

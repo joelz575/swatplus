@@ -9,14 +9,17 @@
       chsd_m(ich) = chsd_m(ich) + chsd_d(ich)
       
 !!!!! daily print
-      if (pco%chan == 3) then
-        write (4600,100) time%day, time%yrc, ich, chsd_d(ich),            &
-          sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
-         if (pco%csvout == 1) then
-           write (4602,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_d(ich),  &
+      if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
+        if (pco%chan == 3) then
+          write (4600,100) time%day, time%yrc, ich, chsd_d(ich),            &
             sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
-         end if
-      end if 
+           if (pco%csvout == 1) then
+             write (4602,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_d(ich),  &
+             sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
+           end if
+        end if
+      end if
 
 !!!!! monthly print
         if (time%end_mo == 1) then

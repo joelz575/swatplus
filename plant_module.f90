@@ -106,7 +106,7 @@
                                                               == 1)then
           idp = pcom(j)%plcur(ip)%idplt
           pl_db => pldb(idp)
-          par(1) = .5 * hru_ra(j) * (1. - Exp(-pldb(idp)%ext_coef *       &    
+          par(ip) = .5 * hru_ra(j) * (1. - Exp(-pldb(idp)%ext_coef *       &    
                 (pcom(j)%plg(ip)%lai + .05)))
         end if
       else if (npl_gro > 1) then

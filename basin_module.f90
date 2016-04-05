@@ -158,6 +158,10 @@
           !!  2 = monthly
           !!  3 = daily                            
         integer :: nyskip = 0         !!  number of years to skip output summarization
+        integer :: jd_start = 0       !!  julian day to start printing output
+        integer :: jd_end = 0         !!  julian day to end printing output
+        integer :: yr_start = 0       !!  calendar year to start printing output
+        integer :: yr_end = 0         !!  calendar year to end printing output
         ! HRU
         integer :: wb_hru = 0         !!  water balance HRU output
         integer :: nb_hru = 0         !!  nutrient balance HRU output

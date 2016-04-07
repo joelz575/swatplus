@@ -94,7 +94,7 @@
 
       j = ihru
 
-      ifrt = mgt%op1
+      ifrt = mgt%op2
       frt_kg = fertop%amt_kgh
 
       do l = 1, 2

@@ -75,12 +75,17 @@
               endif
           end do
 
-          case ("fert")
-          do idb = 1, db_mx%fertparm
-              if (sched(isched)%mgt_ops(iop)%op_char == fertdb(idb)%fertnm) then
-                  sched(isched)%mgt_ops(iop)%op1 = idb
+        case ("fert")
+          do iopdb = 1, db_mx%fertop_db
+            if (sched(isched)%mgt_ops(iop)%op_char == fertop_db(iopdb)%name) then
+              sched(isched)%mgt_ops(iop)%op1 = iopdb
+              do idb = 1, db_mx%fertparm
+                if (fertop_db(iopdb)%fertnm == fertdb(idb)%fertnm) then
+                  sched(isched)%mgt_ops(iop)%op2 = idb
                   exit
-              endif
+                endif
+              end do
+            end if
           end do
 
           case ("pest")

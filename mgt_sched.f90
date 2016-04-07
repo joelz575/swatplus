@@ -29,7 +29,7 @@
       j = ihru
       
       ! determine which plant in community (%op2)
-      ! xwalk
+      if (mgt%op /= 'fert      ') then
       mgt%op2 = 0
       icom = pcom(j)%pcomdb
       if (icom > 0) then
@@ -40,13 +40,13 @@
                 exit
             end if
           end do
-        endif
-      endif
+        end if
+      end if
+      end if
          
       select case (mgt%op)
 
           case ("plnt")    !! plant one plant or entire community
-
             icom = pcom(j)%pcomdb
             do ipl = 1, npl(j)
               idp = pcomdb(icom)%pl(ipl)%db_num
@@ -226,7 +226,7 @@
             end if
           
           case ("fert")   !! fertilizer operation
-            ipl = amax1(1, mgt%op2)
+            ipl = 1
             fertop = fertop_db(mgt%op1)
             if (mgt%op3 > 1.e-6) fertop%amt_kgh = mgt%op3
             if (fertop%surface <= 1.e-6) fertop%surface = 0.2

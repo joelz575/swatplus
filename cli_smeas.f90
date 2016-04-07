@@ -6,7 +6,6 @@
       character (len=80) :: titldum
       integer :: eof, i, imax
        
-       mslr = 0
        eof = 0
        imax = 0
 
@@ -32,7 +31,7 @@
       read (107,*) titldum
       read (107,*) header
       
-      do ii = 1, imax
+      do i = 1, imax
         read (107,*,iostat = eof) slr(i)%filename
         if (eof < 0) exit
         open (108,file = slr(i)%filename)
@@ -44,11 +43,12 @@
                                 slr(i)%elev
         if (eof < 0) exit
        
+        ! the precip time step has to be the same as time%step
         allocate (slr(i)%ts(366,slr(i)%nbyr))
 
         ! read and store entire year
        do 
-         read (108,*,iostat=eof) iyr, istep
+         read (108,*,iostat=eof) iyr, istep, solrad
          if (eof < 0) exit
          if (iyr == time%yrc) exit
        end do
@@ -57,7 +57,7 @@
        iyr_prev = iyr
        iyrs = 1
        
-       do 
+       do
          read (108,*,iostat=eof) iyr, istep, slr(i)%ts(istep,iyrs)
          if (eof < 0) exit
          read (108,*,iostat=eof) iyr, istep

@@ -5,8 +5,7 @@
       character (len=80) :: header
       character (len=80) :: titldum
       integer :: eof, i, imax
-       
-       mwnd = 0
+
        eof = 0
        imax = 0
 
@@ -32,7 +31,7 @@
       read (107,*) titldum
       read (107,*) header
       
-      do ii = 1, mwnd
+      do i = 1, imax
         read (107,*,iostat = eof) wnd(i)%filename
         if (eof < 0) exit
         open (108,file = wnd(i)%filename)
@@ -44,11 +43,12 @@
                                wnd(i)%elev
         if (eof < 0) exit
        
+        ! the precip time step has to be the same as time%step
         allocate (wnd(i)%ts(366,wnd(i)%nbyr))
 
         ! read and store entire year
        do 
-         read (108,*,iostat=eof) iyr, istep
+         read (108,*,iostat=eof) iyr, istep, wndspd
          if (eof < 0) exit
          if (iyr == time%yrc) exit
        end do
@@ -57,7 +57,7 @@
        iyr_prev = iyr
        iyrs = 1
        
-       do 
+       do
          read (108,*,iostat=eof) iyr, istep, wnd(i)%ts(istep,iyrs)
          if (eof < 0) exit
          read (108,*,iostat=eof) iyr, istep

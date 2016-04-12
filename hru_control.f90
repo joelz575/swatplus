@@ -383,7 +383,7 @@
       
         !! impounded water - rice paddy, pothole, wetland, etc
         !! do not call if typ=="fpl" (flood plain and no depressional storage)
-        if (res_ob(jres)%typ == "hru" .and. res(jres)%flo > 1.e-6) then
+        if (hru(j)%surfstor > 0) then ! .and. res(jres)%flo > 1.e-6) then
           call stor_surf (jres)
         end if
           

@@ -183,7 +183,7 @@
         character (len=6) :: yrs =        ' time '
         character (len=6) :: yrc =        ' year '
         character (len=8) :: isd =        '   unit '
-        character (len=12) :: sedyld =    'sedy_tons   '
+        character (len=12) :: sedyld =    'sedy_tha    '
         character (len=12)  :: sedorgn =  'sedn_kgha   '
         character (len=12)  :: sedorgp =  'sedp_kgha   '
         character (len=12)  :: surqno3 =  ' sq3_kgha   '

@@ -17,10 +17,10 @@
       ressedi = sedyld(ihru) * frac_in
       ressani = sanyld(ihru) * frac_in
       ressili = silyld(ihru) * frac_in
-	resclai = clayld(ihru) * frac_in 
-	ressagi = sagyld(ihru) * frac_in
-	reslagi = lagyld(ihru) * frac_in
-	resgrai = grayld(ihru) * frac_in
+	  resclai = clayld(ihru) * frac_in 
+	  ressagi = sagyld(ihru) * frac_in
+	  reslagi = lagyld(ihru) * frac_in
+	  resgrai = grayld(ihru) * frac_in
       solpesti = 0.   !add soluble pest
       sorpesti = 0.   !add sorbed pest
 

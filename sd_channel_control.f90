@@ -6,12 +6,18 @@
       erode_bank = 0.
       deg_btm = 0.
       deg_bank = 0.
+      sedout = 0.
+      washld = 0.
+      bedld = 0.
+      dep = 0.
+      hc_sed = 0.
       
       !! set incoming flow and sediment
       chflow_m3 = ob(icmd)%hin%flo
       if (chflow_m3 < 1.e-6) then
         ob(icmd)%hd(1) = hz
-      
+        sedin = 0.
+        peakrate = 0.
       else
       sedin = ob(icmd)%hin%sed
       hyd_rad = 0.
@@ -212,16 +218,18 @@
           else
             shear_btm_adj = 0.
           end if
+          
+          perim_bed = sd_ch(ich)%chw
+          shear_btm_adj = shear_btm   !take out bedld_cap adjustment
 	      if (shear_btm_adj > shear_btm_cr) then
             e_btm = timeint(ihval) *  sd_chd(ich)%cherod * (shear_btm_adj - shear_btm_cr)    !! cm = hr * cm/hr/Pa * Pa
             erode_btm = erode_btm + e_btm
             !! calculate mass of sediment eroded
             ! t = cm * m/100cm * width (m) * length (km) * 1000 m/km * bd (t/m3)
             !! degradation of the bottom (downcutting)
-            perim_bed = sd_ch(ich)%chw
             deg_btm = deg_btm + 10. * e_btm * perim_bed * sd_ch(ich)%chl * sd_chd(ich)%bd
           end if
-          
+
           !! widening sides
           perim_bank = 2. * ((sd_chd(ich)%chd ** 2) * (1. + sd_chd(ich)%chss ** 2)) ** 0.5
           tw = perim_bed + 2. * sd_chd(ich)%chss * rchdep
@@ -240,9 +248,15 @@
 
           end do
           
-          erode_btm = MAX(0., erode_btm)
+          !! adjust for incoming bedload
+          bedld = sd_chd(ich)%bedldcoef * sedin
+          erode_btm = (deg_btm - bedld) / (10. * perim_bed * sd_ch(ich)%chl * sd_chd(ich)%bd)
           erode_bank = MAX(0., erode_bank)
           sd_ch(ich)%chd = sd_ch(ich)%chd + erode_btm / 100.
+          if (sd_ch(ich)%chd < 0.) then
+            !! stream is completely filled in
+            sd_ch(ich)%chd = 0.01
+          end if
           sd_ch(ich)%chw = sd_ch(ich)%chw + 2. * erode_bank / 100.
           sd_ch(ich)%chs = sd_ch(ich)%chs - (erode_btm / 100.) / (sd_ch(ich)%chl * 1000.)
           sd_ch(ich)%chs = MAX(sd_chd(ich)%chseq, sd_ch(ich)%chs)
@@ -256,15 +270,11 @@
         !convert mass to concentration
         call hyd_convert_conc (ht1)
         call sd_channel_nutrients (ht1)
-        
       END IF
           
       !! compute sediment leaving the channel
-	  bedld = sd_chd(ich)%bedldcoef * sedin
 	  washld = (1. - sd_chd(ich)%bedldcoef) * sedin
-	  dep =  bedld - bedld_cap
-      dep = amax1 (0., dep)
-	  sedout = (bedld - dep) + washld + hc_sed + deg_btm + deg_bank
+	  sedout = washld + hc_sed + deg_btm + deg_bank
       
       !! output_channel
       chsd_d(ich)%flo = ob_const * ob(icmd)%hin%flo  / 86400.  !adjust if overbank flooding is moved to landscape
@@ -272,7 +282,7 @@
       chsd_d(ich)%sed_in = ob(icmd)%hin%sed
       chsd_d(ich)%sed_out = sedout
       chsd_d(ich)%washld = washld
-      chsd_d(ich)%bedld = bedld - dep
+      chsd_d(ich)%bedld = bedld
       chsd_d(ich)%dep = dep
       chsd_d(ich)%deg_btm = deg_btm
       chsd_d(ich)%deg_bank = deg_bank

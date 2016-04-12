@@ -28,7 +28,6 @@
             read (105,*,iostat=eof) i
             if (eof < 0) exit
             imax = amax1(imax,i)
-            mrch = mch + 1
           end do        
         
         allocate (rte_nut(0:imax))

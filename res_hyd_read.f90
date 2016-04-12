@@ -7,7 +7,6 @@
       integer :: eof, mon, i, imax
       real :: lnvol
       
-      mres_i = 0
       eof = 0
       imax = 0
       
@@ -25,7 +24,6 @@
           read (105,*,iostat=eof) i
           if (eof < 0) exit
           imax = amax1(imax,i)
-          mres_i = mres_i + 1
         end do
       
       allocate (res_init(0:imax))
@@ -33,7 +31,7 @@
       read (105,*) titldum
       read (105,*) header
            
-       do ires = 1, mres_i
+       do ires = 1, imax
          read (105,*,iostat=eof) i
          backspace (105)
          read (105,*,iostat=eof) k, res_init(ires)
@@ -44,7 +42,6 @@
       enddo
       endif
       
-      mres_i = 0
       imax = 0
       inquire (file=in_res%res, exist=i_exist)
       if (i_exist == 0 .or. in_res%res == 'null') then
@@ -56,12 +53,10 @@
        if (eof < 0) exit
        read (105,*,iostat=eof) header
        if (eof < 0) exit
-       mres_i = 0
         do while (eof >= 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
           imax = amax1(imax,i)
-          mres_i = mres_i + 1
         end do
       
       allocate (res_dat(0:imax))
@@ -69,7 +64,7 @@
       read (105,*) titldum
       read (105,*) header
       
-       do ires = 1, mres_i
+       do ires = 1, imax
          read (105,*,iostat=eof) i
          backspace (105)
          read (105,*,iostat=eof) k, res_dat(ires)
@@ -80,7 +75,6 @@
       enddo
       endif
         
-      mres_i = 0
       imax = 0
       inquire (file=in_res%hyd_res, exist=i_exist)
       if (i_exist == 0 .or. in_res%hyd_res == 'null') then
@@ -96,7 +90,6 @@
           read (105,*,iostat=eof) i
           if (eof < 0) exit
           imax = amax1(imax,i)
-          mres_i = mres_i + 1
         end do
       
       allocate (res_hyd(0:imax))
@@ -104,7 +97,7 @@
       read (105,*) titldum
       read (105,*) header
       
-       do ires = 1, mres_i
+       do ires = 1, imax
          read (105,*,iostat=eof) i
          backspace (105)
          read (105,*,iostat=eof) k, res_hyd(ires)
@@ -116,7 +109,7 @@
       endif
   
       !! set default values
-      do i = 1, mres_i
+      do i = 1, imax
         if (res_hyd(i)%pvol + res_hyd(i)%evol> 0.) then
           if(res_hyd(i)%pvol <= 0) res_hyd(i)%pvol = 0.9*res_hyd(i)%evol
         else

@@ -119,10 +119,10 @@
           end if
         end if
       end do
-      
 !! Temperature: 
       do ii = 1, mwst
         iwst = wst_pointer(ii)
+      
         iwgn = wst(iwst)%wco%wgn
         call cli_weatgn(iwgn)
         if (wst(iwst)%wco_c%tgage == "sim") then

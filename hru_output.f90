@@ -270,7 +270,7 @@
       return
       
 100   format (2i6,i8,18f12.3)
-101   format (2i6,i8,16f12.3)
+101   format (2i6,i8,18f12.3)
 102   format (2i6,i8,17f12.3)
 103   format (2i6,i8,4x,a,5x,f12.3)
        

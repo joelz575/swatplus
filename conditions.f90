@@ -196,12 +196,12 @@
           end select
           
           do ialt = 1, d_tbl(id)%alts
-            if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
+            if (d_tbl(id)%alt(ic,ialt) == "<") then
               if (phubase(ihru) > targ) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
-            if (d_tbl(id)%alt(ic,ialt) == ">") then    !may use for grazing or fire
+            if (d_tbl(id)%alt(ic,ialt) == ">") then
               if (phubase(ihru) < targ) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if

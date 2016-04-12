@@ -23,6 +23,11 @@
       enddo
       endif
       close (107)
+      
+      if (pco%jd_start == 0) pco%jd_start = 1
+      if (pco%jd_end == 0) pco%jd_end = 366
+      if (pco%yr_start == 0) pco%yr_start = time%yrc
+      if (pco%yr_end == 0) pco%yr_end = time%yrc + time%nbyr
             
       return
       end subroutine basin_print_codes_read           

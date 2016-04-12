@@ -63,6 +63,7 @@
         integer :: pathcom = 0
         integer :: hmetcom = 0
         integer :: saltcom = 0
+        integer :: res = 0            !! none     |max number of reservoir data
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
 

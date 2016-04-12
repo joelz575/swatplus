@@ -57,11 +57,11 @@
       real :: chg_val, absmin, absmax
       integer :: num_db, mx_elem
 
-      prog = "SWAT+ Apr 6 2016    MODULAR Rev 17"
+      prog = "SWAT+ Apr 12 2016    MODULAR Rev 18"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "           Revision 17 - Apr 6        ",/,            &
+     &          "           Revision 18 - Apr 12       ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -158,6 +158,13 @@
       mhru = sp_ob%hru
       mres = sp_ob%res
 
+      ! read reservoir data
+      call res_hyd_read
+      call res_sed_read
+      call res_nut_read
+      call res_pst_read
+      call res_weir_read
+      
       !! set the object number for each hru-to point to weather station
       if (sp_ob%hru > 0) then
         call hru_read     
@@ -195,14 +202,7 @@
         idat = ob(i)%props
         call ch_initial (idat, irch)
       end do
-      
-      ! read reservoir data
-      call res_hyd_read
-      call res_sed_read
-      call res_nut_read
-      call res_pst_read
-      call res_weir_read
-      
+
       call sub_read
       
       call time_conc_init

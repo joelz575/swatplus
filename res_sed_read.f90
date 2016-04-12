@@ -15,7 +15,6 @@
       real :: orgpi, solpi, orgni, no3i, nh3i, no2i
       real :: lkarea
       
-      mres_q = 0
       eof = 0
       imax = 0
 
@@ -33,7 +32,6 @@
             read (105,*,iostat=eof) i
             if (eof < 0) exit
             imax = amax1(imax,i)
-            mres_q = mres_q + 1
           end do        
         
         allocate (res_sed(0:imax))
@@ -41,7 +39,7 @@
         read (105,*) titldum
         read (105,*) header
           
-        do ires = 1, mres_q
+        do ires = 1, imax
           read (105,*,iostat=eof) i
           backspace (105)
           read (105,*) k, res_sed(i)

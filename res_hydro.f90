@@ -8,7 +8,6 @@
       use time_module
       
       real :: vol, vvr, targ, xx, flw, ndespill
-      real :: v_lo(2)
 
       !! store initial values
       vol = res(jres)%flo
@@ -43,10 +42,9 @@
           
         !! determine reservoir outflow
         irel = res_dat(res_ob(jres)%props)%release
-        ihyd = res_dat(res_ob(jres)%props)%hyd
-        imet = 0    !no rule set is met
-        !call conditions ()
-        !call actions ()
+        iob_rel = res_ob(jres)%ob
+        call conditions (irel, iob_rel)
+        call actions (irel, iob_rel)
       
         !! subtract outflow from reservoir storage
         res(jres)%flo = res(jres)%flo - resflwo

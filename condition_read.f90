@@ -35,7 +35,7 @@
             allocate (d_tbl(i)%act(d_tbl(i)%acts))
             allocate (d_tbl(i)%act_hit(d_tbl(i)%acts))
             allocate (d_tbl(i)%act_ptr(d_tbl(i)%acts))
-            allocate (d_tbl(i)%act_outcomes(d_tbl(i)%conds,d_tbl(i)%acts))
+            allocate (d_tbl(i)%act_outcomes(d_tbl(i)%acts,d_tbl(i)%alts))
             
             !read conditions and condition alternatives
             read (107,*,iostat=eof) header

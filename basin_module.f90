@@ -194,7 +194,8 @@
         integer :: hydcon = 0         !!  hydrograph connect output file (hydcon.out)
         integer :: solout = 0         !!  soils output file (soils.out)
         integer :: mgtout = 0         !!  management output file (mgt.out)
-        integer :: csvout = 0         !!  code to print .csv files 0=no print; 1=print
+        integer :: csvout = 0         !!  code to print .csv files 0=no print; 1=print;
+        integer :: fdcout = 0         !!  flow duration curve output 0=no print; 1=print;
       end type basin_print_codes
       type (basin_print_codes) :: pco
            

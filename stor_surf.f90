@@ -31,8 +31,7 @@
       res(jres)%no3 = res(jres)%no3 + surqno3(ihru) * frac_in
       res(jres)%nh3 = res(jres)%nh3 + 0.  !add ammonium 
       res(jres)%no2 = res(jres)%no2 + 0.  !add no2
-      res(jres)%solp = res(jres)%solp + (sedminps(ihru) +                &
-                                              sedminpa(ihru)) * frac_in
+      res(jres)%solp = res(jres)%solp + (sedminps(ihru) + sedminpa(ihru)) * frac_in
 
       idat = res_ob(jres)%props
       ihyd = res_dat(idat)%hyd
@@ -55,10 +54,10 @@
       sedyld(ihru) = ressedo / hru(ihru)%area_ha + sedyld(ihru) * bypass
       sanyld(ihru) = ressano / hru(ihru)%area_ha + sanyld(ihru) * bypass
       silyld(ihru) = ressilo / hru(ihru)%area_ha + silyld(ihru) * bypass
-	clayld(ihru) = resclao / hru(ihru)%area_ha + clayld(ihru) * bypass 
-	sagyld(ihru) = ressago / hru(ihru)%area_ha + sagyld(ihru) * bypass
-	lagyld(ihru) = reslago / hru(ihru)%area_ha + lagyld(ihru) * bypass
-	grayld(ihru) = resgrao / hru(ihru)%area_ha + grayld(ihru) * bypass
+	  clayld(ihru) = resclao / hru(ihru)%area_ha + clayld(ihru) * bypass 
+	  sagyld(ihru) = ressago / hru(ihru)%area_ha + sagyld(ihru) * bypass
+	  lagyld(ihru) = reslago / hru(ihru)%area_ha + lagyld(ihru) * bypass
+	  grayld(ihru) = resgrao / hru(ihru)%area_ha + grayld(ihru) * bypass
       solpesti = 0.   !add soluble pest
       sorpesti = 0.   !add sorbed pest
 

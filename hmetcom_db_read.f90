@@ -43,10 +43,6 @@
           allocate (hmetcom_db(ip)%metals(num))
           read (106,*,iostat=eof) hmetcom_db(i)%name, hmetcom_db(i)%init_df, hmetcom_db(i)%recall_df,   &
               hmetcom_db(i)%exco_df, hmetcom_db(i)%dr_df, hmetcom_db(i)%num, hmetcom_db(i)%metals
-      
-           !! pesticide.pst
-           hmetcom_xw(ip) = hmetcom_db(ip)%name
-
         end do
         exit
       enddo

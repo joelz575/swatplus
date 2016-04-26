@@ -14,7 +14,6 @@
       inquire (file=in_ops%graze_ops, exist=i_exist)
       if (i_exist == 0 .or. in_ops%graze_ops == 'null') then
          allocate (grazeop_db(0:0))
-         allocate (graz_xw(0:0))
       else
       do
         open (107,file=in_ops%graze_ops)
@@ -29,7 +28,6 @@
         end do
         
         allocate (grazeop_db(0:imax)) 
-        allocate (graz_xw(0:imax))
         
         rewind (107)
         read (107,*) titldum
@@ -37,9 +35,6 @@
               
         do igrazop = 1, imax 
           read (107,*,iostat=eof) grazeop_db(igrazop)
-          
-          !! graz
-          graz_xw(igrazop) = grazeop_db(igrazop)%name
           if (eof < 0) exit
         end do
  

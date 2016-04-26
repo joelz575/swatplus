@@ -43,11 +43,6 @@
           allocate (saltcom_db(ip)%salts(num))
           read (106,*,iostat=eof) saltcom_db(i)%name, saltcom_db(i)%init_df, saltcom_db(i)%recall_df,   &
               saltcom_db(i)%exco_df, saltcom_db(i)%dr_df, saltcom_db(i)%num, saltcom_db(i)%salts
-
-      
-           !! pesticide.pst
-           saltcom_xw(ip) = saltcom_db(ip)%name
-
         end do
         exit
       enddo

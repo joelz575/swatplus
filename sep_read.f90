@@ -14,7 +14,6 @@
       inquire (file=in_str%septic_str,exist=i_exist)                  
       if (i_exist == 0 .or. in_str%septic_str == 'null') then 
         allocate (sep(0:0)) 
-        allocate (sept_str_xw(0:0))
       else
         do 
           open (172,file=in_str%septic_str)
@@ -29,17 +28,12 @@
           end do
           
           allocate (sep(0:imax))
-          allocate (sept_str_xw(0:imax))
           rewind (172)
           read (172,*) titldum
           read (172,*) header   
                 
           do isep = 1, imax
-            read(172,*,iostat=eof) sep(isep)
-            
-            !!septic.str
-            sept_str_xw(isep) = sep(isep)%name
-            
+            read(172,*,iostat=eof) sep(isep)        
             if (eof < 0) exit
           end do    
           exit

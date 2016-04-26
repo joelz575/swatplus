@@ -35,7 +35,7 @@
           
         case ("plnt")
           do idb = 1, db_mx%plantparm
-              if (sched(isched)%mgt_ops(iop)%op_char == plnt_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_plant == plnt_xw(idb)) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -43,7 +43,7 @@
           
         case ("harv")
           do idb = 1, db_mx%harvop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == harv_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == harvop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -52,7 +52,7 @@
 
         case ("hvkl")
           do idb = 1, db_mx%harvop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == harv_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == harvop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -60,7 +60,7 @@
           
         case ("till")
           do idb = 1, db_mx%tillparm
-              if (sched(isched)%mgt_ops(iop)%op_char == till_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == tilldb(idb)%tillnm) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -69,7 +69,7 @@
         case ("irrm")
           sched(isched)%irr = 1
           do idb = 1, db_mx%irrop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == irrm_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == irrop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -81,7 +81,7 @@
               sched(isched)%mgt_ops(iop)%op1 = iopdb
               do idb = 1, db_mx%fertparm
                 if (fertop_db(iopdb)%fertnm == fertdb(idb)%fertnm) then
-                  sched(isched)%mgt_ops(iop)%op2 = idb
+                  sched(isched)%mgt_ops(iop)%op4 = idb
                   exit
                 endif
               end do
@@ -90,7 +90,7 @@
 
           case ("pest")
           do idb = 1, db_mx%pstop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == pestop_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == pestop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -98,7 +98,7 @@
 
           case ("graz")
           do idb = 1, db_mx%grazeop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == graz_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == grazeop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -106,7 +106,7 @@
  
           case ("burn")
           do idb = 1, db_mx%fireop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == burn_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == fire_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -114,7 +114,7 @@
           
           case ("swep")
           do idb = 1, db_mx%sweepop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == swep_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == sweepop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif

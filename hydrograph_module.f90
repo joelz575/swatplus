@@ -8,7 +8,8 @@
       integer, dimension (:), allocatable :: rcv_sum, dfn_sum, elem_cnt
       real, dimension (:), allocatable :: hyd_km2
       real, dimension(:,:,:), allocatable:: rchhr
-
+      integer, dimension (8) :: fdc_p = (/18,36,91,182,274,328,347,366/)
+      
       type hyd_output
         !H !character (len=13) :: name
         real :: temp = 0.              !! deg c        |temperature
@@ -106,53 +107,96 @@
       end type timestep
       type (timestep), dimension(:),allocatable, save :: ts
 
+      type sorted_duration_curve
+        !linked list to sort the flow duration curves
+        real :: val = 0.
+        integer :: next = 0
+      end type sorted_duration_curve
+      
+      type duration_curve_points
+        real :: min = 1.e10
+        real :: p5 = 0.
+        real :: p10 = 0.
+        real :: p25 = 0.
+        real :: p50 = 0.
+        real :: p75 = 0.
+        real :: p90 = 0.
+        real :: p95 = 0.
+        real :: max = 0.
+        real :: mean = 0.
+      end type duration_curve_points
+      
+      type flow_duration_curve
+        integer :: mfe = 1
+        integer :: mle = 1
+        type (duration_curve_points) :: p_md                            !median of all years
+        type (duration_curve_points), dimension(:),allocatable :: p     !dimension to number of years
+      end type flow_duration_curve
+      
+      type output_flow_duration_header
+        character (len=12) :: obtyp =   ' ob_typ '
+        character (len=12) :: props =   '  props '
+        character (len=12) :: min =     '    min '
+        character (len=12) :: p5  =     '     p5 '
+        character (len=12) :: p10 =     '    p10 '     
+        character (len=12) :: p25 =     '    p25 '
+        character (len=12) :: p50 =     '    p50 '
+        character (len=12) :: p75 =     '    p75 '
+        character (len=12) :: p90 =     '    p90 '
+        character (len=12) :: p95 =     '    p95 '
+        character (len=12) :: max =     '    max '
+        character (len=12) :: mean =    '   mean '
+      end type output_flow_duration_header    
+      type (output_flow_duration_header), dimension(:), allocatable, save  :: fdc_hdr
+
       type object_connectivity
         character(len=16) :: name = "default"
-        character(len=8) :: typ = " "       !object type - ie hru, hru_lte, sub, chan, res, recall
-        real :: lat              !latitude (degrees)
-        real :: long             !longitude (degrees) 
-        real :: area_ha = 80.    !area - ha
-        integer :: props = 1     !properties number from data base (ie hru.dat, sub.dat) - change props to data
-        integer :: wst = 1       !weather station number
-        integer :: constit       !constituent data pointer to pesticides, pathogens, metals, salts
-        integer :: props2        !overbank connectivity pointer to landscape units - change props2 to overbank
-        integer :: ruleset       !ruleset pointer for flow fraction of hydrograph
-  
-        integer :: num = 1       !spatial object number- ie hru number corresponding to sequential command number
-                                 !this is the first column in hru_dat (doesn't have to be sequential)
-   
-        integer :: fired = 0     !0=not fired; 1=fired off as a command
-        integer :: cmd_next = 0  !next command (object) number
-        integer :: cmd_prev = 0  !previous command (object) number
-        integer :: cmd_order = 0 !1=headwater,2=2nd order,etc
-        integer :: src_tot = 0   !total number of outgoing (source) objects
-        integer :: rcv_tot = 0   !total number of incoming (receiving) hydrographs
-        integer :: rcvob_tot = 0 !total number of incoming (receiving) objects
-        integer :: dfn_tot = 0   !total number of defining objects (ie hru's within a subbasin)
-        integer :: subs_tot      !number of subbasins that contain this object
-        integer :: elem          !subbasins element number for this object
-        integer :: flood_ch_lnk = 0  !channel the landscape unit is linked to
-        integer :: flood_ch_elem = 0 !landscape unit number - 1 is nearest to stream
-        integer :: wr_ob = 0         !1=element in a water rights object; 0=not an element
+        character(len=8) :: typ = " "   !object type - ie hru, hru_lte, sub, chan, res, recall
+        real :: lat                     !latitude (degrees)
+        real :: long                    !longitude (degrees) 
+        real :: area_ha = 80.           !area - ha
+        integer :: props = 1            !properties number from data base (ie hru.dat, sub.dat) - change props to data
+        integer :: wst = 1              !weather station number
+        integer :: constit              !constituent data pointer to pesticides, pathogens, metals, salts
+        integer :: props2               !overbank connectivity pointer to landscape units - change props2 to overbank
+        integer :: ruleset              !ruleset pointer for flow fraction of hydrograph
+        integer :: num = 1              !spatial object number- ie hru number corresponding to sequential command number
+                                        !this is the first column in hru_dat (doesn't have to be sequential)
+        integer :: fired = 0            !0=not fired; 1=fired off as a command
+        integer :: cmd_next = 0         !next command (object) number
+        integer :: cmd_prev = 0         !previous command (object) number
+        integer :: cmd_order = 0        !1=headwater,2=2nd order,etc
+        integer :: src_tot = 0          !total number of outgoing (source) objects
+        integer :: rcv_tot = 0          !total number of incoming (receiving) hydrographs
+        integer :: rcvob_tot = 0        !total number of incoming (receiving) objects
+        integer :: dfn_tot = 0          !total number of defining objects (ie hru's within a subbasin)
+        integer :: subs_tot             !number of subbasins that contain this object
+        integer :: elem                 !subbasins element number for this object
+        integer :: flood_ch_lnk = 0     !channel the landscape unit is linked to
+        integer :: flood_ch_elem = 0    !landscape unit number - 1 is nearest to stream
+        integer :: wr_ob = 0            !1=element in a water rights object; 0=not an element
         character (len=3), dimension(:), allocatable :: obtyp_out    !outflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
-        integer, dimension(:), allocatable :: obtypno_out  !outflow object type name
-        integer, dimension(:), allocatable :: obj_out      !outflow object
-        character (len=3), dimension(:), allocatable :: htyp_out     !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
-        integer, dimension(:), allocatable :: ihtyp_out     !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
-        real, dimension(:), allocatable :: frac_out        !fraction of hydrograph
+        integer, dimension(:), allocatable :: obtypno_out           !outflow object type name
+        integer, dimension(:), allocatable :: obj_out               !outflow object
+        character (len=3), dimension(:), allocatable :: htyp_out    !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
+        integer, dimension(:), allocatable :: ihtyp_out             !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
+        real, dimension(:), allocatable :: frac_out                 !fraction of hydrograph
         character(len=8), dimension(:), allocatable :: obtyp_in     !inflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
-        integer, dimension(:), allocatable :: obtypno_in   !outflow object type number
+        integer, dimension(:), allocatable :: obtypno_in            !outflow object type number
         integer, dimension(:), allocatable :: obj_in
         integer, dimension(:), allocatable :: htyp_in
         real, dimension(:), allocatable :: frac_in
-        type (hyd_output) :: hin                           !inflow hydrograph for surface runon - sum of all inflow hyds
-        type (hyd_output) :: hin_s                         !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
-        type (hyd_output), dimension(:),allocatable :: hd  !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
-        type (hyd_output), dimension(:,:),allocatable :: ts  !subdaily hydrographs
-        type (hyd_output), dimension(:),allocatable :: tsin  !inflow subdaily hydrograph
-        integer :: day_cur = 1                               !current hydrograph day in ts
-        integer :: day_max                                   !maximum number of days to store the hydrograph
-        real :: peakrate                                   !peak flow rate during time step - m3/s
+        type (flow_duration_curve) :: fdc                                   !use for daily flows and then use to get median of annual fdc's
+        type (sorted_duration_curve), dimension(:),allocatable :: fdc_ll    !linked list of daily flow for year - dimensioned to 366
+        type (sorted_duration_curve), dimension(:),allocatable :: fdc_lla   !linked list of annual flow for simulation - dimensioned to nbyr
+        type (hyd_output) :: hin                                            !inflow hydrograph for surface runon - sum of all inflow hyds
+        type (hyd_output) :: hin_s                                          !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+        type (hyd_output), dimension(:),allocatable :: hd                   !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
+        type (hyd_output), dimension(:,:),allocatable :: ts                 !subdaily hydrographs
+        type (hyd_output), dimension(:),allocatable :: tsin                 !inflow subdaily hydrograph
+        integer :: day_cur = 1                                              !current hydrograph day in ts
+        integer :: day_max                                                  !maximum number of days to store the hydrograph
+        real :: peakrate                                                    !peak flow rate during time step - m3/s
         
         type (hyd_output), dimension(:),allocatable :: hin_m
         type (hyd_output), dimension(:),allocatable :: hin_y
@@ -163,7 +207,7 @@
         type (hyd_output) :: hdep_m
         type (hyd_output) :: hdep_y
         type (hyd_output) :: hdep_a
-        integer, dimension(:), allocatable :: obj_subs      !subbasins object number that contain this object
+        integer, dimension(:), allocatable :: obj_subs                      !subbasins object number that contain this object
       end type object_connectivity
       type (object_connectivity), dimension(:),allocatable, save :: ob
       

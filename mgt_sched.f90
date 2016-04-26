@@ -50,7 +50,7 @@
             icom = pcom(j)%pcomdb
             do ipl = 1, npl(j)
               idp = pcomdb(icom)%pl(ipl)%db_num
-              if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
+              if (mgt%op_plant == pcomdb(icom)%pl(ipl)%cpnm) then
                 pcom(j)%plcur(ipl)%gro = 1
                 pcom(j)%plcur(ipl)%idorm = 0
               end if
@@ -145,7 +145,8 @@
           case ("hvkl")   !! harvest and kill operation
             if (mgt%op1 <= 0) mgt%op1 = 1
             harvop = harvop_db(mgt%op1)
-            
+            hi_ovr = harvop%hi_ovr
+            harveff = harvop%eff
             do ipl = 1, npl(j)
               biomass = pcom(j)%plm(ipl)%mass
               if (mgt%op_plant == pcomdb(icom)%pl(ipl)%cpnm) then
@@ -237,8 +238,8 @@
             
             if (pco%mgtout == 1) then
               write (143, 1004) j, time%yrc,i_mo,iida,                  & 
-              fertdb(mgt%op1)%fertnm,                                   &
-              "   FERT", phubase(j),pcom(j)%plcur(ipl)%phuacc,          &
+              fertop_db(mgt%op1)%fertnm,                                &
+              "    FERT", phubase(j),pcom(j)%plcur(ipl)%phuacc,         &
               hru(j)%sol%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,  &
               sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3,  &
               fertorgn, fertsolp, fertorgp
@@ -320,16 +321,16 @@
               pcom(j)%plg(ipl)%laimx_pop
             end do
             
-!          case ("dran")    !! set drain depth for drainage water management
-!            hru(j)%sdr_dep = mgt%op3
-!            if (hru(j)%sdr_dep > 0) then
-!              do jj = 1, hru(ihru)%sol%nly
-!                if (hru(j)%sdr_dep < soil(ihru)%phys(jj)%d) ldrain(ihru) = jj
-!                if (hru(j)%sdr_dep < soil(ihru)%phys(jj)%d) exit
-!              end do
-!            else
-!               ldrain(ihru) = 0
-!            endif 
+          case ("dwm")    !! set drain depth for drainage water management
+            hru(j)%sdr_dep = mgt%op3
+            if (hru(j)%sdr_dep > 0) then
+              do jj = 1, hru(ihru)%sol%nly
+                if (hru(j)%sdr_dep < soil(ihru)%phys(jj)%d) ldrain(ihru) = jj
+                if (hru(j)%sdr_dep < soil(ihru)%phys(jj)%d) exit
+              end do
+            else
+               ldrain(ihru) = 0
+            endif 
 
           case ("skip")    !! skip a year
             yr_skip(j) = 1

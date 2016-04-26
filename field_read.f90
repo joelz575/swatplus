@@ -15,7 +15,6 @@
       inquire (file=in_hyd%field_fld, exist=i_exist)
       if (i_exist == 0 .or. in_hyd%field_fld == 'null') then
         allocate (field_db(0:0))
-        allocate (field_xw(0:0))
       else
         do
           open (107,file=in_hyd%field_fld)
@@ -31,7 +30,6 @@
           end do
           
           allocate (field_db(0:imax))
-          allocate (field_xw(0:imax))
           rewind (107)
           read (107,*) titldum
           read (107,*) header

@@ -16,7 +16,6 @@
       if (i_exist == 0 .or. in_parmdb%pest_pst == 'null') then
         allocate (pestdb(0:0))
         allocate (pstcp(0:0))
-        allocate (pest_xw(0:0))
       else
       do
         open (106,file=in_parmdb%pest_pst)
@@ -32,7 +31,6 @@
           
         allocate (pestdb(0:imax))
         allocate (pstcp(0:imax))
-        allocate (pest_xw(0:imax))
 
         rewind (106)
         read (106,*) titldum
@@ -40,9 +38,6 @@
         
         do ip = 1, imax
            read (106,*,iostat=eof) pestdb(ip)
-      
-           !! pesticide.pst
-           pest_xw(ip) = pestdb(ip)%pestnm
            if (eof < 0) exit
       
           !! calculations: the first-order rate law for the decay of pesticides

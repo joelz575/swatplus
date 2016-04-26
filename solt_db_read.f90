@@ -15,7 +15,6 @@
       inquire (file=in_sol%nut_sol,exist=i_exist)
       if (i_exist == 0 .or. in_sol%nut_sol == 'null') then
         allocate (solt_db(0:0))
-        allocate (soil_nut_xw(0:0))
       else
         do
          open (107,file=in_sol%nut_sol)
@@ -30,18 +29,13 @@
           end do
                 
          allocate (solt_db(0:imax))
-         allocate (soil_nut_xw(0:imax))
          
          rewind (107)
          read (107,*) titldum
          read (107,*) header       
                 
          do isolt = 1, imax
-          read (107,*,iostat=eof) solt_db(isolt)
-          
-          !! soil nutrients
-          soil_nut_xw(isolt) = solt_db(isolt)%name
-          
+          read (107,*,iostat=eof) solt_db(isolt)       
           if (eof < 0) exit
          end do 
        exit

@@ -175,18 +175,7 @@
         end if
       end do
       end if
-
-!!    define soil layer that the drainage tile is in
-      isdr = isdr_no(j)
-      if (sdr(isdr)%depth > 0.) then
-        do k = 1, nly
-          if (sdr(isdr)%depth < soil(j)%phys(k)%d) ldrain(j) = k
-          if (sdr(isdr)%depth < soil(j)%phys(k)%d) exit
-        end do
-      else
-       ldrain(j) = 0
-      end if
-      
+  
       isol = hru(j)%dbs%soil
       ilu = hru(j)%luse%cn_lu
       select case (sol(isol)%s%hydgrp)

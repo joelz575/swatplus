@@ -14,7 +14,6 @@
       inquire (file=in_str%tiledrain_str, exist=i_exist)
       if (i_exist == 0 .or. in_str%tiledrain_str == 'null') then
         allocate (sdr(0:0))
-        allocate (tdrain_str_xw(0:0))
       else
         do
           open (107,file=in_str%tiledrain_str)
@@ -29,18 +28,13 @@
           end do
           
           allocate (sdr(0:imax))
-          allocate (tdrain_str_xw(0:imax))
           
           rewind (107)
           read (107,*) titldum
           read (107,*) header  
 
           do isdr = 1, imax 
-            read (107,*,iostat=eof) sdr(isdr)
-            
-            !! tiledrain.str
-
-            
+            read (107,*,iostat=eof) sdr(isdr)          
             if (eof < 0) exit
           end do
 

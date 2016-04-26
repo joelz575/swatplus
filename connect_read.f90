@@ -8,6 +8,7 @@
 
       use hydrograph_module
       use constituent_mass_module
+      use time_module
       
       integer, intent(in) :: nhyds, ndsave, nspu, nspu1
 
@@ -81,6 +82,13 @@
                 obcs(i)%pests = pestcom_db(ics)%pests       !set 
                 obcs(i)%pest_num = pestcom_db(ics)%num_db
               end if
+              
+              !set arrays for flow duration curves
+              !if (printcode == 1) then
+                allocate (ob(i)%fdc_ll(366))
+                allocate (ob(i)%fdc_lla(time%nbyr))
+                allocate (ob(i)%fdc%p(time%nbyr))
+              !end if
           
             end do
           endif

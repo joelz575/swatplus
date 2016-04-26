@@ -13,7 +13,6 @@
        inquire (file=in_str%contour_str, exist=i_exist)
        if (i_exist == 0 .or. in_str%contour_str == 'null') then
          allocate (contour_db(0:0))
-         allocate (cont_str_xw(0:0))
        else
        do
          open (107,file=in_str%contour_str)
@@ -28,7 +27,6 @@
          end do
          
          allocate (contour_db(0:imax))
-         allocate (cont_str_xw(0:imax))
          
          rewind (107)
          read (107,*) titldum
@@ -36,9 +34,6 @@
          
          do icontop = 1, imax
            read (107,*,iostat=eof) contour_db(icontop)
-           
-           !! contour.str
-           cont_str_xw(icontop) = contour_db(icontop)%name
            if (eof < 0) exit
          end do
          exit

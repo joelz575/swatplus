@@ -42,10 +42,6 @@
 
           !! plant
           plnt_xw(ic) = pldb(ic)%plantnm
- 
-!          !! burn
-!          burn_xw(ic)%name = fireop_db(i)%name
-!          burn_xw(ic)%name = ic
          
           if (eof < 0) exit
         end do

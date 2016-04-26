@@ -16,7 +16,6 @@
       if (i_exist == 0 .or. in_lum%landuse_lum == 'null') then
         allocate (lum(0:0))
         allocate (lum_str(0:0))
-        allocate (landuse_xw(0:0))
       else
       do
        open (107,file=in_lum%landuse_lum)
@@ -32,8 +31,7 @@
        
        allocate (lum(0:imax))
        allocate (lum_str(0:imax))
-       allocate (landuse_xw(0:imax))
-       
+      
        rewind (107)
        read (107,*) titldum
        read (107,*) header
@@ -52,7 +50,7 @@
          
          if (lum(ilu)%mgt_ops /= 'null') then 
            do isched = 1, db_mx%mgt_ops
-             if (lum(ilu)%mgt_ops == mgt_ops_xw(isched)) then
+             if (lum(ilu)%mgt_ops == sched(isched)%name) then
                lum_str(ilu)%mgt_ops = isched
                exit
              end if
@@ -130,10 +128,7 @@
              end if
            end do
          end if
-         
-         !! landuse.lum
-         landuse_xw(ilu) = lum(ilu)%name
-         
+        
          if (eof < 0) exit
        end do
        exit

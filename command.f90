@@ -39,14 +39,8 @@
       use sd_channel_module
       use reservoir_module
       use organic_mineral_mass_module
-      !use recall_apex_daily
-      !use recall_daily
-      !use recmon_module
-      !use recall_hourly
-      ! use impound_module
-      !use wateruse_module
-      !use recyear_module
-      !use sd_channel_module
+      
+      real, dimension(7) :: val = 0.
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
@@ -203,7 +197,8 @@
             isd_chsur = ob(icmd)%props2
             call sd_channel_control
             
-        end select
+          end select
+        if (pco%fdcout == 1) call flow_dur_curve
         
         !print all outflow hydrographs
         if (ob(icmd)%src_tot > 0) then

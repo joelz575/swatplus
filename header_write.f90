@@ -2,6 +2,8 @@
     
      use basin_module
      use reservoir_module
+     use hydrograph_module
+     use parm
     
 !!   open soils.out file       
       if (pco%solout > 0) then
@@ -78,6 +80,13 @@
             write (5006,'(*(G0.3,:","))') res_hdr_unt
           end if
       end if
+      
+      if (pco%fdcout == 1) then
+        open (6000,file="flow_duration_curve.out", recl=800) 
+        allocate (fdc_hdr(1))
+        write (6000,*) (fdc_hdr(1))
+      end if 
+      
  1002 format (t15,'SURFACE',t29,'-------  SOIL PROFILE  -------',/,   &
         t8,'DAY',t15,'SOL_RSD',t27,'SOL_P',t38,                       &
         'NO3',t47,'ORG_N',t57,'ORG_P',t70,'CN'/,t16,                  &                   

@@ -14,7 +14,6 @@
       inquire (file=in_ops%harv_ops, exist=i_exist)
       if (i_exist == 0 .or. in_ops%harv_ops == 'null') then
         allocate (harvop_db(0:0))
-        allocate (harv_xw(0:0))
       else
       do 
         open (107,file=in_ops%harv_ops)
@@ -29,15 +28,12 @@
         end do
         
         allocate (harvop_db(0:imax))
-        allocate (harv_xw(0:imax))
         rewind (107)
         read (107,*) titldum
         read (107,*) header
         
         do iharvop = 1, imax
             read (107,*,iostat=eof) harvop_db(iharvop)
-            !! harv
-            harv_xw(iharvop) = harvop_db(iharvop)%name
             if (eof < 0) exit
         end do
 

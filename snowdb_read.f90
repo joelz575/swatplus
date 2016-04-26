@@ -16,7 +16,6 @@
       inquire (file=in_parmdb%snow, exist=i_exist)
       if (i_exist == 0 .or. in_parmdb%snow == 'null') then
         allocate (snodb(0:0))
-        allocate (snow_xw(0:0))
       else 
       do 
         open (107,file=in_parmdb%snow)
@@ -35,14 +34,9 @@
         read (107,*) header
         
         allocate (snodb(0:imax))
-        allocate (snow_xw(0:imax))
-      
+    
         do isno = 1, imax
-          read (107,*,iostat=eof) snodb(isno)
-          
-          !! snow
-          snow_xw(isno) = snodb(isno)%name
-          
+          read (107,*,iostat=eof) snodb(isno)         
           if (eof < 0) exit
         end do
 

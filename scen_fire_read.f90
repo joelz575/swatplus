@@ -13,7 +13,6 @@
        inquire (file=in_str%fire_str, exist=i_exist)
        if (i_exist == 0 .or. in_str%fire_str == 'null') then
          allocate (fire_db(0:0))
-         allocate (fire_str_xw(0:0))
        else
        do
          open (107,file=in_str%fire_str)
@@ -28,18 +27,13 @@
          end do
          
          allocate (fire_db(0:imax))
-         allocate (fire_str_xw(0:imax))
          
          rewind (107)
          read (107,*) titldum
          read (107,*) header
              
          do ifireop = 1, imax
-           read (107,*,iostat=eof) fire_db(ifireop)
-           
-           !! fire_str
-           fire_str_xw(ifireop) = fire_db(ifireop)%name
-           
+           read (107,*,iostat=eof) fire_db(ifireop)          
            if (eof < 0) exit
          end do
 

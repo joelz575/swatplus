@@ -227,6 +227,7 @@
             !! calculate mass of sediment eroded
             ! t = cm * m/100cm * width (m) * length (km) * 1000 m/km * bd (t/m3)
             !! degradation of the bottom (downcutting)
+            perim_bed = sd_ch(ich)%chw
             deg_btm = deg_btm + 10. * e_btm * perim_bed * sd_ch(ich)%chl * sd_chd(ich)%bd
           end if
 
@@ -275,6 +276,7 @@
       !! compute sediment leaving the channel
 	  washld = (1. - sd_chd(ich)%bedldcoef) * sedin
 	  sedout = washld + hc_sed + deg_btm + deg_bank
+      dep = bedld - deg_btm - deg_bank
       
       !! output_channel
       chsd_d(ich)%flo = ob_const * ob(icmd)%hin%flo  / 86400.  !adjust if overbank flooding is moved to landscape

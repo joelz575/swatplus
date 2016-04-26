@@ -59,19 +59,19 @@
             end if
           end do
           do isolt = 1, db_mx%soiltest
-            if (hru_db(i)%dbsc%soil_nutr_init == soil_nut_xw(isolt)) then
+            if (hru_db(i)%dbsc%soil_nutr_init == solt_db(isolt)%name) then
                hru_db(i)%dbs%soil_nutr_init = isolt
             exit
             end if
           end do
           do ith = 1, db_mx%topo
-            if (hru_db(i)%dbsc%topo == topo_xw(ith)) then
+            if (hru_db(i)%dbsc%topo == topo_db(ith)%name) then
                hru_db(i)%dbs%topo = ith
             exit
             end if
           end do
          do ithyd = 1, db_mx%hyd
-            if (hru_db(i)%dbsc%hyd == hyd_xw(ithyd)) then
+            if (hru_db(i)%dbsc%hyd == hyd_db(ithyd)%name) then
                hru_db(i)%dbs%hyd = ithyd
             exit
             end if
@@ -89,14 +89,14 @@
             end if
          end do
          do isno = 1, db_mx%sno
-            if (hru_db(i)%dbsc%snow == snow_xw(isno)) then
+            if (hru_db(i)%dbsc%snow == snodb(isno)%name) then
                hru_db(i)%dbs%snow = isno
             exit
             end if
          end do
          do ifld = 1, db_mx%field
-            if (hru_db(i)%dbsc%snow == snow_xw(isno)) then
-               hru_db(i)%dbs%snow = isno
+             if (hru_db(i)%dbsc%field == field_db(ifld)%name) then
+               hru_db(i)%dbs%field = ifld
             exit
             end if
          end do

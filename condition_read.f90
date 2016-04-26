@@ -61,7 +61,7 @@
                 select case (d_tbl(i)%act(iac)%name)
                 case ("irrigate")
                   do idb = 1, db_mx%irrop_db
-                    if (d_tbl(i)%act(iac)%file_pointer == irrm_xw(idb)) then
+                    if (d_tbl(i)%act(iac)%file_pointer == irrop_db(idb)%name) then
                       d_tbl(i)%act_ptr = idb
                       exit
                     end if

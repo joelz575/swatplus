@@ -14,7 +14,6 @@
       inquire (file=in_ops%sweep_ops, exist=i_exist)
       if (i_exist == 0 .or. in_ops%sweep_ops == 'null') then 
         allocate (sweepop_db(0:0))
-        allocate (swep_xw(0:0))
       else
       do
         open (107,file=in_ops%sweep_ops)
@@ -29,7 +28,6 @@
         end do
         
          allocate (sweepop_db(0:imax))
-         allocate (swep_xw(0:imax))
          
          rewind (107)
          read (107,*) titldum
@@ -37,9 +35,6 @@
               
         do isweepop = 1, imax
           read (107,*,iostat=eof) sweepop_db(isweepop)
-          
-          !! swep
-          swep_xw(isweepop) = sweepop_db(isweepop)%name
           if (eof < 0) exit
         end do
 

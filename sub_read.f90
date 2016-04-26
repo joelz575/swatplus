@@ -69,7 +69,7 @@
       uhs = 0
       
   !      do ith = 1, db_mx%toposub
-  !        if (sub(i)%dbsc%toposub == toposub_xw(ith)) then
+  !        if (sub(i)%dbsc%toposub == toposub_db(ith)%name) then
   !             sub(i)%dbs%toposub = ith
   !        exit
   !        end if

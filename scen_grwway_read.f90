@@ -13,7 +13,6 @@
        inquire (file=in_str%grassww_str, exist=i_exist)
        if (i_exist == 0 .or. in_str%grassww_str == 'null') then
          allocate (grwaterway_db(0:0))
-         allocate (grassww_str_xw(0:0))
        else
        do
          open (107,file=in_str%grassww_str)
@@ -28,18 +27,13 @@
          end do
          
          allocate (grwaterway_db(0:imax))
-         allocate (grassww_str_xw(0:imax))
          
          rewind (107)
          read (107,*) titldum
          read (107,*) header
          
          do igrwwop = 1, imax
-           read (107,*,iostat=eof) grwaterway_db(igrwwop)
-           
-           !! grassedww.str
-           grassww_str_xw(igrwwop)= grwaterway_db(igrwwop)%name
-           
+           read (107,*,iostat=eof) grwaterway_db(igrwwop)          
            if (eof < 0) exit
          end do
 

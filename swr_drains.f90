@@ -130,16 +130,18 @@
       end if
 
       !!	calculate parameters hdrain and gee1
-      ad = hru(j)%hyd%dep_imp - sdr(isdr)%depth
-	ap = 3.55 - ((1.6 * ad) / sdr(isdr)%dist) + 2 *                   &
+      ad = hru(j)%hyd%dep_imp - hru(j)%sdr_dep
+      ad = amax1 (10., ad)
+	  ap = 3.55 - ((1.6 * ad) / sdr(isdr)%dist) + 2 *                   &
                                            ((2 / sdr(isdr)%dist)**2)
-	if (ad / sdr(isdr)%dist < 0.3) then
-          hdrain= ad / (1 + ((ad / sdr(isdr)%dist) * (((8 / pi) *       &
+	  if (ad / sdr(isdr)%dist < 0.3) then
+        hdrain= ad / (1 + ((ad / sdr(isdr)%dist) * (((8 / pi) *       &
      	    Log(ad / sdr(isdr)%radius) - ap))))
-	else
-          hdrain = (sdr(isdr)%dist * pi) / (8 * ((log(sdr(isdr)%dist /  &
-                   sdr(isdr)%radius)/ log(e)) - 1.15))
-	end if
+      else
+        hdrain = ad
+          !hdrain = (sdr(isdr)%dist * pi) / (8 * ((log(sdr(isdr)%dist /  &
+          !         sdr(isdr)%radius)/ log(e)) - 1.15))
+	  end if
       !! calculate Kirkham G-Factor, gee
         k2 = tan((pi * ((2. * ad) -sdr(isdr)%radius)) /                 &               
                            (4. * hru(j)%hyd%dep_imp))
@@ -164,8 +166,8 @@
 
       !! calculate drainage and subirrigation flux section
       !	drainage flux for ponded surface
-      depth = sdr(isdr)%depth + hdrain
-      hdmin = depth - sdr(isdr)%depth
+      depth = hru(j)%sdr_dep + hdrain
+      hdmin = depth - hru(j)%sdr_dep
       if (bsn_cc%smax == 1) then
         call swr_depstor ! dynamic stmaxd(j): compute current HRU stmaxd based 
 	           ! on cumulative rainfall and cum. intensity
@@ -195,7 +197,7 @@
         em=depth-y1-hdrain
         if(em < -1.0) then
 !!          ddranp=ddrain(j)-1.0
-          ddranp = sdr(isdr)%depth - 1.0
+          ddranp = hru(j)%sdr_dep - 1.0
           dot = hdrain + hru(j)%hyd%dep_imp - depth
           dflux=4.0*24.0*cone*em*hdrain*(2.0+em/dot)/sdr(isdr)%dist**2 
           if((depth-hdrain) >= ddranp) dflux=0.

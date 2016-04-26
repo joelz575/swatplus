@@ -14,7 +14,6 @@
       inquire (file=in_str%initial_str, exist=i_exist)
       if (i_exist == 0 .or. in_str%initial_str == 'null') then
         allocate (str_init(0:0))
-        allocate (init_str_xw(0:0))
       else
       do
         open (107,file=in_str%initial_str)
@@ -29,7 +28,6 @@
           end do
                 
         allocate (str_init(0:imax))
-        allocate (init_str_xw(0:imax))
         
         rewind (107) 
         read (107,*) titldum
@@ -50,7 +48,7 @@
                 
             case ("terrace")
                 do ipr = 1, db_mx%terrop_db
-                   if (str_init(istr)%prac_typ(ii) == terr_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) == terrace_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -58,7 +56,7 @@
                 
             case ("tile")
                 do ipr = 1, db_mx%sdr
-                   if (str_init(istr)%prac_typ(ii) == tdrain_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) == sdr(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -66,7 +64,7 @@
 
             case ("contour")
                 do ipr = 1, db_mx%contop_db
-                   if (str_init(istr)%prac_typ(ii) ==  cont_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==  contour_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -74,7 +72,7 @@
                 
             case ("filter")
                 do ipr = 1, db_mx%filtop_db
-                   if (str_init(istr)%prac_typ(ii) ==  fstrip_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==  filtstrip_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -83,7 +81,7 @@
  
            case ("stripcrop")
                 do ipr = 1, db_mx%stripop_db
-                   if (str_init(istr)%prac_typ(ii) ==  stripcr_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==  stripcrop_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -91,7 +89,7 @@
                 
            case ("fire")
                 do ipr = 1, db_mx%fireop_db
-                   if (str_init(istr)%prac_typ(ii) ==  fire_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==  fire_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -99,7 +97,7 @@
     
           case ("grassww")
                 do ipr = 1, db_mx%grassop_db
-                   if (str_init(istr)%prac_typ(ii) ==  grassww_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==  grwaterway_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -107,7 +105,7 @@
                 
           case ("plantup")
                 do ipr = 1, db_mx%plparmop_db
-                   if (str_init(istr)%prac_typ(ii) ==  plparms_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==  plparmup_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -115,7 +113,7 @@
                 
          case ("resman")
                 do ipr = 1, db_mx%rsdmgtop_db
-                   if (str_init(istr)%prac_typ(ii) ==   rsdmgt_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==   rsdmgt_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -123,7 +121,7 @@
                 
          case ("user_def")
                 do ipr = 1, db_mx%bmpuserop_db
-                   if (str_init(istr)%prac_typ(ii) ==   bmp_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==   bmpuser_db(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -131,7 +129,7 @@
                 
          case ("septic")
                 do ipr = 1, db_mx%septic
-                   if (str_init(istr)%prac_typ(ii) ==   sept_str_xw(ipr)) then
+                   if (str_init(istr)%prac_typ(ii) ==   sep(ipr)%name) then
                      str_init(istr)%prac_num(ii) = ipr
                      exit
                    end if
@@ -139,10 +137,7 @@
                 
             end select
           end do
-              
-          !! initial.str
-          init_str_xw(istr) = str_init(istr)%name
-          
+         
           if (eof < 0) exit
         end do
         exit

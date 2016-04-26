@@ -14,7 +14,6 @@
       inquire (file=in_ops%contpest_ops, exist=i_exist)
       if (i_exist == 0 .or. in_ops%contpest_ops == 'null') then
         allocate (contpestop_db(0:0))
-        allocate (pstc_xw(0:0))
       else
       do
         open (107,file=in_ops%contpest_ops)
@@ -29,16 +28,12 @@
         end do
         
         allocate (contpestop_db(0:imax))
-        allocate (pstc_xw(0:imax))
         rewind (107)
         read (107,*) titldum
         read (107,*) header
         
         do icpestop = 1, imax
           read (107,*,iostat=eof) contpestop_db(icpestop)
-          
-          !! pstc
-          pstc_xw(icpestop) = contpestop_db(i)%name
           if (eof < 0) exit
         end do
 

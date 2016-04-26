@@ -38,10 +38,7 @@
           read (106,*) i
           backspace (106)
           read (106,*,iostat=eof) cs_db(i)
-      
-           !! pesticide.pst
-           !constit_xw(ip) = cs_db(ip)%name
-
+          if (eof < 0) exit
         end do
         exit
       enddo

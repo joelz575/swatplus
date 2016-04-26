@@ -40,7 +40,7 @@
       allocate (pot(mhru))
       
 !!    drains
-      allocate (wnan(mlyr))
+      allocate (wnan(10))
       allocate (ranrns_hru(mhru))
       
       !dimension plant arrays used each day and not saved

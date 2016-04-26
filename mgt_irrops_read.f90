@@ -14,7 +14,6 @@
       inquire (file=in_ops%irr_ops, exist=i_exist)
       if (i_exist == 0 .or. in_ops%irr_ops == 'null') then
         allocate (irrop_db(0:0))
-        allocate (irrm_xw(0:0))
       else
       do
         open (107,file=in_ops%irr_ops)
@@ -29,7 +28,6 @@
         end do
 
         allocate (irrop_db(0:imax))
-        allocate (irrm_xw(0:imax))
         
         rewind (107)
         read (107,*) titldum
@@ -37,9 +35,6 @@
         
         do irr_op = 1, imax
           read (107,*,iostat=eof) irrop_db(irr_op)
-          
-          !! irrm
-          irrm_xw(irr_op)= irrop_db(irr_op)%name
           if (eof < 0) exit
         end do
 

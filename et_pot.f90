@@ -108,7 +108,6 @@
       vpd = ea - ed
 
       !!calculate the slope of the saturation vapor pressure curve
-      dlt = 0.
       dlt = 4098. * ea / (tmpav(j) + 237.3)**2
 	
 !! DETERMINE POTENTIAL ET
@@ -119,7 +118,6 @@
      
        !! net radiation
          !! calculate net short-wave radiation for PET
-          ralb = 0.
           if (sno_hru(j) <= .5) then
             ralb = hru_ra(j) * (1.0 - 0.23)
           else
@@ -129,11 +127,9 @@
         !! calculate net long-wave radiation
 
           !! net emissivity  equation 2.2.20 in SWAT manual
-          rbo = 0.
           rbo = -(0.34 - 0.139 * Sqrt(ed))
 
           !! cloud cover factor equation 2.2.19
-          rto = 0.
             if (hru_rmx(j) < 1.e-4) then
 		    rto = 0.
             else
@@ -141,14 +137,12 @@
             end if
 
           !! net long-wave radiation equation 2.2.21
-          rout = 0.
           rout = rbo * rto * 4.9e-9 * (tk**4)
 
           !! calculate net radiation
-          rn_pet = 0.
           rn_pet = ralb + rout
-       !! net radiation
-
+          
+          !! net radiation
           pet_alpha = 1.28
           pet_day = pet_alpha * (dlt / (dlt + gma)) * rn_pet / xl
           pet_day = Max(0., pet_day)
@@ -158,48 +152,38 @@
 
        !! net radiation
          !! calculate net short-wave radiation for PET
-          ralb = 0.
           if (sno_hru(j) <= .5) then
             ralb = hru_ra(j) * (1.0 - 0.23) 
           else
             ralb = hru_ra(j) * (1.0 - 0.8) 
           end if
          !! calculate net short-wave radiation for max plant ET
-          ralb1 = 0.
           ralb1 = hru_ra(j) * (1.0 - albday) 
 
          !! calculate net long-wave radiation
           !! net emissivity  equation 2.2.20 in SWAT manual
-          rbo = 0.
           rbo = -(0.34 - 0.139 * Sqrt(ed))
 
           !! cloud cover factor equation 2.2.19
-          rto = 0.
-            if (hru_rmx(j) < 1.e-4) then
-		    rto = 0.
-            else
-              rto = 0.9 * (hru_ra(j) / hru_rmx(j)) + 0.1
-            end if
+          if (hru_rmx(j) < 1.e-4) then
+            rto = 0.
+          else
+            rto = 0.9 * (hru_ra(j) / hru_rmx(j)) + 0.1
+          end if
 
           !! net long-wave radiation equation 2.2.21
-          rout = 0.
           rout = rbo * rto * 4.9e-9 * (tk**4)
 
           !! calculate net radiation
-          rn = 0.
-          rn_pet = 0.
           rn = ralb1 + rout
           rn_pet = ralb + rout
-       !! net radiation
+          !! net radiation
 
-          rho = 0.
           rho = 1710. - 6.85 * tmpav(j)
 
           if (u10(j) < 0.01) u10(j) = 0.01
 
-        !! potential ET: reference crop alfalfa at 40 cm height
-           rv = 0.
-           rc = 0.
+           !! potential ET: reference crop alfalfa at 40 cm height
            rv = 114. / (u10(j) * (170./1000.)**0.2)
            rc = 49. / (1.4 - 0.4 * hru(j)%parms%co2 / 330.)
            pet_day = (dlt * rn_pet + gma * rho * vpd / rv) /            &           
@@ -217,8 +201,6 @@
           else
             !! determine wind speed and height of wind speed measurement
             !! adjust to 100 cm (1 m) above canopy if necessary
-            uzz = 0.
-            zz = 0.
             if (cht_mx(j) <= 1.0) then
               zz = 170.0
             else
@@ -227,7 +209,6 @@
             uzz = u10(j) * (zz/1000.)**0.2
 
             !! calculate canopy height in cm
-            chz = 0.
             if (cht_mx(j) < 0.01) then
               chz = 1.
             else
@@ -235,7 +216,6 @@
             end if
 
             !! calculate roughness length for momentum transfer
-            zom = 0.
             if (chz <= 200.) then
               zom = 0.123 * chz
             else
@@ -243,11 +223,9 @@
             end if
  
             !! calculate roughness length for vapor transfer
-            zov = 0.
             zov = 0.1 * zom
 
             !! calculate zero-plane displacement of wind profile
-            d = 0.
             d = 0.667 * chz
 
             !! calculate aerodynamic resistance

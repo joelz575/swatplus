@@ -387,7 +387,7 @@
           call stor_surf (jres)
         end if
           
-        xx = sed_con(j)+soln_con(j)+solp_con(j)+orgn_con(j)+orgp_con(j)
+        xx = sed_con(j) + soln_con(j) + solp_con(j) + orgn_con(j) + orgp_con(j)
         if (xx > 1.e-6) then
           call hru_urb_bmp
         end if

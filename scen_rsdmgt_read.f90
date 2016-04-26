@@ -13,7 +13,6 @@
        inquire (file=in_str%residue_str, exist=i_exist)
        if (i_exist == 0 .or. in_str%residue_str == 'null') then
             allocate (rsdmgt_db(0:0))
-            allocate (rsdmgt_str_xw(0:0))
        else
        do
          open (107,file=in_str%residue_str)
@@ -28,18 +27,13 @@
          end do
          
          allocate (rsdmgt_db(0:imax))
-         allocate (rsdmgt_str_xw(0:imax))
          
          rewind (107)
          read (107,*) titldum
          read (107,*) header
          
          do irsdop = 1, imax 
-           read (107,*,iostat=eof) rsdmgt_db(irsdop)
-           
-           !! residue.str
-           rsdmgt_str_xw(irsdop) = rsdmgt_db(irsdop)%name
-           
+           read (107,*,iostat=eof) rsdmgt_db(irsdop)         
            if (eof < 0) exit
          end do
 

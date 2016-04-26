@@ -38,15 +38,14 @@
 
 !! calculate albedo
       cej = -5.e-5
-      eaj = 0.
       eaj = Exp(cej * (sol_cov(j) + .1))   !! equation 2.2.16 in SWAT manual
 
       if (sno_hru(j) <= .5) then
         !! equation 2.2.14 in SWAT manual
-        albday = hru(j)%sol%crk
+        albday = hru(j)%ly(1)%alb
 
         !! equation 2.2.15 in SWAT manual
-        if (sumlai > 0.)albday = .23 * (1. - eaj) + hru(j)%sol%crk * eaj
+        if (sumlai > 0.) albday = .23 * (1. - eaj) + hru(j)%ly(1)%alb * eaj
       else
         !! equation 2.2.13 in SWAT manual
         albday = 0.8

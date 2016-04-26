@@ -70,6 +70,7 @@
          read (105,*,iostat=eof) k, res_dat(ires)
          if (eof < 0) exit
        end do
+       db_mx%res = imax
        close (105)
       exit
       enddo

@@ -15,7 +15,6 @@
       inquire (file=in_hyd%topogr_hyd, exist=i_exist)
       if (i_exist == 0 .or. in_hyd%topogr_hyd == 'null') then
         allocate (topo_db(0:0))
-        allocate (topo_xw(0:0))
       else
         do
           open (107,file=in_hyd%topogr_hyd)
@@ -30,18 +29,13 @@
           end do
           
           allocate (topo_db(0:imax))
-          allocate (topo_xw(0:imax))
           
           rewind (107)
           read (107,*) titldum
           read (107,*) header
                    
           do ith = 1, imax 
-             read (107,*,iostat=eof) topo_db(ith)
-             
-             !! topo
-             topo_xw(ith) = topo_db(ith)%name
-             
+             read (107,*,iostat=eof) topo_db(ith)           
              if (eof < 0) exit
           end do
           exit

@@ -50,25 +50,24 @@
            call curno(terr_cn,j)
         end if
 
-      case ("tile")
+      case ("tiledrain")
         isdr_no(j) = istr
-
+        hru(j)%sdr_dep = sdr(istr)%depth
         !! define soil layer that the drainage tile is in
         if (sdr(istr)%depth > 0) then
           do jj = 1, hru(j)%sol%nly
-            if (sdr(istr)%depth < soil(j)%phys(jj)%d)                & 
-               ldrain(j) = jj
-            if (sdr(istr)%depth < soil(j)%phys(jj)%d) exit
+            if (hru(j)%sdr_dep < soil(j)%phys(jj)%d) ldrain(j) = jj
+            if (hru(j)%sdr_dep < soil(j)%phys(jj)%d) exit
           end do
         else
           ldrain(j) = 0
         endif
         !! setting tile lage time
-      if (ldrain(j) > 0 .and. sdr(istr)%lag > 0.01) then
-            tile_ttime(j) = 1. - Exp(-24. /sdr(istr)%lag)
-         else
-            tile_ttime(j) = 0.
-         end if
+        if (ldrain(j) > 0 .and. sdr(istr)%lag > 0.01) then
+          tile_ttime(j) = 1. - Exp(-24. /sdr(istr)%lag)
+        else
+          tile_ttime(j) = 0.
+        end if
 
       case ("contour")
         cont_cn = contour_db(istr)%cont_cn

@@ -533,6 +533,7 @@
         type (hydrology) :: hyd
         type (landuse) :: luse
         integer :: irrsrc
+        real :: sdr_dep
       end type hydrologic_response_unit
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
       type (plant_growth), pointer :: plt
@@ -614,28 +615,28 @@
           character (len=15) :: oper =   '               '
           character (len=10) :: phub =   '          '  
           character (len=10) :: phua =   '          '
-          character (len=10) :: sw =     '      mm  '
-          character (len=10) :: bio =    '   kg/ha  '
-          character (len=10) :: rsd =    '   kg/ha  '
-          character (len=10) :: solno3 = '   kg/ha  '
-          character (len=10) :: solp =   '   kg/ha  '
-          character (len=10) :: yld =    '   kg/ha  '
-          character (len=10) :: irr =    '   mm     '
+          character (len=10) :: sw =     '       mm '
+          character (len=10) :: bio =    '    kg/ha '
+          character (len=10) :: rsd =    '    kg/ha '
+          character (len=10) :: solno3 = '    kg/ha '
+          character (len=10) :: solp =   '    kg/ha '
+          character (len=10) :: yld =    '    kg/ha '
+          character (len=10) :: irr =    '    mm    '
           character (len=10) :: amt =    ' or dwfert'
           character (len=10) :: mix =    '  frac    '
-          character (len=10) :: strn =   ' fertno3  '
-          character (len=10) :: strp =   '   nh3    '
-          character (len=10) :: strmp =  '   orgn   '
-          character (len=10) :: strsw =  '   solp   '
-          character (len=10) :: strsa =  '   orgp   '
+          character (len=10) :: strn =   '  fertno3 '
+          character (len=10) :: strp =   '      nh3 '
+          character (len=10) :: strmp =  '     orgn '
+          character (len=10) :: strsw =  '     solp '
+          character (len=10) :: strsa =  '     orgp '
           character (len=10) :: irrsc =  '          '
           character (len=10) :: irrno =  '          '  
-          character (len=10) :: grain =  ' kg/ha    '
-          character (len=10) :: biom =   ' kg/ha    '
-          character (len=10) :: tuber =  ' kg/ha    '
-          character (len=10) :: resis =  ' kg/ha    '
-          character (len=10) :: nit =    ' kg/ha    '
-          character (len=10) :: phos =   ' kg/ha    ' 
+          character (len=10) :: grain =  '    kg/ha '
+          character (len=10) :: biom =   '    kg/ha '
+          character (len=10) :: tuber =  '    kg/ha '
+          character (len=10) :: resis =  '    kg/ha '
+          character (len=10) :: nit =    '    kg/ha '
+          character (len=10) :: phos =   '    kg/ha ' 
       end type mgt_header_unit2
       type(mgt_header_unit2) :: mgt_hdr_unt2
 

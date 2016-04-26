@@ -42,10 +42,6 @@
            allocate (pathcom_db(ip)%paths(num))
            read (106,*,iostat=eof) pathcom_db(ip)%name, pathcom_db(ip)%init_df, pathcom_db(ip)%recall_df,  &
              pathcom_db(ip)%exco_df, pathcom_db(ip)%dr_df, pathcom_db(ip)%num, pathcom_db(ip)%paths 
-           
-           !! pesticide.pst
-           pathcom_xw(ip) = pathcom_db(ip)%name
-
         end do
         exit
       enddo

@@ -435,6 +435,7 @@
         integer :: op1 = 0
         integer :: op2 = 0              !! |none          |plant number in community for hu scheduling
         real :: op3 = 0                 !! |none          |application amount (mm or kg/ha)
+        integer :: op4 = 0              !! |none          |
       end type management_ops1
       
       type management_ops
@@ -465,6 +466,7 @@
         integer :: op1 = 0
         integer :: op2 = 0              !! |none          |plant number in community for hu scheduling
         real :: op3 = 0                 !! |none          |application amount (mm or kg/ha)
+        integer :: op4 = 0              !! |none          |
       end type management_ops
       type (management_ops) :: mgt
       type (management_ops) :: mgt1
@@ -571,7 +573,7 @@
       type topography_db
         character(len=13) :: name = 'default'
         real :: elev = 100.       !!               |m             |elevation of HRU
-        real :: slope = .02       !!	hru_slp(:)   |m/m           |average slope steepness in HRU
+        real :: slope = .02       !!	hru_slp(:) |m/m           |average slope steepness in HRU
         real :: slope_len = 50.   !! slsubbsn(:)   |m             |average slope length for erosion
         real :: lat_len = 50.     !! slsoil(:)     |m             |slope length for lateral subsurface flow
         real :: dis_stream = 100. !! dis_stream(:) |m             |average distance to stream
@@ -854,50 +856,8 @@
       end type pcom_crosswalk
       type (pcom_crosswalk), dimension(:), allocatable :: pcom_xw
       
-      character (len=20), dimension(:), allocatable :: plnt_xw 
-      character (len=20), dimension(:), allocatable :: harv_xw        
-      character (len=20), dimension(:), allocatable :: till_xw
-      character (len=20), dimension(:), allocatable :: irrm_xw      
-      character (len=20), dimension(:), allocatable :: fert_xw
-      character (len=20), dimension(:), allocatable :: frta_xw  
-      character (len=20), dimension(:), allocatable :: frtc_xw    
-      character (len=20), dimension(:), allocatable :: pest_xw
-      character (len=20), dimension(:), allocatable :: pestop_xw
-      character (len=20), dimension(:), allocatable :: pstc_xw
-      character (len=20), dimension(:), allocatable :: graz_xw   
-      character (len=20), dimension(:), allocatable :: burn_xw   
-      character (len=20), dimension(:), allocatable :: swep_xw
-      
- !!  structural ops     
-      character (len=20), dimension(:), allocatable :: sept_str_xw
-      character (len=20), dimension(:), allocatable :: bmp_str_xw
-      character (len=20), dimension(:), allocatable :: cont_str_xw
-      character (len=20), dimension(:), allocatable :: fstrip_str_xw
-      character (len=20), dimension(:), allocatable :: fire_str_xw
-      character (len=20), dimension(:), allocatable :: grassww_str_xw
-      character (len=20), dimension(:), allocatable :: plparms_str_xw
-      character (len=20), dimension(:), allocatable :: rsdmgt_str_xw
-      character (len=20), dimension(:), allocatable :: stripcr_str_xw
-      character (len=20), dimension(:), allocatable :: terr_str_xw
-      character (len=20), dimension(:), allocatable :: tdrain_str_xw
-      character (len=20), dimension(:), allocatable :: init_str_xw
-      
-      character (len=20), dimension(:), allocatable :: mgt_ops_xw
-      character (len=20), dimension(:), allocatable :: soil_nut_xw
-      character (len=20), dimension(:), allocatable :: topo_xw
-      character (len=20), dimension(:), allocatable :: toposub_xw
-      character (len=20), dimension(:), allocatable :: hyd_xw
+      character (len=20), dimension(:), allocatable :: plnt_xw                     
       character (len=20), dimension(:), allocatable :: soil_xw
-      character (len=20), dimension(:), allocatable :: landuse_xw
-      character (len=20), dimension(:), allocatable :: snow_xw
-      character (len=20), dimension(:), allocatable :: field_xw
-      
-!!    constituents ops
-      character (len=20), dimension(:), allocatable :: constit_xw
-      character (len=20), dimension(:), allocatable :: pestcom_xw
-      character (len=20), dimension(:), allocatable :: pathcom_xw
-      character (len=20), dimension(:), allocatable :: hmetcom_xw
-      character (len=20), dimension(:), allocatable :: saltcom_xw
     
       type routing_nut_data         ! used for 2-stage ditch in chandeg and overland flow
         character(len=16) :: name = 'Drainage_Ditch'

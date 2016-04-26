@@ -13,7 +13,6 @@
        inquire (file=in_str%stcrop_str, exist=i_exist)
        if (i_exist == 0 .or. in_str%stcrop_str == 'null') then
          allocate (stripcrop_db(0:0))
-         allocate (stripcr_str_xw(0:0))
        else
        do
          open (107,file=in_str%stcrop_str)
@@ -28,18 +27,13 @@
          end do
          
          allocate (stripcrop_db(0:imax))
-         allocate (stripcr_str_xw(0:imax))
          
          rewind (107)
          read (107,*) titldum
          read (107,*) header
          
          do istripop = 1, imax
-           read (107,*,iostat=eof) stripcrop_db(istripop)
-           
-           !!stripcrop.str
-           stripcr_str_xw(istripop) = stripcrop_db(istripop)%name
-           
+           read (107,*,iostat=eof) stripcrop_db(istripop)    
            if (eof < 0) exit
          end do
 

@@ -80,7 +80,6 @@
         if (pcom(j)%plg(ipl)%plpet < 10.) then
           wur = 100.
         else
-          wur = 0.
           wur = 100. * pcom(j)%plg(ipl)%plet / pcom(j)%plg(ipl)%plpet
         endif
 
@@ -94,12 +93,10 @@
 
 
 !! check if yield is from above or below ground
-      yield = 0.
-      resnew = 0.
       if (pldb(idp)%hvsti > 1.001) then
         yield = pcom(j)%plm(ipl)%mass * (1. - 1. / (1. + hiad1))
       else
-        yield = (1. - pcom(j)%plg(ipl)%rwt)*pcom(j)%plm(ipl)%mass*hiad1
+        yield = (1. - pcom(j)%plg(ipl)%rwt) * pcom(j)%plm(ipl)%mass * hiad1
       endif
        if (yield < 0.) yield = 0.
       yield = yield * harveff
@@ -134,7 +131,7 @@
        xx = pcom(j)%plm(ipl)%mass
        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - yield
        pcom(j)%plg(ipl)%rwt = pcom(j)%plg(ipl)%rwt * xx /                &
-         pcom(j)%plm(ipl)%mass
+         (pcom(j)%plm(ipl)%mass + 1.e-6)
 
 !! update curve number
       if (cnop > 0.) call curno(cnop,j)

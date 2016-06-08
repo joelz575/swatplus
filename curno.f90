@@ -77,16 +77,15 @@
       rto3 = 1. - s3 / smx(h)
       rtos = 1. - 2.54 / smx(h)
       sumul = hru(h)%sol%sumul
-      sumfc = hru(h)%sol%sumfc + hru(h)%hyd%cn3_swf * (sumul -          &
-                                                     hru(h)%sol%sumfc)
+      sumfc = hru(h)%sol%sumfc + hru(h)%hyd%cn3_swf * (sumul - hru(h)%sol%sumfc)
 !! calculate shape parameters
       call ascrv(rto3,rtos,sumfc,sumul,wrt(1,h),wrt(2,h))
 
       if (time%yrs == 0) then
-	  sci(h) = 0.9 * smx(h)
-	else
+	    sci(h) = 0.9 * smx(h)
+	  else
         sci(h) = (1. - ((smxold - sci(h)) / smxold)) * smx(h)  !! plant ET
-	end if
+	  end if
 
       return
       end subroutine curno

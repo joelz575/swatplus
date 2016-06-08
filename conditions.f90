@@ -1,6 +1,6 @@
       subroutine conditions (id, ob_num)
       !current conditions include: w_stress, n_stress, phu_plant, phu_base0, soil_water, jday, month, vol
-      ! year_rot, year_cal, year_seq    
+      ! year_rot, year_cal, year_seq, prob, land_use   
       !target variables include: w_stress -> wp, fc, ul; vol -> pvol, evol
     
       use jrw_datalib_module
@@ -11,6 +11,8 @@
       use reservoir_module
       
       integer :: id, ob_num
+      integer :: nbz=748932582
+      integer, dimension(1) :: seed = (/3/)
 
       d_tbl(id)%act_hit = "y"
       do ic = 1, d_tbl(id)%conds
@@ -137,7 +139,7 @@
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == "=") then
-              if (time%day == d_tbl(id)%cond(ic)%lim_const) then
+              if (time%day /= d_tbl(id)%cond(ic)%lim_const) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
@@ -157,7 +159,7 @@
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == "=") then
-              if (time%mo == d_tbl(id)%cond(ic)%lim_const) then
+              if (time%mo /= d_tbl(id)%cond(ic)%lim_const) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
@@ -168,10 +170,76 @@
             
         !calendar year
         case ("year_cal")
-            
+          do ialt = 1, d_tbl(id)%alts
+            if (d_tbl(id)%alt(ic,ialt) == "<") then
+              if (time%yrc > d_tbl(id)%cond(ic)%lim_const) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl(id)%alt(ic,ialt) == ">") then
+              if (time%yrc < d_tbl(id)%cond(ic)%lim_const) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl(id)%alt(ic,ialt) == "=") then
+              if (time%yrc /= d_tbl(id)%cond(ic)%lim_const) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+          
         !sequential year of simulation
         case ("year_seq")
-            
+          do ialt = 1, d_tbl(id)%alts
+            if (d_tbl(id)%alt(ic,ialt) == "<") then
+              if (time%yrs > d_tbl(id)%cond(ic)%lim_const) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl(id)%alt(ic,ialt) == ">") then
+              if (time%yrs < d_tbl(id)%cond(ic)%lim_const) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl(id)%alt(ic,ialt) == "=") then
+              if (time%yrs /= d_tbl(id)%cond(ic)%lim_const) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                      
+        !probability
+        case ("prob")
+          !call RANDOM_SEED ()
+          !call RANDOM_NUMBER (ran_num)
+          !ran_num = ran(nbz)
+          ran_num = Aunif(nbz)
+          do ialt = 1, d_tbl(id)%alts
+            if (d_tbl(id)%alt(ic,ialt) == "<") then
+              if (ran_num > d_tbl(id)%cond(ic)%lim_const) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl(id)%alt(ic,ialt) == ">") then
+              if (ran_num < d_tbl(id)%cond(ic)%lim_const) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                    
+        !land use and management
+        case ("land_use")
+          do ialt = 1, d_tbl(id)%alts
+            if (d_tbl(id)%alt(ic,ialt) == "=") then
+              ihru = ob_num
+              if (hru(ihru)%dbsc%land_use_mgt /= d_tbl(id)%cond(ic)%lim_var) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            !else
+            !  d_tbl(id)%act_hit(ialt) = "n"
+            end if
+          end do
+             
         !reservoir volume
         case ("vol")
           !determine target variable

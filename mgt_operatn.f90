@@ -59,6 +59,7 @@
 
         do while(mgt%jday > 0 .and. iida == mgt%jday)
           call mgt_sched (isched)
+          if (sched(isched)%num_ops == 1) exit
           if (yr_skip(j) == 1) exit
         end do
 

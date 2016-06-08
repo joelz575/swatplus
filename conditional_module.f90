@@ -1,4 +1,6 @@
       module conditional_module
+    
+      integer :: ical_hyd
 
       type conditions_var
         character(len=16) :: var            ! condition variable (ie volume, flow, sw, time, etc)
@@ -23,9 +25,9 @@
         integer :: conds                                                ! number of conditions
         integer :: alts                                                 ! number of alternatives
         integer :: acts                                                 ! number of actions
-        type (conditions_var), dimension(:), allocatable :: cond            ! conditions
+        type (conditions_var), dimension(:), allocatable :: cond        ! conditions
         character(len=16), dimension(:,:), allocatable :: alt           ! condition alternatives
-        type (actions_var), dimension(:), allocatable :: act                ! actions
+        type (actions_var), dimension(:), allocatable :: act            ! actions
         character(len=1), dimension(:,:), allocatable :: act_outcomes   ! action outcomes ('y' to perform action; 'n' to not perform)
         character(len=1), dimension(:), allocatable :: act_hit          ! 'y' if all condition alternatives (rules) are met; 'n' if not
         integer, dimension(:), allocatable :: act_ptr                   ! pointer to file character name (ie irr.ops)

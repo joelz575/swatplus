@@ -38,11 +38,12 @@
         allocate (hru(0:imax))
         allocate (soil(0:imax))
         allocate (pcom(0:imax))
+        
         rewind (113)
         read (113,*) titldum
         read (113,*) header
 
-      do ihru = 1, mhru_db
+      do ihru = 1, mhru    !mhru_db
         read (113,*) i
         backspace (113)
         read (113,*,iostat=eof) k, hru_db(i)%dbsc

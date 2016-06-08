@@ -213,19 +213,16 @@
                end if 
            end if
           
-          hwb_y(j) = hwbz
-          hnb_y(j) = hnbz
-          hpw_y(j) = hpwz
-          hls_y(j) = hlsz
         end if
         
 !!!!! average annual print
          if (time%end_sim == 1) then
            hwb_a(j) = hwb_a(j) / time%yrs_prt
            write (4004,100) time%end_yr, time%yrs, j, hwb_a(j)
-             if (pco%csvout == 1) then
-               write (4016,100) time%end_yr, time%yrs, j, hwb_a(j)
-             end if
+           if (pco%csvout == 1) then
+             write (4016,100) time%end_yr, time%yrs, j, hwb_a(j)
+           end if
+           hwb_a(j) = hwbz
          end if
         
          if (time%end_sim == 1) then 
@@ -234,6 +231,7 @@
              if (pco%csvout == 1) then 
                write (4018,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hnb_a(j)
              end if
+             hnb_a(j) = hnbz
          end if
         
          if (time%end_sim == 1) then
@@ -241,7 +239,8 @@
            write (4006,101) time%end_yr, time%yrs, j, hls_a(j)
              if (pco%csvout == 1) then 
                write (4020,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hls_a(j)
-             end if 
+             end if
+             hls_a(j) = hlsz
          end if
         
          if (time%end_sim == 1) then     
@@ -249,7 +248,8 @@
            write (4007,102) time%end_yr, time%yrs, j, hpw_a(j)
              if (pco%csvout == 1) then 
                write (4022,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hpw_a(j)
-             end if 
+             end if
+             hpw_a(j) = hpwz
          end if
 
          if (time%end_sim == 1) then

@@ -48,7 +48,12 @@
         ihyd = res_dat(idat)%hyd
         ised = res_dat(idat)%sed
         if(time%step == 0) then		!! urban modeling by J.Jeong
-	      call res_hydro (jres, ihyd, ised)
+	      !call from actions --> call res_hydro (jres, ihyd, ised)
+          !! determine reservoir outflow
+          irel = res_dat(res_ob(jres)%props)%release
+          iob_rel = res_ob(jres)%ob
+          call conditions (irel, iob_rel)
+          call actions (irel, iob_rel)
           call res_sediment (jres, ihyd, ised)
 	    else
 	      !call res_hourly

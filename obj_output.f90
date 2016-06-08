@@ -7,15 +7,13 @@
       
       do
         do itot = 1, mobj_out
-          
-                
           iob = ob_out(itot)%objno
           ihd = ob_out(itot)%hydno
           iunit = ob_out(itot)%unitno          
                 
-          write (iunit+itot,100) time%day, time%yrc,                            &
-             ob_out(itot)%obtyp, ob_out(itot)%obtypno,                          &
-             ob(iob)%hd(ihd)
+          if (iob <= sp_ob%objs) then
+            write (iunit+itot,100) time%day, time%yrc, ob_out(itot)%obtyp, ob_out(itot)%obtypno, ob(iob)%hd(ihd)
+          end if
 
         end do
         exit

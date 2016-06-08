@@ -16,6 +16,7 @@
         integer :: day = 0            !! current day of simulation
         integer :: mo = 0             !! current month of simulation
         integer :: yrc = 2014         !! current calendar year
+        integer :: yrc_start = 2014   !! starting calendar year
         integer :: yrs = 0            !! current sequential year
         integer :: day_mo = 0         !! day of month (1-31)  
         integer :: end_mo = 0         !! set to 1 if end of month

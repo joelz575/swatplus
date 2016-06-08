@@ -40,7 +40,7 @@
         terr_p = terrace_db(istr)%p
         terr_cn = terrace_db(istr)%cn2
         terr_sl = terrace_db(istr)%sl_len
-        xm = 0.6 * (1. - Exp(-35.835 * hru(j)%topo%slope))    
+        xm = 0.6 * (1. - Exp(-35.835 * hru(j)%topo%slope))
         sin_sl = Sin(Atan(hru(j)%topo%slope))
         usle_ls(j) = (terr_sl / 22.128) ** xm * (65.41 * sin_sl *    &
                                      sin_sl + 4.56 * sin_sl + .065)

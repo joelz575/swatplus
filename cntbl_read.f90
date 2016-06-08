@@ -8,7 +8,6 @@
       
       eof = 0
       imax = 0
-      mcn = 0
       
     !! read all curve number data from cn.tbl
       inquire (file=in_lum%cntable_lum, exist=i_exist)
@@ -22,27 +21,28 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
          do while (eof >= 0)
-           read (107,*,iostat=eof) i
+           read (107,*,iostat=eof) titldum
            if (eof < 0) exit
-           imax = amax1(imax,i)
-           mcn = mcn + 1
+           imax = imax + 1
          end do
          
         allocate (cn(0:imax))
+        
         rewind (107)
         read (107,*) titldum
         read (107,*) header
         
-        do icno = 1, mcn
-          read (107,*,iostat=eof) i
-          backspace (107)
-          read (107,*,iostat=eof) k, cn(i)
+        do icno = 1, imax
+          read (107,*,iostat=eof) cn(icno)
           if (eof < 0) exit
         end do
         exit
       enddo
       endif
-        close(107)
+      
+      db_mx%cn_lu = imax
+      
+      close(107)
       
       return 
       end subroutine cntbl_read

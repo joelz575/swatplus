@@ -1,7 +1,7 @@
       subroutine landuse_read
       
       use input_file_module
-      
+
       character (len=80) :: titldum
       character (len=80) :: header
       character (len=13) :: file
@@ -38,10 +38,12 @@
       
        do ilu = 1, imax   
          read (107,*,iostat=eof) lum(ilu)
-         
+       end do
+       
+       do ilu = 1, imax    
          if (lum(ilu)%plant_cov /= 'null') then
            do ipcom = 1, db_mx%plantcom
-              if (lum(ilu)%plant_cov == pcom_xw(ipcom)%name) then
+              if (lum(ilu)%plant_cov == pcomdb(ipcom)%name) then
                  lum_str(ilu)%plant_cov = ipcom
                  exit
               end if
@@ -56,6 +58,16 @@
              end if
            end do
          end if
+         
+         if (lum(ilu)%cn_lu /= 'null') then
+           do ipr = 1, db_mx%cn_lu
+             if (lum(ilu)%cn_lu == cn(ipr)%name) then
+               lum_str(ilu)%cn_lu = ipr
+               exit
+             end if
+           end do
+         end if
+      
          
          if (lum(ilu)%tiledrain /= 'null') then
            do ipr = 1, db_mx%sdr

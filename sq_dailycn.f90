@@ -54,16 +54,14 @@
       if (icn <= 0) then
         !! traditional CN method (function of soil water)
         if ((hru(j)%sol%sw + Exp(xx)) > 0.001) then
-          r2 = smx(j) * (1.-hru(j)%sol%sw /             &            
-                        (hru(j)%sol%sw+Exp(xx)))
+          r2 = smx(j) * (1. - hru(j)%sol%sw / (hru(j)%sol%sw + Exp(xx)))
         end if
       else                        
         !! alternative CN method (function of plant ET) 
         r2 = amax1(3., sci(j))           
       end if
 
-      if (soil(j)%phys(2)%tmp <= 0.) r2=smx(j) * (1. -                   &
-                Exp(- bsn_prm%cn_froz * r2))
+      if (soil(j)%phys(2)%tmp <= 0.) r2=smx(j) * (1. - Exp(- bsn_prm%cn_froz * r2))
       r2 = amax1(3.,r2)
 
       cnday(j) = 25400. / (r2 + 254.)

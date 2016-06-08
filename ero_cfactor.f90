@@ -65,7 +65,7 @@
           else
             c = .8
           end if
-	  end if
+	    end if
       else
         rsd_frcov = Exp(-bsn_prm%rsd_covco * sol_cov(j))
         grcov_fr = sumlai / (sumlai + Exp(1.748 - 1.748 * sumlai))

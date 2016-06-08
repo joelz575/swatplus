@@ -11,17 +11,18 @@
       integer :: id, ob_num, ir
       character(len=1) :: action
 
-      action = "y"
+      action = "n"
       do iac = 1, d_tbl(id)%acts
         do ial = 1, d_tbl(id)%alts
-          if (d_tbl(id)%act_hit(ial) /= d_tbl(id)%act_outcomes(iac,ial)) then
-            action = "n"
+          if (d_tbl(id)%act_hit(ial) == "y" .and. d_tbl(id)%act_outcomes(iac,ial) == "y") then
+            action = "y"
             exit
           end if
         end do
       
         if (action == "y") then
           select case (d_tbl(id)%act(iac)%name)
+          
           !irrigate
           case ("irrigate")     
             select case (d_tbl(id)%act(iac)%option)
@@ -35,7 +36,8 @@
               qird(ob_num) = irrop_db(ir)%amt_mm * irrop_db(ir)%surq
             end select
             
-          !reservoir release
+          !reservoir release - res_hydro does release and water balance
+          call res_hydro (jres, ihyd, ised)
           case ("release")
             !condition is met - set the release rate
             select case (d_tbl(id)%act(iac)%option)
@@ -85,6 +87,15 @@
               
           !drainage water management
           case ("drainage")
+              
+          !land use change
+          case ("lu_change")
+            !!ihru, ilu and isol are in modparm
+            ihru = ob_num
+            ilu = d_tbl(id)%act_ptr(iac)
+            hru(ob_num)%dbs%land_use_mgt = ilu
+            isol = hru(ob_num)%dbs%soil  
+            call pcom_set_parms (1)
         
           !herd management - move the herd
           case ("herd")

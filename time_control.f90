@@ -70,6 +70,8 @@
       real :: xx
       character(len=16):: chg_parm, chg_typ
 
+      time%yrc = time%yrc_start
+
       do curyr = 1, time%nbyr
         time%yrs = curyr
         
@@ -146,7 +148,7 @@
               time%yrs_prt = time%yrs_prt / 365.
             end if
           end if
-          
+
           !! initialize variables at beginning of day for hru's
           if (sp_ob%hru > 0) call sim_initday
 
@@ -188,7 +190,20 @@
             isce = isce + 1
           end do
           end if
-                                                    
+
+          !! conditional reset of land use and management
+          if (time%day == 1) then  !only on first day of year
+            do iupd = 1, db_mx%updates
+              if (upd_sched(iupd)%typ == 'land_use' .and. upd_sched(iupd)%cond /= 'null') then
+                do j = 1, mhru
+                  id = upd_sched(iupd)%cond_num
+                  call conditions (id, j)
+                  call actions (id, j)
+                end do
+              end if
+            end do
+          end if
+          
           !! allocate water for water rights objects
           !call water_allocation
 
@@ -222,11 +237,57 @@
         end do                                        !! end daily loop
 
         !! perform end-of-year processes
+        
+        !! sum output for soft data calibration
+        if (cal_codes%ls == 'y') then
+          do ireg = 1, db_mx%lscal_reg
+            do ilu = 1, lscal(ireg)%lum_num
+            if (lscal(ireg)%msubs <= 0) then
+              lscal(ireg)%lum(ilu)%ha = 0.
+              lscal(ireg)%lum(ilu)%precip = 0.
+              lscal(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
+              do ihru = 1, mhru
+                if (hru(ihru)%land_use_mgt == lscal(ireg)%lum(ilu)%lum_no) then
+                  ha_hru = 100. * hru(ihru)%km      ! 10 * ha * mm --> m3
+                  lscal(ireg)%lum(ilu)%ha = lscal(ireg)%lum(ilu)%ha + ha_hru
+                  lscal(ireg)%lum(ilu)%precip = lscal(ireg)%lum(ilu)%precip + (10. * ha_hru * hwb_y(ihru)%precip)
+                  lscal(ireg)%lum(ilu)%sim%srr = lscal(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * hwb_y(ihru)%surq_gen)
+                  lscal(ireg)%lum(ilu)%sim%etr = lscal(ireg)%lum(ilu)%sim%etr + (10. * ha_hru * hwb_y(ihru)%et)
+                  lscal(ireg)%lum(ilu)%sim%tfr = lscal(ireg)%lum(ilu)%sim%tfr + (10. * ha_hru * hwb_y(ihru)%qtile)
+                  lscal(ireg)%lum(ilu)%sim%sed = lscal(ireg)%lum(ilu)%sim%sed + (ha_hru * hls_y(ihru)%sedyld)
+                  !add nutrients
+                end if
+              end do
+            else
+              do isub = 1, lscal(ireg)%msubs
+              end do
+            end if
+            end do  !lum_num
+            
+            do ilu = 1, lscal(ireg)%lum_num
+              if (lscal(ireg)%lum(ilu)%ha > 1.e-6) then
+                lscal(ireg)%lum(ilu)%nbyr = lscal(ireg)%lum(ilu)%nbyr + 1
+                !! convert back to mm, t/ha, kg/ha
+                lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa + lscal(ireg)%lum(ilu)%precip / (10. * lscal(ireg)%lum(ilu)%ha)
+                lscal(ireg)%lum(ilu)%aa%srr = lscal(ireg)%lum(ilu)%aa%srr + lscal(ireg)%lum(ilu)%sim%srr / (10. * lscal(ireg)%lum(ilu)%ha)
+                lscal(ireg)%lum(ilu)%aa%etr = lscal(ireg)%lum(ilu)%aa%etr + lscal(ireg)%lum(ilu)%sim%etr / (10. * lscal(ireg)%lum(ilu)%ha)
+                lscal(ireg)%lum(ilu)%aa%tfr = lscal(ireg)%lum(ilu)%aa%tfr + lscal(ireg)%lum(ilu)%sim%tfr / (10. * lscal(ireg)%lum(ilu)%ha)
+                lscal(ireg)%lum(ilu)%aa%sed = lscal(ireg)%lum(ilu)%aa%sed + lscal(ireg)%lum(ilu)%sim%sed / lscal(ireg)%lum(ilu)%ha
+                ! add nutrients
+              end if
+            end do
+          end do    !reg
+        end if
+
         do j = 1, mhru
-
+          !! zero yearly balances after using them in soft data calibration (was in hru_output)
+          hwb_y(j) = hwbz
+          hnb_y(j) = hnbz
+          hpw_y(j) = hpwz
+          hls_y(j) = hlsz
+          
           !! compute biological mixing at the end of every year
-
-!          if (biomix(j) > .001) call mgt_tillmix (j,biomix(j))
+          !! if (biomix(j) > .001) call mgt_tillmix (j,biomix(j))
           if (hru(j)%hyd%biomix > .001)                              &
                    call mgt_newtillmix (j,hru(j)%hyd%biomix)
 
@@ -274,6 +335,23 @@
       !! update simulation year
       time%yrc = time%yrc + 1
       end do            !!     end annual loop
+
+        !! average output for soft data calibration
+        if (cal_codes%ls == 'y') then
+          do ireg = 1, db_mx%lscal_reg
+            do ilu = 1, lscal(ireg)%lum_num
+              if (lscal(ireg)%lum(ilu)%nbyr > 0) then
+                !! convert back to mm, t/ha, kg/ha
+                lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%aa%srr = lscal(ireg)%lum(ilu)%aa%srr / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%aa%etr = lscal(ireg)%lum(ilu)%aa%etr / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%aa%tfr = lscal(ireg)%lum(ilu)%aa%tfr / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%aa%sed = lscal(ireg)%lum(ilu)%aa%sed / lscal(ireg)%lum(ilu)%nbyr
+                ! add nutrients
+              end if
+            end do
+          end do
+        end if
 
       return
  1234 format (1x,' Executing year/day ', 2i4)

@@ -212,9 +212,9 @@
         if (igrz(j) == 1) then
           ndeat(j) = ndeat(j) + 1
           call pl_graze
-          call bac_apply_hrucon
-          hru(j)%ly(1)%bacsol(ibac) = sol_bacsol
-          hru(j)%ly(1)%bacsor(ibac) = sol_bacsor
+          !call bac_apply_hrucon
+          !hru(j)%ly(1)%bacsol(ibac) = sol_bacsol
+          !hru(j)%ly(1)%bacsor(ibac) = sol_bacsor
         end if
        
         !! compute crop growth

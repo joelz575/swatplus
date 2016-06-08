@@ -143,7 +143,8 @@
         write (4304,102) '     0', time%yrs, iz, bwb_a
         if (pco%csvout == 1) then 
           write (4040,'(*(G0.3,:","))') '     0', time%yrs, iz, bwb_a
-        end if 
+        end if
+        bwb_a = hwbz
       end if
       if (time%end_sim == 1) then
         bnb_a = bnb_a / time%yrs_prt
@@ -151,14 +152,17 @@
         if (pco%csvout == 1) then 
           write (4042,'(*(G0.3,:","))') '     0', time%yrs, iz, bnb_a
         end if 
+        bnb_a = hnbz
       end if
       if (time%end_sim == 1) then     
         bls_a = bls_a / time%yrs_prt
         write (4306,102) '     0', time%yrs, iz, bls_a
+        bls_a = hlsz
       end if
       if (time%end_sim == 1) then     
         bpw_a = bpw_a / time%yrs_prt
         write (4307,102) '     0', time%yrs, iz, bpw_a
+        bpw_a = hpwz
       end if
       
       return

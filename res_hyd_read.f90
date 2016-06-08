@@ -127,7 +127,7 @@
         
         !! calculate shape parameters for surface area equation
         resdif = res_hyd(i)%evol - res_hyd(i)%pvol
-        if ((res_hyd(i)%esa - res_hyd(i)%psa) > 0. .and. resdif>0.) then
+        if ((res_hyd(i)%esa - res_hyd(i)%psa) > 0. .and. resdif > 0.) then
           lnvol = Log10(res_hyd(i)%evol) - Log10(res_hyd(i)%pvol)
           if (lnvol > 1.e-4) then
             res_hyd(i)%br2 = (Log10(res_hyd(i)%esa) - Log10(res_hyd(i)%psa)) / lnvol

@@ -77,6 +77,7 @@
 	     ! excess water makes surface runoff
 	     if (qlyr>0) then
 	         soil(j)%phys(1)%st = soil(j)%phys(1)%ul
+             cbodu(j) = (cbodu(j) * surfq(j) + sepdb(sep(isep)%typ)%bodconcs * qlyr) / (qday + qlyr) !add septic effluent cbod (mg/l) concentration to HRU runoff, Jaehak Jeong 2016
 	         surfq(j) = surfq(j) + qlyr 
 		       qvol = qlyr * hru(j)%area_ha * 10.
 		       ! nutrients in surface runoff

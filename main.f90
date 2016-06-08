@@ -29,7 +29,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    i           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-      
+
       use parm
       use hydrograph_module
       use subbasin_module
@@ -53,15 +53,15 @@
       integer :: istr_db, mstr_prac, istr, iscenario, j, ichan, idat
       integer :: isched, iauto, ictl
       real :: rto, sumn, t_ch, ch_slope, ch_n, ch_l, tov
-      character(len=16):: chg_parm, chg_typ
-      real :: chg_val, absmin, absmax
-      integer :: num_db, mx_elem
+      character(len=16):: chg_typ
+      real :: chg_val, absmin, absmax, diff, meas
+      integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco
 
-      prog = "SWAT+ Apr 28 2016    MODULAR Rev 21"
+      prog = "SWAT+ Jun 8 2016    MODULAR Rev 22"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "           Revision 21 - Apr 28       ",/,             &
+     &          "           Revision 22 - Jun 8        ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -146,8 +146,8 @@
       !! call readseptwq         !! read the septic database (read from HRU_READ)
       call readpcom             !! read the plant community database
       
-      call landuse_read
       call cntbl_read
+      call landuse_read
         
       call bac_lsinit_read
       call pst_lsinit_read
@@ -176,7 +176,10 @@
       call update_parm_read
 
       call update_init
-      
+            
+      !! read decision table data for conditional management
+      call condition_read
+
       !! read update data
       call update_sched_read
 
@@ -215,7 +218,7 @@
       
       call res_objects
       
-!! set reservoir object numbers for hru's in flood plain without surface storage
+      !! set reservoir object numbers for hru's in flood plain without surface storage
 
       call drainage_area
 
@@ -223,9 +226,11 @@
       
       call aqu_read
       call aqu_initial
-      
-      call condition_read
-      call readlup
+
+      !! read soft calibration parameters
+      call codes_cal_read
+      call ls_regions_cal_read
+      call ls_parms_cal_read
 
       call output_landscape_init
 
@@ -247,7 +252,15 @@
          end if
       end do
       
-
+      !save hru initial conditions if calibrating
+      if (cal_codes%ls == 'y') then
+        do ihru = 1, mhru
+          hru_init(ihru) = hru(ihru)
+          soil_init(ihru) = soil(ihru)
+          pcom_init(ihru) = pcom(ihru)
+        end do
+      end if
+      
       ! compute unit hydrograph parameters for subdaily runoff
       if (time%step > 0) call unit_hyd
       
@@ -268,7 +281,17 @@
           call time_control
         end if
       end do
-
+      
+      !calibrate hydrology
+      if (cal_codes%hyd == 'y') then
+        call cal_hyd
+      end if
+            
+      !calibrate sediment yield from uplands (hru's)
+      if (cal_codes%sed == 'y') then
+        call cal_sed
+      end if
+      
       do i = 101, 109       !Claire 12/2/09: change 1, 9  to 101, 109.
         close (i)
       end do

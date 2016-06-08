@@ -8,6 +8,7 @@
         integer :: soil = 0           !! none     |number of types of soils 
         integer :: landuse = 0        !! none     |number of landuse types
         integer :: mgt_ops = 0        !! none     |number of records in management
+        integer :: cn_lu = 0          !! none     |number of records in cntable.lum
         integer :: pothole = 0        !! none     |number of potholes
         integer :: sdr = 0            !! none     |number of types of susbsurface drain systems
         integer :: str_ops = 0        !! none     |number of management ops
@@ -64,6 +65,7 @@
         integer :: hmetcom = 0
         integer :: saltcom = 0
         integer :: res = 0            !! none     |max number of reservoir data
+        integer :: lscal_reg = 0      !! none     |max number of regions for landscape calibration
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
 
@@ -503,7 +505,7 @@
         integer :: num_elem = 0         !! total number of elements modified (ie - 1 -5 18; num_tot=3 and num_elem=6)
         integer, dimension(:), allocatable :: num
         integer :: num_cond
-        type (calibration_conditions), dimension(:), allocatable :: cond  
+        type (calibration_conditions), dimension(:), allocatable :: cond
       end type update_parameters
 
       type (update_parameters), dimension (:), allocatable :: cal_upd   !dimensioned to db_mx%cal_parms
@@ -516,14 +518,84 @@
         integer :: day = 0
         integer :: year = 0
         character(len=16) :: cond       !! points to ruleset in conditional.ctl for scheduling the update
+        integer :: cond_num
         type (update_parameters), dimension (:), allocatable :: upd_prm
       end type update_schedule
       type (update_schedule), dimension (:), allocatable :: upd_sched
+      
+      type soft_calibration_codes
+        character (len=1) :: ls = 'n'       !! if y, calibrate at least one landscape process (hyd,sed,nut,plt) by land use in each region
+        character (len=1) :: hyd = 'n'      !! if y, calibrate hydrologic balance by land use in each region
+        character (len=1) :: sed = 'n'      !! if y, calibrate sediment yield by land use in each region  
+        character (len=1) :: nut = 'n'      !! if y, calibrate nutrient balance by land use in each region
+        character (len=1) :: plt = 'n'      !! if y, calibrate plant growth by land use (by plant) in each region
+        character (len=1) :: chsed = 'n'    !! if y, calibrate channel widening and bank accretion by stream order
+        character (len=1) :: chnut = 'n'    !! if y, calibrate channel nutrient balance by stream order
+        character (len=1) :: res = 'n'      !! if y, calibrate reservoir budgets by reservoir
+      end type soft_calibration_codes
+      type (soft_calibration_codes) :: cal_codes
+      
+      type soft_calib_ls_parms
+        character(len=16) :: name       !! cn2, terrace, land use, mgt, etc.
+        integer :: num_db = 0           !! crosswalk number of parameter, structure or land use to get database array number
+        character(len=16) :: chg_typ    !! type of change (absval,abschg,pctchg)
+        real :: neg                     !! negative limit of change
+        real :: pos                     !! positive limit of change
+      end type soft_calib_ls_parms
+      type (soft_calib_ls_parms), dimension(:), allocatable :: ls_prms
+            
+      type soft_calib_ls_adjust
+        real :: cn = 0.         !+/- or 0/1       |cn2 adjustment or at limit
+        real :: esco = 0.       !+/- or 0/1       |esco adjustment or at limit
+        real :: awc = 0.        !+/- or 0/1       |awc adjustment or at limit
+        real :: tconc = 0.      !+/- or 0/1       |time of concentration adjustment or at limit
+        real :: cvm = 0.        !+/- or 0/1       |minimum c-factor adjustment or at limit
+      end type soft_calib_ls_adjust
+      
+      type soft_calib_ls_processes
+        !database of soft ave annual landscape calibration values
+        character(len=16) :: name
+        real :: srr = 0.    !- or m3        |surface runoff ratio - surface runoff/precip 
+        real :: etr = 0.    !- or m3        |et ratio - et/precip
+        real :: tfr = 0.    !- or m3        |tile flow ratio - tile flow/total runoff 
+        real :: sed = 0.    !t/ha or t      |sediment yield
+        real :: orgn = 0.   !kg/ha or kg    |organic n yield
+        real :: orgp = 0.   !kg/ha or kg    |organic p yield
+        real :: no3 = 0.    !kg/ha or kg    |nitrate yield
+        real :: solp = 0.   !kg/ha or kg    |soluble p yield
+      end type soft_calib_ls_processes
+      type (soft_calib_ls_processes) :: lscal_z  !to zero values
+
+      type soft_data_calib_regions
+        character(len=16) :: name = 'default'
+        integer :: lum_no                                       !xwalk lum()%name with lscal()%lum()%name
+        real :: ha                                              !ha of each land use
+        integer :: nbyr = 0                                     !number of years the land use occurred 
+        type (soft_calib_ls_processes) :: meas                  !input soft calibration parms of each land use - ratio,t/ha,kg/ha
+        real :: precip = 0.                                     !model precip for each land use to determine ratios
+        real :: precip_aa = 0.                                  !model ave annual precip for each land use to determine ratios
+        type (soft_calib_ls_processes) :: sim                   !simulated sum of soft calibration parms of each land use - m3,t,kg
+        type (soft_calib_ls_processes) :: aa                    !average annual soft calibration parms of each land use - mm,t/ha,kg/ha
+        type (soft_calib_ls_processes) :: prev                  !simulated sum of soft calibration parms of previous run - m3,t,kg
+        type (soft_calib_ls_adjust) :: prm                      !parameter adjustments used in landscape calibration
+        type (soft_calib_ls_adjust) :: prm_prev                 !parameter adjustments used in landscape calibration
+        type (soft_calib_ls_adjust) :: prm_lim                  !code if parameters are at limits
+      end type soft_data_calib_regions
+      
+      type soft_data_calib_landscape
+        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lscal_reg)
+        character(len=16) :: parms                                          !points to lscal_db()%names
+        integer :: msubs                                                    !total number of subbasins in the region
+        integer :: lum_num                                                  !number of land uses in each region
+        integer, dimension(:), allocatable :: subs                          !subbasins that are included in the region
+        type (soft_data_calib_regions), dimension(:), allocatable :: lum    !dimension for land uses within a region
+      end type soft_data_calib_landscape
+      type (soft_data_calib_landscape), dimension(:), allocatable :: lscal  !dimension by region
 
       type structural_practices
         character(len=13) :: name = 'default'
         integer :: num_pr                                 
-        character(len=13), dimension(:), allocatable :: prac       !! terrace, tile, contour, filter, stripcrop
+        character(len=16), dimension(:), allocatable :: prac       !! terrace, tile, contour, filter, stripcrop
                                                            !! fire, grassww, plantup, resman, user_def, septic       
         character(len=13), dimension(:), allocatable :: prac_typ   !! points to appropriate data file 
         integer, dimension(:), allocatable :: prac_num
@@ -642,14 +714,14 @@
         character (len=16) :: name = " "
         character (len=16) :: plant_cov = ""
         character (len=16) :: mgt_ops = ""
-        integer :: cn_lu = 1
+        character (len=16) :: cn_lu
         integer :: usle_p
         integer :: urb_lu = 0           !! none     urban land type identification number
         integer :: iurban = 0           !! none     urban simulation code 
                                         !!                 |0  no urban sections in HRU
                                         !!                 |1  urban sections in HRU, simulate using USGS regression eqs
                                         !!                 |2  urban sections in HRU, simulate using build up/wash off alg
-        real :: ovn = 0.1                !! none    Manning's "n" value for overland flow
+        real :: ovn = 0.1               !! none    Manning's "n" value for overland flow
         character (len=25) :: tiledrain
         character (len=25) :: septic
         character (len=25) :: fstrip
@@ -664,6 +736,7 @@
       type land_use_structures
         integer :: plant_cov = 0
         integer :: mgt_ops = 0
+        integer :: cn_lu = 0
         integer :: tiledrain = 0
         integer :: septic = 0
         integer :: fstrip = 0
@@ -676,10 +749,8 @@
       type (land_use_structures), dimension (:), allocatable :: lum_str
            
       type curvenumber_table
-          character(len=80) :: lu = " "             !landuse
-          character(len=40) :: treat = " "          !treatment
-          character(len=13) :: hycon = " "          !condition of cover
-          real, dimension(4) :: cn = (/30.,55.,70.,77./) !curve number
+        character(len=16) :: name                      !name includes abbrev for lu/treatment/condition 
+        real, dimension(4) :: cn = (/30.,55.,70.,77./) !curve number
       end type curvenumber_table
       type (curvenumber_table), dimension (:), allocatable :: cn
       
@@ -849,6 +920,29 @@
       end type plant_cp
       type (plant_cp), dimension(:),allocatable, target, save :: plcp
       type (plant_cp), pointer :: pl_cp
+            
+      type plant_init_db
+        character(len=4) :: cpnm = "frsd"
+        integer :: db_num = 1      !             |plant object
+        integer :: igro = 1        !             |land cover status
+                                   !               0 = no land cover growing
+                                   !               1 = land cover growing
+        real :: phu = 2500.        !heat units   |total number of heat units to
+                                   !                bring plant to maturity
+        real :: lai = 0.           !m**2/m**2    |leaf area index
+        real :: bioms = 0.         !kg/ha        |land cover/crop biomass
+        real :: phuacc = 0.        !             |frac of plant heat unit acc.
+        real :: pop = 0.
+        real :: yrmat = 20.        !years        |years to maturity 
+        real :: rsdin = 10000.     !kg/ha        |initial residue cover
+      end type plant_init_db
+      
+      type plant_community_db   
+        character(len=20) :: name = "frsd_frsd"
+        integer :: plants_com = 1
+        type (plant_init_db), dimension(:), allocatable :: pl
+      end type plant_community_db
+      type (plant_community_db), dimension(:), allocatable :: pcomdb
       
       type pcom_crosswalk
         character (len=20) name    !! name of the community
@@ -1075,9 +1169,13 @@
                                   !                and converted to m^3)
         real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom
         real :: evrsv = .7        !none          |lake evap coeff
-        real :: br1 = 0.          !none          |shape coefficient for reservoirs (model estimates if zero)
-        real :: br2 = 0.          !none          |shape coefficient for reservoirs (model estimates if zero)
-        real :: acoef = 1         !none          |vol-surface area coefficient for hru impoundment
+        real :: br1 = 0.          !none          |vol-surface area coefficient for reservoirs (model estimates if zero)
+                                  !              |vol-depth coefficient for hru impoundment
+        real :: br2 = 0.          !none          |vol-surface area coefficient for reservoirs (model estimates if zero)
+                                  !              |vol-depth coefficient for hru impoundment
+        real :: acoef = 1.        !none          |vol-surface area coefficient for hru impoundment
+        real :: bcoef = 1         !none          |vol-depth coefficient for hru impoundment
+        real :: ccoef = 1         !none          |vol-depth coefficient for hru impoundment
         real :: frac = .5         !none          |fraction of hru that drains into impoundment
       end type reservoir_hyd_data
       type (reservoir_hyd_data), dimension(:), allocatable :: res_hyd
@@ -1130,7 +1228,7 @@
         real :: num_steps = 24        !              |number of time steps in day for weir routing
         real :: c = 1.                !              |weir discharge coefficient 
         real :: k = 150000.           !m^1/2 d^-1    |energy coefficient (broad_crested=147,000' sharp crested=153,000)
-        real :: wid = 2.              !(m)           |width
+        real :: w = 2.                !(m)           |width
         real :: bcoef = 1.75          !              |velocity exponent coefficient for bedding material
         real :: ccoef = 1.            !              |depth exponent coefficient for bedding material
       end type reservoir_weir_outflow

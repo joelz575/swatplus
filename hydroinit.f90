@@ -175,19 +175,6 @@
         end if
       end do
       end if
-  
-      isol = hru(j)%dbs%soil
-      ilu = hru(j)%luse%cn_lu
-      select case (sol(isol)%s%hydgrp)
-      case ('A')
-        cn2(j) = cn(ilu)%cn(1)
-      case ('B')
-        cn2(j) = cn(ilu)%cn(2)
-      case ('C')
-        cn2(j) = cn(ilu)%cn(3)
-      case ('D')
-        cn2(j) = cn(ilu)%cn(4)
-      end select
 
       do ly = 1, hru(j)%sol%nly
         if (soil(j)%ly(ly)%pperco_sub <= 1.e-6)                          &

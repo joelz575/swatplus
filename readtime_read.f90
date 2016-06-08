@@ -18,8 +18,7 @@
          if (eof < 0) exit
          read (107,*,iostat=eof) header
          if (eof < 0) exit
-         read (107,*,iostat=eof) time%nbyr, time%yrc, time%idaf,         &
-                    time%idal_in, time%step
+         read (107,*,iostat=eof) time%nbyr, time%yrc_start, time%idaf, time%idal_in, time%step
          if (time%idaf <= 0) time%idaf = 1
          if (eof < 0) exit
          exit
@@ -27,5 +26,7 @@
        enddo
        endif
       
+       time%yrc = time%yrc_start
+       
        return
        end subroutine readtime_read            

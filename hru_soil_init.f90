@@ -49,6 +49,7 @@
         iob = sp_ob1%hru + ihru - 1
         ihru_db = ob(iob)%props    !points to hru.dat
         hru(ihru)%dbs = hru_db(ihru_db)%dbs
+        hru(ihru)%dbsc = hru_db(ihru_db)%dbsc
         hru(ihru)%parms = hru_db(ihru_db)%parms
         if (hru(ihru)%dbs%surf_stor > 0) then
           imp = imp + 1
@@ -60,94 +61,6 @@
       !! use the same res object for resrvoirs and landscape storage
       !! allocate res and other types later in res_init
       mres = imp
-                           
-      !!assign land use pointers for the hru
-      do ihru = 1, mhru
-        ilu = hru(ihru)%dbs%land_use_mgt    !points to landuse.lu
-        hru(ihru)%land_use_mgt = ilu
-        hru(ihru)%plant_cov = lum_str(ilu)%plant_cov
-        hru(ihru)%mgt_ops = lum_str(ilu)%mgt_ops
-        hru(ihru)%tiledrain = lum_str(ilu)%tiledrain
-        hru(ihru)%septic = lum_str(ilu)%septic
-        hru(ihru)%fstrip = lum_str(ilu)%fstrip
-        hru(ihru)%grassww = lum_str(ilu)%grassww
-        hru(ihru)%terrace = lum_str(ilu)%terrace
-        hru(ihru)%contour = lum_str(ilu)%contour
-        hru(ihru)%stcrop = lum_str(ilu)%stcrop
-        hru(ihru)%bmpuser = lum_str(ilu)%bmpuser
-        hru(ihru)%luse%cn_lu = lum(ilu)%cn_lu
-        hru(ihru)%luse%usle_p = 1.
-        hru(ihru)%luse%urb_lu = lum(ilu)%urb_lu
-        hru(ihru)%luse%ovn = lum(ilu)%ovn
-      end do
-      
-      !! allocate plants
-      do j = 1, mhru
-        icom = hru(j)%plant_cov
-        ipl_com(j) = icom
-        if (icom == 0) then
-          npl(j) = 0
-        else
-        npl(j) = pcomdb(icom)%plants_com
-        allocate (pcom(j)%plg(npl(j))) 
-        allocate (pcom(j)%plm(npl(j))) 
-        allocate (pcom(j)%plstr(npl(j))) 
-        allocate (pcom(j)%plcur(npl(j))) 
-        allocate (hru(j)%veg_ag(npl(j)))
-        allocate (hru(j)%grain(npl(j)))
-        allocate (hru(j)%root(npl(j)))
-        allocate (hru(j)%rsd_flt(npl(j)))
-        allocate (hru(j)%rsd_std(npl(j)))
-
-        cvm_com(j) = 0.
-        blai_com(j) = 0.
-        tnylda(j) = 0.
-        rsdco_plcom(j) = 0.
-        pcom(j)%pcomdb = icom
-        do ipl = 1, npl(j)
-          pcom(j)%plg(ipl)%cpnm = pcomdb(icom)%pl(ipl)%cpnm
-          pcom(j)%plcur(ipl)%gro = pcomdb(icom)%pl(ipl)%igro
-          pcom(j)%plcur(ipl)%idorm = 1
-          idp = pcomdb(icom)%pl(ipl)%db_num
-          hru(j)%rsd_flt(ipl)%mass = pcomdb(icom)%pl(ipl)%rsdin
-          !set fresh organic pools--assume cn ratio = 57 and cp ratio = 300
-          hru(j)%rsd_flt(ipl)%nmass = 0.43 * hru(j)%rsd_flt(ipl)%mass / 57.
-          hru(j)%rsd_flt(ipl)%pmass = 0.43 * hru(j)%rsd_flt(ipl)%mass / 300.
-          pcom(j)%plg(ipl)%phumat = pcomdb(icom)%pl(ipl)%phu
-          pcom(j)%plg(ipl)%lai = pcomdb(icom)%pl(ipl)%lai
-          pcom(j)%plm(ipl)%mass = pcomdb(icom)%pl(ipl)%bioms
-          pcom(j)%plcur(ipl)%phuacc = pcomdb(icom)%pl(ipl)%phuacc
-          pcom(j)%plcur(ipl)%curyr_mat = pcomdb(icom)%pl(ipl)%yrmat
-          cvm_com(j) = plcp(idp)%cvm + cvm_com(j)
-          rsdco_plcom(j) = rsdco_plcom(j) + pldb(idp)%rsdco_pl
-          pcom(j)%plcur(ipl)%idplt = pcomdb(icom)%pl(ipl)%db_num
-          idp = pcom(j)%plcur(ipl)%idplt
-          pcom(j)%plm(ipl)%p_fr = (pldb(idp)%pltpfr1-pldb(idp)%pltpfr3)*   &
-          (1. - pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +     &
-           Exp(plcp(idp)%pup1 - plcp(idp)%pup2 *                           &
-           pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltpfr3
-            pcom(j)%plm(ipl)%nmass=pcom(j)%plm(ipl)%n_fr *                 &
-           pcom(j)%plm(ipl)%mass                  
-          pcom(j)%plm(ipl)%n_fr =                                          &
-           (pldb(idp)%pltnfr1- pldb(idp)%pltnfr3) *                        &
-           (1.- pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +     &
-           Exp(plcp(idp)%nup1 - plcp(idp)%nup2 *                           &
-           pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
-          pcom(j)%plm(ipl)%pmass = pcom(j)%plm(ipl)%p_fr *                 &
-                pcom(j)%plm(ipl)%mass
-          tnylda(j) = tnylda(j) + 350. * pldb(idp)%cnyld *                 &
-                pldb(idp)%bio_e / npl(j)
-          if (pcom(j)%plcur(ipl)%pop_com < 1.e-6) then
-            pcom(j)%plg(ipl)%laimx_pop = pldb(idp)%blai
-          else
-            xx = pcom(j)%plcur(ipl)%pop_com / 1001.
-            pcom(j)%plg(ipl)%laimx_pop = pldb(idp)%blai * xx / (xx +     &
-                    exp(pldb(idp)%pop1 - pldb(idp)%pop2 * xx))
-          end if
-        end do
-
-        end if
-      end do
 
       !!assign topography and hyd paramters
       do ihru = 1, mhru
@@ -372,11 +285,9 @@
 
         npmx = obcs(icmd)%num_pests
         do ipest = 1, npmx
-         hru(ihru)%pst(ipest)%num_db =                                   &             
-                                 pesti_db(ipest_db)%pesti(ipest)%num_db
+         hru(ihru)%pst(ipest)%num_db = pesti_db(ipest_db)%pesti(ipest)%num_db
          hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt
-         hru(ihru)%ly(1)%pst(ipest) =                                   &                             
-                                   pesti_db(ipest_db)%pesti(ipest)%soil
+         hru(ihru)%ly(1)%pst(ipest) = pesti_db(ipest_db)%pesti(ipest)%soil
          hru(ihru)%pst(ipest)%enr = pesti_db(ipest_db)%pesti(ipest)%enr
         end do
         end if
@@ -390,59 +301,18 @@
         sol_cov(ihru) = soil(ihru)%ly(1)%rsd
         
       end do    !hru loop
-        
+                                   
+      !!assign land use pointers for the hru
+      !!allocate and initialize land use and management
+      do ihru = 1, mhru
+        !!ihru, ilu and isol are in modparm
+        ilu = hru(ihru)%dbs%land_use_mgt
+        isol = hru(ihru)%dbs%soil
+        !send 0 value in when initializing- 1 for updating to deallocate
+        call pcom_set_parms (0)
+      end do
+
       call hydroinit        !! initialize hydrology parameters
 
-           
-      do ihru = 1, mhru
-        !! set initial curve number parameters
-        call curno(cn2(ihru),ihru)
-       
-        !! set parameters for structural land use/managment
-        ilu = hru(ihru)%dbs%land_use_mgt
-        if (lum(ilu)%tiledrain /= 'null') then
-          call structure_set_parms('tiledrain       ', lum_str(ilu)%tiledrain, ihru)
-        end if
-      
-        if (lum(ilu)%septic /= 'null') then
-          call structure_set_parms('septic          ', lum_str(ilu)%septic, ihru)
-        end if
-        
-        if (lum(ilu)%fstrip /= 'null') then
-          call structure_set_parms('fstrip          ', lum_str(ilu)%fstrip, ihru)
-        end if
-        
-        if (lum(ilu)%grassww /= 'null') then
-          call structure_set_parms('grassww         ', lum_str(ilu)%grassww, ihru)
-        end if
-        
-        if (lum(ilu)%terrace /= 'null') then
-          call structure_set_parms('terrace         ', lum_str(ilu)%terrace, ihru)
-        end if
-        
-        if (lum(ilu)%contour /= 'null') then
-          call structure_set_parms('contour         ', lum_str(ilu)%contour, ihru)
-        end if
-        
-        if (lum(ilu)%stcrop /= 'null') then
-          call structure_set_parms('stcrop          ', lum_str(ilu)%stcrop, ihru)
-        end if
-        
-        if (lum(ilu)%bmpuser /= 'null') then
-          call structure_set_parms('bmpuser         ', lum_str(ilu)%bmpuser, ihru)
-        end if
-      end do
-
-      !! set linked-list array for all hru's with unlimited source irrigation (hru_irr_nosrc)
-      db_mx%irr_nosrc = 0
-      do ihru = 1, mhru
-        isched = hru(ihru)%mgt_ops
-        icmd = hru(ihru)%obj_no
-        if (sched(isched)%irr > 0 .and. ob(icmd)%wr_ob == 0) then
-          hru(ihru)%irrsrc = 1
-          db_mx%irr_nosrc = db_mx%irr_nosrc + 1
-        end if
-      end do
-      
       return
       end subroutine hru_soil_init

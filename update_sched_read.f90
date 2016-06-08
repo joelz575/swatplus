@@ -22,6 +22,7 @@
       
       use input_file_module
       use jrw_datalib_module
+      use conditional_module
 
       integer, dimension (:), allocatable :: elem_cnt
       character (len=80) :: titldum, header
@@ -52,6 +53,17 @@
         if (eof < 0) exit
         allocate (upd_sched(i)%upd_prm(upd_sched(i)%num))
         
+                            
+        if (upd_sched(i)%typ == 'land_use' .and. upd_sched(i)%cond /= 'null') then
+          !! crosswalk parameters with calibration parameter db
+          do icond = 1, db_mx%d_tbl
+            if (upd_sched(i)%cond == d_tbl(icond)%name) then
+              upd_sched(i)%cond_num = icond
+              exit
+            end if
+          end do
+        else
+          
         do ichg = 1, upd_sched(i)%num
             
         read (107,*,iostat=eof) upd_sched(i)%upd_prm(ichg)%name, upd_sched(i)%upd_prm(ichg)%chg_typ,            &
@@ -121,7 +133,7 @@
               end if
             end do
           end if
-          
+
           if (upd_sched(i)%typ == 'structure') then
             !! crosswalk structural objects
             select case(upd_sched(i)%name)
@@ -186,6 +198,7 @@
           end if
           
         end do
+        end if
       end do
       exit
       end do

@@ -45,30 +45,7 @@
         real, dimension(:), allocatable :: nh4_drymo
       end type atmospheric_deposition
       type (atmospheric_deposition),dimension(:), allocatable :: atmodep
-      
-      type plant_init_db
-        character(len=4) :: cpnm = "frsd"
-        integer :: db_num = 1      !             |plant object
-        integer :: igro = 1        !             |land cover status
-                                   !               0 = no land cover growing
-                                   !               1 = land cover growing
-        real :: phu = 2500.        !heat units   |total number of heat units to
-                                   !                bring plant to maturity
-        real :: lai = 0.           !m**2/m**2    |leaf area index
-        real :: bioms = 0.         !kg/ha        |land cover/crop biomass
-        real :: phuacc = 0.        !             |frac of plant heat unit acc.
-        real :: pop = 0.
-        real :: yrmat = 20.        !years        |years to maturity 
-        real :: rsdin = 10000.     !kg/ha        |initial residue cover
-      end type plant_init_db
-      
-      type plant_community_db   
-        character(len=20) :: name = "frsd_frsd"
-        integer :: plants_com = 1
-        type (plant_init_db), dimension(:), allocatable :: pl
-      end type plant_community_db
-      type (plant_community_db), dimension(:), allocatable :: pcomdb
-           
+
       type plant_growth
          character(len=4) :: cpnm       !! N/A          4 letter char code represents crop name 
          real :: cht = 0.               !! m            canopy height 
@@ -146,7 +123,7 @@
        type (plant_status), dimension(:), allocatable :: plcur
       end type plant_community
       type (plant_community), dimension (:), allocatable :: pcom
-      
+      type (plant_community), dimension (:), allocatable :: pcom_init
                  
       type pesticide
         character(len=10) :: name
@@ -291,6 +268,7 @@
         real :: cmtot_kgh = 0.             !! kg/ha          current soil carbon integrated - aggregating all soil layers 
       end type soil_profile
       type (soil_profile), dimension(:), allocatable :: soil
+      type (soil_profile), dimension(:), allocatable :: soil_init
       
       type soil_hru_database
          character(len=16) :: snam = ""     !! NA            soil series name  
@@ -466,15 +444,15 @@
       end type hru_databases
       
       type hru_databases_char
-        character(len=13) :: name = ""
-        character(len=20) :: topo = ""
-        character(len=20) :: hyd = ""
-        character(len=20) :: soil = ""
-        character(len=20) :: land_use_mgt = ""
-        character(len=20) :: soil_nutr_init = ""
-        character(len=20) :: surf_stor = ""
-        character(len=20) :: snow = ""
-        character(len=20) :: field = ""
+        character(len=16) :: name = ""
+        character(len=16) :: topo = ""
+        character(len=16) :: hyd = ""
+        character(len=16) :: soil = ""
+        character(len=16) :: land_use_mgt = ""
+        character(len=16) :: soil_nutr_init = ""
+        character(len=16) :: surf_stor = ""
+        character(len=16) :: snow = ""
+        character(len=16) :: field = ""
       end type hru_databases_char
         
       type hru_parms_db
@@ -536,6 +514,7 @@
         real :: sdr_dep
       end type hydrologic_response_unit
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
+      type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
       type (plant_growth), pointer :: plt
 
       
@@ -723,7 +702,7 @@
       real :: yield, burn_frlb, pst_kg
       
 !!    new/modified arrays for plant competition
-      integer :: idp,ipl,icom
+      integer :: idp,ipl,icom,isol
       integer, dimension (:), allocatable :: npl,ipl_com,isdr_no
 
       real :: sumlai,sumbm,sumrwt,strsa_av,strsn_av,strsp_av,strstmp_av

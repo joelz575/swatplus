@@ -158,8 +158,8 @@
         if (pcom(j)%plm(ipl)%nmass < 0.) pcom(j)%plm(ipl)%nmass = 0.
         if (pcom(ihru)%plm(ipl)%pmass < 0.) pcom(ihru)%plm(ipl)%pmass=0.
         if (dmii - pcom(j)%plm(ipl)%mass > 0.) then
-          soil(j)%nut(l)%fon = (dmii - pcom(j)%plm(ipl)%mass) *          &
-            pcom(j)%plm(ipl)%n_fr + soil(j)%nut(l)%fon
+          soil(j)%nut(1)%fon = (dmii - pcom(j)%plm(ipl)%mass) *          &
+            pcom(j)%plm(ipl)%n_fr + soil(j)%nut(1)%fon
 
             !!insert new biomss by zhang
             !!===========================

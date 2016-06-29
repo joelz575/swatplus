@@ -60,14 +60,14 @@
         if (kk > 0) then
 
           !! calculate degradation in soil
-          do l = 1, hru(j)%sol%nly
+          do l = 1, soil(j)%nly
             x1 = 0.
-            x1 = hru(j)%ly(l)%pst(k)
+            x1 = soil(j)%ly(l)%pst(k)
             
             if (x1 >= 0.0001) then
               xx = 0.
               xx = x1 * pstcp(kk)%decay_s
-              hru(j)%ly(l)%pst(k) = xx
+              soil(j)%ly(l)%pst(k) = xx
               
             end if
           end do

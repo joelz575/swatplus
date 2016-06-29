@@ -55,7 +55,7 @@
       j = 0
       j = ihru 
 
-      do k = 1, hru(j)%sol%nly
+      do k = 1, soil(j)%nly
         tf = 0.
         tf = .41 * (soil(j)%phys(k)%tmp - 5.) / 10.
 

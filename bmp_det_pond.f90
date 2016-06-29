@@ -111,7 +111,7 @@
                   qstage = qstage * dtp_numweir(sb) * 60. * time%dtm !m^3	         
                else
                !! Partially submerged
-                  watdepact = Amax1(qdepth - dtp_addon(sb,k),0.)
+                  watdepact = Max(qdepth - dtp_addon(sb,k),0.)
                   dtp_wrwid(sb,k) = dtp_diaweir(sb,k) * 0.667
 		           
 		          !! weir/orifice discharge
@@ -121,7 +121,7 @@
 	         
 	        else
 	        !! Rectangular weir
-	           watdepact = Amax1(qdepth - dtp_addon(sb,k),0.)
+	           watdepact = Max(qdepth - dtp_addon(sb,k),0.)
 
                !! Estimate weir/orifice discharge
 		       qstage = dtp_cdis(sb,k) * 1.84 * dtp_wrwid(sb,k) * watdepact ** 1.5 !m3/s
@@ -133,7 +133,7 @@
 	      end do
 
 	      !Limit total outflow amount less than available water above addon
-	      if(qout>qin-qaddon) qout = Amax1(qin - qaddon,0.)
+	      if(qout>qin-qaddon) qout = Max(qin - qaddon,0.)
          
           !! Flow over the emergency weir
           watdepact = qdepth - (dtp_depweir(sb,1) + dtp_addon(sb,1))
@@ -191,11 +191,11 @@
          
          !! Mass balance for sediment
          sedout = spndconc * qout !tons
-         sedpnd = Amax1(0.,sedin - sedout) !tons
+         sedpnd = Max(0.,sedin - sedout) !tons
 	      
    	   !! Store flow/sediment out of the pond at the subbasin outlet
-   	   !ob(icmd)%ts(1,ii)%flo = Amax1(0.,qout)
-   	   !ob(icmd)%ts(1,ii)%sed = Amax1(0.,sedout)
+   	   !ob(icmd)%ts(1,ii)%flo = Max(0.,qout)
+   	   !ob(icmd)%ts(1,ii)%sed = Max(0.,sedout)
 
 	   
       end do  !! Outermost do loop ends here

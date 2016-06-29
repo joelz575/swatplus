@@ -70,8 +70,8 @@
         do j = 1, nhru
           if (hrupest(j) == 1) then
             pfp = pfp + hru(j)%pst(k)%plt * hru_dafr(j)
-            do l = 1, hru(j)%sol%nly
-              pfg = pfg +  hru(j)%ly(l)%pst(k) * hru_dafr(j)
+            do l = 1, soil(j)%nly
+              pfg = pfg +  soil(j)%ly(l)%pst(k) * hru_dafr(j)
              
             end do
           end if

@@ -97,7 +97,7 @@
       
       !!Section 1
       !!this section sets, allocates, and initializes the original soil database
-       msoils = amax1(0,db_mx%soil)
+       msoils = Max(0,db_mx%soil)
        allocate (sol(0:msoils))
       do isol = 1, msoils
         sol(isol)%s%snam = soildb(isol)%s%snam
@@ -169,26 +169,20 @@
       * sol(isol)%phys(1)%clay-0.003479*sol(isol)%phys(1)%clay ** 2 *       &
       sol(isol)%phys(1)%por - 0.000799 * sol(isol)%phys(1)%sand ** 2 *      & 
       sol(isol)%phys(1)%por)
-        hru(ihru)%sol = sol(isol)%s
-        soil(ihru)%snam = sol(isol)%s%snam
-        soil(ihru)%hydgrp = sol(isol)%s%hydgrp
-        soil(ihru)%texture = sol(isol)%s%texture
-        nly = hru(ihru)%sol%nly
-        allocate (hru(ihru)%ly(nly))
+        soil(ihru) = sol(isol)%s
+        nly = soil(ihru)%nly
+        allocate (soil(ihru)%ly(nly))
         allocate (soil(ihru)%phys(nly))
         allocate (soil(ihru)%nut(nly))    !!  nbs
         allocate (soil(ihru)%cbn(nly))    !!  nbs
-        allocate (soil(ihru)%ly(nly))     !!  nbs
         !! set hru soils to appropriate database soil layers
         do ly = 1, nly
-          
-          hru(ihru)%ly(ly) = sol(isol)%ly(ly)
           soil(ihru)%phys(ly) = sol(isol)%phys(ly)
           soil(ihru)%nut(ly) = sol(isol)%nut(ly)
           soil(ihru)%cbn(ly) = sol(isol)%cbn(ly)
           soil(ihru)%ly(ly) = sol(isol)%ly(ly)
           !! set arrays that are layer and plant dependent - residue and roots
-          allocate (hru(ihru)%ly(ly)%rs(npl(ihru)))
+          allocate (soil(ihru)%ly(ly)%rs(npl(ihru)))
         end do
       end do
       
@@ -248,17 +242,17 @@
         mbac = obcs(icmd)%num_paths
         if (mbac > 0) then
         !! allocate bacteria associated with
-        do ly = 1, hru(ihru)%sol%nly
-          allocate (hru(ihru)%ly(ly)%bacsol(mbac))
-          allocate (hru(ihru)%ly(ly)%bacsor(mbac))
+        do ly = 1, soil(ihru)%nly
+          allocate (soil(ihru)%ly(ly)%bacsol(mbac))
+          allocate (soil(ihru)%ly(ly)%bacsor(mbac))
         end do
         do ibac = 1, mbac
           if (ly == 1) then
-            hru(ihru)%ly(1)%bacsol(ibac) = bact(ibac_db)%bac(ibac)%sol
-            hru(ihru)%ly(1)%bacsor(ibac) = bact(ibac_db)%bac(ibac)%sor
+            soil(ihru)%ly(1)%bacsol(ibac) = bact(ibac_db)%bac(ibac)%sol
+            soil(ihru)%ly(1)%bacsor(ibac) = bact(ibac_db)%bac(ibac)%sor
           else
-            hru(ihru)%ly(1)%bacsol(ibac) = 0.
-            hru(ihru)%ly(1)%bacsor(ibac) = 0.
+            soil(ihru)%ly(1)%bacsol(ibac) = 0.
+            soil(ihru)%ly(1)%bacsor(ibac) = 0.
           end if
         end do   
         !! allocate bacteria associated with plant
@@ -277,9 +271,9 @@
         allocate (hru(ihru)%pst(mpst))
         npmx = obcs(icmd)%num_pests
         if (npmx > 0) then
-          do ly = 1, hru(ihru)%sol%nly
-            allocate (hru(ihru)%ly(ly)%kp(npmx))
-            allocate (hru(ihru)%ly(ly)%pst(npmx))
+          do ly = 1, soil(ihru)%nly
+            allocate (soil(ihru)%ly(ly)%kp(npmx))
+            allocate (soil(ihru)%ly(ly)%pst(npmx))
           end do
         end if
 
@@ -287,7 +281,7 @@
         do ipest = 1, npmx
          hru(ihru)%pst(ipest)%num_db = pesti_db(ipest_db)%pesti(ipest)%num_db
          hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt
-         hru(ihru)%ly(1)%pst(ipest) = pesti_db(ipest_db)%pesti(ipest)%soil
+         soil(ihru)%ly(1)%pst(ipest) = pesti_db(ipest_db)%pesti(ipest)%soil
          hru(ihru)%pst(ipest)%enr = pesti_db(ipest_db)%pesti(ipest)%enr
         end do
         end if

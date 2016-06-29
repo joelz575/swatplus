@@ -324,7 +324,7 @@
 
 
 	!! allocate dead roots, N, P to soil layers
-	do l = 1, hru(j)%sol%nly
+	do l = 1, soil(j)%nly
 	 soil(j)%ly(l)%rsd=soil(j)%ly(l)%rsd + soil(j)%ly(l)%rtfr * rtresnew
        soil(j)%nut(l)%fon = soil(j)%nut(l)%fon + soil(j)%ly(l)%rtfr*ff2*     &
            (pcom(j)%plm(ipl)%nmass - yieldn)
@@ -452,7 +452,7 @@
             if (hru(j)%pst(k)%plt < 0.) hru(j)%pst(k)%plt = 0.
           endif
           !! add pesticide in residue to soil surface
-          hru(j)%ly(1)%pst(k) = hru(j)%ly(1)%pst(k) + hru(j)%pst(k)%plt
+          soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + hru(j)%pst(k)%plt
           
           hru(j)%pst(k)%plt = 0.
         end do

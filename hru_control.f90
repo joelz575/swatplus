@@ -139,7 +139,7 @@
           sumlai = sumlai + pcom(j)%plg(ipl)%lai
            sumbm = sumbm + pcom(j)%plm(ipl)%mass
           sumrwt = sumrwt + pcom(j)%plg(ipl)%rwt
-          cht_mx(j) = amax1(0., cht_mx(j))
+          cht_mx(j) = Max(0., cht_mx(j))
           strsw_av(j) = strsw_av(j) + pcom(j)%plstr(ipl)%strsw / npl(j)
           strsa_av = strsa_av + pcom(j)%plstr(ipl)%strsa / npl(j)
           strsn_av = strsn_av + pcom(j)%plstr(ipl)%strsn / npl(j)
@@ -198,8 +198,8 @@
           ndcfrt(j) = ndcfrt(j) + 1
           call pl_confert
           call bac_apply_hrucon
-          hru(j)%ly(1)%bacsol(ibac) = sol_bacsol
-          hru(j)%ly(1)%bacsor(ibac) = sol_bacsor
+          soil(j)%ly(1)%bacsol(ibac) = sol_bacsol
+          soil(j)%ly(1)%bacsor(ibac) = sol_bacsor
         end if
         
         !! apply pesticide in continuous pest operation
@@ -213,8 +213,8 @@
           ndeat(j) = ndeat(j) + 1
           call pl_graze
           !call bac_apply_hrucon
-          !hru(j)%ly(1)%bacsol(ibac) = sol_bacsol
-          !hru(j)%ly(1)%bacsor(ibac) = sol_bacsor
+          !soil(j)%ly(1)%bacsol(ibac) = sol_bacsol
+          !soil(j)%ly(1)%bacsor(ibac) = sol_bacsor
         end if
        
         !! compute crop growth
@@ -344,7 +344,6 @@
         call stor_surfstor
 
         !! lag subsurface flow and nitrate in subsurface flow
-
         call swr_substor
 
         !! add lateral flow that was routed across the landscape on the previous day

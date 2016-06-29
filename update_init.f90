@@ -39,7 +39,7 @@
             case ("lyr")
               !! check layers for soil variables
               if (cal_upd(ichg_par)%lyr1 <= 0) cal_upd(ichg_par)%lyr1 = 1
-              if (cal_upd(ichg_par)%lyr2 <= 0) cal_upd(ichg_par)%lyr2 = hru(ielem)%sol%nly
+              if (cal_upd(ichg_par)%lyr2 <= 0) cal_upd(ichg_par)%lyr2 = soil(ielem)%nly
               do lyr = cal_upd(ichg_par)%lyr1, cal_upd(ichg_par)%lyr2
                 call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
               end do

@@ -57,11 +57,11 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco
 
-      prog = "SWAT+ Jun 8 2016    MODULAR Rev 22"
+      prog = "SWAT+ Jun 28 2016    MODULAR Rev 24"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "           Revision 22 - Jun 8        ",/,             &
+     &          "           Revision 24 - Jun 28        ",/,            &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -181,7 +181,8 @@
       call condition_read
 
       !! read update data
-      call update_sched_read
+      !call update_sched_read
+      call update_cond_read
 
       call sd_hru_read
       call sd_channel_read
@@ -227,10 +228,13 @@
       call aqu_read
       call aqu_initial
 
+            
       !! read soft calibration parameters
       call codes_cal_read
       call ls_regions_cal_read
       call ls_parms_cal_read
+      call ch_regions_cal_read
+      call ch_parms_cal_read
 
       call output_landscape_init
 
@@ -258,6 +262,13 @@
           hru_init(ihru) = hru(ihru)
           soil_init(ihru) = soil(ihru)
           pcom_init(ihru) = pcom(ihru)
+        end do
+      end if
+      
+      !save sdc initial conditions if calibrating
+      if (cal_codes%chsed == 'y') then
+        do isdc = 1, sp_ob%chandeg
+          sdch_init(isdc) = sd_ch(isdc)
         end do
       end if
       
@@ -291,6 +302,12 @@
       if (cal_codes%sed == 'y') then
         call cal_sed
       end if
+      
+      !calibrate channel sediment 
+      if (cal_codes%chsed == 'y') then
+        call cal_chsed
+      end if
+      
       
       do i = 101, 109       !Claire 12/2/09: change 1, 9  to 101, 109.
         close (i)

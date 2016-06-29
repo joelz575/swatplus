@@ -86,7 +86,7 @@
 	real*8 solp_init,solp_begin,solp_end,svolp,totalp,ctmp
 
 	j = ihru
-	nly = hru(j)%sol%nly
+	nly = soil(j)%nly
       isep = iseptic(j)
 	isp = sep(isep)%typ 	   !! J.Jeong 3/09/09
       bz_lyr = i_sep(j)    

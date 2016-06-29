@@ -137,7 +137,7 @@
 	endif
 	       
       if (sep(isep)%opt ==0) then
-      if (j1 < hru(j)%sol%nly) then
+      if (j1 < soil(j)%nly) then
         if (soil(j)%phys(j1)%st - soil(j)%phys(j1)%ul > 1.e-4) then
           sepday = sepday + (soil(j)%phys(j1)%st - soil(j)%phys(j1)%ul)
           soil(j)%phys(j1)%st = soil(j)%phys(j1)%ul
@@ -147,7 +147,7 @@
         if (soil(j)%phys(j1)%st - soil(j)%phys(j1)%ul > 1.e-4) then
           ul_excess = soil(j)%phys(j1)%st - soil(j)%phys(j1)%ul
           soil(j)%phys(j1)%st = soil(j)%phys(j1)%ul
-          nn = hru(j)%sol%nly
+          nn = soil(j)%nly
           do ly = nn - 1, 1, -1
             soil(j)%phys(ly)%st = soil(j)%phys(ly)%st + ul_excess
             if (soil(j)%phys(ly)%st > soil(j)%phys(ly)%ul) then

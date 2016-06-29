@@ -123,7 +123,7 @@
           sol_sumno3 = 0.
           sol_sumsolp = 0.
           do j = 1, mhru
-            do ly = 1, hru(j)%sol%nly
+            do ly = 1, soil(j)%nly
               sol_sumno3(j) = sol_sumno3(j) + soil(j)%nut(ly)%no3 +          &
                 soil(j)%nut(ly)%nh3
               sol_sumsolp(j) = sol_sumsolp(j) +  soil(j)%nut(ly)%solp

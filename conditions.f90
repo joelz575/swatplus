@@ -9,6 +9,7 @@
       use time_module
       use parm
       use reservoir_module
+      use sd_channel_module
       
       integer :: id, ob_num
       integer :: nbz=748932582
@@ -20,7 +21,7 @@
         !water stress
         case ("w_stress")
           ihru = ob_num
-          ipl = amax1 (d_tbl(id)%cond(ic)%ob_num, 1)
+          ipl = Max (d_tbl(id)%cond(ic)%ob_num, 1)
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
               if (pcom(ihru)%plstr(ipl)%strsw > d_tbl(id)%cond(ic)%lim_const) then
@@ -37,7 +38,7 @@
         !nitrogen stress
         case ("n_stress")
           ihru = ob_num
-          ipl = amax1 (d_tbl(id)%cond(ic)%ob_num, 1)
+          ipl = Max (d_tbl(id)%cond(ic)%ob_num, 1)
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
               if (pcom(ihru)%plstr(ipl)%strsn > d_tbl(id)%cond(ic)%lim_const) then
@@ -54,7 +55,7 @@
         !potential heat units - plant based
         case ("phu_plant")
           ihru = ob_num
-          ipl = amax1 (d_tbl(id)%cond(ic)%ob_num, 1)
+          ipl = Max (d_tbl(id)%cond(ic)%ob_num, 1)
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
               if (pcom(j)%plcur(ipl)%phuacc > d_tbl(id)%cond(ic)%lim_const *        &
@@ -212,7 +213,7 @@
         case ("prob")
           !call RANDOM_SEED ()
           !call RANDOM_NUMBER (ran_num)
-          !ran_num = ran(nbz)
+          !ran_num = ran1(1)
           ran_num = Aunif(nbz)
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then
@@ -233,6 +234,19 @@
             if (d_tbl(id)%alt(ic,ialt) == "=") then
               ihru = ob_num
               if (hru(ihru)%dbsc%land_use_mgt /= d_tbl(id)%cond(ic)%lim_var) then
+                d_tbl(id)%act_hit(ialt) = "n"
+              end if
+            !else
+            !  d_tbl(id)%act_hit(ialt) = "n"
+            end if
+          end do
+                                 
+        !channel management
+        case ("ch_use")
+          do ialt = 1, d_tbl(id)%alts
+            if (d_tbl(id)%alt(ic,ialt) == "=") then
+              ich = ob_num
+              if (sd_chd(ich)%order /= d_tbl(id)%cond(ic)%lim_var) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             !else

@@ -56,7 +56,8 @@
         integer :: toposub = 0        !! none     |max in toposub.top file
         integer :: cal_parms = 0      !! none     |max number of calibration parameters in cal_parms_upd
         integer :: cal_upd = 0        !! none     |max number of calibration parameter updates
-        integer :: updates = 0        !! none     |max number of basin updates (paramters, structures, land_use_mgt)
+        integer :: sched_up = 0       !! none     |max number of scheduled updates (paramters, structures, land_use_mgt)
+        integer :: cond_up = 0        !! none     |max number of conditional updates (paramters, structures, land_use_mgt)
         integer :: wr_ob = 0          !! none     |max number of water rights objects
         integer :: irr_nosrc = 0      !! none     |max number of hru's with unlimited water source for irrigation
         integer :: d_tbl = 0          !! none     |max number of decision tables
@@ -66,6 +67,7 @@
         integer :: saltcom = 0
         integer :: res = 0            !! none     |max number of reservoir data
         integer :: lscal_reg = 0      !! none     |max number of regions for landscape calibration
+        integer :: chcal_reg = 0      !! none     |max number of regions for channel calibration
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
 
@@ -169,8 +171,8 @@
         character(len=13) :: name = "default"
         integer :: typ = 0      !! none            |septic system type
         integer :: yr = 0       !!                 |year the septic system became operational
-        integer :: opt = 0      !!none             |Septic system operation flag (1=active,2=failing,0=not operated)                                isep_opt
-        real :: cap  = 0.       !!none             |Number of permanent residents in the house                                                          sep_cap
+        integer :: opt = 0      !!none             |Septic system operation flag (1=active,2=failing,0=not operated)
+        real :: cap  = 0.       !!none             |Number of permanent residents in the house
         real :: area = 0.       !!m^2              |average area of drainfield of individual septic systems 
         integer :: tfail  = 0   !!days             |time until falling systems gets fixed
         real :: z  = 0.         !!mm               |depth to the top of the biozone layer from the ground surface
@@ -512,16 +514,26 @@
       type (update_parameters) :: chg
 
       type update_schedule
-        character(len=16) :: typ        !! type of update schedule (parameter, structure, land_use_mgt)
-        integer :: num = 0              !! number of updates
-        character(len=16) :: name       !! name of update schedule
+        character(len=16) :: typ        !! type of update (structure, land_use_mgt)
+        character(len=16) :: name       !! name of structure, existing land use
         integer :: day = 0
         integer :: year = 0
-        character(len=16) :: cond       !! points to ruleset in conditional.ctl for scheduling the update
-        integer :: cond_num
-        type (update_parameters), dimension (:), allocatable :: upd_prm
+        character(len=16) :: lum        !! name of new land use
+        integer :: num_tot = 0          !! total number of integers read in
+        integer :: num_elem = 0         !! total number of elements (hrus or channels) modified (ie - 1 -5 18; num_tot=3 and num_elem=6)
+        integer, dimension(:), allocatable :: num
+        integer :: str_lu               !! integer pointer to structure or land use in appropriate data file
+        integer :: new_lu               !! integer pointer to new land use in data file
       end type update_schedule
       type (update_schedule), dimension (:), allocatable :: upd_sched
+    
+      type update_conditional
+        character(len=16) :: typ        !! type of update schedule (parameter, structure, land_use_mgt)
+        character(len=16) :: name       !! name of update schedule
+        character(len=16) :: cond       !! points to ruleset in conditional.ctl for scheduling the update
+        integer :: cond_num             !! integer pointer to d_table in conditional.ctl
+      end type update_conditional
+      type (update_conditional), dimension (:), allocatable :: upd_cond
       
       type soft_calibration_codes
         character (len=1) :: ls = 'n'       !! if y, calibrate at least one landscape process (hyd,sed,nut,plt) by land use in each region
@@ -535,27 +547,32 @@
       end type soft_calibration_codes
       type (soft_calibration_codes) :: cal_codes
       
-      type soft_calib_ls_parms
+      type soft_calib_parms
         character(len=16) :: name       !! cn2, terrace, land use, mgt, etc.
         integer :: num_db = 0           !! crosswalk number of parameter, structure or land use to get database array number
         character(len=16) :: chg_typ    !! type of change (absval,abschg,pctchg)
         real :: neg                     !! negative limit of change
         real :: pos                     !! positive limit of change
-      end type soft_calib_ls_parms
-      type (soft_calib_ls_parms), dimension(:), allocatable :: ls_prms
+      end type soft_calib_parms
+      type (soft_calib_parms), dimension(:), allocatable :: ls_prms
+      type (soft_calib_parms), dimension(:), allocatable :: ch_prms
             
       type soft_calib_ls_adjust
         real :: cn = 0.         !+/- or 0/1       |cn2 adjustment or at limit
         real :: esco = 0.       !+/- or 0/1       |esco adjustment or at limit
-        real :: awc = 0.        !+/- or 0/1       |awc adjustment or at limit
+        real :: k = 0.          !+/- or 0/1       |k (upper layers) adjustment or at limit
+        real :: k_lo = 0.       !+/- or 0/1       |l (lowest layer) adjustment or at limit
         real :: tconc = 0.      !+/- or 0/1       |time of concentration adjustment or at limit
-        real :: cvm = 0.        !+/- or 0/1       |minimum c-factor adjustment or at limit
+        real :: slope = 0.      !+/- or 0/1       |minimum c-factor adjustment or at limit
       end type soft_calib_ls_adjust
       
       type soft_calib_ls_processes
         !database of soft ave annual landscape calibration values
         character(len=16) :: name
-        real :: srr = 0.    !- or m3        |surface runoff ratio - surface runoff/precip 
+        ! srr + lfr + pcr + etr + tfr = 1
+        real :: srr = 0.    !- or m3        |surface runoff ratio - surface runoff/precip
+        real :: lfr = 0.    !- or m3        |lateral flow ratio - soil lat flow/precip 
+        real :: pcr = 0.    !- or m3        |percolation ratio - perc/precip
         real :: etr = 0.    !- or m3        |et ratio - et/precip
         real :: tfr = 0.    !- or m3        |tile flow ratio - tile flow/total runoff 
         real :: sed = 0.    !t/ha or t      |sediment yield
@@ -566,7 +583,7 @@
       end type soft_calib_ls_processes
       type (soft_calib_ls_processes) :: lscal_z  !to zero values
 
-      type soft_data_calib_regions
+      type ls_calib_regions
         character(len=16) :: name = 'default'
         integer :: lum_no                                       !xwalk lum()%name with lscal()%lum()%name
         real :: ha                                              !ha of each land use
@@ -580,18 +597,55 @@
         type (soft_calib_ls_adjust) :: prm                      !parameter adjustments used in landscape calibration
         type (soft_calib_ls_adjust) :: prm_prev                 !parameter adjustments used in landscape calibration
         type (soft_calib_ls_adjust) :: prm_lim                  !code if parameters are at limits
-      end type soft_data_calib_regions
+      end type ls_calib_regions
       
       type soft_data_calib_landscape
         character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lscal_reg)
-        character(len=16) :: parms                                          !points to lscal_db()%names
-        integer :: msubs                                                    !total number of subbasins in the region
         integer :: lum_num                                                  !number of land uses in each region
-        integer, dimension(:), allocatable :: subs                          !subbasins that are included in the region
-        type (soft_data_calib_regions), dimension(:), allocatable :: lum    !dimension for land uses within a region
+        integer :: num_tot                                                  !number of hru's in each region
+        integer, dimension(:), allocatable :: num                           !hru's that are included in the region
+        type (ls_calib_regions), dimension(:), allocatable :: lum           !dimension for land uses within a region
       end type soft_data_calib_landscape
       type (soft_data_calib_landscape), dimension(:), allocatable :: lscal  !dimension by region
 
+      type soft_calib_chan_adjust
+        real :: cov = 0.            !+/- or 0/1     |cover adjustment or at limit
+        real :: erod = 0.           !+/- or 0/1     |channel erodibility adjustment or at limit
+        real :: hc_erod = 0.        !+/- or 0/1     |head cut erodibility adjustment or at limit
+      end type soft_calib_chan_adjust
+      
+      type soft_calib_chan_processes
+        !database of soft ave annual landscape calibration values
+        character(len=16) :: name
+        real :: chw = 0.    !mm/yr          |channel widening 
+        real :: chd = 0.    !mm/yr          |channel downcutting or accretion
+        real :: fpd = 0.    !mm/yr          |flood plain accretion 
+      end type soft_calib_chan_processes
+      type (soft_calib_chan_processes) :: chcal_z  !to zero values
+
+      type chan_calib_regions
+        character(len=16) :: name = 'default'
+        integer :: ord_no                                       !xwalk sdc()%name with chcal()%ord()%name
+        real :: ha                                              !ha of each land use
+        integer :: nbyr = 0                                     !number of years the land use occurred 
+        type (soft_calib_chan_processes) :: meas                !input soft calibration parms of each land use - ratio,t/ha,kg/ha
+        type (soft_calib_chan_processes) :: sim                 !simulated sum of soft calibration parms of each land use - m3,t,kg
+        type (soft_calib_chan_processes) :: aa                  !average annual soft calibration parms of each land use - mm,t/ha,kg/ha
+        type (soft_calib_chan_processes) :: prev                !simulated sum of soft calibration parms of previous run - m3,t,kg
+        type (soft_calib_chan_adjust) :: prm                    !parameter adjustments used in landscape calibration
+        type (soft_calib_chan_adjust) :: prm_prev               !parameter adjustments used in landscape calibration
+        type (soft_calib_chan_adjust) :: prm_lim                !code if parameters are at limits
+      end type chan_calib_regions
+      
+      type soft_data_calib_channel
+        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lscal_reg)
+        integer :: ord_num                                                  !number of stream orders in each region
+        integer :: num_tot                                                  !number of channels in each region
+        integer, dimension(:), allocatable :: num                           !channels that are included in the region
+        type (chan_calib_regions), dimension(:), allocatable :: ord         !dimension for stream order within a region
+      end type soft_data_calib_channel
+      type (soft_data_calib_channel), dimension(:), allocatable :: chcal  !dimension by region
+      
       type structural_practices
         character(len=13) :: name = 'default'
         integer :: num_pr                                 

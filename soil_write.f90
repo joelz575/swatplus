@@ -30,7 +30,7 @@
 	  solno3_t = 0.
 	  solorgn_t = 0.
 	  solorgp_t = 0.
-         do l = 1, hru(j)%sol%nly
+         do l = 1, soil(j)%nly
            solp_t = solp_t + soil(j)%nut(l)%solp 
            solno3_t = solno3_t +  soil(j)%nut(l)%no3
 	     !if (bsn_cc%cswat == 0) then
@@ -45,7 +45,7 @@
 			solorgn_t = solorgn_t + soil(j)%nut(l)%orgn
 	     end if
 	     if (bsn_cc%cswat == 1) then
-			solorgn_t = solorgn_t + hru(j)%ly(l)%n
+			solorgn_t = solorgn_t + soil(j)%ly(l)%n
 		   end if		   
 		   if (bsn_cc%cswat ==2) then
 		    solorgn_t = solorgn_t + soil(j)%cbn(l)%hsn + soil(j)%cbn(l)%hpn

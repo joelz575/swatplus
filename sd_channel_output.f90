@@ -63,6 +63,6 @@
       
       return
 
-100   format (2i6,i8,60(1x,e10.4))
+100   format (2i6,i8,60(1x,e11.4))
        
       end subroutine sd_channel_output

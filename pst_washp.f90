@@ -55,7 +55,7 @@
             xx = 0.
             xx = pestdb(kk)%pst_wof * hru(j)%pst(k)%plt
             if (xx > hru(j)%pst(k)%plt) xx = hru(j)%pst(k)%plt
-            hru(j)%ly(1)%pst(k) = hru(j)%ly(1)%pst(k) + xx
+            soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + xx
             hru(j)%pst(k)%plt = hru(j)%pst(k)%plt - xx
           end if
         end if

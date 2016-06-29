@@ -31,7 +31,7 @@
           do while (eof >= 0)
             read (105,*,iostat=eof) i
             if (eof < 0) exit
-            imax = amax1(imax,i)
+            imax = Max(imax,i)
           end do        
         
         allocate (res_pst(0:imax))

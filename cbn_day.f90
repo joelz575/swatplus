@@ -107,12 +107,12 @@
           soilwater(1) = wc      
           wfsc(1) = soil(ihru)%phys(1)%por * (wc / sat)   ! fraction
           
-          if (hru(ihru)%sol%nly .ge. 2) then
+          if (soil(ihru)%nly .ge. 2) then
               do k = 2, 11
                 sumwater = 0.
                 sumwfsc = 0.
                 sumdepth = 0.
-                do ly = 2, hru(ihru)%sol%nly
+                do ly = 2, soil(ihru)%nly
                     if (soil(ihru)%phys(ly-1)%d.ge. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .le. sum_depth(k)) then
 
                               dp = soil(ihru)%phys(ly)%d - soil(ihru)%phys(ly-1)%d
@@ -205,7 +205,7 @@
           tot_pmass = 0. 
           tot_solp = 0.
           tot_no3_nh3 =0.
-          do k = 1, hru(j)%sol%nly 
+          do k = 1, soil(j)%nly 
               sol_mass = 0.
               if (k == 1) then
  		        sol_mass = (10) / 1000.* 10000. * soil(j)%phys(k)%bd* 1000. * (1- soil(j)%phys(k)%rock / 100.)            

@@ -32,7 +32,7 @@
         hwb_d(j)%esoil = es_day
         hwb_d(j)%surq_cont = surfq(j)
         hwb_d(j)%cn = cnday(j)
-        hwb_d(j)%sw = hru(j)%sol%sw
+        hwb_d(j)%sw = soil(j)%sw
         hwb_d(j)%pet = pet_day
         hwb_d(j)%qtile = qtile
         hwb_d(j)%irr = aird(j)

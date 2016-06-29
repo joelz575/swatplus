@@ -170,7 +170,7 @@
          solpcon = 0.
          cbodcon = 0.
          o2con = 0.
-         ch(jrch)%rch_cbod = amax1(1.e-6,ch(jrch)%rch_cbod)
+         ch(jrch)%rch_cbod = Max(1.e-6,ch(jrch)%rch_cbod)
          wtrtot = wtrin + rchwtr
          algcon =(algin * wtrin + ch(jrch)%algae * rchwtr) / wtrtot
          orgncon= (orgnin * wtrin + ch(jrch)%organicn * rchwtr) / wtrtot

@@ -39,10 +39,10 @@
           do ipl = 1, npl(j)
             call bac_apply_plant (ibacdb, ibac, gc,frt_t,            &
                 bac_db(ibtyp)%kd, pcom(j)%plg(ipl)%bac(ibac),        &
-                hru(j)%ly(1)%bacsol(ibac), hru(j)%ly(1)%bacsor(ibac))
+                soil(j)%ly(1)%bacsol(ibac), soil(j)%ly(1)%bacsor(ibac))
           end do
           call bac_apply_soil (ibacdb, ibac, gc, frt_t,              &             
-                 hru(j)%ly(1)%bacsol(ibac), hru(j)%ly(1)%bacsor(ibac))
+                 soil(j)%ly(1)%bacsol(ibac), soil(j)%ly(1)%bacsor(ibac))
         end do
       end if
       

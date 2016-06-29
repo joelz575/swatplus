@@ -1,4 +1,4 @@
-      subroutine ls_regions_cal_read
+      subroutine ch_regions_cal_read
    
       use input_file_module
       use jrw_datalib_module
@@ -11,24 +11,24 @@
       mcal = 0
         
       do
-        open (107,file = 'ls_regions.cal')
+        open (107,file = 'ch_orders.cal')
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
-        read (107,*,iostat=eof) mreg
+        read (107,*,iostat=eof) mord
         if (eof < 0) exit
         read (107,*,iostat=eof) header
-        allocate (lscal(mreg))
+        allocate (chcal(mord))
 
-      do i = 1, mreg
+      do i = 1, mord
 
-        read (107,*,iostat=eof) lscal(i)%name, lscal(i)%lum_num, nspu
+        read (107,*,iostat=eof) chcal(i)%name, chcal(i)%ord_num, nspu
         
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
-          read (107,*,iostat=eof) lscal(i)%name, lscal(i)%lum_num,  nspu, (elem_cnt(isp), isp = 1, nspu)
-
+          read (107,*,iostat=eof) chcal(i)%name, chcal(i)%ord_num,  nspu, (elem_cnt(isp), isp = 1, nspu)
+          
           !!save the object number of each defining unit
           ielem = 0
           do ii = 1, nspu
@@ -48,8 +48,8 @@
             end if
             if (ii == nspu .and. elem_cnt(ii) < 0) exit
           end do
-          allocate (lscal(i)%num(ielem))
-          lscal(i)%num_tot = ielem
+          allocate (chcal(i)%num(ielem))
+          chcal(i)%num_tot = ielem
 
           ielem = 0
           ii = 1
@@ -58,19 +58,19 @@
             if (ii == nspu) then
               ielem = ielem + 1
               ii = ii + 1
-              lscal(i)%num(ielem) = ie1
+              chcal(i)%num(ielem) = ie1
             else
               ie2 = elem_cnt(ii+1)
               if (ie2 > 0) then
                 ielem = ielem + 1
-                lscal(i)%num(ielem) = ie1
+                chcal(i)%num(ielem) = ie1
                 ielem = ielem + 1
-                lscal(i)%num(ielem) = ie2
+                chcal(i)%num(ielem) = ie2
               else
                 ie2 = abs(ie2)
                 do ie = ie1, ie2
                   ielem = ielem + 1
-                  lscal(i)%num(ielem) = ie
+                  chcal(i)%num(ielem) = ie
                 end do
               end if
               ii = ii + 2
@@ -78,38 +78,38 @@
           end do
           deallocate (elem_cnt)
         else
-          !!all hrus are in region
-          allocate (lscal(i)%num(sp_ob%hru))
-          lscal(i)%num_tot = sp_ob%hru
-          do ihru = 1, sp_ob%hru
-            lscal(i)%num(ihru) = ihru
-          end do      
+          !!all channels are in region
+          allocate (chcal(i)%num(sp_ob%chandeg))
+          chcal(i)%num_tot = sp_ob%chandeg
+          do ich = 1, sp_ob%chandeg
+            chcal(i)%num(ich) = ich
+          end do
         end if
         
-        !! read landscape soft calibration data for each land use
+        !! read channel soft calibration data for each land use
         read (107,*,iostat=eof) header
         if (eof < 0) exit
-        if (lscal(i)%lum_num > 0) then
-          ilum_mx = lscal(i)%lum_num
-          allocate (lscal(i)%lum(ilum_mx))
-          do ilum = 1, ilum_mx
-            read (107,*,iostat=eof) lscal(i)%lum(ilum)%meas
+        if (chcal(i)%ord_num > 0) then
+          iord_mx = chcal(i)%ord_num
+          allocate (chcal(i)%ord(iord_mx))
+          do iord = 1, iord_mx
+            read (107,*,iostat=eof) chcal(i)%ord(iord)%meas
             if (eof < 0) exit
-              !!crosswalk lum database name with ls calibration lum name
-              do ilumdb = 1, db_mx%landuse
-                if (lum(ilumdb)%name == lscal(i)%lum(ilum)%meas%name) then
-                  lscal(i)%lum(ilum)%lum_no = ilumdb
+              !!crosswalk ord database name with channel order parameter
+              do iorddb = 1, chcal(i)%ord_num
+                if (lum(ilumdb)%name == chcal(i)%ord(iord)%meas%name) then
+                  chcal(i)%ord(iord)%ord_no = iorddb
                   exit
                 end if
               end do
           end do
         end if 
-
-      end do    !mreg
+        
+      end do
       exit
          
       end do     
         
-      db_mx%chcal_reg = mreg
+      db_mx%lscal_reg = mord
       return
-      end subroutine ls_regions_cal_read
+      end subroutine ch_regions_cal_read

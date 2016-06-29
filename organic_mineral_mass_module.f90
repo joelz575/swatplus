@@ -371,10 +371,10 @@
       end function om_div_const
             
       !function to convert m^3-> mm and kg(or t)->kg(or t)/ha
-      function om_div_conv (hyd1,const) result (hyd2)
-        type (organic_mineral_mass), intent (in) :: hyd1
+      function om_div_conv (o_m1,const) result (o_m2)
+        type (organic_mineral_mass), intent (in) :: o_m1
         real, intent (in) :: const  !ha
-        type (organic_mineral_mass) :: hyd2
+        type (organic_mineral_mass) :: o_m2
         o_m2%vol = o_m1%vol / (10. * const)
         o_m2%hum%m = o_m1%hum%m / const
         o_m2%hum%c = o_m1%hum%c / const
@@ -392,23 +392,23 @@
       end function om_div_conv
       
       !function to set dr to a constant
-      function om_constant (o_m1, const)
-        type (organic_mineral_mass) :: o_m1
-        real, intent (in) :: const
-        o_m1%vol = const
-        o_m1%hum%m = const
-        o_m1%hum%c = const
-        o_m1%hum%n = const
-        o_m1%hum%p = const
-        o_m1%hum_act%m = const
-        o_m1%hum_act%c = const
-        o_m1%hum_act%n = const
-        o_m1%hum_act%p = const
-        o_m1%min%m = const
-        o_m1%min%no3 = const
-        o_m1%min%no2 = const
-        o_m1%min%nh4 = const
-        o_m1%min%po4 = const
-      end function om_constant
+ !     function om_constant (o_m1, const)
+ !       type (organic_mineral_mass) :: o_m1
+ !       real, intent (in) :: const
+ !       o_m1%vol = const
+ !       o_m1%hum%m = const
+ !       o_m1%hum%c = const
+ !       o_m1%hum%n = const
+ !       o_m1%hum%p = const
+ !       o_m1%hum_act%m = const
+ !       o_m1%hum_act%c = const
+ !       o_m1%hum_act%n = const
+ !       o_m1%hum_act%p = const
+ !       o_m1%min%m = const
+ !       o_m1%min%no3 = const
+ !       o_m1%min%no2 = const
+ !       o_m1%min%nh4 = const
+ !       o_m1%min%po4 = const
+ !     end function om_constant
       
-      end module organic_mineral_mass_module
+      end module organic_mineral_mass_module 

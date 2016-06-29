@@ -24,7 +24,7 @@
           do while (eof <= 0)
               read (107,*,iostat=eof) i
               if (eof < 0) exit
-              imax = amax1(i,imax)
+              imax = Max(i,imax)
           end do
        
         msub_elems = imax

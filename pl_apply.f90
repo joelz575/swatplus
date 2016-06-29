@@ -74,16 +74,16 @@
 
       ! added for pesticide incorporation 3/31/08 gsm
       if (pst_dep > 1.e-6) then
-       do nly = 1, hru(j)%sol%nly
+       do nly = 1, soil(j)%nly
          if (nly == 1) then
          if (pst_dep < soil(j)%phys(nly)%d) then
-            hru(j)%ly(1)%pst(k) =  hru(j)%ly(1)%pst(k) + xx
+            soil(j)%ly(1)%pst(k) =  soil(j)%ly(1)%pst(k) + xx
            exit
          endif
        else
         if (pst_dep>soil(j)%phys(nly-1)%d .and. pst_dep <           &
           soil(j)%phys(nly)%d)then
-             hru(j)%ly(nly)%pst(k) = hru(j)%ly(nly)%pst(k) + xx
+             soil(j)%ly(nly)%pst(k) = soil(j)%ly(nly)%pst(k) + xx
            exit
            endif
          endif
@@ -98,7 +98,7 @@
 
       !! update pesticide levels on ground and foliage
       hru(j)%pst(k)%plt = hru(j)%pst(k)%plt + gc * xx
-      hru(j)%ly(1)%pst(k) = hru(j)%ly(1)%pst(k) + (1. - gc) * xx
+      soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + (1. - gc) * xx
       
       !! added endif for pesticide incorporation 3/31/08 gsm
       endif

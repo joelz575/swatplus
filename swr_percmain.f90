@@ -7,7 +7,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    drainmod tile equations   08/2006
-!!	dep_imp(:)	|mm            |depth to impervious layer
+!!	  dep_imp(:)  |mm            |depth to impervious layer
 !!    drainmod tile equations   08/2006
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
@@ -84,17 +84,13 @@
 	  endif
 
       !back to 4 mm slug for soil routing- keeps moisture above fc
-      slug = 1000.   !this should be an input in parameters.bsn
+      slug = 4.  !1000.   !this should be an input in parameters.bsn
       sep_left = sepday
       do                  !slug loop
         if (sep_left < 1.e-6) exit
-        sepday = amin1(sepday, slug)
+        sepday = amin1(sep_left, slug)
         sep_left = sep_left - sepday
-        if (sep_left > slug) then
-          sepday = sep_left
-          sep_left = 0.
-        end if
-      do j1 = 1, hru(j)%sol%nly
+      do j1 = 1, soil(j)%nly
         !! add water moving into soil layer from overlying layer
         soil(j)%phys(j1)%st = soil(j)%phys(j1)%st + sepday
         
@@ -126,7 +122,7 @@
         end if
 
         !! summary calculations
-        if (j1 == hru(j)%sol%nly) then
+        if (j1 == soil(j)%nly) then
           sepbtm(j) = sepbtm(j) + sepday
         endif
         latq(j) = latq(j) + latlyr
@@ -137,13 +133,14 @@
         if (qtile < 1.e-6) qtile = 0.
         if (soil(j)%ly(j1)%flat < 1.e-6) soil(j)%ly(j1)%flat = 0.
       end do
+      if (sep_left < 1.e-6) exit
       end do                    !slug loop
 
       
       !! update soil profile water
-      hru(j)%sol%sw = 0.
-      do j1 = 1, hru(j)%sol%nly
-        hru(j)%sol%sw = hru(j)%sol%sw + soil(j)%phys(j1)%st
+      soil(j)%sw = 0.
+      do j1 = 1, soil(j)%nly
+        soil(j)%sw = soil(j)%sw + soil(j)%phys(j1)%st
       end do
 
       !! compute shallow water table depth and tile flow
@@ -155,12 +152,12 @@
         d = hru(j)%hyd%dep_imp - hru(j)%sdr_dep
         !! drainmod wt_shall equations   10/23/2006
         if (bsn_cc%wtdn == 0) then !compute wt_shall using original eq-Daniel 10/23/06
-          if (hru(j)%sol%sw > hru(j)%sol%sumfc) then
-            yy = hru(j)%sol%sumul * por_air
-            if (yy < 1.1 * hru(j)%sol%sumfc) then
-              yy = 1.1 * hru(j)%sol%sumfc
+          if (soil(j)%sw > soil(j)%sumfc) then
+            yy = soil(j)%sumul * por_air
+            if (yy < 1.1 * soil(j)%sumfc) then
+              yy = 1.1 * soil(j)%sumfc
             end if
-            xx = (hru(j)%sol%sw - hru(j)%sol%sumfc) / (yy - hru(j)%sol%sumfc)
+            xx = (soil(j)%sw - soil(j)%sumfc) / (yy - soil(j)%sumfc)
             if (xx > 1.) xx = 1.
             wt_shall = xx * hru(j)%hyd%dep_imp
 		    wat = hru(j)%hyd%dep_imp - wt_shall
@@ -168,14 +165,14 @@
           end if
         else
           !compute water table depth using Daniel's modifications
-          do j1 = 1, hru(j)%sol%nly
-            if (hru(j)%sol%wat_tbl < soil(j)%phys(j1)%d) then
-              sw_del = hru(j)%sol%swpwt - hru(j)%sol%sw
-              wt_del = sw_del * hru(j)%ly(j1)%vwt
-              hru(j)%sol%wat_tbl = hru(j)%sol%wat_tbl + wt_del
-	          if(hru(j)%sol%wat_tbl > hru(j)%hyd%dep_imp)  hru(j)%sol%wat_tbl = hru(j)%hyd%dep_imp
-	          wt_shall = hru(j)%hyd%dep_imp - hru(j)%sol%wat_tbl
-	          hru(j)%sol%swpwt = hru(j)%sol%sw
+          do j1 = 1, soil(j)%nly
+            if (soil(j)%wat_tbl < soil(j)%phys(j1)%d) then
+              sw_del = soil(j)%swpwt - soil(j)%sw
+              wt_del = sw_del * soil(j)%ly(j1)%vwt
+              soil(j)%wat_tbl = soil(j)%wat_tbl + wt_del
+	          if(soil(j)%wat_tbl > hru(j)%hyd%dep_imp)  soil(j)%wat_tbl = hru(j)%hyd%dep_imp
+	          wt_shall = hru(j)%hyd%dep_imp - soil(j)%wat_tbl
+	          soil(j)%swpwt = soil(j)%sw
 	          exit
 	        end if
 	      end do
@@ -204,7 +201,7 @@
       if (qtile > 0.) then
         !! update soil profile water after tile drainage
         sumqtile = qtile
-        do j1 = 1, hru(j)%sol%nly
+        do j1 = 1, soil(j)%nly
           xx = soil(j)%phys(j1)%st - soil(j)%phys(j1)%fc
           if (xx > 0.) then
             if (xx > sumqtile) then
@@ -218,14 +215,14 @@
         end do
         if (sumqtile > 0.) then
           qtile = qtile - sumqtile
-          qtile = amax1(0., qtile)
+          qtile = Max(0., qtile)
         end if
       end if
 
       !! update soil profile water
-      hru(j)%sol%sw = 0.
-      do j1 = 1, hru(j)%sol%nly
-        hru(j)%sol%sw = hru(j)%sol%sw + soil(j)%phys(j1)%st
+      soil(j)%sw = 0.
+      do j1 = 1, soil(j)%nly
+        soil(j)%sw = soil(j)%sw + soil(j)%phys(j1)%st
       end do
 
       return

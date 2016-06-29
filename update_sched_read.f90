@@ -42,40 +42,21 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) mchg_sched
         allocate (upd_sched(0:mchg_sched))
-        db_mx%updates = mchg_sched
+        db_mx%sched_up = mchg_sched
         if (eof < 0) exit
         read (107,*,iostat=eof) header
         if (eof < 0) exit
 
       do i = 1, mchg_sched
         read (107,*,iostat=eof) upd_sched(i)%typ, upd_sched(i)%num, upd_sched(i)%name, upd_sched(i)%day,        &
-            upd_sched(i)%year, upd_sched(i)%cond
+            upd_sched(i)%year, upd_sched(i)%lum, nspu
         if (eof < 0) exit
-        allocate (upd_sched(i)%upd_prm(upd_sched(i)%num))
-        
-                            
-        if (upd_sched(i)%typ == 'land_use' .and. upd_sched(i)%cond /= 'null') then
-          !! crosswalk parameters with calibration parameter db
-          do icond = 1, db_mx%d_tbl
-            if (upd_sched(i)%cond == d_tbl(icond)%name) then
-              upd_sched(i)%cond_num = icond
-              exit
-            end if
-          end do
-        else
-          
-        do ichg = 1, upd_sched(i)%num
-            
-        read (107,*,iostat=eof) upd_sched(i)%upd_prm(ichg)%name, upd_sched(i)%upd_prm(ichg)%chg_typ,            &
-        upd_sched(i)%upd_prm(ichg)%cond, upd_sched(i)%upd_prm(ichg)%val, nspu
-        
-        if (eof < 0) exit
+
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
-          read (107,*,iostat=eof) upd_sched(i)%upd_prm(ichg)%name, upd_sched(i)%upd_prm(ichg)%chg_typ,          &
-              upd_sched(i)%upd_prm(ichg)%cond, upd_sched(i)%upd_prm(ichg)%val,                                  &
-              upd_sched(i)%upd_prm(ichg)%num_tot, (elem_cnt(isp), isp = 1, nspu)
+          read (107,*,iostat=eof) upd_sched(i)%typ, upd_sched(i)%num, upd_sched(i)%name, upd_sched(i)%day,        &
+            upd_sched(i)%year, upd_sched(i)%new_lu, upd_sched(i)%num_tot, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
           
           !!save the object number of each defining unit
@@ -96,7 +77,7 @@
               ii = ii + 2
             end if
           end do
-          allocate (upd_sched(i)%upd_prm(ichg)%num(ielem))
+          allocate (upd_sched(i)%num(ielem))
 
           ielem = 0
           ii = 1
@@ -105,17 +86,17 @@
             if (ii == nspu) then
               ielem = ielem + 1
               ii = ii + 1
-              upd_sched(i)%upd_prm(ichg)%num(ielem) = ie1
+              upd_sched(i)%num(ielem) = ie1
             else
               ie2 = elem_cnt(ii+1)
               if (ie2 > 0) then
                 ielem = ielem + 1
-                upd_sched(i)%upd_prm(ichg)%num(ielem) = ie2
+                upd_sched(i)%num(ielem) = ie2
               else
                 ie2 = abs(ie2)
                 do ie = ie1, ie2
                   ielem = ielem + 1
-                  upd_sched(i)%upd_prm(ichg)%num(ielem) = ie
+                  upd_sched(i)%num(ielem) = ie
                 end do
               end if
               ii = ii + 2
@@ -123,82 +104,80 @@
           end do
           deallocate (elem_cnt)
         end if          
-          
-          if (upd_sched(i)%typ == 'parameters') then
-            !! crosswalk parameters with calibration parameter db
-            do ical = 1, db_mx%cal_parms
-              if (upd_sched(i)%upd_prm(ichg)%name == cal_parms(ical)%name) then
-                upd_sched(i)%upd_prm(ichg)%num_db = ical
-                exit
-              end if
-            end do
-          end if
 
+        if (upd_sched(i)%typ == 'land_use') then
+          !! crosswalk parameters with calibration parameter db
+          do ilu = 1, db_mx%d_tbl
+            if (upd_sched(i)%name == d_tbl(ilu)%name) then
+              upd_sched(i)%new_lu = icond
+              exit
+            end if
+          end do
+        end if
+          
           if (upd_sched(i)%typ == 'structure') then
             !! crosswalk structural objects
             select case(upd_sched(i)%name)
 
             case ("terrace")
               do iterr = 1, db_mx%terrop_db
-                if (terrace_db(iterr)%name == upd_sched(i)%upd_prm(ichg)%name) then
-                  upd_sched(i)%upd_prm(ichg)%num_db = iterr
+                if (terrace_db(iterr)%name == upd_sched(i)%name) then
+                  upd_sched(i)%str_lu = iterr
                 end if
               end do
 
             case ("tile")
               do isdr = 1, db_mx%sdr
-                if (sdr(iterr)%name == upd_sched(i)%upd_prm(ichg)%name) then
-                  upd_sched(i)%upd_prm(ichg)%num = isdr
+                if (sdr(iterr)%name == upd_sched(i)%name) then
+                  upd_sched(i)%str_lu = isdr
                 end if
               end do
             
             case ("contour")
               do icont = 1, db_mx%contop_db
-                if (contour_db(iterr)%name == upd_sched(i)%upd_prm(ichg)%name) then
-                  upd_sched(i)%upd_prm(ichg)%num = icont
+                if (contour_db(iterr)%name == upd_sched(i)%name) then
+                  upd_sched(i)%str_lu = icont
                 end if
               end do
 
             case ("filter")
               do ifilt = 1, db_mx%filtop_db
-                if (filtstrip_db(iterr)%name == upd_sched(i)%upd_prm(ichg)%name) then
-                  upd_sched(i)%upd_prm(ichg)%num = ifilt
+                if (filtstrip_db(iterr)%name == upd_sched(i)%name) then
+                  upd_sched(i)%str_lu = ifilt
                 end if
               end do
 
             case ("stripcrop")
               do istrp = 1, db_mx%stripop_db
-                if (stripcrop_db(iterr)%name == upd_sched(i)%upd_prm(ichg)%name) then
-                  upd_sched(i)%upd_prm(ichg)%num = istrp
+                if (stripcrop_db(iterr)%name == upd_sched(i)%name) then
+                  upd_sched(i)%str_lu = istrp
                 end if
               end do
 
             case ("grassww")
               do igras = 1, db_mx%grassop_db
-                if (grwaterway_db(iterr)%name == upd_sched(i)%upd_prm(ichg)%name) then
-                  upd_sched(i)%upd_prm(ichg)%num = igras
+                if (grwaterway_db(iterr)%name == upd_sched(i)%name) then
+                  upd_sched(i)%str_lu = igras
                 end if
               end do
 
             case ("user_def")                 !user defined Upland CP removal MJW
               do iuser = 1, db_mx%bmpuserop_db
-                if (bmpuser_db(iterr)%name == upd_sched(i)%upd_prm(ichg)%name) then
-                  upd_sched(i)%upd_prm(ichg)%num = iuser
+                if (bmpuser_db(iterr)%name == upd_sched(i)%name) then
+                  upd_sched(i)%str_lu = iuser
                 end if
               end do
       
             case ("septic")
               do isept = 1, db_mx%septic
-                if (sepdb(iterr)%sepnm == upd_sched(i)%upd_prm(ichg)%name) then
-                  upd_sched(i)%upd_prm(ichg)%num = isept
+                if (sepdb(iterr)%sepnm == upd_sched(i)%name) then
+                  upd_sched(i)%str_lu = isept
                 end if
               end do
 
             end select
           end if
-          
-        end do
-        end if
+
       end do
       exit
       end do

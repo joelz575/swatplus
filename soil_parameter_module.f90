@@ -133,6 +133,5 @@
          type (soilayer), dimension(:), allocatable :: ly
       end type soil_hru_database
       type (soil_hru_database), dimension(:), allocatable :: sol
-
-      
+    
       end module soil_parameter_module

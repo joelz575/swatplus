@@ -70,7 +70,7 @@
         rsd_frcov = Exp(-bsn_prm%rsd_covco * sol_cov(j))
         grcov_fr = sumlai / (sumlai + Exp(1.748 - 1.748 * sumlai))
         bio_frcov = 1. - grcov_fr * Exp(-.01 * cht_mx(j))
-        c = amax1(1.e-10, rsd_frcov * bio_frcov)
+        c = Max(1.e-10, rsd_frcov * bio_frcov)
       end if
 
       usle_cfac(ihru) = c

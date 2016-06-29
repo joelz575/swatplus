@@ -91,13 +91,13 @@
 
 !! update pesticide levels on ground and foliage
         hru(j)%pst(k)%plt = hru(j)%pst(k)%plt + gc * xx
-        hru(j)%ly(1)%pst(k) = hru(j)%ly(1)%pst(k) + (1. - gc) * xx
+        soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + (1. - gc) * xx
         
  
         if (pco%mgtout ==  1) then
          write (143, 1000) j, time%yrc, i_mo, iida,                       & 
          "         ", "CONT PEST", phubase(j),pcom(j)%plcur(ipl)%phuacc,  &
-            hru(j)%sol%sw,pcom(j)%plm(ipl)%mass,                          &
+            soil(j)%sw,pcom(j)%plm(ipl)%mass,                          &
             soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j), cpst_kg(j)
         end if
            

@@ -178,8 +178,8 @@
       sedc_d(j) = YOC + YBC
       
       latc_clyr = latc_clyr + soil(j)%ly(1)%latc   
-      DO k = 2, hru(j)%sol%nly
-          if (soil(j)%ly(k)%prk > 0 .and. k == hru(j)%sol%nly) then
+      DO k = 2, soil(j)%nly
+          if (soil(j)%ly(k)%prk > 0 .and. k == soil(j)%nly) then
             !write (*,*) 'stop'
           end if
           sol_thick = 0.
@@ -192,14 +192,14 @@
               IF(V>0.)VBC=Y1*(1.-EXP(-V/(soil(j)%phys(k)%por*sol_thick-soil(j)%phys(k)%wpmm+.0001*PRMT_21*soil(j)%cbn(1)%woc)))              
           END IF
           soil(j)%ly(k)%latc = VBC*(soil(j)%ly(k)%flat/(soil(j)%ly(k)%prk + soil(j)%ly(k)%flat+1.e-6))
-          soil(j)%ly(k)%percc = VBC-hru(j)%ly(k)%latc
+          soil(j)%ly(k)%percc = VBC-soil(j)%ly(k)%latc
           soil(j)%cbn(k)%bmc=Y1-VBC
 
         !! calculate nitrate in percolate        
         !perc_clyr = 0.
         perc_clyr = perc_clyr + soil(j)%ly(k)%percc
         
-        latc_clyr = latc_clyr + hru(j)%ly(k)%latc
+        latc_clyr = latc_clyr + soil(j)%ly(k)%latc
       END DO
      
         latc_d(j) = latc_clyr

@@ -89,7 +89,7 @@
       if (bmix > 1.e-6) then
         !! biological mixing
         emix = bmix
-        dtil = Min(soil(jj)%phys(hru(jj)%sol%nly)%d, 300.)
+        dtil = Min(soil(jj)%phys(soil(jj)%nly)%d, 300.)
       else 
         !! tillage operation
         emix = tilldb(idtill)%effmix
@@ -118,7 +118,7 @@
         smix = 0.
         nl = 0
         thtill(1) = 1.
-        do l = 1, hru(jj)%sol%nly
+        do l = 1, soil(jj)%nly
           if (l /= 1) then
             if (soil(jj)%phys(l)%d > dtil) then
               if (soil(jj)%phys(l-1)%d< dtil) then
@@ -148,7 +148,7 @@
             smix(11) = smix(11) + thtill(l) * emix * soil(jj)%ly(l)%rsd
             do k = 1, npmx
             smix(11+k) = smix(11+k) + thtill(l) * emix *                &             
-                                                  hru(jj)%ly(l)%pst(k)
+                                                  soil(jj)%ly(l)%pst(k)
             
             end do
           end if
@@ -212,8 +212,8 @@
 
           if (hrupest(jj) > 0) then
           do k = 1, npmx
-            hru(jj)%ly(l)%pst(k) =  hru(jj)%ly(l)%pst(k) *               &
-                     (1. - thtill(l)) + hru(jj)%ly(l)%pst(k)  *          &
+            soil(jj)%ly(l)%pst(k) =  soil(jj)%ly(l)%pst(k) *             &
+                     (1. - thtill(l)) + soil(jj)%ly(l)%pst(k)  *         &
                      thtill(l) * (1. - emix) + smix(11+k) * thtill(l) *  & 
                      dg / dtil
           

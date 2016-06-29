@@ -84,7 +84,7 @@
 
       if (soil(j)%cbn(1)%cbn == 0.) return	
  
-      do k = 1, hru(j)%sol%nly
+      do k = 1, soil(j)%nly
 
       sum_c_i = 0.
       sum_n_i = 0.
@@ -377,8 +377,8 @@
 	bal_p = sum_p_i - sum_p_f
 
 !!    carbon outputs for .hru file
-      if (k == 1) hru(j)%sol%cmup_kgh = sol_cmass
-      hru(j)%sol%cmtot_kgh = hru(j)%sol%cmtot_kgh + sol_cmass
+      if (k == 1) soil(j)%cmup_kgh = sol_cmass
+      soil(j)%cmtot_kgh = soil(j)%cmtot_kgh + sol_cmass
 !!    carbon outputs for .hru file
 
 

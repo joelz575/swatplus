@@ -78,7 +78,7 @@
              * (1.- urbdb(ulu)%fimp) * 1000.) !mm/dt
           
           !add irrigated water to soil water content
-          do kk = 1, hru(j)%sol%nly
+          do kk = 1, soil(j)%nly
             if(irmmdt(ii)<soil(j)%phys(kk)%ul-soil(j)%phys(kk)%st) then
                soil(j)%phys(kk)%st = soil(j)%phys(kk)%st + irmmdt(ii)
                exit

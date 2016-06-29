@@ -10,7 +10,8 @@
       real, dimension(:), allocatable :: timeint  !days       |time spent in each hydrograph time step
       
       type swatdeg_channel_data
-        character(len=13) :: name
+        character(len=16) :: name
+        character(len=16) :: order
         integer :: route_db = 0 !         |pointer to routing_nut_data
         real :: chw             !m        |channel width
         real :: chd             !m        |channel depth
@@ -40,6 +41,8 @@
         real :: chd = .5     !m        |channel depth
         real :: chs = .01    !m/m      |channel slope
         real :: chl = .1     !km       |channel length
+        real :: cherod       !         |channel erodibility
+        real :: cov          !0-1      |channel cover factor
         real :: hc_co = 0.   !m/m      |proportionality coefficient for head cut
         real :: attack0 = 0. !km       |attack threshold for movement of head cut
         real :: hc_len = 0.  !km       |length of head cut
@@ -47,6 +50,7 @@
         real, dimension(13) :: phi
       end type swatdeg_channel_dynamic
       type (swatdeg_channel_dynamic),dimension (:), allocatable :: sd_ch
+      type (swatdeg_channel_dynamic),dimension (:), allocatable :: sdch_init
               
       type sd_ch_output
         real :: flo = 0.              ! (m^3/s)      !ave flow rate

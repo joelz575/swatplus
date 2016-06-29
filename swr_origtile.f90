@@ -41,8 +41,8 @@
 
       dmod_m = wt_shall - d
       
-      if (hru(j)%sol%sw > hru(j)%sol%sumfc) then
-        sw_excess = (dmod_m / wt_shall) * (hru(j)%sol%sw - hru(j)%sol%sumfc)
+      if (soil(j)%sw > soil(j)%sumfc) then
+        sw_excess = (dmod_m / wt_shall) * (soil(j)%sw - soil(j)%sumfc)
         qtile = sw_excess * (1. - Exp(-24. / sdr(isdr)%time))
         qtile = amin1(qtile, sdr(isdr)%drain_co)
       else

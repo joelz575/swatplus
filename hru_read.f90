@@ -6,7 +6,7 @@
       
       character (len=500) :: header
       character (len=80) :: titldum
-      integer :: eof, i, imax
+      integer :: eof, imax
       
       eof = 0
       imax = 0
@@ -30,7 +30,7 @@
          do while (eof >= 0)
             read (113,*,iostat=eof) i
             if (eof < 0) exit
-            imax = amax1(imax,i)
+            imax = Max(imax,i)
             mhru_db = mhru_db + 1
           end do
           

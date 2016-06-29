@@ -99,7 +99,7 @@
          qet = ri_evrsv(sb,kk) * tsa * pet_day / 1000. / 1440. * time%dtm !m^3
          
          !water pumped for irrigation
-         qpump =  Amax1(0.,ri_pmpvol(kk,ii))
+         qpump =  Max(0.,ri_pmpvol(kk,ii))
          
          !mass balance  
          qpnd = qpnd - qseep - qet - qpump

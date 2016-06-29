@@ -26,7 +26,7 @@
           do while (eof >= 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
-            imax = amax1(imax,i) 
+            imax = Max(imax,i) 
           end do
           
       allocate (recall(0:imax))
@@ -103,7 +103,7 @@
           do while (eof >= 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
-            imax = amax1(imax,i) 
+            imax = Max(imax,i) 
           end do
           
       allocate (rec_pest(0:imax))
@@ -179,7 +179,7 @@
           do while (eof >= 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
-            imax = amax1(imax,i) 
+            imax = Max(imax,i) 
           end do
           
       allocate (pest_init(0:imax,db_mx%pestcom))

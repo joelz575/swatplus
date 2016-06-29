@@ -118,9 +118,9 @@
       yieldn = Min(yieldn, 0.85 * pcom(j)%plm(ipl)%nmass)
       yieldp = Min(yieldp, 0.85 * pcom(ihru)%plm(ipl)%pmass)
       pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - yieldn
-      pcom(j)%plm(ipl)%nmass = amax1(0.,pcom(j)%plm(ipl)%nmass)
+      pcom(j)%plm(ipl)%nmass = Max(0.,pcom(j)%plm(ipl)%nmass)
       pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - yieldp
-      pcom(ihru)%plm(ipl)%pmass = amax1(0.,pcom(ihru)%plm(ipl)%pmass)
+      pcom(ihru)%plm(ipl)%pmass = Max(0.,pcom(ihru)%plm(ipl)%pmass)
 
 !! calculate modifier for autofertilization target nitrogen content
       tnyld(j) = 0.

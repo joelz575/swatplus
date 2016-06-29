@@ -112,7 +112,7 @@
           if (auto_wstr(k) > 0.) then
             if (wstrs_id(k) == 1 .and. strsw_av(k) < auto_wstr(k))      &     
                                                             flag = 2
-            if (wstrs_id(k) == 2 .and. hru(k)%sol%sumfc-hru(k)%sol%sw > &
+            if (wstrs_id(k) == 2 .and. soil(k)%sumfc-soil(k)%sw >    &
                   auto_wstr(k)) flag = 2
           end if
 
@@ -156,7 +156,7 @@
               if (flag == 1) then
                 vmxi = 0.
                 vmxi = irramt(k)                       
-                if (vmxi < 1.e-6) vmxi = hru(k)%sol%sumfc
+                if (vmxi < 1.e-6) vmxi = soil(k)%sumfc
                 if (vmm > vmxi) vmm = vmxi
               end if
               if (flag == 2) then

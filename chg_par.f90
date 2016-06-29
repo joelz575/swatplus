@@ -39,7 +39,7 @@
       
       end select
       
-      chg_par = amax1(chg_par, absmin)
+      chg_par = Max(chg_par, absmin)
       chg_par = amin1(chg_par, absmax)
       
       return

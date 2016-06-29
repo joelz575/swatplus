@@ -389,8 +389,8 @@
       call pl_rootfr
 
       !! allocate roots, N, and P to soil pools	! Armen 20 May 2008
-      do l = 1, hru(j)%sol%nly
-       hru(j)%ly(l)%rsd=hru(j)%ly(l)%rsd+soil(j)%ly(l)%rtfr * rtresnew
+      do l = 1, soil(j)%nly
+       soil(j)%ly(l)%rsd=soil(j)%ly(l)%rsd+soil(j)%ly(l)%rtfr * rtresnew
        soil(j)%nut(l)%fon=soil(j)%nut(l)%fon+soil(j)%ly(l)%rtfr * rtresn
        soil(j)%nut(l)%fop=soil(j)%nut(l)%fop+soil(j)%ly(l)%rtfr * rtresp
 
@@ -520,7 +520,7 @@
           clippst = yldpst * (1. - harveff)
           if (clippst < 0.) clippst = 0.
           !! add pesticide in clippings to soil surface
-          hru(j)%ly(1)%pst(k) = hru(j)%ly(1)%pst(k) + clippst
+          soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + clippst
           
         end do   
       end if

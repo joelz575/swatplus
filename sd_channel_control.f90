@@ -26,15 +26,14 @@
       !! compute headcut
       !! adjust peak rate for headcut advance -also adjusts CEAP gully from
       !! edge-of-field to trib (assuming rectangular shape and constant tc)
-      pr_ratio = (sd_ch(ich)%chl - sd_ch(ich)%hc_len / 1000.) /           &
-                                                        sd_ch(ich)%chl
-      pr_ratio = amax1(pr_ratio, 0.)
+      pr_ratio = (sd_ch(ich)%chl - sd_ch(ich)%hc_len / 1000.) / sd_ch(ich)%chl
+      pr_ratio = Max(pr_ratio, 0.)
       !assume triangular hydrograph
       peakrate = 2. * chflow_m3 / (1.5 * sd_chd(ich)%tc)
       peakrate = peakrate / 60.   !convert min to sec
       attack = peakrate * sd_chd(ich)%hc_hgt
       hc_adv = sd_ch(ich)%hc_co * (attack - sd_ch(ich)%attack0)
-      hc_adv = amax1(hc_adv, 0.)
+      hc_adv = Max(hc_adv, 0.)
       hc_adv = amin1(hc_adv, sd_ch(ich)%chl*1000.)
       sd_ch(ich)%hc_len = sd_ch(ich)%hc_len + hc_adv / 1000.
       !! compute sediment yield from headcut- assume bd = 1.2 t/m3
@@ -49,8 +48,7 @@
 
           !! compute flow and travel time at bankfull depth
           p = b + 2. * sd_ch(ich)%chd * Sqrt(chside * chside + 1.)
-          a = b * sd_ch(ich)%chd + chside * sd_ch(ich)%chd *            &           
-              sd_ch(ich)%chd
+          a = b * sd_ch(ich)%chd + chside * sd_ch(ich)%chd * sd_ch(ich)%chd
           rh = a / p
           sd_ch(ich)%phi(1) = a
           sd_ch(ich)%phi(5) = Qman(a,rh,sd_chd(ich)%chn,sd_ch(ich)%chs)
@@ -86,8 +84,7 @@
             
             !! estimate overbank flow - assume a triangular hyd
             tbase = 1.5 * sd_chd(ich)%tc * 60.  !seconds
-            vol_ovb = 0.5 * (peakrate - sd_ch(ich)%phi(5)) *              &
-                                    sd_ch(ich)%phi(5) / peakrate * tbase
+            vol_ovb = 0.5 * (peakrate - sd_ch(ich)%phi(5)) * sd_ch(ich)%phi(5) / peakrate * tbase
             vol_ovb = amin1(vol_ovb, chflow_m3)
             vol_ovb = peakrate - sd_ch(ich)%phi(5)
             const = vol_ovb / peakrate
@@ -113,7 +110,7 @@
                 c =  ch_sur(ics)%flood_volmx(ii-1) - ht1%flo
                 xx = b ** 2 - 4. * a * c
                 dep = (-b + sqrt(xx)) / (2. * a)
-                dep = amax1(0., dep)
+                dep = Max(0., dep)
                 ic = ii
                 exit
               end if
@@ -137,16 +134,14 @@
               else if (flood_dep < ch_sur(ics)%dep(ii)) then
                 !flood level within the element
                 dep_e = flood_dep - ch_sur(ics)%dep(ii-1)
-                ch_sur(ics)%hd(ii)%flo = dep_e ** 2 / sd_ch(ich)%chs       &
-                                                        * sd_ch(ich)%chl
+                ch_sur(ics)%hd(ii)%flo = dep_e ** 2 / sd_ch(ich)%chs * sd_ch(ich)%chl
               else
                 !flood level over max element depth
                 ch_sur(ics)%hd(ii)%flo = 2. * sd_ch(ich)%chw *             & 
                   (flood_dep - ch_sur(ics)%dep(ii)) + sd_ch(ich)%chw *     &
                   (ch_sur(ics)%dep(ii) - ch_sur(ics)%dep(ii-1))
               end if
-              ch_sur(ics)%hd(ii)%flo = amin1 (                             &
-                 ch_sur(ics)%hd(ii)%flo, ch_sur(ics)%flood_volmx(ii))
+              ch_sur(ics)%hd(ii)%flo = amin1 (ch_sur(ics)%hd(ii)%flo, ch_sur(ics)%flood_volmx(ii))
               sum_vol = sum_vol + ch_sur(ics)%hd(ii)%flo
             end do
             !determine fraction of total flood volume and set volume for each element
@@ -193,13 +188,36 @@
             timeint = timeint / sumtime
           END IF
 
-         !!     calculate flow velocity
+         !! calculate flow velocity
           vc = 0.001
           if (rcharea > 1.e-4) then
             vc = peakrate / rcharea
             if (vc > sd_ch(ich)%phi(9)) vc = sd_ch(ich)%phi(9)
           end if
 
+        !! compute headcut
+        !! adjust peak rate for headcut advance -also adjusts CEAP gully from
+        !! edge-of-field to trib (assuming rectangular shape and constant tc)
+        pr_ratio = (sd_ch(ich)%chl - sd_ch(ich)%hc_len / 1000.) / sd_ch(ich)%chl
+        pr_ratio = Max(pr_ratio, 0.)
+        hc_adv = 0.
+        do ihval = 1, maxint
+          !assume triangular hydrograph
+          q = 35.28 * peakrate / float(maxint - ihval + 1) / 60.    !m^3/min -> ft^3/s
+          
+          hc_w = .666 * sd_ch(ich)%chw * 3.28                       !m -> ft
+          qunit = q / hc_w                                          !ft^3/s/ft
+          attack = (qunit * sd_chd(ich)%hc_hgt * 3.28) ** .33333
+          hc = sd_ch(ich)%hc_co * (attack - sd_ch(ich)%attack0)     !ft/hr
+          hc = Max(hc, 0.)
+          hc_adv = hc_adv + hc * timeint(ihval) / 3.28              !ft/hr * hr /3.28 = m
+        end do
+        hc_adv = amin1(hc_adv, sd_ch(ich)%chl*1000.)
+        sd_ch(ich)%hc_len = sd_ch(ich)%hc_len + hc_adv / 1000.
+        !! compute sediment yield from headcut- assume bd = 1.2 t/m3
+        !! assume channel dimensions are same as data file
+        hc_sed = hc_adv * sd_chd(ich)%chw * sd_chd(ich)%chd * 1.2
+          
         if (sd_ch(ich)%chs > sd_chd(ich)%chseq) then
           !break hydrograph into maxint segments and compute deg at each flow increment
           do ihval = 1, maxint
@@ -294,11 +312,11 @@
       !! storage locations set to zero are not currently used
       ob(icmd)%hd(1)%temp = 5. + .75 * tave        !!wtmp
       ob(icmd)%hd(1)%flo = chflow_m3               !!qdr m3/d
-      ob(icmd)%hd(1)%sed = amax1 (0., ob(icmd)%hin%sed - sed_reduc_t)  !!sedyld
-      ob(icmd)%hd(1)%orgn = amax1 (0., (ht1%orgn - tp_reduc) * ob(icmd)%hin%flo / 1000.) 
-      ob(icmd)%hd(1)%sedp = amax1 (0., (ht1%sedp - tp_reduc) * ob(icmd)%hin%flo / 1000.)
-      ob(icmd)%hd(1)%no3 = amax1 (0., ob(icmd)%hin%no3 - no3_reduc_t) 
-      ob(icmd)%hd(1)%solp = amax1 (0., ob(icmd)%hin%solp - srp_reduc_t) 
+      ob(icmd)%hd(1)%sed = Max (0., ob(icmd)%hin%sed - sed_reduc_t)  !!sedyld
+      ob(icmd)%hd(1)%orgn = Max (0., (ht1%orgn - tp_reduc) * ob(icmd)%hin%flo / 1000.) 
+      ob(icmd)%hd(1)%sedp = Max (0., (ht1%sedp - tp_reduc) * ob(icmd)%hin%flo / 1000.)
+      ob(icmd)%hd(1)%no3 = Max (0., ob(icmd)%hin%no3 - no3_reduc_t) 
+      ob(icmd)%hd(1)%solp = Max (0., ob(icmd)%hin%solp - srp_reduc_t) 
       ob(icmd)%hd(1)%chla = 0.
       ob(icmd)%hd(1)%nh3 = 0.                         !! NH3
       ob(icmd)%hd(1)%no2 = 0.                         !! NO2

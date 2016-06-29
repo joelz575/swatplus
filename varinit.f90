@@ -100,7 +100,7 @@
       j = ihru
 
       !! initialize hru variables - modular code
-      do ly = 1, hru(j)%sol%nly
+      do ly = 1, soil(j)%nly
         soil(j)%ly(ly)%prk = 0.
         soil(j)%ly(ly)%flat = 0.
       end do

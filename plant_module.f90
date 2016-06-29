@@ -178,7 +178,7 @@
       end do
       sum_no3 = 0.
       sum_solp = 0.
-      do nly = 1, hru(j)%sol%nly
+      do nly = 1, soil(j)%nly
         sum_no3 = sum_no3 + soil(j)%nut(nly)%no3
         sum_solp = sum_solp + soil(j)%nut(nly)%solp
       end do

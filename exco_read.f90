@@ -24,7 +24,7 @@
           do while (eof >= 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
-            imax = amax1(imax,i)
+            imax = Max(imax,i)
             mexco_sp = mexco_sp + 1 
           end do
           

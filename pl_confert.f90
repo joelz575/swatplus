@@ -184,7 +184,7 @@
          write (143, 1000) j, time%yrc, i_mo, iida,                   &
             "         ",                                              &
           "CONT FERT", phubase(j), pcom(j)%plcur(ipl)%phuacc,         &
-            hru(j)%sol%sw, pcom(j)%plm(ipl)%mass,                     &
+            soil(j)%sw, pcom(j)%plm(ipl)%mass,                     &
             soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j), cfrt_kg(j)
         end if
      

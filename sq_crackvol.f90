@@ -41,12 +41,12 @@
       voltot = 0.
 
       !! calculate volume of cracks in soil
-      do l = 1, hru(j)%sol%nly
+      do l = 1, soil(j)%nly
         volcrnew = 0.
         crlag = 0.
         volcrnew = soil(j)%phys(l)%crdep * (soil(j)%phys(l)%fc -      &
                    soil(j)%phys(l)%st) / (soil(j)%phys(l)%fc)
-        if (hru(j)%sol%sw < .90 * hru(j)%sol%sumfc) then
+        if (soil(j)%sw < .90 * soil(j)%sumfc) then
           if (volcrnew > soil(j)%ly(l)%volcr) then
             crlag = crlagdry
           else

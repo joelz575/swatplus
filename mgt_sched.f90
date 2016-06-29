@@ -50,7 +50,7 @@
             icom = pcom(j)%pcomdb
             do ipl = 1, npl(j)
               idp = pcomdb(icom)%pl(ipl)%db_num
-              if (mgt%op_plant == pcomdb(icom)%pl(ipl)%cpnm) then
+              if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 pcom(j)%plcur(ipl)%gro = 1
                 pcom(j)%plcur(ipl)%idorm = 0
               end if
@@ -58,7 +58,7 @@
                 write (143, 1000) j, time%yrc,i_mo,iida,                 &
                 pldb(idp)%plantnm, pcomdb(icom)%name, phubase(j),        &
                 pcom(j)%plcur(ipl)%phuacc,                               &
-                hru(j)%sol%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd, &
+                soil(j)%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd, &
                 sol_sumno3(j),                                           &
                 sol_sumsolp(j),pcom(j)%plg(ipl)%lai,                     &
                 pcom(j)%plg(ipl)%laimx_pop
@@ -86,7 +86,7 @@
             
           case ("harv")  !! harvest only operation
             ihk = mgt%op1
-            ipl = amax1(1, mgt%op2)
+            ipl = Max(1, mgt%op2)
             harvop = harvop_db(mgt%op1)
             hi_ovr = harvop%hi_ovr
             harveff = harvop%eff
@@ -115,7 +115,7 @@
               write (143, 1001) j, time%yrc, i_mo, iida,                 &
               pldb(idp)%plantnm,                                         &
               "HARVEST ONLY",phubase(j),pcom(j)%plcur(ipl)%phuacc,       &
-              hru(j)%sol%sw, pcom(j)%plm(ipl)%mass,                      &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass,                      &
               soil(j)%ly(1)%rsd, yield, strsn_sum(j), strsp_sum(j),      &
               strstmp_sum(j), strsw_sum(j), strsa_sum(j)
             end if
@@ -133,7 +133,7 @@
                 write (143, 1000) j, time%yrc,i_mo, iida,                &
                 "         ",                                             &
            "    KILL", phubase(j), pcom(j)%plcur(ipl)%phuacc,            &
-                hru(j)%sol%sw, pcom(j)%plm(ipl)%mass,                    &
+                soil(j)%sw, pcom(j)%plm(ipl)%mass,                    &
                  soil(j)%ly(1)%rsd, sol_sumno3(j), sol_sumsolp(j)
               end if
             
@@ -174,7 +174,7 @@
               if (pco%mgtout == 1) then
                 write (143, 1001) j, time%yrc, i_mo,iida,                &
           pldb(idp)%plantnm, "HARV/KILL", phubase(j),                    & 
-          pcom(j)%plcur(ipl)%phuacc,hru(j)%sol%sw,biomass,               &
+          pcom(j)%plcur(ipl)%phuacc,soil(j)%sw,biomass,               &
           soil(j)%ly(1)%rsd, sol_sumno3(j),sol_sumsolp(j),yield,         &
           strsn_sum(j), strsp_sum(j), strstmp_sum(j), strsw_sum(j),      &
           strsa_sum(j)
@@ -187,14 +187,14 @@
             
           case ("till")   !! tillage operation
             idtill = mgt%op1
-            ipl = amax1(1, mgt%op2)
+            ipl = Max(1, mgt%op2)
             call mgt_newtillmix(j,0.)
             
             if (pco%mgtout == 1) then
               write (143, 1003) j, time%yrc, i_mo, iida,                 &
               tilldb(idtill)%tillnm,                                     &
               "TILLAGE",phubase(j),pcom(j)%plcur(ipl)%phuacc,            &
-              hru(j)%sol%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,   &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,   &
               sol_sumno3(j), sol_sumsolp(j), tilldb(idtill)%effmix
 1003  format (4i6,2a15,7f10.2,30x,f10.2)
             end if
@@ -209,7 +209,7 @@
               write (143, 1002) j, time%yrc, i_mo,                      & 
               iida, "        ", "IRRIGATE", phubase(j),                 &
               pcom(j)%plcur(ipl)%phuacc,                                &
-              hru(j)%sol%sw,pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,   &
+              soil(j)%sw,pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,   &
               sol_sumno3(j),                                            &
               sol_sumsolp(j),irramt(j), irr_sc(j), irr_no(j)
 1002        format (4i6,2a15,7f10.2,10x,f10.2,70x,2i7)
@@ -217,12 +217,12 @@
           
           case ("rel")    !! release/impound water in rice fields
             imp_trig(j) = mgt%op1
-            ipl = amax1(1, mgt%op2)
+            ipl = Max(1, mgt%op2)
           
             if (pco%mgtout ==  1) then
               write (143, 1000) j, time%yrc, i_mo,iida,                  & 
        "         ","RELEASE/IMPOUND", phubase(j),                        &
-       pcom(j)%plcur(ipl)%phuacc, hru(j)%sol%sw,pcom(j)%plm(ipl)%mass,   &
+       pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,   &
        soil(j)%ly(1)%rsd, sol_sumno3(j), sol_sumsolp(j)
             end if
           
@@ -233,14 +233,14 @@
             if (fertop%surface <= 1.e-6) fertop%surface = 0.2
             call pl_fert
             !call bac_apply_hrucon    THIS SHOULD BE CALLED FROM AN HRU CONTROL MODULE 
-            !hru(j)%ly(1)%bacsol(ibac) = sol_bacsol
-            !hru(j)%ly(1)%bacsor(ibac) = sol_bacsor
+            !soil(j)%ly(1)%bacsol(ibac) = sol_bacsol
+            !soil(j)%ly(1)%bacsor(ibac) = sol_bacsor
             
             if (pco%mgtout == 1) then
               write (143, 1004) j, time%yrc,i_mo,iida,                  & 
               fertop_db(mgt%op1)%fertnm,                                &
               "    FERT", phubase(j),pcom(j)%plcur(ipl)%phuacc,         &
-              hru(j)%sol%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,  &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,  &
               sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3,  &
               fertorgn, fertsolp, fertorgp
 1004  format (4i6,2a15,7f10.2,20x,f10.2,10x,5f10.2)
@@ -256,14 +256,14 @@
               write (143, 1004) j, time%yrc,i_mo,iida,                  & 
               pestdb(ipest)%pestnm, "   PEST", phubase(j),              &
               pcom(j)%plcur(ipl)%phuacc,                                &
-              hru(j)%sol%sw,pcom(j)%plm(ipl)%mass,                      &
+              soil(j)%sw,pcom(j)%plm(ipl)%mass,                      &
               soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j),pst_kg
             endif
 
           case ("graz")    !! grazing operation
             ndeat(j) = 0
             igrz(j) = 1
-            ipl = amax1(1, mgt%op2)
+            ipl = Max(1, mgt%op2)
             grazeop = grazeop_db(mgt%op1)
             manure_id(j) = mgt%op1
             grz_days(j) = grazeop%days
@@ -278,25 +278,25 @@
               write (143, 1005) j, time%yrc,i_mo,iida,                   &
               "         ",                                               &
            "   GRAZE", phubase(j), pcom(j)%plcur(ipl)%phuacc,            &
-           hru(j)%sol%sw, pcom(j)%plm(ipl)%mass,                         &
+           soil(j)%sw, pcom(j)%plm(ipl)%mass,                         &
            soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j),manure_kg(j)
 1005  format (4i6,2a15,7f10.2,20x,f10.2)
             end if
 
           case ("burn")   !! burning
             burn_frlb = mgt%op3
-            ipl = amax1(1, mgt%op2)
+            ipl = Max(1, mgt%op2)
             call pl_burnop
             if (pco%mgtout ==  1) then
               write (143, 1000) j, time%yrc, i_mo,iida,                 & 
               "         ",                                              &
            "      BURN", phubase(j),pcom(j)%plcur(ipl)%phuacc,          &
-              hru(j)%sol%sw, pcom(j)%plm(ipl)%mass,                     &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass,                     &
               soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j)
             end if
 
           case ("swep")   !! street sweeping (only if iurban=2)
-            ipl = amax1(1, mgt%op2)
+            ipl = Max(1, mgt%op2)
             sweepop = sweepop_db(mgt%op1)
             sweepeff = sweepop%eff
             fr_curb = sweepop%fr_curb
@@ -305,7 +305,7 @@
               write (143, 1000) j, time%yrc, i_mo,iida,                 & 
               "         ",                                              &
        "STREET SWEEP",phubase(j),pcom(j)%plcur(ipl)%phuacc,             &
-              hru(j)%sol%sw, pcom(j)%plm(ipl)%mass,                     &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass,                     &
               soil(j)%ly(1)%rsd, sol_sumno3(j), sol_sumsolp(j)        
             end if
                
@@ -315,7 +315,7 @@
               write (143, 1000) j, time%yrc, i_mo,iida,                 & 
               pldb(idp)%plantnm, pcomdb(icom)%name, phubase(j),         &
               pcom(j)%plcur(ipl)%phuacc,                                &
-              hru(j)%sol%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,  &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,  &
               sol_sumno3(j),                                            &
               sol_sumsolp(j), pcom(j)%plg(ipl)%lai,                     &
               pcom(j)%plg(ipl)%laimx_pop
@@ -324,7 +324,7 @@
           case ("dwm")    !! set drain depth for drainage water management
             hru(j)%sdr_dep = mgt%op3
             if (hru(j)%sdr_dep > 0) then
-              do jj = 1, hru(ihru)%sol%nly
+              do jj = 1, soil(ihru)%nly
                 if (hru(j)%sdr_dep < soil(ihru)%phys(jj)%d) ldrain(ihru) = jj
                 if (hru(j)%sdr_dep < soil(ihru)%phys(jj)%d) exit
               end do

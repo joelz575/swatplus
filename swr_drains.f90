@@ -131,7 +131,7 @@
 
       !!	calculate parameters hdrain and gee1
       ad = hru(j)%hyd%dep_imp - hru(j)%sdr_dep
-      ad = amax1 (10., ad)
+      ad = Max (10., ad)
 	  ap = 3.55 - ((1.6 * ad) / sdr(isdr)%dist) + 2 *                   &
                                            ((2 / sdr(isdr)%dist)**2)
 	  if (ad / sdr(isdr)%dist < 0.3) then

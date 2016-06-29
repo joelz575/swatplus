@@ -73,16 +73,17 @@
          Else
             !spillway overflow
             If (hpnd > mxh) Then
-               hweir = Amax1(0.,hpnd - mxh)  !water depth over weir crest, m
+  !             hweir = Max(0.,hpnd - mxh)  !water depth over weir crest, m
+                hweir = Max(0.,hpnd - mxh)  !water depth over weir crest, m
                !weir overflow, m^3
                qweir = 3.33 * splw * hweir ** 1.5 * time%dtm * 60.
-               hpnd = Amax1(0.,(qpndi - qweir) / tsa) !m
+               hpnd = Max(0.,(qpndi - qweir) / tsa) !m
                !overflow amount is no larger than surplus water above spillway height
                if (qweir>qpndi-mxvol) then
-                  qweir = Amax1(0.,qpndi - mxvol) !weir outflow
+                  qweir = Max(0.,qpndi - mxvol) !weir outflow
                   hpnd = mxh
                end if   
-               qpnd = Amax1(0.,qpndi - qweir) 
+               qpnd = Max(0.,qpndi - qweir) 
             Else
                qpnd = qpndi
             End If
@@ -106,7 +107,7 @@
 
             !Outflow through orifice pipe
             hpnd = qpnd / tsa  !m
-            phead = Amax1(0.,hpnd * 1000. - pdia / 2.)  !mm
+            phead = Max(0.,hpnd * 1000. - pdia / 2.)  !mm
 !            If (phead>pdia/2.) then
                qpipe = pipeflow(pdia,phead) * time%dtm * 60. !m^3 
 !            else
@@ -115,7 +116,7 @@
             
            !update out flow, m^3
             qout = qpipe 
-            qpnd = Amax1(0.,qpnd - qout)
+            qpnd = Max(0.,qpnd - qout)
            
             !outflow normalized to subbasin area, mm
             flw(1,ii) = qin / ((sub_ha - tsa / 10000.) *10.)

@@ -87,12 +87,12 @@
          swtrg(j) = 0
          dthet = 0.001 * soil(j)%phys(1)%por * 0.95
        else
-         if (hru(j)%sol%sw >= hru(j)%sol%sumfc) then
-           soilw = 0.999 * hru(j)%sol%sumfc
+         if (soil(j)%sw >= soil(j)%sumfc) then
+           soilw = 0.999 * soil(j)%sumfc
          else
-           soilw = hru(j)%sol%sw
+           soilw = soil(j)%sw
          end if
-         dthet = (1. - soilw / hru(j)%sol%sumfc) *                  & 
+         dthet = (1. - soilw / soil(j)%sumfc) *                  & 
                                       soil(j)%phys(1)%por * 0.95
          rateinf(1) = 2000.
        end if

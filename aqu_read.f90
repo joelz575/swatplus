@@ -25,7 +25,7 @@
             do while (eof >= 0)
               read (107,*,iostat=eof) i
               if (eof < 0) exit
-              imax = amax1(imax,i)
+              imax = Max(imax,i)
               msh_aqp = msh_aqp + 1
             end do 
                        
@@ -38,6 +38,7 @@
           do ish_aqp = 1, msh_aqp
             read (107,*,iostat=eof) i
             backspace (107)
+            !! read from the aquifer database file named aquifer.aqu
             read (107,*,iostat=eof) k, aqudb(i)
             if (eof < 0) exit
           end do

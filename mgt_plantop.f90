@@ -65,10 +65,10 @@
       endif
       
       !! compare maximum rooting depth in soil to maximum rooting depth of plant
-      nly = hru(j)%sol%nly
-      hru(ihru)%sol%zmx = soil(j)%phys(nly)%d
+      nly = soil(j)%nly
+      soil(ihru)%zmx = soil(j)%phys(nly)%d
       plt_zmx = 1000. * pldb(ipl)%rdmx
-      hru(ihru)%sol%zmx = Min(hru(ihru)%sol%zmx,plt_zmx)
+      soil(ihru)%zmx = Min(soil(ihru)%zmx,plt_zmx)
       
       !! reset curve number if given in .mgt file
       if (cnop > 0.) call curno(cnop,j)

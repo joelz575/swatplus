@@ -621,33 +621,33 @@
       end function hydout_div_conv
       
       !function to set dr to a constant
-      function dr_constant (dr1, const)
-        type (hyd_output) :: dr1
-        real, intent (in) :: const
-        dr1%flo = const
-        dr1%sed = const
-        dr1%orgn = const
-        dr1%sedp = const
-        dr1%no3 = const
-        dr1%solp = const
-        dr1%psol = const
-        dr1%psor = const
-        dr1%chla = const
-        dr1%nh3 = const
-        dr1%no2 = const
-        dr1%cbod = const
-        dr1%dox = const
-        dr1%bacp = const
-        dr1%baclp = const
-        dr1%met1 = const
-        dr1%met2 = const
-        dr1%met3 = const
-        dr1%san = const
-        dr1%sil = const
-        dr1%cla = const
-        dr1%sag = const
-        dr1%lag = const
-        dr1%grv = const
-      end function dr_constant
+!      function dr_constant (dr1, const)
+!        type (hyd_output) :: dr1
+!        real, intent (in) :: const
+!        dr1%flo = const
+!        dr1%sed = const
+!        dr1%orgn = const
+!        dr1%sedp = const
+!        dr1%no3 = const
+!        dr1%solp = const
+!        dr1%psol = const
+!        dr1%psor = const
+!        dr1%chla = const
+!        dr1%nh3 = const
+!        dr1%no2 = const
+!        dr1%cbod = const
+!        dr1%dox = const
+!        dr1%bacp = const
+!        dr1%baclp = const
+!        dr1%met1 = const
+!        dr1%met2 = const
+!        dr1%met3 = const
+!        dr1%san = const
+!        dr1%sil = const
+!        dr1%cla = const
+!        dr1%sag = const
+!        dr1%lag = const
+!        dr1%grv = const
+!      end function dr_constant
       
       end module hydrograph_module

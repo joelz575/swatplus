@@ -23,7 +23,7 @@
         do while (eof >= 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
-          imax = amax1(imax,i)
+          imax = Max(imax,i)
           mch_i = mch_i + 1
         end do
       
@@ -59,7 +59,7 @@
         do while (eof >= 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
-          imax = amax1(imax,i)
+          imax = Max(imax,i)
           mch_i = mch_i + 1
         end do
       
@@ -94,7 +94,7 @@
         do while (eof >= 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
-          imax = amax1(imax,i)
+          imax = Max(imax,i)
           mch_i = mch_i + 1
         end do
       

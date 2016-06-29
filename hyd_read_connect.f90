@@ -385,7 +385,7 @@
               dfn_sum(kk) = dfn_sum(kk) + 1
             end do
           
-            isrc_tot = amax1(ob(i)%src_tot, 1)  !force to go through once
+            isrc_tot = Max(ob(i)%src_tot, 1)  !force to go through once
             iprev = 0
             do ii = 1, isrc_tot
               !! add receiving object for single objects
@@ -429,7 +429,7 @@
                 !! compute object order of highest receiving object and add 1
                 do ircv = 1, ob(i)%rcvob_tot
                   ircv_ob = ob(i)%obj_in(ircv)
-                  iorder = amax1 (iorder, ob(ircv_ob)%cmd_order)
+                  iorder = Max (iorder, ob(ircv_ob)%cmd_order)
                 end do
                 !! subbasin has to be in parallel order after elements in the subbasin 
                 if (ob(i)%typ == "sub" .and. ob(i)%rcvob_tot == 0) then

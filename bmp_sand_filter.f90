@@ -109,7 +109,7 @@
                 if(qout(ii) > qpipe) qout(ii) = qpipe
              end if
   
-             qsw(ii) = Amax1(0.,qsw(ii - 1) - qout(ii)) ! m^3
+             qsw(ii) = Max(0.,qsw(ii - 1) - qout(ii)) ! m^3
              flw(2,ii) = qout(ii)  / (sub_ha *10000. - tsa) * 1000.  !mm
            endif
         
@@ -119,9 +119,9 @@
  
            !spillway overflow
            If (hpnd > ft_h(sb,kk)) Then
-              qloss = Amax1(0.,qpnd(ii) - mxvol) !weir outflow
+              qloss = Max(0.,qpnd(ii) - mxvol) !weir outflow
               hpnd = ft_h(sb,kk)
-              qpnd(ii) = Amax1(0.,qpnd(ii) - qloss) 
+              qpnd(ii) = Max(0.,qpnd(ii) - qloss) 
            End If
            qpndi = qpnd(ii) + qsw(ii-1)
             
@@ -234,8 +234,8 @@
                     qpnd(ii) = 0.
                   endif
                    
-                  qloss = Amax1(0.,qpnd(ii) - mxvol)
-                  qpnd(ii) = Amax1(0.,qpnd(ii) - qloss)
+                  qloss = Max(0.,qpnd(ii) - mxvol)
+                  qpnd(ii) = Max(0.,qpnd(ii) - qloss)
                endif
             end if
             qpnde = qpnd(ii) + qsw(ii)

@@ -57,11 +57,11 @@
         ((soil(j)%phys(1)%conv_wt/ 1000.) * bsn_prm%pperco + .1)   !dont merge
       vap = Min(vap, .5 * soil(j)%nut(1)%solp)
       soil(j)%nut(1)%solp = soil(j)%nut(1)%solp - vap
-      if (hru(j)%sol%nly >= 2) then
+      if (soil(j)%nly >= 2) then
         soil(j)%nut(2)%solp = soil(j)%nut(2)%solp + vap
       end if
    
-      do ii = 2, hru(j)%sol%nly-1
+      do ii = 2, soil(j)%nly-1
         vap = 0.
 	 if (ii/=i_sep(j)) then
        vap = soil(j)%nut(ii)%solp * soil(j)%ly(ii)%prk /                &

@@ -500,11 +500,8 @@
         type (plant_mass) :: rsd     !total flat residue of all plants
         type (plant_mass) :: std     !total standing dead biomass of all plants
         type (plant_mass) :: stl     !total standing live biomass of all plants
-        !! soil layers
-        type (soilayer), dimension(:), allocatable :: ly
         type (pesticide), dimension(:), allocatable :: pst
-        !! soil profile
-        type (soil_profile) :: sol
+
         !! other data
         type (topography) :: topo
         type (field) :: field

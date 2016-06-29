@@ -133,7 +133,7 @@
           sum = 0.
           do iyr = 1, time%nbyr
             sum = sum + ob(icmd)%fdc%p(iyr)%mean
-            ob(icmd)%fdc%p_md%max = amax1 (ob(icmd)%fdc%p_md%max, ob(icmd)%fdc%p(iyr)%max)
+            ob(icmd)%fdc%p_md%max = Max (ob(icmd)%fdc%p_md%max, ob(icmd)%fdc%p(iyr)%max)
             ob(icmd)%fdc%p_md%min = amin1 (ob(icmd)%fdc%p_md%min, ob(icmd)%fdc%p(iyr)%min)
           end do
           ob(icmd)%fdc%p_md%mean = sum / time%nbyr

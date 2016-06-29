@@ -69,7 +69,7 @@
          do while (eof >= 0)
             read (1,*,iostat=eof) i
             if (eof < 0) exit
-            imax = amax1(imax,i)
+            imax = Max(imax,i)
             msd_h = msd_h + 1
          end do
          
@@ -147,7 +147,7 @@
          end do
          ! change from growing season to time to maturity
          sd(i)%phu = .9 * phutot
-         sd(i)%phu = amax1(700., sd(i)%phu)
+         sd(i)%phu = Max(700., sd(i)%phu)
 
          ! compute musle factors
          ! calculate USLE slope length factor

@@ -49,7 +49,7 @@
       rto = 0.
       rto = bsn_prm%psp / (1.-bsn_prm%psp)
 
-      do l = 1, hru(j)%sol%nly
+      do l = 1, soil(j)%nly
         rmn1 = 0.
         rmn1 = (soil(j)%nut(l)%solp - soil(j)%nut(l)%actp * rto)
 !!  mike changed/added per isabelle beaudin's email from 01/21/09

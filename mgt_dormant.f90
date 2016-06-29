@@ -372,7 +372,7 @@
            if (pco%mgtout ==  1) then
             write (143, 1000) j, time%yrc, i_mo, iida,                   &
               pldb(idp)%plantnm, "START-DORM", phubase(j),               & 
-              pcom(j)%plcur(ipl)%phuacc, hru(j)%sol%sw,                  &
+              pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,                  &
               pcom(j)%plm(ipl)%mass,soil(j)%ly(1)%rsd,                   &
               sol_sumno3(j), sol_sumsolp(j)
            end if
@@ -399,7 +399,7 @@
           if (pco%mgtout ==  1) then
             write (143,1000) j, time%yrc, i_mo, iida,                   & 
               pldb(idp)%plantnm, "END-DORM", phubase(j),                &               
-              pcom(j)%plcur(ipl)%phuacc, hru(j)%sol%sw,                 &
+              pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,                 &
               pcom(j)%plm(ipl)%mass,soil(j)%ly(1)%rsd,                  &
               sol_sumno3(j), sol_sumsolp(j)
           end if

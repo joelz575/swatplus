@@ -64,6 +64,7 @@
       use mgtops_module
       use climate_module
       use basin_module
+      use sd_channel_module
       
       integer :: j, iix, iiz, ic, mon, ii
       integer :: isce = 1
@@ -159,44 +160,40 @@
           call climate_control      !! read in/generate weather
           
           !! check to determine if scenarios need to be set
-          if (db_mx%updates > 0) then
-          do while (time%day == upd_sched(isce)%day .and. time%yrc ==        & 
-                                                    upd_sched(isce)%year)
-            if (upd_sched(isce)%cond == 'null') then
-              if (upd_sched(isce)%typ == 'parameters') then
-                do ichg_par = 1, upd_sched(isce)%num
-                  do ispu = 1, upd_sched(isce)%upd_prm(ichg_par)%num_tot
-                    ielem = upd_sched(isce)%upd_prm(ichg_par)%num(ispu)
-                    chg_parm = upd_sched(isce)%upd_prm(ichg_par)%name
-                    chg_typ = upd_sched(isce)%upd_prm(ichg_par)%chg_typ
-                    chg_val = upd_sched(isce)%upd_prm(ichg_par)%val
-                    absmin = cal_parms(upd_sched(isce)%upd_prm(ichg_par)%num_db)%absmin
-                    absmax = cal_parms(upd_sched(isce)%upd_prm(ichg_par)%num_db)%absmax
-                    num_db = upd_sched(isce)%upd_prm(ichg_par)%num_db
-                    call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
-                  end do
+          if (db_mx%sched_up > 0) then
+          do while (time%day == upd_sched(isce)%day .and. time%yrc == upd_sched(isce)%year)
+            if (upd_sched(isce)%typ == 'structure') then
+                do ispu = 1, upd_sched(isce)%num_tot
+                  ielem = upd_sched(isce)%num(ispu)
+                  call structure_set_parms (upd_sched(isce)%name, upd_sched(isce)%str_lu, ielem)
                 end do
-              else if (upd_sched(isce)%typ == 'structure') then
-                do ichg_par = 1, upd_sched(isce)%num
-                  do ispu = 1, upd_sched(isce)%upd_prm(ichg_par)%num_tot
-                    ielem = upd_sched(isce)%upd_prm(ichg_par)%num(ispu)
-                    call structure_set_parms (upd_sched(isce)%name, upd_sched(isce)%upd_prm(ichg_par)%num_db, ielem)
-                  end do
-                end do
-              else if (upd_sched(isce)%typ == 'land_use_mgt') then
-                !! change management or entire land use
-              end if
+            else if (upd_sched(isce)%typ == 'land_use') then
+              !! change management or entire land use
             end if
-            isce = isce + 1
+          isce = isce + 1
+          if (isce > db_mx%sched_up) isce = 1
           end do
           end if
 
           !! conditional reset of land use and management
           if (time%day == 1) then  !only on first day of year
-            do iupd = 1, db_mx%updates
-              if (upd_sched(iupd)%typ == 'land_use' .and. upd_sched(iupd)%cond /= 'null') then
-                do j = 1, mhru
-                  id = upd_sched(iupd)%cond_num
+            do iupd = 1, db_mx%cond_up
+              if (upd_cond(iupd)%typ == 'land_use') then
+                do j = 1, sp_ob%hru
+                  id = upd_cond(iupd)%cond_num
+                  call conditions (id, j)
+                  call actions (id, j)
+                end do
+              end if
+            end do
+          end if
+          
+          !! conditional reset of channel management
+          if (time%day == 1) then  !only on first day of year
+            do iupd = 1, db_mx%cond_up
+              if (upd_cond(iupd)%typ == 'chan_use') then
+                do j = 1, sp_ob%chandeg
+                  id = upd_cond(iupd)%cond_num
                   call conditions (id, j)
                   call actions (id, j)
                 end do
@@ -238,30 +235,28 @@
 
         !! perform end-of-year processes
         
-        !! sum output for soft data calibration
+        !! sum landscape output for soft data calibration
         if (cal_codes%ls == 'y') then
           do ireg = 1, db_mx%lscal_reg
             do ilu = 1, lscal(ireg)%lum_num
-            if (lscal(ireg)%msubs <= 0) then
               lscal(ireg)%lum(ilu)%ha = 0.
               lscal(ireg)%lum(ilu)%precip = 0.
               lscal(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
-              do ihru = 1, mhru
-                if (hru(ihru)%land_use_mgt == lscal(ireg)%lum(ilu)%lum_no) then
+              do ihru_s = 1, lscal(ireg)%num_tot
+                ihru = lscal(ireg)%num(ihru_s)
+                if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%land_use_mgt) then
                   ha_hru = 100. * hru(ihru)%km      ! 10 * ha * mm --> m3
                   lscal(ireg)%lum(ilu)%ha = lscal(ireg)%lum(ilu)%ha + ha_hru
                   lscal(ireg)%lum(ilu)%precip = lscal(ireg)%lum(ilu)%precip + (10. * ha_hru * hwb_y(ihru)%precip)
                   lscal(ireg)%lum(ilu)%sim%srr = lscal(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * hwb_y(ihru)%surq_gen)
+                  lscal(ireg)%lum(ilu)%sim%lfr = lscal(ireg)%lum(ilu)%sim%lfr + (10. * ha_hru * hwb_y(ihru)%latq)
+                  lscal(ireg)%lum(ilu)%sim%pcr = lscal(ireg)%lum(ilu)%sim%pcr + (10. * ha_hru * hwb_y(ihru)%perc)
                   lscal(ireg)%lum(ilu)%sim%etr = lscal(ireg)%lum(ilu)%sim%etr + (10. * ha_hru * hwb_y(ihru)%et)
                   lscal(ireg)%lum(ilu)%sim%tfr = lscal(ireg)%lum(ilu)%sim%tfr + (10. * ha_hru * hwb_y(ihru)%qtile)
                   lscal(ireg)%lum(ilu)%sim%sed = lscal(ireg)%lum(ilu)%sim%sed + (ha_hru * hls_y(ihru)%sedyld)
                   !add nutrients
                 end if
               end do
-            else
-              do isub = 1, lscal(ireg)%msubs
-              end do
-            end if
             end do  !lum_num
             
             do ilu = 1, lscal(ireg)%lum_num
@@ -270,12 +265,39 @@
                 !! convert back to mm, t/ha, kg/ha
                 lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa + lscal(ireg)%lum(ilu)%precip / (10. * lscal(ireg)%lum(ilu)%ha)
                 lscal(ireg)%lum(ilu)%aa%srr = lscal(ireg)%lum(ilu)%aa%srr + lscal(ireg)%lum(ilu)%sim%srr / (10. * lscal(ireg)%lum(ilu)%ha)
+                lscal(ireg)%lum(ilu)%aa%lfr = lscal(ireg)%lum(ilu)%aa%lfr + lscal(ireg)%lum(ilu)%sim%lfr / (10. * lscal(ireg)%lum(ilu)%ha)
+                lscal(ireg)%lum(ilu)%aa%pcr = lscal(ireg)%lum(ilu)%aa%pcr + lscal(ireg)%lum(ilu)%sim%pcr / (10. * lscal(ireg)%lum(ilu)%ha)
                 lscal(ireg)%lum(ilu)%aa%etr = lscal(ireg)%lum(ilu)%aa%etr + lscal(ireg)%lum(ilu)%sim%etr / (10. * lscal(ireg)%lum(ilu)%ha)
                 lscal(ireg)%lum(ilu)%aa%tfr = lscal(ireg)%lum(ilu)%aa%tfr + lscal(ireg)%lum(ilu)%sim%tfr / (10. * lscal(ireg)%lum(ilu)%ha)
                 lscal(ireg)%lum(ilu)%aa%sed = lscal(ireg)%lum(ilu)%aa%sed + lscal(ireg)%lum(ilu)%sim%sed / lscal(ireg)%lum(ilu)%ha
                 ! add nutrients
               end if
             end do
+          end do    !reg
+        end if
+
+        !! sum channel output for soft data calibration
+        if (cal_codes%chsed == 'y') then
+          do ireg = 1, db_mx%chcal_reg
+            do iord = 1, chcal(ireg)%ord_num
+              chcal(ireg)%ord(iord)%sim = chcal_z  !! zero all calibration parameters
+              do ich_s = 1, chcal(ireg)%num_tot
+                ich = chcal(ireg)%num(ich_s)
+                chcal(ireg)%ord(iord)%nbyr = chcal(ireg)%ord(iord)%nbyr + 1
+                chcal(ireg)%ord(iord)%aa%chw = chcal(ireg)%ord(iord)%aa%chw + chsd_a(ich)%deg_bank
+                chcal(ireg)%ord(iord)%aa%chd = chcal(ireg)%ord(iord)%aa%chd + chsd_a(ich)%deg_btm
+                chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd !+ chsd_a()%dep_fp
+              end do
+            end do
+            !average the channel data
+              do iord = 1, chcal(ireg)%ord_num
+                if (lscal(ireg)%lum(iord)%nbyr > 0) then
+                  !! convert back to mm, t/ha, kg/ha
+                  chcal(ireg)%ord(iord)%aa%chd = chcal(ireg)%ord(iord)%aa%chd / chcal(ireg)%ord(iord)%nbyr
+                  chcal(ireg)%ord(iord)%aa%chw = chcal(ireg)%ord(iord)%aa%chw / chcal(ireg)%ord(iord)%nbyr
+                  chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd / chcal(ireg)%ord(iord)%nbyr
+                end if
+              end do
           end do    !reg
         end if
 
@@ -344,10 +366,26 @@
                 !! convert back to mm, t/ha, kg/ha
                 lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%srr = lscal(ireg)%lum(ilu)%aa%srr / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%aa%lfr = lscal(ireg)%lum(ilu)%aa%lfr / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%aa%pcr = lscal(ireg)%lum(ilu)%aa%pcr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%etr = lscal(ireg)%lum(ilu)%aa%etr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%tfr = lscal(ireg)%lum(ilu)%aa%tfr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%sed = lscal(ireg)%lum(ilu)%aa%sed / lscal(ireg)%lum(ilu)%nbyr
                 ! add nutrients
+              end if
+            end do
+          end do
+        end if
+        
+        !! average channel output for soft data calibration
+        if (cal_codes%chsed == 'y') then
+          do ireg = 1, db_mx%chcal_reg
+            do ich = 1, chcal(ireg)%ord_num
+              if (chcal(ireg)%ord(ich)%nbyr > 0) then
+                !! convert back to mm, t/ha, kg/ha
+                chcal(ireg)%ord(ich)%aa%chd = chcal(ireg)%ord(ich)%aa%chd / chcal(ireg)%ord(ich)%nbyr
+                chcal(ireg)%ord(ich)%aa%chw = chcal(ireg)%ord(ich)%aa%chw / chcal(ireg)%ord(ich)%nbyr
+                chcal(ireg)%ord(ich)%aa%fpd = chcal(ireg)%ord(ich)%aa%fpd / chcal(ireg)%ord(ich)%nbyr
               end if
             end do
           end do

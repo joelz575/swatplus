@@ -24,7 +24,7 @@
            do while (eof <= 0) 
              read (171,*,iostat=eof) i
              if (eof < 0) exit
-             imax = amax1(imax,i)
+             imax = Max(imax,i)
              msep = msep + 1
            end do
            

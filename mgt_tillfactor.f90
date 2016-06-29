@@ -19,13 +19,13 @@
       real, intent (in) :: bmix
       integer :: l, m1, m2
       real :: emix, dtil
-	real :: sol_thick(hru(jj)%sol%nly)
+	real :: sol_thick(soil(jj)%nly)
 	
 	emix = emix - bmix ! this is to avoid affecting tillage factor with biological mixing
 	
 	if (emix > 0.) then
 
-	  do l = 1, hru(j)%sol%nly
+	  do l = 1, soil(j)%nly
 			
 	    if (soil(jj)%phys(l)%d <= dtil) then
 		  emix = emix

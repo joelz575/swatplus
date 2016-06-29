@@ -125,16 +125,16 @@
           end if
           decr = Max(bsn_prm%decr_min, decr)
           decr = Min(decr, 1.)
-          hru(j)%rsd_flt(ipl)%mass = amax1(1.e-6, hru(j)%rsd_flt(ipl)%mass)
+          hru(j)%rsd_flt(ipl)%mass = Max(1.e-6, hru(j)%rsd_flt(ipl)%mass)
           rdc = decr * hru(j)%rsd_flt(ipl)%mass
           hru(j)%rsd_flt(ipl)%mass = hru(j)%rsd_flt(ipl)%mass - rdc
           if (hru(j)%rsd_flt(ipl)%mass < 0.) hru(j)%rsd_flt(ipl)%mass = 0.
           rmn1 = decr * hru(j)%rsd_flt(ipl)%nmass 
-          hru(j)%rsd_flt(ipl)%pmass = amax1(1.e-6,hru(j)%rsd_flt(ipl)%pmass)
+          hru(j)%rsd_flt(ipl)%pmass = Max(1.e-6,hru(j)%rsd_flt(ipl)%pmass)
           rmp = decr * hru(j)%rsd_flt(ipl)%pmass
 
           hru(j)%rsd_flt(ipl)%pmass = hru(j)%rsd_flt(ipl)%pmass - rmp
-          hru(j)%rsd_flt(ipl)%nmass  = amax1(1.e-6,hru(j)%rsd_flt(ipl)%nmass)
+          hru(j)%rsd_flt(ipl)%nmass  = Max(1.e-6,hru(j)%rsd_flt(ipl)%nmass)
           hru(j)%rsd_flt(ipl)%nmass  = hru(j)%rsd_flt(ipl)%nmass  - rmn1
           soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 + .8 * rmn1
           soil(j)%nut(1)%aorgn = soil(j)%nut(1)%aorgn + .2 * rmn1
@@ -145,7 +145,7 @@
           
       !! compute residue decomp and mineralization of fresh organic n and p
       !! root and incorporated residue 
-      do k = 1, hru(j)%sol%nly
+      do k = 1, soil(j)%nly
 
         if (k == 1) then
           kk = 2
@@ -196,7 +196,7 @@
           end if
           hmp = Min(hmp, soil(j)%nut(k)%orgp)
           !! move mineralized nutrients between pools
-          soil(j)%nut(k)%aorgn = amax1(1.e-6, soil(j)%nut(k)%aorgn - hmn)
+          soil(j)%nut(k)%aorgn = Max(1.e-6, soil(j)%nut(k)%aorgn - hmn)
           soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 + hmn
           soil(j)%nut(k)%orgp = soil(j)%nut(k)%orgp - hmp
           soil(j)%nut(k)%solp = soil(j)%nut(k)%solp + hmp
@@ -239,16 +239,16 @@
             end if
             decr = Max(bsn_prm%decr_min, decr)
             decr = Min(decr, 1.)
-            soil(j)%ly(k)%rsd = amax1(1.e-6, soil(j)%ly(k)%rsd)
+            soil(j)%ly(k)%rsd = Max(1.e-6, soil(j)%ly(k)%rsd)
             rdc = decr * soil(j)%ly(k)%rsd
             soil(j)%ly(k)%rsd = soil(j)%ly(k)%rsd - rdc
             if (soil(j)%ly(k)%rsd < 0.) soil(j)%ly(k)%rsd = 0.
             rmn1 = decr * soil(j)%nut(k)%fon 
-            soil(j)%nut(k)%fop = amax1(1.e-6,soil(j)%nut(k)%fop)
+            soil(j)%nut(k)%fop = Max(1.e-6,soil(j)%nut(k)%fop)
             rmp = decr * soil(j)%nut(k)%fop
 
             soil(j)%nut(k)%fop = soil(j)%nut(k)%fop - rmp
-            soil(j)%nut(k)%fon  = amax1(1.e-6,soil(j)%nut(k)%fon)
+            soil(j)%nut(k)%fon  = Max(1.e-6,soil(j)%nut(k)%fon)
             soil(j)%nut(k)%fon  = soil(j)%nut(k)%fon  - rmn1
             soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 + .8 * rmn1
             soil(j)%nut(k)%aorgn = soil(j)%nut(k)%aorgn + .2 * rmn1

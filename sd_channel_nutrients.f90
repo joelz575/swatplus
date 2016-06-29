@@ -14,7 +14,7 @@
           area_m2 = 1000. * sd_ch(ich)%chl * field_db(ifld)%wid
           turbid = ht1%sed / rte_nut(inut)%turb_tss_slp
           turbid_reduc = - (rte_nut(inut)%turb_slp * turbid + rte_nut(inut)%turb_int) * area_m2   !reduction is positive
-          turbid_reduc = amax1 (0., turbid_reduc)
+          turbid_reduc = Max (0., turbid_reduc)
           sed_reduc = rte_nut(inut)%tss_slp * turbid_reduc + rte_nut(inut)%tss_int
           tp_reduc = rte_nut(inut)%tp_slp * turbid_reduc + rte_nut(inut)%tp_int
           srp_reduc = rte_nut(inut)%srp_slp * tp_reduc + rte_nut(inut)%srp_int

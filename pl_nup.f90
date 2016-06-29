@@ -72,7 +72,7 @@
       ir = 0
       if (uno3d(ipl) < 1.e-6) return
 
-      do l = 1, hru(j)%sol%nly
+      do l = 1, soil(j)%nly
         if (ir > 0) exit
 
         gx = 0.
@@ -112,7 +112,7 @@
           else
             xx = 1.
           end if
-          pcom(j)%plstr(ipl)%strsn = amax1(pcom(j)%plstr(ipl)%strsn, xx)
+          pcom(j)%plstr(ipl)%strsn = Max(pcom(j)%plstr(ipl)%strsn, xx)
           pcom(j)%plstr(ipl)%strsn = amin1(pcom(j)%plstr(ipl)%strsn, 1.)
       end select
 

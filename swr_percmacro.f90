@@ -45,10 +45,10 @@
       sepcrk = Min(voltot, inflpcp)
       sepcrktot = sepcrk
       if (sepcrk > 1.e-4) then
-        do ly = hru(j)%sol%nly, 1, -1
+        do ly = soil(j)%nly, 1, -1
           crk = 0.
           xx = 0.
-          if (ly == hru(j)%sol%nly) then
+          if (ly == soil(j)%nly) then
           crk = crklch*(soil(j)%ly(ly)%volcr/(soil(j)%phys(ly)%d -          &
                 soil(j)%phys(ly-1)%d) * voltot - volcrmin)
             if (crk < sepcrk) then
@@ -75,8 +75,8 @@
         !! crack flow, it is assumed to percolate out of bottom of profile
         if (sepcrk > 1.e-4) then
           sepbtm(j) = sepbtm(j) + sepcrk
-          soil(j)%ly(hru(j)%sol%nly)%prk =                              &                             
-                     soil(j)%ly(hru(j)%sol%nly)%prk + sepcrk
+          soil(j)%ly(soil(j)%nly)%prk =                              &                             
+                     soil(j)%ly(soil(j)%nly)%prk + sepcrk
         end if
       end if
 

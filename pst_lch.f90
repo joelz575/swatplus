@@ -63,7 +63,7 @@
 
       if (hrupest(j) /= 0) then
 
-        do ly = 1, hru(j)%sol%nly
+        do ly = 1, soil(j)%nly
           if (ly == 1) then
             yy = 0.
           else
@@ -87,7 +87,7 @@
 
               zdb1 = 0.0
 !!              zdb1 = soil(j)%phys(ly)%ul + sol_kp(k,j,ly) * soil(j)%phys(1)%bd*dg
-              zdb1 = soil(j)%phys(ly)%ul + hru(j)%ly(ly)%kp(k) *          &
+              zdb1 = soil(j)%phys(ly)%ul + soil(j)%ly(ly)%kp(k) *          &
                                                    soil(j)%phys(1)%bd*dg
               !! units: mm + (m^3/ton)*(ton/m^3)*mm = mm
               if (ly == 1) hru(j)%pst(k)%zdb = zdb1
@@ -95,9 +95,9 @@
               vf = 0.
               vf = qsurf + soil(j)%ly(ly)%prk + soil(j)%ly(ly)%flat
 
-              if (hru(j)%ly(ly)%pst(k) >= 0.0001 .and. vf > 0.) then
+              if (soil(j)%ly(ly)%pst(k) >= 0.0001 .and. vf > 0.) then
                 xx = 0.
-                xx =  hru(j)%ly(ly)%pst(k) * (1. - Exp(-vf /             &          
+                xx =  soil(j)%ly(ly)%pst(k) * (1. - Exp(-vf /             &          
                                                       (zdb1 + 1.e-6)))
                
                 cocalc = 0.
@@ -124,12 +124,12 @@
                 !! calculate pesticide leaching
                 xx = 0.
                 xx = co * soil(j)%ly(ly)%prk
-                if (xx > hru(j)%ly(ly)%pst(k)) xx = hru(j)%ly(ly)%pst(k)
+                if (xx > soil(j)%ly(ly)%pst(k)) xx = soil(j)%ly(ly)%pst(k)
                  
-                hru(j)%ly(ly)%pst(k) = hru(j)%ly(ly)%pst(k) - xx
+                soil(j)%ly(ly)%pst(k) = soil(j)%ly(ly)%pst(k) - xx
 
-                if (ly < hru(j)%sol%nly) then
-                  hru(j)%ly(ly+1)%pst(k) = hru(j)%ly(ly+1)%pst(k) + xx
+                if (ly < soil(j)%nly) then
+                  soil(j)%ly(ly+1)%pst(k) = soil(j)%ly(ly+1)%pst(k) + xx
                   
                 else
  !                 pstsol(k) = xx
@@ -139,10 +139,10 @@
                 if (ly == 1) then
                   yy = 0.
                   yy = csurf * surfq(j)
-                  if (yy >  hru(j)%ly(ly)%pst(k)) yy =                  &                 
-                                                 hru(j)%ly(ly)%pst(k)
+                  if (yy >  soil(j)%ly(ly)%pst(k)) yy =                  &                 
+                                                 soil(j)%ly(ly)%pst(k)
                  
-                   hru(j)%ly(ly)%pst(k) =  hru(j)%ly(ly)%pst(k) - yy
+                   soil(j)%ly(ly)%pst(k) =  soil(j)%ly(ly)%pst(k) - yy
                   hru(j)%pst(k)%surq = yy 
                 endif
 
@@ -150,9 +150,9 @@
                 !! calculate pesticide lost in lateral flow
                 yy = 0.
                 yy = csurf * soil(j)%ly(ly)%flat
-                if (yy > hru(j)%ly(ly)%pst(k)) yy = hru(j)%ly(ly)%pst(k)
+                if (yy > soil(j)%ly(ly)%pst(k)) yy = soil(j)%ly(ly)%pst(k)
                  
-                hru(j)%ly(ly)%pst(k) = hru(j)%ly(ly)%pst(k) - yy
+                soil(j)%ly(ly)%pst(k) = soil(j)%ly(ly)%pst(k) - yy
                 hru(j)%pst(k)%latq = hru(j)%pst(k)%latq + yy 
 
               end if

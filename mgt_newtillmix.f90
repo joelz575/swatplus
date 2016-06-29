@@ -86,9 +86,9 @@
       !!changed the dimension from 22 + npmx to 22 + npmx + 12
       !!by zhang
       !!=============
-      real :: sol_mass(hru(jj)%sol%nly)
-      real :: sol_thick(hru(jj)%sol%nly), sol_msm(hru(jj)%sol%nly)
-      real :: sol_msn(hru(jj)%sol%nly)
+      real :: sol_mass(soil(jj)%nly)
+      real :: sol_thick(soil(jj)%nly), sol_msm(soil(jj)%nly)
+      real :: sol_msn(soil(jj)%nly)
 
 
       XX = 0.
@@ -101,7 +101,7 @@
       if (bmix > 1.e-6) then
         !! biological mixing
         emix = bmix !bmix MJW (rev 412)
-        kk = hru(jj)%sol%nly
+        kk = soil(jj)%nly
         dtil = Min(soil(jj)%phys(kk)%d, 50.) ! it was 300.  MJW (rev 412)
       else 
         !! tillage operation
@@ -139,13 +139,13 @@
 	!! calculate max mixing to preserve target surface residue MJW rev 490
 	!! Assume residue in all other layers is negligible to simplify calculation and remove depth dependency
       if (min_res(jj) > 1. .and. bmix < 0.001) then
-	  maxmix = 1 - min_res(jj)/hru(jj)%ly(1)%rsd
+	  maxmix = 1 - min_res(jj)/soil(jj)%ly(1)%rsd
 	  if (maxmix <0.05)  maxmix = 0.05	
 	  if (emix > maxmix)  emix = maxmix
       end if
 
 
-      do l = 1, hru(jj)%sol%nly
+      do l = 1, soil(jj)%nly
         if ( l == 1) then
           sol_thick(l) = soil(jj)%phys(l)%d
         else	
@@ -165,7 +165,7 @@
       if (dtil > 0.) then
 !!!  added by Armen 09/10/2010 next line only
         if (dtil < 10.0) dtil = 11.0
-	 do l = 1, hru(jj)%sol%nly
+	 do l = 1, soil(jj)%nly
 
           if (soil(jj)%phys(l)%d <= dtil) then
             !! msm = mass of soil mixed for the layer
@@ -212,7 +212,7 @@
           smix(19)=(XX*smix(19)+soil(jj)%phys(l)%sand*sol_msm(l))/WW2
 		!! mass based distribution - check later
           !do k = 1, npmx
-          !  smix(20+k) = smix(20+k) + hru(jj)%ly(1)%pst(k) * WW1
+          !  smix(20+k) = smix(20+k) + soil(jj)%ly(1)%pst(k) * WW1
           !end do
 
             !!by zhang
@@ -239,7 +239,7 @@
 
         end do
 
-          do l = 1, hru(jj)%sol%nly
+          do l = 1, soil(jj)%nly
 			
             ! reconstitute each soil layer 
             WW3 = sol_msn(l) / sol_mass(l)
@@ -274,7 +274,7 @@
                  * sol_msn(l) + smix(19) * sol_msm(l)) / sol_mass(l)
 !pesticide clean up - npmx is number of pest in db - should be in simulation
 !            do k = 1, npmx
-!              hru(jj)%ly(l)%pst(k) = hru(jj)%ly(l)%pst(k) * WW3         
+!              soil(jj)%ly(l)%pst(k) = soil(jj)%ly(l)%pst(k) * WW3         
 !     &                                           + smix(20+k) * WW4
 !            end do
 

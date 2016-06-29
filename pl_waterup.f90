@@ -69,11 +69,11 @@
 
       select case (pldb(idp)%idc)
         case (1, 2, 4, 5)
-          sol_rd = 2.5 * pcom(j)%plcur(ipl)%phuacc * hru(j)%sol%zmx
-          if (sol_rd > hru(j)%sol%zmx) sol_rd = hru(j)%sol%zmx
+          sol_rd = 2.5 * pcom(j)%plcur(ipl)%phuacc * soil(j)%zmx
+          if (sol_rd > soil(j)%zmx) sol_rd = soil(j)%zmx
           if (sol_rd < 10.) sol_rd = 10.
         case default
-          sol_rd = hru(j)%sol%zmx
+          sol_rd = soil(j)%zmx
       end select
 
 	  stsol_rd(j) = sol_rd ! cole armen 26 Feb
@@ -89,9 +89,9 @@
         xx = 0.
  
 !!  compute aeration stress
-        if (hru(j)%sol%sw > hru(j)%sol%sumfc) then
-          satco=(hru(j)%sol%sw-hru(j)%sol%sumfc) / (hru(j)%sol%sumul -   &
-                                                  hru(j)%sol%sumfc)
+        if (soil(j)%sw > soil(j)%sumfc) then
+          satco=(soil(j)%sw-soil(j)%sumfc) / (soil(j)%sumul -   &
+                                                  soil(j)%sumfc)
           pl_aerfac = .85
           scparm = 100. * (satco - pl_aerfac) / (1.0001 - pl_aerfac)
           if (scparm > 0.) then
@@ -102,7 +102,7 @@
           end if
         end if
 
-        do k = 1, hru(j)%sol%nly
+        do k = 1, soil(j)%nly
           if (ir > 0) exit
 
           if (sol_rd <= soil(j)%phys(k)%d) then
@@ -161,9 +161,9 @@
           end do
 
         !! update total soil water in profile
-        hru(j)%sol%sw = 0.
-        do k = 1, hru(j)%sol%nly
-          hru(j)%sol%sw = hru(j)%sol%sw + soil(j)%phys(k)%st
+        soil(j)%sw = 0.
+        do k = 1, soil(j)%nly
+          soil(j)%sw = soil(j)%sw + soil(j)%phys(k)%st
         end do
 
         pcom(j)%plstr(ipl)%strsw = xx / epmax(ipl)

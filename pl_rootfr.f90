@@ -3,7 +3,7 @@
 	!! code developed by Armen R. Kemanian in 2008 
 	!! March, 2009 further adjustments expected
 
-	real :: sol_thick(hru(ihru)%sol%nly)
+	real :: sol_thick(soil(ihru)%nly)
 	real :: cum_rd, cum_d, cum_rf, x1, x2
 	integer :: k, l, jj
 	
@@ -29,7 +29,7 @@
          sol_thick(:) = 0.
          rtfr = 0.
 
-	do l = 1, hru(jj)%sol%nly
+	do l = 1, soil(jj)%nly
 	  if (l == 1) then
 	    sol_thick(l) = soil(jj)%phys(l)%d
 	  else	
@@ -58,7 +58,7 @@
 	end do
 
 	!!	 ensures that cumulative fractional root distribution = 1
-	do l = 1, hru(jj)%sol%nly
+	do l = 1, soil(jj)%nly
 		soil(jj)%ly(l)%rtfr = soil(jj)%ly(l)%rtfr / cum_rf
 		If (l == k) Exit ! exits loop on the same layer as the previous loop
     end do

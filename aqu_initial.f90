@@ -19,7 +19,8 @@
         aqu_prm(iaqdb)%alpha_e = Exp(-aqudb(iaqdb)%alpha)
         if(aqudb(iaqdb)%delay < .1) aqudb(iaqdb)%delay = .1
         aqu_prm(iaqdb)%delay_e = Exp(-1./(aqudb(iaqdb)%delay + 1.e-6))
-            
+        
+        !! 
         aqu_prm(iaqdb)%nloss = Exp(-.693 / (aqudb(iaqdb)%hlife_n + .1))
         aqu(iaq)%flo = aqudb(iaqdb)%flo           ! * ob(iob)%area_ha * 10.  !convert mm to m^3
         aqu(iaq)%stor = aqudb(iaqdb)%stor

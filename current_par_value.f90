@@ -719,20 +719,20 @@
         case ("snow_lte")
             sd_db(ielem)%snow = chg_par (sd_db(ielem)%snow, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
-        case ("itext_lte")
-            sd_db(ielem)%itext = chg_par (sd_db(ielem)%itext, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!        case ("itext_lte")
+!            sd_db(ielem)%itext = chg_par (sd_db(ielem)%itext, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
-        case ("tropical_lte")
-            sd_db(ielem)%tropical = chg_par (sd_db(ielem)%tropical, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!        case ("tropical_lte")
+!            sd_db(ielem)%tropical = chg_par (sd_db(ielem)%tropical, ielem, chg_typ, chg_val, absmin, absmax, num_db)
 
-        case ("igrow1_lte")
-            sd_db(ielem)%igrow1 = chg_par (sd_db(ielem)%igrow1, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!        case ("igrow1_lte")
+!            sd_db(ielem)%igrow1 = chg_par (sd_db(ielem)%igrow1, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
-        case ("igrow2_lte")
-            sd_db(ielem)%igrow2 = chg_par (sd_db(ielem)%igrow2, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!        case ("igrow2_lte")
+!            sd_db(ielem)%igrow2 = chg_par (sd_db(ielem)%igrow2, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
-        case ("ipet_lte")
-            sd_db(ielem)%ipet = chg_par (sd_db(ielem)%ipet, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!        case ("ipet_lte")
+!            sd_db(ielem)%ipet = chg_par (sd_db(ielem)%ipet, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
         case ("uslek_lte")
             sd_db(ielem)%uslek = chg_par (sd_db(ielem)%uslek, ielem, chg_typ, chg_val, absmin, absmax, num_db)

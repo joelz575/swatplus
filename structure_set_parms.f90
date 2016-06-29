@@ -44,7 +44,7 @@
         sin_sl = Sin(Atan(hru(j)%topo%slope))
         usle_ls(j) = (terr_sl / 22.128) ** xm * (65.41 * sin_sl *    &
                                      sin_sl + 4.56 * sin_sl + .065)
-        usle_mult(j) = soil(j)%phys(1)%rock*hru(j)%sol%usle_k  &
+        usle_mult(j) = soil(j)%phys(1)%rock * soil(j)%usle_k         &
                                        * terr_p * usle_ls(j) * 11.8
         if (terr_cn > 1.e-6) then
            call curno(terr_cn,j)
@@ -55,7 +55,7 @@
         hru(j)%sdr_dep = sdr(istr)%depth
         !! define soil layer that the drainage tile is in
         if (sdr(istr)%depth > 0) then
-          do jj = 1, hru(j)%sol%nly
+          do jj = 1, soil(j)%nly
             if (hru(j)%sdr_dep < soil(j)%phys(jj)%d) ldrain(j) = jj
             if (hru(j)%sdr_dep < soil(j)%phys(jj)%d) exit
           end do

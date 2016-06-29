@@ -96,19 +96,19 @@
       end if
       
       !! set initial soil water and temperature for each layer
-      nly = hru(j)%sol%nly
-      hru(j)%sol%sw = 0.
+      nly = soil(j)%nly
+      soil(j)%sw = 0.
       do k = 1, nly
         soil(j)%phys(k)%tmp = tsoil
         soil(j)%phys(k)%st = sffc * soil(j)%phys(k)%fc
-        hru(j)%sol%sw = hru(j)%sol%sw + soil(j)%phys(k)%st
+        soil(j)%sw = soil(j)%sw + soil(j)%phys(k)%st
       end do
       
       !! set day length threshold for dormancy
       dormhr(j) = wgn_pms(iwgn)%daylth
 
 !!    compare maximum rooting depth in soil to maximum rooting depth of plant
-      if (hru(j)%sol%zmx<= 0.001) hru(j)%sol%zmx = soil(j)%phys(nly)%d
+      if (soil(j)%zmx<= 0.001) soil(j)%zmx = soil(j)%phys(nly)%d
       plt_zmx = 0.
       do ipl = 1, npl(j)
         idp = pcom(j)%plcur(ipl)%idplt
@@ -118,15 +118,15 @@
             soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + hru(j)%rsd_flt(ipl)%mass
             plt_zmxp = plt_zmx
             plt_zmx = 1000. * pldb(idp)%rdmx
-            plt_zmx = amax1(plt_zmx,plt_zmxp)
+            plt_zmx = Max(plt_zmx,plt_zmxp)
           end if
         end if
       end do
-      if (hru(j)%sol%zmx > 1. .and. plt_zmx > 1.) then
-         hru(j)%sol%zmx = Min(hru(j)%sol%zmx,plt_zmx)
+      if (soil(j)%zmx > 1. .and. plt_zmx > 1.) then
+         soil(j)%zmx = Min(soil(j)%zmx,plt_zmx)
       else
          !! if one value is missing it will set to the one available
-         hru(j)%sol%zmx = Max(hru(j)%sol%zmx,plt_zmx)
+         soil(j)%zmx = Max(soil(j)%zmx,plt_zmx)
       end if
 
 !! create a biozone layer in septic HRUs
@@ -157,7 +157,7 @@
         jj = npno(k)
         if (jj > 0) then
           solpst = 0.
-          solpst = hru(j)%ly(1)%pst(k)  !!concentration of pesticide in soil
+          solpst = soil(j)%ly(1)%pst(k)  !!concentration of pesticide in soil
           
           xx = 0.
           do n = 1, nly
@@ -167,16 +167,16 @@
             xx = soil(j)%phys(n)%d 
             wt1 = soil(j)%phys(n)%bd * dg / 100.      !! mg/kg => kg/ha
 !!            sol_kp(k,j,n) = pestdb(jj)%skoc * soil(j)%cbn(n)%cbn / 100.
-            hru(j)%ly(n)%kp(k) = pestdb(jj)%skoc *                         &
+            soil(j)%ly(n)%kp(k) = pestdb(jj)%skoc *                         &
                                              soil(j)%cbn(n)%cbn / 100.
-            hru(j)%ly(n)%pst(k) = solpst * wt1
+            soil(j)%ly(n)%pst(k) = solpst * wt1
             
           end do
         end if
       end do
       end if
 
-      do ly = 1, hru(j)%sol%nly
+      do ly = 1, soil(j)%nly
         if (soil(j)%ly(ly)%pperco_sub <= 1.e-6)                          &
              soil(j)%ly(ly)%pperco_sub = bsn_prm%pperco
       end do
@@ -184,7 +184,7 @@
 !!    compute lateral flow travel time
         if (hru(j)%hyd%lat_ttime <= 0.) then
             scmx = 0.
-            do l = 1, hru(j)%sol%nly
+            do l = 1, soil(j)%nly
               if (soil(j)%phys(l)%k > scmx) then
                 scmx = soil(j)%phys(l)%k
               endif

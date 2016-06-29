@@ -76,8 +76,8 @@
 !! calculate fraction difference in retention parameters
       rto3 = 1. - s3 / smx(h)
       rtos = 1. - 2.54 / smx(h)
-      sumul = hru(h)%sol%sumul
-      sumfc = hru(h)%sol%sumfc + hru(h)%hyd%cn3_swf * (sumul - hru(h)%sol%sumfc)
+      sumul = soil(h)%sumul
+      sumfc = soil(h)%sumfc + hru(h)%hyd%cn3_swf * (soil(h)%sumul - soil(h)%sumfc)
 !! calculate shape parameters
       call ascrv(rto3,rtos,sumfc,sumul,wrt(1,h),wrt(2,h))
 

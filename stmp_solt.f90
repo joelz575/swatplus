@@ -68,16 +68,16 @@
       !! SWAT manual equation 2.3.6
       f = 0.
       dp = 0.
-      f = hru(j)%sol%avbd / (hru(j)%sol%avbd + 686. * Exp(-5.63 *       &       
-              hru(j)%sol%avbd))
+      f = soil(j)%avbd / (soil(j)%avbd + 686. * Exp(-5.63 *       &       
+              soil(j)%avbd))
       dp = 1000. + 2500. * f
 
       !! calculate scaling factor for soil water
       !! SWAT manual equation 2.3.7
       ww = 0.
       wc = 0.
-      ww = .356 - .144 * hru(j)%sol%avbd
-      wc = hru(j)%sol%sw / (ww * soil(j)%phys(hru(j)%sol%nly)%d)
+      ww = .356 - .144 * soil(j)%avbd
+      wc = soil(j)%sw / (ww * soil(j)%phys(soil(j)%nly)%d)
 
       !! calculate daily value for damping depth
       !! SWAT manual equation 2.3.8
@@ -125,7 +125,7 @@
 
 !! calculate temperature for each layer on current day
       xx = 0.
-      do k = 1, hru(j)%sol%nly
+      do k = 1, soil(j)%nly
         zd = 0.
         df = 0.
         zd = (xx + soil(j)%phys(k)%d) / 2.  ! calculate depth at center of layer

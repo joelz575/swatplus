@@ -180,7 +180,7 @@
        j=0
        j=ihru
         
-       do k = 1, hru(j)%sol%nly
+       do k = 1, soil(j)%nly
           ! a simple equation to calculate Bulk Density from DSSAT (Not Used)  
           !XZ = sol_cbn(k,j)  
           !sol_BDM(k)=ZZ/(1./BD(J)-XZ/.224)  
@@ -202,7 +202,7 @@
       
       !!calculate C/N dynamics for each soil layer
       !!===========================================
-       do k = 1, hru(j)%sol%nly
+       do k = 1, soil(j)%nly
           if (k == 1) then
             !10 cm / 1000 = 0.01m; 1 ha = 10000 m2; ton/m3; * 1000 --> final unit is kg/ha; rock fraction is considered
  		    sol_mass = (10) / 1000.* 10000. * soil(j)%phys(k)%bd* 1000. *(1- soil(j)%phys(k)%rock / 100.)            
@@ -238,7 +238,7 @@
 	              SUT = .1 + .9 * Sqrt(soil(j)%phys(k)%st / soil(j)%phys(k)%fc)
               END IF             
               sut = Min(1., sut)
-              sut = amax1(.05, sut)
+              sut = Max(.05, sut)
               !check X1, FC, S15
  
               !from Armen 

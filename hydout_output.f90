@@ -81,7 +81,7 @@
         
       return
         
-100   format (a16,3i8,a8,i8,'    out ',2(a8,i8),a13,30(1x,e10.4))
-101   format (3i8,a8,i8,'    out ',2(a8,i8),a13,30(1x,e10.4))
+100   format (a16,3i8,a8,i8,'    out ',2(a8,i8),a13,30(1x,e11.4))
+101   format (3i8,a8,i8,'    out ',2(a8,i8),a13,30(1x,e11.4))
        
       end subroutine hydout_output

@@ -9,17 +9,17 @@
         mbac = obcs(icmd)%num_paths
         if (mbac > 0) then
           do ly = 1, sol(isol)%s%nly
-            allocate (hru(ihru)%ly(ly)%bacsol(mbac))
-            allocate (hru(ihru)%ly(ly)%bacsor(mbac))
+            allocate (soil(ihru)%ly(ly)%bacsol(mbac))
+            allocate (soil(ihru)%ly(ly)%bacsor(mbac))
           end do
 
         do ibac = 1, mbac
           if (ly == 1) then
-            hru(ihru)%ly(1)%bacsol(ibac) = bact(mbac_db)%bac(ibac)%sol
-            hru(ihru)%ly(1)%bacsor(ibac) = bact(mbac_db)%bac(ibac)%sor
+            soil(ihru)%ly(1)%bacsol(ibac) = bact(mbac_db)%bac(ibac)%sol
+            soil(ihru)%ly(1)%bacsor(ibac) = bact(mbac_db)%bac(ibac)%sor
           else
-            hru(ihru)%ly(1)%bacsol(ibac) = 0.
-            hru(ihru)%ly(1)%bacsor(ibac) = 0.
+            soil(ihru)%ly(1)%bacsol(ibac) = 0.
+            soil(ihru)%ly(1)%bacsor(ibac) = 0.
           end if
         end do
         do ipl = 1, mpl
@@ -33,8 +33,8 @@
         npmx = obcs(icmd)%num_pests
         if (npmx > 0) then
           do ly = 1, sol(isol)%s%nly
-            allocate (hru(ihru)%ly(ly)%kp(npmx))
-            allocate (hru(ihru)%ly(ly)%pst(npmx))
+            allocate (soil(ihru)%ly(ly)%kp(npmx))
+            allocate (soil(ihru)%ly(ly)%pst(npmx))
           end do
         end if
         
@@ -43,7 +43,7 @@
          hru(ihru)%pst(ipest)%num_db =                                  &                               
                                  pesti_db(ipest_db)%pesti(ipest)%num_db
          hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt
-         hru(ihru)%ly(1)%pst(ipest) =                                   &                                
+         soil(ihru)%ly(1)%pst(ipest) =                                   &                                
                                    pesti_db(ipest_db)%pesti(ipest)%soil
          hru(ihru)%pst(ipest)%enr = pesti_db(ipest_db)%pesti(ipest)%enr
         end do

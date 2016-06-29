@@ -74,8 +74,8 @@
 
 !!!  HRU - Plant/Weather
         if (pco%pw_hru > 0) then
-          write (4003,*) pw_hdr  !! hru 
           open (4003,file="plantwx.hru", recl = 1500)
+          write (4003,*) pw_hdr  !! hru 
           write (9000,*) 'HRU                 plantwx.hru'
             if (pco%csvout == 1) then 
               open (4021,file="plantwx_hru.csv", recl = 1500)

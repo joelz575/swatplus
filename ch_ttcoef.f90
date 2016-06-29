@@ -102,7 +102,7 @@
         b = 0.
         chsslope = 0.
         b = .5 * ch_hyd(k)%w
-        b = amax1(0., b)
+        b = Max(0., b)
         chsslope = (ch_hyd(k)%w - b) / (2. * d)
       end if
       ch(k)%phi(6) = b

@@ -106,7 +106,7 @@
         if (nstress(j) == 0) then                !! n target approach
          tsno3 = 0.
          tpno3 = 0.
-         do ly = 1, hru(j)%sol%nly
+         do ly = 1, soil(j)%nly
            tsno3 = tsno3 + soil(j)%nut(ly)%no3 + soil(j)%nut(ly)%nh3
          end do
          tpno3 = pcom(j)%plm(ipl)%nmass
@@ -262,7 +262,7 @@
               write (143, 1000) j, time%yrc,i_mo,iida,                   & 
               fertdb(mgt%op1)%fertnm,                                    &
             "AUTOFERT", phubase(j),pcom(j)%plcur(ipl)%phuacc,            &
-              hru(j)%sol%sw, pcom(j)%plm(ipl)%mass,                      &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass,                      &
               soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j), dwfert,    &
               fertno3, fertnh3, fertorgn, fertsolp, fertorgp            
         end if

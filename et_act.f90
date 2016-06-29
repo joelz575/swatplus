@@ -166,7 +166,7 @@
 !! take soil evap from each soil layer
       evzp = 0.
       eosl = esleft
-      do ly = 1, hru(j)%sol%nly
+      do ly = 1, soil(j)%nly
 
         !! depth exceeds max depth for soil evap (esd)
         dep = 0.
@@ -219,9 +219,9 @@
       end do
 
       !! update total soil water content
-      hru(j)%sol%sw = 0.
-      do ly = 1, hru(j)%sol%nly
-        hru(j)%sol%sw = hru(j)%sol%sw + soil(j)%phys(ly)%st
+      soil(j)%sw = 0.
+      do ly = 1, soil(j)%nly
+        soil(j)%sw = soil(j)%sw + soil(j)%phys(ly)%st
       end do
 
       !! calculate actual amount of evaporation from soil

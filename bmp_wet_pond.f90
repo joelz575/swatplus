@@ -212,8 +212,8 @@
                   
   	  
    	   !! Store flow/sediment out of the pond at the subbasin outlet
-   	   !ob(icmd)%ts(1,ii)%flo = Amax1(0.,qout)
-   	   !ob(icmd)%ts(1,ii)%sed = Amax1(0.,sedout)
+   	   !ob(icmd)%ts(1,ii)%flo = Max(0.,qout)
+   	   !ob(icmd)%ts(1,ii)%sed = Max(0.,sedout)
   
       end do
       

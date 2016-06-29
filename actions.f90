@@ -7,6 +7,7 @@
       use time_module
       use parm
       use reservoir_module
+      use sd_channel_module
       
       integer :: id, ob_num, ir
       character(len=1) :: action
@@ -90,12 +91,19 @@
               
           !land use change
           case ("lu_change")
-            !!ihru, ilu and isol are in modparm
+            !ihru, ilu and isol are in modparm
             ihru = ob_num
             ilu = d_tbl(id)%act_ptr(iac)
             hru(ob_num)%dbs%land_use_mgt = ilu
             isol = hru(ob_num)%dbs%soil  
             call pcom_set_parms (1)
+                     
+          !channel change
+          case ("chan_change")
+            ich = ob_num
+            !set new cover and name for calibration
+            sd_chd(ich)%cov = d_tbl(i)%act(iac)%const
+            sd_chd(ich)%order = d_tbl(i)%act(iac)%file_pointer
         
           !herd management - move the herd
           case ("herd")

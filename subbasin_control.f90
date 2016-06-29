@@ -180,7 +180,7 @@
               sumflo = sumflo + ob(icmd)%ts(iday,itot)%flo
             else
               !! adjust if flow exceeded max days
-              rto = amax1 (1., ob(icmd)%hd(3)%flo / sumflo)
+              rto = Max (1., ob(icmd)%hd(3)%flo / sumflo)
               do iadj = 1, itot - 1
                 iday = iadj / time%step + 1
                 istep = iadj - (iday - 1) * time%step

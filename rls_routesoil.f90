@@ -19,9 +19,9 @@
       !!put in soil layers - weighted by depth of soil layer
         dep = 0.
         xslat = 0.
-        do lyr = 1, hru(j)%sol%nly
+        do lyr = 1, soil(j)%nly
           latqlyr = ((soil(j)%phys(lyr)%d - dep) /                   &
-                soil(j)%phys(hru(j)%sol%nly)%d) * latqrunon
+                soil(j)%phys(soil(j)%nly)%d) * latqrunon
           dep = soil(j)%phys(lyr)%d
           soil(j)%phys(lyr)%st = soil(j)%phys(lyr)%st + latqlyr
           if (soil(j)%phys(lyr)%st > soil(j)%phys(lyr)%ul) then

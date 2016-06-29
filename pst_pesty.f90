@@ -60,7 +60,7 @@
         if (kk > 0) then
           xx = 0.
           if (iwave <= 0) then
-            xx = hru(j)%ly(1)%pst(k)
+            xx = soil(j)%ly(1)%pst(k)
           else
             xx = sub_pst(kk,iwave)
           end if
@@ -69,7 +69,7 @@
             conc = 0.
             er = 0.
 !!            conc = 100. * sol_kp(k,j,1) * xx / (zdb(k,j)+1.e-10)
-            conc = 100. * hru(j)%ly(1)%kp(k) * xx /                     &  
+            conc = 100. * soil(j)%ly(1)%kp(k) * xx /                     &  
                                        (hru(j)%pst(k)%zdb + 1.e-10)
             if (hru(j)%pst(k)%enr > 0.) then
               er = hru(j)%pst(k)%enr
@@ -80,7 +80,7 @@
             hru(j)%pst(k)%sed=.001* sedyld(j) *conc * er/hru(j)%area_ha
             if (hru(j)%pst(k)%sed < 0.) hru(j)%pst(k)%sed = 0.
             if (hru(j)%pst(k)%sed > xx) hru(j)%pst(k)%sed = xx
-             hru(j)%ly(1)%pst(k) = xx -hru(j)%pst(k)%sed
+            soil(j)%ly(1)%pst(k) = xx -hru(j)%pst(k)%sed
            
           end if
         end if

@@ -56,12 +56,12 @@
 
       !! compute soil water factor
       fxw = 0.
-      fxw = hru(j)%sol%sw / (.85 * hru(j)%sol%sumfc)
+      fxw = soil(j)%sw / (.85 * soil(j)%sumfc)
 
       !! compute no3 factor
       sumn = 0.
       fxn = 0.
-      do l = 1, hru(j)%sol%nly
+      do l = 1, soil(j)%nly
         sumn = sumn + soil(j)%nut(l)%no3
       end do
       if (sumn > 300.) fxn = 0.

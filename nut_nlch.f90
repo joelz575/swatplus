@@ -52,7 +52,7 @@
 
       percnlyr = 0.
 
-      do jj = 1, hru(j)%sol%nly
+      do jj = 1, soil(j)%nly
 
         !! add nitrate leached from layer above
         soil(j)%nut(jj)%no3 = soil(j)%nut(jj)%no3 + percnlyr
@@ -66,7 +66,7 @@
         end if
         vv = soil(j)%ly(jj)%prk + sro + soil(j)%ly(jj)%flat + 1.e-10
         if (ldrain(j) == jj) vv = vv + qtile
-        ww = -vv / ((1. - hru(j)%sol%anion_excl) * soil(j)%phys(jj)%ul)
+        ww = -vv / ((1. - soil(j)%anion_excl) * soil(j)%phys(jj)%ul)
         vno3 = soil(j)%nut(jj)%no3 * (1. - Exp(ww))
         co = Max(vno3 / vv, 0.)
 
@@ -108,7 +108,7 @@
 
 
       nloss = (2.18 * hru(j)%topo%dis_stream - 8.63) / 100.
-      nloss = amax1(0.,nloss)
+      nloss = Max(0.,nloss)
       nloss = Amin1(1.,nloss)
       latno3(j) = (1. - nloss) * latno3(j)
 

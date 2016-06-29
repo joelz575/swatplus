@@ -18,6 +18,7 @@
       if (i_exist == 0 .or. in_cha%chan_ez == 'null') then
         allocate (sd_chd(0:0))
         allocate (sd_ch(0:0))
+        allocate (sdch_init(0:0))
         allocate (chsd_d(0:0))
         allocate (chsd_m(0:0))
         allocate (chsd_y(0:0))
@@ -32,12 +33,13 @@
           do while (eof >= 0)
             read (1,*,iostat=eof) i
             if (eof < 0) exit
-            imax = amax1(imax,i)
+            imax = Max(imax,i)
             mlte = mlte + 1
           end do       
            
         allocate (sd_chd(0:imax))
         allocate (sd_ch(0:imax))
+        allocate (sdch_init(0:imax))
         allocate (chsd_d(0:imax))
         allocate (chsd_m(0:imax))
         allocate (chsd_y(0:imax))
@@ -55,13 +57,14 @@
           sd_ch(i)%chd = sd_chd(i)%chd
           sd_ch(i)%chs = sd_chd(i)%chs
           sd_ch(i)%chl = sd_chd(i)%chl
+          sd_ch(i)%cherod = sd_chd(i)%cherod
+          sd_ch(i)%cov = sd_chd(i)%cov
           sd_ch(i)%hc_len = sd_chd(i)%hc_ini
           
           !! conpute headcut parameters
           kh = sd_chd(i)%hc_kh
           if (kh > 1.e-6) then
-            sd_ch(i)%attack0 = (189. * (kh**.5) * exp(-3.23 / (alog(101.   &
-                                                      * kh)))) ** .33333
+            sd_ch(i)%attack0 = (189. * (kh**.5) * exp(-3.23 / (alog(101. * kh)))) ** .33333
             if (kh < 18.2) then
               sd_ch(i)%hc_co = -.79 * alog(kh) + 3.04
             else
@@ -88,7 +91,7 @@
 !!      check IF bottom width (b) is < 0
           IF (b <= 0.) THEN
             b = .5 * sd_ch(i)%chw
-            b = amax1(0., b)
+            b = Max(0., b)
             chside = (sd_ch(i)%chw - b) / (2. * sd_ch(i)%chd)
           END IF
           sd_ch(i)%phi(6) = b

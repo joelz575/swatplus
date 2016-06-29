@@ -62,7 +62,7 @@
       ir = 0
       if (uapd(ipl) < 1.e-6) return
 
-      do l = 1, hru(j)%sol%nly
+      do l = 1, soil(j)%nly
         if (ir > 0) exit
 
         gx = 0.

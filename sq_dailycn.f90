@@ -47,22 +47,22 @@
 
       j = ihru
 
-      xx = wrt(1,j) - wrt(2,j) * hru(j)%sol%sw
+      xx = wrt(1,j) - wrt(2,j) * soil(j)%sw
       if (xx < -20.) xx = -20.
       if (xx > 20.) xx = 20.
 
       if (icn <= 0) then
         !! traditional CN method (function of soil water)
-        if ((hru(j)%sol%sw + Exp(xx)) > 0.001) then
-          r2 = smx(j) * (1. - hru(j)%sol%sw / (hru(j)%sol%sw + Exp(xx)))
+        if ((soil(j)%sw + Exp(xx)) > 0.001) then
+          r2 = smx(j) * (1. - soil(j)%sw / (soil(j)%sw + Exp(xx)))
         end if
       else                        
         !! alternative CN method (function of plant ET) 
-        r2 = amax1(3., sci(j))           
+        r2 = Max(3., sci(j))           
       end if
 
       if (soil(j)%phys(2)%tmp <= 0.) r2=smx(j) * (1. - Exp(- bsn_prm%cn_froz * r2))
-      r2 = amax1(3.,r2)
+      r2 = Max(3.,r2)
 
       cnday(j) = 25400. / (r2 + 254.)
       

@@ -63,7 +63,7 @@
           if (yr_skip(j) == 1) exit
         end do
 
-        ipl = amax1(mgt%op2, 1)
+        ipl = Max(mgt%op2, 1)
         if (pcom(j)%plcur(ipl)%gro == 0) then
           aphu = phubase(j)
         else
@@ -72,7 +72,7 @@
         if (dorm_flag == 1) aphu = 999.
         do while (mgt%husc > 0. .and. aphu > mgt%husc)
           call mgt_sched (isched)
-          ipl = amax1(mgt%op2, 1)
+          ipl = Max(mgt%op2, 1)
           if (pcom(j)%plcur(ipl)%gro == 0) then
             aphu = phubase(j)
           else

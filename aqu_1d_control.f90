@@ -18,7 +18,7 @@
       !! compute flow and substract from storage
       if (aqu(iaq)%stor > aqu(iaq)%flo_min) then
         aqu(iaq)%flo = aqu(iaq)%flo * aqu_prm(iaq)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaq)%alpha_e)
-        aqu(iaq)%flo = amax1 (0., aqu(iaq)%flo)
+        aqu(iaq)%flo = Max (0., aqu(iaq)%flo)
         aqu(iaq)%stor = aqu(iaq)%stor - aqu(iaq)%flo
       else
         aqu(iaq)%flo = 0.
@@ -44,7 +44,7 @@
       !! compute groundwater height - datum: above bottom of channel
       aqu(iaq)%hgt = aqu(iaq)%hgt * aqudb(iaqdb)%alpha + aqu(iaq)%rchrg * (1.-aqudb(iaqdb)%alpha) /          & 
                                              (800. * aqudb(iaqdb)%spyld * aqudb(iaqdb)%alpha + 1.e-6)       
-      aqu(iaq)%hgt = amax1(1.e-6, aqu(iaq)%hgt)
+      aqu(iaq)%hgt = Max(1.e-6, aqu(iaq)%hgt)
 
       !! compute nitrate recharge into the aquifer
       aqu(iaq)%rchrg_n = ob(icmd)%hin%no3 / (10. * ob(icmd)%area_ha)

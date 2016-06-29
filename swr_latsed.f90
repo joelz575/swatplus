@@ -34,11 +34,11 @@
 
       !! update sediment yield for sediment in lateral flow
       sedyld(j)=sedyld(j) + latq(j) * hru(j)%km * hru(j)%hyd%lat_sed
-      sanyld(j)=sanyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * hru(j)%sol%det_san
-      silyld(j)=silyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * hru(j)%sol%det_sil
-      clayld(j)=clayld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * hru(j)%sol%det_cla
-      sagyld(j)=sagyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * hru(j)%sol%det_sag
-      lagyld(j)=lagyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * hru(j)%sol%det_lag
+      sanyld(j)=sanyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_san
+      silyld(j)=silyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_sil
+      clayld(j)=clayld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_cla
+      sagyld(j)=sagyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_sag
+      lagyld(j)=lagyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_lag
 
       !! organic n and p in the lateral flow     - by J.Jeong BREC 2011  
       !mm*mg/L*1000L/m3*kg/1000000mg*m3/10ha-mm=kg/ha

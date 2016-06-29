@@ -51,7 +51,7 @@
       j = 0
       j = ihru
         
-	do l = 1, hru(j)%sol%nly !! loop through soil layers in this HRU
+	do l = 1, soil(j)%nly !! loop through soil layers in this HRU
 	!! make sure that no zero or negative pool values come in
 	if (soil(j)%nut(l)%solp <= 1.e-6) soil(j)%nut(l)%solp = 1.e-6
 	if (soil(j)%nut(l)%actp <= 1.e-6) soil(j)%nut(l)%actp = 1.e-6

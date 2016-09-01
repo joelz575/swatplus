@@ -66,7 +66,9 @@
         integer :: hmetcom = 0
         integer :: saltcom = 0
         integer :: res = 0            !! none     |max number of reservoir data
-        integer :: lscal_reg = 0      !! none     |max number of regions for landscape calibration
+        integer :: lscal_reg = 0      !! none     |max number of regions for landscape hru calibration
+        integer :: lscalt_reg = 0     !! none     |max number of regions for landscape hru_lte calibration
+        integer :: plcal_reg = 0      !! none     |max number of regions for plant calibration
         integer :: chcal_reg = 0      !! none     |max number of regions for channel calibration
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
@@ -500,7 +502,8 @@
         integer :: conds                !! number of conditions
         integer :: lyr1                 !! first layer in range for soil variables (0 assumes all layers are modified)
         integer :: lyr2                 !! last layer in range for soil variables (0 assumes through last layer)
-        integer :: year                 !! year for precip and temp
+        integer :: year1                !! first year for precip and temp
+        integer :: year2                !! last year for precip and temp
         integer :: day1                 !! first day in range for precip and temp
         integer :: day2                 !! last day in range for precip and temp
         integer :: num_tot = 0          !! total number of integers read in
@@ -553,8 +556,11 @@
         character(len=16) :: chg_typ    !! type of change (absval,abschg,pctchg)
         real :: neg                     !! negative limit of change
         real :: pos                     !! positive limit of change
+        real :: lo                      !! lower limit of parameter
+        real :: up                      !! upper limit of parameter
       end type soft_calib_parms
       type (soft_calib_parms), dimension(:), allocatable :: ls_prms
+      type (soft_calib_parms), dimension(:), allocatable :: pl_prms
       type (soft_calib_parms), dimension(:), allocatable :: ch_prms
             
       type soft_calib_ls_adjust
@@ -562,13 +568,17 @@
         real :: esco = 0.       !+/- or 0/1       |esco adjustment or at limit
         real :: k = 0.          !+/- or 0/1       |k (upper layers) adjustment or at limit
         real :: k_lo = 0.       !+/- or 0/1       |l (lowest layer) adjustment or at limit
+        real :: slope = 0.      !+/- or 0/1       |slope adjustment or at limit        
         real :: tconc = 0.      !+/- or 0/1       |time of concentration adjustment or at limit
-        real :: slope = 0.      !+/- or 0/1       |minimum c-factor adjustment or at limit
+        real :: etco = 0.       !+/- or 0/1       |etco adjustment or at limit
+        real :: perco = 0.      !+/- or 0/1       |percolation coefficient adjustment or at limit
+        real :: revapc = 0.     !+/- or 0/1       |slope adjustment or at limit
+        real :: cn3_swf = 0.    !+/- or 0/1       |cn3_swf adjustment or at limit
       end type soft_calib_ls_adjust
       
       type soft_calib_ls_processes
         !database of soft ave annual landscape calibration values
-        character(len=16) :: name
+        character(len=16) :: name = 'default'
         ! srr + lfr + pcr + etr + tfr = 1
         real :: srr = 0.    !- or m3        |surface runoff ratio - surface runoff/precip
         real :: lfr = 0.    !- or m3        |lateral flow ratio - soil lat flow/precip 
@@ -591,6 +601,7 @@
         type (soft_calib_ls_processes) :: meas                  !input soft calibration parms of each land use - ratio,t/ha,kg/ha
         real :: precip = 0.                                     !model precip for each land use to determine ratios
         real :: precip_aa = 0.                                  !model ave annual precip for each land use to determine ratios
+        real :: precip_aa_sav = 0.                              !model ave annual precip for each land use to determine ratios for final output
         type (soft_calib_ls_processes) :: sim                   !simulated sum of soft calibration parms of each land use - m3,t,kg
         type (soft_calib_ls_processes) :: aa                    !average annual soft calibration parms of each land use - mm,t/ha,kg/ha
         type (soft_calib_ls_processes) :: prev                  !simulated sum of soft calibration parms of previous run - m3,t,kg
@@ -606,7 +617,50 @@
         integer, dimension(:), allocatable :: num                           !hru's that are included in the region
         type (ls_calib_regions), dimension(:), allocatable :: lum           !dimension for land uses within a region
       end type soft_data_calib_landscape
-      type (soft_data_calib_landscape), dimension(:), allocatable :: lscal  !dimension by region
+      type (soft_data_calib_landscape), dimension(:), allocatable :: lscal  !dimension by region for hru's
+      type (soft_data_calib_landscape), dimension(:), allocatable :: lscalt !dimension by region for hru_lte's
+
+      type soft_calib_pl_adjust
+        real :: stress = 0.     !+/- or 0/1     |plant stress (pest, soil, etc) or at limit
+      end type soft_calib_pl_adjust
+      
+      type soft_calib_pl_processes
+        !database of soft ave annual landscape calibration values
+        character(len=16) :: name = 'default'
+        real :: yield = 0.      !t/ha or t      |crop yield
+        real :: npp = 0.        !t/ha or t      |net primary productivity (biomass) dry weight
+        real :: lai_mx = 0.     !               |maximum leaf area index
+        real :: wstress = 0.    !               |sum of water (drought) stress
+        real :: astress = 0.    !               |sum of water (aeration) stress
+        real :: tstress = 0.    !               |sum of temperature stress
+      end type soft_calib_pl_processes
+      type (soft_calib_pl_processes) :: plcal_z  !to zero values
+
+      type pl_calib_regions
+        character(len=16) :: name = 'default'
+        integer :: lum_no                                       !xwalk lum()%name with lscal()%lum()%name
+        real :: ha                                              !ha of each land use
+        integer :: nbyr = 0                                     !number of years the land use occurred 
+        type (soft_calib_pl_processes) :: meas                  !input soft calibration parms of each land use - ratio,t/ha,kg/ha
+        real :: precip = 0.                                     !model precip for each land use to determine ratios
+        real :: precip_aa = 0.                                  !model ave annual precip for each land use to determine ratios
+        real :: precip_aa_sav = 0.                              !model ave annual precip for each land use to determine ratios for final output
+        type (soft_calib_pl_processes) :: sim                   !simulated sum of soft calibration parms of each land use - m3,t,kg
+        type (soft_calib_pl_processes) :: aa                    !average annual soft calibration parms of each land use - mm,t/ha,kg/ha
+        type (soft_calib_pl_processes) :: prev                  !simulated sum of soft calibration parms of previous run - m3,t,kg
+        type (soft_calib_pl_adjust) :: prm                      !parameter adjustments used in landscape calibration
+        type (soft_calib_pl_adjust) :: prm_prev                 !parameter adjustments used in landscape calibration
+        type (soft_calib_pl_adjust) :: prm_lim                  !code if parameters are at limits
+      end type pl_calib_regions
+      
+      type soft_data_calib_plant
+        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lscal_reg)
+        integer :: lum_num                                                  !number of land uses in each region
+        integer :: num_tot                                                  !number of hru's in each region
+        integer, dimension(:), allocatable :: num                           !hru's that are included in the region
+        type (pl_calib_regions), dimension(:), allocatable :: lum           !dimension for land uses within a region
+      end type soft_data_calib_plant
+      type (soft_data_calib_plant), dimension(:), allocatable :: plcal      !dimension by region for plants
 
       type soft_calib_chan_adjust
         real :: cov = 0.            !+/- or 0/1     |cover adjustment or at limit
@@ -1046,8 +1100,8 @@
         real :: lag               !kg/L          |amt of lag in res (read in as mg/L and converted to kg/L)
         real :: gra               !kg/L          |amt of gra in res (read in as mg/L and converted to kg/L)
         real :: chla              !kg chl-a      |amt of chlorophyll-a in res
-        real :: psol          !kg/L          |amt of pest in res (read in as mg/L and converted to kg/L)
-        real :: psor         !kg/L          |amt of pest in res (read in as mg/L and converted to kg/L)
+        real :: psol              !kg/L          |amt of pest in res (read in as mg/L and converted to kg/L)
+        real :: psor              !kg/L          |amt of pest in res (read in as mg/L and converted to kg/L)
         real :: bactlp            !# cfu/100ml   |less persistent bacteria stored in res
         real :: bactp             !# cfu/100ml   |persistent bacteria stored in res
       end type channel_initial
@@ -1061,7 +1115,7 @@
         integer :: nut = 0                    !nutrient inputs-points to nutrient.res
         integer :: pst = 0                    !pesticide inputs-points to pesticide.res
         integer :: ls_lnk = 0                 !landscape linkage-points to ch_ls_link?
-        integer :: aqu_lnk = 0                !aquifer likage-points to ch_aqu_link
+        integer :: aqu_lnk = 0                !aquifer linkage-points to ch_aqu_link
       end type channel_data
       type (channel_data), dimension(:), allocatable :: ch_dat
       
@@ -1290,7 +1344,6 @@
 
     contains
 
-!      include 'data_files_read.f'
       include 'bac_lsparms_read.f90'
       include 'fertparm_read.f90'
       include 'pestparm_read.f90'

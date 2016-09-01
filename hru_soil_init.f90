@@ -74,7 +74,7 @@
         hru(ihru)%topo%slope_len = topo_db(itopohd_db)%slope_len
         hru(ihru)%hyd%name = hyd_db(ihyd_db)%name
         hru(ihru)%hyd%lat_ttime = hyd_db(ihyd_db)%lat_ttime
-        hru(ihru)%hyd%lat_sed = hyd_db(ihyd_db)%lat_sed
+        hru(ihru)%hyd%lat_sed = hyd_db(ihyd_db)%lat_sed / 1000. !mg/l => g/l ; mm * km2 * g/l = t
         hru(ihru)%topo%lat_len = topo_db(itopohd_db)%lat_len
         hru(ihru)%hyd%canmx = hyd_db(ihyd_db)%canmx
         hru(ihru)%hyd%esco = hyd_db(ihyd_db)%esco

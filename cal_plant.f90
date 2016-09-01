@@ -1,0 +1,139 @@
+      subroutine cal_plant
+
+      use parm
+      use hydrograph_module
+      use subbasin_module
+      use hru_module
+!      use wateruse_module
+      use climate_module
+      use aquifer_module
+      use channel_module
+      use sd_hru_module
+      use sd_channel_module
+      use basin_module
+      use jrw_datalib_module
+      use conditional_module
+      use reservoir_module
+
+      !calibrate hydrology
+        ical_hyd = 0
+        iter_all = 1
+        iter_ind = 1
+        
+      do iterall = 1, iter_all
+        ! 1st plant stress adjustment
+        isim = 0
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            soft = plcal(ireg)%lum(ilum)%meas%yield * plcal(ireg)%lum(ilum)%precip_aa
+            diff = 0.
+            if (soft > 1.e-6) diff = abs((soft - plcal(ireg)%lum(ilum)%aa%yield) / soft)
+            if (diff > .02 .and. plcal(ireg)%lum(ilum)%ha > 1.e-6 .and. plcal(ireg)%lum(ilum)%prm_lim%stress < 1.e-6) then
+            isim = 1
+            
+                plcal(ireg)%lum(ilum)%prm_prev = plcal(ireg)%lum(ilum)%prm
+                plcal(ireg)%lum(ilum)%prev = plcal(ireg)%lum(ilum)%aa
+
+                diff = plcal(ireg)%lum(ilum)%meas%yield * plcal(ireg)%lum(ilum)%precip_aa - plcal(ireg)%lum(ilum)%aa%yield
+                chg_val = diff / 10.     !assume 1 t/ha for .1 stress??
+                plcal(ireg)%lum(ilum)%prm_prev%stress = plcal(ireg)%lum(ilum)%prm%stress
+                plcal(ireg)%lum(ilum)%prm%stress = plcal(ireg)%lum(ilum)%prm%stress + chg_val
+                plcal(ireg)%lum(ilum)%prev%yield = plcal(ireg)%lum(ilum)%aa%yield
+                
+                if (plcal(ireg)%lum(ilum)%prm%stress >= ls_prms(1)%pos) then
+                  chg_val = ls_prms(1)%pos - plcal(ireg)%lum(ilum)%prm_prev%stress
+                  plcal(ireg)%lum(ilum)%prm%stress = ls_prms(1)%pos
+                  plcal(ireg)%lum(ilum)%prm_lim%stress = 1.
+                end if
+                if (plcal(ireg)%lum(ilum)%prm%stress <= ls_prms(1)%neg) then
+                  chg_val = ls_prms(1)%neg - plcal(ireg)%lum(ilum)%prm_prev%stress
+                  plcal(ireg)%lum(ilum)%prm%stress = ls_prms(1)%neg
+                  plcal(ireg)%lum(ilum)%prm_lim%stress = 1.
+                end if
+
+            do ihru_s = 1, plcal(ireg)%num_tot
+              iihru = plcal(ireg)%num(ihru_s)
+              if (plcal(ireg)%lum(ilum)%name == sd(ihru)%plant) then
+                !set parms for 1st surface runoff calibration and rerun
+                sd(iihru) = sd_init(iihru)
+                sd(iihru)%stress = sd(iihru)%stress + chg_val
+                sd_init(iihru) = sd(iihru)
+              end if
+            end do
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
+          end if
+          end do
+        end do
+        ! 1st plant stress adjustment 
+        if (isim > 0) then
+          write (4304,*) " first plant stress adj "
+          call time_control
+        end if
+
+          ! adjust plant growth using stress parameter
+          do ist = 1, iter_ind
+          isim = 0
+          do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            soft = plcal(ireg)%lum(ilum)%meas%yield * plcal(ireg)%lum(ilum)%precip_aa
+            diff = 0.
+            if (soft > 1.e-6) diff = abs((soft - plcal(ireg)%lum(ilum)%aa%yield) / soft)
+            if (diff > .02 .and. plcal(ireg)%lum(ilum)%ha > 1.e-6 .and. plcal(ireg)%lum(ilum)%prm_lim%stress < 1.e-6) then
+            isim = 1
+            
+                rmeas = plcal(ireg)%lum(ilum)%meas%yield * plcal(ireg)%lum(ilum)%precip_aa
+                denom = plcal(ireg)%lum(ilum)%prev%yield - plcal(ireg)%lum(ilum)%aa%yield
+                if (denom > 1.e-6) then
+                  chg_val = - (plcal(ireg)%lum(ilum)%prm_prev%stress - plcal(ireg)%lum(ilum)%prm%stress)                  &
+                    * (plcal(ireg)%lum(ilum)%aa%yield - rmeas) / denom
+                else
+                  chg_val = diff / 200.
+                end if
+                plcal(ireg)%lum(ilum)%prm_prev%stress = plcal(ireg)%lum(ilum)%prm%stress
+                plcal(ireg)%lum(ilum)%prm%stress = plcal(ireg)%lum(ilum)%prm%stress + chg_val
+                plcal(ireg)%lum(ilum)%prev%yield = plcal(ireg)%lum(ilum)%aa%yield
+                                
+                if (plcal(ireg)%lum(ilum)%prm%stress >= ls_prms(1)%pos) then
+                  chg_val = ls_prms(1)%pos - plcal(ireg)%lum(ilum)%prm_prev%stress
+                  plcal(ireg)%lum(ilum)%prm%stress = ls_prms(1)%pos
+                  plcal(ireg)%lum(ilum)%prm_lim%stress = 1.
+                end if
+                if (plcal(ireg)%lum(ilum)%prm%stress <= ls_prms(1)%neg) then
+                  chg_val = plcal(ireg)%lum(ilum)%prm_prev%stress - ls_prms(1)%neg
+                  plcal(ireg)%lum(ilum)%prm%stress = ls_prms(1)%neg
+                  plcal(ireg)%lum(ilum)%prm_lim%stress = 1.
+                end if
+            
+            !check all hru's for proper lum
+            do ihru_s = 1, plcal(ireg)%num_tot
+              iihru = plcal(ireg)%num(ihru_s)
+              if (plcal(ireg)%lum(ilum)%name == sd(ihru)%plant) then
+                !set parms for surface runoff calibration and rerun
+                sd(iihru) = sd_init(iihru)
+                sd(iihru)%stress = sd(iihru)%stress + chg_val
+                sd(iihru)%stress = amin1 (sd(iihru)%stress, ls_prms(1)%up)
+                sd(iihru)%stress = Max (sd(iihru)%stress, ls_prms(1)%lo)
+                sd_init(iihru) = sd(iihru)
+              end if
+            end do
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
+            !else
+            !plcal(ireg)%lum(ilum)%prm_lim%etco = 1.
+            end if
+          end do
+        end do
+        ! plant stress adjustment
+        if (isim > 0) then
+          write (4304,*) " plant stress adj "
+          call time_control
+        end if
+        end do      ! ist
+          
+      end do    ! iter_all loop
+        
+	  return
+      end subroutine cal_plant

@@ -204,14 +204,11 @@
         real :: yield = 0.                 !kg/ha         |yield (dry weight) by crop type
         real :: residue = 0.               !kga/ha        |initial residue cover
         real :: sol_tmp = 0.               !deg C         |daily average temperature of soil layer
-        real :: strsw = 0.                 !none          |frac of pot plant growth achieved on the day
-!!                                                            where the reduction is caused by water stress
-        real :: strstmp = 0.               !none          |frac of pot plant growth achievedon the day
-!!                                                            where the reduction is      
-        real :: strsn = 0.                 !none          |frac of pot plant growth achieved on the day 
-!!                                                            where the reduction is caused by nitrogen stress
-        real :: strsp = 0.                 !none          |frac of pot plant growth achieved on the day 
-!!                                                            where the reduction is caused by phosphorus stress
+        real :: strsw = 0.                 !0-1           |water (drought) stress
+        real :: strsa = 0.                 !0-1           |water (aeration) stress
+        real :: strstmp = 0.               !0-1           |temperature stress      
+        real :: strsn = 0.                 !0-1           |nitrogen stress
+        real :: strsp = 0.                 !0-1           |phosphorus stress
         real :: nplnt = 0.                 !kg N/ha       |plant uptake of nit in HRU for the day
         real :: percn = 0.                 !kg N/ha       |NO3-N leached from soil profile
         real :: pplnt = 0.                 !kg P/ha       |plant uptake of phos in HRU for the day
@@ -253,6 +250,7 @@
         character (len=12) :: residue =   '  residue   '
         character (len=12) :: sol_tmp =   '   soltmp   '
         character (len=12) :: strsw =     '    strsw   '
+        character (len=12) :: strsa =     '    strsa   '
         character (len=12) :: strstmp =   '  strstmp   '
         character (len=12) :: strsn =     '    strsn   '
         character (len=12) :: strsp =     '    strsp   '

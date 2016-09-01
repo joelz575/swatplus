@@ -50,7 +50,7 @@
                   lscal(ireg)%lum(ilum)%prm_lim%cn = 1.
                 end if
                 if (lscal(ireg)%lum(ilum)%prm%cn <= ls_prms(1)%neg) then
-                  chg_val = ls_prms(1)%pos - lscal(ireg)%lum(ilum)%prm_prev%cn
+                  chg_val = ls_prms(1)%neg - lscal(ireg)%lum(ilum)%prm_prev%cn
                   lscal(ireg)%lum(ilum)%prm%cn = ls_prms(1)%neg
                   lscal(ireg)%lum(ilum)%prm_lim%cn = 1.
                 end if

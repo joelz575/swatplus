@@ -50,7 +50,7 @@
 
         hru(ihru)%obj_no = sp_ob1%hru + ihru - 1
         hru(ihru)%area_ha = ob(hru(ihru)%obj_no)%area_ha
-        hru(i)%km = ob(hru(ihru)%obj_no)%area_ha
+        hru(i)%km = ob(hru(ihru)%obj_no)%area_ha / 100.
         if (eof < 0) exit
 
           do ilum = 1, db_mx%landuse

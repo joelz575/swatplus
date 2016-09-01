@@ -7,8 +7,8 @@
       use input_file_module
     
       real :: a1, a2
-      real :: precip, snowfall, snowmelt, runoff, flowlat, chflow, perc
-      real :: tmax, tmin, tave, raobs, tstress, ws, biomass, phubase0
+      real :: precip, snowfall, snowmelt, runoff, flowlat, chflow, perc, flow_tile
+      real :: tmax, tmin, tave, raobs, tstress, ws, strsair, biomass, phubase0
       real :: cn_sd, aet, pet, sedin
       real, dimension(:), allocatable :: sd_qday, sd_qfdc, pr, be
       real, dimension(12) :: awct = 0.
@@ -19,10 +19,14 @@
         character(len=16) :: name
         real :: dakm2 = 0.          !km^2          |drainage area
         real :: cn2 = 0.            !none          |condition II curve number
+        real :: cn3_swf = 0.        !none          |soil water factor for cn3 (used in calibration)
+                                    !              |0 = fc; 1 = saturation (porosity)
         real :: tc = 0.             !min           |time of concentration
         real :: soildep = 0.        !mm            |soil profile depth
+        real :: perco = 0.          !              |soil percolation coefficient
         real :: slope = 0.          !m/m           |land surface slope
         real :: slopelen = 0.       !m             |land surface slope length
+        real :: etco = 0.           !              |et coefficient - use with pet and aet
         real :: sy = 0.             !mm            |specific yld of the shallow aquifer
         real :: abf = 0.            !              |alpha factor groundwater
         real :: revapc = 0.         !              |revap coefficient amt of et from shallow aquifer
@@ -44,9 +48,11 @@
         integer :: igrow2 = 0       !julian day    |end of growing season for non-tropical
                                     !              |end of monsoon initialization period for tropical
         character(len=16) :: plant  !              |plant type (as listed in plants.plt)
-        integer :: ipet = 0         !              |potential ET method
+        real :: stress = 0.         !frac          |plant stress - pest, root restriction, soil quality, nutrient, (non water, temp)
+        integer :: ipet = 0         !              |potential ET method (0==Hargrove; 1==Priestley-Taylor)
         integer :: irr = 0          !              |irrigation code 0=no irr 1=irrigation
         integer :: irrsrc = 0       !              |irrigation source 0=outside basin 1=shal aqu 2=deep
+        real :: tdrain = 0.         !hr            |design subsurface tile drain time
         real :: uslek = 0.          !              |usle soil erodibility factor
         real :: uslec = 0.          !              |usle cover factor
         real :: uslep = 0.          !none          |USLE equation support practice (P) factor
@@ -55,12 +61,25 @@
       type (swatdeg_hru_data), dimension (:), allocatable :: sd_db
       
       type swatdeg_hru_dynamic
-        character(len=13) :: name
-        integer :: hydno
-        integer :: iplant = 1                !             |plant number xwalked from sd_db()%plant and plants.plt
-        real :: uslefac = 0.                 !             |USLE slope length factor
-        real :: s1 = 0.
-        real :: s3 = 0.
+        character(len=16) :: name
+        integer :: props
+        character(len=16) :: plant           !              |plant type (as listed in plants.plt)
+        integer :: iplant = 1                !              |plant number xwalked from sd_db()%plant and plants.plt
+        real :: km2 = 0.                     !km^2          |drainage area
+        real :: cn2 = 0.                     !              |condition II curve number (used in calibration)
+        real :: cn3_swf = 0.                 !none          |soil water factor for cn3 (used in calibration)
+                                             !              |0 = fc; 1 = saturation (porosity)
+        real :: etco = 0.                    !              |et coefficient - use with pet and aet (used in calibration)
+        real :: revapc = 0.                  !m/m           |revap from aquifer (used in calibration)
+        real :: perco = 0.                   !              |soil percolation coefficient (used in calibration)
+        real :: tdrain = 0.                  !hr            |design subsurface tile drain time (used in calibration)
+        real :: stress = 0.                  !frac          |plant stress - pest, root restriction, soil quality, nutrient, 
+                                             !              |(non water, temp) (used in calibration)
+        real :: uslefac = 0.                 !              |USLE slope length factor
+        real :: wrt1 = 0.
+        real :: wrt2 = 0.
+        real :: smx = 0.
+        real :: hk = 0.
         real :: yls = 0.
         real :: ylc = 0.
         real :: awc = 0.                     !mm/mm        |available water capacity of soil 
@@ -79,6 +98,7 @@
         real :: gwdeep = 0.                  !mm            |deep aquifer storage
       end type swatdeg_hru_dynamic
       type (swatdeg_hru_dynamic), dimension (:), allocatable :: sd
+      type (swatdeg_hru_dynamic), dimension (:), allocatable :: sd_init
                
       contains
 !! routines for swatdeg_hru module

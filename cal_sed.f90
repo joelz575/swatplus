@@ -16,26 +16,43 @@
       use reservoir_module
 
       !calibrate sediment
-        ical_sed = 0
-        
+
         ! 1st time of concentration adjustment
+        isim = 0
         do ireg = 1, db_mx%lscal_reg
           do ilum = 1, lscal(ireg)%lum_num
+            soft = lscal(ireg)%lum(ilum)%meas%sed
+            diff = 0.
+            if (soft > 1.e-6) diff = abs((soft - lscal(ireg)%lum(ilum)%aa%sed) / soft)
+            if (diff > .1 .and. lscal(ireg)%lum(ilum)%ha > 1.e-6 .and. lscal(ireg)%lum(ilum)%prm_lim%tconc < 1.e-6) then
+            isim = 1
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%lum_no == hru(ihru)%land_use_mgt) then
-                !set parms for 1st sediment tconc calibration and rerun
+                !set parms for 1st sediment yield calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
-
+                
                 chg_val = lscal(ireg)%lum(ilum)%meas%sed / lscal(ireg)%lum(ilum)%aa%sed
                 chg_val = chg_val ** 1.7857
-                chg_val = amin1 (chg_val, ls_prms(4)%pos)
-                chg_val = Max (chg_val, ls_prms(4)%neg)
-                lscal(ireg)%lum(ilum)%prm%tconc = chg_val
+                lscal(ireg)%lum(ilum)%prm_prev%tconc = lscal(ireg)%lum(ilum)%prm_prev%tconc
+                lscal(ireg)%lum(ilum)%prm_prev%tconc = lscal(ireg)%lum(ilum)%prm_prev%tconc + chg_val
+                lscal(ireg)%lum(ilum)%prev%sed = lscal(ireg)%lum(ilum)%aa%sed
+                
+                if (lscal(ireg)%lum(ilum)%prm_prev%tconc >= ls_prms(1)%pos) then
+                  chg_val = ls_prms(5)%pos - lscal(ireg)%lum(ilum)%prm_prev%tconc
+                  lscal(ireg)%lum(ilum)%prm_prev%tconc = ls_prms(5)%pos
+                  lscal(ireg)%lum(ilum)%prm_lim%tconc = 1.
+                end if
+                if (lscal(ireg)%lum(ilum)%prm_prev%tconc <= ls_prms(5)%neg) then
+                  chg_val = ls_prms(5)%pos - lscal(ireg)%lum(ilum)%prm_prev%tconc
+                  lscal(ireg)%lum(ilum)%prm_prev%tconc = ls_prms(1)%neg
+                  lscal(ireg)%lum(ilum)%prm_lim%tconc = 1.
+                end if
+
                 tconc(iihru) = tconc(iihru) / chg_val
                 tconc(iihru) = amin1 (tconc(iihru), 1400.)
                 tconc(iihru) = Max (tconc(iihru), 0.)
@@ -44,10 +61,11 @@
             lscal(ireg)%lum(ilum)%nbyr = 0
             lscal(ireg)%lum(ilum)%precip_aa = 0.
             lscal(ireg)%lum(ilum)%aa = lscal_z
+          end if
           end do
         end do
-        ! 1st cn adjustment 
-        call time_control
+        ! 1st tconc adjustment 
+        if (isim > 0) call time_control
         
         do iter = 1, 2
           ! additional adjust sediment using tconc

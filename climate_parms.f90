@@ -15,8 +15,7 @@
       integer, dimension (:), allocatable :: ifirstt,ifirstpcp
       !! this should go in the weather module
            
-      type weather_generator_db
-        character(len=16) :: name                 !! station name
+      type weather_generator_db      
         real :: lat =  0.0                        !! degrees       |latitude of weather station used to compile data
         real :: long = 0.0                        !! degrees       |longitude of weather station 
         real :: elev = 0.0                        !!               |elevation of weather station used to compile weather generator data
@@ -53,6 +52,7 @@
       type (weather_generator_db), dimension(:),allocatable :: wgn
       type (weather_generator_db), dimension(:),allocatable :: wgn_orig
       type (weather_generator_db), dimension(:),allocatable :: fwgn
+      character(len=16), dimension(:),allocatable :: wgn_n                 !! station name
       
       type wgn_parms
         real, dimension (12) :: pr_wdays = 0.   !! none   |proportion of wet days in a month
@@ -139,7 +139,12 @@
         real, dimension (:,:,:), allocatable :: tss
       end type climate_measured_data
       type (climate_measured_data), dimension(:), allocatable :: pcp
-      type (climate_measured_data), dimension(:), allocatable :: tmp
+      character(len=16), dimension(:), allocatable :: pcp_n
+      character(len=16), dimension(:), allocatable :: tmp_n 
+      character(len=16), dimension(:), allocatable :: slr_n
+      character(len=16), dimension(:), allocatable :: hmd_n
+      character(len=16), dimension(:), allocatable :: wnd_n     
+      type (climate_measured_data), dimension(:), allocatable :: tmp    
       type (climate_measured_data), dimension(:), allocatable :: slr
       type (climate_measured_data), dimension(:), allocatable :: hmd
       type (climate_measured_data), dimension(:), allocatable :: wnd

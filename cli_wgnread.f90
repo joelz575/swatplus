@@ -14,6 +14,7 @@
       inquire (file=in_cli%weat_wgn, exist=i_exist)
       if (i_exist == 0 .or. in_cli%weat_wgn == 'null') then              
         allocate (wgn(0:1))
+        allocate (wgn_n(1))
         allocate (wgn_orig(0:1))
         allocate (wgncur(3,0:1))
         allocate (wgnold(3,0:1))
@@ -48,6 +49,7 @@
         
         !! arrays containing weather
         allocate (wgn(imax))
+        allocate (wgn_n(imax))
         allocate (wgn_pms(imax))
         allocate (wgn_orig(imax))
         allocate (wgncur(3,imax))
@@ -78,7 +80,7 @@
         call gcycl
         
       do iwgn = 1, db_mx%wgnsta
-        read (114,*,iostat=eof) i, wgn(iwgn)
+        read (114,*,iostat=eof) i, wgn_n(iwgn), wgn(iwgn)
         !! initialize weather generator parameters
         call cli_initwgn(iwgn)
         if (eof < 0) exit

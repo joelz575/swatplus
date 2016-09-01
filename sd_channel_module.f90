@@ -21,7 +21,7 @@
         real :: chk             !mm/h     |channel bottom conductivity
         real :: cherod          !         |channel erodibility
         real :: cov             !0-1      |channel cover factor
-        real :: chwdr           !         |channel width depth ratio
+        real :: hc_cov          !0-1      |head cut cover factor
         real :: chseq           !m/m      |equilibrium channel slope
         real :: d50             !mm       |channel median sediment size
         real :: clay            !%        |clay percent of bank and bed
@@ -44,8 +44,8 @@
         real :: cherod       !         |channel erodibility
         real :: cov          !0-1      |channel cover factor
         real :: hc_co = 0.   !m/m      |proportionality coefficient for head cut
-        real :: attack0 = 0. !km       |attack threshold for movement of head cut
-        real :: hc_len = 0.  !km       |length of head cut
+        real :: attack0 = 0. !         |attack threshold for movement of head cut
+        real :: hc_len = 0.  !m        |length of head cut
         character (len=2) :: overbank  !         |0=inbank; 1=overbank flood
         real, dimension(13) :: phi
       end type swatdeg_channel_dynamic

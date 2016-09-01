@@ -1,6 +1,7 @@
       subroutine cli_wmeas
       
       use input_file_module
+      use climate_parms
       
       character (len=80) :: header
       character (len=80) :: titldum
@@ -13,6 +14,7 @@
       inquire (file=in_cli%wnd_cli, exist=i_exist)
       if (i_exist == 0 .or. in_cli%wnd_cli == 'null') then
          allocate (wnd(0:0))
+         allocate (wnd_n(0))
       else
       do 
         open (107,file=in_cli%wnd_cli)
@@ -27,6 +29,15 @@
           end do
           
       allocate (wnd(0:imax))
+      allocate (wnd_n(imax))
+      
+      rewind (107)
+      read (107,*) titldum
+      read (107,*) header
+      do i = 1, imax
+        read (107,*,iostat=eof) wnd_n(i)
+      end do
+      
       rewind (107)
       read (107,*) titldum
       read (107,*) header

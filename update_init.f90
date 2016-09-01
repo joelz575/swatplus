@@ -43,25 +43,38 @@
               do lyr = cal_upd(ichg_par)%lyr1, cal_upd(ichg_par)%lyr2
                 call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
               end do
+            case ("plt")
+              !! check plant
+              do ipldb = 1, db_mx%plantparm
+                if (cal_upd(ichg_par)%cond(ic)%targc == pldb(ipldb)%plantnm) then 
+                  ielem = ipldb
+                  exit
+                end if
+              end do
+              call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
             case ("cli")
             !! check dates for climate variable
               select case (cal_upd(ichg_par)%name)
               case ("precip")
                 do iwst = 1, cal_upd(ichg_par)%num_elem
-                  do iday = cal_upd(ichg_par)%day1, cal_upd(ichg_par)%day2
-                    iyr = cal_upd(ichg_par)%year - time%yrc + 1
-                    ipg = cal_upd(ichg_par)%num(iwst)
-                    val_cur = pcp(ipg)%ts(iday,iyr)
-                    pcp(ipg)%ts(iday,iyr) = chg_par (val_cur, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                  do iyear = cal_upd(ichg_par)%year1, cal_upd(ichg_par)%year2
+                    do iday = cal_upd(ichg_par)%day1, cal_upd(ichg_par)%day2
+                      iyr = iyear - time%yrc + 1
+                      ipg = cal_upd(ichg_par)%num(iwst)
+                      val_cur = pcp(ipg)%ts(iday,iyr)
+                      pcp(ipg)%ts(iday,iyr) = chg_par (val_cur, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                    end do
                   end do
                 end do
               case ("temp")
                 do iwst = 1, cal_upd(ichg_par)%num_elem
-                  do iday = cal_upd(ichg_par)%day1, cal_upd(ichg_par)%day2
-                    iyr = cal_upd(ichg_par)%year - time%yrc + 1
-                    ig = cal_upd(ichg_par)%num_db 
-                    val_cur = tmp(ig)%ts(iday,iyr)
-                    tmp(ig)%ts(iday,iyr) = chg_par (val_cur, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                  do iyear = cal_upd(ichg_par)%year1, cal_upd(ichg_par)%year2
+                    do iday = cal_upd(ichg_par)%day1, cal_upd(ichg_par)%day2
+                      iyr = iyear - time%yrc + 1
+                      ig = cal_upd(ichg_par)%num_db 
+                      val_cur = tmp(ig)%ts(iday,iyr)
+                      tmp(ig)%ts(iday,iyr) = chg_par (val_cur, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                    end do
                   end do
                 end do
               end select

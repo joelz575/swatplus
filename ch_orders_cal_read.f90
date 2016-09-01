@@ -9,9 +9,13 @@
       
       imax = 0
       mcal = 0
-        
+ 
+      inquire (file=in_chg%ch_orders_cal, exist=i_exist)
+      if (i_exist == 0 .or. in_chg%ch_orders_cal == 'null') then
+           allocate (chcal(0:0))	      
+      else 
       do
-        open (107,file = 'ch_orders.cal')
+        open (107,file=in_chg%ch_orders_cal)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mord
@@ -103,13 +107,14 @@
                 end if
               end do
           end do
-        end if 
-        
+        end if   
       end do
       exit
          
-      end do     
+      end do    
+      end if
         
       db_mx%lscal_reg = mord
+      
       return
       end subroutine ch_regions_cal_read

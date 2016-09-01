@@ -6,7 +6,7 @@
 !! @version 0.0.0
 !! @date 06 28 2016
 !!
-!! @brief 
+!! @brief
 !! This module includes the aquifer database parameters
 !!
 !! @details
@@ -102,20 +102,23 @@
           character (len=6) :: yrs =       ' time '
           character (len=6) :: yrc =       ' year '
           character (len=8) :: isd =       '   unit '
-          character(len=15) :: flo =       '         flo_mm'          ! (mm)
+          character(len=15) :: flo =       '        flo_m^3'          ! (^m3)
           character(len=15) :: stor =      '        stor_mm'          ! (mm)
-          character(len=15) :: hgt =       '       height_m'          ! (m)
-          character(len=15) :: no3 =       '     no3_kgN/ha'          ! (kg/ha N)
-          character(len=15) :: sed_in =    '    minp_kgP/ha'          ! (kg/ha P)
-          character(len=15) :: sed_out=    '    orgn_kgN/ha'          ! (kg/ha N)
-          character(len=15) :: sed_conc =  '    orgp_kgP/ha'          ! (kg/ha P)
-          character(len=15) :: orgn_in =   '       rchrg_mm'          ! (mm)
-          character(len=15) :: orgn_out =  '  rchrgn_kgN/ha'          ! (kg/ha N)
-          character(len=15) :: orgp_in =   '        perc_mm'          ! (mm)
-          character(len=15) :: orgp_out =  '   nloss_kgN/ha'          ! (kg/ha N)
-          character(len=15) :: seep =      '     seepage mm'          ! (mm)
-          character(len=15) :: revap =     '       revap_mm'          ! (mm)
-          character(len=15) :: seep_no3 =  '   nseep_kgN/ha'          ! (kg/ha N)
+          character(len=15) :: hgt =       '          hgt_m'          ! (m)
+          character(len=15) :: no3 =       '   no3_ppmNO3-N'          ! (ppm NO3-N)
+          character(len=15) :: minp =      '        minp_kg'          ! (kg)
+          character(len=15) :: orgn =      '    orgn_kgN/ha'          ! (kg/ha N)
+          character(len=15) :: orgp =      '    orgp_kgP/ha'          ! (kg/ha P)
+          character(len=15) :: rchrg =     '      rchrg_m^3'          ! (m^3)
+          character(len=15) :: rchrgn =    '  rchrgn_kgN/ha'          ! (kg/ha N)
+          character(len=15) :: nloss =     '   nloss_kgN/ha'          ! (kg/ha N)
+          character(len=15) :: no3gw =     '   no3gw_kgN/ha'          ! (kg N/ha)
+          character(len=15) :: seep =      '    seep_kgN/ha'          ! (kg N/ha)
+          character(len=15) :: revap =     '      revap_m^3'          ! (m^3)
+          character(len=15) :: seep_no3 =  '     seepno3_kg'          ! (kg)
+          character(len=15) :: flo_min =   '      flomin_mm'          ! (mm)
+          character(len=15) :: revap_co =  '   revapco_frac'          ! (kg)
+          character(len=15) :: revap_min = '    revapmin_mm'          ! (mm)
       end type aqu_header
       type (aqu_header) :: aqu_hdr
       interface operator (+)

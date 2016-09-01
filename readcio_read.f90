@@ -62,6 +62,8 @@
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_cond
          if (eof < 0) exit
+		 read (107,*,iostat=eof) name, in_const
+		 if (eof < 0) exit
          exit
       enddo
       endif

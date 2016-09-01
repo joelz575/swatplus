@@ -18,6 +18,7 @@
       inquire (file=in_cli%pcp_cli, exist=i_exist)
       if (i_exist == 0 .or. in_cli%pcp_cli == 'null') then
         allocate (pcp(0:0))
+        allocate (pcp_n(0))
       else
       do 
         open (107,file=in_cli%pcp_cli)
@@ -26,12 +27,22 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
           do while (eof >= 0)
-            read (107,*,iostat=eof) titldum
+            read (107,*,iostat = eof) titldum
             if (eof < 0) exit
             imax = imax + 1
           end do
           
       allocate (pcp(0:imax))
+      allocate (pcp_n(imax))
+      
+      rewind (107)
+      read (107,*) titldum
+      read (107,*) header
+      do i = 1, imax
+        read (107,*,iostat = eof) pcp_n(i)
+        if (eof < 0) exit
+      end do
+      
       rewind (107)
       read (107,*) titldum
       read (107,*) header
@@ -69,8 +80,7 @@
        do 
          if (pcp(i)%tstep > 0.) then
            do iss = 1, time%step
-             read (108,*,iostat=eof)iyr, istep, hr_min,               & 
-                  pcp(i)%tss(iss,istep,iyrs)
+             read (108,*,iostat=eof)iyr, istep, hr_min, pcp(i)%tss(iss,istep,iyrs)
              if (eof < 0) exit
            end do
          else    

@@ -17,7 +17,7 @@
             case ("hru")
               rto = tconc(ihru) / sub_tc(isub)
             case ("hlt")
-              rto = sd_db(ihru)%tc / sub_tc(isub)
+              rto = (sd_db(ihru)%tc / 3600.) / sub_tc(isub)
             case ("sdc")
               rto = 1.
             case ("sub")

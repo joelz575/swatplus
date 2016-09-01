@@ -10,7 +10,9 @@
           ielem = sub_d(isub)%num(ii)
           if (sub_elem(ielem)%obtyp == "hru") then
             ihru = sub_elem(ielem)%obtypno 
-            sub_n(isub) = sub_n(isub) + hru(ihru)%luse%ovn* hru(ihru)%km
+            sub_n(isub) = sub_n(isub) + hru(ihru)%luse%ovn * hru(ihru)%km
+          else
+            sub_n(isub) = 0.1
           end if
         end do
       end do
@@ -27,7 +29,7 @@
           tov = .0556 * (toposub_db(ith)%slope_len * sub_n(isub)) ** .6 /     &
                                               (toposub_db(ith)%slope + .0001) ** .3
           ch_slope = .5 * (toposub_db(ith)%slope + 0001)
-          ch_n = .05
+          ch_n = sub_n(isub)
           ch_l = field_db(ifld)%length / 1000.
           t_ch = .62 * ch_l * ch_n**.75 / (sub(isub)%da_km2**.125 * ch_slope**.375)
           sub_tc(isub) = tov + t_ch
@@ -41,7 +43,7 @@
         t_ov(ihru) = .0556 * (hru(ihru)%topo%slope_len *                    &
            hru(ihru)%luse%ovn) ** .6 / (hru(ihru)%topo%slope + .00001) ** .3
         ch_slope = .5 * topo_db(ith)%slope
-        ch_n = .05
+        ch_n = hru(ihru)%luse%ovn
         ch_l = field_db(ifld)%length / 1000.
         t_ch = .62 * ch_l * ch_n**.75 / (hru(ihru)%km**.125 * (ch_slope + .00001)**.375)
         tconc(ihru) = t_ov(ihru) + t_ch

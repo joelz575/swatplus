@@ -159,7 +159,9 @@
           
       !read connect file for swat-deg channels
       if (sp_ob%chandeg > 0) then
-        call connect_read(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, 3, 3) 
+        call connect_read(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, 3, 3)
+        call overbank_read
+        call aqu2d_read
       end if
 
     

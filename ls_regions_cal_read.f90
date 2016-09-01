@@ -9,9 +9,13 @@
       
       imax = 0
       mcal = 0
-        
+	  
+	     inquire (file=in_chg%ls_regions_cal, exist=i_exist)
+         if (i_exist == 0 .or. in_chg%ls_regions_cal == 'null') then
+           allocate (lscal(0:0))		        
+      else  
       do
-        open (107,file = 'ls_regions.cal')
+        open (107,file=in_chg%ls_regions_cal)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mreg
@@ -108,8 +112,10 @@
       end do    !mreg
       exit
          
-      end do     
+      end do 
+      end if	  
         
-      db_mx%chcal_reg = mreg
+      db_mx%lscal_reg = mreg
+	  
       return
       end subroutine ls_regions_cal_read

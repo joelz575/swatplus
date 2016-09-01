@@ -75,14 +75,13 @@
           r6 = wgn(iwgn)%pcpskw(i_mo) / 6.
           xlv = (cli_Dstn1(rnd3(iwgn),v8) - r6) * r6 + 1.
           xlv = (xlv**3 - 1.) * 2. / wgn(iwgn)%pcpskw(i_mo)
-          rnd3(iwst) = v8
+          rnd3(iwgn) = v8
           pcpgen = xlv * wgn(iwgn)%pcpstd(i_mo) +            &                     
                               wgn_pms(iwgn)%pcpmean(i_mo)
           pcpgen = pcpgen * wgn_pms(iwgn)%pcf(i_mo)
         else
           !! mixed exponential rainfall distribution
-          pcpgen=((-Log(v8))**bsn_prm%rexp)*wgn_pms(iwgn)%pcpmean(i_mo)*    &
-                                                                rcor
+          pcpgen=((-Log(v8))**bsn_prm%rexp)*wgn_pms(iwgn)%pcpmean(i_mo) * rcor
         end if
         if (pcpgen < .1) pcpgen = .1
       end if

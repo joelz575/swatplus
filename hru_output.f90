@@ -64,6 +64,7 @@
         hpw_d(j)%yield = yield
         hpw_d(j)%sol_tmp =  soil(j)%phys(2)%tmp
         hpw_d(j)%strsw = (1.-strsw_av(j))
+        hpw_d(j)%strsw = (1.-strsa_av)
         hpw_d(j)%strsn = (1.-strsn_av)        
         hpw_d(j)%strsp = (1.-strsp_av)
         hpw_d(j)%nplnt = nplnt(j)
@@ -216,7 +217,7 @@
         end if
         
 !!!!! average annual print
-         if (time%end_sim == 1) then
+         if (time%end_sim == 1 .and. pco%wb_hru > 0) then
            hwb_a(j) = hwb_a(j) / time%yrs_prt
            write (4004,100) time%end_yr, time%yrs, j, hwb_a(j)
            if (pco%csvout == 1) then
@@ -225,7 +226,7 @@
            hwb_a(j) = hwbz
          end if
         
-         if (time%end_sim == 1) then 
+         if (time%end_sim == 1 .and. pco%nb_hru > 0) then 
            hnb_a(j) = hnb_a(j) / time%yrs_prt
            write (4005,100) time%end_yr, time%yrs, j, hnb_a(j)
              if (pco%csvout == 1) then 
@@ -234,7 +235,7 @@
              hnb_a(j) = hnbz
          end if
         
-         if (time%end_sim == 1) then
+         if (time%end_sim == 1 .and. pco%ls_hru > 0) then
            hls_a(j) = hls_a(j) / time%yrs_prt 
            write (4006,101) time%end_yr, time%yrs, j, hls_a(j)
              if (pco%csvout == 1) then 
@@ -243,7 +244,7 @@
              hls_a(j) = hlsz
          end if
         
-         if (time%end_sim == 1) then     
+         if (time%end_sim == 1 .and. pco%pw_hru > 0) then     
            hpw_a(j) = hpw_a(j) / time%yrs_prt      
            write (4007,102) time%end_yr, time%yrs, j, hpw_a(j)
              if (pco%csvout == 1) then 
@@ -271,7 +272,7 @@
       
 100   format (2i6,i8,18f12.3)
 101   format (2i6,i8,18f12.3)
-102   format (2i6,i8,17f12.3)
+102   format (2i6,i8,18f12.3)
 103   format (2i6,i8,4x,a,5x,f12.3)
        
       end subroutine hru_output

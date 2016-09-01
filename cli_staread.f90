@@ -53,43 +53,20 @@
                 read (107,*,iostat=eof) wst_pointer(iwst), wst(i)%name,       & 
                 wst(i)%wco_c
                 
-               do ii = 1, db_mx%wgnsta
-                  if (wst(i)%wco_c%wgn == wgn(ii)%name) then            
-                    wst(i)%wco%wgn = ii
-                    exit
-                 end if 
-               end do
+               if (db_mx%wgnsta > 0) call search (wgn_n, db_mx%wgnsta, wst(i)%wco_c%wgn, wst(i)%wco%wgn)
+               if (db_mx%pcpfiles > 0) call search (pcp_n, db_mx%pcpfiles, wst(i)%wco_c%pgage, wst(i)%wco%pgage)
+               if (db_mx%tmpfiles > 0) call search (tmp_n, db_mx%tmpfiles, wst(i)%wco_c%tgage, wst(i)%wco%tgage)
+               if (db_mx%slrfiles > 0) call search (slr_n, db_mx%slrfiles, wst(i)%wco_c%sgage, wst(i)%wco%sgage)
+               if (db_mx%rhfiles > 0) call search (hmd_n, db_mx%rhfiles, wst(i)%wco_c%hgage, wst(i)%wco%hgage) 
+               if (db_mx%wndfiles > 0) call search (wnd_n, db_mx%wndfiles, wst(i)%wco_c%wgage, wst(i)%wco%wgage)  
+               
+               !do ii = 1, db_mx%wgnsta
+               !   if (wst(i)%wco_c%wgn == wgn(ii)%name) then            
+               !     wst(i)%wco%wgn = ii
+               !     exit
+               !  end if 
+               !end do
       
-                do ii = 1, db_mx%pcpfiles
-                    if (wst(i)%wco_c%pgage == pcp(ii)%filename) then            
-                        wst(i)%wco%pgage = ii
-                        exit
-                    end if 
-                end do
-                do ii = 1, db_mx%tmpfiles
-                    if (wst(i)%wco_c%tgage == tmp(ii)%filename) then            
-                        wst(i)%wco%tgage = ii
-                        exit
-                    end if 
-                end do
-                do ii = 1, db_mx%slrfiles
-                    if (wst(i)%wco_c%sgage == slr(ii)%filename) then            
-                        wst(i)%wco%sgage = ii
-                        exit
-                    end if
-                end do
-                do ii = 1, db_mx%rhfiles
-                    if (wst(i)%wco_c%hgage == hmd(ii)%filename) then            
-                        wst(i)%wco%hgage = ii
-                        exit
-                    end if             
-                end do 
-                do ii = 1, db_mx%wndfiles
-                    if (wst(i)%wco_c%wgage == wnd(ii)%filename) then            
-                        wst(i)%wco%wgage = ii
-                        exit
-                    end if             
-                end do 
                 if (eof < 0) exit  
             end do
             exit

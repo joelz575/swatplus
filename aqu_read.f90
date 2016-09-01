@@ -47,8 +47,5 @@
        enddo
        endif
           
-       write (4444,4446) in_aqu%aqu, msh_aqp, imax
-
        return
-4446   format (1x,a25,1x,2i6)
        end subroutine aqu_read         

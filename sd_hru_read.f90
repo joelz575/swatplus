@@ -5,11 +5,11 @@
       character (len=80) :: titldum
       character (len=80) :: header
       integer :: eof, grow_start, grow_end
+      real :: rtos, rto3
       
       eof = 0
       imax = 0
-      msd_h = 0
-      
+
       ! soil textures
       awct(1) = .056
       awct(2) = .116
@@ -62,25 +62,23 @@
         open (1,file=in_hru%hru_ez)
         read (1,*,iostat=eof) titldum
         if (eof < 0) exit
-!        read (1,*,iostat=eof) msd_h
-!        if (eof < 0) exit
         read (1,*,iostat=eof) header
         if (eof < 0) exit
          do while (eof >= 0)
             read (1,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i)
-            msd_h = msd_h + 1
          end do
          
         !assumes data for each hru -> ok since there is only one file
         allocate (sd_db(0:imax))
         allocate (sd(sp_ob%hru_lte))
+        allocate (sd_init(sp_ob%hru_lte))
         rewind (1)
         read (1,*) titldum
         read (1,*) header
 
-      do isd_h = 1, msd_h
+      do isd_h = 1, imax
         read (1,*,iostat = eof) i
         backspace (1)
         read (1,*,iostat=eof) k, sd_db(i)
@@ -90,17 +88,38 @@
       do i = 1, sp_ob%hru_lte
          icmd = sp_ob1%hru_lte + i - 1
          idb = ob(icmd)%props
+         sd(i)%name = ob(icmd)%name
+         sd(i)%props = idb
+         sd(i)%km2 = sd_db(idb)%dakm2
+         sd(i)%cn2 = sd_db(idb)%cn2
+         sd(i)%cn2 = amax1(35., sd(i)%cn2)
+         sd(i)%cn2 = amin1(98., sd(i)%cn2)
+         sd(i)%etco = sd_db(idb)%etco
+         sd(i)%perco = sd_db(idb)%perco
+         sd(i)%tdrain = sd_db(idb)%tdrain
+         sd(i)%revapc = sd_db(idb)%revapc
+         sd(i)%plant = sd_db(idb)%plant
          sd(i)%sw = sd_db(i)%sw * awct(sd_db(idb)%itext) *               &
                                        sd_db(idb)%soildep !* 1000.
          sd(i)%awc = awct(sd_db(idb)%itext) * sd_db(idb)%soildep !* 1000.
          sd(i)%por = port(sd_db(idb)%itext) * sd_db(idb)%soildep !* 1000.
-         sd(i)%sc = scon(sd_db(idb)%itext) 
+         sd(i)%sc = scon(sd_db(idb)%itext)
+         sd(i)%hk = (sd(i)%por - sd(i)%awc) / (scon(sd_db(idb)%itext))
+         sd(i)%hk = Max(2., sd(i)%hk)
          sd_db(idb)%abf = EXP(-sd_db(idb)%abf) 
          qn1 = sd_db(idb)%cn2 - (20. * (100. - sd_db(idb)%cn2)) /        &
             (100.-sd_db(idb)%cn2 + EXP(2.533-.063*(100.-sd_db(idb)%cn2)))
+         qn1 = Max(qn1, .4 * sd_db(idb)%cn2)
          qn3 = sd_db(idb)%cn2 * EXP(.00673*(100.-sd_db(idb)%cn2)) 
-         sd(i)%s1 = 254. * (100. / qn1 - 1.) 
-         sd(i)%s3 = 254. * (100. / qn3 - 1.) 
+         sd(idb)%smx = 254. * (100. / qn1 - 1.) 
+         s3 = 254. * (100. / qn3 - 1.)
+         rto3 = 1. - s3 / sd(idb)%smx
+         rtos = 1. - 2.54 / sd(idb)%smx
+         sumul = sd(i)%por
+         sumfc = sd(i)%awc + sd_db(idb)%cn3_swf * (sumul - sd(i)%awc)
+         !! calculate shape parameters
+         call ascrv(rto3, rtos, sumfc, sumul, sd(i)%wrt1, sd(i)%wrt2)
+         
          xi = 30. * mo - 15. 
          xx = sd_db(idb)%xlat / 57.3 
          sd(i)%yls = SIN(xx) 
@@ -112,7 +131,7 @@
                   
          !crosswalk plant with plants.plt
          do ipl = 1, db_mx%plantparm
-            if (sd_db(idb)%plant == plnt_xw(ipl)) then
+            if (sd_db(idb)%plant == pldb(ipl)%plantnm) then
               sd(i)%iplant = ipl
               exit
             endif

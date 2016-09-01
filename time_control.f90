@@ -65,6 +65,7 @@
       use climate_module
       use basin_module
       use sd_channel_module
+      use sd_hru_module
       
       integer :: j, iix, iiz, ic, mon, ii
       integer :: isce = 1
@@ -237,6 +238,8 @@
         
         !! sum landscape output for soft data calibration
         if (cal_codes%ls == 'y') then
+            
+          !calibrate hru's
           do ireg = 1, db_mx%lscal_reg
             do ilu = 1, lscal(ireg)%lum_num
               lscal(ireg)%lum(ilu)%ha = 0.
@@ -274,6 +277,87 @@
               end if
             end do
           end do    !reg
+          
+          !calibrate hru_lte's
+          do ireg = 1, db_mx%lscalt_reg
+            do ilu = 1, lscalt(ireg)%lum_num
+              lscalt(ireg)%lum(ilu)%ha = 0.
+              lscalt(ireg)%lum(ilu)%precip = 0.
+              lscalt(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
+              do ihru_s = 1, lscalt(ireg)%num_tot
+                ihru = lscalt(ireg)%num(ihru_s)
+                !if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%land_use_mgt) then
+                  ha_hru = 100. * sd(ihru)%km2      ! 10 * ha * mm --> m3
+                  lscalt(ireg)%lum(ilu)%ha = lscalt(ireg)%lum(ilu)%ha + ha_hru
+                  lscalt(ireg)%lum(ilu)%precip = lscalt(ireg)%lum(ilu)%precip + (10. * ha_hru * sdwb_y(ihru)%precip)
+                  lscalt(ireg)%lum(ilu)%sim%srr = lscalt(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * sdwb_y(ihru)%surq_gen)
+                  lscalt(ireg)%lum(ilu)%sim%lfr = lscalt(ireg)%lum(ilu)%sim%lfr + (10. * ha_hru * sdwb_y(ihru)%latq)
+                  lscalt(ireg)%lum(ilu)%sim%pcr = lscalt(ireg)%lum(ilu)%sim%pcr + (10. * ha_hru * sdwb_y(ihru)%perc)
+                  lscalt(ireg)%lum(ilu)%sim%etr = lscalt(ireg)%lum(ilu)%sim%etr + (10. * ha_hru * sdwb_y(ihru)%et)
+                  lscalt(ireg)%lum(ilu)%sim%tfr = lscalt(ireg)%lum(ilu)%sim%tfr + (10. * ha_hru * sdwb_y(ihru)%qtile)
+                  lscalt(ireg)%lum(ilu)%sim%sed = lscalt(ireg)%lum(ilu)%sim%sed + (ha_hru * sdls_y(ihru)%sedyld)
+                  !add nutrients
+                !end if
+              end do
+            end do  !lum_num
+            
+            do ilu = 1, lscalt(ireg)%lum_num
+              if (lscalt(ireg)%lum(ilu)%ha > 1.e-6) then
+                lscalt(ireg)%lum(ilu)%nbyr = lscalt(ireg)%lum(ilu)%nbyr + 1
+                !! convert back to mm, t/ha, kg/ha
+                lscalt(ireg)%lum(ilu)%precip_aa = lscalt(ireg)%lum(ilu)%precip_aa + lscalt(ireg)%lum(ilu)%precip / (10. * lscalt(ireg)%lum(ilu)%ha)
+                lscalt(ireg)%lum(ilu)%aa%srr = lscalt(ireg)%lum(ilu)%aa%srr + lscalt(ireg)%lum(ilu)%sim%srr / (10. * lscalt(ireg)%lum(ilu)%ha)
+                lscalt(ireg)%lum(ilu)%aa%lfr = lscalt(ireg)%lum(ilu)%aa%lfr + lscalt(ireg)%lum(ilu)%sim%lfr / (10. * lscalt(ireg)%lum(ilu)%ha)
+                lscalt(ireg)%lum(ilu)%aa%pcr = lscalt(ireg)%lum(ilu)%aa%pcr + lscalt(ireg)%lum(ilu)%sim%pcr / (10. * lscalt(ireg)%lum(ilu)%ha)
+                lscalt(ireg)%lum(ilu)%aa%etr = lscalt(ireg)%lum(ilu)%aa%etr + lscalt(ireg)%lum(ilu)%sim%etr / (10. * lscalt(ireg)%lum(ilu)%ha)
+                lscalt(ireg)%lum(ilu)%aa%tfr = lscalt(ireg)%lum(ilu)%aa%tfr + lscalt(ireg)%lum(ilu)%sim%tfr / (10. * lscalt(ireg)%lum(ilu)%ha)
+                lscalt(ireg)%lum(ilu)%aa%sed = lscalt(ireg)%lum(ilu)%aa%sed + lscalt(ireg)%lum(ilu)%sim%sed / lscalt(ireg)%lum(ilu)%ha
+                ! add nutrients
+              end if
+            end do
+          end do    !reg
+        end if
+          
+        !! sum landscape output for soft data calibration
+        if (cal_codes%plt == 'y') then
+            
+          !calibrate plnt growth
+          do ireg = 1, db_mx%plcal_reg
+            do ilu = 1, plcal(ireg)%lum_num
+              plcal(ireg)%lum(ilu)%ha = 0.
+              plcal(ireg)%lum(ilu)%precip = 0.
+              plcal(ireg)%lum(ilu)%sim = plcal_z  !! zero all calibration parameters
+              do ihru_s = 1, plcal(ireg)%num_tot
+                ihru = plcal(ireg)%num(ihru_s)
+                if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%land_use_mgt) then
+                  ha_hru = 100. * sd(ihru)%km2      ! 10 * ha * mm --> m3
+                  plcal(ireg)%lum(ilu)%ha = plcal(ireg)%lum(ilu)%ha + ha_hru
+                  plcal(ireg)%lum(ilu)%precip = plcal(ireg)%lum(ilu)%precip + (10. * ha_hru * sdwb_y(ihru)%precip)
+                  plcal(ireg)%lum(ilu)%sim%yield = plcal(ireg)%lum(ilu)%sim%yield + (10. * ha_hru * sdpw_y(ihru)%yield)
+                  plcal(ireg)%lum(ilu)%sim%npp = plcal(ireg)%lum(ilu)%sim%npp + (10. * ha_hru * sdpw_y(ihru)%bioms)
+                  plcal(ireg)%lum(ilu)%sim%lai_mx = plcal(ireg)%lum(ilu)%sim%lai_mx + (10. * ha_hru * sdpw_y(ihru)%lai)
+                  plcal(ireg)%lum(ilu)%sim%wstress = plcal(ireg)%lum(ilu)%sim%wstress + (10. * ha_hru * sdpw_y(ihru)%strsw)
+                  plcal(ireg)%lum(ilu)%sim%astress = plcal(ireg)%lum(ilu)%sim%astress + (10. * ha_hru * sdpw_y(ihru)%strsa)
+                  plcal(ireg)%lum(ilu)%sim%tstress = plcal(ireg)%lum(ilu)%sim%tstress + (ha_hru * sdpw_y(ihru)%strstmp)
+                end if
+              end do
+            end do  !lum_num
+            
+            do ilu = 1, plcal(ireg)%lum_num
+              if (plcal(ireg)%lum(ilu)%ha > 1.e-6) then
+                plcal(ireg)%lum(ilu)%nbyr = plcal(ireg)%lum(ilu)%nbyr + 1
+                !! convert back to mm, t/ha, kg/ha
+                plcal(ireg)%lum(ilu)%precip_aa = plcal(ireg)%lum(ilu)%precip_aa + plcal(ireg)%lum(ilu)%precip / (10. * plcal(ireg)%lum(ilu)%ha)
+                plcal(ireg)%lum(ilu)%aa%yield = plcal(ireg)%lum(ilu)%aa%yield + plcal(ireg)%lum(ilu)%sim%yield / (10. * plcal(ireg)%lum(ilu)%ha)
+                plcal(ireg)%lum(ilu)%aa%npp = plcal(ireg)%lum(ilu)%aa%npp + plcal(ireg)%lum(ilu)%sim%npp / (10. * plcal(ireg)%lum(ilu)%ha)
+                plcal(ireg)%lum(ilu)%aa%lai_mx = plcal(ireg)%lum(ilu)%aa%lai_mx + plcal(ireg)%lum(ilu)%sim%lai_mx / (10. * plcal(ireg)%lum(ilu)%ha)
+                plcal(ireg)%lum(ilu)%aa%wstress = plcal(ireg)%lum(ilu)%aa%wstress + plcal(ireg)%lum(ilu)%sim%wstress / (10. * plcal(ireg)%lum(ilu)%ha)
+                plcal(ireg)%lum(ilu)%aa%astress = plcal(ireg)%lum(ilu)%aa%astress + plcal(ireg)%lum(ilu)%sim%astress / (10. * plcal(ireg)%lum(ilu)%ha)
+                plcal(ireg)%lum(ilu)%aa%tstress = plcal(ireg)%lum(ilu)%aa%tstress + plcal(ireg)%lum(ilu)%sim%tstress / plcal(ireg)%lum(ilu)%ha
+                ! add nutrients
+              end if
+            end do
+          end do    !reg
         end if
 
         !! sum channel output for soft data calibration
@@ -289,18 +373,26 @@
                 chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd !+ chsd_a()%dep_fp
               end do
             end do
-            !average the channel data
-              do iord = 1, chcal(ireg)%ord_num
-                if (lscal(ireg)%lum(iord)%nbyr > 0) then
-                  !! convert back to mm, t/ha, kg/ha
-                  chcal(ireg)%ord(iord)%aa%chd = chcal(ireg)%ord(iord)%aa%chd / chcal(ireg)%ord(iord)%nbyr
-                  chcal(ireg)%ord(iord)%aa%chw = chcal(ireg)%ord(iord)%aa%chw / chcal(ireg)%ord(iord)%nbyr
-                  chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd / chcal(ireg)%ord(iord)%nbyr
-                end if
-              end do
+            !average the channel data - could do it by length
+            !  do iord = 1, chcal(ireg)%ord_num
+            !    if (lscal(ireg)%lum(iord)%nbyr > 0) then
+            !      !! convert back to mm, t/ha, kg/ha
+            !      chcal(ireg)%ord(iord)%aa%chd = chcal(ireg)%ord(iord)%aa%chd / chcal(ireg)%ord(iord)%length
+            !      chcal(ireg)%ord(iord)%aa%chw = chcal(ireg)%ord(iord)%aa%chw / chcal(ireg)%ord(iord)%length
+            !      chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd / chcal(ireg)%ord(iord)%length
+            !    end if
+            !  end do
           end do    !reg
         end if
 
+        do j = 1, sp_ob%hru_lte
+          !! zero yearly balances after using them in soft data calibration (was in sd_hru_output)
+          sdwb_y(j) = hwbz
+          sdnb_y(j) = hnbz
+          sdpw_y(j) = hpwz
+          sdls_y(j) = hlsz
+        end do
+        
         do j = 1, mhru
           !! zero yearly balances after using them in soft data calibration (was in hru_output)
           hwb_y(j) = hwbz
@@ -360,17 +452,60 @@
 
         !! average output for soft data calibration
         if (cal_codes%ls == 'y') then
+            
+          !average annual for hru calibration
           do ireg = 1, db_mx%lscal_reg
             do ilu = 1, lscal(ireg)%lum_num
               if (lscal(ireg)%lum(ilu)%nbyr > 0) then
                 !! convert back to mm, t/ha, kg/ha
                 lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%precip_aa_sav = lscal(ireg)%lum(ilu)%precip_aa
                 lscal(ireg)%lum(ilu)%aa%srr = lscal(ireg)%lum(ilu)%aa%srr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%lfr = lscal(ireg)%lum(ilu)%aa%lfr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%pcr = lscal(ireg)%lum(ilu)%aa%pcr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%etr = lscal(ireg)%lum(ilu)%aa%etr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%tfr = lscal(ireg)%lum(ilu)%aa%tfr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%sed = lscal(ireg)%lum(ilu)%aa%sed / lscal(ireg)%lum(ilu)%nbyr
+                ! add nutrients
+              end if
+            end do
+          end do
+        
+          !average annual for hru_lte calibration
+          do ireg = 1, db_mx%lscalt_reg
+            do ilu = 1, lscalt(ireg)%lum_num
+              if (lscalt(ireg)%lum(ilu)%nbyr > 0) then
+                !! convert back to mm, t/ha, kg/ha
+                lscalt(ireg)%lum(ilu)%precip_aa = lscalt(ireg)%lum(ilu)%precip_aa / lscalt(ireg)%lum(ilu)%nbyr
+                lscalt(ireg)%lum(ilu)%precip_aa_sav = lscalt(ireg)%lum(ilu)%precip_aa
+                lscalt(ireg)%lum(ilu)%aa%srr = lscalt(ireg)%lum(ilu)%aa%srr / lscalt(ireg)%lum(ilu)%nbyr
+                lscalt(ireg)%lum(ilu)%aa%lfr = lscalt(ireg)%lum(ilu)%aa%lfr / lscalt(ireg)%lum(ilu)%nbyr
+                lscalt(ireg)%lum(ilu)%aa%pcr = lscalt(ireg)%lum(ilu)%aa%pcr / lscalt(ireg)%lum(ilu)%nbyr
+                lscalt(ireg)%lum(ilu)%aa%etr = lscalt(ireg)%lum(ilu)%aa%etr / lscalt(ireg)%lum(ilu)%nbyr
+                lscalt(ireg)%lum(ilu)%aa%tfr = lscalt(ireg)%lum(ilu)%aa%tfr / lscalt(ireg)%lum(ilu)%nbyr
+                lscalt(ireg)%lum(ilu)%aa%sed = lscalt(ireg)%lum(ilu)%aa%sed / lscalt(ireg)%lum(ilu)%nbyr
+                ! add nutrients
+              end if
+            end do
+          end do
+        end if
+            
+        !! average output for soft data calibration
+        if (cal_codes%plt == 'y') then
+            
+          !average annual for hru_lte calibration
+          do ireg = 1, db_mx%plcal_reg
+            do ilu = 1, plcal(ireg)%lum_num
+              if (plcal(ireg)%lum(ilu)%nbyr > 0) then
+                !! convert back to mm, t/ha, kg/ha
+                plcal(ireg)%lum(ilu)%precip_aa = plcal(ireg)%lum(ilu)%precip_aa / plcal(ireg)%lum(ilu)%nbyr
+                plcal(ireg)%lum(ilu)%precip_aa_sav = plcal(ireg)%lum(ilu)%precip_aa
+                plcal(ireg)%lum(ilu)%aa%yield = plcal(ireg)%lum(ilu)%aa%yield / plcal(ireg)%lum(ilu)%nbyr
+                plcal(ireg)%lum(ilu)%aa%npp = plcal(ireg)%lum(ilu)%aa%npp / plcal(ireg)%lum(ilu)%nbyr
+                plcal(ireg)%lum(ilu)%aa%lai_mx = plcal(ireg)%lum(ilu)%aa%lai_mx / plcal(ireg)%lum(ilu)%nbyr
+                plcal(ireg)%lum(ilu)%aa%wstress = plcal(ireg)%lum(ilu)%aa%wstress / plcal(ireg)%lum(ilu)%nbyr
+                plcal(ireg)%lum(ilu)%aa%astress = plcal(ireg)%lum(ilu)%aa%astress / plcal(ireg)%lum(ilu)%nbyr
+                plcal(ireg)%lum(ilu)%aa%tstress = plcal(ireg)%lum(ilu)%aa%tstress / plcal(ireg)%lum(ilu)%nbyr
                 ! add nutrients
               end if
             end do

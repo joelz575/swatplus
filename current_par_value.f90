@@ -746,7 +746,9 @@
         case ("uslels_lte")
             sd_db(ielem)%uslels = chg_par (sd_db(ielem)%uslels, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
-      end select
+        case ("t_opt")
+            sd_db(ielem)%uslels = chg_par (sd_db(ielem)%uslels, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        end select
 
       return
       end subroutine current_par_value

@@ -95,6 +95,17 @@
         allocate (fdc_hdr(1))
         write (6000,*) (fdc_hdr(1))
       end if 
+	  
+	  open (5000,file="hru-lte-reg.cal", recl = 800)
+	  write (9000,*)   'CALB                hru-lte-reg.cal'
+	  allocate (calb_hdr(1))
+	  write (5000,*) (calb_hdr(1))
+	  
+	  open (4999,file="hru-lte.cal", recl = 800)
+	  write (9000,*)   'CALB                hru-lte.cal'
+	  allocate (calb2_hdr(1))
+	  write (4999,*) (calb2_hdr(1)) 
+	  
       
  1002 format (t15,'SURFACE',t29,'-------  SOIL PROFILE  -------',/,   &
         t8,'DAY',t15,'SOL_RSD',t27,'SOL_P',t38,                       &

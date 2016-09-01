@@ -26,7 +26,7 @@
         sdwb_d(isd)%cn = cn_sd
         sdwb_d(isd)%sw = sd(isd)%sw             
         sdwb_d(isd)%pet = pet             
-        sdwb_d(isd)%qtile = 0.
+        sdwb_d(isd)%qtile = flow_tile
         sdwb_d(isd)%irr = air
         
 !    output_nutbal - no nutrients currently in SWAT-DEG
@@ -50,8 +50,7 @@
 !        sdnb_d(isd)%no3pcp = 0.   !! no3pcp
 
 !    output_losses - SWAT-DEG
-        sdls_d(isd)%sedyld = sedin /                                    & 
-               (100. * sd_db(isd_db)%dakm2) !! sedyld(isd) / hru_ha(isd)
+        sdls_d(isd)%sedyld = sedin / (100. * sd_db(isd_db)%dakm2) !! sedyld(isd) / hru_ha(isd)
         sdls_d(isd)%sedorgn = 0.   !! sedorgn(isd)
         sdls_d(isd)%sedorgp = 0.   !! sedorgp(isd)
         sdls_d(isd)%surqno3 = 0.   !! surqno3(isd)
@@ -64,23 +63,24 @@
         sdls_d(isd)%tileno3 = 0.   !! tileno3(isd)
         
 !    output_plantweather - SWAT-DEG
-        sdpw_d(isd)%lai =  sd(isd)%alai   !! lai
-        sdpw_d(isd)%bioms =  sd(isd)%dm   !! total biomass
-        sdpw_d(isd)%yield =  0.           !! crop uield
-        sdpw_d(isd)%residue =  0.         !! residue
-        sdpw_d(isd)%sol_tmp =  0.         !! soil(isd)%phys(2))%tmp
-        sdpw_d(isd)%strsw = ws            !! (1.-strsw_av(isd))
-        sdpw_d(isd)%strstmp = tstress     !! (1.-strstmp_av)
-        sdpw_d(isd)%strsn = 0.            !! (1.-strsn_av)        
-        sdpw_d(isd)%strsp = 0.            !! (1.-strsp_av)
-        sdpw_d(isd)%nplnt = 0.            !! nplnt(isd)
-        sdpw_d(isd)%percn = 0.            !! percn(isd)
-        sdpw_d(isd)%pplnt = 0.            !! pplnt(isd)
-        sdpw_d(isd)%tmx = tmax            !! tmx(isd)
-        sdpw_d(isd)%tmn = tmin            !! tmn(isd)
-        sdpw_d(isd)%tmpav = tave          !! tmpav(isd)
-        sdpw_d(isd)%solrad = raobs        !! hru_ra(isd)
-        sdpw_d(isd)%phubase0 = phubase0   !! base zero potential heat units
+        sdpw_d(isd)%lai =  sd(isd)%alai     !! lai
+        sdpw_d(isd)%bioms =  sd(isd)%dm     !! total biomass
+        sdpw_d(isd)%yield =  yield          !! crop yield
+        sdpw_d(isd)%residue =  0.           !! residue
+        sdpw_d(isd)%sol_tmp =  0.           !! soil(isd)%phys(2))%tmp
+        sdpw_d(isd)%strsw = 1. - ws         !! (1.-strsw_av(isd))
+        sdpw_d(isd)%strsa = 1. - strsair    !! (1.-strsw_av(isd))
+        sdpw_d(isd)%strstmp = 1. - tstress  !! (1.-strstmp_av)
+        sdpw_d(isd)%strsn = 0.              !! (1.-strsn_av)        
+        sdpw_d(isd)%strsp = 0.              !! (1.-strsp_av)
+        sdpw_d(isd)%nplnt = 0.              !! nplnt(isd)
+        sdpw_d(isd)%percn = 0.              !! percn(isd)
+        sdpw_d(isd)%pplnt = 0.              !! pplnt(isd)
+        sdpw_d(isd)%tmx = tmax              !! tmx(isd)
+        sdpw_d(isd)%tmn = tmin              !! tmn(isd)
+        sdpw_d(isd)%tmpav = tave            !! tmpav(isd)
+        sdpw_d(isd)%solrad = raobs          !! hru_ra(isd)
+        sdpw_d(isd)%phubase0 = phubase0     !! base zero potential heat units
         
         sdwb_m(isd) = sdwb_m(isd) + sdwb_d(isd)
         sdnb_m(isd) = sdnb_m(isd) + sdnb_d(isd)
@@ -204,38 +204,38 @@
                 write (4029,'(*(G0.3,:","))') time%end_yr, time%yrc, isd, sdpw_y(isd)
               end if 
            end if
-          
-          sdwb_y(isd) = hwbz
-          sdnb_y(isd) = hnbz
-          sdpw_y(isd) = hpwz
-          sdls_y(isd) = hlsz
+
         end if
         
 !!!!! average annual print
-         if (time%end_sim == 1) then
+         if (time%end_sim == 1 .and. pco%wb_sd > 0) then
            sdwb_a(isd) = sdwb_a(isd) / time%yrs_prt
            write (4104,100) time%end_yr, time%yrs, isd, sdwb_a(isd)
-             if (pco%csvout == 1) then 
-               write (4124,'(*(G0.3,:","))') time%end_yr, time%yrs, isd, sdwb_a(isd)
-             end if 
+           if (pco%csvout == 1) then 
+             write (4124,'(*(G0.3,:","))') time%end_yr, time%yrs, isd, sdwb_a(isd)
+           end if
+           sdwb_a(isd) = hwbz
          end if
         
-!         if (time%end_sim == 1) then 
+!         if (time%end_sim == 1 .and. pco%nb_sd > 0) then 
 !           sdnb_a(isd) = sdnb_a(isd) / time%yrs_prt
 !           write (4105,100) time%end_yr, time%yrs, isd, sdnb_a(isd)
 !         end if
-        
-         if (time%end_sim == 1) then
+!         sdnb_a(isd) = hnbz       
+         
+         if (time%end_sim == 1 .and. pco%ls_sd > 0) then
            sdls_a(isd) = sdls_a(isd) / time%yrs_prt  
            write (4106,101) time%end_yr, time%yrs, isd, sdls_a(isd)
          end if
+         sdls_a(isd) = hlsz
         
-         if (time%end_sim == 1) then   
+         if (time%end_sim == 1 .and. pco%pw_sd > 0) then   
            sdpw_a(isd) = sdpw_a(isd) / time%yrs_prt      
            write (4107,102) time%end_yr, time%yrs, isd, sdpw_a(isd)
            if (pco%csvout == 1) then 
              write (4030,'(*(G0.3,:","))') time%end_yr, time%yrs, isd, sdpw_a(isd)
-           end if  
+           end if
+           sdpw_a(isd) = hpwz
          end if
          
       return

@@ -315,7 +315,7 @@
               write (143, 1000) j, time%yrc, i_mo,iida,                 & 
               pldb(idp)%plantnm, pcomdb(icom)%name, phubase(j),         &
               pcom(j)%plcur(ipl)%phuacc,                                &
-              soil(j)%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,  &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,     &
               sol_sumno3(j),                                            &
               sol_sumsolp(j), pcom(j)%plg(ipl)%lai,                     &
               pcom(j)%plg(ipl)%laimx_pop

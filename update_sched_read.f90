@@ -32,12 +32,12 @@
       mchg_sched = 0
         
       !!read parameter change values for calibration
-      inquire (file=in_chg%sched_upd, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%sched_upd == 'null') then
+      inquire (file=in_sch%structural_sch, exist=i_exist)
+      if (i_exist == 0 .or. in_sch%structural_sch == 'null') then
         allocate (upd_sched(0:0))
       else
       do
-        open (107,file=in_chg%sched_upd)
+        open (107,file=in_sch%structural_sch)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mchg_sched

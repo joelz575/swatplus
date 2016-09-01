@@ -109,7 +109,6 @@
       end type input_water_rights
       type (input_water_rights) :: in_watrts
       
-
 !! link
       type input_link
        character(len=25) :: chan_surf = "chan-surf.lin"
@@ -186,6 +185,7 @@
 
       type input_sch
        character(len=25) :: management_sch = "management.sch"
+       character(len=25) :: structural_sch = "structural.sch"
       end type input_sch
       type (input_sch) :: in_sch
 
@@ -196,9 +196,14 @@
       type (input_lum) :: in_lum
 
       type input_chg
-       character(len=25) :: cal_parms = "cal_parms.upd"
-       character(len=25) :: cal_upd = "calibration.upd"
-       character(len=25) :: sched_upd = "schedule.upd"
+       character(len=25) :: codes_cal = "codes.cal"
+       character(len=25) :: cal_parms = "cal_parms.cal"
+       character(len=25) :: cal_upd = "calibration.cal"
+       character(len=25) :: ls_parms_cal = "ls_parms.cal"
+       character(len=25) :: ls_regions_cal = "ls_regions.cal"
+       character(len=25) :: ls_regions_cal_lte = "ls_regions_lte.cal"
+       character(len=25) :: ch_orders_cal = "ch_orders.cal"
+       character(len=25) :: ch_parms_cal = "ch_parms.cal"
       end type input_chg
       type (input_chg) :: in_chg
 

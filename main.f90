@@ -52,16 +52,17 @@
       integer :: ibac, mbac, mbac_db, ii, iob, idfn, isb, ielem, ifld
       integer :: istr_db, mstr_prac, istr, iscenario, j, ichan, idat
       integer :: isched, iauto, ictl
+      integer :: isdh, idb, ihru_s
       real :: rto, sumn, t_ch, ch_slope, ch_n, ch_l, tov
       character(len=16):: chg_typ
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco
 
-      prog = "SWAT+ Jun 28 2016    MODULAR Rev 24"
+      prog = "SWAT+ Sep 1 2016    MODULAR Rev 2016.25"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "           Revision 24 - Jun 28        ",/,            &
+     &          "              Revision 25             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -87,14 +88,22 @@
       call basin_prm_default
       call basin_print_codes_read
 
+      write (*,*) 'reading from precipitation file'
       call cli_pmeas
+      write (*,*) 'reading from temperature file'
       call cli_tmeas
+      write (*,*) 'reading from solar radiation file'
       call cli_smeas
+      write (*,*) 'reading from relative humidity file'
       call cli_hmeas
+      write (*,*) 'reading from wind file'
       call cli_wmeas
+      write (*,*) 'reading from precipitation file'
       
       call cli_wgnread
+      write (*,*) 'reading from wgn file'
       call cli_staread
+      write (*,*) 'reading from wx station file'
       
       call sep_read
       call solt_db_read
@@ -231,8 +240,11 @@
             
       !! read soft calibration parameters
       call codes_cal_read
-      call ls_regions_cal_read
+      call ls_regions_cal_read      !soft data for hru calibration
+      call ls_regions_calt_read     !soft data for hru_lte calibration
       call ls_parms_cal_read
+      call pl_regions_cal_read     !soft data for hru_lte calibration
+      call pl_parms_cal_read
       call ch_regions_cal_read
       call ch_parms_cal_read
 
@@ -262,6 +274,9 @@
           hru_init(ihru) = hru(ihru)
           soil_init(ihru) = soil(ihru)
           pcom_init(ihru) = pcom(ihru)
+        end do
+        do ihru = 1, sp_ob%hru_lte
+          sd_init(ihru) = sd(ihru)
         end do
       end if
       
@@ -296,8 +311,40 @@
       !calibrate hydrology
       if (cal_codes%hyd == 'y') then
         call cal_hyd
-      end if
+        call calt_hyd
+		do ireg = 1, db_mx%lscalt_reg
+		  do ilum = 1, lscalt(ireg)%lum_num
+            lscalt(ireg)%lum(ilum)%meas%srr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%srr
+            lscalt(ireg)%lum(ilum)%meas%lfr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%lfr
+            lscalt(ireg)%lum(ilum)%meas%pcr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%pcr
+            lscalt(ireg)%lum(ilum)%meas%etr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%etr
+            lscalt(ireg)%lum(ilum)%meas%tfr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%tfr
             
+            write (5000,500) lscalt(ireg)%lum(ilum)%name, lscalt(ireg)%lum(ilum)%ha, lscalt(ireg)%lum(ilum)%nbyr, &
+                    lscalt(ireg)%lum(ilum)%precip_aa_sav,                                                         &
+                    lscalt(ireg)%lum(ilum)%meas, lscalt(ireg)%lum(ilum)%aa, lscalt(ireg)%lum(ilum)%prm
+		  end do
+        end do  
+      
+	    do isdh = 1, sp_ob%hru_lte
+	      idb = sd(isdh)%props
+		  write (4999,400) sd(isdh)%name, sd_db(idb)%dakm2, sd(isdh)%cn2, sd(isdh)%cn3_swf, sd_db(idb)%tc,       &
+		    sd_db(idb)%soildep, sd(isdh)%perco, sd_db(isdh)%slope, sd_db(idb)%slopelen,        &
+		    sd(isdh)%etco,  sd_db(idb)%sy, sd_db(idb)%abf, sd(idb)%revapc,                     &
+		    sd_db(idb)%percc, sd_db(idb)%sw, sd_db(idb)%gw, sd_db(idb)%gwflow,                 &
+		    sd_db(idb)%gwdeep, sd_db(idb)%snow, sd_db(idb)%xlat, sd_db(idb)%itext,             &
+		    sd_db(idb)%tropical, sd_db(idb)%igrow1, sd_db(idb)%igrow2, sd_db(idb)%plant, sd(isdh)%stress,      &
+		    sd_db(idb)%ipet, sd_db(idb)%irr, sd_db(idb)%irrsrc, sd_db(idb)%tdrain,             &
+            sd_db(idb)%uslek, sd_db(idb)%uslec, sd_db(idb)%uslep, sd_db(idb)%uslels
+	    end do
+		
+      end if
+        
+      !calibrate plant growth
+      if (cal_codes%plt == 'y') then
+        call cal_plant
+      end if
+      
       !calibrate sediment yield from uplands (hru's)
       if (cal_codes%sed == 'y') then
         call cal_sed
@@ -308,7 +355,6 @@
         call cal_chsed
       end if
       
-      
       do i = 101, 109       !Claire 12/2/09: change 1, 9  to 101, 109.
         close (i)
       end do
@@ -316,6 +362,7 @@
       
       write (*,1001)
  1001 format (/," Execution successfully completed ")
-      
+  400 format (a16,19f12.3,4i12,12x,a4,f12.3,3i12,5f12.3)
+  500 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),10f12.3)	
 	  stop
       end

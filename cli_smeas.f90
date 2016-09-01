@@ -1,5 +1,6 @@
       subroutine cli_smeas
       
+      use climate_parms
       use input_file_module
       
       character (len=80) :: header
@@ -13,6 +14,7 @@
       inquire (file=in_cli%slr_cli, exist=i_exist)
       if (i_exist == 0 .or. in_cli%slr_cli == 'null') then
         allocate (slr(0:0))
+        allocate (slr_n(0))
       else
       do 
         open (107,file=in_cli%slr_cli)
@@ -27,9 +29,19 @@
           end do
           
       allocate (slr(0:imax))
+      allocate (slr_n(imax))
+      
       rewind (107)
       read (107,*) titldum
       read (107,*) header
+      do i = 1, imax
+        read (107,*, iostat=eof) slr_n(i)
+        if (eof < 0) exit
+      end do
+      
+      rewind (107)
+      read (107,*) titldum
+      read (107,*) header      
       
       do i = 1, imax
         read (107,*,iostat = eof) slr(i)%filename

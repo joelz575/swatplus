@@ -61,25 +61,14 @@
           sd_ch(i)%cov = sd_chd(i)%cov
           sd_ch(i)%hc_len = sd_chd(i)%hc_ini
           
-          !! conpute headcut parameters
+          !! compute headcut parameters
           kh = sd_chd(i)%hc_kh
           if (kh > 1.e-6) then
-            sd_ch(i)%attack0 = (189. * (kh**.5) * exp(-3.23 / (alog(101. * kh)))) ** .33333
-            if (kh < 18.2) then
-              sd_ch(i)%hc_co = -.79 * alog(kh) + 3.04
-            else
-              sd_ch(i)%hc_co = .75
-            end if
+            sd_ch(i)%hc_co = .004 * kh ** -.77 * (1. - sd_chd(i)%hc_cov)
           else
             sd_ch(i)%hc_co = 0.
-            sd_ch(i)%attack0 = 0.
           end if
 
-!     !      effective depth for channel storage and et 
-!     !      wet/dry calculation
-!         ch_effd = 150.0
-!         ch_stmx = sd(i)%awct(sd_db(i)%itext) * ch_effd
-  
 !!      compute travel time coefficients
           aa = 1.
           b = 0.

@@ -129,7 +129,7 @@
             grwat_d(j) = 3. / 64. * grwat_w(j)
           end if
           !! Default to 3/4 HRU slope
-          if (grwat_s(j) <=0.) grwat_s(j) = hru_slp(j)*.75
+          if (grwat_s(j) <=0.) grwat_s(j) = hru(j)%topo%slope * .75
           !! default sed coeff to 0.005
           if (grwat_spcon(j)<= 0.) grwat_spcon(j) = 0.005
 

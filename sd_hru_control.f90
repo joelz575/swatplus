@@ -24,7 +24,7 @@
       
       yield = 0.
       ws = 0.
-      strsair = 0.
+      strsair = 1.
       tstress = 0.
       snowfall = 0.
       snowmelt = 0.
@@ -146,8 +146,10 @@
 
           IF (time%day == sd_db(isd_db)%igrow2) then
             !calculate yield - print lai, biomass and yield - add stress to yield?
-            yield = sd(isd)%dm * pldb(iplt)%hvsti  ! * sd_db(isd_db)%stress
-            
+            yield = sd(isd)%dm * pldb(iplt)%hvsti  ! * sd(isd)%stress
+            sd(isd)%yield = yield / 1000.
+            sd(isd)%npp = sd(isd)%dm / 1000.
+            sd(isd)%lai_mx = sd(isd)%alai
             !compute annual net primary productivity (npp) for perennial non-harvested?
             !use output.mgt print code
             !write() isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
@@ -177,7 +179,7 @@
             END IF 
             sd(isd)%g = sd(isd)%g + delg 
             parad = .5 * raobs * (1.-EXP(-.65 * (sd(isd)%alai + .05))) 
-            drymat = parad * pldb(iplt)%bio_e * sd_db(isd_db)%stress
+            drymat = parad * pldb(iplt)%bio_e * sd(isd)%stress
             biomass = biomass + drymat
             ws = aet / pet
             

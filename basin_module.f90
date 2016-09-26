@@ -162,6 +162,7 @@
         integer :: jd_end = 0         !!  julian day to end printing output
         integer :: yr_start = 0       !!  calendar year to start printing output
         integer :: yr_end = 0         !!  calendar year to end printing output
+        integer :: interval = 1       !!  interval between daily printing within period
         ! HRU
         integer :: wb_hru = 0         !!  water balance HRU output
         integer :: nb_hru = 0         !!  nutrient balance HRU output

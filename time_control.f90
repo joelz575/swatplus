@@ -150,6 +150,13 @@
               time%yrs_prt = time%yrs_prt / 365.
             end if
           end if
+          
+          !! check time interval for daily printing
+          if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end   &
+                                             .and. time%day <= pco%jd_end) then
+            int_print = int_print + 1
+            if (int_print > pco%interval) int_print = 1
+          end if
 
           !! initialize variables at beginning of day for hru's
           if (sp_ob%hru > 0) call sim_initday
@@ -237,8 +244,7 @@
         !! perform end-of-year processes
         
         !! sum landscape output for soft data calibration
-        if (cal_codes%ls == 'y') then
-            
+        if (cal_codes%hyd_hru == 'y') then
           !calibrate hru's
           do ireg = 1, db_mx%lscal_reg
             do ilu = 1, lscal(ireg)%lum_num
@@ -247,7 +253,7 @@
               lscal(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
               do ihru_s = 1, lscal(ireg)%num_tot
                 ihru = lscal(ireg)%num(ihru_s)
-                if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%land_use_mgt) then
+                if (lscal(ireg)%lum(ilu)%meas%name == hru(ihru)%land_use_mgt_c) then
                   ha_hru = 100. * hru(ihru)%km      ! 10 * ha * mm --> m3
                   lscal(ireg)%lum(ilu)%ha = lscal(ireg)%lum(ilu)%ha + ha_hru
                   lscal(ireg)%lum(ilu)%precip = lscal(ireg)%lum(ilu)%precip + (10. * ha_hru * hwb_y(ihru)%precip)
@@ -277,7 +283,9 @@
               end if
             end do
           end do    !reg
-          
+        end if
+        
+        if (cal_codes%hyd_hrul == 'y') then
           !calibrate hru_lte's
           do ireg = 1, db_mx%lscalt_reg
             do ilu = 1, lscalt(ireg)%lum_num
@@ -318,9 +326,8 @@
           end do    !reg
         end if
           
-        !! sum landscape output for soft data calibration
+        !! sum landscape output for plant soft data calibration
         if (cal_codes%plt == 'y') then
-            
           !calibrate plnt growth
           do ireg = 1, db_mx%plcal_reg
             do ilu = 1, plcal(ireg)%lum_num
@@ -329,13 +336,13 @@
               plcal(ireg)%lum(ilu)%sim = plcal_z  !! zero all calibration parameters
               do ihru_s = 1, plcal(ireg)%num_tot
                 ihru = plcal(ireg)%num(ihru_s)
-                if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%land_use_mgt) then
+                if (plcal(ireg)%lum(ilu)%meas%name == sd(ihru)%plant) then
                   ha_hru = 100. * sd(ihru)%km2      ! 10 * ha * mm --> m3
                   plcal(ireg)%lum(ilu)%ha = plcal(ireg)%lum(ilu)%ha + ha_hru
                   plcal(ireg)%lum(ilu)%precip = plcal(ireg)%lum(ilu)%precip + (10. * ha_hru * sdwb_y(ihru)%precip)
-                  plcal(ireg)%lum(ilu)%sim%yield = plcal(ireg)%lum(ilu)%sim%yield + (10. * ha_hru * sdpw_y(ihru)%yield)
-                  plcal(ireg)%lum(ilu)%sim%npp = plcal(ireg)%lum(ilu)%sim%npp + (10. * ha_hru * sdpw_y(ihru)%bioms)
-                  plcal(ireg)%lum(ilu)%sim%lai_mx = plcal(ireg)%lum(ilu)%sim%lai_mx + (10. * ha_hru * sdpw_y(ihru)%lai)
+                  plcal(ireg)%lum(ilu)%sim%yield = plcal(ireg)%lum(ilu)%sim%yield + (10. * ha_hru * sd(ihru)%yield)
+                  plcal(ireg)%lum(ilu)%sim%npp = plcal(ireg)%lum(ilu)%sim%npp + (10. * ha_hru * sd(ihru)%npp)
+                  plcal(ireg)%lum(ilu)%sim%lai_mx = plcal(ireg)%lum(ilu)%sim%lai_mx + (10. * ha_hru * sd(ihru)%lai_mx)
                   plcal(ireg)%lum(ilu)%sim%wstress = plcal(ireg)%lum(ilu)%sim%wstress + (10. * ha_hru * sdpw_y(ihru)%strsw)
                   plcal(ireg)%lum(ilu)%sim%astress = plcal(ireg)%lum(ilu)%sim%astress + (10. * ha_hru * sdpw_y(ihru)%strsa)
                   plcal(ireg)%lum(ilu)%sim%tstress = plcal(ireg)%lum(ilu)%sim%tstress + (ha_hru * sdpw_y(ihru)%strstmp)
@@ -361,27 +368,35 @@
         end if
 
         !! sum channel output for soft data calibration
-        if (cal_codes%chsed == 'y') then
+        if (cal_codes%chsed == 'y' .and. cal_codes%sed == 'n' .and. cal_codes%plt == 'n' .and. cal_codes%hyd_hru == 'n' .and. cal_codes%hyd_hrul == 'n') then
           do ireg = 1, db_mx%chcal_reg
             do iord = 1, chcal(ireg)%ord_num
+              chcal(ireg)%ord(iord)%length = 0.
               chcal(ireg)%ord(iord)%sim = chcal_z  !! zero all calibration parameters
               do ich_s = 1, chcal(ireg)%num_tot
                 ich = chcal(ireg)%num(ich_s)
-                chcal(ireg)%ord(iord)%nbyr = chcal(ireg)%ord(iord)%nbyr + 1
-                chcal(ireg)%ord(iord)%aa%chw = chcal(ireg)%ord(iord)%aa%chw + chsd_a(ich)%deg_bank
-                chcal(ireg)%ord(iord)%aa%chd = chcal(ireg)%ord(iord)%aa%chd + chsd_a(ich)%deg_btm
-                chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd !+ chsd_a()%dep_fp
+                if (chcal(ireg)%ord(iord)%meas%name == sd_ch(ich)%order) then
+                  chcal(ireg)%ord(iord)%nbyr = chcal(ireg)%ord(iord)%nbyr + 1
+                  chcal(ireg)%ord(iord)%length = chcal(ireg)%ord(iord)%length + sd_ch(ich)%chl
+                  chcal(ireg)%ord(iord)%aa%chw = chcal(ireg)%ord(iord)%aa%chw + chsd_y(ich)%deg_bank_m * sd_ch(ich)%chl
+                  chcal(ireg)%ord(iord)%aa%chd = chcal(ireg)%ord(iord)%aa%chd + chsd_y(ich)%deg_btm_m * sd_ch(ich)%chl
+                  chcal(ireg)%ord(iord)%aa%hc = chcal(ireg)%ord(iord)%aa%hc + chsd_y(ich)%hc_m * sd_ch(ich)%chl
+                  chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd !+ chsd_y()%dep_fp_m * sd_ch(ich)%chl
+                end if
               end do
             end do
-            !average the channel data - could do it by length
-            !  do iord = 1, chcal(ireg)%ord_num
-            !    if (lscal(ireg)%lum(iord)%nbyr > 0) then
-            !      !! convert back to mm, t/ha, kg/ha
-            !      chcal(ireg)%ord(iord)%aa%chd = chcal(ireg)%ord(iord)%aa%chd / chcal(ireg)%ord(iord)%length
-            !      chcal(ireg)%ord(iord)%aa%chw = chcal(ireg)%ord(iord)%aa%chw / chcal(ireg)%ord(iord)%length
-            !      chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd / chcal(ireg)%ord(iord)%length
-            !    end if
-            !  end do
+            !average the channel data by length
+            do iord = 1, chcal(ireg)%ord_num
+              if (chcal(ireg)%ord(iord)%nbyr > 0) then
+                !! convert back to mm, t/ha, kg/ha
+                if (chcal(ireg)%ord(iord)%length > 1.e-6) then
+                  chcal(ireg)%ord(iord)%aa%chd = chcal(ireg)%ord(iord)%aa%chd / chcal(ireg)%ord(iord)%length
+                  chcal(ireg)%ord(iord)%aa%chw = chcal(ireg)%ord(iord)%aa%chw / chcal(ireg)%ord(iord)%length
+                  chcal(ireg)%ord(iord)%aa%hc = chcal(ireg)%ord(iord)%aa%hc / chcal(ireg)%ord(iord)%length
+                  chcal(ireg)%ord(iord)%aa%fpd = chcal(ireg)%ord(iord)%aa%fpd / chcal(ireg)%ord(iord)%length
+                end if
+              end if
+            end do
           end do    !reg
         end if
 
@@ -391,6 +406,11 @@
           sdnb_y(j) = hnbz
           sdpw_y(j) = hpwz
           sdls_y(j) = hlsz
+        end do
+        
+        do j = 1, sp_ob%chandeg
+          !! zero yearly balances after using them in soft data calibration (was in sd_channel_output)
+          chsd_y(ich) = chsdz
         end do
         
         do j = 1, mhru
@@ -451,8 +471,7 @@
       end do            !!     end annual loop
 
         !! average output for soft data calibration
-        if (cal_codes%ls == 'y') then
-            
+        if (cal_codes%hyd_hru == 'y') then
           !average annual for hru calibration
           do ireg = 1, db_mx%lscal_reg
             do ilu = 1, lscal(ireg)%lum_num
@@ -470,7 +489,9 @@
               end if
             end do
           end do
+        end if
         
+        if (cal_codes%hyd_hrul == 'y') then
           !average annual for hru_lte calibration
           do ireg = 1, db_mx%lscalt_reg
             do ilu = 1, lscalt(ireg)%lum_num
@@ -493,7 +514,7 @@
         !! average output for soft data calibration
         if (cal_codes%plt == 'y') then
             
-          !average annual for hru_lte calibration
+          !average annual for plant calibration
           do ireg = 1, db_mx%plcal_reg
             do ilu = 1, plcal(ireg)%lum_num
               if (plcal(ireg)%lum(ilu)%nbyr > 0) then
@@ -513,13 +534,14 @@
         end if
         
         !! average channel output for soft data calibration
-        if (cal_codes%chsed == 'y') then
+        if (cal_codes%chsed == 'y' .and. cal_codes%sed == 'n' .and. cal_codes%plt == 'n' .and. cal_codes%hyd_hru == 'n' .and. cal_codes%hyd_hrul == 'n') then
           do ireg = 1, db_mx%chcal_reg
             do ich = 1, chcal(ireg)%ord_num
               if (chcal(ireg)%ord(ich)%nbyr > 0) then
-                !! convert back to mm, t/ha, kg/ha
-                chcal(ireg)%ord(ich)%aa%chd = chcal(ireg)%ord(ich)%aa%chd / chcal(ireg)%ord(ich)%nbyr
-                chcal(ireg)%ord(ich)%aa%chw = chcal(ireg)%ord(ich)%aa%chw / chcal(ireg)%ord(ich)%nbyr
+                !! soft data for w and d in mm/year (convert to m) -- hc soft and model in m -- fpd soft and model in mm
+                chcal(ireg)%ord(ich)%aa%chd = 1000. * chcal(ireg)%ord(ich)%aa%chd / chcal(ireg)%ord(ich)%nbyr
+                chcal(ireg)%ord(ich)%aa%chw = 1000. * chcal(ireg)%ord(ich)%aa%chw / chcal(ireg)%ord(ich)%nbyr
+                chcal(ireg)%ord(ich)%aa%hc = chcal(ireg)%ord(ich)%aa%hc / chcal(ireg)%ord(ich)%nbyr
                 chcal(ireg)%ord(ich)%aa%fpd = chcal(ireg)%ord(ich)%aa%fpd / chcal(ireg)%ord(ich)%nbyr
               end if
             end do

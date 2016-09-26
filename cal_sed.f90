@@ -28,7 +28,7 @@
             isim = 1
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%lum_no == hru(ihru)%land_use_mgt) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                 !set parms for 1st sediment yield calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
@@ -74,7 +74,7 @@
           do ilum = 1, lscal(ireg)%lum_num
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%lum_no == hru(ihru)%land_use_mgt) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                 !set parms for 1st sediment tconc calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
@@ -112,7 +112,7 @@
               !check all hru's for proper lum
               do iihru = 1, mhru
                 !set parms for 1st surface runoff calibration and rerun
-                if (hru(iihru)%land_use_mgt == lscal(ireg)%lum(ilum)%lum_no) then
+                if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                   hru(iihru) = hru_init(iihru)
                   soil(iihru) = soil_init(iihru)
                   pcom(iihru) = pcom_init(iihru)
@@ -149,7 +149,7 @@
               !check all hru's for proper lum
               do iihru = 1, mhru
                 !set parms for 1st surface runoff calibration and rerun
-                if (hru(iihru)%land_use_mgt == lscal(ireg)%lum(ilum)%lum_no) then
+                if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                   hru(iihru) = hru_init(iihru)
                   soil(iihru) = soil_init(iihru)
                   pcom(iihru) = pcom_init(iihru)

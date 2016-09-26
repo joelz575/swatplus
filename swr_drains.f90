@@ -11,7 +11,6 @@
 !!    drain_co(:) |mm/day        |drainage coefficient 
 !!    dg(:,:)     |mm            |depth of soil layer
 !!    ddrain(:)   |mm            |depth of drain tube from the soil surface							 
-!!    hru_slp(:)  |m/m           |average slope steepness in HRU
 !!    ihru        |none          |HRU number
 !!    latksatf(:) |none          |multiplication factor to determine conk(j1,j) from sol_k(j1,j) for HRU
 !!    pc(:)       |mm/hr         |pump capacity (default pump capacity = 1.042mm/hr or 25mm/day)

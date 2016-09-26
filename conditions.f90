@@ -246,7 +246,7 @@
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "=") then
               ich = ob_num
-              if (sd_chd(ich)%order /= d_tbl(id)%cond(ic)%lim_var) then
+              if (sd_ch(ich)%order /= d_tbl(id)%cond(ic)%lim_var) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             !else

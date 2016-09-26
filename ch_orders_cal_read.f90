@@ -3,6 +3,7 @@
       use input_file_module
       use jrw_datalib_module
       use hydrograph_module
+      use sd_channel_module
 
       character (len=80) :: titldum, header
       integer :: eof
@@ -18,12 +19,12 @@
         open (107,file=in_chg%ch_orders_cal)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
-        read (107,*,iostat=eof) mord
+        read (107,*,iostat=eof) mreg
         if (eof < 0) exit
         read (107,*,iostat=eof) header
-        allocate (chcal(mord))
+        allocate (chcal(mreg))
 
-      do i = 1, mord
+      do i = 1, mreg
 
         read (107,*,iostat=eof) chcal(i)%name, chcal(i)%ord_num, nspu
         
@@ -99,13 +100,14 @@
           do iord = 1, iord_mx
             read (107,*,iostat=eof) chcal(i)%ord(iord)%meas
             if (eof < 0) exit
-              !!crosswalk ord database name with channel order parameter
-              do iorddb = 1, chcal(i)%ord_num
-                if (lum(ilumdb)%name == chcal(i)%ord(iord)%meas%name) then
-                  chcal(i)%ord(iord)%ord_no = iorddb
-                  exit
-                end if
-              end do
+            
+            !! sum total channel length for
+            do ich_s = 1, chcal(i)%num_tot
+              ich = chcal(i)%num(ich_s)
+              if (chcal(i)%ord(iord)%meas%name == sd_ch(ich)%order) then
+                chcal(i)%ord(iord)%length = chcal(i)%ord(iord)%length + sd_ch(ich)%chl
+              end if
+            end do
           end do
         end if   
       end do
@@ -114,7 +116,7 @@
       end do    
       end if
         
-      db_mx%lscal_reg = mord
+      db_mx%chcal_reg = mreg
       
       return
       end subroutine ch_regions_cal_read

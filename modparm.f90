@@ -359,11 +359,13 @@
                                    !!                              |Mixing of soil due to activity of earthworms
                                    !!                              |and other soil biota. Mixing is performed at
                                    !!                              |the end of every calendar year.
-           real :: dep_imp = 0.    !! dep_imp(:)	  |mm            |depth to impervious layer
+           real :: dep_imp = 0.    !! dep_imp(:)    |mm            |depth to impervious layer
            real :: lat_orgn = 0.
            real :: lat_orgp = 0.
            real :: harg_pet  = .0023  
-           real :: cncoef = 0.3
+           real :: cncoef = 0.3    !!               |              |plant ET curve number coefficient
+           real :: perco = 1.      !!               |              |percolation coefficient-adjusts soil mositure
+                                   !!                              | for perc to occur (1.0 = fc)
       end type hydrology
       
       type landuse
@@ -379,58 +381,6 @@
       end type landuse
       type (landuse), dimension (:), allocatable :: luse
 
- !     type hru_databases
- !       character(len=13) :: name = ""
- !       integer :: weather = 1
- !       integer :: topo = 1
- !       integer :: hyd = 1
- !       integer :: soil = 1
- !       integer :: landuse = 1
- !       integer :: mgt_ops = 1
- !       integer :: str_ops = 1
- !       integer :: str_init = 1
- !       integer :: plantcom = 1
- !       integer :: soiltest = 1
- !       integer :: pestdb = 1
- !       integer :: bactdb = 1
- !       integer :: pothole = 1
- !       integer :: sno = 1
- !     end type hru_databases
-                                 
- !     type hru_databases
- !       character(len=13) :: name = ""
- !       integer :: topo = 1
- !       integer :: hyd = 1
- !       integer :: soil = 1
- !       integer :: landuse = 1
- !       integer :: mgt_ops = 1
- !       integer :: str_init = 0
- !       integer :: plant_init = 1
- !       integer :: soil_nutr_init = 1
- !       integer :: pest_init = 0
- !       integer :: bact_init = 0
- !       integer :: surf_stor = 0
- !       integer :: snow = 1
- !       integer :: field = 1
- !     end type hru_databases
-      
- !     type hru_databases_char
- !       character(len=13) :: name = ""
- !       character(len=20) :: topo = ""
- !       character(len=20) :: hyd = ""
- !       character(len=20) :: soil = ""
- !       character(len=20) :: landuse = ""
- !       character(len=20) :: mgt_ops = ""
- !       character(len=20) :: str_init = ""
- !       character(len=20) :: plant_init = ""
- !       character(len=20) :: soil_nutr_init = ""
- !       character(len=20) :: pest_init = ""
- !       character(len=20) :: bact_init = ""
- !       character(len=20) :: surf_stor = ""
- !       character(len=20) :: snow = ""
- !       character(len=20) :: field = ""
- !     end type hru_databases_char
-        
       type hru_databases
         character(len=13) :: name = ""
         integer :: topo = 1
@@ -477,6 +427,7 @@
         type (hru_databases_char) :: dbsc !!database pointers
         type (hru_parms_db) :: parms      !!calibration parameters
         integer :: land_use_mgt
+        character(len=16) :: land_use_mgt_c
         integer :: plant_cov
         integer :: mgt_ops
         integer :: tiledrain = 0
@@ -514,7 +465,60 @@
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
       type (plant_growth), pointer :: plt
 
+      type pothole_dynamic
+          real :: seep = 0.
+          real :: vol = 0.            !! m**3 H2O     |current vol of water stored in the depression/impounded area
+          real :: evap = 0.
+          real :: sedin = 0.
+          real :: solp = 0.           !! kg N         |amount of soluble p in pothole water body
+          real :: solpi = 0.
+          real :: orgp = 0.           !! kg N         |amount of organic P in pothole water body
+          real :: orgpi = 0.
+          real :: orgn = 0.           !! kg N         |amount of organic N in pothole water body
+          real :: orgni = 0.
+          real :: mps = 0.            !! kg N         |amount of stable mineral pool P in pothole water body
+          real :: mpsi = 0.
+          real :: mpa = 0.            !! kg N         |amount of active mineral pool P in pothole water body
+          real :: mpai = 0.
+          real :: no3i = 0.
+          real :: sa = 0.             !! ha           |surface area of impounded water body
+          real :: volx = 0.
+          real :: flwi = 0.           !! m^3 H2O      |water entering pothole on day
+          real :: sedi = 0.           !! metric tons  |sediment entering pothole on day
+          real :: tile = 0.           !! m3/d         |average daily outflow to main channel from tile flow if drainage tiles are installed
+                                                        !! in pothole (needed only if current HRU is  IPOT)
+          real :: sed = 0.            !! metric tons  | amount of sediment in pothole water body
+          real :: no3 = 0.            !! kg N         | amount of nitrate in pothole water body
+          real :: san = 0.
+          real :: sil = 0.
+          real :: cla = 0.
+          real :: lag = 0.
+          real :: sag = 0.
+          real :: sani = 0.
+          real :: sili = 0.
+          real :: clai = 0.
+          real :: sagi = 0.
+          real :: lagi = 0.
+      end type pothole_dynamic
+      type (pothole_dynamic), dimension (:), allocatable :: pot
+       
+      type pestinit
+        character(len=13) :: name
+        integer :: num_db     !!          |pesticide number in pesticide.pst
+        real :: plt           !! kg/ha    |amount of pesticide on plant at start of simulation
+        real :: soil          !! kg/ha    |amount of pesticide in soil at start of simulation
+        real :: enr           !!          | pesticide enrichment ratio
+      end type pestinit
       
+      type pestinit_db
+        character(len=13) :: name        !!      |name of pesticide community
+        integer :: num                   !!      |number of pesticides in community
+        character (len=16) :: exco_df    !!      |name of export coefficient file for pesticide community
+        character (len=16) :: dr_df      !!      |name of delivery ratio file for pesticide community
+        type (pestinit), dimension (:), allocatable :: pesti
+      end type pestinit_db
+      type (pestinit_db), dimension (:), allocatable :: pesti_db
+     
       type mgt_header         
           character (len=6) :: hru =          '  hru '
           character (len=6) :: year =         ' year '
@@ -616,60 +620,6 @@
       end type mgt_header_unit2
       type(mgt_header_unit2) :: mgt_hdr_unt2
 
-      type pothole_dynamic
-          real :: seep = 0.
-          real :: vol = 0.            !! m**3 H2O     |current vol of water stored in the depression/impounded area
-          real :: evap = 0.
-          real :: sedin = 0.
-          real :: solp = 0.           !! kg N         |amount of soluble p in pothole water body
-          real :: solpi = 0.
-          real :: orgp = 0.           !! kg N         |amount of organic P in pothole water body
-          real :: orgpi = 0.
-          real :: orgn = 0.           !! kg N         |amount of organic N in pothole water body
-          real :: orgni = 0.
-          real :: mps = 0.            !! kg N         |amount of stable mineral pool P in pothole water body
-          real :: mpsi = 0.
-          real :: mpa = 0.            !! kg N         |amount of active mineral pool P in pothole water body
-          real :: mpai = 0.
-          real :: no3i = 0.
-          real :: sa = 0.             !! ha           |surface area of impounded water body
-          real :: volx = 0.
-          real :: flwi = 0.           !! m^3 H2O      |water entering pothole on day
-          real :: sedi = 0.           !! metric tons  |sediment entering pothole on day
-          real :: tile = 0.           !! m3/d         |average daily outflow to main channel from tile flow if drainage tiles are installed
-                                                        !! in pothole (needed only if current HRU is  IPOT)
-          real :: sed = 0.            !! metric tons  | amount of sediment in pothole water body
-          real :: no3 = 0.            !! kg N         | amount of nitrate in pothole water body
-          real :: san = 0.
-          real :: sil = 0.
-          real :: cla = 0.
-          real :: lag = 0.
-          real :: sag = 0.
-          real :: sani = 0.
-          real :: sili = 0.
-          real :: clai = 0.
-          real :: sagi = 0.
-          real :: lagi = 0.
-      end type pothole_dynamic
-      type (pothole_dynamic), dimension (:), allocatable :: pot
-       
-      type pestinit
-        character(len=13) :: name
-        integer :: num_db     !!          |pesticide number in pesticide.pst
-        real :: plt           !! kg/ha    |amount of pesticide on plant at start of simulation
-        real :: soil          !! kg/ha    |amount of pesticide in soil at start of simulation
-        real :: enr           !!          | pesticide enrichment ratio
-      end type pestinit
-      
-      type pestinit_db
-        character(len=13) :: name        !!      |name of pesticide community
-        integer :: num                   !!      |number of pesticides in community
-        character (len=16) :: exco_df    !!      |name of export coefficient file for pesticide community
-        character (len=16) :: dr_df      !!      |name of delivery ratio file for pesticide community
-        type (pestinit), dimension (:), allocatable :: pesti
-      end type pestinit_db
-      type (pestinit_db), dimension (:), allocatable :: pesti_db
- 
       type snw_header
           character (len=35) :: day = ' '
           character (len=40) ::head ='SNOW(mm) at ELEVATION BAND (1-10)'
@@ -838,7 +788,7 @@
       real, dimension (:), allocatable :: flowfr
       real, dimension (:), allocatable :: flowmin
       real, dimension (:), allocatable :: divmax, cn1,cn2
-      real, dimension (:), allocatable :: tile_ttime, hru_slp
+      real, dimension (:), allocatable :: tile_ttime
       real, dimension (:), allocatable :: sol_cov
       real, dimension (:), allocatable :: driftco,cn3
       real, dimension (:), allocatable :: smx,sci

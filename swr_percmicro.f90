@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hru_slp(:)   |m/m           |average slope steepness
 !!    ihru         |none          |HRU number
 !!    ldrain(:)    |none          |soil layer where drainage tile is located
 !!    slsoil(:)    |m             |slope length for lateral subsurface flow
@@ -96,13 +95,14 @@
       soil(j)%phys(ly1)%hk = Max(2., soil(j)%phys(ly1)%hk)
 
       !! compute seepage to the next layer
-      sepday = sw_excess * (1. - Exp(-24. / soil(j)%phys(ly1)%hk))
+      sepday = (soil(j)%phys(ly1)%st - soil(j)%phys(ly1)%fc * hru(j)%hyd%perco) * (1. - Exp(-24. / soil(j)%phys(ly1)%hk))
+      sepday = Max(0., sepday)
       
       !! limit maximum seepage from biozone layer below potential perc amount
-	if(ly1 == i_sep(j).and.sep(isep)%opt ==1) then
-	   sepday = min(sepday,sol_k_sep *24.)
-	   bz_perc(j) = sepday
-	end if
+	  if(ly1 == i_sep(j).and.sep(isep)%opt ==1) then
+	    sepday = min(sepday,sol_k_sep *24.)
+	    bz_perc(j) = sepday
+	  end if
       
       !! restrict seepage if next layer is saturated
       if (ly1 == soil(j)%nly) then

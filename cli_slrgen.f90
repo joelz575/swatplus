@@ -33,12 +33,12 @@
  
       real :: rx, rav
 
-      rav = wgn(iwgn)%solarav(i_mo) /                                 &
-           (1. - 0.5 * wgn_pms(iwgn)%pr_wdays(i_mo))
+      rav = wgn(iwgn)%solarav(i_mo) / (1. - 0.5 * wgn_pms(iwgn)%pr_wdays(i_mo))
       if (wst(iwst)%weat%precip > 0.0) rav = 0.5 * rav
       rx = wst(iwst)%weat%solradmx - rav
       wst(iwst)%weat%solrad = rav + wgncur(3,iwgn) * rx / 4.
-      if (wst(iwst)%weat%solrad <= 0.) wst(iwst)%weat%solrad = .05 *  &
-           wst(iwst)%weat%solradmx
+      if (wst(iwst)%weat%solrad <= 0.) wst(iwst)%weat%solrad = .05 * wst(iwst)%weat%solradmx
+      
+      wst(iwst)%weat%solrad = wgn(iwgn)%solarav(i_mo)
       return
       end subroutine cli_slrgen

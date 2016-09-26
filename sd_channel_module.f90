@@ -29,6 +29,7 @@
         real :: chss            !         |channel side slope
         real :: bedldcoef       !         |percent of sediment entering the channel that is bed material
         real :: tc              !         |time of concentration
+        real :: shear_bnk       !0-1      |bank shear coefficient - fraction of bottom shear
         real :: hc_kh           !         |headcut erodibility
         real :: hc_hgt          !m        |headcut height
         real :: hc_ini          !km       |initial channel length for gullies
@@ -37,16 +38,19 @@
       
       type swatdeg_channel_dynamic
         character(len=13) :: name = "default"
-        real :: chw = 3.     !m        |channel width
-        real :: chd = .5     !m        |channel depth
-        real :: chs = .01    !m/m      |channel slope
-        real :: chl = .1     !km       |channel length
-        real :: cherod       !         |channel erodibility
-        real :: cov          !0-1      |channel cover factor
-        real :: hc_co = 0.   !m/m      |proportionality coefficient for head cut
-        real :: attack0 = 0. !         |attack threshold for movement of head cut
-        real :: hc_len = 0.  !m        |length of head cut
-        character (len=2) :: overbank  !         |0=inbank; 1=overbank flood
+        character(len=16) :: order
+        real :: chw = 3.        !m          |channel width
+        real :: chd = .5        !m          |channel depth
+        real :: chs = .01       !m/m        |channel slope
+        real :: chl = .1        !km         |channel length
+        real :: cov             !0-1        |channel cover factor
+        real :: cherod          !           |channel erodibility
+        real :: shear_bnk       !0-1        |bank shear coefficient - fraction of bottom shear
+        real :: hc_erod         !           |headcut erodibility
+        real :: hc_co = 0.      !m/m        |proportionality coefficient for head cut
+        real :: hc_len = 0.     !m          |length of head cut
+        real :: hc_hgt          !m          |headcut height
+        character (len=2) :: overbank  !    |0=inbank; 1=overbank flood
         real, dimension(13) :: phi
       end type swatdeg_channel_dynamic
       type (swatdeg_channel_dynamic),dimension (:), allocatable :: sd_ch
@@ -63,6 +67,9 @@
         real :: deg_btm = 0.          ! (tons)       !bottom erosion
         real :: deg_bank = 0.         ! (tons)       !bank erosion
         real :: hc_sed = 0.           ! (tons)       !headcut erosion
+        real :: deg_btm_m = 0.        ! (m)          !downcutting
+        real :: deg_bank_m = 0.       ! (m)          !widening
+        real :: hc_m = 0.         ! (m)          !headcut retreat
       end type sd_ch_output
       
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_d
@@ -126,6 +133,9 @@
        cho3%deg_btm = cho1%deg_btm + cho2%deg_btm
        cho3%deg_bank = cho1%deg_bank + cho2%deg_bank
        cho3%hc_sed = cho1%hc_sed + cho2%hc_sed
+       cho3%deg_btm_m = cho1%deg_btm_m + cho2%deg_btm_m
+       cho3%deg_bank_m = cho1%deg_bank_m + cho2%deg_bank_m
+       cho3%hc_m = cho1%hc_m + cho2%hc_m
       end function
       
       function chsd_div (ch1,const) result (ch2)
@@ -142,6 +152,9 @@
         ch2%deg_btm = ch1%deg_btm / const
         ch2%deg_bank = ch1%deg_bank / const
         ch2%hc_sed = ch1%hc_sed / const
+        ch2%deg_btm_m = ch1%deg_btm_m / const
+        ch2%deg_bank_m = ch1%deg_bank_m / const
+        ch2%hc_m = ch1%hc_m / const
       end function chsd_div
       
       function chsd_mult (const, chn1) result (chn2)
@@ -157,7 +170,10 @@
         chn2%dep = const * chn1%dep
         chn2%deg_btm = const * chn1%deg_btm
         chn2%deg_bank = const * chn1%deg_bank
-        chn2%hc_sed = const * chn1%hc_sed     
+        chn2%hc_sed = const * chn1%hc_sed  
+        chn2%deg_btm_m = const * chn1%deg_btm_m
+        chn2%deg_bank_m = const * chn1%deg_bank_m
+        chn2%hc_m = const * chn1%hc_m
       end function chsd_mult
       
       end module sd_channel_module

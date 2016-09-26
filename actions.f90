@@ -95,6 +95,7 @@
             ihru = ob_num
             ilu = d_tbl(id)%act_ptr(iac)
             hru(ob_num)%dbs%land_use_mgt = ilu
+            hru(ob_num)%land_use_mgt_c = d_tbl(id)%act(iac)%file_pointer
             isol = hru(ob_num)%dbs%soil  
             call pcom_set_parms (1)
                      
@@ -102,8 +103,8 @@
           case ("chan_change")
             ich = ob_num
             !set new cover and name for calibration
-            sd_chd(ich)%cov = d_tbl(i)%act(iac)%const
-            sd_chd(ich)%order = d_tbl(i)%act(iac)%file_pointer
+            sd_ch(ich)%cov = d_tbl(i)%act(iac)%const
+            sd_ch(ich)%order = d_tbl(i)%act(iac)%file_pointer
         
           !herd management - move the herd
           case ("herd")

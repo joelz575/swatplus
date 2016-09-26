@@ -46,7 +46,6 @@
             sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
           end if
         end if
-        chsd_y(ich) = chsdz
       end if
 
 !!!!! average annual print

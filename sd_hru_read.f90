@@ -73,7 +73,7 @@
         !assumes data for each hru -> ok since there is only one file
         allocate (sd_db(0:imax))
         allocate (sd(sp_ob%hru_lte))
-        allocate (sd_init(sp_ob%hru_lte))
+        
         rewind (1)
         read (1,*) titldum
         read (1,*) header
@@ -99,6 +99,7 @@
          sd(i)%tdrain = sd_db(idb)%tdrain
          sd(i)%revapc = sd_db(idb)%revapc
          sd(i)%plant = sd_db(idb)%plant
+         sd(i)%stress = sd_db(idb)%stress
          sd(i)%sw = sd_db(i)%sw * awct(sd_db(idb)%itext) *               &
                                        sd_db(idb)%soildep !* 1000.
          sd(i)%awc = awct(sd_db(idb)%itext) * sd_db(idb)%soildep !* 1000.
@@ -137,15 +138,17 @@
             endif
           end do
          
-         !compute heat unit from growing season and weather generator
+         !compute heat units from growing season and weather generator
          iwst = ob(icmd)%wst
          iwgn = wst(iwst)%wco%wgn
          if (sd_db(idb)%igrow2 > sd_db(idb)%igrow1) then
            grow_start = sd_db(idb)%igrow1
            grow_end = sd_db(idb)%igrow2
+           hu_init = .15
          else
            grow_start = sd_db(idb)%igrow2
            grow_end = sd_db(idb)%igrow1
+           hu_init = .85
          end if
          mo = 1
          imo = 2

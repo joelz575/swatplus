@@ -80,6 +80,15 @@
           end if
           end do
         end do
+        
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
+          end do
+        end do
         ! 1st cn2 adjustment 
         if (isim > 0) then
           write (4304,*) " first cn2 adj "
@@ -99,7 +108,7 @@
             
                 rmeas = lscalt(ireg)%lum(ilum)%meas%srr * lscalt(ireg)%lum(ilum)%precip_aa
                 denom = lscalt(ireg)%lum(ilum)%prev%srr - lscalt(ireg)%lum(ilum)%aa%srr
-                if (denom > 1.e-6) then
+                if (abs(denom) > 1.e-6) then
                   chg_val = - (lscalt(ireg)%lum(ilum)%prm_prev%cn - lscalt(ireg)%lum(ilum)%prm%cn)                  &
                     * (lscalt(ireg)%lum(ilum)%aa%srr - rmeas) / denom
                 else
@@ -147,9 +156,16 @@
             lscalt(ireg)%lum(ilum)%nbyr = 0
             lscalt(ireg)%lum(ilum)%precip_aa = 0.
             lscalt(ireg)%lum(ilum)%aa = lscal_z
-            !else
-            !lscalt(ireg)%lum(ilum)%prm_lim%etco = 1.
             end if
+          end do
+        end do
+          
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
         ! cn2 adjustment
@@ -204,9 +220,16 @@
             lscalt(ireg)%lum(ilum)%nbyr = 0
             lscalt(ireg)%lum(ilum)%precip_aa = 0.
             lscalt(ireg)%lum(ilum)%aa = lscal_z
-          !else
-            !lscalt(ireg)%lum(ilum)%prm_lim%etco = 1.
           end if
+          end do
+        end do
+        
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
         ! 1st etco adjustment 
@@ -229,7 +252,7 @@
 
                 rmeas = lscalt(ireg)%lum(ilum)%meas%etr * lscalt(ireg)%lum(ilum)%precip_aa
                 denom = lscalt(ireg)%lum(ilum)%prev%etr - lscalt(ireg)%lum(ilum)%aa%etr
-                if (denom > 1.e-6) then
+                if (abs(denom) > 1.e-6) then
                   chg_val = - (lscalt(ireg)%lum(ilum)%prm_prev%etco - lscalt(ireg)%lum(ilum)%prm%etco)                  &
                     * (lscalt(ireg)%lum(ilum)%aa%etr - rmeas) / denom
                 else
@@ -266,6 +289,15 @@
             lscalt(ireg)%lum(ilum)%aa = lscal_z
           end if
           end do
+          end do
+          
+          !zero plant calibration data in case plants are calibrated
+          do ireg = 1, db_mx%plcal_reg
+            do ilum = 1, plcal(ireg)%lum_num
+              plcal(ireg)%lum(ilum)%nbyr = 0
+              plcal(ireg)%lum(ilum)%precip_aa = 0.
+              plcal(ireg)%lum(ilum)%aa = plcal_z
+            end do
           end do
           ! et adjustment 
           if (isim > 0) then
@@ -327,6 +359,15 @@
             end if
             end do
         end do
+        
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
+          end do
+        end do
         ! 1st perco adjustment 
         if (isim > 0) then
           write (4304,*) " first perco adj "
@@ -346,7 +387,7 @@
             
                 rmeas = lscalt(ireg)%lum(ilum)%meas%pcr * lscalt(ireg)%lum(ilum)%precip_aa
                 denom = lscalt(ireg)%lum(ilum)%prev%pcr - lscalt(ireg)%lum(ilum)%aa%pcr
-                if (denom > 1.e-6) then
+                if (abs(denom) > 1.e-6) then
                   chg_val = - (lscalt(ireg)%lum(ilum)%prm_prev%perco - lscalt(ireg)%lum(ilum)%prm%perco) *         &
                         (lscalt(ireg)%lum(ilum)%aa%pcr - rmeas) / denom
                 else
@@ -390,6 +431,15 @@
             end if
           end do
           end do
+          
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
+          end do
+        end do
         ! perco adjustment 
         if (isim > 0) then
           write (4304,*) " perco adj "
@@ -447,6 +497,15 @@
           end if
           end do
         end do
+        
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
+          end do
+        end do
         ! 1st revapc adjustment 
         if (isim > 0) then
           write (4304,*) " first revapc adj "
@@ -466,7 +525,7 @@
             
                 rmeas = lscalt(ireg)%lum(ilum)%meas%lfr * lscalt(ireg)%lum(ilum)%precip_aa
                 denom = lscalt(ireg)%lum(ilum)%prev%lfr - lscalt(ireg)%lum(ilum)%aa%lfr
-                if (denom > 1.e-6) then
+                if (abs(denom) > 1.e-6) then
                   chg_val = - (lscalt(ireg)%lum(ilum)%prm_prev%revapc - lscalt(ireg)%lum(ilum)%prm%revapc)                  &
                     * (lscalt(ireg)%lum(ilum)%aa%lfr - rmeas) / denom
                 else
@@ -504,6 +563,15 @@
             lscalt(ireg)%lum(ilum)%precip_aa = 0.
             lscalt(ireg)%lum(ilum)%aa = lscal_z
           end if
+          end do
+        end do
+        
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
         ! revapc adjustment for lateral flow
@@ -573,6 +641,15 @@
           end if
           end do
         end do
+        
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
+          end do
+        end do
         ! 1st cn3_swf adjustment 
         if (isim > 0) then
           write (4304,*) " first cn3_swf adj "
@@ -592,7 +669,7 @@
             
                 rmeas = lscalt(ireg)%lum(ilum)%meas%srr * lscalt(ireg)%lum(ilum)%precip_aa
                 denom = lscalt(ireg)%lum(ilum)%prev%srr - lscalt(ireg)%lum(ilum)%aa%srr
-                if (denom > 1.e-6) then
+                if (abs(denom) > 1.e-6) then
                   chg_val = - (lscalt(ireg)%lum(ilum)%prm_prev%cn3_swf - lscalt(ireg)%lum(ilum)%prm%cn3_swf)                  &
                     * (lscalt(ireg)%lum(ilum)%aa%srr - rmeas) / denom
                 else
@@ -644,6 +721,15 @@
             end if
           end do
         end do
+          
+        !zero plant calibration data in case plants are calibrated
+        do ireg = 1, db_mx%plcal_reg
+          do ilum = 1, plcal(ireg)%lum_num
+            plcal(ireg)%lum(ilum)%nbyr = 0
+            plcal(ireg)%lum(ilum)%precip_aa = 0.
+            plcal(ireg)%lum(ilum)%aa = plcal_z
+          end do
+        end do  
         ! cn3_swf adjustment
         if (isim > 0) then
           write (4304,*) " cn3_swf adj "
@@ -653,5 +739,7 @@
           
       end do    ! iter_all loop
         
+      cal_codes%hyd_hru = 'n'
+      
 	  return
       end subroutine calt_hyd

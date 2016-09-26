@@ -99,17 +99,11 @@
         !if (eof < 0) exit
         if (plcal(i)%lum_num > 0) then
           ilum_mx = plcal(i)%lum_num
+          read (107,*,iostat=eof) header
           allocate (plcal(i)%lum(ilum_mx))
           do ilum = 1, ilum_mx
             read (107,*,iostat=eof) plcal(i)%lum(ilum)%meas
             if (eof < 0) exit
-              !!crosswalk lum database name with ls calibration lum name
-              !do ilumdb = 1, db_mx%landuse
-              !  if (lum(ilumdb)%name == plcal(i)%lum(ilum)%meas%name) then
-              !    plcal(i)%lum(ilum)%lum_no = ilumdb
-              !    exit
-              !  end if
-              !end do
           end do
         end if 
 

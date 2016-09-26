@@ -94,7 +94,10 @@
         real :: gwflow = 0.                  !mm            |initial groundwater flow
         integer :: igro = 0                  !              |0=plant growing; 1=not growing
         real :: dm = 0.                      !t/ha          |plant biomass
-        real :: alai = 0.                    !              |initial leaf area index
+        real :: alai = 0.                    !              |leaf area index
+        real :: yield = 0.                   !t/ha          |plant yield
+        real :: npp = 0.                     !t/ha          |net primary productivity
+        real :: lai_mx = 0.                  !              |maximum leaf area index
         real :: gwdeep = 0.                  !mm            |deep aquifer storage
       end type swatdeg_hru_dynamic
       type (swatdeg_hru_dynamic), dimension (:), allocatable :: sd

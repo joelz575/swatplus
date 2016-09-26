@@ -99,7 +99,7 @@
 
 !!!!! daily print
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                    .and. time%day <= pco%jd_end) then
+                                        .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
           if (pco%wb_sd == 3) then
             write (4100,100) time%day, time%yrc, isd, sdwb_d(isd)  !! waterbal
               if (pco%csvout == 1 .and. pco%wb_sd == 3) then 

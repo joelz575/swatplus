@@ -539,14 +539,14 @@
       type (update_conditional), dimension (:), allocatable :: upd_cond
       
       type soft_calibration_codes
-        character (len=1) :: ls = 'n'       !! if y, calibrate at least one landscape process (hyd,sed,nut,plt) by land use in each region
-        character (len=1) :: hyd = 'n'      !! if y, calibrate hydrologic balance by land use in each region
-        character (len=1) :: sed = 'n'      !! if y, calibrate sediment yield by land use in each region  
-        character (len=1) :: nut = 'n'      !! if y, calibrate nutrient balance by land use in each region
-        character (len=1) :: plt = 'n'      !! if y, calibrate plant growth by land use (by plant) in each region
-        character (len=1) :: chsed = 'n'    !! if y, calibrate channel widening and bank accretion by stream order
-        character (len=1) :: chnut = 'n'    !! if y, calibrate channel nutrient balance by stream order
-        character (len=1) :: res = 'n'      !! if y, calibrate reservoir budgets by reservoir
+        character (len=1) :: hyd_hru = 'n'      !! if y, calibrate hydrologic balance for hru by land use in each region
+        character (len=1) :: hyd_hrul = 'n'     !! if y, calibrate hydrologic balance for hru_lte by land use in each region
+        character (len=1) :: plt = 'n'          !! if y, calibrate plant growth by land use (by plant) in each region
+        character (len=1) :: sed = 'n'          !! if y, calibrate sediment yield by land use in each region  
+        character (len=1) :: nut = 'n'          !! if y, calibrate nutrient balance by land use in each region
+        character (len=1) :: chsed = 'n'        !! if y, calibrate channel widening and bank accretion by stream order
+        character (len=1) :: chnut = 'n'        !! if y, calibrate channel nutrient balance by stream order
+        character (len=1) :: res = 'n'          !! if y, calibrate reservoir budgets by reservoir
       end type soft_calibration_codes
       type (soft_calibration_codes) :: cal_codes
       
@@ -566,7 +566,7 @@
       type soft_calib_ls_adjust
         real :: cn = 0.         !+/- or 0/1       |cn2 adjustment or at limit
         real :: esco = 0.       !+/- or 0/1       |esco adjustment or at limit
-        real :: k = 0.          !+/- or 0/1       |k (upper layers) adjustment or at limit
+        real :: lat_len = 0.    !+/- or 0/1       |k (upper layers) adjustment or at limit
         real :: k_lo = 0.       !+/- or 0/1       |l (lowest layer) adjustment or at limit
         real :: slope = 0.      !+/- or 0/1       |slope adjustment or at limit        
         real :: tconc = 0.      !+/- or 0/1       |time of concentration adjustment or at limit
@@ -665,6 +665,7 @@
       type soft_calib_chan_adjust
         real :: cov = 0.            !+/- or 0/1     |cover adjustment or at limit
         real :: erod = 0.           !+/- or 0/1     |channel erodibility adjustment or at limit
+        real :: shear_bnk = 0.      !+/- or 0/1     |bank shear coefficient adjustment or at limit
         real :: hc_erod = 0.        !+/- or 0/1     |head cut erodibility adjustment or at limit
       end type soft_calib_chan_adjust
       
@@ -673,14 +674,14 @@
         character(len=16) :: name
         real :: chw = 0.    !mm/yr          |channel widening 
         real :: chd = 0.    !mm/yr          |channel downcutting or accretion
+        real :: hc = 0.     !m/yr           |head cut advance
         real :: fpd = 0.    !mm/yr          |flood plain accretion 
       end type soft_calib_chan_processes
       type (soft_calib_chan_processes) :: chcal_z  !to zero values
 
       type chan_calib_regions
         character(len=16) :: name = 'default'
-        integer :: ord_no                                       !xwalk sdc()%name with chcal()%ord()%name
-        real :: ha                                              !ha of each land use
+        real :: length                                          !ha of each land use
         integer :: nbyr = 0                                     !number of years the land use occurred 
         type (soft_calib_chan_processes) :: meas                !input soft calibration parms of each land use - ratio,t/ha,kg/ha
         type (soft_calib_chan_processes) :: sim                 !simulated sum of soft calibration parms of each land use - m3,t,kg
@@ -785,13 +786,13 @@
          real :: lat_ttime = 0.  !! lat_ttime(:)  |none          |Exponential of the lateral flow travel time
          real :: lat_sed = 0.    !! lat_sed(:)    |g/L           |sediment concentration in lateral flow
          real :: canmx = 0.      !! canmx(:)      |mm H2O        |maximum canopy storage
-         real :: esco = 0.       !! esco(:)       |none          |soil evaporation compensation factor
+         real :: esco = 0.       !! esco(:)       |none          |soil evaporation compensation factor (0-1)
          real :: epco = 0.       !! epco(:)       |none          |plant water uptake compensation factor (0-1)
          real :: erorgn = 0.     !! erorgn(:)     |none          |organic N enrichment ratio, if left blank
                                  !!                              |the model will calculate for every event
          real :: erorgp = 0.     !! erorgp(:)     |none          |organic P enrichment ratio, if left blank
                                  !!                              |the model will calculate for every event
-         real :: cn3_swf = 0.    !! evpot(:)      |none          |pothole evaporation coefficient
+         real :: cn3_swf = 0.    !!               |none          |soil water at cn3 - 0=fc; .99=near saturation
          real :: biomix = 0.     !! biomix(:)     |none          |biological mixing efficiency.
                                  !!                              |Mixing of soil due to activity of earthworms
                                  !!                              |and other soil biota. Mixing is performed at
@@ -799,9 +800,11 @@
          real :: dep_imp = 0.    !! dep_imp(:)    |mm            |depth to impervious layer
          real :: lat_orgn = 0.   !!               |ppm           |organic N concentration in lateral flow
          real :: lat_orgp = 0.   !!               |ppm           |organic P concentration in lateral flow
-         real :: harg_pet  = .0023  !!           |              |coefficient related to radiation used in 
-                                     !!                            Hargreaves equation
-         real :: cncoef = 0.3        !!           |              |plant ET curve number coefficient
+         real :: harg_pet  = .0023  !!            |              |coefficient related to radiation used in 
+                                 !!                              | Hargreaves equation
+         real :: cncoef = 0.3    !!               |              |plant ET curve number coefficient
+         real :: perco = 1.      !!               |              |percolation coefficient-adjusts soil mositure
+                                 !!                              | for perc to occur (1.0 = fc)
        end type hydrology_db
         type (hydrology_db), dimension (:), allocatable :: hyd_db
         

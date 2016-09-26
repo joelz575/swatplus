@@ -18,7 +18,6 @@
 !!    hru_dafr(:) |km2/km2       |fraction of total watershed area contained
 !!                               |in HRU
 !!    hru_km(:)   |km2           |area of HRU in square kilometers
-!!    hru_slp(:)  |m/m           |average slope steepness
 !!    hru_sub(:)  |none          |subbasin in which HRU is located
 !!    lat_ttime(:)|days          |lateral flow travel time
 !!   tile_ttime(:)|none          |Exponential of the tile flow travel time

@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!	hru_slp(:)	|m/m	       |average slope steepness in HRU
 !!	iida		|julian date   |day being simulated (current julian day)
 !!    iop(:,:,:)  |julian date   |date of tillage operation
 !!    mgt_op      |none          |operation code number

@@ -177,13 +177,14 @@
 		character (len=12) :: solp_aa     =   '   solp     '
 		character (len=12) :: cn_prm_aa   =   '     cn     '
 		character (len=12) :: esco        =   '   esco     '
-		character (len=12) :: k           =   '      k     '
+		character (len=12) :: lat_len     =   'lat_len     '
 		character (len=12) :: k_lo        =   '   k_lo     '
 		character (len=12) :: slope       =   '  slope     '
 		character (len=12) :: tconc       =   '  tconc     '
 		character (len=12) :: etco        =   '   etco     '
-		character (len=12) :: dep_imp     =   ' dep_imp    '
-		character (len=12) :: revapc      =   '  revapc    '		
+		character (len=12) :: perco       =   '  perco     '
+		character (len=12) :: revapc      =   '  revapc    '
+		character (len=12) :: cn3_swf     =   ' cn3_swf    '	
       end type calibration_header    
       type (calibration_header), dimension(:), allocatable, save  :: calb_hdr	 
 	  

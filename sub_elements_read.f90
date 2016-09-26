@@ -101,9 +101,9 @@
         read (107,*) titldum
         read (107,*) header
 
-      ob1 = sp_ob1%sub
-      ob2 = sp_ob1%sub + sp_ob%sub - 1
-      do i = ob1, ob2
+      iob1 = sp_ob1%sub
+      iob2 = sp_ob1%sub + sp_ob%sub - 1
+      do i = iob1, iob2
         isub = ob(i)%props
         !ob(i)%typ = "sub"
         ob(i)%subs_tot = 0

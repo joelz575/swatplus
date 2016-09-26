@@ -49,7 +49,6 @@
 !!    vfscon(:)   |none          |Fraction of the total runoff from the entire field
 !!                               |entering the most concentrated 10% of the VFS.
 !!    vfsratio(:) |none          |Field area/VFS area ratio
-!!    hru_slp(:)  |m/m           |average slope steepness
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~

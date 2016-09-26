@@ -19,16 +19,14 @@
         sedin = 0.
         peakrate = 0.
       else
-        pr_ratio = (sd_ch(ich)%chl - sd_ch(ich)%hc_len / 1000.) / sd_ch(ich)%chl
-        pr_ratio = Max(pr_ratio, 0.)
-        !assume triangular hydrograph
-        peakrate = 2. * chflow_m3 / (1.5 * sd_chd(ich)%tc)
-        peakrate = peakrate / 60.   !convert min to sec
-        
-        sedin = ob(icmd)%hin%sed
-        hyd_rad = 0.
-        timeint = 0.
-        
+      sedin = ob(icmd)%hin%sed
+      hyd_rad = 0.
+      timeint = 0.
+
+      !assume triangular hydrograph
+      peakrate = 2. * chflow_m3 / (1.5 * sd_chd(ich)%tc)
+      peakrate = peakrate / 60.   !convert min to sec
+      
          !! compute changes in channel dimensions
           chside = sd_chd(ich)%chss
           b = sd_ch(ich)%chw
@@ -190,7 +188,7 @@
         pr_ratio = Max(pr_ratio, 0.)
         
         !new q*qp (m3 * m3/s) equation for entire runoff event
-        hc = sd_ch(ich)%hc_co * (chflow_m3 * peakrate) ** .56 * sd_chd(ich)%hc_hgt ** .185       !m per event
+        hc = sd_ch(ich)%hc_co * (chflow_m3/86400.) ** .54 * sd_chd(ich)%hc_hgt ** .225       !m per event
         hc = Max(hc, 0.)
         sd_ch(ich)%hc_len = sd_ch(ich)%hc_len + hc
         if (sd_ch(ich)%hc_len > sd_ch(ich)%chl * 1000.) then
@@ -202,19 +200,6 @@
         !! assume channel dimensions are same as data file
         hc_sed = hc * sd_chd(ich)%chw * sd_chd(ich)%chd * 1.2
         
-        !do ihval = 1, maxint
-          !assume triangular hydrograph
-          !q = 35.28 * peakrate / float(maxint - ihval + 1) !/ 60.    !m^3/min -> ft^3/s
-          !hc_w = .33 * sd_ch(ich)%chw * 3.28                         !m -> ft
-          !qunit = q / hc_w                                          !ft^3/s/ft
-          !attack = (qunit * sd_chd(ich)%hc_hgt * 3.28) ** .387
-          !attack = attack * chflow_m3 / 1233.48                     !m^3/1233.48=acre-ft
-          !hc = sd_ch(ich)%hc_co * (attack - sd_ch(ich)%attack0)     !ft/hr
-          !hc = Max(hc, 0.)  !new equation
-          !hc = exp(hc)
-          !hc_adv = hc_adv + hc * timeint(ihval) / 3.28              !ft/hr * hr /3.28 = m
-        !end do
-          
         if (sd_ch(ich)%chs > sd_chd(ich)%chseq) then
           !break hydrograph into maxint segments and compute deg at each flow increment
           do ihval = 1, maxint
@@ -286,7 +271,7 @@
         !convert mass to concentration
         call hyd_convert_conc (ht1)
         call sd_channel_nutrients (ht1)
-      end if
+      END IF
           
       !! compute sediment leaving the channel
 	  washld = (1. - sd_chd(ich)%bedldcoef) * sedin
@@ -304,6 +289,9 @@
       chsd_d(ich)%deg_btm = deg_btm
       chsd_d(ich)%deg_bank = deg_bank
       chsd_d(ich)%hc_sed = hc_sed
+      chsd_d(ich)%deg_btm_m = erode_btm
+      chsd_d(ich)%deg_bank_m = erode_bank
+      chsd_d(ich)%hc_m = hc
       
       !! set values for outflow hydrograph
       !! storage locations set to zero are not currently used

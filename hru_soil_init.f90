@@ -82,6 +82,7 @@
         hru(ihru)%hyd%erorgn = hyd_db(ihyd_db)%erorgn
         hru(ihru)%hyd%erorgp = hyd_db(ihyd_db)%erorgp
         hru(ihru)%hyd%cn3_swf = hyd_db(ihyd_db)%cn3_swf
+        hru(ihru)%hyd%perco = hyd_db(ihyd_db)%perco
         hru(ihru)%topo%dis_stream = topo_db(itopohd_db)%dis_stream
         hru(ihru)%hyd%biomix = hyd_db(ihyd_db)%biomix
         hru(ihru)%hyd%dep_imp = hyd_db(ihyd_db)%dep_imp

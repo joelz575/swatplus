@@ -48,6 +48,8 @@
       !use output_landscape_module
       
       implicit none
+      integer :: date_time(8)
+      character*10 b(3)
       integer :: mres, ob1, ob2, ires, imp, mrch, irch, isdc, imax, iup
       integer :: ibac, mbac, mbac_db, ii, iob, idfn, isb, ielem, ifld
       integer :: istr_db, mstr_prac, istr, iscenario, j, ichan, idat
@@ -58,11 +60,11 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco
 
-      prog = "SWAT+ Sep 1 2016    MODULAR Rev 2016.25"
+      prog = "SWAT+ Sep 23 2016    MODULAR Rev 2016.26"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 25             ",/,             &
+     &          "              Revision 26             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -88,23 +90,30 @@
       call basin_prm_default
       call basin_print_codes_read
 
-      write (*,*) 'reading from precipitation file'
+   
+      call DATE_AND_TIME (b(1), b(2), b(3), date_time)
+      write (*,111) 'reading from precipitation file    ', date_time(5), date_time(6), date_time(7)
+111   format (1x,a, 5x,'Time',2x,i2,':',i2,':',i2)
       call cli_pmeas
-      write (*,*) 'reading from temperature file'
+      write (*,111) 'reading from temperature file      ', date_time(5), date_time(6), date_time(7)
+      call DATE_AND_TIME (b(1), b(2), b(3), date_time)
       call cli_tmeas
-      write (*,*) 'reading from solar radiation file'
+      write (*,111) 'reading from solar radiation file  ', date_time(5), date_time(6), date_time(7)
+      call DATE_AND_TIME (b(1), b(2), b(3), date_time)
       call cli_smeas
-      write (*,*) 'reading from relative humidity file'
+      write (*,111) 'reading from relative humidity file', date_time(5), date_time(6), date_time(7)
+      call DATE_AND_TIME (b(1), b(2), b(3), date_time)
       call cli_hmeas
-      write (*,*) 'reading from wind file'
+      write (*,111) 'reading from wind file             ', date_time(5), date_time(6), date_time(7)
+      call DATE_AND_TIME (b(1), b(2), b(3), date_time)
       call cli_wmeas
-      write (*,*) 'reading from precipitation file'
-      
+      write (*,111) 'reading from wgn file              ', date_time(5), date_time(6), date_time(7)
+      call DATE_AND_TIME (b(1), b(2), b(3), date_time)
       call cli_wgnread
-      write (*,*) 'reading from wgn file'
+      write (*,111) 'reading from wx station file       ', date_time(5), date_time(6), date_time(7)
+      call DATE_AND_TIME (b(1), b(2), b(3), date_time)
       call cli_staread
-      write (*,*) 'reading from wx station file'
-      
+   
       call sep_read
       call solt_db_read
       call topo_read
@@ -269,12 +278,16 @@
       end do
       
       !save hru initial conditions if calibrating
-      if (cal_codes%ls == 'y') then
+      if (cal_codes%hyd_hru == 'y') then
         do ihru = 1, mhru
           hru_init(ihru) = hru(ihru)
           soil_init(ihru) = soil(ihru)
           pcom_init(ihru) = pcom(ihru)
         end do
+      end if
+      
+      !save hru_lte initial conditions if calibrating
+      if (cal_codes%hyd_hrul == 'y') then
         do ihru = 1, sp_ob%hru_lte
           sd_init(ihru) = sd(ihru)
         end do
@@ -308,10 +321,15 @@
         end if
       end do
       
-      !calibrate hydrology
-      if (cal_codes%hyd == 'y') then
+      !calibrate hydrology for hru
+      if (cal_codes%hyd_hru == 'y') then
         call cal_hyd
+      end if
+      
+      !calibrate hydrology for hru_lte
+      if (cal_codes%hyd_hrul == 'y') then
         call calt_hyd
+        !print calibrated hydrology for hru_lte
 		do ireg = 1, db_mx%lscalt_reg
 		  do ilum = 1, lscalt(ireg)%lum_num
             lscalt(ireg)%lum(ilum)%meas%srr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%srr
@@ -325,19 +343,18 @@
                     lscalt(ireg)%lum(ilum)%meas, lscalt(ireg)%lum(ilum)%aa, lscalt(ireg)%lum(ilum)%prm
 		  end do
         end do  
-      
+
 	    do isdh = 1, sp_ob%hru_lte
 	      idb = sd(isdh)%props
-		  write (4999,400) sd(isdh)%name, sd_db(idb)%dakm2, sd(isdh)%cn2, sd(isdh)%cn3_swf, sd_db(idb)%tc,       &
-		    sd_db(idb)%soildep, sd(isdh)%perco, sd_db(isdh)%slope, sd_db(idb)%slopelen,        &
-		    sd(isdh)%etco,  sd_db(idb)%sy, sd_db(idb)%abf, sd(idb)%revapc,                     &
-		    sd_db(idb)%percc, sd_db(idb)%sw, sd_db(idb)%gw, sd_db(idb)%gwflow,                 &
-		    sd_db(idb)%gwdeep, sd_db(idb)%snow, sd_db(idb)%xlat, sd_db(idb)%itext,             &
-		    sd_db(idb)%tropical, sd_db(idb)%igrow1, sd_db(idb)%igrow2, sd_db(idb)%plant, sd(isdh)%stress,      &
-		    sd_db(idb)%ipet, sd_db(idb)%irr, sd_db(idb)%irrsrc, sd_db(idb)%tdrain,             &
+		  write (4999,400) sd(isdh)%name, sd_db(idb)%dakm2, sd(isdh)%cn2, sd(isdh)%cn3_swf, sd_db(idb)%tc,      &
+		    sd_db(idb)%soildep, sd(isdh)%perco, sd_db(isdh)%slope, sd_db(idb)%slopelen,                         &
+		    sd(isdh)%etco,  sd_db(idb)%sy, sd_db(idb)%abf, sd(idb)%revapc,                                      &
+		    sd_db(idb)%percc, sd_db(idb)%sw, sd_db(idb)%gw, sd_db(idb)%gwflow,                                  &
+		    sd_db(idb)%gwdeep, sd_db(idb)%snow, sd_db(idb)%xlat, sd_db(idb)%itext,                              &
+		    sd_db(idb)%tropical, sd_db(idb)%igrow1, sd_db(idb)%igrow2, sd_db(idb)%plant, sd(isdh)%stress,       &
+		    sd_db(idb)%ipet, sd_db(idb)%irr, sd_db(idb)%irrsrc, sd_db(idb)%tdrain,                              &
             sd_db(idb)%uslek, sd_db(idb)%uslec, sd_db(idb)%uslep, sd_db(idb)%uslels
 	    end do
-		
       end if
         
       !calibrate plant growth
@@ -363,6 +380,6 @@
       write (*,1001)
  1001 format (/," Execution successfully completed ")
   400 format (a16,19f12.3,4i12,12x,a4,f12.3,3i12,5f12.3)
-  500 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),10f12.3)	
+  500 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),9f12.3)	
 	  stop
       end

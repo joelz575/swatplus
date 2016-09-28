@@ -194,7 +194,7 @@
         summn_t = summn_t + wgn(i)%tmpmn(mon)
 
         !! calculate total potential heat units
-        if (tav > 0.)wgn_pms(i)%phutot = wgn_pms(i)%phutot + tav * mdays
+        if (tav > 0.) wgn_pms(i)%phutot = wgn_pms(i)%phutot + tav * mdays
 
         !! calculate values for pr_w if missing or bad
         if (wgn(i)%pr_ww(mon) <= wgn(i)%pr_wd(mon).or.                    &

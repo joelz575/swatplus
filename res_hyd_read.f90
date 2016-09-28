@@ -10,6 +10,7 @@
       eof = 0
       imax = 0
       
+      !read init
       inquire (file=in_res%init_res, exist=i_exist)
       if (i_exist == 0 .or. in_res%init_res == 'null') then
         allocate (res_init(0:0))
@@ -42,6 +43,7 @@
       enddo
       endif
       
+      !read hyd
       imax = 0
       inquire (file=in_res%res, exist=i_exist)
       if (i_exist == 0 .or. in_res%res == 'null') then

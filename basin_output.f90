@@ -20,7 +20,7 @@
         
 !!!!! daily print - SUBBASIN
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                    .and. time%day <= pco%jd_end) then
+                                    .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
           if (pco%wb_bsn == 3) then
             write (4300,100) time%day, time%yrc, iz, bwb_d  !! waterbal
             if (pco%csvout == 1 .and. pco%wb_bsn == 3) then 

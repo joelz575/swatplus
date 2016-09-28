@@ -188,7 +188,7 @@
         pr_ratio = Max(pr_ratio, 0.)
         
         !new q*qp (m3 * m3/s) equation for entire runoff event
-        hc = sd_ch(ich)%hc_co * (chflow_m3/86400.) ** .54 * sd_chd(ich)%hc_hgt ** .225       !m per event
+        hc = sd_ch(ich)%hc_co * (chflow_m3/86400.) ** .27 * sd_chd(ich)%hc_hgt ** .113       !m per event
         hc = Max(hc, 0.)
         sd_ch(ich)%hc_len = sd_ch(ich)%hc_len + hc
         if (sd_ch(ich)%hc_len > sd_ch(ich)%chl * 1000.) then

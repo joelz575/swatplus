@@ -90,6 +90,7 @@
          idb = ob(icmd)%props
          sd(i)%name = ob(icmd)%name
          sd(i)%props = idb
+         sd(i)%obj_no = icmd
          sd(i)%km2 = sd_db(idb)%dakm2
          sd(i)%cn2 = sd_db(idb)%cn2
          sd(i)%cn2 = amax1(35., sd(i)%cn2)
@@ -169,7 +170,10 @@
          end do
          ! change from growing season to time to maturity
          sd(i)%phu = .9 * phutot
-         sd(i)%phu = Max(700., sd(i)%phu)
+         sd(i)%phu = Max(500., sd(i)%phu)
+         if (pldb(iplt)%idc <= 2 .or. pldb(iplt)%idc == 4 .or. pldb(iplt)%idc == 5) then
+           sd(i)%phu = Min(2000., sd(i)%phu)
+         end if
 
          ! compute musle factors
          ! calculate USLE slope length factor

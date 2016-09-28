@@ -1,4 +1,7 @@
       subroutine hydout_output (iout)
+    
+      use time_module
+      use basin_module
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs hyd variables on daily, monthly and annual time steps
@@ -10,7 +13,7 @@
 
 !!!!! daily print
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                    .and. time%day <= pco%jd_end) then
+                              .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
           if (pco%hyd == 3) then
             write (5001,101) time%day, time%yrs, icmd, ob(icmd)%typ,        &
              ob(icmd)%props, ob(icmd)%obtyp_out(iout),                      &

@@ -73,15 +73,15 @@
             
         !potentail heat units - base zero
         case ("phu_base0")
-          ihru = ob_num
+          iwst = ob_num
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
-              if (phubase(ihru) > d_tbl(id)%cond(ic)%lim_const) then
+              if (wst(iwst)%weat%phubase0 > d_tbl(id)%cond(ic)%lim_const) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == ">") then    !may use for grazing or fire
-              if (phubase(ihru) < d_tbl(id)%cond(ic)%lim_const) then
+              if (wst(iwst)%weat%phubase0 < d_tbl(id)%cond(ic)%lim_const) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if

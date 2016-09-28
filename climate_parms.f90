@@ -89,6 +89,8 @@
         real :: windsp
         real :: pet
         real :: wndir
+        real :: phubase0
+        real :: daylength
         real, dimension(:), allocatable :: ts  !! subdaily precip
       end type weather_daily
             

@@ -1228,7 +1228,7 @@
       type (channel_pst_data), dimension(:), allocatable :: ch_pst
        
       type reservoir_initial
-        character(len=13) :: name
+        character(len=16) :: name
         real :: vol = 0.          !m**3          |res vol (read in as frac principle and converted to m^3)
         real :: sed = 0.          !kg/L          |amt of sed in res (read in as mg/L and converted to kg/L)
         real :: orgn = 0.         !kg N          |amt of org N in res (read in as mg/L and converted to kg/L)

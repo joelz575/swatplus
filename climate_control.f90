@@ -119,6 +119,7 @@
           end if
         end if
       end do
+      
 !! Temperature: 
       do ii = 1, mwst
         iwst = wst_pointer(ii)
@@ -222,6 +223,16 @@
         end do
       end if
 
+!! Base Zero Heat Units
+      do ii = 1, mwst
+        iwst = wst_pointer(ii)
+        iwgn = wst(iwst)%wco%wgn
+        if (wst(iwst)%weat%tave > 0.) wst(iwst)%weat%phubase0 = wst(iwst)%weat%phubase0   &
+                                                + wst(iwst)%weat%tave / wgn_pms(iwgn)%phutot
+        if (time%end_yr == 1) wst(iwst)%weat%phubase0 = 0.
+      end do
+      
+      
 !! Climate Change Adjustments !!
       do iip = 1, mwst
         iwst = wst_pointer(iip)

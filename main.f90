@@ -60,11 +60,11 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco
 
-      prog = "SWAT+ Sep 23 2016    MODULAR Rev 2016.26"
+      prog = "SWAT+ Sep 28 2016    MODULAR Rev 2016.27"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 26             ",/,             &
+     &          "              Revision 27             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -74,7 +74,7 @@
       open (4444,file="diagnostics.out")
       write (4444,4445) 
 4445  format (1x,'FILENAME',21x,'REC',3x,'MAX',9x,'FILE STATUS')
-		
+      		
       call hyd_read_objs
       call readtime_read
       if (time%step > 0) then

@@ -87,7 +87,7 @@
       
 !!!!! daily print
       if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                    .and. time%day <= pco%jd_end) then
+                            .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
         if (pco%chan == 3) then
           write (4400,100) time%day, time%yrc, jrch, ch_d(jrch)
           if (pco%csvout == 1) then

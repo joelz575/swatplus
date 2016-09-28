@@ -150,14 +150,14 @@
               time%yrs_prt = time%yrs_prt / 365.
             end if
           end if
-          
+
           !! check time interval for daily printing
-          if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end   &
-                                             .and. time%day <= pco%jd_end) then
+          if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                                                    .and. time%day <= pco%jd_end) then
             int_print = int_print + 1
             if (int_print > pco%interval) int_print = 1
           end if
-
+          
           !! initialize variables at beginning of day for hru's
           if (sp_ob%hru > 0) call sim_initday
 

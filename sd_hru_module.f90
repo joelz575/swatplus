@@ -63,6 +63,7 @@
       type swatdeg_hru_dynamic
         character(len=16) :: name
         integer :: props
+        integer :: obj_no
         character(len=16) :: plant           !              |plant type (as listed in plants.plt)
         integer :: iplant = 1                !              |plant number xwalked from sd_db()%plant and plants.plt
         real :: km2 = 0.                     !km^2          |drainage area

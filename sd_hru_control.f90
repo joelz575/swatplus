@@ -18,10 +18,6 @@
       rmx = wst(iwst)%weat%solradmx
       
       tave  = (tmax + tmin) / 2. 
-      !calculate base 0 heat units
-      if (time%day == 1) phubase0 = 0.
-      if (tave > 0.) phubase0 = phubase0 + tave / wgn_pms(iwgn)%phutot
-      
       yield = 0.
       ws = 0.
       strsair = 1.
@@ -96,70 +92,23 @@
           xx = 1. - sd(isd)%sw / sd(isd)%awc
           IF (xx.lt.0.0001) xx = 0.0001 
           aet = pet * EXP(-xx) 
-                                                                        
-!                                                                       
-!         compute plant growth - boimass and leaf area                  
-!         b1=et adjustment factor b1=1 during growing season b1=.6 IF no
-!               
-!         begin growth for tropical plants - Strauch, Volk, et al.
-          if (sd_db(isd_db)%tropical == 1) then
-            if (time%day == sd_db(isd_db)%igrow1) sd(isd)%igro = 0
-            if (time%day >= sd_db(isd_db)%igrow1 .and. time%day <= sd_db(isd_db)%igrow2) then
-              if (sd(isd)%igro == 0 .and. sd(isd)%sw > pldb(iplt)%frsw_gro * sd(isd)%awc) then
-                sd(isd)%igro = 1
-                sd(isd)%g = 0.
-                sd(isd)%alai = 0.
-                sd(isd)%dm = 0.
-                sd(isd)%hufh = 0.
-              end if
-              if (sd(isd)%igro == 0 .and. time%day == sd_db(isd_db)%igrow2) then
-                ! calc yield, print max lai, dm and yield
-                if (pco%mgtout == 1) then
-                  yield = sd(isd)%dm * pldb(iplt)%hvsti
-                  write (4700,*) isd, time%day, time%yrc, pldb(iplt)%plantnm,    &
-                     sd(isd)%alai, sd(isd)%dm, yield
-                  if (pco%csvout == 1 .and. pco%mgtout == 1) then
-                    write (4701,'(*(G0.3,:","))') isd, time%day, time%yrc, pldb(iplt)%plantnm,    &
-                      sd(isd)%alai, sd(isd)%dm, yield 
-                  end if
-                end if
-
-                sd(isd)%igro = 1
-                sd(isd)%g = 0.
-                sd(isd)%alai = 0.
-                sd(isd)%dm = 0.
-                sd(isd)%hufh = 0.
-              end if
-            end if
-          ELSE
-                
-!         begin growth for non-tropical plants
-          IF (time%day == sd_db(isd_db)%igrow1) then
-            sd(isd)%igro = 1
-            sd(isd)%g = 0.
-            sd(isd)%alai = 0.
-            sd(isd)%dm = 0.
-            sd(isd)%hufh = 0.
-          END IF
+           
+!         begin growth for plants
+          if (sd(isd)%igro == 0) then
+            ! istart points to rule set in d_table
+            istart = 1  !sd_db(isd_db)%igrow1
+            call conditions (istart, iwst)
+            call actions (istart, iwst)
+          end if
           
-!         end growth
+!         end growth for plants
+          if (sd(isd)%igro == 1) then
+            ! iend points to rule set in d_table
+            iend = 2  !sd_db(isd_db)%igrow2
+            call conditions (iend, iwst)
+            call actions (iend, iwst)
+          end if
 
-          IF (time%day == sd_db(isd_db)%igrow2) then
-            !calculate yield - print lai, biomass and yield - add stress to yield?
-            yield = sd(isd)%dm * pldb(iplt)%hvsti  ! * sd(isd)%stress
-            sd(isd)%yield = yield / 1000.
-            sd(isd)%npp = sd(isd)%dm / 1000.
-            sd(isd)%lai_mx = sd(isd)%alai
-            !compute annual net primary productivity (npp) for perennial non-harvested?
-            !use output.mgt print code
-            !write() isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
-            sd(isd)%igro = 0
-            sd(isd)%g = 0.
-            sd(isd)%alai = 0.
-            sd(isd)%dm = 0.     !adjust for non-harvested perennials?
-            sd(isd)%hufh = 0.
-          END IF
-                    
          ! calc yield, print max lai, dm and yield
           if (pco%mgtout == 1) then
             write (4700,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
@@ -167,9 +116,10 @@
               write (4701,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
             end if
           end if
-          
-        END IF
-           
+                                                              
+!                                                                       
+!         compute plant growth - b1=et adjustment factor b1=1 during growing season b1=.6 IF no
+!    
           b1 = sd(isd)%etco - .4        !evap coef ranges from .4-.8 when etco ranges from .8-1.2
           IF (sd(isd)%igro == 1) THEN
             b1 = sd(isd)%etco
@@ -227,18 +177,22 @@
             ELSE
               tstress = 0. 
             END IF 
-                                                        
+               
+                                                                                    
+!                                                                       
+!         compute boimass and leaf area                  
+!    
             reg = amin1(ws,tstress,strsair) 
             sd(isd)%dm = sd(isd)%dm + reg * drymat 
             f = sd(isd)%g / (sd(isd)%g + EXP(plcp(iplt)%leaf1 - plcp(iplt)%leaf2 * sd(isd)%g))
-            ff = f - sd(isd)%hufh 
-            sd(isd)%hufh = f 
+            ff = f - sd(isd)%hufh
+            sd(isd)%hufh = f
             deltalai = ff * pldb(iplt)%blai * (1.0 - EXP(5.0 *(sd(isd)%alai - pldb(iplt)%blai))) * sqrt(reg)
-            sd(isd)%alai = sd(isd)%alai + deltalai 
+            sd(isd)%alai = sd(isd)%alai + deltalai
           END IF
                                                                   
-!         adjust actual et for growing season                           
-          aet = b1 * aet 
+!         adjust actual et for growing season
+          aet = b1 * aet
           
           !compute lateral soil flow
           sw_excess = sd(isd)%sw - sd(isd)%awc
@@ -302,14 +256,15 @@
 
 !!        compute channel peak rate using SCS triangular unit hydrograph
           chflow_m3 = 1000. * chflow * sd_db(isd_db)%dakm2
-	    runoff_m3 = 1000. * runoff * sd_db(isd_db)%dakm2
-	    bf_m3 = 1000. * (flowlat + sd(isd)%gwflow)*sd_db(isd_db)%dakm2
+	      runoff_m3 = 1000. * runoff * sd_db(isd_db)%dakm2
+	      bf_m3 = 1000. * (flowlat + sd(isd)%gwflow)*sd_db(isd_db)%dakm2
           peakr = 2. * runoff_m3 / (1.5 * sd_db(isd_db)%tc)
-	    peakrbf = bf_m3 / 86400.
+	      peakrbf = bf_m3 / 86400.
           peakr = (peakr + peakrbf)     !* prf     
           
 !!        compute sediment yield with MUSLE
-          sedin = (runoff * peakr * 1000. * sd_db(isd_db)%dakm2) ** .56 * sd(isd)%uslefac 
+          sedin = (runoff * peakr * 1000. * sd_db(isd_db)%dakm2) ** .56 * sd(isd)%uslefac
+          
 	    !! add subsurf sediment - t=ppm*mm*km2/1000.
 	    qssubconc = 500.
 	    qssub = qssubconc * (flowlat + sd(isd)%gwflow) * sd_db(isd_db)%dakm2 / 1000.

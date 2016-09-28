@@ -8,6 +8,7 @@
       use parm
       use reservoir_module
       use sd_channel_module
+      use sd_hru_module
       
       integer :: id, ob_num, ir
       character(len=1) :: action
@@ -85,6 +86,31 @@
             
           !harvest
           case ("harvest")
+                      
+          !initiate growing season for hru_lte
+          case ("grow_init")
+            ihru = ob_num
+            sd(ihru)%igro = 1
+            sd(ihru)%g = 0.
+            sd(ihru)%alai = 0.
+            sd(ihru)%dm = 0.
+            sd(ihru)%hufh = 0.
+            
+          !end growing season for hru_lte
+          case ("grow_end")
+            !calculate yield - print lai, biomass and yield - add stress to yield?
+            yield = sd(ihru)%dm * pldb(sd(ihru)%iplant)%hvsti  ! * sd(isd)%stress
+            sd(ihru)%yield = yield / 1000.
+            sd(ihru)%npp = sd(ihru)%dm / 1000.
+            sd(ihru)%lai_mx = sd(ihru)%alai
+            !compute annual net primary productivity (npp) for perennial non-harvested?
+            !use output.mgt print code
+            !write() isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
+            sd(ihru)%igro = 0
+            sd(ihru)%g = 0.
+            sd(ihru)%alai = 0.
+            sd(ihru)%dm = 0.     !adjust for non-harvested perennials?
+            sd(ihru)%hufh = 0.
               
           !drainage water management
           case ("drainage")

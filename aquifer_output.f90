@@ -16,7 +16,7 @@
         
         !! daily print - AQUIFER
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                    .and. time%day <= pco%jd_end) then
+                              .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
           if (pco%aqu == 3) then
             write (4500,100) time%day, time%yrc, iaq, aqu(iaq)
             if (pco%csvout == 1) then

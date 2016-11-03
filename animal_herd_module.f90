@@ -18,7 +18,4 @@
         integer :: icwd = 0         !           |
       end type animals
 
-      contains
-
-
       end module animal_herd_module 

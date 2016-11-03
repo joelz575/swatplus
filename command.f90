@@ -57,6 +57,7 @@
         if (ob(icmd)%rcv_tot > 0) then
           ob(icmd)%hin = hz
           ob(icmd)%hin_s = hz
+          ht1 = hz
           if (time%step > 0) ob(icmd)%tsin(:) = hz
           ob(icmd)%peakrate = 0.
           do in = 1, ob(icmd)%rcv_tot
@@ -73,20 +74,19 @@
                 ihyd = ob(isub)%htyp_in(in)
                 ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)  !fraction of hydrograph
                 ht1 = sub_elem(ielem)%frac * ht1               !fraction of hru in subbasin
+              else
+                iob = ob(icmd)%obj_in(in)
+                ihyd = ob(icmd)%htyp_in(in)
+                ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
+                ob(icmd)%peakrate = ob(iob)%peakrate
               end if
             else
               iob = ob(icmd)%obj_in(in)
-              if (iob == 4) then
-                !! add flow to channel (or appropriate object)  **Ryan**
-                !ht1%flo = 
-              else
-                ihyd = ob(icmd)%htyp_in(in)
-                ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
-              end if
+              ihyd = ob(icmd)%htyp_in(in)
+              ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
+              ob(icmd)%peakrate = ob(iob)%peakrate
             end if
-            !set peak rate in
-            ob(icmd)%peakrate = ob(iob)%peakrate
-            
+
             if (ihyd == 4) then  !route lat flow through soil
               ob(icmd)%hin_s = ob(icmd)%hin_s + ht1
               isub_in = 1
@@ -211,7 +211,7 @@
         !set the next command
         icmd = ob(icmd)%cmd_next
         
-          end do
+      end do
           
       if (time%yrs > pco%nyskip) then
           call obj_output

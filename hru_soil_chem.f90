@@ -124,7 +124,7 @@
 !!    average in soil for the entire watershed
 !!    convert mg/kg (ppm) to kg/ha
 
-!      do ipl = 1, npl(j)  !! needs to be fixed when updating residue by plant type**
+!      do ipl = 1, pcom(j)%npl  !! needs to be fixed when updating residue by plant type**
 !      sol(isol)%rsd_flt(ipl)%pmass = sol(isol)%rsd_flt(ipl)%mass * .0010 !! was 0.0003 Armen January 2009
 !      sol(isol)%rsd_flt(ipl)%nmass = sol(isol)%rsd_flt(ipl)%mass * .0055 !! was 0.0015 Armen January 2009
 !      end do

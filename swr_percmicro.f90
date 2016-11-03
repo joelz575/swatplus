@@ -8,7 +8,6 @@
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ihru         |none          |HRU number
-!!    ldrain(:)    |none          |soil layer where drainage tile is located
 !!    slsoil(:)    |m             |slope length for lateral subsurface flow
 !!    sw_excess    |mm H2O        |amount of water in soil that exceeds field 
 !!                                |capacity (gravity drained water)

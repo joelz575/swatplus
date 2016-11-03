@@ -7,11 +7,8 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ihru            |none          |HRU number
 !!    surfq(:)	   	|mm H2O        |amount of water in surface runoff generated
-!!	grwat_n(:)      |none          |Mannings's n for grassed waterway
-!!	grwat_i(:)      |none          |On/off Flag for waterway simulation
 !!	grwat_l(:)      |km	           |Length of Grass Waterway
 !!	grwat_w(:)      |none          |Width of grass waterway
-!!	grwat_d(:)      |m             |Depth of Grassed waterway
 !!	grwat_s(:)      |m/m           |Slope of grass waterway
 !!	grwat_spcon(:)  |none          |sediment transport coefficant defined by user
 !!	tc_gwat(:)      |none          |Time of concentration for Grassed waterway and its drainage area
@@ -85,7 +82,7 @@
 !! if peak rate is greater than bankfull discharge
           if (peakr > wat_phi(5,j)) then
             rcharea = wat_phi(1,j)
-            rchdep = grwat_d(j)
+            rchdep = hru(j)%lumv%grwat_d
           else
 !!          find the crossectional area and depth for todays flow
 !!          by iteration method at 1cm interval depth
@@ -98,7 +95,7 @@
               rcharea = (wat_phi(6,j) + 8 * rchdep) * rchdep
               p = wat_phi(6,j) + 2. * rchdep * Sqrt(1. + 8 * 8)
               rh = rcharea / p
-              sdti = Qman(rcharea, rh, grwat_n(j), grwat_s(j))
+              sdti = Qman(rcharea, rh, hru(j)%lumv%grwat_n, hru(j)%lumv%grwat_s)
             end do
           end if
 
@@ -108,7 +105,7 @@
 !! Calculate sediment losses in sheetflow at waterway sides
 
 !! calculate area of sheeflow in m^2 assumne *:1 side slope 8.06 = (8^2+1^2)^.5
-	sf_area = (grwat_d(j) - rchdep) * 8.06 * grwat_l(j) * 1000
+	sf_area = (hru(j)%lumv%grwat_d - rchdep) * 8.06 * hru(j)%lumv%grwat_l * 1000
 !! Adjust Area to account for flow nonuniformities White and Arnold 2009 found half of flow in VFS
 !!handled by 10% of VFS area. Waterways likely even more concentrated Assume only 20% of sideslope acts as filters
       if (sf_area > 1.e-6) then
@@ -157,7 +154,7 @@
 !! Calculate sediment concentration in inflow mg/m^3
             cyin = sedint / chflow_day
 !! Calculate sediment transport capacity mg/m^3
-            cych = grwat_spcon(j) * vc ** 1.5
+            cych = hru(j)%lumv%grwat_spcon * vc ** 1.5
 !! Calculate deposition in mg
             depnet = chflow_day * (cyin - cych)
             if (depnet < 0.) depnet = 0

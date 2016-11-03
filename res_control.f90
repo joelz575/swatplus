@@ -50,11 +50,9 @@
         if(time%step == 0) then		!! urban modeling by J.Jeong
 	      !call from actions --> call res_hydro (jres, ihyd, ised)
           !! determine reservoir outflow
-          irel = res_dat(res_ob(jres)%props)%release
-          iob_rel = res_ob(jres)%ob
-          call conditions (irel, iob_rel)
-          call actions (irel, iob_rel)
-          call res_sediment (jres, ihyd, ised)
+          irel = res_dat(idat)%release
+          call conditions (irel, ihyd)
+          call actions (irel, jres)
 	    else
 	      !call res_hourly
         endif

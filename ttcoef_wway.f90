@@ -6,10 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    grwat_d(:)  |m             |average depth of main channel
-!!    grwat_l(:)  |km            |length of main channel
-!!    grwat_n(:)|none          |Manning's "n" value for the main channel
-!!    grwat_s(:)|m/m           |average slope of main channel
 !!    grwat_w(:)  |m             |average width of main channel
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
@@ -93,16 +89,16 @@
 !      end if
 
       fps = 4.
-      d = grwat_d(k)
-      b = grwat_w(k) - 2. * d * chsslope
+      d = hru(k)%lumv%grwat_d
+      b = hru(k)%lumv%grwat_w - 2. * d * chsslope
 
 
 !!    check if bottom width (b) is < 0
       if (b <= 0.) then
         b = 0.
         chsslope = 0.
-        b = .5 * grwat_w(k)
-        chsslope = (grwat_w(k) - b) / (2. * d)
+        b = .5 * hru(k)%lumv%grwat_w
+        chsslope = (hru(k)%lumv%grwat_w - b) / (2. * d)
       end if
       wat_phi(6,k) = b
       wat_phi(7,k) = d
@@ -116,23 +112,23 @@
       a = b * d + chsslope * d * d
       rh = a / p
       wat_phi(1,k) = a
-      wat_phi(5,k) = Qman(a, rh, grwat_n(k), grwat_s(k))
-      wat_phi(8,k) = Qman(aa, rh, grwat_n(k), grwat_s(k))
+      wat_phi(5,k) = Qman(a, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
+      wat_phi(8,k) = Qman(aa, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
       wat_phi(9,k) = wat_phi(8,k) * 5. / 3.
-      wat_phi(10,k) = grwat_l(k) / wat_phi(9,k) / 3.6
-      tt2 = grwat_l(k) * a / wat_phi(5,k)
+      wat_phi(10,k) = hru(k)%lumv%grwat_l / wat_phi(9,k) / 3.6
+      tt2 = hru(k)%lumv%grwat_l * a / wat_phi(5,k)
 
 !!    compute flow and travel time at 1.2 bankfull depth
       d = 0.
       rh = 0.
       qq1 = 0.
       tt1 = 0.
-      d = 1.2 * grwat_d(k)
-      a = a + (grwat_w(k) * grwat_d(k) + fps * (d - grwat_d(k)) ** 2)
-      p=p + 4.*grwat_w(k) + (0.4 * grwat_d(k) * Sqrt(fps * fps + 1.))
+      d = 1.2 * hru(k)%lumv%grwat_d
+      a = a + (hru(k)%lumv%grwat_w * hru(k)%lumv%grwat_d + fps * (d - hru(k)%lumv%grwat_d) ** 2)
+      p=p + 4.*hru(k)%lumv%grwat_w + (0.4 * hru(k)%lumv%grwat_d * Sqrt(fps * fps + 1.))
       rh = a / p
-      qq1 = Qman(a, rh, grwat_n(k), grwat_s(k))
-      tt1 = grwat_l(k) * a / qq1
+      qq1 = Qman(a, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
+      tt1 = hru(k)%lumv%grwat_l * a / qq1
 
 !!    compute flow and travel time at 0.1 bankfull depth
       a = 0.
@@ -141,15 +137,15 @@
       rh = 0.
       qq1 = 0.
       tt1 = 0.
-      d = 0.1 * grwat_d(k)
+      d = 0.1 * hru(k)%lumv%grwat_d
       p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
       a = b * d + chsslope * d * d
       rh = a / p
-      qq1 = Qman(a, rh, grwat_n(k), grwat_s(k))
-      tt1 = grwat_l(k) * a / qq1
-      wat_phi(11,k) = Qman(aa, rh, grwat_n(k), grwat_s(k))
+      qq1 = Qman(a, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
+      tt1 = hru(k)%lumv%grwat_l * a / qq1
+      wat_phi(11,k) = Qman(aa, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
       wat_phi(12,k) = wat_phi(11,k) * 5. / 3.
-      wat_phi(13,k) = grwat_l(k) / wat_phi(12,k) / 3.6
+      wat_phi(13,k) = hru(k)%lumv%grwat_l / wat_phi(12,k) / 3.6
 
       return
       end

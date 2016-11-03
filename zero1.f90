@@ -22,14 +22,8 @@
       cont_cn = 0.
       cont_p = 0.
       filt_w = 0.
-      grwat_n = 0.
-      grwat_i = 0.
-      grwat_l = 0.
-      grwat_w = 0.
-      grwat_d = 0.
       grwat_veg = 0.
-      ida_lup = 0           !CB 8/24/09
-      ngrwat = 0
+      ida_lup = 0           !CB 8/24/09\
       nop = 1 
       phu_op = 0.
 !!  septic changes 1/29/09 
@@ -98,12 +92,8 @@
       urbcn2 = 0.
       usle_cfac = 0.
       usle_eifac = 0.
-      usle_ls = 0.
 !!  septic changes 1/29/09
       vp = 0. 
-!!  septic changes 1/29/09
-      vfsi = 0.    !CB 8/24/09
-
       wfsh = 0.
       manure_kg = 0.
       depsilfp = 0.

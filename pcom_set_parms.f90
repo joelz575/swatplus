@@ -52,7 +52,7 @@
       !! allocate plants
         ipl_com(j) = icom
         if (icom == 0) then
-          npl(j) = 0
+          pcom(j)%npl = 0
         else
         if (init > 0) then
           deallocate (pcom(j)%plg) 
@@ -66,24 +66,24 @@
           deallocate (hru(j)%rsd_std)
         end if
         
-        npl(j) = pcomdb(icom)%plants_com
+        pcom(j)%npl = pcomdb(icom)%plants_com
         nop(j) = 1
-        allocate (pcom(j)%plg(npl(j))) 
-        allocate (pcom(j)%plm(npl(j))) 
-        allocate (pcom(j)%plstr(npl(j))) 
-        allocate (pcom(j)%plcur(npl(j))) 
-        allocate (hru(j)%veg_ag(npl(j)))
-        allocate (hru(j)%grain(npl(j)))
-        allocate (hru(j)%root(npl(j)))
-        allocate (hru(j)%rsd_flt(npl(j)))
-        allocate (hru(j)%rsd_std(npl(j)))
+        allocate (pcom(j)%plg(pcom(j)%npl)) 
+        allocate (pcom(j)%plm(pcom(j)%npl)) 
+        allocate (pcom(j)%plstr(pcom(j)%npl)) 
+        allocate (pcom(j)%plcur(pcom(j)%npl)) 
+        allocate (hru(j)%veg_ag(pcom(j)%npl))
+        allocate (hru(j)%grain(pcom(j)%npl))
+        allocate (hru(j)%root(pcom(j)%npl))
+        allocate (hru(j)%rsd_flt(pcom(j)%npl))
+        allocate (hru(j)%rsd_std(pcom(j)%npl))
 
         cvm_com(j) = 0.
         blai_com(j) = 0.
         tnylda(j) = 0.
         rsdco_plcom(j) = 0.
         pcom(j)%pcomdb = icom
-        do ipl = 1, npl(j)
+        do ipl = 1, pcom(j)%npl
           pcom(j)%plg(ipl)%cpnm = pcomdb(icom)%pl(ipl)%cpnm
           pcom(j)%plcur(ipl)%gro = pcomdb(icom)%pl(ipl)%igro
           pcom(j)%plcur(ipl)%idorm = 1
@@ -115,7 +115,7 @@
           pcom(j)%plm(ipl)%pmass = pcom(j)%plm(ipl)%p_fr *                 &
                 pcom(j)%plm(ipl)%mass
           tnylda(j) = tnylda(j) + 350. * pldb(idp)%cnyld *                 &
-                pldb(idp)%bio_e / npl(j)
+                pldb(idp)%bio_e / pcom(j)%npl
           if (pcom(j)%plcur(ipl)%pop_com < 1.e-6) then
             pcom(j)%plg(ipl)%laimx_pop = pldb(idp)%blai
           else

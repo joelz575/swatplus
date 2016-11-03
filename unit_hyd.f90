@@ -20,8 +20,6 @@
 !!    hru_km(:)   |km2           |area of HRU in square kilometers
 !!    hru_sub(:)  |none          |subbasin in which HRU is located
 !!    lat_ttime(:)|days          |lateral flow travel time
-!!   tile_ttime(:)|none          |Exponential of the tile flow travel time
-!!    ldrain(:)   |none          |soil layer where drainage tile is located
 !!    nhru        |none          |number of HRUs in watershed
 !!    slsoil(:)   |m             |slope length for lateral subsurface flow
 !!    slsubbsn(:) |m             |average slope length for subbasin
@@ -38,7 +36,6 @@
 !!                               |which takes 1 day or less to reach the 
 !!                               |subbasin outlet
 !!    lat_ttime(:)|none          |Exponential of the lateral flow travel time
-!!    tile_ttime(:)|none         |Exponential of the tile flow travel time
 !!    tconc(:)   |hr             |time of concentration for hru
 !!    t_ov(:)     |hr            |time for flow from farthest point in subbasin
 !!                               |to enter a channel

@@ -193,7 +193,7 @@
  
         !! maximum plant ET
           igrocom = 0
-          do ipl = 1, npl(j)
+          do ipl = 1, pcom(j)%npl
             if (pcom(j)%plcur(ipl)%gro == 1) igrocom = 1
           end do
           if (igrocom <= 0) then
@@ -236,7 +236,7 @@
             !! this adjustment will lower maximum plant ET for plants
             !! sensitive to very low vapor pressure
             gsi_wav = 0.
-            do ipl = 1, npl(j)
+            do ipl = 1, pcom(j)%npl
               idp = pcom(j)%plcur(ipl)%idplt
               rto = pcom(j)%plg(ipl)%lai / (sumlai + 0.01)
               xx = vpd - 1.

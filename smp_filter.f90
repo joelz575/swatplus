@@ -46,9 +46,6 @@
 !!                               |sediment in surface runoff in HRU for day
 !!    surfq(:)    |mm H2O        |surface runoff generated on day in HRU
 !!    hru_ha(:)   |ha            |area of HRU in hectares
-!!    vfscon(:)   |none          |Fraction of the total runoff from the entire field
-!!                               |entering the most concentrated 10% of the VFS.
-!!    vfsratio(:) |none          |Field area/VFS area ratio
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -140,13 +137,13 @@
 !! vfs comnposed of two sections one with more concentrated flow than the other
 
 !! Calculate drainage area of vfs 1 2 3 in ha
-	drain_vfs1 = (1-vfscon(j))* hru(j)%area_ha
-	drain_vfs2 = ((1-vfsch(j)) * vfscon(j))* hru(j)%area_ha
-	drain_vfs3 = vfscon(j) * vfsch(j) * hru(j)%area_ha
+	drain_vfs1 = (1-hru(j)%lumv%vfscon)* hru(j)%area_ha
+	drain_vfs2 = ((1-hru(j)%lumv%vfsch) * hru(j)%lumv%vfscon)* hru(j)%area_ha
+	drain_vfs3 = hru(j)%lumv%vfscon * hru(j)%lumv%vfsch * hru(j)%area_ha
 
 !! Calculate area of vfs 1 and 2 in ha
-	area_vfs1 = hru(j)%area_ha * 0.9 / vfsratio(j)
-	area_vfs2 = hru(j)%area_ha * 0.1 / vfsratio(j)
+	area_vfs1 = hru(j)%area_ha * 0.9 / hru(j)%lumv%vfsratio
+	area_vfs2 = hru(j)%area_ha * 0.1 / hru(j)%lumv%vfsratio
 
 !!	Calculate drainage area to vfs area ratio (unitless)
 	vfs_ratio1 = drain_vfs1/area_vfs1

@@ -151,7 +151,6 @@
   !! change per JGA irrigation 4/2/2009
       latno3 = 0.
       nicr = 0
-      npl = 1
       npno = 0
       ntil = 1
       orgn_con = 0.
@@ -189,12 +188,7 @@
       gw_qdeep = 0.
       tile_no3 = 0.
       tileq = 0.
-      tile_ttime = 0.
       uh = 0.
-      vfsratio = 0.
-      vfscon = 0.
-	  vfsi = 0.
-      vfsch = 0.
       wt_shall = 0.
       yr_skip = 0
 

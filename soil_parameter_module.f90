@@ -105,7 +105,6 @@
         real :: crk = 0.                   !! none          crack volume potential of soil
         real :: alb = 0.                   !! none          albedo when soil is moist
         real :: usle_k = 0.                !!               USLE equation soil erodibility (K) factor 
-!        real :: usle_mult
         real :: det_san = 0.
         real :: det_sil = 0.
         real :: det_cla = 0.

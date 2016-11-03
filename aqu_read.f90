@@ -42,6 +42,7 @@
             read (107,*,iostat=eof) k, aqudb(i)
             if (eof < 0) exit
           end do
+
           close (107)
           exit
        enddo

@@ -20,8 +20,6 @@
 !!    hru_km(:)   |km2           |area of HRU in square kilometers
 !!    hru_sub(:)  |none          |subbasin in which HRU is located
 !!    lat_ttime(:)|days          |lateral flow travel time
-!!   tile_ttime(:)|none          |Exponential of the tile flow travel time
-!!    ldrain(:)   |none          |soil layer where drainage tile is located
 !!    nhru        |none          |number of HRUs in watershed
 !!    slsoil(:)   |m             |slope length for lateral subsurface flow
 !!    slsubbsn(:) |m             |average slope length for subbasin
@@ -38,7 +36,6 @@
 !!                               |which takes 1 day or less to reach the 
 !!                               |subbasin outlet
 !!    lat_ttime(:)|none          |Exponential of the lateral flow travel time
-!!    tile_ttime(:)|none         |Exponential of the tile flow travel time
 !!    tconc(:)   |hr             |time of concentration for hru
 !!    t_ov(:)     |hr            |time for flow from farthest point in subbasin
 !!                               |to enter a channel
@@ -77,8 +74,8 @@
        iwst = ob(iob)%wst
        iwgn = wst(iwst)%wco%wgn
        
-       usle_mult(j) = soil(j)%phys(1)%rock * soil(j)%ly(1)%usle_k *       &
-                                 hru(j)%luse%usle_p * usle_ls(j) * 11.8
+       hru(j)%lumv%usle_mult = soil(j)%phys(1)%rock * soil(j)%ly(1)%usle_k *       &
+                                 hru(j)%luse%usle_p * hru(j)%lumv%usle_ls * 11.8
 
 !      if (rsdin(j) > 0.) soil(j)%ly(1)%rsd = rsdin(j)
 
@@ -109,7 +106,7 @@
 !!    compare maximum rooting depth in soil to maximum rooting depth of plant
       if (soil(j)%zmx<= 0.001) soil(j)%zmx = soil(j)%phys(nly)%d
       plt_zmx = 0.
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
         idp = pcom(j)%plcur(ipl)%idplt
 	    if (idp > 0) then
           if (pldb(idp)%idc > 0) then
@@ -199,10 +196,10 @@
                      Exp(-1./hru(j)%hyd%lat_ttime)
         end if
 
-        if (ldrain(j) > 0 .and. sdr(isdr_no(j))%lag > 0.01) then
-            tile_ttime(j) = 1. - Exp(-24. / sdr(isdr_no(j))%lag)
+        if (hru(j)%lumv%ldrain > 0 .and. sdr(isdr_no(j))%lag > 0.01) then
+            hru(j)%lumv%tile_ttime = 1. - Exp(-24. / sdr(isdr_no(j))%lag)
         else
-            tile_ttime(j) = 0.
+            hru(j)%lumv%tile_ttime = 0.
         end if
       end do
 

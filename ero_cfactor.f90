@@ -22,7 +22,6 @@
 !!    sub_km(:)   |km^2          |area of subbasin in square kilometers
 !!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
 !!    usle_ei     |100(ft-tn in)/(acre-hr)|USLE rainfall erosion index
-!!    usle_mult(:)|none          |product of USLE K,P,LS,exp(rock)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -56,7 +55,7 @@
 
       !! HRU sediment calculations
       if (bsn_cc%cfac == 0) then
-        if (npl(j) > 0) then     
+        if (pcom(j)%npl > 0) then     
           c = Exp((-.2231 - cvm_com(j)) *                                &
        	      Exp(-.00115 * sol_cov(j)) + cvm_com(j))
         else

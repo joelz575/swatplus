@@ -13,8 +13,8 @@
       integer :: id, ob_num, ir
       character(len=1) :: action
 
-      action = "n"
       do iac = 1, d_tbl(id)%acts
+        action = "n"
         do ial = 1, d_tbl(id)%alts
           if (d_tbl(id)%act_hit(ial) == "y" .and. d_tbl(id)%act_outcomes(iac,ial) == "y") then
             action = "y"
@@ -39,28 +39,13 @@
             end select
             
           !reservoir release - res_hydro does release and water balance
-          call res_hydro (jres, ihyd, ised)
           case ("release")
-            !condition is met - set the release rate
-            select case (d_tbl(id)%act(iac)%option)
-            case ("rate")
-              resflwo = d_tbl(id)%act(iac)%const * 86400.
-            case ("days")
-              resflwo = (res(ob_num)%flo - b_lo) / d_tbl(id)%act(iac)%const
-            case ("weir")
-              !resflwo = 
-            case ("meas")
-              irel = int(d_tbl(id)%act(iac)%const)
-              select case (recall(irel)%typ)
-              case (1)    !daily
-                resflwo = recall(irel)%hd(time%day,time%yrs)%flo
-              case (2)    !monthly
-                resflwo = recall(irel)%hd(time%mo,time%yrs)%flo
-              case (3)    !annual
-                resflwo = recall(irel)%hd(1,time%yrs)%flo
-              end select
-            end select
-          
+            idat = res_ob(ob_num)%props
+            ihyd = res_dat(idat)%hyd
+            ised = res_dat(idat)%sed
+            call res_hydro (ob_num, id, iac, ihyd, ised)
+            call res_sediment (ob_num, ihyd, ised)
+            
           !fertilize
           case ("fertilize")
             !fertop = fertop_db(pointer to fert.dat)
@@ -76,7 +61,7 @@
           !plant
           case ("plant")
             !icom = pcom(ob_num)%pcomdb
-            !do ipl = 1, npl(ob_num)
+            !do ipl = 1, pcom(ob_num)%npl
             !  idp = pcomdb(icom)%pl(ipl)%db_num
             !  if (mgt%op2 == 0 .or. mgt%op2 == ipl) then
             !    pcom(j)%plcur(ipl)%gro = 1

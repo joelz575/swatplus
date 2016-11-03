@@ -1,4 +1,4 @@
-      subroutine res_hyd_read
+      subroutine res_init_read
       
       use basin_module
       use input_file_module
@@ -9,13 +9,14 @@
       
       eof = 0
       imax = 0
-
-      inquire (file=in_res%hyd_res, exist=i_exist)
-      if (i_exist == 0 .or. in_res%hyd_res == 'null') then
-        allocate (res_hyd(0:0))
+      
+      !read init
+      inquire (file=in_res%init_res, exist=i_exist)
+      if (i_exist == 0 .or. in_res%init_res == 'null') then
+        allocate (res_init(0:0))
       else   
       do
-       open (105,file=in_res%hyd_res)
+       open (105,file=in_res%init_res)
        read (105,*,iostat=eof) titldum
        if (eof < 0) exit
        read (105,*,iostat=eof) header
@@ -26,23 +27,23 @@
           imax = Max(imax,i)
         end do
         
-      db_mx%res_hyd = imax
+      db_mx%res_init = imax
       
-      allocate (res_hyd(0:imax))
+      allocate (res_init(0:imax))
       rewind (105)
       read (105,*) titldum
       read (105,*) header
-      
+           
        do ires = 1, imax
          read (105,*,iostat=eof) i
          backspace (105)
-         read (105,*,iostat=eof) k, res_hyd(ires)
+         read (105,*,iostat=eof) k, res_init(ires)
          if (eof < 0) exit
        end do
        close (105)
       exit
       enddo
       endif
-  
+      
       return
-      end subroutine res_hyd_read
+      end subroutine res_init_read

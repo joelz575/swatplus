@@ -35,7 +35,8 @@
       select case (chg_parm)
           
       case ("cn2")
-        cn2(ielem) = chg_par (cn2(ielem), ielem, chg_typ, chg_val, absmin, absmax, num_db)  
+        cn2(ielem) = chg_par (cn2(ielem), ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        call curno (cn2(ielem), ielem)
 
       !! HRU  
       case ("biomix") 
@@ -665,15 +666,15 @@
             aqu_prm(ielem)%delay_e = Exp(-1./(delay + 1.e-6))
             
          case ("flo_min")
-            aqu(ielem)%flo_min = chg_par(res_pst(ielem)%spst_act,  &
+            aqu_st(ielem)%flo_min = chg_par(res_pst(ielem)%spst_act,  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
 
          case ("revap_co")
-            aqu(ielem)%revap_co = chg_par(res_pst(ielem)%spst_act,  &
+            aqu_st(ielem)%revap_co = chg_par(res_pst(ielem)%spst_act,  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("revap_min")
-            aqu(ielem)%revap_min = chg_par(res_pst(ielem)%spst_act,  &
+            aqu_st(ielem)%revap_min = chg_par(res_pst(ielem)%spst_act,  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
       !!LTE

@@ -1,11 +1,12 @@
       module organic_mineral_mass_module
     
       type organic_mass
-        real :: m               !kg or kg/ha      |total object mass
-        real :: c               !kg or kg/ha      |carbon mass
-        real :: n               !kg or kg/ha      |organic nitrogen mass
-        real :: p               !kg or kg/ha      |organic phosphorus mass
+        real :: m = 0.              !kg or kg/ha      |total object mass
+        real :: c = 0.              !kg or kg/ha      |carbon mass
+        real :: n = 0.              !kg or kg/ha      |organic nitrogen mass
+        real :: p = 0.              !kg or kg/ha      |organic phosphorus mass
       end type organic_mass
+      type (organic_mass)  :: om_mass_z
       
       !!new stuff
       type clay_mass
@@ -39,13 +40,16 @@
         type (organic_mass), dimension(:), allocatable :: man       !kg/ha            |manure (by soil layer)
         type (organic_mass), dimension(:), allocatable :: rsd_fl    !kg/ha            |flat residue on soil surface for individual plant in community
         type (organic_mass), dimension(:), allocatable :: rsd_st    !kg/ha            |standing residue for individual plant in community
-        type (organic_mass), dimension(:,:), allocatable :: rsd     !kg/ha            |root and incorporated residue for individual plant in community (by soil layer)
+        type (organic_mass), dimension(:,:), allocatable :: rsd_s   !kg/ha            |root and incorporated residue for individual plant in community (by soil layer)
+        type (organic_mass) :: rsd_tfl                              !kg/ha            |total flat residue on surface (all plants)
+        type (organic_mass) :: rsd_tst                              !kg/ha            |total standing residue (all plants)
+        type (organic_mass), dimension(:), allocatable :: rsd_ts    !kg/ha            |total residue in each soil layer
       end type residue_mass1
       !soil profile object - dimensioned to number of hrus, using the hru pointer
-      type (residue_mass1), dimension(:), allocatable :: res1
+      type (residue_mass1), dimension(:), allocatable :: rsd
       
       type plant_community_mass1
-        character (len=4) :: name                           !                 |same as plant_community object
+        character (len=4) :: name                                   !                 |same as plant_community object
         !live biomass
         type (organic_mass), dimension(:), allocatable :: tot    !kg/ha            |total biomass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: veg    !kg/ha            |vegetative mass for individual plant in community
@@ -88,13 +92,13 @@
         type (mineral_mass) :: min
       end type organic_mineral_mass
       
-      type soil_profile_mass
-        character (len=16) :: name
-        type (organic_mineral_mass), dimension(:), allocatable :: sol       !soil matrix dimensioned by layer
-        type (organic_mineral_mass), dimension(:), allocatable :: sw        !soil water dimensioned by layer
-      end type soil_profile_mass
+      !type soil_profile_mass
+      !  character (len=16) :: name
+      !  type (organic_mineral_mass), dimension(:), allocatable :: sol       !soil matrix dimensioned by layer
+      !  type (organic_mineral_mass), dimension(:), allocatable :: sw        !soil water dimensioned by layer
+     ! end type soil_profile_mass
       !soil profile object - dimensioned to number of hrus, using the hru pointer
-      type (soil_profile_mass), dimension(:), allocatable :: soil
+      !type (soil_profile_mass), dimension(:), allocatable :: soil
       
       type plant_community_mass
         character (len=4) :: name                           !                 |same as plant_community object
@@ -217,11 +221,12 @@
       
       !objects needed for operators
       type (organic_mineral_mass) :: o_m1, o_m2, o_m3
+      type (organic_mineral_mass) :: o1, o2, o3
 
       !we may also need operators for organic and mineral operations
       
       interface operator (+)
-        module procedure om_add
+        module procedure o_add
       end interface
             
       interface operator (**)
@@ -268,25 +273,15 @@
       end subroutine om_convert
          
       !! routines for hydrograph module
-      function om_add (o_m1, o_m2) result (o_m3)
-        type (organic_mineral_mass), intent (in) :: o_m1
-        type (organic_mineral_mass), intent (in) :: o_m2
-        type (organic_mineral_mass) :: o_m3
-        o_m3%vol = o_m1%vol + o_m2%vol
-        o_m3%hum%m = o_m1%hum%m + o_m2%hum%m
-        o_m3%hum%c = o_m1%hum%c + o_m2%hum%c
-        o_m3%hum%n = o_m1%hum%n + o_m2%hum%n
-        o_m3%hum%p = o_m1%hum%p + o_m2%hum%p
-        o_m3%hum_act%m = o_m1%hum_act%m + o_m2%hum_act%m
-        o_m3%hum_act%c = o_m1%hum_act%c + o_m2%hum_act%c
-        o_m3%hum_act%n = o_m1%hum_act%n + o_m2%hum_act%n
-        o_m3%hum_act%p = o_m1%hum_act%p + o_m2%hum_act%p
-        o_m3%min%m = o_m1%min%m + o_m2%min%m
-        o_m3%min%no3 = o_m1%min%no3 + o_m2%min%no3
-        o_m3%min%no2 = o_m1%min%no2 + o_m2%min%no2
-        o_m3%min%nh4 = o_m1%min%nh4 + o_m2%min%nh4
-        o_m3%min%po4 = o_m1%min%po4 + o_m2%min%po4
-      end function om_add
+      function o_add (o1, o2) result (o3)
+        type (organic_mass), intent (in) :: o1
+        type (organic_mass), intent (in) :: o2
+        type (organic_mass) :: o3
+        o3%m = o1%m + o2%m
+        o3%c = o1%c + o2%c
+        o3%n = o1%n + o2%n
+        o3%p = o1%p + o2%p
+      end function o_add
             
       !! routines for hydrograph module
       function om_mult (o_m1, o_m2) result (o_m3)

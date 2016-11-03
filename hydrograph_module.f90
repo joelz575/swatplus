@@ -347,6 +347,7 @@
         integer :: objs = 0      !number of objects or 1st object command
         integer :: hru = 0       !1-number of hru's or 1st hru command
         integer :: hru_lte = 0   !2-number of hru_lte's or 1st hru_lte command
+        
         integer :: sub = 0       !3-number of sub's or 1st sub command
         integer :: modflow = 0   !4-number of modparm's or 1st modparm command
         integer :: aqu = 0       !5-number of aquifer's or 1st aquifer command

@@ -58,7 +58,6 @@
 !!    arrays for plant communities
       allocate (ipl_com(mhru))
       allocate (cht_mx(mhru))
-      allocate (npl(mhru))
       allocate (cvm_com(mhru))
       allocate (blai_com(mhru))
       allocate (rsdco_plcom(mhru))
@@ -204,13 +203,6 @@
       allocate (flowfr(mhru))
       allocate (flowmin(mhru))
       allocate (fsred(mhru))
-      allocate (grwat_n(mhru))
-      allocate (grwat_i(mhru))
-      allocate (grwat_l(mhru))
-      allocate (grwat_w(mhru))
-      allocate (grwat_d(mhru))
-      allocate (grwat_s(mhru))
-      allocate (grwat_spcon(mhru))
       allocate (hru_dafr(mhru))
       allocate (hru_ra(mhru))
       allocate (hru_rmx(mhru))
@@ -235,14 +227,12 @@
       allocate (lai_yrmx(mhru))
       allocate (latno3(mhru))
       allocate (latq(mhru))
-      allocate (ldrain(mhru))
       allocate (ncf(mhru))
       allocate (ndeat(mhru))
       allocate (ndcfrt(mhru))
       allocate (ndcpst(mhru))
       allocate (nfert(mhru))
       allocate (ngr(mhru))
-      allocate (ngrwat(mhru))
       allocate (nirr(mhru))
       allocate (nop(mhru))
       allocate (nplnt(mhru))
@@ -300,7 +290,6 @@
       allocate (tfertp(mhru))
       allocate (tgrazn(mhru))
       allocate (tgrazp(mhru))
-      allocate (tile_ttime(mhru))
       allocate (tileno3(mhru))
       allocate (tmn(mhru))
       allocate (tmpav(itempa))
@@ -312,8 +301,8 @@
       allocate (u10(mhru))
       allocate (usle_cfac(mhru))
       allocate (usle_eifac(mhru))
-      allocate (usle_mult(mhru))
-      allocate (usle_ls(mhru))
+!      allocate (usle_mult(mhru))
+!      allocate (usle_ls(mhru))
       allocate (wtab(mhru))
       allocate (wtab_mn(mhru))
       allocate (wtab_mx(mhru))
@@ -367,12 +356,7 @@
         ft_qin(msub,10),ft_qout(msub,10),ft_sedpnd(msub,10),            &
         sf_ptp(msub,10),ft_fc(msub,10),sub_ha_urb(msub)) 
 !! additional var by Ann
-!! Filter Strip variable allocation MJW
-      allocate (vfscon(mhru))
-      allocate (vfsratio(mhru))
-      allocate (vfsch(mhru))
-      allocate (vfsi(mhru))
-      
+
       ! detention pond
  	allocate(dtp_subnum(mhyd),dtp_imo(mhyd),dtp_iyr(mhyd),                &
         dtp_numweir(mhyd),dtp_numstage(mhyd),                               &
@@ -397,14 +381,7 @@
 
 !! Variables for soil P and additional operations mjw
 	allocate (min_res(mhru))
-
-	allocate (bmp_flag(mhru))
-	allocate (bmp_sed(mhru))
-	allocate (bmp_pp(mhru)) 	
-	allocate (bmp_sp(mhru))	
-	allocate (bmp_pn(mhru)) 	
-	allocate (bmp_sn(mhru))	
-	allocate (bmp_bac(mhru))
+	
       !retention irrigation
       allocate(ri_sed(msub,10),ri_fr(msub,10),ri_dim(msub,10),           &
          ri_im(msub,10),ri_iy(msub,10),ri_sa(msub,10),ri_vol(msub,10),   &

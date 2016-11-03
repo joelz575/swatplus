@@ -27,7 +27,7 @@
         real :: n_fr = 0.             !!none              |nitrogen fraction
         real :: p_fr = 0.             !!none              |phosphorus fraction
       end type plant_mass
-      type (plant_mass) :: plt_mass_z
+!      type (plant_mass) :: plt_mass_z
       type (plant_mass) :: yld_tbr
       type (plant_mass) :: yld_grn
       type (plant_mass) :: yld_veg

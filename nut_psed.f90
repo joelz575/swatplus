@@ -65,7 +65,7 @@
       j = ihru
 
       hru(j)%rsd = plt_mass_z
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
         hru(j)%rsd = hru(j)%rsd + hru(j)%rsd_flt(ipl)
       end do
       

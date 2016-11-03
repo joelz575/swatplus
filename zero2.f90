@@ -37,7 +37,6 @@
       
       irelease = 0
       imp_trig = 1
-      ldrain = 0
       minpcnst = 0.
       minpmon = 0.
       minpyr = 0.
@@ -77,17 +76,10 @@
       tmp_hi = 0.
       tmp_lo = 0.
       twash = 0.
-      usle_mult = 0.
       wpstaao = 0.
       wrt = 0.
       yldn = 0.
       zdb = 0.
-      bmp_sed = 0.	
-	bmp_pp = 0.	
-	bmp_sp = 0.
-	bmp_pn = 0.	
-	bmp_sn = 0.
-	bmp_bac = 0.
 	bio_init = 0
 	lai_init = 0
 	    

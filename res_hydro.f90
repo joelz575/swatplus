@@ -1,4 +1,4 @@
-      subroutine res_hydro (jres, ihyd, ised)
+      subroutine res_hydro (jres, id, iac, ihyd, ised)
 
       use jrw_datalib_module
       use reservoir_module
@@ -11,6 +11,7 @@
       
       !! store initial values
       vol = res(jres)%flo
+      nstep = 1
 
       do tstep = 1, nstep
           
@@ -56,7 +57,9 @@
       end if
 
       !! calculate water balance for day
-      resev = 10. * res_hyd(ihyd)%evrsv * pet_day * ressa
+      iob = res_ob(jres)%ob
+      iwst = ob(iob)%wst
+      resev = 10. * res_hyd(ihyd)%evrsv * wst(iwst)%weat%pet * ressa
       ressep = res_hyd(ihyd)%k * ressa * 240.
       respcp = respcp * ressa * 10.
 

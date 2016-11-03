@@ -21,7 +21,6 @@
 !!    latq(:)       |mm H2O       |amount of water in lateral flow in HRU for
 !!                                |the day
 !!    qtile(:)      |mm H2O       |amount of water in tile flow in HRU for the day
-!!    tile_ttime(:) |none         |Exponential of tile flow travel time
 !!    pst_lag(:,3,:)|kg pst/ha    |amount of pesticide lagged
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -78,8 +77,8 @@
 
       latq(j) = bss(1,j) * hru(j)%hyd%lat_ttime
       latno3(j) = bss(2,j) * hru(j)%hyd%lat_ttime
-      qtile = bss(3,j) * tile_ttime(j)
-      tileno3(j) = bss(4,j) * tile_ttime(j)
+      qtile = bss(3,j) * hru(j)%lumv%tile_ttime
+      tileno3(j) = bss(4,j) * hru(j)%lumv%tile_ttime
       if (latq(j) < 1.e-6) latq(j) = 0.
       if (latno3(j) < 1.e-6) latno3(j) = 0.
       if (qtile < 1.e-6) qtile = 0.

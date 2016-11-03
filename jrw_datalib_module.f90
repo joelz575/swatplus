@@ -70,6 +70,13 @@
         integer :: lscalt_reg = 0     !! none     |max number of regions for landscape hru_lte calibration
         integer :: plcal_reg = 0      !! none     |max number of regions for plant calibration
         integer :: chcal_reg = 0      !! none     |max number of regions for channel calibration
+        integer :: res_dat       
+        integer :: res_init
+        integer :: res_hyd
+        integer :: res_sed
+        integer :: res_nut
+        integer :: res_pst
+        integer :: res_weir
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
 
@@ -1252,9 +1259,20 @@
       end type reservoir_initial
       type (reservoir_initial), dimension(:),allocatable :: res_init
       type (reservoir_initial) :: resz
+      
+      type reservoir_data_char_input
+        character (len=16) :: name = "default"
+        character (len=16) :: init                  !initial data-points to initial.res
+        character (len=16) :: hyd                   !points to hydrology.res for hydrology inputs
+        character (len=16) :: release               !0=simulated; 1=measured outflow
+        character (len=16) :: sed                   !sediment inputs-points to sediment.res
+        character (len=16) :: nut                   !nutrient inputs-points to nutrient.res
+        character (len=16) :: pst                   !pesticide inputs-points to pesticide.res      
+      end type reservoir_data_char_input
+      type (reservoir_data_char_input), dimension(:), allocatable :: res_dat_c
 
       type reservoir_data
-        character(len=13) :: name = "default"
+        character(len=16) :: name = "default"
         integer :: init = 0                   !initial data-points to initial.res
         integer :: hyd = 0                    !points to hydrology.res for hydrology inputs
         integer :: release = 0                !0=simulated; 1=measured outflow
@@ -1269,7 +1287,7 @@
         !variables are conditional on res_dat()%hyd = 0 for reservoirs and 1 for hru impounding
         !surface areas are ha for 0 and frac of hru for 1; volumes are ha-m for 0 and mm for 1
         !br1 and br2 are used for 0 and acoef for 0 -- for surface area - volume relationship
-        character(len=13) :: name = "default"
+        character(len=16) :: name = "default"
         integer :: iyres = 0      !none          |year of the sim that the res becomes operational
         integer :: mores = 0      !none          |month the res becomes operational
         real :: psa = 0.          !ha or frac    |res surface area when res is filled to princ spillway
@@ -1293,7 +1311,7 @@
       type (reservoir_hyd_data) :: res_hydz
       
       type reservoir_sed_data
-        character(len=13) :: name
+        character(len=16) :: name
         real :: nsed              !kg/L          |normal amt of sed in res (read in as mg/L and convert to kg/L)
         real :: d50               ! 
         real :: sed_stlr          !none          |sed settling rate
@@ -1302,7 +1320,7 @@
       type (reservoir_sed_data), dimension(:), allocatable :: res_sed
             
       type reservoir_nut_data
-        character(len=13) :: name
+        character(len=16) :: name
         integer :: ires1          !none          |beg of mid-year nutrient settling "season"
         integer :: ires2          !none          |end of mid-year nutrient settling "season"
         real :: nsetlr1               !m/day         |nit settling rate for mid-year period (read in as m/year and converted to m/day)
@@ -1319,7 +1337,7 @@
       type (reservoir_nut_data), dimension(:), allocatable :: res_nut
           
       type reservoir_pst_data
-        character(len=13) :: name
+        character(len=16) :: name
         real :: pst_conc = 0.         !mg/m^3        |pest concentration in lake water
         real :: pst_koc = 0.          !m**3/g        |pest partition coeff between water and sed in lake water
         real :: pst_mix = 0.          !m/day         |mixing velocity (diffusion/dispersion)in lake water for pest
@@ -1335,7 +1353,7 @@
       type (reservoir_pst_data), dimension(:), allocatable :: res_pst
             
       type reservoir_weir_outflow
-        character(len=13) :: name
+        character(len=16) :: name
         real :: num_steps = 24        !              |number of time steps in day for weir routing
         real :: c = 1.                !              |weir discharge coefficient 
         real :: k = 150000.           !m^1/2 d^-1    |energy coefficient (broad_crested=147,000' sharp crested=153,000)
@@ -1388,6 +1406,8 @@
       include 'snowdb_read.f90'
       include 'soil_db_read.f90'
       include 'atmoparm_read.f90'
+      include 'res_init_read.f90'
+     ! include 'res_read.f90'
       include 'res_hyd_read.f90'
       include 'res_sed_read.f90'
       include 'res_nut_read.f90'

@@ -67,6 +67,16 @@
                     end if
                   end do
                   
+                case ("release")
+                  do idb = 1, db_mx%res_weir
+                    if (d_tbl(i)%act(iac)%option == 'weir') then
+                    if (d_tbl(i)%act(iac)%file_pointer == res_weir(idb)%name) then
+                      d_tbl(i)%act_ptr(iac) = idb
+                      exit
+                    end if
+                    end if
+                  end do
+                  
                 case ("lu_change")
                   do ilum = 1, db_mx%landuse
                     if (d_tbl(i)%act(iac)%file_pointer == lum(ilum)%name) then

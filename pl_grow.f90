@@ -103,7 +103,7 @@
       j = ihru
       rto = 1.
 
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
         !! plant will not undergo stress if dormant
         if (pcom(j)%plcur(ipl)%idorm == 0.and.pcom(j)%plcur(ipl)%gro==1) then
         idp = pcom(j)%plcur(ipl)%idplt
@@ -248,7 +248,7 @@
                 (pcom(j)%plg(ipl)%lai - laimax))) * Sqrt(reg)
             !! adjust lai increment for plant competition
             sumlaiht = 0.
-            do jpl = 1, npl(j)
+            do jpl = 1, pcom(j)%npl
               sumlaiht=sumlaiht+pcom(j)%plg(ipl)%lai * pcom(j)%plg(jpl)%cht
             end do
             if (sumlaiht > 1.e-6) then

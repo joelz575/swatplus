@@ -22,8 +22,6 @@
 !!    sub_km(:)   |km^2          |area of subbasin in square kilometers
 !!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
 !!    usle_ei     |100(ft-tn in)/(acre-hr)|USLE rainfall erosion index
-!!    usle_mult(:)|none          |product of USLE K,P,LS,exp(rock)
-
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -55,7 +53,7 @@
       j = ihru
       
       !! initialize variables
-      cklsp(j) = usle_cfac(j) * usle_mult(j)
+      cklsp(j) = usle_cfac(j) * hru(j)%lumv%usle_mult
 
       !! compute sediment yield with musle
       sedyld(j) = (surfq(j) * peakr * 1000. * hru(j)%km) ** .56 * cklsp(j)

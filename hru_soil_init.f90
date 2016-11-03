@@ -183,7 +183,7 @@
           soil(ihru)%cbn(ly) = sol(isol)%cbn(ly)
           soil(ihru)%ly(ly) = sol(isol)%ly(ly)
           !! set arrays that are layer and plant dependent - residue and roots
-          allocate (soil(ihru)%ly(ly)%rs(npl(ihru)))
+          allocate (soil(ihru)%ly(ly)%rs(pcom(ihru)%npl))
         end do
       end do
       
@@ -259,7 +259,7 @@
         !! allocate bacteria associated with plant
         mbac = obcs(icmd)%num_paths
         if (mbac > 0) then
-          do ipl = 1, npl(j)
+          do ipl = 1, pcom(j)%npl
             allocate (pcom(ihru)%plg(ipl)%bac(mbac))
           end do
         end if
@@ -290,7 +290,7 @@
         hru(ihru)%topo%lat_len = 50.
         xm = .6 * (1. - Exp(-35.835 * hru(ihru)%topo%slope))
         sin_sl = Sin(Atan(hru(ihru)%topo%slope))
-        usle_ls(ihru) = (hru(ihru)%topo%slope_len / 22.128) ** xm *          & 
+        hru(ihru)%lumv%usle_ls = (hru(ihru)%topo%slope_len / 22.128) ** xm *          & 
                       (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
       
         sol_cov(ihru) = soil(ihru)%ly(1)%rsd

@@ -1,8 +1,8 @@
       subroutine aqu_1d_control 
 
       !! set pointers to aquifer database and weather station
-      iaq = ob(icmd)%props
-      iaqdb = ob(icmd)%props2
+      iaq = ob(icmd)%num
+      iaqdb = ob(icmd)%props
       iwst = ob(icmd)%wst
       
       !convert from m^3 to mm
@@ -16,9 +16,10 @@
       aqu(iaq)%stor = aqu(iaq)%stor + aqu(iaq)%rchrg
       
       !! compute flow and substract from storage
-      if (aqu(iaq)%stor > aqu(iaq)%flo_min) then
+      if (aqu(iaq)%stor > aqu_st(iaq)%flo_min) then
         aqu(iaq)%flo = aqu(iaq)%flo * aqu_prm(iaq)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaq)%alpha_e)
         aqu(iaq)%flo = Max (0., aqu(iaq)%flo)
+        aqu(iaq)%flo = Min (aqu(iaq)%stor, aqu(iaq)%flo)
         aqu(iaq)%stor = aqu(iaq)%stor - aqu(iaq)%flo
       else
         aqu(iaq)%flo = 0.
@@ -29,12 +30,12 @@
       
       !! compute seepage through aquifer and subtract from storage
       aqu(iaq)%seep = aqu(iaq)%rchrg * aqudb(iaqdb)%seep
-      aqu(iaq)%seep = amin1 (seep, aqu(iaq)%stor)
+      aqu(iaq)%seep = amin1 (aqu(iaq)%seep, aqu(iaq)%stor)
       aqu(iaq)%stor = aqu(iaq)%stor - aqu(iaq)%seep
       
       !! compute revap (deep root uptake from aquifer) and subtract from storage
-      if (aqu(iaq)%stor > aqu(iaq)%revap_min) then
-        aqu(iaq)%revap = wst(iwst)%weat%pet * aqu(iaq)%revap_co
+      if (aqu(iaq)%stor > aqu_st(iaq)%revap_min) then
+        aqu(iaq)%revap = wst(iwst)%weat%pet * aqu_st(iaq)%revap_co
         aqu(iaq)%revap = amin1 (aqu(iaq)%revap, aqu(iaq)%stor)
         aqu(iaq)%stor = aqu(iaq)%stor - aqu(iaq)%revap
       else
@@ -42,7 +43,7 @@
       end if
 
       !! compute groundwater height - datum: above bottom of channel
-      aqu(iaq)%hgt = aqu(iaq)%hgt * aqudb(iaqdb)%alpha + aqu(iaq)%rchrg * (1.-aqudb(iaqdb)%alpha) /          & 
+      aqu(iaq)%hgt = aqu(iaq)%hgt * aqu_prm(iaq)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaq)%alpha_e) /   & 
                                              (800. * aqudb(iaqdb)%spyld * aqudb(iaqdb)%alpha + 1.e-6)       
       aqu(iaq)%hgt = Max(1.e-6, aqu(iaq)%hgt)
 
@@ -62,6 +63,7 @@
       ob(icmd)%hd(1)%no3 = conc_no3 * aqu(iaq)%flo
       ob(icmd)%hd(1)%no3 = amin1(ob(icmd)%hd(1)%no3, aqu(iaq)%no3)
       aqu(iaq)%no3 = aqu(iaq)%no3 - ob(icmd)%hd(1)%no3
+      aqu(iaq)%no3gw = ob(icmd)%hd(1)%no3
       
       !revapno3 = conc * revap -- dont include nitrate uptake by plant
       

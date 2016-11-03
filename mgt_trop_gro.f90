@@ -40,7 +40,7 @@
 
       j = ihru
 
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
           if (pcom(j)%plcur(ipl)%monsoon_init == 1) then
               idp = pcom(j)%plcur(ipl)%idplt
               sol_st2 = soil(j)%phys(1)%st + soil(j)%phys(2)%st

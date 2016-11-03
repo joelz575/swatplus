@@ -11,7 +11,7 @@
       real :: tmpk, d, gma, ho, pet_alpha, aphu, phuop
 
       j = ihru
-      if (npl(j) > 0) idp = pcom(ihru)%plcur(1)%idplt
+      if (pcom(j)%npl > 0) idp = pcom(ihru)%plcur(1)%idplt
       ulu = hru(j)%luse%urb_lu
       iob = hru(j)%obj_no
       iwst = ob(iob)%wst
@@ -135,16 +135,16 @@
         strsn_av = 0.
         strsp_av = 0.
         strstmp_av = 0.
-        do ipl = 1, npl(j)
+        do ipl = 1, pcom(j)%npl
           sumlai = sumlai + pcom(j)%plg(ipl)%lai
            sumbm = sumbm + pcom(j)%plm(ipl)%mass
           sumrwt = sumrwt + pcom(j)%plg(ipl)%rwt
           cht_mx(j) = Max(0., cht_mx(j))
-          strsw_av(j) = strsw_av(j) + pcom(j)%plstr(ipl)%strsw / npl(j)
-          strsa_av = strsa_av + pcom(j)%plstr(ipl)%strsa / npl(j)
-          strsn_av = strsn_av + pcom(j)%plstr(ipl)%strsn / npl(j)
-          strsp_av = strsp_av + pcom(j)%plstr(ipl)%strsp / npl(j)
-          strstmp_av = strstmp_av + pcom(j)%plstr(ipl)%strst / npl(j)
+          strsw_av(j) = strsw_av(j) + pcom(j)%plstr(ipl)%strsw / pcom(j)%npl
+          strsa_av = strsa_av + pcom(j)%plstr(ipl)%strsa / pcom(j)%npl
+          strsn_av = strsn_av + pcom(j)%plstr(ipl)%strsn / pcom(j)%npl
+          strsp_av = strsp_av + pcom(j)%plstr(ipl)%strsp / pcom(j)%npl
+          strstmp_av = strstmp_av + pcom(j)%plstr(ipl)%strst / pcom(j)%npl
         end do
         
         !! calculate albedo for day
@@ -221,7 +221,7 @@
         call plantmod
      
         !! check for dormancy
-        do ipl = 1, npl(j)
+        do ipl = 1, pcom(j)%npl
           if (pcom(j)%plcur(ipl)%gro == 1) call mgt_dormant
         end do
                
@@ -351,22 +351,22 @@
       !!  latq_ru(j) = 0.
         
         !! compute reduction in pollutants due to edge-of-field filter strip
-        if (vfsi(j) >0.)then
+        if (hru(j)%lumv%vfsi >0.)then
           call smp_filter
           if (filterw(j) > 0.) call smp_buffer
         end if
-              if (vfsi(j) == 0. .and. filterw(j) > 0.) then 
+              if (hru(j)%lumv%vfsi == 0. .and. filterw(j) > 0.) then 
                 call smp_filtw
                 call smp_buffer
               end if
 
 	 !! compute reduction in pollutants due to in field grass waterway
-         if (grwat_i(j) == 1) then
+         if (hru(j)%lumv%grwat_i == 1) then
           call smp_grass_wway
         end if
 
 	 !! compute reduction in pollutants due to in fixed BMP eff
-	   if (bmp_flag(j) == 1) then
+	   if (hru(j)%lumv%bmp_flag == 1) then
           call smp_bmpfixed
         end if
 

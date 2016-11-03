@@ -91,19 +91,19 @@
       j = ihru
       
       bioms_tot = 0.
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
         bioms_tot = bioms_tot + pcom(j)%plm(ipl)%mass
       end do
 !! graze only if adequate biomass in HRU
       if (bioms_tot > bio_min(j)) then
 
-        do ipl = 1, npl(j)
+        do ipl = 1, pcom(j)%npl
         !! determine new biomass in HRU
         dmi = 0.
         dmi = pcom(j)%plm(ipl)%mass
         !! for now the amount eaten is evenly divided by the number of plants
         !! later we can add preferences - by animal type or simply by n and p content
-        pcom(j)%plm(ipl)%mass =pcom(j)%plm(ipl)%mass - bio_eat(j)/npl(j)
+        pcom(j)%plm(ipl)%mass =pcom(j)%plm(ipl)%mass - bio_eat(j)/pcom(j)%npl
         if (bioms_tot < bio_min(j)) pcom(j)%plm(ipl)%mass = bio_min(j)
 
         !!add by zhang
@@ -125,7 +125,7 @@
         !! remove trampled biomass and add to residue
         dmii = 0.
         dmii = pcom(j)%plm(ipl)%mass
-        pcom(j)%plm(ipl)%mass=pcom(j)%plm(ipl)%mass - bio_trmp(j)/npl(j)
+        pcom(j)%plm(ipl)%mass=pcom(j)%plm(ipl)%mass - bio_trmp(j)/pcom(j)%npl
         if (pcom(j)%plm(ipl)%mass < bio_min(j))  then
           soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + dmii - bio_min(j)
           pcom(j)%plm(ipl)%mass = bio_min(j)

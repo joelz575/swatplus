@@ -20,12 +20,10 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ldrain(:)     |none          |soil layer where drainage tile is located
 !!    rock(:)       |none          |exponential value that is a function of
 !!                                 |percent rock
 !!    sol_st(:,:)   |mm H2O        |amount of water stored in the soil layer
 !!                                 |on any given day (less wp water)
-!!    usle_mult(:)  |none          |product of USLE K,P,LS,exp(rock)
 !!    wfsh(:)       |mm            |wetting front matric potential
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 

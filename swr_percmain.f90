@@ -149,7 +149,7 @@
       !! drainmod tile equations   08/11/2006
       if (soil(j)%phys(2)%tmp > 0.) then   !Daniel 1/29/09
         por_air = 0.9
-        d = hru(j)%hyd%dep_imp - hru(j)%sdr_dep
+        d = hru(j)%hyd%dep_imp - hru(j)%lumv%sdr_dep
         !! drainmod wt_shall equations   10/23/2006
         if (bsn_cc%wtdn == 0) then !compute wt_shall using original eq-Daniel 10/23/06
           if (soil(j)%sw > soil(j)%sumfc) then
@@ -180,7 +180,7 @@
         !! drainmod wt_shall equations   10/23/2006
         
         if (isdr > 0) then
-        if (hru(j)%sdr_dep > 0.) then
+        if (hru(j)%lumv%sdr_dep > 0.) then
           if (wt_shall <= d) then
             qtile = 0.
           else

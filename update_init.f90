@@ -31,6 +31,7 @@
               end if
             end select
           end do
+
           if (cond_met == 'y') then
             if (cal_parms(num_db)%ob_typ /= 'lyr' .and. cal_parms(num_db)%ob_typ /= 'cli') then
               call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)

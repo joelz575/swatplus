@@ -54,17 +54,17 @@
       integer :: ibac, mbac, mbac_db, ii, iob, idfn, isb, ielem, ifld
       integer :: istr_db, mstr_prac, istr, iscenario, j, ichan, idat
       integer :: isched, iauto, ictl
-      integer :: isdh, idb, ihru_s
+      integer :: isdh, idb, ihru_s, ical
       real :: rto, sumn, t_ch, ch_slope, ch_n, ch_l, tov
       character(len=16):: chg_typ
       real :: chg_val, absmin, absmax, diff, meas
-      integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco
+      integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
 
-      prog = "SWAT+ Sep 28 2016    MODULAR Rev 2016.27"
+      prog = "SWAT+ Nov 2 2016    MODULAR Rev 2016.28"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 27             ",/,             &
+     &          "              Revision 28             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -74,7 +74,9 @@
       open (4444,file="diagnostics.out")
       write (4444,4445) 
 4445  format (1x,'FILENAME',21x,'REC',3x,'MAX',9x,'FILE STATUS')
-      		
+      
+      open (6001,file="actions.out")
+		
       call hyd_read_objs
       call readtime_read
       if (time%step > 0) then
@@ -176,12 +178,17 @@
       mhru = sp_ob%hru
       mres = sp_ob%res
 
+      !! read decision table data for conditional management
+      call condition_read     
+      
       ! read reservoir data
+      call res_init_read
       call res_hyd_read
       call res_sed_read
       call res_nut_read
       call res_pst_read
       call res_weir_read
+      call res_read
       
       !! set the object number for each hru-to point to weather station
       if (sp_ob%hru > 0) then
@@ -195,9 +202,6 @@
 
       call update_init
             
-      !! read decision table data for conditional management
-      call condition_read
-
       !! read update data
       !call update_sched_read
       call update_cond_read
@@ -231,11 +235,10 @@
 
       call sub_allo
             
-      !! allocate reservoir variables
+      !! allocate and initialize reservoir variables
       call res_allo (mres)
-      call res_initial (mres)
-      
       call res_objects
+      call res_initial (mres)
       
       !! set reservoir object numbers for hru's in flood plain without surface storage
 
@@ -277,8 +280,14 @@
          end if
       end do
       
-      !save hru initial conditions if calibrating
-      if (cal_codes%hyd_hru == 'y') then
+      !save initial conditions if calibrating
+      ical = 0
+      if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hrul == 'y'.or.       &
+             cal_codes%plt == 'y' .or. cal_codes%sed == 'y' .or.            &
+             cal_codes%nut == 'y' .or. cal_codes%chsed == 'y' .or.          &
+             cal_codes%chnut == 'y' .or. cal_codes%res == 'y') ical = 1
+             
+      if (ical == 1) then
         do ihru = 1, mhru
           hru_init(ihru) = hru(ihru)
           soil_init(ihru) = soil(ihru)
@@ -324,8 +333,26 @@
       !calibrate hydrology for hru
       if (cal_codes%hyd_hru == 'y') then
         call cal_hyd
+        !print calibrated hydrology for hru_lte
+		do ireg = 1, db_mx%lscal_reg
+		  do ilum = 1, lscal(ireg)%lum_num
+            lscal(ireg)%lum(ilum)%meas%srr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%srr
+            lscal(ireg)%lum(ilum)%meas%lfr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%lfr
+            lscal(ireg)%lum(ilum)%meas%pcr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%pcr
+            lscal(ireg)%lum(ilum)%meas%etr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%etr
+            lscal(ireg)%lum(ilum)%meas%tfr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%tfr
+            
+            write (5000,500) lscal(ireg)%lum(ilum)%name, lscal(ireg)%lum(ilum)%ha, lscal(ireg)%lum(ilum)%nbyr,  &
+                    lscal(ireg)%lum(ilum)%precip_aa_sav, lscal(ireg)%lum(ilum)%meas, lscal(ireg)%lum(ilum)%aa,  &
+                    lscal(ireg)%lum(ilum)%prm
+		  end do
+        end do  
+
+	    do ireg = 1, db_mx%lscal_reg
+	      !write to calibration.upd and use land use as a condition
+	    end do
       end if
-      
+
       !calibrate hydrology for hru_lte
       if (cal_codes%hyd_hrul == 'y') then
         call calt_hyd
@@ -339,8 +366,8 @@
             lscalt(ireg)%lum(ilum)%meas%tfr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%tfr
             
             write (5000,500) lscalt(ireg)%lum(ilum)%name, lscalt(ireg)%lum(ilum)%ha, lscalt(ireg)%lum(ilum)%nbyr, &
-                    lscalt(ireg)%lum(ilum)%precip_aa_sav,                                                         &
-                    lscalt(ireg)%lum(ilum)%meas, lscalt(ireg)%lum(ilum)%aa, lscalt(ireg)%lum(ilum)%prm
+                    lscalt(ireg)%lum(ilum)%precip_aa_sav, lscalt(ireg)%lum(ilum)%meas, lscalt(ireg)%lum(ilum)%aa, &
+                    lscalt(ireg)%lum(ilum)%prm
 		  end do
         end do  
 
@@ -348,7 +375,7 @@
 	      idb = sd(isdh)%props
 		  write (4999,400) sd(isdh)%name, sd_db(idb)%dakm2, sd(isdh)%cn2, sd(isdh)%cn3_swf, sd_db(idb)%tc,      &
 		    sd_db(idb)%soildep, sd(isdh)%perco, sd_db(isdh)%slope, sd_db(idb)%slopelen,                         &
-		    sd(isdh)%etco,  sd_db(idb)%sy, sd_db(idb)%abf, sd(idb)%revapc,                                      &
+		    sd(isdh)%etco, sd_db(idb)%sy, sd_db(idb)%abf, sd(idb)%revapc,                                       &
 		    sd_db(idb)%percc, sd_db(idb)%sw, sd_db(idb)%gw, sd_db(idb)%gwflow,                                  &
 		    sd_db(idb)%gwdeep, sd_db(idb)%snow, sd_db(idb)%xlat, sd_db(idb)%itext,                              &
 		    sd_db(idb)%tropical, sd_db(idb)%igrow1, sd_db(idb)%igrow2, sd_db(idb)%plant, sd(isdh)%stress,       &
@@ -365,8 +392,24 @@
       !calibrate sediment yield from uplands (hru's)
       if (cal_codes%sed == 'y') then
         call cal_sed
+        !print calibrated hydrology for hru_lte
+		do ireg = 1, db_mx%chcal_reg
+          do iord = 1, chcal(ireg)%ord_num
+            write (5000,500) chcal(ireg)%ord(iord)%name, chcal(ireg)%ord(iord)%length, chcal(ireg)%ord(iord)%nbyr,  &
+                    chcal(ireg)%ord(iord)%meas, chcal(ireg)%ord(iord)%aa, chcal(ireg)%ord(iord)%prm
+		  end do
+        end do  
+
+	    do isdc = 1, sp_ob%chandeg
+	      idb = sd(isdh)%props
+		  write (4999,400) sd_chd(idb)%name, sd_chd(idb)%order, sd_chd(idb)%route_db, sd_chd(idb)%chw,          &
+              sd_chd(idb)%chd, sd_chd(idb)%chs, sd_chd(idb)%chl, sd_chd(idb)%chn, sd_chd(idb)%chk,              &
+              sd_ch(isdc)%cherod, sd_ch(isdc)%cov, sd_chd(idb)%hc_cov, sd_chd(idb)%chseq, sd_chd(idb)%d50,      &
+              sd_chd(idb)%clay, sd_chd(idb)%bd, sd_chd(idb)%chss, sd_chd(idb)%bedldcoef, sd_chd(idb)%tc,        &
+              sd_ch(isdc)%shear_bnk, sd_ch(isdc)%hc_erod, sd_chd(idb)%hc_hgt, sd_chd(idb)%hc_ini
+	    end do
       end if
-      
+
       !calibrate channel sediment 
       if (cal_codes%chsed == 'y') then
         call cal_chsed

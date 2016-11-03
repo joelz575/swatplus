@@ -12,6 +12,7 @@
 !!                 3 = daily
      
         !! sum monthly variables
+        iaq = ob(icmd)%num
         aqu_m(iaq) = aqu_m(iaq) + aqu(iaq)
         
         !! daily print - AQUIFER
@@ -27,6 +28,10 @@
 
         !! monthly print - AQUIFER
         if (time%end_mo == 1) then
+          const = float (ndays(time%mo + 1) - ndays(time%mo))
+          aqu_m(iaq)%stor = aqu_m(iaq)%stor / const 
+          aqu_m(iaq)%hgt = aqu_m(iaq)%hgt / const
+          aqu_m(iaq)%no3 = aqu_m(iaq)%no3 / const
           aqu_y(iaq) = aqu_y(iaq) + aqu_m(iaq)
           if (pco%aqu == 2) then
             write (4500,100) time%mo, time%yrc, iaq, aqu_m(iaq)
@@ -39,19 +44,22 @@
 
         !! yearly print - AQUIFER
         if (time%end_yr == 1) then
-           aqu_a(iaq) = aqu_a(iaq) + aqu_y(iaq)
-           if (pco%aqu == 1) then
-             write (4500,102) '     0', time%yrc, iaq, aqu_y(iaq)
-             if (pco%csvout == 1) then
-               write (4502,'(*(G0.3,:","))') '     0', time%yrc, iaq, aqu_y(iaq) 
-             end if
-           end if
+          aqu_y(iaq)%stor = aqu_y(iaq)%stor / 12.
+          aqu_y(iaq)%hgt = aqu_y(iaq)%hgt / 12.
+          aqu_y(iaq)%no3 = aqu_y(iaq)%no3 / 12.
+          aqu_a(iaq) = aqu_a(iaq) + aqu_y(iaq)
+          if (pco%aqu == 1) then
+            write (4500,102) '     0', time%yrc, iaq, aqu_y(iaq)
+            if (pco%csvout == 1) then
+              write (4502,'(*(G0.3,:","))') '     0', time%yrc, iaq, aqu_y(iaq) 
+            end if
+          end if
           !! zero yearly variables        
           aqu_y(iaq) = aquz
         end if
         
       !! average annual print - AQUIFER
-      if (time%end_sim == 1 .or. pco%aqu == 0) then
+      if (time%end_sim == 1 .and. pco%aqu == 0) then
         aqu_a(iaq) = aqu_a(iaq) / time%yrs_prt
         write (4501,102) '     0', time%yrs, iaq, aqu_a(iaq)
         if (pco%csvout == 1) then 

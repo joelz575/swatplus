@@ -37,7 +37,7 @@
                 chcal(ireg)%ord(iord)%prm_prev = chcal(ireg)%ord(iord)%prm
                 chcal(ireg)%ord(iord)%prev = chcal(ireg)%ord(iord)%aa
 
-                chg_val = - chcal(ireg)%ord(iord)%meas%chw / chcal(ireg)%ord(iord)%aa%chw     !assume same ratio of cover and width change
+                chg_val = - chcal(ireg)%ord(iord)%meas%chw / (chcal(ireg)%ord(iord)%aa%chw + 1.e-6)    !assume same ratio of cover and width change
                 chcal(ireg)%ord(iord)%prm_prev%cov = chcal(ireg)%ord(iord)%prm%cov
                 chcal(ireg)%ord(iord)%prm%cov = chcal(ireg)%ord(iord)%prm%cov + chg_val
                 chcal(ireg)%ord(iord)%prev%chw = chcal(ireg)%ord(iord)%aa%chw
@@ -58,10 +58,9 @@
               iich = chcal(ireg)%num(ich_s)
               if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
                 !set parms for 1st width calibration and rerun
-                sd_ch(iich) = sdch_init(iich)
-                sd_ch(iich)%cov = sd_ch(iich)%cov + chg_val
-                sd_ch(iich)%cov = amin1 (sd_ch(iich)%cov, ch_prms(1)%up)
-                sd_ch(iich)%cov = Max (sd_ch(iich)%cov, ch_prms(1)%lo)
+                sdch_init(iich)%cov = sdch_init(iich)%cov + chg_val
+                sdch_init(iich)%cov = amin1 (sdch_init(iich)%cov, ch_prms(1)%up)
+                sdch_init(iich)%cov = Max (sdch_init(iich)%cov, ch_prms(1)%lo)
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -78,9 +77,13 @@
         do iihru = 1, sp_ob%hru_lte
           sd_init(iihru) = sd(iihru)
         end do
+        !initialize swat deg channel data
+        do iihru = 1, sp_ob%hru_lte
+          sdch_init(iihru) = sd_ch(iihru)
+        end do
         ! 1st cover adjustment 
         if (isim > 0) then
-          write (4603,*) " first cover adj "
+          write (4601,*) " first cover adj "
           call time_control
         end if
 
@@ -123,10 +126,9 @@
               iich = chcal(ireg)%num(ich_s)
               if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
                 !set parms for width calibration and rerun
-                sd_ch(iich) = sdch_init(iich)
-                sd_ch(iich)%cov = sd_ch(iich)%cov + chg_val
-                sd_ch(iich)%cov = amin1 (sd_ch(iich)%cov, ch_prms(1)%up)
-                sd_ch(iich)%cov = Max (sd_ch(iich)%cov, ch_prms(1)%lo)
+                sdch_init(iich)%cov = sdch_init(iich)%cov + chg_val
+                sdch_init(iich)%cov = amin1 (sdch_init(iich)%cov, ch_prms(1)%up)
+                sdch_init(iich)%cov = Max (sdch_init(iich)%cov, ch_prms(1)%lo)
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -143,9 +145,13 @@
         do iihru = 1, sp_ob%hru_lte
           sd_init(iihru) = sd(iihru)
         end do
+        !initialize swat deg channel data
+        do iihru = 1, sp_ob%hru_lte
+          sdch_init(iihru) = sd_ch(iihru)
+        end do
         ! cover adjustment
         if (isim > 0) then
-          write (4603,*) " cover adj "
+          write (4601,*) " cover adj "
           call time_control
         end if
       end do      ! icov
@@ -163,7 +169,7 @@
                 chcal(ireg)%ord(iord)%prm_prev = chcal(ireg)%ord(iord)%prm
                 chcal(ireg)%ord(iord)%prev = chcal(ireg)%ord(iord)%aa
 
-                chg_val = chcal(ireg)%ord(iord)%meas%chw / chcal(ireg)%ord(iord)%aa%chw     !assume same ratio of cover and width change
+                chg_val = chcal(ireg)%ord(iord)%meas%chw / (chcal(ireg)%ord(iord)%aa%chw + 1.e-6)    !assume same ratio of cover and width change
                 chcal(ireg)%ord(iord)%prm_prev%shear_bnk = chcal(ireg)%ord(iord)%prm%shear_bnk
                 chcal(ireg)%ord(iord)%prm%shear_bnk = chcal(ireg)%ord(iord)%prm%shear_bnk + chg_val
                 chcal(ireg)%ord(iord)%prev%chw = chcal(ireg)%ord(iord)%aa%chw
@@ -184,10 +190,9 @@
               iich = chcal(ireg)%num(ich_s)
               if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
                 !set parms for 1st width calibration and rerun
-                sd_ch(iich) = sdch_init(iich)
-                sd_ch(iich)%shear_bnk = sd_ch(iich)%shear_bnk + chg_val
-                sd_ch(iich)%shear_bnk = amin1 (sd_ch(iich)%shear_bnk, ch_prms(3)%up)
-                sd_ch(iich)%shear_bnk = Max (sd_ch(iich)%shear_bnk, ch_prms(3)%lo)
+                sdch_init(iich)%shear_bnk = sdch_init(iich)%shear_bnk + chg_val
+                sdch_init(iich)%shear_bnk = amin1 (sdch_init(iich)%shear_bnk, ch_prms(3)%up)
+                sdch_init(iich)%shear_bnk = Max (sdch_init(iich)%shear_bnk, ch_prms(3)%lo)
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -204,9 +209,13 @@
         do iihru = 1, sp_ob%hru_lte
           sd_init(iihru) = sd(iihru)
         end do
+        !initialize swat deg channel data
+        do iihru = 1, sp_ob%hru_lte
+          sdch_init(iihru) = sd_ch(iihru)
+        end do
         ! 1st bank shear coefficient adjustment 
         if (isim > 0) then
-          write (4603,*) " first bank shear coeff adj "
+          write (4601,*) " first bank shear coeff adj "
           call time_control
         end if
 
@@ -249,10 +258,9 @@
               iich = chcal(ireg)%num(ich_s)
               if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
                 !set parms for width calibration and rerun
-                sd_ch(iich) = sdch_init(iich)
-                sd_ch(iich)%shear_bnk = sd_ch(iich)%shear_bnk + chg_val
-                sd_ch(iich)%shear_bnk = amin1 (sd_ch(iich)%shear_bnk, ch_prms(3)%up)
-                sd_ch(iich)%shear_bnk = Max (sd_ch(iich)%shear_bnk, ch_prms(3)%lo)
+                sdch_init(iich)%shear_bnk = sdch_init(iich)%shear_bnk + chg_val
+                sdch_init(iich)%shear_bnk = amin1 (sdch_init(iich)%shear_bnk, ch_prms(3)%up)
+                sdch_init(iich)%shear_bnk = Max (sdch_init(iich)%shear_bnk, ch_prms(3)%lo)
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -268,10 +276,14 @@
         end do
         do iihru = 1, sp_ob%hru_lte
           sd_init(iihru) = sd(iihru)
-        end do          
+        end do
+        !initialize swat deg channel data
+        do iihru = 1, sp_ob%hru_lte
+          sdch_init(iihru) = sd_ch(iihru)
+        end do
         ! bank shear coefficient adjustment
         if (isim > 0) then
-          write (4603,*) " bank shear coeff adj "
+          write (4601,*) " bank shear coeff adj "
           call time_control
         end if
       end do      ! icov
@@ -289,7 +301,7 @@
                 chcal(ireg)%ord(iord)%prm_prev = chcal(ireg)%ord(iord)%prm
                 chcal(ireg)%ord(iord)%prev = chcal(ireg)%ord(iord)%aa
 
-                chg_val = chcal(ireg)%ord(iord)%meas%chd / chcal(ireg)%ord(iord)%aa%chd     !assume same ratio of cover and width change
+                chg_val = chcal(ireg)%ord(iord)%meas%chd / (chcal(ireg)%ord(iord)%aa%chd + 1.e-6)    !assume same ratio of cover and width change
                 chcal(ireg)%ord(iord)%prm_prev%erod = chcal(ireg)%ord(iord)%prm%erod
                 chcal(ireg)%ord(iord)%prm%erod = chcal(ireg)%ord(iord)%prm%erod + chg_val
                 chcal(ireg)%ord(iord)%prev%chd = chcal(ireg)%ord(iord)%aa%chd
@@ -310,10 +322,9 @@
               iich = chcal(ireg)%num(ich_s)
               if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
                 !set parms for 1st erodibility calibration and rerun
-                sd_ch(iich) = sdch_init(iich)
-                sd_ch(iich)%cherod = sd_ch(iich)%cherod / chg_val
-                sd_ch(iich)%cherod = amin1 (sd_ch(iich)%cherod, ch_prms(2)%up)
-                sd_ch(iich)%cherod = Max (sd_ch(iich)%cherod, ch_prms(2)%lo)
+                sdch_init(iich)%cherod = sdch_init(iich)%cherod / chg_val
+                sdch_init(iich)%cherod = amin1 (sdch_init(iich)%cherod, ch_prms(2)%up)
+                sdch_init(iich)%cherod = Max (sdch_init(iich)%cherod, ch_prms(2)%lo)
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -330,9 +341,13 @@
         do iihru = 1, sp_ob%hru_lte
           sd_init(iihru) = sd(iihru)
         end do
+        !initialize swat deg channel data
+        do iihru = 1, sp_ob%hru_lte
+          sdch_init(iihru) = sd_ch(iihru)
+        end do
         ! 1st erodibility adjustment 
         if (isim > 0) then
-          write (4603,*) " first erodibility adj "
+          write (4601,*) " first erodibility adj "
           call time_control
         end if
 
@@ -350,7 +365,7 @@
                 rmeas = chcal(ireg)%ord(iord)%meas%chd
                 denom = chcal(ireg)%ord(iord)%prev%chd - chcal(ireg)%ord(iord)%aa%chd
                 if (abs(denom) > 1.e-6) then
-                  chg_val = - (chcal(ireg)%ord(iord)%prm_prev%erod - chcal(ireg)%ord(iord)%prm%erod)                  &
+                  chg_val = (chcal(ireg)%ord(iord)%prm_prev%erod - chcal(ireg)%ord(iord)%prm%erod)                  &
                     * (chcal(ireg)%ord(iord)%aa%chd - rmeas) / denom
                 else
                   chg_val = chcal(ireg)%ord(iord)%meas%chd / chcal(ireg)%ord(iord)%aa%chd
@@ -375,10 +390,9 @@
               iich = chcal(ireg)%num(ich_s)
               if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
                 !set parms for depth calibration and rerun
-                sd_ch(iich) = sdch_init(iich)
-                sd_ch(iich)%cherod = sd_ch(iich)%cherod / chg_val
-                sd_ch(iich)%cherod = amin1 (sd_ch(iich)%cherod, ch_prms(2)%up)
-                sd_ch(iich)%cherod = Max (sd_ch(iich)%cherod, ch_prms(2)%lo)
+                sdch_init(iich)%cherod = sdch_init(iich)%cherod / chg_val
+                sdch_init(iich)%cherod = amin1 (sdch_init(iich)%cherod, ch_prms(2)%up)
+                sdch_init(iich)%cherod = Max (sdch_init(iich)%cherod, ch_prms(2)%lo)
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -394,10 +408,14 @@
         end do
         do iihru = 1, sp_ob%hru_lte
           sd_init(iihru) = sd(iihru)
-        end do  
+        end do
+        !initialize swat deg channel data
+        do iihru = 1, sp_ob%hru_lte
+          sdch_init(iihru) = sd_ch(iihru)
+        end do
         ! erodibility adjustment
         if (isim > 0) then
-          write (4603,*) " erodibility adj "
+          write (4601,*) " erodibility adj "
           call time_control
         end if
         end do      ! ierod
@@ -415,7 +433,7 @@
                 chcal(ireg)%ord(iord)%prm_prev = chcal(ireg)%ord(iord)%prm
                 chcal(ireg)%ord(iord)%prev = chcal(ireg)%ord(iord)%aa
 
-                chg_val = chcal(ireg)%ord(iord)%meas%hc / chcal(ireg)%ord(iord)%aa%hc     !assume same ratio of cover and width change
+                chg_val = chcal(ireg)%ord(iord)%meas%hc / (chcal(ireg)%ord(iord)%aa%hc + 1.e-6)     !assume same ratio of cover and width change
                 chcal(ireg)%ord(iord)%prm_prev%hc_erod = chcal(ireg)%ord(iord)%prm%hc_erod
                 chcal(ireg)%ord(iord)%prm%hc_erod = chcal(ireg)%ord(iord)%prm%hc_erod + chg_val
                 chcal(ireg)%ord(iord)%prev%hc = chcal(ireg)%ord(iord)%aa%hc
@@ -436,12 +454,10 @@
               iich = chcal(ireg)%num(ich_s)
               if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
                 !if height is 0 - no head cut advance
-                if (sd_ch(iich)%hc_hgt > 1.e-6) then
-                  sd_ch(iich) = sdch_init(iich)
-                  sd_ch(iich)%hc_erod = sd_ch(iich)%hc_erod / chg_val
-                  sd_ch(iich)%hc_erod = amin1 (sd_ch(iich)%hc_erod, ch_prms(4)%up)
-                  sd_ch(iich)%hc_erod = Max (sd_ch(iich)%hc_erod, ch_prms(4)%lo)
-                end if
+                  sdch_init(iich)%hc_erod = sdch_init(iich)%hc_erod / chg_val
+                  sdch_init(iich)%hc_erod = amin1 (sdch_init(iich)%hc_erod, ch_prms(4)%up)
+                  sdch_init(iich)%hc_erod = Max (sdch_init(iich)%hc_erod, ch_prms(4)%lo)
+                !end if
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -458,9 +474,13 @@
         do iihru = 1, sp_ob%hru_lte
           sd_init(iihru) = sd(iihru)
         end do
+        !initialize swat deg channel data
+        do iihru = 1, sp_ob%hru_lte
+          sdch_init(iihru) = sd_ch(iihru)
+        end do
         ! 1st erodibility adjustment 
         if (isim > 0) then
-          write (4603,*) " first head cut erodibility adj "
+          write (4601,*) " first head cut erodibility adj "
           call time_control
         end if
 
@@ -504,10 +524,9 @@
               if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
                 !if height is 0 - no head cut advance
                 if (sd_ch(iich)%hc_hgt > 1.e-6) then
-                  sd_ch(iich) = sdch_init(iich)
-                  sd_ch(iich)%hc_erod = sd_ch(iich)%hc_erod / chg_val
-                  sd_ch(iich)%hc_erod = amin1 (sd_ch(iich)%hc_erod, ch_prms(4)%up)
-                  sd_ch(iich)%hc_erod = Max (sd_ch(iich)%hc_erod, ch_prms(4)%lo)
+                  sdch_init(iich)%hc_erod = sdch_init(iich)%hc_erod / chg_val
+                  sdch_init(iich)%hc_erod = amin1 (sdch_init(iich)%hc_erod, ch_prms(4)%up)
+                  sdch_init(iich)%hc_erod = Max (sdch_init(iich)%hc_erod, ch_prms(4)%lo)
                 end if
               end if
             end do
@@ -524,10 +543,14 @@
         end do
         do iihru = 1, sp_ob%hru_lte
           sd_init(iihru) = sd(iihru)
-        end do  
+        end do
+        !initialize swat deg channel data
+        do iihru = 1, sp_ob%hru_lte
+          sdch_init(iihru) = sd_ch(iihru)
+        end do
         ! erodibility adjustment
         if (isim > 0) then
-          write (4603,*) " head cut erodibility adj "
+          write (4601,*) " head cut erodibility adj "
           call time_control
         end if
         end do      ! ierod

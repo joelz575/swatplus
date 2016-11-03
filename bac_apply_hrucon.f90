@@ -36,7 +36,7 @@
         do ibac = 1, bact(ibacdb)%num
           ibtyp = bact(ibacdb)%bac(ibac)%num_db
           frt_t = bac_db(ibtyp)%swf * manure_kgh / 1000.
-          do ipl = 1, npl(j)
+          do ipl = 1, pcom(j)%npl
             call bac_apply_plant (ibacdb, ibac, gc,frt_t,            &
                 bac_db(ibtyp)%kd, pcom(j)%plg(ipl)%bac(ibac),        &
                 soil(j)%ly(1)%bacsol(ibac), soil(j)%ly(1)%bacsor(ibac))

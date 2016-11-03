@@ -85,7 +85,7 @@
             end if
          end do
          do isstor = 1, db_mx%res
-            if (hru_db(i)%dbsc%surf_stor == res_dat(isstor)%name) then
+            if (hru_db(i)%dbsc%surf_stor == res_dat_c(isstor)%name) then
                hru_db(i)%dbs%surf_stor = isstor
             exit
             end if

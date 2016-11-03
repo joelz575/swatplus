@@ -32,7 +32,9 @@
             read (105,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i)
-          end do        
+          end do  
+          
+       db_mx%res_sed = imax
         
         allocate (res_sed(0:imax))
         rewind (105)

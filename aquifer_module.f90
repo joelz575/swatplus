@@ -68,29 +68,32 @@
       type (aquifer_data_parameters), dimension(:), allocatable :: aqu_prm 
                  
       type aquifer_state_parameters
+        character(len=16) :: name
+        integer :: props
+        integer :: obj_no
+        real :: flo_min        !mm        |minimum aquifer storage to allow return flow
+        real :: revap_co       !0-1 frac  |fraction of pet to calculate revap
+        real :: revap_min = 0. !mm H2O    |threshold depth of water in shallow aquifer required to allow revap to occur
         real :: rchrg_prev = 0.   !m^3        |previous days recharge
-        real :: rchrgn_prev = 0.  !m^3        |previous days recharge
+        real :: rchrgn_prev = 0.  !m^3        |previous days n recharge
       end type aquifer_state_parameters
       type (aquifer_state_parameters), dimension(:), allocatable :: aqu_st 
              
       type aquifer_dynamic
         real :: flo = 0.       !m^3       |flow from aquifer in current time step       
         real :: stor = 0.      !          |water storage in aquifer 
+        real :: rchrg = 0.     !m^3       |recharge
+        real :: seep = 0.      !kg N/ha   |seepage to next object
+        real :: revap = 0.     !m^3       |revap
         real :: hgt = 0.       !m         |groundwater height
         real :: no3 = 0.       !ppm NO3-N |nitrate-N concentration in aquifer
         real :: minp = 0.      !kg        |mineral phosphorus from aquifer on current timestep    
         real :: orgn = 0.  
         real :: orgp = 0.   
-        real :: rchrg = 0.     !m^3       |recharge 
         real :: rchrg_n = 0.   !          |amount of nitrate getting to the shallow aquifer  
         real :: nloss = 0. 
         real :: no3gw          !kg N/ha   |nitrate loading to reach in groundwater
-        real :: seep = 0.      !kg N/ha   |seepage to next object
-        real :: revap = 0.     !m^3       |revap
         real :: seepno3 = 0.   !kg        |seepage of no3 to next object
-        real :: flo_min        !mm        |minimum aquifer storage to allow return flow
-        real :: revap_co       !0-1 frac  |fraction of pet to calculate revap
-        real :: revap_min = 0. !mm H2O    |threshold depth of water in shallow aquifer required to allow revap to occur
       end type aquifer_dynamic
       type (aquifer_dynamic), dimension(:), allocatable :: aqu
       type (aquifer_dynamic), dimension(:), allocatable, save :: aqu_m
@@ -104,21 +107,18 @@
           character (len=8) :: isd =       '   unit '
           character(len=15) :: flo =       '        flo_m^3'          ! (^m3)
           character(len=15) :: stor =      '        stor_mm'          ! (mm)
-          character(len=15) :: hgt =       '          hgt_m'          ! (m)
-          character(len=15) :: no3 =       '   no3_ppmNO3-N'          ! (ppm NO3-N)
+          character(len=15) :: rchrg =     '      rchrg_m^3'          ! (m^3)
+          character(len=15) :: seep =      '           seep'          ! (mm)
+          character(len=15) :: revap =     '      revap_m^3'          ! (m^3)
+          character(len=15) :: hgt =       '        hgt_m  '          ! (m)
+          character(len=15) :: no3_st =    'no3_stor_kgN/ha'          ! (kg/ha N)
           character(len=15) :: minp =      '        minp_kg'          ! (kg)
           character(len=15) :: orgn =      '    orgn_kgN/ha'          ! (kg/ha N)
           character(len=15) :: orgp =      '    orgp_kgP/ha'          ! (kg/ha P)
-          character(len=15) :: rchrg =     '      rchrg_m^3'          ! (m^3)
           character(len=15) :: rchrgn =    '  rchrgn_kgN/ha'          ! (kg/ha N)
           character(len=15) :: nloss =     '   nloss_kgN/ha'          ! (kg/ha N)
           character(len=15) :: no3gw =     '   no3gw_kgN/ha'          ! (kg N/ha)
-          character(len=15) :: seep =      '    seep_kgN/ha'          ! (kg N/ha)
-          character(len=15) :: revap =     '      revap_m^3'          ! (m^3)
           character(len=15) :: seep_no3 =  '     seepno3_kg'          ! (kg)
-          character(len=15) :: flo_min =   '      flomin_mm'          ! (mm)
-          character(len=15) :: revap_co =  '   revapco_frac'          ! (kg)
-          character(len=15) :: revap_min = '    revapmin_mm'          ! (mm)
       end type aqu_header
       type (aqu_header) :: aqu_hdr
       interface operator (+)
@@ -143,6 +143,7 @@
       type (aquifer_dynamic),  intent (in) :: aqo2
       type (aquifer_dynamic) :: aqo3
        aqo3%flo = aqo1%flo + aqo2%flo
+       aqo3%stor = aqo1%stor + aqo2%stor
        aqo3%hgt = aqo1%hgt + aqo2%hgt
        aqo3%no3 = aqo1%no3 + aqo2%no3   
        aqo3%minp = aqo1%minp + aqo2%minp  
@@ -152,7 +153,8 @@
        aqo3%rchrg_n = aqo1%rchrg_n + aqo2%rchrg_n         
        aqo3%nloss = aqo1%nloss + aqo2%nloss
        aqo3%seep = aqo1%seep + aqo2%seep
-       aqo3%revap = aqo1%revap + aqo2%revap           
+       aqo3%revap = aqo1%revap + aqo2%revap
+       aqo3%no3gw = aqo1%no3gw + aqo2%no3gw
        aqo3%seepno3 = aqo1%seepno3 + aqo2%seepno3
       end function aqu_add
       
@@ -162,6 +164,7 @@
         type (aquifer_dynamic) :: aq2
         consta = time%nbyr
         aq2%flo = aq1%flo / consta
+        aq2%stor = aq1%stor / consta
         aq2%hgt = aq1%hgt / consta
         aq2%no3 = aq1%no3 / consta  
         aq2%minp = aq1%minp / consta  
@@ -171,7 +174,8 @@
         aq2%rchrg_n = aq1%rchrg_n / consta               
         aq2%nloss = aq1%nloss / consta
         aq2%seep = aq1%seep / consta  
-        aq2%revap = aq1%revap / consta              
+        aq2%revap = aq1%revap / consta
+        aq2%no3gw = aq1%no3gw / consta
         aq2%seepno3 = aq1%seepno3 / consta
       end function aqu_div
         

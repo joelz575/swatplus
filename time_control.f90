@@ -422,19 +422,16 @@
           
           !! compute biological mixing at the end of every year
           !! if (biomix(j) > .001) call mgt_tillmix (j,biomix(j))
-          if (hru(j)%hyd%biomix > .001)                              &
-                   call mgt_newtillmix (j,hru(j)%hyd%biomix)
+          if (hru(j)%hyd%biomix > .001) call mgt_newtillmix (j,hru(j)%hyd%biomix)
 
           !! update sequence number for year in rotation to that of
           !! the next year and reset sequence numbers for operations
-          do ipl = 1, npl(j)
+          do ipl = 1, pcom(j)%npl
             idp = pcom(j)%plcur(ipl)%idplt
             if (idp > 0) then
               if (pldb(idp)%idc == 7) then
-                pcom(j)%plcur(ipl)%curyr_mat =                            &
-                    pcom(j)%plcur(ipl)%curyr_mat + 1
-                pcom(j)%plcur(ipl)%curyr_mat =                            &
-                    Min(pcom(j)%plcur(ipl)%curyr_mat,pldb(idp)%mat_yrs)
+                pcom(j)%plcur(ipl)%curyr_mat = pcom(j)%plcur(ipl)%curyr_mat + 1
+                pcom(j)%plcur(ipl)%curyr_mat = Min(pcom(j)%plcur(ipl)%curyr_mat,pldb(idp)%mat_yrs)
               end if
             end if
           end do

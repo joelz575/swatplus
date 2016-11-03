@@ -80,6 +80,7 @@
           character (len=6) :: yrs =          ' time '
           character (len=6) :: yrc =          ' year '
           character (len=8) :: j =            ' resnum '
+          character (len=10) :: vol =      '      vol'        !m^3                  |flow volume res
           character (len=10) :: flowi =    '    flowi'        !m^3/s                |flow into res
           character (len=10) :: flowo =    '    flowo'        !m^3/s                |flow out of res          
           character (len=10) :: sedi =     '     sedi'        !metric tons          |sed entering res
@@ -128,6 +129,7 @@
           character (len=6) :: yrs =       '      '
           character (len=6) :: yrc =       '      '
           character (len=8) :: isd =       '         '
+          character (len=10) :: vol =       '      m^3'        !m^3                  |volume res
           character (len=10) :: flowi =    '    m^3/s'        !m^3/s                |flow into res
           character (len=10) :: flowo =    '    m^3/s'        !m^3/s                |flow out of res          
           character (len=10) :: sedi =     ' met tons'        !metric tons          |sed entering res

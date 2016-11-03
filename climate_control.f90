@@ -132,13 +132,12 @@
           ig = wst(iwst)%wco%tgage
           wst(iwst)%weat%tmax = tmp(ig)%ts(time%day,time%yrs)
           wst(iwst)%weat%tmin = tmp(ig)%ts2(time%day,time%yrs)
-          if (wst(iwst)%weat%tmax <= -97.) then
+          if (wst(iwst)%weat%tmax <= -97. .or. wst(iwst)%weat%tmin <= -97.) then
             call cli_weatgn(iwgn)
             call cli_tgen(iwgn)
           end if
         end if
-        wst(iwst)%weat%tave = (wst(iwst)%weat%tmax +                         &
-                                             wst(iwst)%weat%tmin) / 2.
+        wst(iwst)%weat%tave = (wst(iwst)%weat%tmax + wst(iwst)%weat%tmin) / 2.
       end do
 
 !! Solar Radiation: 

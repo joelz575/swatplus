@@ -33,8 +33,8 @@
       mgt%op2 = 0
       icom = pcom(j)%pcomdb
       if (icom > 0) then
-        if (npl(j) > 1) then
-          do ipl = 1, npl(j)
+        if (pcom(j)%npl > 1) then
+          do ipl = 1, pcom(j)%npl
             if (mgt%op_plant == pcom_xw(icom)%pl_name(ipl)) then
                 mgt%op2 = ipl
                 exit
@@ -48,7 +48,7 @@
 
           case ("plnt")    !! plant one plant or entire community
             icom = pcom(j)%pcomdb
-            do ipl = 1, npl(j)
+            do ipl = 1, pcom(j)%npl
               idp = pcomdb(icom)%pl(ipl)%db_num
               if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 pcom(j)%plcur(ipl)%gro = 1
@@ -58,7 +58,7 @@
                 write (143, 1000) j, time%yrc,i_mo,iida,                 &
                 pldb(idp)%plantnm, pcomdb(icom)%name, phubase(j),        &
                 pcom(j)%plcur(ipl)%phuacc,                               &
-                soil(j)%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd, &
+                soil(j)%sw, pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd,    &
                 sol_sumno3(j),                                           &
                 sol_sumsolp(j),pcom(j)%plg(ipl)%lai,                     &
                 pcom(j)%plg(ipl)%laimx_pop
@@ -69,12 +69,12 @@
             !!begin monsoon initiation period
             if (int(mgt%op3) == 1) then
               pcom(j)%mseas = 1
-              do ipl = 1, npl(j)
+              do ipl = 1, pcom(j)%npl
                 pcom(j)%plcur(ipl)%monsoon_init = 1
               end do
             else
               pcom(j)%mseas = 0
-             do ipl = 1, npl(j)
+             do ipl = 1, pcom(j)%npl
                if (pcom(j)%plcur(ipl)%monsoon_init == 1) then             
                   pcom(j)%plcur(ipl)%gro = 1
                   pcom(j)%plcur(ipl)%phuacc = 0. 
@@ -92,7 +92,7 @@
             harveff = harvop%eff
             if (harveff <= 0.) harveff = 1.0 
 
-            do ipl = 1, npl(j)
+            do ipl = 1, pcom(j)%npl
             if (mgt%op_plant == pcomdb(icom)%pl(ipl)%cpnm) then
             
             !harvest specific type
@@ -125,7 +125,7 @@
             case ("kill")   !! kill operation
               ihk = mgt%op1
               
-              do ipl = 1, npl(j)
+              do ipl = 1, pcom(j)%npl
                 if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 call mgt_killop
   
@@ -147,7 +147,7 @@
             harvop = harvop_db(mgt%op1)
             hi_ovr = harvop%hi_ovr
             harveff = harvop%eff
-            do ipl = 1, npl(j)
+            do ipl = 1, pcom(j)%npl
               biomass = pcom(j)%plm(ipl)%mass
               if (mgt%op_plant == pcomdb(icom)%pl(ipl)%cpnm) then
                           
@@ -322,14 +322,14 @@
             end do
             
           case ("dwm")    !! set drain depth for drainage water management
-            hru(j)%sdr_dep = mgt%op3
-            if (hru(j)%sdr_dep > 0) then
+            hru(j)%lumv%sdr_dep = mgt%op3
+            if (hru(j)%lumv%sdr_dep > 0) then
               do jj = 1, soil(ihru)%nly
-                if (hru(j)%sdr_dep < soil(ihru)%phys(jj)%d) ldrain(ihru) = jj
-                if (hru(j)%sdr_dep < soil(ihru)%phys(jj)%d) exit
+                if (hru(j)%lumv%sdr_dep < soil(ihru)%phys(jj)%d) hru(ihru)%lumv%ldrain = jj
+                if (hru(j)%lumv%sdr_dep < soil(ihru)%phys(jj)%d) exit
               end do
             else
-               ldrain(ihru) = 0
+                hru(ihru)%lumv%ldrain = 0
             endif 
 
           case ("skip")    !! skip a year

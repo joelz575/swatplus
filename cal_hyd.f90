@@ -190,10 +190,7 @@
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
-                !set parms for 1st et calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                !set parms for 1st et calibration
                 hru(iihru)%hyd%esco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%esco = amin1 (hru(iihru)%hyd%esco, ls_prms(2)%up)
                 hru(iihru)%hyd%esco = Max (hru(iihru)%hyd%esco, ls_prms(2)%lo)
@@ -218,6 +215,12 @@
             plcal(ireg)%lum(ilum)%precip_aa = 0.
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
+        end do
+        ! re-initialize all hru data
+        do iihru = 1, sp_ob%hru
+          hru(iihru) = hru_init(iihru)
+          soil(iihru) = soil_init(iihru)
+          pcom(iihru) = pcom_init(iihru)
         end do
         ! 1st esco adjustment 
         if (isim > 0) then
@@ -263,10 +266,7 @@
             do ihru_s = 1, lscal(ireg)%num_tot
                 iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
-                !set parms for et calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                !set parms for et calibration
                 hru(iihru)%hyd%esco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%esco = amin1 (hru(iihru)%hyd%esco, ls_prms(2)%up)
                 hru(iihru)%hyd%esco = Max (hru(iihru)%hyd%esco, ls_prms(2)%lo)
@@ -284,6 +284,12 @@
           end do
           end do
           
+          ! re-initialize all hru data
+          do iihru = 1, sp_ob%hru
+            hru(iihru) = hru_init(iihru)
+            soil(iihru) = soil_init(iihru)
+            pcom(iihru) = pcom_init(iihru)
+          end do
           !zero plant calibration data in case plants are calibrated
           do ireg = 1, db_mx%plcal_reg
             do ilum = 1, plcal(ireg)%lum_num
@@ -291,6 +297,12 @@
               plcal(ireg)%lum(ilum)%precip_aa = 0.
               plcal(ireg)%lum(ilum)%aa = plcal_z
             end do
+          end do
+          ! re-initialize all hru data
+          do iihru = 1, sp_ob%hru
+            hru(iihru) = hru_init(iihru)
+            soil(iihru) = soil_init(iihru)
+            pcom(iihru) = pcom_init(iihru)
           end do
           ! et adjustment 
           if (isim > 0) then
@@ -333,10 +345,7 @@
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
-                !set parms for 1st perco calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                !set parms for 1st perco calibration
                 hru(iihru)%hyd%perco = hru(iihru)%hyd%perco + chg_val
                 hru(iihru)%hyd%perco = amin1 (hru(iihru)%hyd%perco, ls_prms(8)%up)
                 hru(iihru)%hyd%perco = Max (hru(iihru)%hyd%perco, ls_prms(8)%lo)
@@ -360,6 +369,12 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
+        ! re-initialize all hru data
+          do iihru = 1, sp_ob%hru
+            hru(iihru) = hru_init(iihru)
+            soil(iihru) = soil_init(iihru)
+            pcom(iihru) = pcom_init(iihru)
+          end do
         ! 1st perco adjustment 
         if (isim > 0) then
           write (4304,*) " first perco adj "
@@ -404,10 +419,7 @@
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
-                !set parms for 1st perco calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                !set parms for 1st perco calibration
                 hru(iihru)%hyd%perco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%perco = amin1 (hru(iihru)%hyd%perco, ls_prms(8)%up)
                 hru(iihru)%hyd%perco = Max (hru(iihru)%hyd%perco, ls_prms(8)%lo)
@@ -431,6 +443,12 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
+        ! re-initialize all hru data
+          do iihru = 1, sp_ob%hru
+            hru(iihru) = hru_init(iihru)
+            soil(iihru) = soil_init(iihru)
+            pcom(iihru) = pcom_init(iihru)
+          end do
         ! perco adjustment 
         if (isim > 0) then
           write (4304,*) " perco adj "
@@ -473,10 +491,7 @@
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
-                !set parms for 1st perco calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                !set parms for 1st perco calibration
                 hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val
                 hru(iihru)%topo%lat_len = amin1 (hru(iihru)%topo%lat_len, ls_prms(3)%up)
                 hru(iihru)%topo%lat_len = Max (hru(iihru)%topo%lat_len, ls_prms(3)%lo)
@@ -498,6 +513,12 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
+        ! re-initialize all hru data
+          do iihru = 1, sp_ob%hru
+            hru(iihru) = hru_init(iihru)
+            soil(iihru) = soil_init(iihru)
+            pcom(iihru) = pcom_init(iihru)
+          end do
         ! 1st lat_len adjustment 
         if (isim > 0) then
           write (4304,*) " first lat_len adj "
@@ -542,10 +563,7 @@
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
-                !set parms for 1st perco calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                !set parms for 1st perco calibration
                 hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val
                 hru(iihru)%topo%lat_len = amin1 (hru(iihru)%topo%lat_len, ls_prms(3)%up)
                 hru(iihru)%topo%lat_len = Max (hru(iihru)%topo%lat_len, ls_prms(3)%lo)
@@ -567,6 +585,12 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
+        ! re-initialize all hru data
+          do iihru = 1, sp_ob%hru
+            hru(iihru) = hru_init(iihru)
+            soil(iihru) = soil_init(iihru)
+            pcom(iihru) = pcom_init(iihru)
+          end do
         ! lat_len adjustment for lateral soil flow
         if (isim > 0) then
           write (4304,*) " lat_len adj "
@@ -607,10 +631,7 @@
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
-                !set parms for 1st perco calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                !set parms for 1st perco calibration
                 hru(iihru)%hyd%cn3_swf = hru(iihru)%hyd%cn3_swf + chg_val
                 hru(iihru)%hyd%cn3_swf = amin1 (hru(iihru)%hyd%cn3_swf, ls_prms(10)%up)
                 hru(iihru)%hyd%cn3_swf = Max (hru(iihru)%hyd%cn3_swf, ls_prms(10)%lo)
@@ -633,6 +654,12 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
+        ! re-initialize all hru data
+          do iihru = 1, sp_ob%hru
+            hru(iihru) = hru_init(iihru)
+            soil(iihru) = soil_init(iihru)
+            pcom(iihru) = pcom_init(iihru)
+          end do
         ! 1st cn3_swf adjustment 
         if (isim > 0) then
           write (4304,*) " first cn3_swf adj "
@@ -677,10 +704,7 @@
             do ihru_s = 1, lscal(ireg)%num_tot
               iihru = lscal(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
-                !set parms for 1st perco calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                !set parms for 1st perco calibration
                 hru(iihru)%hyd%cn3_swf = hru(iihru)%hyd%cn3_swf + chg_val
                 hru(iihru)%hyd%cn3_swf = amin1 (hru(iihru)%hyd%cn3_swf, ls_prms(10)%up)
                 hru(iihru)%hyd%cn3_swf = Max (hru(iihru)%hyd%cn3_swf, ls_prms(10)%lo)
@@ -702,7 +726,13 @@
             plcal(ireg)%lum(ilum)%precip_aa = 0.
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
-        end do 
+        end do
+        ! re-initialize all hru data
+          do iihru = 1, sp_ob%hru
+            hru(iihru) = hru_init(iihru)
+            soil(iihru) = soil_init(iihru)
+            pcom(iihru) = pcom_init(iihru)
+          end do
         ! cn3_swf adjustment
         if (isim > 0) then
           write (4304,*) " cn3_swf adj "

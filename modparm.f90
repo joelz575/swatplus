@@ -249,7 +249,6 @@
         real :: crk = 0.                   !! none          crack volume potential of soil
         real :: alb = 0.                   !! none          albedo when soil is moist
         real :: usle_k = 0.                !!               USLE equation soil erodibility (K) factor 
-!        real :: usle_mult
         real :: det_san = 0.
         real :: det_sil = 0.
         real :: det_cla = 0.
@@ -417,6 +416,34 @@
       end type hydrologic_response_unit_db
       type (hydrologic_response_unit_db), dimension(:),allocatable :: hru_db
       
+      type land_use_mgt_variables
+        real :: usle_ls = 0.                !! |none          |USLE equation length slope (LS) factor
+        real :: usle_mult = 0.              !! |none          |product of USLE K,P,LS,exp(rock)
+        real :: sdr_dep = 0.                !! |
+        real :: ldrain= 0.                  !! |none          |soil layer where drainage tile is located
+        real :: tile_ttime = 0.             !! |none          |Exponential of the tile flow travel time
+        real :: vfsi = 0.                   !! |none          |initial SCS curve number II value
+        real :: vfsratio = 0.               !! |none          |contouring USLE P factor
+        real :: vfscon = 0.                 !! |none          |fraction of the total runoff from the entire field
+        real :: vfsch = 0;                  !! |none          |fraction of flow entering the most concentrated 10% of the VFS.
+                                            !!                     which is fully channelized
+        integer :: ngrwat = 0
+        real :: grwat_i = 0.                !! |none          |On/off Flag for waterway simulation
+        real :: grwat_n = 0.                !! |none          |Mannings's n for grassed waterway
+        real :: grwat_spcon = 0.            !! |none          |sediment transport coefficant defined by user
+        real :: grwat_d = 0.                !! |m             |depth of Grassed waterway
+        real :: grwat_w = 0.                !! |none          |Width of grass waterway
+        real :: grwat_l = 0.                !! |km            |length of Grass Waterway
+        real :: grwat_s = 0.                !! |m/m           |slope of grass waterway
+        real :: bmp_flag = 0.  
+        real :: bmp_sed = 0.                !! |%             | Sediment removal by BMP 
+        real :: bmp_pp = 0.                 !! |%             | Particulate P removal by BMP
+        real :: bmp_sp = 0.                 !! |%             | Soluble P removal by BMP
+        real :: bmp_pn = 0.                 !! |%             | Particulate N removal by BMP 
+        real :: bmp_sn = 0.                 !! |%             | Soluble N removal by BMP  
+        real :: bmp_bac = 0.                !! |%             | Bacteria removal by BMP
+      end type land_use_mgt_variables
+     
       type hydrologic_response_unit
         character(len=13) :: name = ""
         integer :: obj_no
@@ -459,11 +486,12 @@
         type (hydrology) :: hyd
         type (landuse) :: luse
         integer :: irrsrc
-        real :: sdr_dep
+      type (land_use_mgt_variables) :: lumv
       end type hydrologic_response_unit
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
       type (plant_growth), pointer :: plt
+
 
       type pothole_dynamic
           real :: seep = 0.
@@ -775,20 +803,15 @@
       integer, dimension (:), allocatable :: itill
 
 ! mhru = maximum number of hydrologic response units
-      real, dimension (:), allocatable :: grwat_n, grwat_i, grwat_l
-      real, dimension (:), allocatable :: grwat_w, grwat_d
-      real, dimension (:), allocatable :: grwat_s, grwat_spcon
       real, dimension (:), allocatable :: tc_gwat
       real, dimension (:), allocatable :: wfsh
       real, dimension (:), allocatable :: fsred
       real, dimension (:), allocatable :: sed_con, orgn_con, orgp_con
       real, dimension (:), allocatable :: soln_con, solp_con
-      integer, dimension (:), allocatable :: ngrwat
-      real, dimension (:), allocatable :: filterw, usle_ls
+      real, dimension (:), allocatable :: filterw
       real, dimension (:), allocatable :: flowfr
       real, dimension (:), allocatable :: flowmin
       real, dimension (:), allocatable :: divmax, cn1,cn2
-      real, dimension (:), allocatable :: tile_ttime
       real, dimension (:), allocatable :: sol_cov
       real, dimension (:), allocatable :: driftco,cn3
       real, dimension (:), allocatable :: smx,sci
@@ -801,7 +824,6 @@
       real, dimension (:), allocatable :: tconc,hru_rmx
       real, dimension (:), allocatable :: usle_cfac,usle_eifac
       real, dimension (:), allocatable :: anano3,aird,t_ov
-      real, dimension (:), allocatable :: usle_mult
       real, dimension (:), allocatable :: aairr,u10,rhd
       real, dimension (:), allocatable :: canstor,ovrlnd
       real, dimension (:), allocatable :: irr_mx, auto_wstr
@@ -875,7 +897,6 @@
 ! additional reach variables , added by Ann van Griensven
 ! Modifications to Pesticide and Water routing routines by Balaji Narasimhan
 !Additional buffer and filter strip variables Mike White
-      real, dimension (:), allocatable :: vfscon,vfsratio,vfsch,vfsi
       real, dimension (:), allocatable :: stsol_rd
 !! Armen Jan 08 end
 	real, dimension (:), allocatable :: ubnrunoff,ubntss
@@ -919,10 +940,7 @@
        dtp_flowin,dtp_backup_length,dtp_intcept,dtp_expont,dtp_coef1,    &
        dtp_coef2,dtp_coef3,dtp_ivol,dtp_ised
  
-      real, dimension (:), allocatable :: min_res       
-      real, dimension (:),allocatable :: bmp_sed, bmp_bac
-      real, dimension (:),allocatable :: bmp_pp, bmp_sp
-      real, dimension (:),allocatable :: bmp_pn, bmp_sn, bmp_flag       
+      real, dimension (:), allocatable :: min_res             
       real, dimension(:,:), allocatable:: dtp_wdratio,dtp_depweir,       &
         dtp_diaweir,dtp_retperd,dtp_pcpret,dtp_cdis,dtp_flowrate,        &
         dtp_wrwid,dtp_addon

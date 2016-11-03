@@ -38,6 +38,25 @@
            allocate (hru_init(0:sp_ob%hru))
            allocate (soil_init(0:sp_ob%hru))
            allocate (pcom_init(0:sp_ob%hru))
+           do j = 1, sp_ob%hru
+             icom = hru(j)%plant_cov
+             nplt = pcomdb(icom)%plants_com
+             allocate (pcom_init(j)%plg(nplt)) 
+             allocate (pcom_init(j)%plm(nplt)) 
+             allocate (pcom_init(j)%plstr(nplt)) 
+             allocate (pcom_init(j)%plcur(nplt)) 
+             allocate (hru_init(j)%veg_ag(nplt))
+             allocate (hru_init(j)%grain(nplt))
+             allocate (hru_init(j)%root(nplt))
+             allocate (hru_init(j)%rsd_flt(nplt))
+             allocate (hru_init(j)%rsd_std(nplt))
+             nly1 = soil(j)%nly + 1                                                                                                         
+             allocate (soil_init(j)%ly(nly1))
+             allocate (soil_init(j)%ly(nly1)%rs(nplt))    !bac and pest not allocated
+             allocate (soil_init(j)%phys(nly1))
+             allocate (soil_init(j)%nut(nly1))
+             allocate (soil_init(j)%cbn(nly1))
+           end do
            allocate (sd_init(0:sp_ob%hru_lte))
            allocate (sdch_init(0:sp_ob%chandeg))
          end if

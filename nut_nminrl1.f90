@@ -1,5 +1,9 @@
-      subroutine nut_nminrl
-
+      subroutine nut_nminrl1
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!  NPL 
+!!  RSDCO_PCOM
+!!  RSDCO_PLCOM
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine estimates daily nitrogen and phosphorus
 !!    mineralization and immobilization considering fresh organic
@@ -65,13 +69,15 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : hru, soil, pcom, rsdco_plcom, i_sep
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, k, kk
       real :: rmn1, rmp, xx, csf, rwn, hmn, hmp, r4, cnr, cnrf, cpr
       real :: cprf, ca, decr, rdc, wdn, cdg, sut
-
+      
       j = ihru
       nactfr = .02
 
@@ -82,16 +88,16 @@
           rmn1 = 0.
           rmp = 0.
           r4 = .58 * hru(j)%rsd_flt(ipl)%mass
-          if (hru(j)%rsd_flt(ipl)%nmass + soil(j)%nut(1)%no3 > 1.e-4) then
-            cnr = r4 / (hru(j)%rsd_flt(ipl)%nmass  + soil(j)%nut(1)%no3)
+          if (hru(j)%rsd_flt(ipl)%nmass + soil1(j)%no3(1) > 1.e-4) then
+            cnr = r4 / (hru(j)%rsd_flt(ipl)%nmass  + soil1(j)%no3(1))
             if (cnr > 500.) cnr = 500.
             cnrf = Exp(-.693 * (cnr - 25.) / 25.)
           else
             cnrf = 1.
           end if
             
-          if (hru(j)%rsd_flt(ipl)%pmass + soil(j)%nut(1)%solp > 1.e-4) then
-            cpr = r4 / (hru(j)%rsd_flt(ipl)%pmass + soil(j)%nut(1)%solp)
+          if (hru(j)%rsd_flt(ipl)%pmass + soil1(j)%sta(1)%p > 1.e-4) then
+            cpr = r4 / (hru(j)%rsd_flt(ipl)%pmass + soil1(j)%sta(1)%p)
             if (cpr > 5000.) cpr = 5000.
             cprf = Exp(-.693 * (cpr - 200.) / 200.)
           else
@@ -136,9 +142,9 @@
           hru(j)%rsd_flt(ipl)%pmass = hru(j)%rsd_flt(ipl)%pmass - rmp
           hru(j)%rsd_flt(ipl)%nmass  = Max(1.e-6,hru(j)%rsd_flt(ipl)%nmass)
           hru(j)%rsd_flt(ipl)%nmass  = hru(j)%rsd_flt(ipl)%nmass  - rmn1
-          soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 + .8 * rmn1
-          soil(j)%nut(1)%aorgn = soil(j)%nut(1)%aorgn + .2 * rmn1
-          soil(j)%nut(1)%solp = soil(j)%nut(1)%solp + .8 * rmp
+          soil1(j)%no3(1) = soil1(j)%no3(1) + .8 * rmn1
+          soil1(j)%act(1)%n = soil1(j)%act(1)%n + .2 * rmn1
+          soil1(j)%sta(1)%p = soil1(j)%sta(1)%p + .8 * rmp
           soil(j)%nut(1)%orgp = soil(j)%nut(1)%orgp + .2 * rmp
         end do
       end if
@@ -175,30 +181,30 @@
           csf = Sqrt(xx)
 
           !! compute flow from active to stable pools
-          rwn = .1e-4 * (soil(j)%nut(k)%aorgn * (1. / nactfr - 1.) - soil(j)%nut(k)%orgn)
+          rwn = .1e-4 * (soil1(j)%act(k)%n * (1. / nactfr - 1.) - soil1(j)%sta(k)%n)
           if (rwn > 0.) then
-            rwn = Min(rwn, soil(j)%nut(k)%aorgn)
+            rwn = Min(rwn, soil1(j)%act(k)%n)
           else
-            rwn = -(Min(Abs(rwn), soil(j)%nut(k)%orgn))
+            rwn = -(Min(Abs(rwn), soil1(j)%sta(k)%n))
           endif
-          soil(j)%nut(k)%orgn = Max(1.e-6, soil(j)%nut(k)%orgn + rwn)
-          soil(j)%nut(k)%aorgn = Max(1.e-6, soil(j)%nut(k)%aorgn - rwn)
+          soil1(j)%sta(k)%n = Max(1.e-6, soil1(j)%sta(k)%n + rwn)
+          soil1(j)%act(k)%n = Max(1.e-6, soil1(j)%act(k)%n - rwn)
 
           !! compute humus mineralization on active organic n
-          hmn = bsn_prm%cmn * csf * soil(j)%nut(k)%aorgn
-          hmn = Min(hmn, soil(j)%nut(k)%aorgn)
+          hmn = bsn_prm%cmn * csf * soil1(j)%act(k)%n
+          hmn = Min(hmn, soil1(j)%act(k)%n)
           !! compute humus mineralization on active organic p
-          xx = soil(j)%nut(k)%orgn + soil(j)%nut(k)%aorgn
+          xx = soil1(j)%sta(k)%n + soil1(j)%act(k)%n
           if (xx > 1.e-6) then
-            hmp = 1.4 * hmn * soil(j)%nut(k)%orgp / xx
+            hmp = 1.4 * hmn * soil1(j)%sta(k)%p / xx
           else
             hmp = 0.
           end if
-          hmp = Min(hmp, soil(j)%nut(k)%orgp)
+          hmp = Min(hmp, soil1(j)%sta(k)%p)
           !! move mineralized nutrients between pools
-          soil(j)%nut(k)%aorgn = Max(1.e-6, soil(j)%nut(k)%aorgn - hmn)
-          soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 + hmn
-          soil(j)%nut(k)%orgp = soil(j)%nut(k)%orgp - hmp
+          soil1(j)%act(k)%n = Max(1.e-6, soil1(j)%act(k)%n - hmn)
+          soil1(j)%no3(k) = soil1(j)%no3(k) + hmn
+          soil1(j)%sta(k)%p = soil1(j)%sta(k)%p - hmp
           soil(j)%nut(k)%solp = soil(j)%nut(k)%solp + hmp
 
           !! compute residue decomp and mineralization of 
@@ -207,16 +213,16 @@
           rmp = 0.
           if (k <= 2) then
             r4 = .58 * soil(j)%ly(k)%rsd
-            if (soil(j)%nut(k)%fon + soil(j)%nut(k)%no3 > 1.e-4) then
-              cnr = r4 / (soil(j)%nut(k)%fon  + soil(j)%nut(k)%no3)
+            if (rsd(j)%rsd_tfl%n + soil1(j)%no3(k) > 1.e-4) then
+              cnr = r4 / (rsd(j)%rsd_tfl%n  + soil1(j)%no3(k))
               if (cnr > 500.) cnr = 500.
               cnrf = Exp(-.693 * (cnr - 25.) / 25.)
             else
               cnrf = 1.
             end if
             
-            if (soil(j)%nut(k)%fop + soil(j)%nut(k)%solp > 1.e-4) then
-              cpr = r4 / (soil(j)%nut(k)%fop + soil(j)%nut(k)%solp)
+            if (rsd(j)%rsd_tfl%p + soil(j)%nut(k)%solp > 1.e-4) then
+              cpr = r4 / (rsd(j)%rsd_tfl%p + soil(j)%nut(k)%solp)
               if (cpr > 5000.) cpr = 5000.
               cprf = Exp(-.693 * (cpr - 200.) / 200.)
             else
@@ -243,28 +249,28 @@
             rdc = decr * soil(j)%ly(k)%rsd
             soil(j)%ly(k)%rsd = soil(j)%ly(k)%rsd - rdc
             if (soil(j)%ly(k)%rsd < 0.) soil(j)%ly(k)%rsd = 0.
-            rmn1 = decr * soil(j)%nut(k)%fon 
-            soil(j)%nut(k)%fop = Max(1.e-6,soil(j)%nut(k)%fop)
-            rmp = decr * soil(j)%nut(k)%fop
+            rmn1 = decr * rsd(j)%rsd_tfl%n 
+            rsd(j)%rsd_tfl%p = Max(1.e-6,rsd(j)%rsd_tfl%p)
+            rmp = decr * rsd(j)%rsd_tfl%p
 
-            soil(j)%nut(k)%fop = soil(j)%nut(k)%fop - rmp
-            soil(j)%nut(k)%fon  = Max(1.e-6,soil(j)%nut(k)%fon)
-            soil(j)%nut(k)%fon  = soil(j)%nut(k)%fon  - rmn1
-            soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 + .8 * rmn1
-            soil(j)%nut(k)%aorgn = soil(j)%nut(k)%aorgn + .2 * rmn1
+            rsd(j)%rsd_tfl%p = rsd(j)%rsd_tfl%p - rmp
+            rsd(j)%rsd_tfl%n  = Max(1.e-6,rsd(j)%rsd_tfl%n)
+            rsd(j)%rsd_tfl%n  = rsd(j)%rsd_tfl%n  - rmn1
+            soil1(j)%no3(k) = soil1(j)%no3(k) + .8 * rmn1
+            soil1(j)%act(k)%n = soil1(j)%act(k)%n + .2 * rmn1
             soil(j)%nut(k)%solp = soil(j)%nut(k)%solp + .8 * rmp
-            soil(j)%nut(k)%orgp = soil(j)%nut(k)%orgp + .2 * rmp
+            soil1(j)%sta(k)%p = soil1(j)%sta(k)%p + .2 * rmp
           end if
 !! septic changes 1/28/09 gsm
 !!  compute denitrification
         wdn = 0.   
 	  if (i_sep(j) /= k .or. sep(isep)%opt  /= 1) then
 	    if (sut >= bsn_prm%sdnco) then
-	      wdn = soil(j)%nut(k)%no3 * (1.-Exp(-bsn_prm%cdn * cdg * soil(j)%cbn(k)%cbn))
+	      wdn = soil1(j)%no3(k) * (1.-Exp(-bsn_prm%cdn * cdg * soil(j)%cbn(k)%cbn))
 	    else
 	      wdn = 0.
 	    endif
-	    soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 - wdn
+	    soil1(j)%no3(k) = soil1(j)%no3(k) - wdn
 	  end if
 ! septic changes 1/28/09 gsm
 
@@ -273,4 +279,4 @@
         end if
       end do
       return
-      end subroutine nut_nminrl
+      end subroutine nut_nminrl1

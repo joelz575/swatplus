@@ -141,11 +141,11 @@
             end if
           end do
           deallocate (elem_cnt1)
+          cal_upd(i)%num_elem = ielem
         end if
         
         nconds = cal_upd(i)%conds
         allocate (cal_upd(i)%cond(nconds))
-        cal_upd(i)%num_elem = ielem
         do icond = 1, nconds
           read (107,*,iostat=eof) cal_upd(i)%cond(icond)
         end do 

@@ -66,7 +66,7 @@
           !! compute headcut parameters
           kh = sd_chd(idb)%hc_kh
           if (kh > 1.e-6) then
-            sd_ch(i)%hc_co = 17.83 + 16.56 * kh - 15. * sd_chd(idb)%hc_cov
+            sd_ch(i)%hc_co = .37 * (17.83 + 16.56 * kh - 15. * sd_chd(idb)%hc_cov)
             sd_ch(i)%hc_co = amax1 (0., sd_ch(i)%hc_co)
           else
             sd_ch(i)%hc_co = 0.

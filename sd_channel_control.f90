@@ -188,17 +188,21 @@
         pr_ratio = Max(pr_ratio, 0.)
         
         !new q*qp (m3 * m3/s) equation for entire runoff event
-        hc = sd_ch(ich)%hc_co * (chflow_m3/86400.) ** .27 * sd_chd(ich)%hc_hgt ** .113       !m per event
-        hc = Max(hc, 0.)
-        sd_ch(ich)%hc_len = sd_ch(ich)%hc_len + hc
-        if (sd_ch(ich)%hc_len > sd_ch(ich)%chl * 1000.) then
-          hc = hc - (sd_ch(ich)%hc_len - sd_ch(ich)%chl * 1000.)
-          sd_ch(ich)%hc_len = sd_ch(ich)%chl * 1000.
-        end if
+        qmm = chflow_m3 / (10. * ob(icmd)%area_ha)
+        if (qmm > 3.) then
+          qh = (chflow_m3 / 86400.) ** .5 * sd_chd(ich)%hc_hgt ** .225
+          hc = sd_ch(ich)%hc_co * qh            !m per event
+          hc = Max(hc, 0.)
+          sd_ch(ich)%hc_len = sd_ch(ich)%hc_len + hc
+          if (sd_ch(ich)%hc_len > sd_ch(ich)%chl * 1000.) then
+            hc = hc - (sd_ch(ich)%hc_len - sd_ch(ich)%chl * 1000.)
+            sd_ch(ich)%hc_len = sd_ch(ich)%chl * 1000.
+          end if
             
-        !! compute sediment yield from headcut- assume bd = 1.2 t/m3
-        !! assume channel dimensions are same as data file
-        hc_sed = hc * sd_chd(ich)%chw * sd_chd(ich)%chd * 1.2
+          !! compute sediment yield from headcut- assume bd = 1.2 t/m3
+          !! assume channel dimensions are same as data file
+          hc_sed = hc * sd_chd(ich)%chw * sd_chd(ich)%chd * 1.2
+        end if
         
         if (sd_ch(ich)%chs > sd_chd(ich)%chseq) then
           !break hydrograph into maxint segments and compute deg at each flow increment
@@ -236,7 +240,7 @@
           tw = perim_bed + 2. * sd_chd(ich)%chss * rchdep
           s_bank = 1.77 * (perim_bed / perim_bank + 1.5) ** - 1.4
           shear_bank = shear_btm * .75                              !s_bank * (tw * perim_bed) / (2. * perim_bank)
-          shear_bank_adj = shear_bank * (1. - sd_chd(ich)%cov)      !* (chns / sd_chd(ich)%chn) ** 2
+          shear_bank_adj = sd_ch(ich)%shear_bnk * (1. - sd_chd(ich)%cov)      !* (chns / sd_chd(ich)%chn) ** 2
           shear_bank_cr = 0.493 * 10. ** (.0182 * sd_chd(ich)%clay)
           if (shear_bank_adj > shear_bank_cr) then
             e_bank = timeint(ihval) * sd_chd(ich)%cherod * (shear_bank_adj - shear_bank_cr)    !! cm = hr * cm/hr/Pa * Pa

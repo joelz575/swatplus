@@ -72,7 +72,7 @@
 
       !! calculate residue on soil surface for current day
       sol_cov(j) = 0.
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
         sol_cov(j) = sol_cov(j) + .8 * pcom(j)%plm(ipl)%mass
       end do
       sol_cov(j) = sol_cov(j) + soil(j)%ly(1)%rsd
@@ -82,7 +82,7 @@
       !! compute actual plant transpiration
       ep_day = 0.
       !! partition to each plant in the community
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
         if (sumlai > 1.e-6) then
           epmax(ipl) = ep_max * pcom(j)%plg(ipl)%lai / sumlai
         else
@@ -91,7 +91,7 @@
       end do
 
       npl_gro = 0
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
         if (pcom(j)%plcur(ipl)%gro == 1) then
           call pl_waterup
           npl_gro = npl_gro + 1
@@ -113,8 +113,8 @@
         !! calculate photosynthetically active radiation for multiple plants
         if (sumlai > 1.e-6) then
           translt = 0.
-          do ipl = 1, npl(j)
-            do jpl = 1, npl(j)
+          do ipl = 1, pcom(j)%npl
+            do jpl = 1, pcom(j)%npl
               x1 = pcom(j)%plg(jpl)%cht - .5 * pcom(j)%plg(ipl)%cht
               if (x1 > 0.) then
                 idp = pcom(j)%plcur(ipl)%idplt
@@ -125,13 +125,13 @@
             end do
           end do
           sum = 0.
-          do ipl = 1,npl(j)
+          do ipl = 1,pcom(j)%npl
             translt(ipl) = exp(translt(ipl))
             sum = sum + translt(ipl)
           end do
           sumf = 0.
           sumle = 0.
-          do ipl = 1, npl(j)
+          do ipl = 1, pcom(j)%npl
             idp = pcom(j)%plcur(ipl)%idplt
             translt(ipl) = translt(ipl) / sum
             x1 = pcom(j)%plg(ipl)%lai * pldb(idp)%ext_coef
@@ -139,7 +139,7 @@
             sumf = sumf + (1. - exp(-x1)) * translt(ipl)
           end do
           fi = 1. - exp(-sumle)
-          do ipl = 1, npl(j)
+          do ipl = 1, pcom(j)%npl
             idp = pcom(j)%plcur(ipl)%idplt
             if (sumf > 0.) then
               htfac(ipl) = (1. - exp(-pldb(idp)%ext_coef *              &             
@@ -159,7 +159,7 @@
       uno3d_tot = 0.
       uapd(ipl) = 0.
       uapd_tot = 0.
-      do ipl = 1, npl(j)
+      do ipl = 1, pcom(j)%npl
         idp = pcom(j)%plcur(ipl)%idplt
         if (pcom(j)%plcur(ipl)%idorm == 0.and.pcom(j)%plcur(ipl)%gro==1)   &
                                                                    then

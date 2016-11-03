@@ -254,7 +254,7 @@
          end if
 
          if (time%end_sim == 1) then
-           do ipl = 1, npl(j)
+           do ipl = 1, pcom(j)%npl
              idp = pcom(j)%plcur(ipl)%idplt
              if (pcom(j)%plcur(ipl)%harv_num > 0) then 
                pcom(j)%plg(ipl)%yield = pcom(j)%plg(ipl)%yield /           &

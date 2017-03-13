@@ -24,6 +24,7 @@
 
       use parm
       use nutrient_module
+      use organic_mineral_mass_module
     
     !! private variables
       real :: cx, decf, rhc, mhc, sol_cdec, tilf
@@ -137,11 +138,11 @@
       sol_nmass = sol_mass * (soil(j)%ly(k)%n / 100.) 
 
 	!! sum initial C,N,P for mass balance
-	sum_c_i = sol_cmass + 0.43 * soil(j)%ly(k)%rsd + soil(j)%cbn(k)%mc
-	sum_n_i = sol_nmass + soil(j)%nut(k)%no3+soil(j)%nut(k)%nh3 +     &
-             soil(j)%nut(k)%fon + soil(j)%nut(k)%mn
-	sum_p_i = soil(j)%nut(k)%orgp + soil(j)%nut(k)%solp+soil(j)%nut(k)%fop    &
-             + soil(j)%nut(k)%mp
+	sum_c_i = sol_cmass + 0.43 * soil(j)%ly(k)%rsd + soil1(j)%man(k)%c
+	sum_n_i = sol_nmass + soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4 +     &
+             soil1(j)%tot(k)%n + soil1(j)%man(k)%n
+	sum_p_i = soil1(j)%hp(k)%p + soil1(j)%mp(k)%lab + soil1(j)%tot(k)%p    &
+             + soil1(j)%man(k)%p
 
       kk = k 
       if (k == 1) kk = 2
@@ -189,7 +190,7 @@
 
         !! residue and manure decomposition and N and P mineralization    
         CNsoil = soil(j)%cbn(k)%cbn / soil(j)%ly(k)%n 
-        NPsoil = (sol_mass*soil(j)%ly(k)%n / 100.) / soil(j)%nut(k)%orgp
+        NPsoil = (sol_mass*soil(j)%ly(k)%n / 100.) / soil1(j)%hp(k)%p
         CPsoil = CNsoil * NPsoil
         
     
@@ -201,19 +202,19 @@
 			!! humification factor
 			rhc = fhc(soil(j)%phys(k)%clay,soil(j)%cbn(k)%cbn,cx) * cfh(j)
             
-            CNres = 0.43 * soil(j)%ly(k)%rsd / soil(j)%nut(k)%fon
-            CPres = 0.43 * soil(j)%ly(k)%rsd / soil(j)%nut(k)%fop
+            CNres = 0.43 * soil(j)%ly(k)%rsd / soil1(j)%tot(k)%n
+            CPres = 0.43 * soil(j)%ly(k)%rsd / soil1(j)%tot(k)%p
             
             !! CN of new organic matter (humified residue)
-            rCNnew = fCNnew(soil(j)%nut(k)%no3,sol_mass,CNres, 110.)
+            rCNnew = fCNnew(soil1(j)%mn(k)%no3,sol_mass,CNres, 110.)
 
 			!! N mineralization / immobilization			
 			xx1 = soil(j)%ly(k)%rsd
-			xx2 = soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3
+			xx2 = soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4
 			rnet_N = fnetmin(rdc,CNres,rCNnew,rhc,ffres1,xx1,xx2,0.43)
 
             !! P mineralization / immobilization
-            xx2 = soil(j)%nut(k)%solp
+            xx2 = soil1(j)%mp(k)%lab
             rnet_P = fnetmin(rdc,CPres,CPsoil,rhc,ffres2,xx1,xx2,0.43)
   
             !! check if P limits N mineralization and re-adjust
@@ -226,28 +227,28 @@
         end if
 
         ! manure decomposition and N and P mineralization
-        if (soil(j)%cbn(k)%mc > 0.00001) then
+        if (soil1(j)%man(k)%c > 0.00001) then
 
             !! residue decomposition
             !! decomposition rate about 1/2 of residue
-            mdc = 0.025 * csf * soil(j)%cbn(k)%mc
+            mdc = 0.025 * csf * soil1(j)%man(k)%c
 
             !! humification factor
 			mhc = 1.6*fhc(soil(j)%phys(k)%clay,soil(j)%cbn(k)%cbn,cx)
 			
-			CNman = soil(j)%cbn(k)%mc / soil(j)%nut(k)%mn
-			CPman = soil(j)%cbn(k)%mc / soil(j)%nut(k)%mp
+			CNman = soil1(j)%man(k)%c / soil1(j)%man(k)%n
+			CPman = soil1(j)%man(k)%c / soil1(j)%man(k)%p
 			
 			!! CN of new organic matter (humified manure)
-			mCNnew = fCNnew(soil(j)%nut(k)%no3,sol_mass,CNman, 55.)
+			mCNnew = fCNnew(soil1(j)%mn(k)%no3,sol_mass,CNman, 55.)
 
 			!! N mineralization / immobilization			
-			xx1 = soil(j)%cbn(k)%mc
-			xx2 = soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3
+			xx1 = soil1(j)%man(k)%c
+			xx2 = soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4
 			mnet_N = fnetmin(mdc,CNman,mCNnew,mhc,ffman1,xx1,xx2,1.0)
 
             !! P mineralization / immobilization
-            xx2 = soil(j)%nut(k)%solp
+            xx2 = soil1(j)%mp(k)%lab
             mnet_P = fnetmin(mdc,CPman,CPsoil,mhc,ffman2,xx1,xx2,1.0)
   
             !! check if P or N limit mineralization and re-adjust
@@ -260,8 +261,8 @@
         end if
 
         !! check if sufficient mineral N for both residue and manure decomposition
-		if ((soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3) > 0.) then
-			xx = (rnet_N + mnet_N) / (soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3)
+		if ((soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4) > 0.) then
+			xx = (rnet_N + mnet_N) / (soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4)
             if (xx < -1.) then
                 rdc = -rdc / xx
                 rnet_N = -rnet_N / xx
@@ -276,8 +277,8 @@
         end if
         
         !! check if sufficient mineral P for both residue and manure decomposition
-        if (soil(j)%nut(k)%solp > 0.) then
-            xx = (rnet_P + mnet_P) / soil(j)%nut(k)%solp
+        if (soil1(j)%mp(k)%lab > 0.) then
+            xx = (rnet_P + mnet_P) / soil1(j)%mp(k)%lab
             if (xx < -1.) then
                 rdc = -rdc / xx
                 rnet_N = -rnet_N / xx
@@ -309,68 +310,68 @@
 		solN_net_min=-(- sol_cdec / CNsoil                            &
                   + resc_hum / rCNnew + manc_hum / mCNnew)
  		soil(j)%ly(k)%n  = 100. * sol_nmass / sol_mass
-		soil(j)%nut(k)%orgn = sol_nmass ! for output
-        soil(j)%nut(k)%orgp = soil(j)%nut(k)%orgp - sol_cdec / CPsoil  &
+		soil1(j)%hp(k)%n = sol_nmass ! for output
+        soil1(j)%hp(k)%p = soil1(j)%hp(k)%p - sol_cdec / CPsoil  &
               + (resc_hum + manc_hum) / CPsoil
 
                 if (ffres > 1.) ffres = 1.
 
         soil(j)%ly(k)%rsd = soil(j)%ly(k)%rsd * (1. - ffres)
-        soil(j)%nut(k)%fon = soil(j)%nut(k)%fon * (1. - ffres)
-        soil(j)%nut(k)%fop = soil(j)%nut(k)%fop * (1. - ffres)
+        soil1(j)%tot(k)%n = soil1(j)%tot(k)%n * (1. - ffres)
+        soil1(j)%tot(k)%p = soil1(j)%tot(k)%p * (1. - ffres)
      
                 if (ffman > 1.) ffman = 1.
 
-        soil(j)%cbn(k)%mc = soil(j)%cbn(k)%mc * (1. - ffman)
-        soil(j)%nut(k)%mn = soil(j)%nut(k)%mn * (1. - ffman)
-        soil(j)%nut(k)%mp = soil(j)%nut(k)%mp * (1. - ffman)
+        soil1(j)%man(k)%c = soil1(j)%man(k)%c * (1. - ffman)
+        soil1(j)%man(k)%n = soil1(j)%man(k)%n * (1. - ffman)
+        soil1(j)%man(k)%p = soil1(j)%man(k)%p * (1. - ffman)
 		
 		! add positive n-mineralization to ammonia pool in the layer
-		if (rnet_N>0.) soil(j)%nut(k)%nh3 = soil(j)%nut(k)%nh3 + rnet_N 
-		if (mnet_N>0.) soil(j)%nut(k)%nh3 = soil(j)%nut(k)%nh3 + mnet_N
+		if (rnet_N>0.) soil1(j)%mn(k)%nh4 = soil1(j)%mn(k)%nh4 + rnet_N 
+		if (mnet_N>0.) soil1(j)%mn(k)%nh4 = soil1(j)%mn(k)%nh4 + mnet_N
 
 		if (rnet_N<0.) then
-			if (abs(rnet_N) < soil(j)%nut(k)%nh3) then
-				soil(j)%nut(k)%nh3 = soil(j)%nut(k)%nh3 + rnet_N
+			if (abs(rnet_N) < soil1(j)%mn(k)%nh4) then
+				soil1(j)%mn(k)%nh4 = soil1(j)%mn(k)%nh4 + rnet_N
 			else
-				xx4 = soil(j)%nut(k)%nh3 + rnet_N
-				soil(j)%nut(k)%nh3 = 0.
-				soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 + xx4
+				xx4 = soil1(j)%mn(k)%nh4 + rnet_N
+				soil1(j)%mn(k)%nh4 = 0.
+				soil1(j)%mn(k)%no3 = soil1(j)%mn(k)%no3 + xx4
 			end if
 		end if
 	
 		if (mnet_N<0.) then
-			if (abs(mnet_N) < soil(j)%nut(k)%nh3) then
-				soil(j)%nut(k)%nh3 = soil(j)%nut(k)%nh3 + mnet_N
+			if (abs(mnet_N) < soil1(j)%mn(k)%nh4) then
+				soil1(j)%mn(k)%nh4 = soil1(j)%mn(k)%nh4 + mnet_N
 			else
-				xx4 = soil(j)%nut(k)%nh3 + mnet_N
-				soil(j)%nut(k)%nh3 = 0.
-				soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 + xx4
+				xx4 = soil1(j)%mn(k)%nh4 + mnet_N
+				soil1(j)%mn(k)%nh4 = 0.
+				soil1(j)%mn(k)%no3 = soil1(j)%mn(k)%no3 + xx4
 			end if
 		end if
 	
-		soil(j)%nut(k)%nh3 = soil(j)%nut(k)%nh3 + sol_cdec * (1. / CNsoil)
+		soil1(j)%mn(k)%nh4 = soil1(j)%mn(k)%nh4 + sol_cdec * (1. / CNsoil)
 		
-		soil(j)%nut(k)%solp = soil(j)%nut(k)%solp + net_P +              &
+		soil1(j)%mp(k)%lab = soil1(j)%mp(k)%lab + net_P +              &
        		sol_cdec * (1. / CPsoil)
 	 
 		If (soil(j)%ly(k)%rsd < 1e-10) soil(j)%ly(k)%rsd = 1e-10
-		If (soil(j)%nut(k)%fon < 1e-11) soil(j)%nut(k)%fon = 1e-11
-		If (soil(j)%nut(k)%fop < 1e-12) soil(j)%nut(k)%fop = 1e-12
-		If (soil(j)%cbn(k)%mc < 1e-10) soil(j)%cbn(k)%mc = 1e-10
-		If (soil(j)%nut(k)%mn < 1e-11) soil(j)%nut(k)%mn = 1e-11
-		If (soil(j)%nut(k)%mp < 1e-12) soil(j)%nut(k)%mp = 1e-12
-		If (soil(j)%nut(k)%no3 < 1e-12) soil(j)%nut(k)%no3 = 1e-12
+		If (soil1(j)%tot(k)%n < 1e-11) soil1(j)%tot(k)%n = 1e-11
+		If (soil1(j)%tot(k)%p < 1e-12) soil1(j)%tot(k)%p = 1e-12
+		If (soil1(j)%man(k)%c < 1e-10) soil1(j)%man(k)%c = 1e-10
+		If (soil1(j)%man(k)%n < 1e-11) soil1(j)%man(k)%n = 1e-11
+		If (soil1(j)%man(k)%p < 1e-12) soil1(j)%man(k)%p = 1e-12
+		If (soil1(j)%mn(k)%no3 < 1e-12) soil1(j)%mn(k)%no3 = 1e-12
 
 	end if
 
 	!! balance file cswat_balance
 	sum_c_f = sol_cmass + 0.43 * soil(j)%ly(k)%rsd + sol_cdec            &
-        	+ (1. - rhc) * rdc * 0.43 + soil(j)%cbn(k)%mc + (1. - mhc) * mdc
-	sum_n_f = sol_nmass + soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3 +      &
-          soil(j)%nut(k)%fon + soil(j)%nut(k)%mn + wdn
-	sum_p_f=soil(j)%nut(k)%orgp + soil(j)%nut(k)%orgp+soil(j)%nut(k)%fop &
-        	+ soil(j)%nut(k)%mp
+        	+ (1. - rhc) * rdc * 0.43 + soil1(j)%man(k)%c + (1. - mhc) * mdc
+	sum_n_f = sol_nmass + soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4 +      &
+          soil1(j)%tot(k)%n + soil1(j)%man(k)%n + wdn
+	sum_p_f = soil1(j)%hp(k)%p + soil1(j)%hp(k)%p + soil1(j)%tot(k)%p &
+        	+ soil1(j)%man(k)%p
 		  
 	bal_c = sum_c_i - sum_c_f
 	bal_n = sum_n_i - sum_n_f
@@ -386,15 +387,15 @@
 	nmass_pro = nmass_pro + sol_nmass
 	sol_rsd_pro = sol_rsd_pro + soil(j)%ly(k)%rsd
 	sol_cdec_pro = sol_cdec_pro + sol_cdec
-	sol_fon_pro = sol_fon_pro + soil(j)%nut(k)%fon
-	sol_no3_pro = sol_no3_pro + soil(j)%nut(k)%no3
-	sol_nh3_pro = sol_nh3_pro + soil(j)%nut(k)%nh3
-	sol_orgp_pro = sol_orgp_pro + soil(j)%nut(k)%orgp
-	sol_fop_pro = sol_fop_pro + soil(j)%nut(k)%fop
-	sol_solp_pro = sol_solp_pro + soil(j)%nut(k)%solp
-	sol_mc_pro = sol_mc_pro + soil(j)%cbn(k)%mc
-	sol_mn_pro = sol_mn_pro + soil(j)%nut(k)%mn
-	sol_mp_pro = sol_mp_pro + soil(j)%nut(k)%mp
+	sol_fon_pro = sol_fon_pro + soil1(j)%tot(k)%n
+	sol_no3_pro = sol_no3_pro + soil1(j)%mn(k)%no3
+	sol_nh3_pro = sol_nh3_pro + soil1(j)%mn(k)%nh4
+	sol_orgp_pro = sol_orgp_pro + soil1(j)%hp(k)%p
+	sol_fop_pro = sol_fop_pro + soil1(j)%tot(k)%p
+	sol_solp_pro = sol_solp_pro + soil1(j)%mp(k)%lab
+	sol_mc_pro = sol_mc_pro + soil1(j)%man(k)%c
+	sol_mn_pro = sol_mn_pro + soil1(j)%man(k)%n
+	sol_mp_pro = sol_mp_pro + soil1(j)%man(k)%p
 	wdn_pro = wdn_pro + wdn
 	net_N_pro = net_N_pro + net_N
 	solN_net_min_pro = solN_net_min_pro + solN_net_min

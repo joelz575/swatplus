@@ -38,6 +38,9 @@
       
       type swatdeg_channel_dynamic
         character(len=13) :: name = "default"
+        integer :: props
+        integer :: obj_no
+        character(len=16) :: region
         character(len=16) :: order
         real :: chw = 3.        !m          |channel width
         real :: chd = .5        !m          |channel depth
@@ -69,13 +72,21 @@
         real :: hc_sed = 0.           ! (tons)       !headcut erosion
         real :: deg_btm_m = 0.        ! (m)          !downcutting
         real :: deg_bank_m = 0.       ! (m)          !widening
-        real :: hc_m = 0.         ! (m)          !headcut retreat
+        real :: hc_m = 0.             ! (m)          !headcut retreat
       end type sd_ch_output
       
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_d
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_m
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_y
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_a
+      type (sd_ch_output), dimension(:), allocatable, save :: schsd_d
+      type (sd_ch_output), dimension(:), allocatable, save :: schsd_m
+      type (sd_ch_output), dimension(:), allocatable, save :: schsd_y
+      type (sd_ch_output), dimension(:), allocatable, save :: schsd_a
+      type (sd_ch_output) :: bchsd_d
+      type (sd_ch_output) :: bchsd_m
+      type (sd_ch_output) :: bchsd_y
+      type (sd_ch_output) :: bchsd_a
       type (sd_ch_output) :: chsdz
             
       type sdch_header

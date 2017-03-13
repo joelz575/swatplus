@@ -52,7 +52,9 @@
           !! determine reservoir outflow
           irel = res_dat(idat)%release
           call conditions (irel, ihyd)
-          call actions (irel, jres)
+          !call actions (irel, jres)
+          call res_hydro (jres, irel, ihyd, ised)
+          call res_sediment (jres, ihyd, ised)
 	    else
 	      !call res_hourly
         endif
@@ -129,51 +131,53 @@
           ressolpc = res(jres)%solp / (res(jres)%flo+.1) * 1000.
           sedcon = res(jres)%sed * 1.e6
           
-          resd(jres)%flowi = flwi / 86400. 
-          resd(jres)%flowo = flwo / 86400.
-          resd(jres)%sedi = sedi 
-          resd(jres)%sedo = sedo
-          resd(jres)%sedcon = sedcon
-          resd(jres)%pesti = pesti
-          resd(jres)%reactw = reactw
-          resd(jres)%volatpst = volatpst
-          resd(jres)%setlpst = setlpst
-          resd(jres)%resuspst = resuspst
-          resd(jres)%difus = difus
-          resd(jres)%reactb = reactb
-          resd(jres)%pesto = pesto
-          resd(jres)%pstcon = pstcon
-          resd(jres)%spstcon = spstcon
-          resd(jres)%ev = resev
-          resd(jres)%sep = ressep
-          resd(jres)%pcp = respcp
-          resd(jres)%flwim3 = flwim3
-          resd(jres)%flwom3 = flwom3
-          resd(jres)%orgni = orgni
-          resd(jres)%orgno = orgno
-          resd(jres)%orgpi = orgpi
-          resd(jres)%orgpo = orgpo
-          resd(jres)%no3i = no3i
-          resd(jres)%no3o = no3o
-          resd(jres)%no2i = no2i
-          resd(jres)%no2o = no2o
-          resd(jres)%nh3i = nh3i
-          resd(jres)%nh3o = nh3o
-          resd(jres)%solpi = solpi
-          resd(jres)%solpo = solpo
-          resd(jres)%chlai = chlai
-          resd(jres)%chlao = chlao
-          resd(jres)%orgpc = orgpc
-          resd(jres)%solpc = solpc
-          resd(jres)%orgnc = orgnc
-          resd(jres)%no3c = no3c
-          resd(jres)%no2c = no2c
-          resd(jres)%nh3c = nh3c
+          res_d(jres)%vol = res(jres)%flo / 10000.  !m^3 -> ha-m 
+          res_d(jres)%area_ha = res_ob(jres)%area_ha
+          res_d(jres)%flowi = resflwi / 86400. 
+          res_d(jres)%flowo = resflwo / 86400.
+          res_d(jres)%sedi = ressedi 
+          res_d(jres)%sedo = ressedo
+          res_d(jres)%sedcon = sedcon
+          res_d(jres)%pesti = pesti
+          res_d(jres)%reactw = reactw
+          res_d(jres)%volatpst = volatpst
+          res_d(jres)%setlpst = setlpst
+          res_d(jres)%resuspst = resuspst
+          res_d(jres)%difus = difus
+          res_d(jres)%reactb = reactb
+          res_d(jres)%pesto = pesto
+          res_d(jres)%pstcon = pstcon
+          res_d(jres)%spstcon = spstcon
+          res_d(jres)%ev = resev
+          res_d(jres)%sep = ressep
+          res_d(jres)%pcp = respcp
+          res_d(jres)%flwim3 = flwim3
+          res_d(jres)%flwom3 = flwom3
+          res_d(jres)%orgni = orgni
+          res_d(jres)%orgno = orgno
+          res_d(jres)%orgpi = orgpi
+          res_d(jres)%orgpo = orgpo
+          res_d(jres)%no3i = no3i
+          res_d(jres)%no3o = no3o
+          res_d(jres)%no2i = no2i
+          res_d(jres)%no2o = no2o
+          res_d(jres)%nh3i = nh3i
+          res_d(jres)%nh3o = nh3o
+          res_d(jres)%solpi = solpi
+          res_d(jres)%solpo = solpo
+          res_d(jres)%chlai = chlai
+          res_d(jres)%chlao = chlao
+          res_d(jres)%orgpc = orgpc
+          res_d(jres)%solpc = solpc
+          res_d(jres)%orgnc = orgnc
+          res_d(jres)%no3c = no3c
+          res_d(jres)%no2c = no2c
+          res_d(jres)%nh3c = nh3c
         end if             
 
         if (time%yrs > pco%nyskip) then
           call reservoir_output(jres)
-       end if
+        end if
         
       else
         !! reservoir has not been constructed yet

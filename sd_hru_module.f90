@@ -9,6 +9,7 @@
       real :: a1, a2
       real :: precip, snowfall, snowmelt, runoff, flowlat, chflow, perc, flow_tile
       real :: tmax, tmin, tave, raobs, tstress, ws, strsair, biomass, phubase0
+      real :: wndspd, rhum, air
       real :: cn_sd, aet, pet, sedin
       real, dimension(:), allocatable :: sd_qday, sd_qfdc, pr, be
       real, dimension(12) :: awct = 0.
@@ -64,6 +65,7 @@
         character(len=16) :: name
         integer :: props
         integer :: obj_no
+        character(len=16) :: region
         character(len=16) :: plant           !              |plant type (as listed in plants.plt)
         integer :: iplant = 1                !              |plant number xwalked from sd_db()%plant and plants.plt
         real :: km2 = 0.                     !km^2          |drainage area
@@ -100,6 +102,8 @@
         real :: npp = 0.                     !t/ha          |net primary productivity
         real :: lai_mx = 0.                  !              |maximum leaf area index
         real :: gwdeep = 0.                  !mm            |deep aquifer storage
+        real :: aet = 0.                     !mm            |sum of actual et during growing season (for hi water stress)
+        real :: pet = 0.                     !mm            |sum of potential et during growing season (for hi water stress)
       end type swatdeg_hru_dynamic
       type (swatdeg_hru_dynamic), dimension (:), allocatable :: sd
       type (swatdeg_hru_dynamic), dimension (:), allocatable :: sd_init

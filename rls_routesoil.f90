@@ -10,7 +10,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!
 
-      real :: latqrunon, latqlyr, xslat
+      real :: latqlyr, xslat
 
       j = ihru
       

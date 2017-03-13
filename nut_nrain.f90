@@ -26,6 +26,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
 
       real :: nh3pcp
 
@@ -35,14 +36,14 @@
        if (bsn_cc%atmo == 2) then
             nh3pcp = .01 * atmodep(iadep)%nh4_rfmo(mo_atmo) * precipday
             no3pcp = .01 * atmodep(iadep)%no3_rfmo(mo_atmo) * precipday
-            soil(j)%nut(1)%nh3=nh3pcp+atmodep(iadep)%nh4_drymo(mo_atmo)
-            soil(j)%nut(1)%no3 =no3pcp+atmodep(iadep)%no3_drymo(mo_atmo)
+            rsd1(j)%mn%nh4 = nh3pcp+atmodep(iadep)%nh4_drymo(mo_atmo)
+            rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + .8 * rmn1
        else
             nh3pcp = .01 * atmodep(iadep)%nh4_rf * precipday
             no3pcp = .01 * atmodep(iadep)%no3_rf * precipday
-            soil(j)%nut(1)%nh3 = soil(j)%nut(1)%nh3 + nh3pcp +          &
+            rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 + nh3pcp +          &
                        atmodep(iadep)%nh4_dry / 365.
-            soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 + no3pcp +          &
+            rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + no3pcp +          &
                        atmodep(iadep)%no3_dry / 365.
        endif
 

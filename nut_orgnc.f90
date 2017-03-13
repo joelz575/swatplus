@@ -42,6 +42,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
+      use organic_mineral_mass_module
 
       integer, intent (in) :: iwave
       integer :: j
@@ -55,7 +56,7 @@
       er = 0.	!! enrichment ratio
       if (iwave <= 0) then
         !! HRU calculations
-        xx = soil(j)%ly(1)%n + soil(j)%nut(1)%fon + soil(j)%nut(1)%mn
+        xx = soil(j)%ly(1)%n + rsd1(j)%tot(1)%n + rsd1(j)%man%n
         wt1 = soil(j)%phys(1)%bd * soil(j)%phys(1)%d / 100.
 
         if (hru(j)%hyd%erorgn > .001) then
@@ -86,8 +87,8 @@
       if (iwave <= 0 .and. xx > 1.e-6) then
         xx1 = (1. - sedorgn(j) / xx)
 		soil(j)%ly(1)%n = soil(j)%ly(1)%n * xx1
-		soil(j)%nut(1)%fon = soil(j)%nut(1)%fon * xx1
-		soil(j)%nut(1)%mn = soil(j)%nut(1)%mn * xx1
+		rsd1(j)%tot(1)%n = rsd1(j)%tot(1)%n * xx1
+		rsd1(j)%man%n = rsd1(j)%man%n * xx1
       end if
 
       return

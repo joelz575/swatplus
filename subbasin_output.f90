@@ -2,6 +2,7 @@
       
       use time_module
       use basin_module
+      use jrw_datalib_module
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs SUBBASIN variables on daily, monthly and annual time steps
@@ -11,6 +12,28 @@
 !!                 2 = monthly
 !!                 3 = daily
      
+      do isub = 1, db_mx%lcu_out
+        ! summing HRU output for the subbasin
+        do ielem = 1, lcu_out(isub)%num_tot
+          ihru = lcu_out(isub)%num(ielem)
+          if (lcu_elem(ihru)%sub_frac > 1.e-9) then
+            const = 1. / lcu_elem(ihru)%sub_frac   !only have / operator set up
+            if (sp_ob%hru > 0) then
+              swb_d(isub) = swb_d(isub) + hwb_d(ihru) / const
+              snb_d(isub) = snb_d(isub) + hnb_d(ihru) / const
+              sls_d(isub) = sls_d(isub) + hls_d(ihru) / const
+              spw_d(isub) = spw_d(isub) + hpw_d(ihru) / const
+            end if
+            ! summing HRU_LTE output
+            if (sp_ob%hru_lte > 0) then
+              swb_d(isub) = swb_d(isub) + sdwb_d(ihru) / const
+              snb_d(isub) = snb_d(isub) + sdnb_d(ihru) / const
+              sls_d(isub) = sls_d(isub) + sdls_d(ihru) / const
+              spw_d(isub) = spw_d(isub) + sdpw_d(ihru) / const
+            end if
+          end if
+        end do    !ielem
+      
         !! sum monthly variables
         swb_m(isub) = swb_m(isub) + swb_d(isub)
         snb_m(isub) = snb_m(isub) + snb_d(isub)
@@ -20,32 +43,37 @@
 !!!!! daily print - SUBBASIN
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                                 .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
-          if (pco%wb_sub == 3) then
+          if (pco%wb_sub == 'day') then
             write (4200,100) time%day, time%yrc, isub, swb_d(isub)  !! waterbal
-              if (pco%csvout == 1 .and. pco%wb_sub == 3) then 
+              if (pco%csvout == 'yes' .and. pco%wb_sub == 'day') then 
                 write (4031,'(*(G0.3,:","))') time%day, time%yrc, isub, swb_d(isub)  !! waterbal
               end if 
           end if 
-          if (pco%nb_sub == 3) then
+          if (pco%nb_sub == 'day') then
             write (4201,100) time%day, time%yrc, isub, snb_d(isub)  !! nutrient bal
-            if (pco%csvout == 1 .and. pco%nb_sub == 3) then 
+            if (pco%csvout == 'yes' .and. pco%nb_sub == 'day') then 
               write (4033,'(*(G0.3,:","))') time%day, time%yrc, isub, snb_d(isub)  !! nutrient bal
             end if 
           end if
-          if (pco%ls_sub == 3) then
+          if (pco%ls_sub == 'day') then
             write (4202,100) time%day, time%yrc, isub, sls_d(isub)  !! losses
-            if (pco%csvout == 1 .and. pco%ls_sub == 3) then 
+            if (pco%csvout == 'yes' .and. pco%ls_sub == 'day') then 
               write (4035,'(*(G0.3,:","))') time%day, time%yrc, isub, sls_d(isub)  !! losses
             end if 
           end if
-          if (pco%pw_sub == 3) then
+          if (pco%pw_sub == 'day') then
             write (4203,100) time%day, time%yrc, isub, spw_d(isub)  !! plant weather
-            if (pco%csvout == 1 .and. pco%pw_sub == 3) then 
+            if (pco%csvout == 'yes' .and. pco%pw_sub == 'day') then 
               write (4037,'(*(G0.3,:","))') time%day, time%yrc, isub, spw_d(isub)  !! plant weather 
             end if
           end if 
-       end if
+        end if
 
+        swb_d(isub) = hwbz
+        snb_d(isub) = hnbz
+        sls_d(isub) = hlsz
+        spw_d(isub) = hpwz
+        
 !!!!! monthly print - SUBBASIN
         if (time%end_mo == 1) then
           const = float (ndays(time%mo + 1) - ndays(time%mo)) 
@@ -56,27 +84,27 @@
           snb_y(isub) = snb_y(isub) + snb_m(isub)
           sls_y(isub) = sls_y(isub) + sls_m(isub)
           spw_y(isub) = spw_y(isub) + spw_m(isub)
-          if (pco%wb_sub == 2) then
+          if (pco%wb_sub == 'mon') then
             write (4200,100) time%mo, time%yrc, isub, swb_m(isub)
-            if (pco%csvout == 1 .and. pco%wb_sub == 2) then 
+            if (pco%csvout == 'yes' .and. pco%wb_sub == 'mon') then 
               write (4031,'(*(G0.3,:","))') time%mo, time%yrc, isub, swb_m(isub)
             end if 
           end if
-          if (pco%nb_sub == 2) then 
+          if (pco%nb_sub == 'mon') then 
             write (4201,100) time%mo, time%yrc, isub, snb_m(isub)
-            if (pco%csvout == 1 .and. pco%nb_sub == 2) then 
+            if (pco%csvout == 'yes' .and. pco%nb_sub == 'mon') then 
               write (4033,'(*(G0.3,:","))') time%mo, time%yrc, isub, snb_m(isub)
             end if 
           end if
-          if (pco%ls_sub == 2) then
+          if (pco%ls_sub == 'mon') then
             write (4202,100) time%mo, time%yrc, isub, sls_m(isub)
-            if (pco%csvout == 1 .and. pco%ls_sub == 2) then 
+            if (pco%csvout == 'yes' .and. pco%ls_sub == 'mon') then 
               write (4035,'(*(G0.3,:","))') time%mo, time%yrc, isub, sls_m(isub)
             end if 
           end if
-          if (pco%pw_sub == 2) then
+          if (pco%pw_sub == 'mon') then
             write (4203,100) time%mo, time%yrc, isub, spw_m(isub)
-            if (pco%csvout == 1 .and. pco%pw_sub == 2) then 
+            if (pco%csvout == 'yes' .and. pco%pw_sub == 'mon') then 
               write (4037,'(*(G0.3,:","))') time%mo, time%yrc, isub, spw_m(isub)
             end if 
           end if
@@ -96,27 +124,27 @@
            snb_a(isub) = snb_a(isub) + snb_y(isub)
            sls_a(isub) = sls_a(isub) + sls_y(isub)
            spw_a(isub) = spw_a(isub) + spw_y(isub)
-           if (pco%wb_sub == 1) then
+           if (pco%wb_sub == 'year') then
              write (4200,102) '     0', time%yrc, isub, swb_y(isub)
-             if (pco%csvout == 1 .and. pco%wb_sub == 1) then 
+             if (pco%csvout == 'yes' .and. pco%wb_sub == 'year') then 
                write (4031,'(*(G0.3,:","))') '     0', time%yrc, isub, swb_y(isub)
              end if 
            end if
-           if (pco%nb_sub == 1) then
+           if (pco%nb_sub == 'year') then
              write (4201,102) '     0', time%yrc, isub, snb_y(isub)
-             if (pco%csvout == 1 .and. pco%nb_sub == 1) then 
+             if (pco%csvout == 'yes' .and. pco%nb_sub == 'year') then 
                write (4033,'(*(G0.3,:","))') '     0', time%yrc, isub, snb_y(isub)
              end if 
            end if
-           if (pco%ls_sub == 1) then
+           if (pco%ls_sub == 'year') then
              write (4202,102) '     0', time%yrc, isub, sls_y(isub)
-             if (pco%csvout == 1 .and. pco%ls_sub == 1) then 
+             if (pco%csvout == 'yes' .and. pco%ls_sub == 'year') then 
                write (4035,'(*(G0.3,:","))') '     0', time%yrc, isub, sls_y(isub)
              end if 
            end if
-           if (pco%pw_sub == 1) then
+           if (pco%pw_sub == 'year') then
              write (4203,102) '     0', time%yrc, isub, spw_y(isub)
-             if (pco%csvout == 1 .and. pco%pw_sub == 1) then 
+             if (pco%csvout == 'yes' .and. pco%pw_sub == 'year') then 
                write (4037,'(*(G0.3,:","))') '     0', time%yrc, isub, spw_y(isub)
              end if 
            end if
@@ -129,35 +157,37 @@
         end if
         
 !!!!! average annual print - SUBBASIN
-      if (time%end_sim == 1) then
+      if (time%end_sim == 1 .and. pco%wb_sub /= 'null') then
         swb_a(isub) = swb_a(isub) / time%yrs_prt
         write (4204,102) '     0', time%yrs, isub, swb_a(isub)
-        if (pco%csvout == 1) then 
+        if (pco%csvout == 'yes') then 
           write (4032,'(*(G0.3,:","))') '     0', time%yrs, isub, swb_a(isub)
         end if 
       end if
-      if (time%end_sim == 1) then
+      if (time%end_sim == 1 .and. pco%nb_sub /= 'null') then
         snb_a(isub) = snb_a(isub) / time%yrs_prt
         write (4205,102) '     0', time%yrs, isub, snb_a(isub)
-        if (pco%csvout == 1) then 
+        if (pco%csvout == 'yes') then 
           write (4034,'(*(G0.3,:","))') '     0', time%yrs, isub, snb_a(isub)
         end if
       end if
-      if (time%end_sim == 1) then     
+      if (time%end_sim == 1 .and. pco%ls_sub /= 'null') then     
         sls_a(isub) = sls_a(isub) / time%yrs_prt
         write (4206,102) '     0', time%yrs, isub, sls_a(isub)
-        if (pco%csvout == 1) then 
+        if (pco%csvout == 'yes') then 
           write (4036,'(*(G0.3,:","))') '     0', time%yrs, isub, sls_a(isub)
         end if 
       end if
-      if (time%end_sim == 1) then    
+      if (time%end_sim == 1 .and. pco%pw_sub /= 'null') then    
         spw_a(isub) = spw_a(isub) / time%yrs_prt
         write (4207,102) '     0', time%yrs, isub, spw_a(isub) 
       end if
       
+      end do    !isub
+      
       return
       
-100   format (2i6,i8,18f12.3)
-102   format (a,i6,i8,18f12.3)
+100   format (2i6,i8,20f12.3)
+102   format (a,i6,i8,20f12.3)
        
       end subroutine subbasin_output

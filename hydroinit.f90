@@ -64,7 +64,7 @@
       use basin_module
       use channel_module
       use time_module
-      
+      use organic_mineral_mass_module
 
       integer :: j, l
       real :: t_ch, scmx, xx, tsoil
@@ -111,7 +111,7 @@
 	    if (idp > 0) then
           if (pldb(idp)%idc > 0) then
             !! set initial residue by summing each plant
-            soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + hru(j)%rsd_flt(ipl)%mass
+            soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + rsd1(j)%tot(ipl)%m
             plt_zmxp = plt_zmx
             plt_zmx = 1000. * pldb(idp)%rdmx
             plt_zmx = Max(plt_zmx,plt_zmxp)

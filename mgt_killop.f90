@@ -40,6 +40,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
   
       integer :: j, k
       real :: resnew
@@ -76,15 +77,15 @@
 
 	  !! update residue, N, P on soil surface
       ff1 = (1 - hiad1) / (1 - hiad1 + pcom(j)%plg(ipl)%rwt)
-      hru(j)%rsd_flt(ipl)%mass = resnew + hru(j)%rsd_flt(ipl)%mass
+      rsd1(j)%tot(ipl)%m = resnew + rsd1(j)%tot(ipl)%m
       
-      hru(j)%rsd_flt(ipl)%nmass = hru(j)%rsd_flt(ipl)%nmass + ff1 *     &
+      rsd1(j)%tot(ipl)%n = rsd1(j)%tot(ipl)%n + ff1 *     &
                                   (pcom(j)%plm(ipl)%nmass - yieldn)
-      hru(j)%rsd_flt(ipl)%pmass = hru(j)%rsd_flt(ipl)%pmass + ff1 *     & 
+      rsd1(j)%tot(ipl)%p = rsd1(j)%tot(ipl)%p + ff1 *     & 
                                   (pcom(j)%plm(ipl)%pmass - yieldp)
-      hru(j)%rsd_flt(ipl)%mass = Max(hru(j)%rsd_flt(ipl)%mass, 0.)
-	  hru(j)%rsd_flt(ipl)%nmass = Max(hru(j)%rsd_flt(ipl)%nmass, 0.)
-	  hru(j)%rsd_flt(ipl)%pmass = Max(hru(j)%rsd_flt(ipl)%pmass, 0.)
+      rsd1(j)%tot(ipl)%m = Max(rsd1(j)%tot(ipl)%m, 0.)
+	  rsd1(j)%tot(ipl)%n = Max(rsd1(j)%tot(ipl)%n, 0.)
+	  rsd1(j)%tot(ipl)%p = Max(rsd1(j)%tot(ipl)%p, 0.)
 
             !!insert new biomss by zhang
             !!=================================
@@ -125,7 +126,7 @@
 
                !kg/ha  
 	          sol_min_n = 0.	
-	          sol_min_n = (soil(j)%nut(1)%no3  +soil(j)%nut(1)%nh3)
+	          sol_min_n = (rsd1(j)%mn%no3 + rsd1(j)%mn%nh4)
 	          
 	          resnew = resnew
 	          resnew_n = ff1 * (pcom(j)%plm(ipl)%nmass- yieldn)    	    
@@ -152,8 +153,8 @@
 
 	          LSF =  1 - LMF  
         	  
-	          soil(j)%cbn(1)%lm = soil(j)%cbn(1)%lm + LMF * resnew
-	          soil(j)%cbn(1)%ls = soil(j)%cbn(1)%ls + LSF * resnew
+	          rsd1(j)%meta%m = rsd1(j)%meta%m + LMF * resnew
+	          rsd1(j)%str%m = rsd1(j)%str%m + LSF * resnew
         	  
 
                 
@@ -161,31 +162,31 @@
 	          LSLF = 0.0
 	          LSLF = CLG          
 	          
-	          soil(j)%cbn(1)%lsl = soil(j)%cbn(1)%lsl + RLR* LSF * resnew
-	          soil(j)%cbn(1)%lsc = soil(j)%cbn(1)%lsc + 0.42*LSF * resnew  
+	          rsd1(j)%lig%m = rsd1(j)%lig%m + RLR * LSF * resnew
+	          rsd1(j)%str%c = rsd1(j)%str%c + 0.42 * LSF * resnew  
 	          
-	          soil(j)%cbn(1)%lslc = soil(j)%cbn(1)%lslc+RLR*0.42*LSF*resnew
-	          soil(j)%cbn(1)%lslnc=soil(j)%cbn(1)%lsc-soil(j)%cbn(1)%lslc
+	          rsd1(j)%lig%c = rsd1(j)%lig%c + RLR * 0.42 * LSF * resnew
+	          rsd1(j)%lig%n = rsd1(j)%str%c - rsd1(j)%lig%c
                 
                 !X3 = MIN(X6,0.42*LSF * resnew/150) 
                 
 	          if (resnew_n >= (0.42 * LSF * resnew /150)) then
-		         soil(j)%cbn(1)%lsn = soil(j)%cbn(1)%lsn+0.42*LSF*resnew/150.
-		         soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn + resnew_n -          & 
+		         rsd1(j)%str%n = rsd1(j)%str%n + 0.42*LSF*resnew/150.
+		         rsd1(j)%meta%n = rsd1(j)%meta%n + resnew_n -          & 
                                (0.42 * LSF * resnew / 150) + 1.E-25
 	          else
-		         soil(j)%cbn(1)%lsn = soil(j)%cbn(1)%lsn + resnew_n
-		         soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn + 1.E-25
+		         rsd1(j)%str%n = rsd1(j)%str%n + resnew_n
+		         rsd1(j)%meta%n = rsd1(j)%meta%n + 1.E-25
 	          end if	
         	
 	          !LSNF = sol_LSN(1,j)/(sol_LS(1,j)+1.E-5)	
         	  
-	          soil(j)%cbn(1)%lmc = soil(j)%cbn(1)%lmc + 0.42 * LMF * resnew
+	          rsd1(j)%meta%c = rsd1(j)%meta%c + 0.42 * LMF * resnew
 	          !LMNF = sol_LMN(1,j)/(sol_LM(1,j) + 1.E-5)           
                 
                 !update no3 and nh3 in soil
-                soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 * (1-sf)
-                soil(j)%nut(1)%nh3 = soil(j)%nut(1)%nh3 * (1-sf)
+                rsd1(j)%mn%no3 = rsd1(j)%mn%no3 * (1-sf)
+                rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 * (1-sf)
             end if
             !!insert new biomss by zhang
             !!===============================
@@ -193,9 +194,9 @@
 	!! allocate dead roots, N, P to soil layers
 	do l = 1, soil(j)%nly
 	 soil(j)%ly(l)%rsd = soil(j)%ly(l)%rsd + soil(j)%ly(l)%rtfr * rtresnew
-	 soil(j)%nut(l)%fon = soil(j)%nut(l)%fon+soil(j)%ly(l)%rtfr *            &
+	 soil1(j)%tot(l)%n = soil1(j)%tot(l)%n + soil(j)%ly(l)%rtfr *            &
           pcom(j)%plm(ipl)%nmass * pcom(j)%plg(ipl)%rwt
-	 soil(j)%nut(l)%fop = soil(j)%nut(l)%fop + soil(j)%ly(l)%rtfr *          &
+	 soil1(j)%tot(l)%p = soil1(j)%tot(l)%p + soil(j)%ly(l)%rtfr *          &
           pcom(ihru)%plm(ipl)%pmass * pcom(j)%plg(ipl)%rwt
 
               !!insert new biomss by zhang
@@ -237,7 +238,7 @@
 
                !kg/ha  
 	          sol_min_n = 0.	
-	          sol_min_n = (soil(j)%nut(l)%no3 + soil(j)%nut(l)%nh3)
+	          sol_min_n = (soil1(j)%mn(l)%no3 + soil1(j)%mn(l)%nh4)
 	          	          
 	          resnew = soil(j)%ly(l)%rtfr * rtresnew 
            resnew_n = soil(j)%ly(l)%rtfr*ff2*                             &
@@ -264,38 +265,38 @@
 
 	          LSF =  1 - LMF  
         	  
-	          soil(j)%cbn(l)%lm = soil(j)%cbn(l)%lm + LMF * resnew
-	          soil(j)%cbn(l)%ls = soil(j)%cbn(l)%ls + LSF * resnew
+	          soil1(j)%meta(l)%m = soil1(j)%meta(l)%m + LMF * resnew
+	          soil1(j)%str(l)%m = soil1(j)%str(l)%m + LSF * resnew
         	  
 	          !here a simplified assumption of 0.5 LSL
 	          !LSLF = 0.0
 	          !LSLF = CLG          
 	          
-	          soil(j)%cbn(l)%lsl = soil(j)%cbn(l)%lsl + RLR*resnew
-	          soil(j)%cbn(l)%lsc = soil(j)%cbn(l)%lsc + 0.42*LSF * resnew  
+	          soil1(j)%lig(l)%m = soil1(j)%lig(l)%m + RLR * resnew
+	          soil1(j)%str(l)%c = soil1(j)%str(l)%c + 0.42*LSF * resnew  
 	          
-	          soil(j)%cbn(l)%lslc = soil(j)%cbn(l)%lslc + RLR*0.42*resnew
-	          soil(j)%cbn(l)%lslnc = soil(j)%cbn(l)%lsc-soil(j)%cbn(l)%lslc
+	          soil1(j)%lig(l)%c = soil1(j)%lig(l)%c + RLR*0.42*resnew
+	          soil1(j)%lig(l)%n = soil1(j)%str(l)%c - soil1(j)%lig(l)%c
                 
                 !X3 = MIN(X6,0.42*LSF * resnew/150) 
                 
 	          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
-		         soil(j)%cbn(l)%lsn = soil(j)%cbn(l)%lsn+0.42*LSF*resnew/150.
-		         soil(j)%cbn(l)%lmn = soil(j)%cbn(l)%lmn + resnew_ne -        & 
+		         soil1(j)%str(l)%n = soil1(j)%str(l)%n + 0.42*LSF*resnew/150.
+		         soil1(j)%meta(l)%n = soil1(j)%meta(l)%n + resnew_ne -        & 
                                (0.42 * LSF * resnew / 150) + 1.E-25
 	          else
-		         soil(j)%cbn(l)%lsn = soil(j)%cbn(l)%lsn + resnew_ne
-		         soil(j)%cbn(l)%lmn = soil(j)%cbn(l)%lmn + 1.E-25
+		         soil1(j)%str(l)%n = soil1(j)%str(l)%n + resnew_ne
+		         soil1(j)%meta(l)%n = soil1(j)%meta(l)%n + 1.E-25
 	          end if	
         	
 	          !LSNF = sol_LSN(l,j)/(sol_LS(l,j)+1.E-5)	
         	  
-	          soil(j)%cbn(l)%lmc = soil(j)%cbn(l)%lmc + 0.42 * LMF * resnew
+	          soil1(j)%meta(l)%c = soil1(j)%meta(l)%c + 0.42 * LMF * resnew
 	          !LMNF = sol_LMN(l,j)/(sol_LM(l,j) + 1.E-5)           
                 
                 !update no3 and nh3 in soil
-                soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 * (1-sf)
-                soil(j)%nut(l)%nh3 = soil(j)%nut(l)%nh3 * (1-sf)
+                rsd1(j)%mn%no3 = rsd1(j)%mn%no3 * (1-sf)
+                rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 * (1-sf)
             end if
             !!insert new biomss by zhang    
             !!=============================== 

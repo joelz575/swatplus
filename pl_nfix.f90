@@ -34,6 +34,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, l
       real :: uno3l, fxw, sumn, fxn, fxg, fxr
@@ -62,7 +63,7 @@
       sumn = 0.
       fxn = 0.
       do l = 1, soil(j)%nly
-        sumn = sumn + soil(j)%nut(l)%no3
+        sumn = sumn + soil1(j)%mn(l)%no3
       end do
       if (sumn > 300.) fxn = 0.
       if (sumn > 100. .and. sumn <= 300.) fxn = 1.5 - .0005 * sumn

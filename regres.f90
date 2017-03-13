@@ -12,7 +12,7 @@
 !!                                |indirectly connected)
 !!    hru_km(:)    |km^2          |area of HRU in square kilometers
 !!    ihru         |none          |HRU number
-!!    ireg(:)      |none          |precipitation category:
+!!    iregion(:)      |none          |precipitation category:
 !!                                |  1 precipitation <= 508 mm/yr
 !!                                |  2 precipitation > 508 and <= 1016 mm/yr
 !!                                |  3 precipitation > 1016 mm/yr

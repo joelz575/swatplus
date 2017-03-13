@@ -43,27 +43,13 @@
         end do
      
       !! read spatial input to each subbasin (ie hru fractions)
+      allocate (sub_d(0:imax))
+
       allocate (sub_tc(0:imax))
       allocate (sub_n(0:imax))
       allocate (uhs(0:imax,time%step+1))
       allocate (hyd_flo(time%step+1))
       allocate (itsb(sp_ob%sub))
-      allocate (swb_d(0:imax))
-      allocate (swb_m(0:imax))
-      allocate (swb_y(0:imax))
-      allocate (swb_a(0:imax))
-      allocate (snb_d(0:imax))
-      allocate (snb_m(0:imax))
-      allocate (snb_y(0:imax))
-      allocate (snb_a(0:imax))
-      allocate (sls_d(0:imax))
-      allocate (sls_m(0:imax))
-      allocate (sls_y(0:imax))
-      allocate (sls_a(0:imax))
-      allocate (spw_d(0:imax))
-      allocate (spw_m(0:imax))
-      allocate (spw_y(0:imax))
-      allocate (spw_a(0:imax))
 
       hyd_flo = 0.
       uhs = 0

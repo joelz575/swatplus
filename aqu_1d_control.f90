@@ -4,12 +4,13 @@
       iaq = ob(icmd)%num
       iaqdb = ob(icmd)%props
       iwst = ob(icmd)%wst
+      stor_init = aqu(iaq)%stor
       
       !convert from m^3 to mm
       aqu(iaq)%rchrg = ob(icmd)%hin%flo / (10. * ob(icmd)%area_ha)
       
       !! lag recharge from bottom of soil to water table
-      aqu(iaq)%rchrg = (1. - aqu_prm(iaq)%delay_e) * aqu(iaq)%rchrg + aqu_prm(iaq)%delay_e * aqu_st(iaq)%rchrg_prev
+   !   aqu(iaq)%rchrg = (1. - aqu_prm(iaqdb)%delay_e) * aqu(iaq)%rchrg + aqu_prm(iaqdb)%delay_e * aqu_st(iaq)%rchrg_prev
       aqu_st(iaq)%rchrg_prev = aqu(iaq)%rchrg
       
       !! add recharge to aquifer storage
@@ -17,7 +18,7 @@
       
       !! compute flow and substract from storage
       if (aqu(iaq)%stor > aqu_st(iaq)%flo_min) then
-        aqu(iaq)%flo = aqu(iaq)%flo * aqu_prm(iaq)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaq)%alpha_e)
+        aqu(iaq)%flo = aqu(iaq)%flo * aqu_prm(iaqdb)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaqdb)%alpha_e)
         aqu(iaq)%flo = Max (0., aqu(iaq)%flo)
         aqu(iaq)%flo = Min (aqu(iaq)%stor, aqu(iaq)%flo)
         aqu(iaq)%stor = aqu(iaq)%stor - aqu(iaq)%flo
@@ -43,7 +44,7 @@
       end if
 
       !! compute groundwater height - datum: above bottom of channel
-      aqu(iaq)%hgt = aqu(iaq)%hgt * aqu_prm(iaq)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaq)%alpha_e) /   & 
+      aqu(iaq)%hgt = aqu(iaq)%hgt * aqu_prm(iaqdb)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaqdb)%alpha_e) /   & 
                                              (800. * aqudb(iaqdb)%spyld * aqudb(iaqdb)%alpha + 1.e-6)       
       aqu(iaq)%hgt = Max(1.e-6, aqu(iaq)%hgt)
 
@@ -82,6 +83,14 @@
           step = real(time%step)
           ob(icmd)%ts(1,ii) = ob(icmd)%hd(1) / step
         end do
+      end if
+      
+      err = stor_init - aqu(iaq)%stor + aqu(iaq)%rchrg - aqu(iaq)%flo - aqu(iaq)%seep - aqu(iaq)%revap
+      if (iaq == 1) then
+        sumrchrg = sumrchrg + aqu(iaq)%rchrg
+        sumflo = sumflo + aqu(iaq)%flo
+        sumseep = sumseep + aqu(iaq)%seep
+        sumrevap = sumrevap + aqu(iaq)%revap
       end if
       
       return

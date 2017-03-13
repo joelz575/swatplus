@@ -25,10 +25,9 @@
       ob(icmd)%hd(3) = hz
       ob(icmd)%hd(4) = hz
       ob(icmd)%hd(5) = hz
-      swb_d(isub) = hwbz
-      snb_d(isub) = hnbz
-      sls_d(isub) = hlsz
-      spw_d(isub) = hpwz
+      
+      sumfrac = 0.
+      sumarea = 0.
       
       do ielem = 1, sub_d(isub)%num_tot
         ise = sub_d(isub)%num(ielem)
@@ -41,6 +40,9 @@
         ht4 = hz
         ht5 = hz
         delrto = hz
+        
+        sumfrac = sumfrac + sub_elem(ise)%frac
+        sumarea = sumarea + ob(iob)%area_ha
         
         !define delivery ratio - all variables are hyd_output type
         idr = sub_elem(ise)%idr
@@ -70,8 +72,7 @@
         select case (sub_elem(ielem)%obtyp)
         case ("hru")
         !define expansion factor to surface/soil and recharge
-        ef = sub_elem(ise)%frac * sub(isub)%da_km2 /                      &
-                                                 (hru(ihru)%area_ha / 100.)
+        ef = sub_elem(ise)%frac * sub(isub)%da_km2 / (hru(ihru)%area_ha / 100.)
         case ("hlt")
         ef = sub_elem(ise)%frac * sub(isub)%da_km2 / sd_db(ihru)%dakm2
         end select
@@ -102,7 +103,8 @@
           ht1 = ef * ob(iob)%hd(ihtypno)
           ht5 = ef * ob(iob)%hd(ihtypno)  !no dr on tile
         end select
-
+        end if      !sub_elem(ielem)%obtyp == "exc"
+        
         !recharge hyd - hru_lte computes gw flow and doesnt need recharge hyd
         if (sub_elem(ielem)%obtyp /= "hlt") ht2 = ef * ob(iob)%hd(2)
         
@@ -116,25 +118,6 @@
           end select
         end if
 
-        ! summing HRU output for the subbasin
-        if (sub_elem(ise)%frac > 1.e-9) then
-          const = 1. / sub_elem(ise)%frac   !only have / operator set up (could * frac_dfn directly)
-          if (sub_elem(ise)%obtyp == "hru") then
-            swb_d(isub) = swb_d(isub) + hwb_d(ihru) / const
-            snb_d(isub) = snb_d(isub) + hnb_d(ihru) / const
-            sls_d(isub) = sls_d(isub) + hls_d(ihru) / const
-            spw_d(isub) = spw_d(isub) + hpw_d(ihru) / const
-          end if
-          ! summing HRU_LTE output
-          if (sub_elem(ise)%obtyp == "hlt") then
-            swb_d(isub) = swb_d(isub) + sdwb_d(ihru) / const
-            snb_d(isub) = snb_d(isub) + sdnb_d(ihru) / const
-            sls_d(isub) = sls_d(isub) + sdls_d(ihru) / const
-            spw_d(isub) = spw_d(isub) + sdpw_d(ihru) / const
-          end if
-        end if
-      end if      
-                
       ob(icmd)%hd(1) = ob(icmd)%hd(1) + ht1             !sum total hyd 
       ob(icmd)%hd(2) = ob(icmd)%hd(2) + ht2             !sum recharge hyd
       ob(icmd)%hd(3) = ob(icmd)%hd(3) + ht3             !sum surface hyd 
@@ -229,21 +212,7 @@
           end do
         end if  ! qday > 0
       end if  ! time%step  > 0
-      
-      
-        
-      ! summing subbasin output for the basin
-      if (ob(icmd)%area_ha > 1.e-12 .and. bsn%area_ha > 1.e-12) then
-        const = bsn%area_ha / ob(icmd)%area_ha        !only have / operator set up
-        bwb_d = bwb_d + swb_d(isub) / const
-        bnb_d = bnb_d + snb_d(isub) / const
-        bls_d = bls_d + sls_d(isub) / const
-        bpw_d = bpw_d + spw_d(isub) / const
-      end if
 
-       if (time%yrs > pco%nyskip .and. time%step == 0)                  & 
-                                        call subbasin_output
-      
 	return
 
       end subroutine subbasin_control

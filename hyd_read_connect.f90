@@ -11,13 +11,14 @@
       use organic_mineral_mass_module
       use constituent_mass_module
       use jrw_datalib_module
+      use subbasin_module
       
       character (len=80) :: titldum, header
       character (len=16) :: namedum
       character (len=3) :: iob_out, iobtyp, ihtyp
       integer :: nspu, isp, cmdno, idone, hydno, cmd_prev, ob1, ob2
       integer :: iobj_tot
-      integer :: eof, i, imax
+      integer :: eof, imax  !, i
       
       eof = 0
       imax = 0
@@ -108,7 +109,8 @@
       
       !read connect file for subbasins
       if (sp_ob%sub > 0) then
-        call connect_read(in_con%sub_con, "sub     ", sp_ob1%sub, sp_ob%sub, 5, 2) 
+        call connect_read(in_con%sub_con, "sub     ", sp_ob1%sub, sp_ob%sub, 5, 2)
+        call sub_read
         call sub_elements_read
       end if
         
@@ -154,7 +156,7 @@
                   
       !read connect file for outlet
       if (sp_ob%outlet > 0) then
-        call connect_read(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, 0, 0)
+        call connect_read(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, 1, 0)
       end if
           
       !read connect file for swat-deg channels
@@ -368,7 +370,7 @@
       idone = 0
       iobj_tot = 0
       rcv_sum = 0
-      !iord = 1
+      iord = 1
       dfn_sum = 0
       
       do while (idone == 0)
@@ -448,8 +450,8 @@
                   sp_ob1%objs = i  !first command number
                 end if
                 cmd_prev = i
-                !rcv_sum(i) = rcv_sum(i) + 1
-                !ob(i)%cmd_order = iord
+                rcv_sum(i) = rcv_sum(i) + 1
+                ob(i)%cmd_order = iord
               end if  !exco's are not commands
             
             end do
@@ -459,5 +461,7 @@
         iord = iord + 1
       end do
       
+      !! set command orders for parallelization
+      ! allocate (
       return
       end subroutine hyd_read_connect

@@ -94,9 +94,7 @@
             if (eof < 0) exit
             imax = imax + 1
           end do
-        
-        allocate (sub_d(imax))
-        
+
         rewind (107)
         read (107,*) titldum
         read (107,*) header
@@ -167,23 +165,24 @@
           end do
  !       end if
      
+          ! determine how many subbasins the object is in
           do ii = ie1, ie2
             iobtyp = sub_elem(ii)%obtyp       !object type in sub
             select case (iobtyp)
             case ("hru")   !hru
               sub_elem(ii)%obj = sp_ob1%hru + sub_elem(ii)%obtypno - 1
             case ("hlt")   !hru_lte
-              sub_elem(ii)%obj = sp_ob1%hru_lte + sub_elem(ii)%obtypno-1
+              sub_elem(ii)%obj = sp_ob1%hru_lte + sub_elem(ii)%obtypno - 1
             case ("cha")   !channel
-              sub_elem(ii)%obj = sp_ob1%chan + sub_elem(ii)%obtypno -1
+              sub_elem(ii)%obj = sp_ob1%chan + sub_elem(ii)%obtypno - 1
             case ("exc")   !export coefficient
               sub_elem(ii)%obj = sp_ob1%exco + sub_elem(ii)%obtypno - 1
             case ("del")   !delivery ratio
               sub_elem(ii)%obj = sp_ob1%dr + sub_elem(ii)%obtypno - 1
             case ("out")   !outlet
-              sub_elem(ii)%obj = sp_ob1%outlet + sub_elem(ii)%obtypno -1
+              sub_elem(ii)%obj = sp_ob1%outlet + sub_elem(ii)%obtypno - 1
             case ("sdc")   !swat-deg channel
-              sub_elem(ii)%obj = sp_ob1%chandeg + sub_elem(ii)%obtypno-1
+              sub_elem(ii)%obj = sp_ob1%chandeg + sub_elem(ii)%obtypno - 1
             end select
             k = sub_elem(ii)%obj
             ob(k)%subs_tot = ob(k)%subs_tot + 1
@@ -206,7 +205,7 @@
           
         end if
         deallocate (elem_cnt)
-      end do
+      end do    ! i = subbasin object numbers
         exit
       enddo
       endif
@@ -215,15 +214,15 @@
         do ielem = 1, msub_elems
           iob = sub_elem(ielem)%obj
           isub_tot = ob(iob)%subs_tot
-          allocate (sub_elem(ielem)%sub(isub_tot))
+          allocate (ob(iob)%sub(isub_tot))
         end do
-        do isub = 1, imax
+        do isub = 1, sp_ob%sub
           do ielem = 1, sub_d(isub)%num_tot
             ie = sub_d(isub)%num(ielem)
             ielem_sub(ie) = ielem_sub(ie) + 1
-            sub_elem(ie)%sub(ielem_sub(ie)) = isub
             iob = sub_elem(ie)%obj
-            ob(iob)%elem = ie
+            ob(iob)%sub(ielem_sub(ie)) = isub
+            ob(iob)%elem = ielem
           end do
         end do
 

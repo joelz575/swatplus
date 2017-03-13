@@ -11,10 +11,10 @@
 !!!!! daily print
       if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                                     .and. time%day <= pco%jd_end) then
-        if (pco%chan == 3) then
+        if (pco%chan == 'day') then
           write (4600,100) time%day, time%yrc, ich, chsd_d(ich),            &
             sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
-           if (pco%csvout == 1) then
+           if (pco%csvout == 'yes') then
              write (4602,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_d(ich),  &
              sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
            end if
@@ -24,10 +24,10 @@
 !!!!! monthly print
         if (time%end_mo == 1) then
           chsd_y(ich) = chsd_y(ich) + chsd_m(ich)
-          if (pco%chan == 2) then
+          if (pco%chan == 'mon') then
           write (4600,100) time%day, time%yrc, ich, chsd_m(ich),                &
            sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
-          if (pco%csvout == 1) then
+          if (pco%csvout == 'yes') then
             write (4602,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_m(ich), &
             sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len 
           end if
@@ -38,7 +38,7 @@
 !!!!! yearly print
       if (time%end_yr == 1) then
         chsd_a(ich) = chsd_a(ich) + chsd_y(ich)
-        if (pco%chan == 1) then 
+        if (pco%chan == 'year') then 
           write (4600,100) time%day, time%yrc, ich, chsd_y(ich),          &
           sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
           if (csvout == 1) then

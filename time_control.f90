@@ -66,6 +66,7 @@
       use basin_module
       use sd_channel_module
       use sd_hru_module
+      use basin_module
       
       integer :: j, iix, iiz, ic, mon, ii
       integer :: isce = 1
@@ -140,6 +141,10 @@
           time%end_mo = 0
           time%end_yr = 0
           time%end_sim = 0
+          if (time%end_aa_prt == 1) then
+            time%end_aa_prt = 0
+            time%prt_int_cur = 0.
+          end if
           if (i == ndays(i_mo+1)) then
             time%end_mo = 1
           end if
@@ -148,6 +153,11 @@
             if (time%yrs == time%nbyr) then
               time%end_sim = 1
               time%yrs_prt = time%yrs_prt / 365.
+            end if
+            if (time%yrc == pco%aa_yrs(time%prt_int_cur)) then
+              time%end_aa_prt = 1
+              time%yrs_prt_int = time%yrs_prt_int / 365.
+              time%prt_int_cur = time%prt_int_cur + 1 
             end if
           end if
 
@@ -244,17 +254,17 @@
         !! perform end-of-year processes
         
         !! sum landscape output for soft data calibration
-        if (cal_codes%hyd_hru == 'y') then
+        if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hru == 'y') then
           !calibrate hru's
-          do ireg = 1, db_mx%lscal_reg
+          do ireg = 1, db_mx%lcu_reg
             do ilu = 1, lscal(ireg)%lum_num
               lscal(ireg)%lum(ilu)%ha = 0.
               lscal(ireg)%lum(ilu)%precip = 0.
               lscal(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
-              do ihru_s = 1, lscal(ireg)%num_tot
-                ihru = lscal(ireg)%num(ihru_s)
+              do ihru_s = 1, region(ireg)%num_tot
+                ihru = region(ireg)%num(ihru_s)
                 if (lscal(ireg)%lum(ilu)%meas%name == hru(ihru)%land_use_mgt_c) then
-                  ha_hru = 100. * hru(ihru)%km      ! 10 * ha * mm --> m3
+                  ha_hru = 10. * region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
                   lscal(ireg)%lum(ilu)%ha = lscal(ireg)%lum(ilu)%ha + ha_hru
                   lscal(ireg)%lum(ilu)%precip = lscal(ireg)%lum(ilu)%precip + (10. * ha_hru * hwb_y(ihru)%precip)
                   lscal(ireg)%lum(ilu)%sim%srr = lscal(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * hwb_y(ihru)%surq_gen)
@@ -287,15 +297,15 @@
         
         if (cal_codes%hyd_hrul == 'y') then
           !calibrate hru_lte's
-          do ireg = 1, db_mx%lscalt_reg
+          do ireg = 1, db_mx%lcu_reg
             do ilu = 1, lscalt(ireg)%lum_num
               lscalt(ireg)%lum(ilu)%ha = 0.
               lscalt(ireg)%lum(ilu)%precip = 0.
               lscalt(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
-              do ihru_s = 1, lscalt(ireg)%num_tot
-                ihru = lscalt(ireg)%num(ihru_s)
+              do ihru_s = 1, region(ireg)%num_tot
+                ihru = region(ireg)%num(ihru_s)
                 !if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%land_use_mgt) then
-                  ha_hru = 100. * sd(ihru)%km2      ! 10 * ha * mm --> m3
+                  ha_hru = 10. * region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
                   lscalt(ireg)%lum(ilu)%ha = lscalt(ireg)%lum(ilu)%ha + ha_hru
                   lscalt(ireg)%lum(ilu)%precip = lscalt(ireg)%lum(ilu)%precip + (10. * ha_hru * sdwb_y(ihru)%precip)
                   lscalt(ireg)%lum(ilu)%sim%srr = lscalt(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * sdwb_y(ihru)%surq_gen)
@@ -337,7 +347,7 @@
               do ihru_s = 1, plcal(ireg)%num_tot
                 ihru = plcal(ireg)%num(ihru_s)
                 if (plcal(ireg)%lum(ilu)%meas%name == sd(ihru)%plant) then
-                  ha_hru = 100. * sd(ihru)%km2      ! 10 * ha * mm --> m3
+                  ha_hru = 10. * region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
                   plcal(ireg)%lum(ilu)%ha = plcal(ireg)%lum(ilu)%ha + ha_hru
                   plcal(ireg)%lum(ilu)%precip = plcal(ireg)%lum(ilu)%precip + (10. * ha_hru * sdwb_y(ihru)%precip)
                   plcal(ireg)%lum(ilu)%sim%yield = plcal(ireg)%lum(ilu)%sim%yield + (10. * ha_hru * sd(ihru)%yield)
@@ -369,7 +379,7 @@
 
         !! sum channel output for soft data calibration
         if (cal_codes%chsed == 'y' .and. cal_codes%sed == 'n' .and. cal_codes%plt == 'n' .and. cal_codes%hyd_hru == 'n' .and. cal_codes%hyd_hrul == 'n') then
-          do ireg = 1, db_mx%chcal_reg
+          do ireg = 1, db_mx%ch_reg
             do iord = 1, chcal(ireg)%ord_num
               chcal(ireg)%ord(iord)%length = 0.
               chcal(ireg)%ord(iord)%sim = chcal_z  !! zero all calibration parameters
@@ -408,7 +418,7 @@
           sdls_y(j) = hlsz
         end do
         
-        do j = 1, sp_ob%chandeg
+        do ich = 1, sp_ob%chandeg
           !! zero yearly balances after using them in soft data calibration (was in sd_channel_output)
           chsd_y(ich) = chsdz
         end do
@@ -468,9 +478,9 @@
       end do            !!     end annual loop
 
         !! average output for soft data calibration
-        if (cal_codes%hyd_hru == 'y') then
+        if (cal_codes%hyd_hru == 'y' .or. cal_codes%sed == 'y') then
           !average annual for hru calibration
-          do ireg = 1, db_mx%lscal_reg
+          do ireg = 1, db_mx%lcu_reg
             do ilu = 1, lscal(ireg)%lum_num
               if (lscal(ireg)%lum(ilu)%nbyr > 0) then
                 !! convert back to mm, t/ha, kg/ha
@@ -490,7 +500,7 @@
         
         if (cal_codes%hyd_hrul == 'y') then
           !average annual for hru_lte calibration
-          do ireg = 1, db_mx%lscalt_reg
+          do ireg = 1, db_mx%lcu_reg
             do ilu = 1, lscalt(ireg)%lum_num
               if (lscalt(ireg)%lum(ilu)%nbyr > 0) then
                 !! convert back to mm, t/ha, kg/ha
@@ -532,7 +542,7 @@
         
         !! average channel output for soft data calibration
         if (cal_codes%chsed == 'y' .and. cal_codes%sed == 'n' .and. cal_codes%plt == 'n' .and. cal_codes%hyd_hru == 'n' .and. cal_codes%hyd_hrul == 'n') then
-          do ireg = 1, db_mx%chcal_reg
+          do ireg = 1, db_mx%ch_reg
             do ich = 1, chcal(ireg)%ord_num
               if (chcal(ireg)%ord(ich)%nbyr > 0) then
                 !! soft data for w and d in mm/year (convert to m) -- hc soft and model in m -- fpd soft and model in mm

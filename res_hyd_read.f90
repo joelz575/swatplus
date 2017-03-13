@@ -38,6 +38,17 @@
          backspace (105)
          read (105,*,iostat=eof) k, res_hyd(ires)
          if (eof < 0) exit
+
+        if (res_hyd(ires)%pvol + res_hyd(ires)%evol > 0.) then
+          if(res_hyd(ires)%pvol <= 0) res_hyd(ires)%pvol = 0.9 * res_hyd(ires)%evol
+        else
+          if (res_hyd(ires)%pvol <= 0) res_hyd(ires)%pvol = 60000.0
+        end if
+        if (res_hyd(ires)%evol <= 0.0) res_hyd(ires)%evol = 1.11 *res_hyd(ires)%pvol
+        if (res_hyd(ires)%psa <= 0.0) res_hyd(ires)%psa = 0.08 * res_hyd(ires)%pvol
+        if (res_hyd(ires)%esa <= 0.0) res_hyd(ires)%esa = 1.5 * res_hyd(ires)%psa
+        if (res_hyd(ires)%evrsv <= 0.) res_hyd(ires)%evrsv = 0.6
+
        end do
        close (105)
       exit

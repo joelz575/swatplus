@@ -51,6 +51,7 @@
       use basin_module
       use hydrograph_module
       use jrw_datalib_module
+      use organic_mineral_mass_module
 
       real :: resnew
       integer :: j
@@ -150,7 +151,7 @@
 
                !kg/ha  
 	          sol_min_n = 0.	
-	          sol_min_n = (soil(j)%nut(1)%no3 + soil(j)%nut(1)%nh3)
+	          sol_min_n = (rsd1(j)%mn%no3 + rsd1(j)%mn%nh4)
 	          	          
 	          resnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%bio_leaf
 	          resnew_n = resnew * pcom(j)%plm(ipl)%n_fr   	    
@@ -176,49 +177,49 @@
 
 	          LSF =  1 - LMF  
         	  
-	          soil(j)%cbn(1)%lm = soil(j)%cbn(1)%lm + LMF * resnew
-	          soil(j)%cbn(1)%ls = soil(j)%cbn(1)%ls + LSF * resnew
+	          rsd1(j)%meta%m = rsd1(j)%meta%m + LMF * resnew
+	          rsd1(j)%str%m = rsd1(j)%str%m + LSF * resnew
         	  
 	          !here a simplified assumption of 0.5 LSL
 	          LSLF = 0.0
 	          LSLF = CLG          
 	          
-	          soil(j)%cbn(1)%lsl = soil(j)%cbn(1)%lsl + RLR* LSF * resnew
-	          soil(j)%cbn(1)%lsc = soil(j)%cbn(1)%lsc + 0.42*LSF * resnew  
+	          rsd1(j)%lig%m = rsd1(j)%lig%m + RLR* LSF * resnew
+	          rsd1(j)%str%c = rsd1(j)%str%c + 0.42*LSF * resnew  
 	          
-	          soil(j)%cbn(1)%lslc = soil(j)%cbn(1)%lslc+RLR*0.42*LSF*resnew
-	          soil(j)%cbn(1)%lslnc = soil(j)%cbn(1)%lsc-soil(j)%cbn(1)%lslc
+	          rsd1(j)%lig%c = rsd1(j)%lig%c + RLR*0.42*LSF*resnew
+	          rsd1(j)%lig%n = rsd1(j)%str%c - rsd1(j)%lig%c
                 
                 !X3 = MIN(X6,0.42*LSF * resnew/150) 
                 
 	          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
-		         soil(j)%cbn(1)%lsn = soil(j)%cbn(1)%lsn+0.42*LSF*resnew / 150
-		         soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn + resnew_ne -         &
+		         rsd1(j)%str%n = rsd1(j)%str%n + 0.42*LSF*resnew / 150
+		         rsd1(j)%meta%n = rsd1(j)%meta%n + resnew_ne -         &
                               (0.42 * LSF * resnew / 150) + 1.E-25
 	          else
-		         soil(j)%cbn(1)%lsn = soil(j)%cbn(1)%lsn + resnew_ne
-		         soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn + 1.E-25
+		         rsd1(j)%str%n = rsd1(j)%str%n + resnew_ne
+		         rsd1(j)%meta%n = rsd1(j)%meta%n + 1.E-25
 	          end if	
         	
 	          !LSNF = sol_LSN(1,j)/(sol_LS(1,j)+1.E-5)	
         	  
-	          soil(j)%cbn(1)%lmc = soil(j)%cbn(1)%lmc + 0.42 * LMF * resnew
+	          rsd1(j)%meta%c = rsd1(j)%meta%c + 0.42 * LMF * resnew
 	          !LMNF = sol_LMN(1,j)/(sol_LM(1,j) + 1.E-5)           
                 
                 !update no3 and nh3 in soil
-                soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3  * (1-sf)
-                soil(j)%nut(1)%nh3 = soil(j)%nut(1)%nh3 * (1-sf)
+                rsd1(j)%mn%no3 = rsd1(j)%mn%no3 * (1-sf)
+                rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 * (1-sf)
             end if
             !!insert new biomss by zhang
             !!===========================
 
             
-            hru(j)%rsd_flt(ipl)%mass = hru(j)%rsd_flt(ipl)%mass + resnew
-            hru(j)%rsd_flt(ipl)%mass = Max(hru(j)%rsd_flt(ipl)%mass, 0.)
-            hru(j)%rsd_flt(ipl)%nmass = resnew * pcom(j)%plm(ipl)%n_fr +   &
-                                              hru(j)%rsd_flt(ipl)%nmass
-            hru(j)%rsd_flt(ipl)%pmass = resnew * pcom(j)%plm(ipl)%p_fr +   &
-                                              hru(j)%rsd_flt(ipl)%pmass
+            rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m + resnew
+            rsd1(j)%tot(ipl)%m = Max(rsd1(j)%tot(ipl)%m, 0.)
+            rsd1(j)%tot(ipl)%n = resnew * pcom(j)%plm(ipl)%n_fr +   &
+                                              rsd1(j)%tot(ipl)%n
+            rsd1(j)%tot(ipl)%p = resnew * pcom(j)%plm(ipl)%p_fr +   &
+                                              rsd1(j)%tot(ipl)%p
             pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass *                &   
                 (1. - pcom(j)%plg(ipl)%bio_leaf)
             pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - resnew *     &
@@ -283,7 +284,7 @@
 
                !kg/ha  
 	          sol_min_n = 0.	
-	          sol_min_n = (soil(j)%nut(1)%no3 + soil(j)%nut(1)%nh3)
+	          sol_min_n = (rsd1(j)%mn%no3 + rsd1(j)%mn%nh4)
 	          	          
 	          resnew = pldb(idp)%bm_dieoff * pcom(j)%plm(ipl)%mass 
 	          resnew_n = pldb(idp)%bm_dieoff * pcom(j)%plm(ipl)%nmass
@@ -309,8 +310,8 @@
 
 	          LSF =  1 - LMF  
         	  
-	          soil(j)%cbn(1)%lm = soil(j)%cbn(1)%lm + LMF * resnew
-	          soil(j)%cbn(1)%ls = soil(j)%cbn(1)%ls + LSF * resnew
+	          rsd1(j)%meta%m = rsd1(j)%meta%m + LMF * resnew
+	          rsd1(j)%str%m = rsd1(j)%str%m + LSF * resnew
         	  
 
                 
@@ -318,41 +319,41 @@
 	          !LSLF = 0.0
 	          !LSLF = CLG          
 	          
-	          soil(j)%cbn(1)%lsl = soil(j)%cbn(1)%lsl + RLR*resnew
-	          soil(j)%cbn(1)%lsc = soil(j)%cbn(1)%lsc + 0.42*LSF * resnew  
+	          rsd1(j)%lig%m = rsd1(j)%lig%m + RLR*resnew
+	          rsd1(j)%str%c = rsd1(j)%str%c + 0.42*LSF * resnew  
 	          
-	          soil(j)%cbn(1)%lslc= soil(j)%cbn(1)%lslc + RLR*0.42*resnew
-	          soil(j)%cbn(1)%lslnc = soil(j)%cbn(1)%lsc-soil(j)%cbn(1)%lslc
+	          rsd1(j)%lig%c= rsd1(j)%lig%c + RLR*0.42*resnew
+	          rsd1(j)%lig%n = rsd1(j)%str%c - rsd1(j)%lig%c
                 
                 !X3 = MIN(X6,0.42*LSF * resnew/150) 
                 
 	          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
-		         soil(j)%cbn(1)%lsn = soil(j)%cbn(1)%lsn + 0.42*LSF*resnew/150
-		         soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn + resnew_ne -          &
+		         rsd1(j)%str%n = rsd1(j)%str%n + 0.42*LSF*resnew/150
+		         rsd1(j)%meta%n = rsd1(j)%meta%n + resnew_ne -          &
                                (0.42 * LSF * resnew / 150) + 1.E-25
 	          else
-		         soil(j)%cbn(1)%lsn = soil(j)%cbn(1)%lsn + resnew_ne
-		         soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn + 1.E-25
+		         rsd1(j)%str%n = rsd1(j)%str%n + resnew_ne
+		         rsd1(j)%meta%n = rsd1(j)%meta%n + 1.E-25
 	          end if	
         	
 	          !LSNF = sol_LSN(1,j)/(sol_LS(1,j)+1.E-5)	
         	  
-	          soil(j)%cbn(1)%lmc = soil(j)%cbn(1)%lmc + 0.42 * LMF * resnew
+	          rsd1(j)%meta%c = rsd1(j)%meta%c + 0.42 * LMF * resnew
 	          !LMNF = sol_LMN(1,j)/(sol_LM(1,j) + 1.E-5)           
                 
                 !update no3 and nh3 in soil
-                soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3  * (1-sf)
-                soil(j)%nut(1)%nh3 = soil(j)%nut(1)%nh3 * (1-sf)
+                rsd1(j)%mn%no3 = rsd1(j)%mn%no3 * (1-sf)
+                rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 * (1-sf)
             end if
             !!insert new biomss by zhang
             !!===========================
 
 
-            hru(j)%rsd_flt(ipl)%mass = hru(j)%rsd_flt(ipl)%mass + resnew
-            hru(j)%rsd_flt(ipl)%mass = Max(hru(j)%rsd_flt(ipl)%mass, 0.)
-            hru(j)%rsd_flt(ipl)%nmass = hru(j)%rsd_flt(ipl)%nmass +      &
+            rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m + resnew
+            rsd1(j)%tot(ipl)%m = Max(rsd1(j)%tot(ipl)%m, 0.)
+            rsd1(j)%tot(ipl)%n = rsd1(j)%tot(ipl)%n +      &
               pldb(idp)%bm_dieoff * pcom(j)%plm(ipl)%nmass
-            hru(j)%rsd_flt(ipl)%pmass = hru(j)%rsd_flt(ipl)%pmass +      &
+            rsd1(j)%tot(ipl)%p = rsd1(j)%tot(ipl)%p +      &
               pldb(idp)%bm_dieoff * pcom(ihru)%plm(ipl)%pmass
             pcom(j)%plm(ipl)%mass = (1. - pldb(idp)%bm_dieoff) *         &
              pcom(j)%plm(ipl)%mass
@@ -369,7 +370,7 @@
               pcom(j)%plstr(ipl)%strsw = 1.
             end if 
           end select
-           if (pco%mgtout ==  1) then
+           if (pco%mgtout ==  'year') then
             write (143, 1000) j, time%yrc, i_mo, iida,                   &
               pldb(idp)%plantnm, "START-DORM", phubase(j),               & 
               pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,                  &
@@ -396,7 +397,7 @@
 
             end select
             
-          if (pco%mgtout ==  1) then
+          if (pco%mgtout == 'year') then
             write (143,1000) j, time%yrc, i_mo, iida,                   & 
               pldb(idp)%plantnm, "END-DORM", phubase(j),                &               
               pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,                 &

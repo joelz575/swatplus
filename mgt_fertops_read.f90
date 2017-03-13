@@ -10,7 +10,7 @@
        eof = 0
        imax = 0
       
-          !! read fertilizer operations
+       !! read fertilizer operations
        inquire (file=in_ops%fert_ops, exist=i_exist)
        if (i_exist == 0 .or. in_ops%fert_ops == 'null') then
          allocate (fertop_db(0:0))

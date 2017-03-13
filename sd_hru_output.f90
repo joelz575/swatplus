@@ -24,7 +24,8 @@
         sdwb_d(isd)%esoil = 0.                
         sdwb_d(isd)%surq_cont = 0.
         sdwb_d(isd)%cn = cn_sd
-        sdwb_d(isd)%sw = sd(isd)%sw             
+        sdwb_d(isd)%sw = sd(isd)%sw
+        sdwb_d(isd)%snopack = sd(isd)%snow       
         sdwb_d(isd)%pet = pet             
         sdwb_d(isd)%qtile = flow_tile
         sdwb_d(isd)%irr = air
@@ -80,7 +81,9 @@
         sdpw_d(isd)%tmn = tmin              !! tmn(isd)
         sdpw_d(isd)%tmpav = tave            !! tmpav(isd)
         sdpw_d(isd)%solrad = raobs          !! hru_ra(isd)
-        sdpw_d(isd)%phubase0 = phubase0     !! base zero potential heat units
+        sdpw_d(isd)%wndspd = wndspd         !! windspeed(isd)
+        sdpw_d(isd)%rhum = rhum             !! relative humidity(isd)
+        sdpw_d(isd)%phubase0 = wst(iwst)%weat%phubase0     !! base zero potential heat units
         
         sdwb_m(isd) = sdwb_m(isd) + sdwb_d(isd)
         sdnb_m(isd) = sdnb_m(isd) + sdnb_d(isd)
@@ -100,27 +103,27 @@
 !!!!! daily print
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                         .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
-          if (pco%wb_sd == 3) then
+          if (pco%wb_sd == 'day') then
             write (4100,100) time%day, time%yrc, isd, sdwb_d(isd)  !! waterbal
-              if (pco%csvout == 1 .and. pco%wb_sd == 3) then 
+              if (pco%csvout == 'yes' .and. pco%wb_sd == 'day') then 
                 write (4023,'(*(G0.3,:","))') time%day, time%yrc, isd, sdwb_d(isd)  !! waterbal
               end if 
           end if
-!          if (pco%nb_sd == 3) then
+!          if (pco%nb_sd == 'day') then
 !            write (4101,100) time%day, time%yrc, isd, sdnb_d(isd)  !! nutrient bal
-!             if (pco%csvout == 1 .and. pco%nb_sd == 3) then 
+!             if (pco%csvout == 'yes' .and. pco%nb_sd == 'day') then 
 !               write (4025,'(*(G0.3,:","))') time%day, time%yrc, isd, sdnb_d(isd)  !! nutrient bal
 !             end if 
 !          end if
-          if (pco%ls_sd == 3) then
+          if (pco%ls_sd == 'day') then
             write (4102,102) time%day, time%yrc, isd, sdls_d(isd)  !! losses
-              if (pco%csvout == 1 .and. pco%ls_sd == 3) then 
+              if (pco%csvout == 'yes' .and. pco%ls_sd == 'day') then 
                 write (4027,'(*(G0.3,:","))') time%day, time%yrc, isd, sdls_d(isd)  !! losses
               endif 
           end if
-          if (pco%pw_sd == 3) then
+          if (pco%pw_sd == 'day') then
             write (4103,101) time%day, time%yrc, isd, sdpw_d(isd)  !! plant weather 
-              if (pco%csvout == 1 .and. pco%pw_sd == 3) then 
+              if (pco%csvout == 'yes' .and. pco%pw_sd == 'day') then 
                 write (4029,'(*(G0.3,:","))') time%day, time%yrc, isd, sdpw_d(isd)  !! plant weather 
               end if 
           end if
@@ -138,27 +141,27 @@
           sdpw_y(isd) = sdpw_y(isd) + sdpw_m(isd)
           
           !! monthly print
-           if (pco%wb_sd == 2) then
+           if (pco%wb_sd == 'mon') then
              write (4100,100) time%mo, time%yrc, isd, sdwb_m(isd)
-               if (pco%csvout == 1 .and. pco%wb_sd == 2) then 
+               if (pco%csvout == 'yes' .and. pco%wb_sd == 'mon') then 
                  write (4023,'(*(G0.3,:","))') time%mo, time%yrc, isd, sdwb_m(isd)
                end if 
            end if
-!           if (pco%nb_sd == 2) then
+!           if (pco%nb_sd == 'mon') then
 !             write (4101,100) time%mo, time%yrc, isd, sdnb_m(isd)
-!             if (pco%csvout == 1 .and. pco%nb_sd == 2) then 
+!             if (pco%csvout == 'yes' .and. pco%nb_sd == 'mon') then 
 !               write (4025,'(*(G0.3,:","))') time%mo, time%yrc, isd, sdnb_m(isd)
 !             end if 
 !           end if
-           if (pco%ls_sd == 2) then
+           if (pco%ls_sd == 'mon') then
              write (4102,102) time%mo, time%yrc, isd, sdls_m(isd)
-               if (pco%csvout == 1 .and. pco%ls_sd == 2) then 
+               if (pco%csvout == 'yes' .and. pco%ls_sd == 'mon') then 
                  write (4027,'(*(G0.3,:","))') time%mo, time%yrc, isd, sdls_m(isd)
                end if 
            end if
-           if (pco%pw_sd == 2) then
+           if (pco%pw_sd == 'mon') then
              write (4103,101) time%mo, time%yrc, isd, sdpw_m(isd)
-               if (pco%csvout == 1 .and. pco%pw_sd == 2) then 
+               if (pco%csvout == 'yes' .and. pco%pw_sd == 'mon') then 
                  write (4029,'(*(G0.3,:","))') time%mo, time%yrc, isd, sdpw_m(isd)
                end if 
            end if
@@ -180,27 +183,27 @@
           sdpw_a(isd) = sdpw_a(isd) + sdpw_y(isd)
           
           !! yearly print
-           if (pco%wb_sd == 1) then
+           if (pco%wb_sd == 'year') then
              write (4100,100) time%end_yr, time%yrc, isd, sdwb_y(isd)
-                if (pco%csvout == 1 .and. pco%wb_sd == 1) then 
+                if (pco%csvout == 'yes' .and. pco%wb_sd == 'year') then 
                   write (4023,'(*(G0.3,:","))') time%end_yr, time%yrc, isd, sdwb_y(isd)
                 end if 
            end if
-!           if (pco%nb_sd == 1) then
+!           if (pco%nb_sd == 'year') then
 !             write (4101,100) time%end_yr, time%yrc, isd, sdnb_y(isd)
-!             if (pco%csvout == 1 .and. pco%nb_sd == 1) then 
+!             if (pco%csvout == 'yes' .and. pco%nb_sd == 'year') then 
 !               write (4025,'(*(G0.3,:","))') time%end_yr, time%yrc, isd, sdnb_y(isd)
 !             end if 
 !           end if
-           if (pco%ls_sd == 1) then
+           if (pco%ls_sd == 'year') then
              write (4102,102) time%end_yr, time%yrc, isd, sdls_y(isd)
-               if (pco%csvout == 1 .and. pco%ls_sd == 1) then 
+               if (pco%csvout == 'yes' .and. pco%ls_sd == 'year') then 
                  write (4027,'(*(G0.3,:","))') time%end_yr, time%yrc, isd, sdls_y(isd)
                end if 
            end if
-           if (pco%pw_sd == 1) then
+           if (pco%pw_sd == 'year') then
              write (4103,101) time%end_yr, time%yrc, isd, sdpw_y(isd)
-              if (pco%csvout == 1 .and. pco%pw_sd == 1) then 
+              if (pco%csvout == 'yes' .and. pco%pw_sd == 'year') then 
                 write (4029,'(*(G0.3,:","))') time%end_yr, time%yrc, isd, sdpw_y(isd)
               end if 
            end if
@@ -208,31 +211,31 @@
         end if
         
 !!!!! average annual print
-         if (time%end_sim == 1 .and. pco%wb_sd > 0) then
+         if (time%end_sim == 1 .and. pco%wb_sd /= 'null') then
            sdwb_a(isd) = sdwb_a(isd) / time%yrs_prt
            write (4104,100) time%end_yr, time%yrs, isd, sdwb_a(isd)
-           if (pco%csvout == 1) then 
-             write (4124,'(*(G0.3,:","))') time%end_yr, time%yrs, isd, sdwb_a(isd)
+           if (pco%csvout == 'yes') then 
+             write (4024,'(*(G0.3,:","))') time%end_yr, time%yrs, isd, sdwb_a(isd)
            end if
            sdwb_a(isd) = hwbz
          end if
         
-!         if (time%end_sim == 1 .and. pco%nb_sd > 0) then 
+!         if (time%end_sim == 1 .and. pco%nb_sd == 'avann') then 
 !           sdnb_a(isd) = sdnb_a(isd) / time%yrs_prt
 !           write (4105,100) time%end_yr, time%yrs, isd, sdnb_a(isd)
 !         end if
 !         sdnb_a(isd) = hnbz       
          
-         if (time%end_sim == 1 .and. pco%ls_sd > 0) then
+         if (time%end_sim == 1 .and. pco%ls_sd /= 'null') then
            sdls_a(isd) = sdls_a(isd) / time%yrs_prt  
            write (4106,101) time%end_yr, time%yrs, isd, sdls_a(isd)
          end if
          sdls_a(isd) = hlsz
         
-         if (time%end_sim == 1 .and. pco%pw_sd > 0) then   
+         if (time%end_sim == 1 .and. pco%pw_sd /= 'null') then   
            sdpw_a(isd) = sdpw_a(isd) / time%yrs_prt      
            write (4107,102) time%end_yr, time%yrs, isd, sdpw_a(isd)
-           if (pco%csvout == 1) then 
+           if (pco%csvout == 'yes') then 
              write (4030,'(*(G0.3,:","))') time%end_yr, time%yrs, isd, sdpw_a(isd)
            end if
            sdpw_a(isd) = hpwz
@@ -240,9 +243,9 @@
          
       return
      
-100   format (2i6,i8,18f12.3)
-101   format (2i6,i8,18f12.3)
-102   format (2i6,i8,18f12.3)
+100   format (2i6,i8,21f12.3)
+101   format (2i6,i8,21f12.3)
+102   format (2i6,i8,21f12.3)
 103   format (2i6,i8,4x,a,5x,f12.3)
  
       end subroutine sd_hru_output

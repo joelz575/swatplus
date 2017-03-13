@@ -15,9 +15,13 @@
         real :: surq_cont = 0.        !mm H2O        |amt of surf runoff gen during mon in HRU
         real :: cn = 0.               !none          |CN values during mon in HRU
         real :: sw = 0.               !mm H2O        |sum of daily soil water values used to calc the curve number
+        real :: snopack = 0.          !mm            |snow pack
         real :: pet = 0.              !mm H2O        |pot et on current day in HRU
         real :: qtile = 0.            !mm H2O        |drainage tile flow contrib to main channel from HRU in mon
-        real :: irr = 0.              !mm H2O        |amount of water applied to HRU 
+        real :: irr = 0.              !mm H2O        |amount of water applied to HRU
+        real :: surq_runon = 0.       !mm H2O        |surface runoff from upland landscape units
+        real :: latq_runon = 0.       !mm H2O        |lateral soil flow from upland landscape units
+        real :: overbank = 0.         !mm H2O        |overbank flooding from channels
       end type output_waterbal
        
       type (output_waterbal), dimension (:), allocatable :: hwb_d
@@ -41,27 +45,39 @@
       type (output_waterbal) :: bwb_y
       type (output_waterbal) :: bwb_a
       
+      type regional_output_waterbal
+        type (output_waterbal), dimension (:), allocatable :: lum
+      end type regional_output_waterbal
+      type (regional_output_waterbal), dimension (:), allocatable :: rwb_d
+      type (regional_output_waterbal), dimension (:), allocatable :: rwb_m
+      type (regional_output_waterbal), dimension (:), allocatable :: rwb_y
+      type (regional_output_waterbal), dimension (:), allocatable :: rwb_a
+      
       type output_waterbal_header
-        character (len=6) :: yrs =        ' time '
-        character (len=6) :: yrc =        ' year '
-        character (len=8) :: isd =        '   unit '
-        character (len=12) :: precip =   '  prec_mm   '
-        character (len=12) :: snofall =  '  snow_mm   '
-        character (len=12) :: snomlt =   'snomlt_mm   '        
-        character (len=12) :: surq_gen = 'sq_gen_mm   '      
-        character (len=12) :: latq =     '  latq_mm   ' 
-        character (len=12) :: wateryld = 'wtryld_mm   '
-        character (len=12) :: perc =     '  perc_mm   '   
-        character (len=12) :: et =       '    et_mm   '
-        character (len=12) :: tloss =    ' tloss_mm   '
-        character (len=12) :: eplant =   'eplant_mm   '
-        character (len=12) :: esoil =    ' esoil_mm   '
-        character (len=12) :: surq_cont ='sq_cont_mm  '
-        character (len=12) :: cn =       '       cn   '
-        character (len=12) :: sw =       '    sw_mm   '
-        character (len=12) :: pet     =  '   pet_mm   '
-        character (len=12) :: qtile =    ' qtile_mm   '
-        character (len=12) :: irr =      '   irr_mm   '
+        character (len=6) :: yrs =          ' time '
+        character (len=6) :: yrc =          ' year '
+        character (len=8) :: isd =          '   unit '
+        character (len=12) :: precip =      '  prec_mm   '
+        character (len=12) :: snofall =     '  snow_mm   '
+        character (len=12) :: snomlt =      'snomlt_mm   '        
+        character (len=12) :: surq_gen =    'sq_gen_mm   '      
+        character (len=12) :: latq =        '  latq_mm   ' 
+        character (len=12) :: wateryld =    'wtryld_mm   '
+        character (len=12) :: perc =        '  perc_mm   '   
+        character (len=12) :: et =          '    et_mm   '
+        character (len=12) :: tloss =       ' tloss_mm   '
+        character (len=12) :: eplant =      'eplant_mm   '
+        character (len=12) :: esoil =       ' esoil_mm   '
+        character (len=12) :: surq_cont =   'sq_cont_mm  '
+        character (len=12) :: cn =          '       cn   '
+        character (len=12) :: sw =          '    sw_mm   '
+        character (len=12) :: snopack =     'snopack_mm  '
+        character (len=12) :: pet =         '   pet_mm   '
+        character (len=12) :: qtile =       ' qtile_mm   '
+        character (len=12) :: irr =         '   irr_mm   '
+        character (len=12) :: surq_runon =  'sq_run_mm   '
+        character (len=12) :: latq_runon =  'lq_run_mm   '
+        character (len=12) :: overbank =    'ovbank_mm   '
       end type output_waterbal_header
       
       type (output_waterbal_header) :: wb_hdr
@@ -117,6 +133,14 @@
       type (output_nutbal) :: bnb_m
       type (output_nutbal) :: bnb_y
       type (output_nutbal) :: bnb_a
+      
+      type regional_output_nutbal
+        type (output_nutbal), dimension (:), allocatable :: lum
+      end type regional_output_nutbal
+      type (regional_output_nutbal), dimension (:), allocatable :: rnb_d
+      type (regional_output_nutbal), dimension (:), allocatable :: rnb_m
+      type (regional_output_nutbal), dimension (:), allocatable :: rnb_y
+      type (regional_output_nutbal), dimension (:), allocatable :: rnb_a
       
       type output_nutbal_header
          character (len=6) :: yrs =        ' time '
@@ -178,6 +202,14 @@
       type (output_losses) :: bls_m
       type (output_losses) :: bls_y
       type (output_losses) :: bls_a
+            
+      type regional_output_losses
+        type (output_losses), dimension (:), allocatable :: lum
+      end type regional_output_losses
+      type (regional_output_losses), dimension (:), allocatable :: rls_d
+      type (regional_output_losses), dimension (:), allocatable :: rls_m
+      type (regional_output_losses), dimension (:), allocatable :: rls_y
+      type (regional_output_losses), dimension (:), allocatable :: rls_a
       
       type output_losses_header
         character (len=6) :: yrs =        ' time '
@@ -216,6 +248,8 @@
         real :: tmn = 0.                   !deg C         |minimum temperature for the day in HRU
         real :: tmpav = 0.                 !deg C         |average air temperature on current day in HRU
         real :: solrad = 0.                !MJ/m^2        |solar radiation for the day in HRU
+        real :: wndspd = 0.                !              |windspeed
+        real :: rhum = 0.                  !              |relative humidity
         real :: phubase0 = 0.              !              |base zero potential heat units
       end type output_plantweather
       
@@ -239,6 +273,14 @@
       type (output_plantweather) :: bpw_m
       type (output_plantweather) :: bpw_y
       type (output_plantweather) :: bpw_a
+                  
+      type regional_output_plantweather
+        type (output_plantweather), dimension (:), allocatable :: lum
+      end type regional_output_plantweather
+      type (regional_output_plantweather), dimension (:), allocatable :: rpw_d
+      type (regional_output_plantweather), dimension (:), allocatable :: rpw_m
+      type (regional_output_plantweather), dimension (:), allocatable :: rpw_y
+      type (regional_output_plantweather), dimension (:), allocatable :: rpw_a
       
       type output_plantweather_header
         character (len=6) :: yrs =        ' time '
@@ -261,7 +303,9 @@
         character (len=12) :: tmn =       ' tmn_degc   '
         character (len=12) :: tmpav =     'tave_degc   '
         character (len=12) :: solrad =    'sr_mj/m^2   '
-        character (len=12) :: phubase0  = 'phubase     '
+        character (len=12) :: wndspd =    'wndspd_m/s  '
+        character (len=12) :: rhum =      'relhum_frac '
+        character (len=12) :: phubase0  = 'phubas0/degc'
       end type output_plantweather_header
       
       type (output_plantweather_header) :: pw_hdr
@@ -331,7 +375,10 @@
         hru3%sw = hru1%sw + hru2%sw
         hru3%pet = hru1%pet + hru2%pet
         hru3%qtile = hru1%qtile + hru2%qtile
-        hru3%irr = hru1%irr + hru2%irr       
+        hru3%irr = hru1%irr + hru2%irr
+        hru3%surq_runon = hru1%surq_runon + hru2%surq_runon
+        hru3%latq_runon = hru1%latq_runon + hru2%latq_runon
+        hru3%overbank = hru1%overbank + hru2%overbank 
       end function hruout_waterbal_add
       
       function hruout_nutbal_add (hru1, hru2) result (hru3)
@@ -393,6 +440,8 @@
         hru3%tmx = hru1%tmx + hru2%tmx
         hru3%tmn = hru1%tmn + hru2%tmn
         hru3%tmpav = hru1%tmpav + hru2%tmpav
+        hru3%wndspd = hru1%wndspd + hru2%wndspd
+        hru3%rhum = hru1%rhum + hru2%rhum
         hru3%solrad = hru1%solrad + hru2%solrad
         hru3%phubase0 = hru1%phubase0 + hru2%phubase0
       end function hruout_plantweather_add
@@ -417,7 +466,10 @@
         hru2%sw = hru1%sw / const
         hru2%pet = hru1%pet / const 
         hru2%qtile = hru1%qtile / const 
-        hru2%irr = hru1%irr / const 
+        hru2%irr = hru1%irr / const
+        hru2%surq_runon = hru1%surq_runon / const 
+        hru2%latq_runon = hru1%latq_runon / const 
+        hru2%overbank = hru1%overbank / const
       end function hruout_waterbal_div
       
       function hruout_waterbal_ave (hru1,const) result (hru2)
@@ -491,6 +543,8 @@
         hru2%tmn = hru1%tmn / const
         hru2%tmpav = hru1%tmpav / const
         hru2%solrad = hru1%solrad / const
+        hru2%wndspd = hru1%wndspd / const
+        hru2%rhum = hru1%rhum / const
         hru2%phubase0 = hru1%phubase0 / const
       end function hruout_plantweather_div
                   
@@ -514,6 +568,8 @@
         hru2%tmx = hru1%tmx / const
         hru2%tmn = hru1%tmn / const
         hru2%tmpav = hru1%tmpav / const
+        hru2%wndspd = hru1%wndspd / const
+        hru2%rhum = hru1%rhum / const
         hru2%solrad = hru1%solrad / const
         hru2%phubase0 = hru1%phubase0 / const
       end function hruout_plantweather_ave

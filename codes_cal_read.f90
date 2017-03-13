@@ -6,6 +6,7 @@
        use hydrograph_module
        use sd_hru_module
        use sd_channel_module
+       use organic_mineral_mass_module
       
        character (len=80) :: titldum, header
        integer :: eof
@@ -37,6 +38,7 @@
          if (ical == 1) then
            allocate (hru_init(0:sp_ob%hru))
            allocate (soil_init(0:sp_ob%hru))
+           allocate (rsd_init(0:sp_ob%hru))
            allocate (pcom_init(0:sp_ob%hru))
            do j = 1, sp_ob%hru
              icom = hru(j)%plant_cov
@@ -48,8 +50,10 @@
              allocate (hru_init(j)%veg_ag(nplt))
              allocate (hru_init(j)%grain(nplt))
              allocate (hru_init(j)%root(nplt))
+             
              allocate (hru_init(j)%rsd_flt(nplt))
-             allocate (hru_init(j)%rsd_std(nplt))
+             allocate (rsd_init(j)%tot(nplt))
+             
              nly1 = soil(j)%nly + 1                                                                                                         
              allocate (soil_init(j)%ly(nly1))
              allocate (soil_init(j)%ly(nly1)%rs(nplt))    !bac and pest not allocated

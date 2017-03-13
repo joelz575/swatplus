@@ -43,6 +43,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, jj
       real :: sro, ssfnlyr, percnlyr, vv, vno3, co
@@ -55,8 +56,8 @@
       do jj = 1, soil(j)%nly
 
         !! add nitrate leached from layer above
-        soil(j)%nut(jj)%no3 = soil(j)%nut(jj)%no3 + percnlyr
-	  if (soil(j)%nut(jj)%no3 < 1.e-6) soil(j)%nut(jj)%no3 = 0.0
+        soil1(j)%mn(jj)%no3 = soil1(j)%mn(jj)%no3 + percnlyr
+	  if (soil1(j)%mn(jj)%no3 < 1.e-6) soil1(j)%mn(jj)%no3 = 0.0
 
         !! determine concentration of nitrate in mobile water
         if (jj == 1) then
@@ -67,23 +68,23 @@
         vv = soil(j)%ly(jj)%prk + sro + soil(j)%ly(jj)%flat + 1.e-10
         if (hru(j)%lumv%ldrain == jj) vv = vv + qtile
         ww = -vv / ((1. - soil(j)%anion_excl) * soil(j)%phys(jj)%ul)
-        vno3 = soil(j)%nut(jj)%no3 * (1. - Exp(ww))
+        vno3 = soil1(j)%mn(jj)%no3 * (1. - Exp(ww))
         co = Max(vno3 / vv, 0.)
 
         !! calculate nitrate in surface runoff
         cosurf = bsn_prm%nperco * co
         if (jj == 1) then
           surqno3(j) = surfq(j) * cosurf
-          surqno3(j) = Min(surqno3(j), soil(j)%nut(jj)%no3)
-          soil(j)%nut(jj)%no3 = soil(j)%nut(jj)%no3 - surqno3(j)
+          surqno3(j) = Min(surqno3(j), soil1(j)%mn(jj)%no3)
+          soil1(j)%mn(jj)%no3 = soil1(j)%mn(jj)%no3 - surqno3(j)
         endif
         !Daniel 1/2012    
         !! calculate nitrate in tile flow 
         if (hru(j)%lumv%ldrain == jj) then
            ! tileno3(j) = bsn_prm%nperco * co * qtile     !Daniel 1/2012
            tileno3(j) = co * qtile     !Daniel 1/2012
-          tileno3(j) = Min(tileno3(j), soil(j)%nut(jj)%no3)
-          soil(j)%nut(jj)%no3 = soil(j)%nut(jj)%no3 - tileno3(j)
+          tileno3(j) = Min(tileno3(j), soil1(j)%mn(jj)%no3)
+          soil1(j)%mn(jj)%no3 = soil1(j)%mn(jj)%no3 - tileno3(j)
         end if
         !Daniel 1/2012                  
 
@@ -93,14 +94,14 @@
         else
           ssfnlyr = co * soil(j)%ly(jj)%flat
         end if
-        ssfnlyr = Min(ssfnlyr, soil(j)%nut(jj)%no3)
+        ssfnlyr = Min(ssfnlyr, soil1(j)%mn(jj)%no3)
         latno3(j) = latno3(j) + ssfnlyr
-        soil(j)%nut(jj)%no3 = soil(j)%nut(jj)%no3 - ssfnlyr
+        soil1(j)%mn(jj)%no3 = soil1(j)%mn(jj)%no3 - ssfnlyr
 
         !! calculate nitrate in percolate
         percnlyr = co * soil(j)%ly(jj)%prk
-        percnlyr = Min(percnlyr, soil(j)%nut(jj)%no3)
-        soil(j)%nut(jj)%no3 = soil(j)%nut(jj)%no3 - percnlyr
+        percnlyr = Min(percnlyr, soil1(j)%mn(jj)%no3)
+        soil1(j)%mn(jj)%no3 = soil1(j)%mn(jj)%no3 - percnlyr
       end do
 
       !! calculate nitrate leaching from soil profile

@@ -82,7 +82,7 @@
         if (ob(icmd)%rcv_tot > 0) then
           !!Route incoming lateral soil flow
           call rls_routesoil (icmd)
-          end if
+        end if
           
         !!add overland flow to storage
         if (ob(icmd)%hin%flo > 1.e-6) then
@@ -121,9 +121,7 @@
         end if
         
         !! update base zero total heat units
-        if (tmpav(j) > 0. .and. wgn_pms(iwgn)%phutot > 0.01) then
-           phubase(j) = phubase(j) + tmpav(j) / wgn_pms(iwgn)%phutot
-        end if
+        phubase(j) = wst(iwst)%weat%phubase0
 
         !! compute total parms for all plants in the community
         sumlai = 0.

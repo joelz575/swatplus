@@ -23,6 +23,7 @@
         integer :: end_mo = 0         !! set to 1 if end of month
         integer :: end_yr = 0         !! set to 1 if end of year
         integer :: end_sim = 0        !! set to 1 if end of simulation
+        integer :: end_aa_prt = 0     !! set to 1 if end of simulation
         integer :: idaf = 0           !! beginning julian day of simulation
         integer :: idal = 0           !! ending julian day of simulation for each year
         integer :: idal_in = 0        !! input ending julian day of simulation
@@ -30,7 +31,9 @@
         integer :: step = 0           !! number of time steps in a day for rainfall, runoff and routing
                                       !! 0 = daily; 1=increment(12 hrs); 24=hourly; 96=15 mins; 1440=minute;
         real :: dtm = 0.              !! time step in minutes for rainfall, runoff and routing
-        real :: yrs_prt = 0.          !! number of years for average annual printing
+        real :: yrs_prt = 0.          !! number of years for average annual printing for entire time period
+        real :: yrs_prt_int = 0.      !! number of years for average annual printing for printing interval- pco%aa_yrs()
+        integer :: prt_int_cur = 1    !! current average annual print interval
       end type time_current
       type (time_current) :: time
 

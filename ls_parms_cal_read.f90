@@ -32,6 +32,8 @@
 
       end if	   
     
+      db_mx%lscal_prms = mlsp
+      
       close(107)
       return
       end subroutine ls_parms_cal_read

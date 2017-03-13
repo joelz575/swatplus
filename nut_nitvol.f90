@@ -46,6 +46,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
       
       integer :: j, k
       real :: sw25, swwp, swf, xx, dmidl, dpf, akn, akv, rnv, rnit, rvol
@@ -59,7 +60,7 @@
         tf = 0.
         tf = .41 * (soil(j)%phys(k)%tmp - 5.) / 10.
 
-        if (soil(j)%nut(k)%nh3 > 0. .and. tf >= 0.001) then
+        if (soil1(j)%mn(k)%nh4 > 0. .and. tf >= 0.001) then
           sw25 = 0.
           swwp = 0.
           sw25 = soil(j)%phys(k)%wpmm + 0.25 * soil(j)%phys(k)%fc
@@ -81,7 +82,7 @@
           dpf = 1. - dmidl / (dmidl + Exp(4.706 - .0305 * dmidl))
           akn = tf * swf
           akv = tf * dpf * cecf
-          rnv = soil(j)%nut(k)%nh3 * (1. - Exp(-akn - akv))
+          rnv = soil1(j)%mn(k)%nh4 * (1. - Exp(-akn - akv))
           rnit = 1. - Exp(-akn)
           rvol = 1. - Exp(-akv)
 
@@ -92,19 +93,19 @@
                rvol = rnv * rvol / (rvol + rnit)
                rnit = rnv - rvol
                if (rnit < 0.) rnit = 0.
-               soil(j)%nut(k)%nh3 = Max(1.e-6, soil(j)%nut(k)%nh3-rnit)
+               soil1(j)%mn(k)%nh4 = Max(1.e-6, soil1(j)%mn(k)%nh4 - rnit)
              endif
-             if (soil(j)%nut(k)%nh3 < 0.) then
-               rnit = rnit + soil(j)%nut(k)%nh3
-               soil(j)%nut(k)%nh3 = 0.
+             if (soil1(j)%mn(k)%nh4 < 0.) then
+               rnit = rnit + soil1(j)%mn(k)%nh4
+               soil1(j)%mn(k)%nh4 = 0.
              endif
-             soil(j)%nut(k)%no3 = soil(j)%nut(k)%no3 + rnit
+             soil1(j)%mn(k)%no3 = soil1(j)%mn(k)%no3 + rnit
 
              !! calculate ammonia volatilization
-             soil(j)%nut(k)%nh3 = Max(1.e-6, soil(j)%nut(k)%nh3 - rvol)
-             if (soil(j)%nut(k)%nh3 < 0.) then
-               rvol = rvol + soil(j)%nut(k)%nh3
-               soil(j)%nut(k)%nh3 = 0.
+             soil1(j)%mn(k)%nh4 = Max(1.e-6, soil1(j)%mn(k)%nh4 - rvol)
+             if (soil1(j)%mn(k)%nh4 < 0.) then
+               rvol = rvol + soil1(j)%mn(k)%nh4
+               soil1(j)%mn(k)%nh4 = 0.
              endif
           end if
         end if

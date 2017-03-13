@@ -54,7 +54,7 @@
                 pcom(j)%plcur(ipl)%gro = 1
                 pcom(j)%plcur(ipl)%idorm = 0
               end if
-              if (pco%mgtout ==  1) then
+              if (pco%mgtout ==  'year') then
                 write (143, 1000) j, time%yrc,i_mo,iida,                 &
                 pldb(idp)%plantnm, pcomdb(icom)%name, phubase(j),        &
                 pcom(j)%plcur(ipl)%phuacc,                               &
@@ -111,7 +111,7 @@
             pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num+1
             
             idp = pcom(j)%plcur(ipl)%idplt
-            if (pco%mgtout ==  1) then
+            if (pco%mgtout == 'year') then
               write (143, 1001) j, time%yrc, i_mo, iida,                 &
               pldb(idp)%plantnm,                                         &
               "HARVEST ONLY",phubase(j),pcom(j)%plcur(ipl)%phuacc,       &
@@ -129,7 +129,7 @@
                 if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 call mgt_killop
   
-              if (pco%mgtout ==  1) then 
+              if (pco%mgtout == 'year') then 
                 write (143, 1000) j, time%yrc,i_mo, iida,                &
                 "         ",                                             &
            "    KILL", phubase(j), pcom(j)%plcur(ipl)%phuacc,            &
@@ -156,7 +156,7 @@
               case ('biomass')    
                 call mgt_harvestop
               case ('grain')
-                !hru(j)%pl_tot(ipl)%mass = 2000.
+                !rsd1(j)%tot(ipl)%m = 2000.
                 call mgt_harvgrainop
               case ('residue')
               case ('tree')
@@ -171,7 +171,7 @@
               pcom(j)%plcur(ipl)%harv_num=pcom(j)%plcur(ipl)%harv_num+1
             
               idp = pcom(j)%plcur(ipl)%idplt
-              if (pco%mgtout == 1) then
+              if (pco%mgtout == 'year') then
                 write (143, 1001) j, time%yrc, i_mo,iida,                &
           pldb(idp)%plantnm, "HARV/KILL", phubase(j),                    & 
           pcom(j)%plcur(ipl)%phuacc,soil(j)%sw,biomass,               &
@@ -190,7 +190,7 @@
             ipl = Max(1, mgt%op2)
             call mgt_newtillmix(j,0.)
             
-            if (pco%mgtout == 1) then
+            if (pco%mgtout == 'year') then
               write (143, 1003) j, time%yrc, i_mo, iida,                 &
               tilldb(idtill)%tillnm,                                     &
               "TILLAGE",phubase(j),pcom(j)%plcur(ipl)%phuacc,            &
@@ -205,7 +205,7 @@
             if (irrop%eff < 1.e-6) irrop%eff = 1.0
             call pl_irrigate (j, irrop%amt_mm)
             
-            if (pco%mgtout == 1) then
+            if (pco%mgtout == 'year') then
               write (143, 1002) j, time%yrc, i_mo,                      & 
               iida, "        ", "IRRIGATE", phubase(j),                 &
               pcom(j)%plcur(ipl)%phuacc,                                &
@@ -219,7 +219,7 @@
             imp_trig(j) = mgt%op1
             ipl = Max(1, mgt%op2)
           
-            if (pco%mgtout ==  1) then
+            if (pco%mgtout ==  'year') then
               write (143, 1000) j, time%yrc, i_mo,iida,                  & 
        "         ","RELEASE/IMPOUND", phubase(j),                        &
        pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,   &
@@ -236,7 +236,7 @@
             !soil(j)%ly(1)%bacsol(ibac) = sol_bacsol
             !soil(j)%ly(1)%bacsor(ibac) = sol_bacsor
             
-            if (pco%mgtout == 1) then
+            if (pco%mgtout == 'year') then
               write (143, 1004) j, time%yrc,i_mo,iida,                  & 
               fertop_db(mgt%op1)%fertnm,                                &
               "    FERT", phubase(j),pcom(j)%plcur(ipl)%phuacc,         &
@@ -252,7 +252,7 @@
             
             call pl_apply
             
-            if (pco%mgtout == 1) then
+            if (pco%mgtout == 'year') then
               write (143, 1004) j, time%yrc,i_mo,iida,                  & 
               pestdb(ipest)%pestnm, "   PEST", phubase(j),              &
               pcom(j)%plcur(ipl)%phuacc,                                &
@@ -274,7 +274,7 @@
             end if
             manure_kg(j) = grazeop%manure
           
-            if (pco%mgtout ==  1) then
+            if (pco%mgtout == 'year') then
               write (143, 1005) j, time%yrc,i_mo,iida,                   &
               "         ",                                               &
            "   GRAZE", phubase(j), pcom(j)%plcur(ipl)%phuacc,            &
@@ -287,7 +287,7 @@
             burn_frlb = mgt%op3
             ipl = Max(1, mgt%op2)
             call pl_burnop
-            if (pco%mgtout ==  1) then
+            if (pco%mgtout == 'year') then
               write (143, 1000) j, time%yrc, i_mo,iida,                 & 
               "         ",                                              &
            "      BURN", phubase(j),pcom(j)%plcur(ipl)%phuacc,          &
@@ -301,7 +301,7 @@
             sweepeff = sweepop%eff
             fr_curb = sweepop%fr_curb
             
-            if (pco%mgtout ==  1) then
+            if (pco%mgtout == 'year') then
               write (143, 1000) j, time%yrc, i_mo,iida,                 & 
               "         ",                                              &
        "STREET SWEEP",phubase(j),pcom(j)%plcur(ipl)%phuacc,             &

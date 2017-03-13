@@ -7,6 +7,7 @@
       real :: timeint(1000)
       !real :: ws, ts
 
+      iob = sp_ob1%hru_lte + isd - 1
       isd_db = ob(icmd)%props
       iwst = ob(icmd)%wst
       iwgn = wst(iwst)%wco%wgn
@@ -16,6 +17,8 @@
       tmin = wst(iwst)%weat%tmin
       raobs = wst(iwst)%weat%solrad
       rmx = wst(iwst)%weat%solradmx
+      wndspd = wst(iwst)%weat%windsp     
+      rhum = wst(iwst)%weat%rhum         
       
       tave  = (tmax + tmin) / 2. 
       yield = 0.
@@ -24,6 +27,7 @@
       tstress = 0.
       snowfall = 0.
       snowmelt = 0.
+      air = 0.
           IF (tave .lt.0.) THEN 
             ! IF ave temp < 0  compute snowfall    
             snowfall = precip 
@@ -91,28 +95,32 @@
 !
           xx = 1. - sd(isd)%sw / sd(isd)%awc
           IF (xx.lt.0.0001) xx = 0.0001 
-          aet = pet * EXP(-xx) 
+          aet = pet * EXP(-xx)                  !at sw=0, exp(-xx)=.368
+          aet = pet * sd(isd)%sw / sd(isd)%awc  !try linear- may need s-curve
            
 !         begin growth for plants
           if (sd(isd)%igro == 0) then
             ! istart points to rule set in d_table
-            istart = 1  !sd_db(isd_db)%igrow1
-            call conditions (istart, iwst)
-            call actions (istart, iwst)
+            istart = sd_db(isd_db)%igrow1
+            call conditions (istart, iob)
+            call actions (istart, isd)
           end if
           
 !         end growth for plants
           if (sd(isd)%igro == 1) then
+            ! sum aet and pet for water stress on hi
+            sd(isd)%aet = sd(isd)%aet + aet
+            sd(isd)%pet = sd(isd)%pet + pet
             ! iend points to rule set in d_table
-            iend = 2  !sd_db(isd_db)%igrow2
-            call conditions (iend, iwst)
-            call actions (iend, iwst)
+            iend = sd_db(isd_db)%igrow2
+            call conditions (iend, iob)
+            call actions (iend, isd)
           end if
 
          ! calc yield, print max lai, dm and yield
-          if (pco%mgtout == 1) then
+          if (pco%mgtout == 'year') then
             write (4700,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
-            if (pco%csvout == 1 .and. pco%mgtout == 1) then
+            if (pco%csvout == 'yes' .and. pco%mgtout == 'year') then
               write (4701,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
             end if
           end if
@@ -123,14 +131,13 @@
           b1 = sd(isd)%etco - .4        !evap coef ranges from .4-.8 when etco ranges from .8-1.2
           IF (sd(isd)%igro == 1) THEN
             b1 = sd(isd)%etco
-            delg=(tave - pldb(iplt)%t_base) / sd(isd)%phu 
+            delg = (tave - pldb(iplt)%t_base) / sd(isd)%phu 
             IF (delg.lt.0.) THEN 
               delg = 0. 
             END IF 
             sd(isd)%g = sd(isd)%g + delg 
             parad = .5 * raobs * (1.-EXP(-.65 * (sd(isd)%alai + .05))) 
             drymat = parad * pldb(iplt)%bio_e * sd(isd)%stress
-            biomass = biomass + drymat
             ws = aet / pet
             
             !compute aeration stress
@@ -147,22 +154,29 @@
                                                                         
             !irrigate IF water stress is < 0.7                             
                                                                         
-            IF (sd_db(isd_db)%irr.gt.0) THEN 
-              IF (ws.lt.0.7) THEN 
+            IF (sd_db(isd_db)%irr > 0) THEN 
+              IF (ws < 0.8) THEN 
                 air = sd(isd)%awc - sd(isd)%sw 
-                IF (sd_db(isd_db)%irrsrc.eq.1) THEN 
+                air = amin1 (76.2, air)         !! max application = 3 inches
+                
+                ! take from shallow aquifer
+                IF (sd_db(isd_db)%irrsrc == 1) THEN 
                   sd(isd)%gw = sd(isd)%gw - air 
-                  IF (sd(isd)%gw.lt.0.) THEN 
+                  IF (sd(isd)%gw < 0.) THEN 
                     air = air + sd(isd)%gw 
                     sd(isd)%gw = 0. 
                   END IF 
-                ELSE 
+                END IF
+                
+                ! take from deep aquifer
+                IF (sd_db(isd_db)%irrsrc == 2) THEN
                   sd(isd)%gwdeep = sd(isd)%gwdeep - air 
-                  IF (sd(isd)%gwdeep.lt.0.) THEN 
+                  IF (sd(isd)%gwdeep < 0.) THEN 
                     air = air + sd(isd)%gwdeep 
                     sd(isd)%gwdeep = 0. 
                   END IF 
-                END IF 
+                END IF
+                sd(isd)%sw = sd(isd)%sw + air
               END IF 
             END IF                                  
                                                                   

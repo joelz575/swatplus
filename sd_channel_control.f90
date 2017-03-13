@@ -41,7 +41,7 @@
           sd_ch(ich)%phi(5) = Qman(a,rh,sd_chd(ich)%chn,sd_ch(ich)%chs)
   
           IF (peakrate > sd_ch(ich)%phi(5)) THEN
-            !! OVERBANK FLOOD
+          !! OVERBANK FLOOD
             sd_ch(ich)%overbank = "ob"
             rcharea = sd_ch(ich)%phi(1)
             rchdep = sd_ch(ich)%chd
@@ -87,7 +87,7 @@
             !add current and new flood volumes
             ht1 = ht1 + ob(icmd)%hd(3)
            if (ht1%flo > ch_sur(ics)%flood_volmx(0)) then
-            !calc flood depth above channel bottom (flodd_dep)
+            !calc flood depth above channel bottom (flood_dep)
             sum_vol = 0.
             do ii = 1, ch_sur(ics)%num
               if (ht1%flo < ch_sur(ics)%flood_volmx(ii)) then

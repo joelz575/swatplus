@@ -101,7 +101,7 @@
          sd(i)%revapc = sd_db(idb)%revapc
          sd(i)%plant = sd_db(idb)%plant
          sd(i)%stress = sd_db(idb)%stress
-         sd(i)%sw = sd_db(i)%sw * awct(sd_db(idb)%itext) *               &
+         sd(i)%sw = sd_db(idb)%sw * awct(sd_db(idb)%itext) *               &
                                        sd_db(idb)%soildep !* 1000.
          sd(i)%awc = awct(sd_db(idb)%itext) * sd_db(idb)%soildep !* 1000.
          sd(i)%por = port(sd_db(idb)%itext) * sd_db(idb)%soildep !* 1000.
@@ -113,10 +113,10 @@
             (100.-sd_db(idb)%cn2 + EXP(2.533-.063*(100.-sd_db(idb)%cn2)))
          qn1 = Max(qn1, .4 * sd_db(idb)%cn2)
          qn3 = sd_db(idb)%cn2 * EXP(.00673*(100.-sd_db(idb)%cn2)) 
-         sd(idb)%smx = 254. * (100. / qn1 - 1.) 
+         sd(i)%smx = 254. * (100. / qn1 - 1.) 
          s3 = 254. * (100. / qn3 - 1.)
-         rto3 = 1. - s3 / sd(idb)%smx
-         rtos = 1. - 2.54 / sd(idb)%smx
+         rto3 = 1. - s3 / sd(i)%smx
+         rtos = 1. - 2.54 / sd(i)%smx
          sumul = sd(i)%por
          sumfc = sd(i)%awc + sd_db(idb)%cn3_swf * (sumul - sd(i)%awc)
          !! calculate shape parameters

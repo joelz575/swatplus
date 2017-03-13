@@ -34,9 +34,9 @@
       
       !! new inputs thetn, thetap, conc_pmin, conc_nmin
       !! new equations from Charles Ikenberry for wetlands
-      nitrok = 10000. * ressa * (conc_n - res_nut(inut)%conc_nmin) * Theta(pstlr, res_nut(inut)%theta_n, tair_av)
+      nitrok = 10000. * res_ob(jres)%area_ha * (conc_n - res_nut(inut)%conc_nmin) * Theta(pstlr, res_nut(inut)%theta_n, tair_av)
       nitrok = Min(nitrok, 1.)
-      phosk = 10000. * ressa * (conc_p - res_nut(inut)%conc_pmin) * Theta(pstlr, res_nut(inut)%theta_p, tair_av)
+      phosk = 10000. * res_ob(jres)%area_ha * (conc_p - res_nut(inut)%conc_pmin) * Theta(pstlr, res_nut(inut)%theta_p, tair_av)
       phosk = Min(phosk, 1.)
 
       !! remove nutrients from reservoir by settling

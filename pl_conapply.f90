@@ -94,7 +94,7 @@
         soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + (1. - gc) * xx
         
  
-        if (pco%mgtout ==  1) then
+        if (pco%mgtout ==  'year') then
          write (143, 1000) j, time%yrc, i_mo, iida,                       & 
          "         ", "CONT PEST", phubase(j),pcom(j)%plcur(ipl)%phuacc,  &
             soil(j)%sw,pcom(j)%plm(ipl)%mass,                          &

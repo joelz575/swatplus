@@ -77,7 +77,8 @@
       use parm
       use time_module
       use basin_module
-
+      use organic_mineral_mass_module
+      
       integer :: j, sb, ii, iflag
       character (len=4) :: cropname
 
@@ -213,28 +214,28 @@
 		        sol_mass = (soil(j)%phys(k)%d - soil(j)%phys(k-1)%d) / 1000.* 10000. * soil(j)%phys(k)%bd * 1000. *	(1- soil(j)%phys(k)%rock / 100.)
 	         end if       
           sol_cmass = 0.
-          sol_cmass = soil(j)%cbn(k)%lsc+soil(j)%cbn(k)%lmc+soil(j)%cbn(k)%hpc+soil(j)%cbn(k)%hsc +soil(j)%cbn(k)%bmc
+          sol_cmass = soil1(j)%str(k)%c + soil1(j)%meta(k)%c + soil1(j)%hp(k)%c + soil1(j)%hs(k)%c + soil1(j)%microb(k)%c
           sol_nmass = 0. 
-          sol_nmass = soil(j)%cbn(k)%lsn+soil(j)%cbn(k)%lmn+soil(j)%cbn(k)%hpn+soil(j)%cbn(k)%hsn +soil(j)%cbn(k)%bmn     
-          write (98,9000) time%yrc, i, k, j, sol_mass,sol_cmass,                       &
-             sol_nmass,soil(j)%cbn(k)%ls,soil(j)%cbn(k)%lm,                                &
-             soil(j)%cbn(k)%lsc,soil(j)%cbn(k)%lmc,soil(j)%cbn(k)%hsc,soil(j)%cbn(k)%hpc,      &
-             soil(j)%cbn(k)%bmc,soil(j)%cbn(k)%lsn,soil(j)%cbn(k)%lmn,soil(j)%cbn(k)%hpn,    &
-             soil(j)%cbn(k)%hsn,soil(j)%cbn(k)%bmn,soil(j)%nut(k)%no3,soil(j)%nut(k)%fop,  &
-             soil(j)%nut(k)%orgp,soil(j)%nut(k)%solp   
+          sol_nmass = soil1(j)%str(k)%n + soil1(j)%meta(k)%n + soil(j)%cbn(k)%hpn + soil1(j)%hs(k)%n + soil1(j)%microb(k)%n     
+          write (98,9000) time%yrc, i, k, j, sol_mass,sol_cmass,                               &
+             sol_nmass, soil1(j)%str(k)%m, soil1(j)%meta(k)%m,                                 &
+             soil1(j)%str(k)%c, soil1(j)%meta(k)%c, soil1(j)%hs(k)%c, soil1(j)%hp(k)%c,        &
+             soil1(j)%microb(k)%c, soil1(j)%str(k)%n, soil1(j)%meta(k)%n, soil(j)%cbn(k)%hpn,    &
+             soil1(j)%hs(k)%n, soil1(j)%microb(k)%n,soil1(j)%mn(k)%no3,soil1(j)%tot(k)%p,      &
+             soil1(j)%hp(k)%p, soil1(j)%mp(k)%lab   
          
            tot_mass = tot_mass + sol_mass
            tot_cmass = tot_cmass + sol_cmass 
            tot_nmass = tot_nmass + sol_nmass
-           tot_LSC = tot_LSC + soil(j)%cbn(k)%lsc
-           tot_LMC = tot_LMC + soil(j)%cbn(k)%lmc
-           tot_HSC = tot_HSC + soil(j)%cbn(k)%hsc
-           tot_HPC = tot_HPC + soil(j)%cbn(k)%hpc
-           tot_BMC = tot_BMC + soil(j)%cbn(k)%bmc
-           tot_pmass =tot_pmass+ soil(j)%nut(k)%orgp + soil(j)%nut(k)%fop +  soil(j)%nut(k)%solp
-           tot_solp = tot_solp + soil(j)%nut(k)%solp
+           tot_LSC = tot_LSC + soil1(j)%str(k)%c
+           tot_LMC = tot_LMC + soil1(j)%meta(k)%c
+           tot_HSC = tot_HSC + soil1(j)%hs(k)%c
+           tot_HPC = tot_HPC + soil1(j)%hp(k)%c
+           tot_BMC = tot_BMC + soil1(j)%microb(k)%c
+           tot_pmass = tot_pmass + soil1(j)%hp(k)%p + soil1(j)%tot(k)%p +  soil1(j)%mp(k)%lab
+           tot_solp = tot_solp + soil1(j)%mp(k)%lab
            
-           tot_no3_nh3 = tot_no3_nh3  + soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3
+           tot_no3_nh3 = tot_no3_nh3  + soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4
           end do      
 
           write (100,9001) time%yrc, i, j, rsdc_d(j), sedc_d(j), percc_d(j),        &

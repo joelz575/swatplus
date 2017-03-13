@@ -86,14 +86,17 @@
          else    
            read (108,*,iostat=eof)iyr, istep, pcp(i)%ts(istep,iyrs)
            if (eof < 0) exit
-         endif 
-         read (108,*,iostat=eof) iyr, istep
-         if (eof < 0) exit
-         backspace (108)
-         if (iyr /= iyr_prev) then
-           iyr_prev = iyr
-           iyrs = iyrs + 1
          endif
+         !check to see when next year
+         if (istep == 365 .or. istep == 366) then
+           read (108,*,iostat=eof) iyr, istep
+           if (eof < 0) exit
+           backspace (108)
+           if (iyr /= iyr_prev) then
+             iyr_prev = iyr
+             iyrs = iyrs + 1
+           end if
+         end if
        end do
        close (108)
        

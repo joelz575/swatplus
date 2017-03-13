@@ -11,9 +11,7 @@
 !!
 !!    ht1== deposition: write to deposition.out
 !!    ht2== outflow from inflow: added to hru generated flows
-      
-      real :: ls_overq
-      
+
       j = ihru
 
 !!    compute infiltration from surface runon to next landscape unit

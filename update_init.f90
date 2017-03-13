@@ -2,6 +2,7 @@
 
       use jrw_datalib_module
       use hru_module
+      use sd_hru_module
       
       character(len=16) :: chg_parm, chg_typ
       character(len=1) :: cond_met
@@ -29,6 +30,26 @@
               if (cal_upd(ichg_par)%cond(ic)%targc /= soil(ielem)%texture) then
                 cond_met = 'n'
               end if
+            case ("plant")      !for hru-lte
+              if (cal_upd(ichg_par)%cond(ic)%targc /= sd(ielem)%plant) then 
+                cond_met = 'n'
+                exit
+              end if
+            case ("landuse")    !for hru
+              if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%land_use_mgt_c) then 
+                cond_met = 'n'
+                exit
+              end if
+            case ("region")     !for hru    
+              if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%region) then 
+                cond_met = 'n'
+                exit
+              end if
+            case ("region_lte")     !for hru    
+              if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%region) then 
+                cond_met = 'n'
+                exit
+              end if
             end select
           end do
 
@@ -41,18 +62,10 @@
               !! check layers for soil variables
               if (cal_upd(ichg_par)%lyr1 <= 0) cal_upd(ichg_par)%lyr1 = 1
               if (cal_upd(ichg_par)%lyr2 <= 0) cal_upd(ichg_par)%lyr2 = soil(ielem)%nly
+              cal_upd(ichg_par)%lyr2 = Min (cal_upd(ichg_par)%lyr2, soil(ielem)%nly)
               do lyr = cal_upd(ichg_par)%lyr1, cal_upd(ichg_par)%lyr2
                 call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
               end do
-            case ("plt")
-              !! check plant
-              do ipldb = 1, db_mx%plantparm
-                if (cal_upd(ichg_par)%cond(ic)%targc == pldb(ipldb)%plantnm) then 
-                  ielem = ipldb
-                  exit
-                end if
-              end do
-              call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
             case ("cli")
             !! check dates for climate variable
               select case (cal_upd(ichg_par)%name)

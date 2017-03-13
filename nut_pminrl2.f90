@@ -43,6 +43,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, l
       real :: rto, rmn1, roc, wetness, base, vara, varb, varc, as_p_coeff
@@ -53,14 +54,14 @@
         
 	do l = 1, soil(j)%nly !! loop through soil layers in this HRU
 	!! make sure that no zero or negative pool values come in
-	if (soil(j)%nut(l)%solp <= 1.e-6) soil(j)%nut(l)%solp = 1.e-6
-	if (soil(j)%nut(l)%actp <= 1.e-6) soil(j)%nut(l)%actp = 1.e-6
-      if (soil(j)%nut(l)%stap <= 1.e-6) soil(j)%nut(l)%stap = 1.e-6
+	if (soil1(j)%mp(l)%lab <= 1.e-6) soil1(j)%mp(l)%lab = 1.e-6
+	if (soil1(j)%mp(l)%act <= 1.e-6) soil1(j)%mp(l)%act = 1.e-6
+      if (soil1(j)%mp(l)%sta <= 1.e-6) soil1(j)%mp(l)%sta = 1.e-6
       
 !! Convert kg/ha to ppm so that it is more meaningful to compare between soil layers
-	  solp = soil(j)%nut(l)%solp / soil(j)%phys(l)%conv_wt * 1000000.
-	  actpp = soil(j)%nut(l)%actp / soil(j)%phys(l)%conv_wt * 1000000.
-	  stap = soil(j)%nut(l)%stap/ soil(j)%phys(l)%conv_wt * 1000000.
+	  solp = soil1(j)%mp(l)%lab / soil(j)%phys(l)%conv_wt * 1000000.
+	  actpp = soil1(j)%mp(l)%act / soil(j)%phys(l)%conv_wt * 1000000.
+	  stap = soil1(j)%mp(l)%sta / soil(j)%phys(l)%conv_wt * 1000000.
 
 !! ***************Soluble - Active Transformations***************	
 
@@ -95,11 +96,11 @@
 		rto = 0.
 		rto = bsn_prm%psp / (1.-bsn_prm%psp)
 		rmn1 = 0.
-		rmn1 = soil(j)%nut(l)%solp - soil(j)%nut(l)%actp * rto !! P imbalance
+		rmn1 = soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto !! P imbalance
 
 	  !! Move P between the soluble and active pools based on vadas et al., 2006
 		if (rmn1 >= 0.) then !! Net movement from soluble to active	
-		  rmn1 = Max(rmn1, (-1 * soil(j)%nut(l)%solp))
+		  rmn1 = Max(rmn1, (-1 * soil1(j)%mp(l)%lab))
 		!! Calculate Dynamic Coefficant		
           vara = 0.918 * (exp(-4.603 * bsn_prm%psp))          
 		  varb = (-0.238 * ALOG(vara)) - 1.126
@@ -117,7 +118,7 @@
           End if
 
 		if (rmn1 < 0.) then !! Net movement from Active to Soluble 		
-		  rmn1 = Min(rmn1, soil(j)%nut(l)%actp)	
+		  rmn1 = Min(rmn1, soil1(j)%mp(l)%act)	
 		  !! Calculate Dynamic Coefficant
 		  base = (-1.08 * bsn_prm%psp) + 0.79
 		  varc = base * (exp (-0.29))
@@ -149,8 +150,8 @@
 		 end if
 		  	
 	   roc = 0.
-         roc = ssp * (soil(j)%nut(l)%actp + soil(j)%nut(l)%actp * rto) 
-		 roc = roc - soil(j)%nut(l)%stap
+         roc = ssp * (soil1(j)%mp(l)%act + soil1(j)%mp(l)%act * rto) 
+		 roc = roc - soil1(j)%mp(l)%sta
 		 roc = as_p_coeff * roc 
 		 !! Store todays ssp for tomarrows calculation
 		 soil(j)%ly(l)%ssp_store = ssp
@@ -165,16 +166,16 @@
 !! If total P is greater than 10,000 mg/kg do not allow transformations at all
 	   If ((solp + actpp + stap) < 10000.) then 
 	      !! Allow P Transformations
-		  soil(j)%nut(l)%stap = soil(j)%nut(l)%stap + roc
-		  if (soil(j)%nut(l)%stap < 0.) soil(j)%nut(l)%stap = 0.
-		  soil(j)%nut(l)%actp = soil(j)%nut(l)%actp - roc + rmn1
-		  if (soil(j)%nut(l)%actp < 0.) soil(j)%nut(l)%actp = 0.
-		  soil(j)%nut(l)%solp = soil(j)%nut(l)%solp - rmn1
-		  if (soil(j)%nut(l)%solp < 0.) soil(j)%nut(l)%solp = 0.
+		  soil1(j)%mp(l)%sta = soil1(j)%mp(l)%sta + roc
+		  if (soil1(j)%mp(l)%sta < 0.) soil1(j)%mp(l)%sta = 0.
+		  soil1(j)%mp(l)%act = soil1(j)%mp(l)%act - roc + rmn1
+		  if (soil1(j)%mp(l)%act < 0.) soil1(j)%mp(l)%act = 0.
+		  soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - rmn1
+		  if (soil1(j)%mp(l)%lab < 0.) soil1(j)%mp(l)%lab = 0.
 	   end if
 
 !! Add water soluble P pool assume 1:5 ratio based on sharpley 2005 et al
-	soil(j)%ly(l)%watp = soil(j)%nut(l)%solp / 5
+	soil(j)%ly(l)%watp = soil1(j)%mp(l)%lab / 5
 
       end do
       return

@@ -77,6 +77,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, ib, ly
 !!    real, parameter :: esd = 500., etco = 0.80, effnup = 0.1
@@ -208,12 +209,11 @@
         !! compute no3 flux from layer 2 to 1 by soil evaporation
         if (ly == 2) then
           no3up = 0.
-          no3up =effnup * sev * soil(j)%nut(2)%no3 /                     &
-                  (soil(j)%phys(2)%st + 1.e-6)
-          no3up = Min(no3up, soil(j)%nut(2)%no3)
+          no3up =effnup * sev * soil1(j)%mn(2)%no3 / (soil(j)%phys(2)%st + 1.e-6)
+          no3up = Min(no3up, soil1(j)%mn(2)%no3)
           sno3up = sno3up + no3up * hru_dafr(j)
-          soil(j)%nut(2)%no3 = soil(j)%nut(2)%no3 - no3up
-          soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 + no3up
+          soil1(j)%mn(2)%no3 = soil1(j)%mn(2)%no3 - no3up
+          rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + no3up
         endif
 
       end do

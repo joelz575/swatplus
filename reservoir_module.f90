@@ -10,18 +10,29 @@
       real :: solpesto, sorpesto, resev, ressep, respcp, resorgno
       real :: resorgpo, resno3o, resno2o, resnh3o, ressolpo, reschlao
       real :: resorgpc, ressolpc,resornc, resno3c, resno2c, resnh3c
-      real :: ressa, tair_mx, tair_mn, tair_av
+      real :: tair_mx, tair_mn, tair_av
 
       type reservoir
         character(len=13) :: name = "default"
-        character(len=3) :: typ = "nul"          !res=reservoir; hru=landscape impoundment; fpl=flood plain only (no impound)
-        integer :: ob = 0                        !object number if reservoir object; hru number if hru object
-        integer :: props = 0                     !points to res_dat
-        real :: seci = 0              !m         !seci depth
+        character(len=3) :: typ = "null"            !res=reservoir; hru=landscape impoundment; fpl=flood plain only (no impound)
+        integer :: ob = 0                           !object number if reservoir object; hru number if hru object
+        integer :: props = 0                        !points to res_dat
+        real :: psa = 0.                    !ha     |res surface area when res is filled to princ spillway
+        real :: pvol = 0.                   !ha-m   |vol of water needed to fill the res to the princ spillway (read in as ha-m and converted to m^3)
+        real :: esa = 0.                    !ha     |res surface area when res is filled to emerg spillway 
+        real :: evol = 0.                   !ha-m   |vol of water needed to fill the res to the emerg spillway (read in as ha-m and converted to m^3)
+        real :: br1 = 0.                    !none   |vol-surface area coefficient for reservoirs (model estimates if zero)
+                                            !       |vol-depth coefficient for hru impoundment
+        real :: br2 = 0.                    !none   |vol-surface area coefficient for reservoirs (model estimates if zero)
+                                            !       |vol-depth coefficient for hru impoundment
+        real :: area_ha = 0                 !ha     !reservoir surface area
+        real :: seci = 0                    !m      !seci depth
       end type reservoir          
       type (reservoir), dimension(:),allocatable :: res_ob
 
       type res_output
+          real :: vol = 0.       !ha-m                 |res volume
+          real :: area_ha = 0.   !ha                   |res surface area
           real :: flowi = 0.     !m^3/s                |flow into res
           real :: flowo = 0.     !m^3/s                |flow out of res          
           real :: sedi = 0.      !metric tons          |sed entering res
@@ -65,10 +76,14 @@
           real :: nh3c = 0.      !mg N/L               |ave ammonia conc in res
       end type res_output
       
-      type (res_output), dimension(:), allocatable, save :: resd
-      type (res_output), dimension(:), allocatable, save :: resm
-      type (res_output), dimension(:), allocatable, save :: resy
-      type (res_output), dimension(:), allocatable, save :: resa
+      type (res_output), dimension(:), allocatable, save :: res_d
+      type (res_output), dimension(:), allocatable, save :: res_m
+      type (res_output), dimension(:), allocatable, save :: res_y
+      type (res_output), dimension(:), allocatable, save :: res_a
+      type (res_output) :: bres_d
+      type (res_output) :: bres_m
+      type (res_output) :: bres_y
+      type (res_output) :: bres_a
       type (res_output) :: resadd1
       type (res_output) :: resadd2
       type (res_output) :: resadd3
@@ -123,7 +138,7 @@
           character (len=10) :: no2c =     '     no2c'        !mg N/L               |ave nitrite conc in res
           character (len=10) :: nh3c =     '     nh3c'        !mg N/L               |ave ammonia conc in res
        end type res_header
-       type (res_header), dimension(:), allocatable, save :: res_hdr
+       type (res_header) :: res_hdr
 
       type res_header_unit
           character (len=6) :: yrs =       '      '
@@ -172,7 +187,7 @@
           character (len=10) :: no2c =     '   mg N/L'        !mg N/L               |ave nitrite conc in res
           character (len=10) :: nh3c =     '   mg N/L'        !mg N/L               |ave ammonia conc in res
        end type res_header_unit
-       type (res_header_unit),dimension(:),allocatable,save::res_hdr_unt
+       type (res_header_unit) :: res_hdr_unt
 !!           
       interface operator (+)
         module procedure resout_add
@@ -261,7 +276,7 @@
         hru2%ev = hru1%ev / const
         hru2%sep = hru1%sep / const
         hru2%pcp = hru1%pcp / const
-        hru2%flwim3 = hru1flwim3 / const
+        hru2%flwim3 = hru1%flwim3 / const
         hru2%flwom3= hru1%flwom3 / const
         hru2%orgni = hru1%orgni / const
         hru2%orgno = hru1%orgno / const

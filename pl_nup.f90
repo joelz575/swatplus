@@ -62,6 +62,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, icrop, l, ir
       real :: unmx, uno3l, gx
@@ -85,9 +86,9 @@
 
         unmx = uno3d(ipl) * rto_no3 * (1. - Exp(-bsn_prm%n_updis *       &
                                                    gx / sol_rd)) / uobn
-        uno3l = Min(unmx - nplnt(j), soil(j)%nut(l)%no3)
+        uno3l = Min(unmx - nplnt(j), soil1(j)%mn(l)%no3)
         nplnt(j) = nplnt(j) + uno3l 
-        soil(j)%nut(l)%no3 = soil(j)%nut(l)%no3 - uno3l
+        soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 - uno3l
       end do
       if (nplnt(j) < 0.) nplnt(j) = 0.
 

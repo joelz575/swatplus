@@ -153,50 +153,71 @@
       type (basin_parms) :: bsn_prm
 
       type basin_print_codes
-          !!  0 = average annual (always print)
-          !!  1 = yearly
-          !!  2 = monthly
-          !!  3 = daily                            
-        integer :: nyskip = 0         !!  number of years to skip output summarization
-        integer :: jd_start = 0       !!  julian day to start printing output
-        integer :: jd_end = 0         !!  julian day to end printing output
-        integer :: yr_start = 0       !!  calendar year to start printing output
-        integer :: yr_end = 0         !!  calendar year to end printing output
-        integer :: interval = 1       !!  interval between daily printing within period
+      !!    PRINT CODES: 'avann' = average annual (always print....unless input is 'null')
+      !!                 'year'  = yearly
+      !!                 'mon'   = monthly
+      !!                 'day'   = daily                     
+        integer :: nyskip = 0                         !!  number of years to skip output summarization
+      ! DAILY START/END AND INTERVAL
+        integer :: jd_start = 0                       !!  julian day to start printing output
+        integer :: jd_end = 0                         !!  julian day to end printing output
+        integer :: yr_start = 0                       !!  calendar year to start printing output
+        integer :: yr_end = 0                         !!  calendar year to end printing output
+        integer :: interval = 1                       !!  interval between daily printing within period
+      ! AVE ANNUAL END YEARS
+        integer :: aa_numint                          !! number of print intervals for ave annual output
+        integer, dimension(:), allocatable :: aa_yrs  !! end years for ave annual output
+      ! BASIN
+        character(len=16) :: wb_bsn = 'avann'         !!  water balance BASIN output
+        character(len=16) :: nb_bsn = 'avann'         !!  nutrient balance BASIN output
+        character(len=16) :: ls_bsn = 'avann'         !!  losses BASIN output
+        character(len=16) :: pw_bsn = 'avann'         !!  plant weather BASIN output
+        character(len=16) :: aqu_bsn = 'avann'        !!  
+        character(len=16) :: res_bsn = 'avann'        !!
+        character(len=16) :: chan_bsn = 'avann'       !!
+        character(len=16) :: recall_bsn = 'avann'     !!
+        character(len=16) :: sd_chan_bsn = 'avann'    !! 
+      ! REGION
+        character(len=16) :: wb_reg = 'avann'         !!  water balance REGION output
+        character(len=16) :: nb_reg = 'avann'         !!  nutrient balance REGION output
+        character(len=16) :: ls_reg = 'avann'         !!  losses REGION output
+        character(len=16) :: pw_reg = 'avann'         !!  plant weather REGION output
+        character(len=16) :: aqu_reg = 'avann'        !!  
+        character(len=16) :: res_reg = 'avann'        !!
+        character(len=16) :: chan_reg = 'avann'       !!
+        character(len=16) :: recall_reg = 'avann'     !!
+        character(len=16) :: sd_chan_reg = 'avann'    !! 
+       ! SUBBASIN
+        character(len=16) :: wb_sub = 'avann'         !!  water balance SUBBASIN output
+        character(len=16) :: nb_sub = 'avann'         !!  nutrient balance SUBBASIN output
+        character(len=16) :: ls_sub = 'avann'         !!  losses SUBBASIN output
+        character(len=16) :: pw_sub = 'avann'         !!  plant weather SUBBASIN output
         ! HRU
-        integer :: wb_hru = 0         !!  water balance HRU output
-        integer :: nb_hru = 0         !!  nutrient balance HRU output
-        integer :: ls_hru = 0         !!  losses HRU output
-        integer :: pw_hru = 0         !!  plant weather HRU output
-        ! SWAT-DEG
-        integer :: wb_sd = 0          !!  water balance SWAT-DEG output 
-        integer :: nb_sd = 0          !!  nutrient balance SWAT-DEG output
-        integer :: ls_sd = 0          !!  losses SWAT-DEG output
-        integer :: pw_sd = 0          !!  plant weather SWAT-DEG output
-        ! SUBBASIN
-        integer :: wb_sub = 0         !!  water balance SUBBASIN output
-        integer :: nb_sub = 0         !!  nutrient balance SUBBASIN output
-        integer :: ls_sub = 0         !!  losses SUBBASIN output
-        integer :: pw_sub = 0         !!  plant weather SUBBASIN output
-        ! BASIN
-        integer :: wb_bsn = 0         !!  water balance BASIN output
-        integer :: nb_bsn = 0         !!  nutrient balance BASIN output
-        integer :: ls_bsn = 0         !!  losses BASIN output
-        integer :: pw_bsn = 0         !!  plant weather BASIN output
+        character(len=16) :: wb_hru = 'avann'         !!  water balance HRU output
+        character(len=16) :: nb_hru = 'avann'         !!  nutrient balance HRU output
+        character(len=16) :: ls_hru = 'avann'         !!  losses HRU output
+        character(len=16) :: pw_hru = 'avann'         !!  plant weather HRU output
+        ! HRU-LTE
+        character(len=16) :: wb_sd = 'avann'          !!  water balance SWAT-DEG output 
+        character(len=16) :: nb_sd = 'avann'          !!  nutrient balance SWAT-DEG output
+        character(len=16) :: ls_sd = 'avann'          !!  losses SWAT-DEG output
+        character(len=16) :: pw_sd = 'avann'          !!  plant weather SWAT-DEG output
         ! CHANNEL
-        integer :: chan = 0           !!  channel output 
+        character(len=16) :: chan = 'avann'           !!  channel output 
         ! AQUIFER
-        integer :: aqu = 0            !!  aqufier output
+        character(len=16) :: aqu = 'avann'            !!  aqufier output
         ! RESERVOIR
-        integer :: res = 0            !!  reservoir output
+        character(len=16) :: res = 'avann'            !!  reservoir output
+        ! RECALL
+        character(len=16) :: recall = 'avann'         !!  recall output
         ! HYDIN AND HYDOUT
-        integer :: hyd = 0            !!  hydin_output and hydout_output
+        character(len=16) :: hyd = 'avann'            !!  hydin_output and hydout_output
         ! HYD CONNECT OUTPUT
-        integer :: hydcon = 0         !!  hydrograph connect output file (hydcon.out)
-        integer :: solout = 0         !!  soils output file (soils.out)
-        integer :: mgtout = 0         !!  management output file (mgt.out)
-        integer :: csvout = 0         !!  code to print .csv files 0=no print; 1=print;
-        integer :: fdcout = 0         !!  flow duration curve output 0=no print; 1=print;
+        character(len=16) :: hydcon = 'avann'         !!  hydrograph connect output file (hydcon.out)
+        character(len=16) :: solout = 'avann'         !!  soils output file (soils.out)
+        character(len=16) :: mgtout = 'avann'         !!  management output file (mgt.out)
+        character(len=16) :: csvout = '   no'         !!  code to print .csv files no=no print; yes=print;
+        character(len=16) :: fdcout = '   no'         !!  flow duration curve output null=no print; avann=print;
       end type basin_print_codes
       type (basin_print_codes) :: pco
            
@@ -205,6 +226,6 @@
       include 'basin_prm_read.f90'
       include 'basin_prm_default.f90'
       include 'basin_print_codes_read.f90'
-      include 'basin_output.f90'
+      !include 'basin_output.f90'
 
       end module basin_module

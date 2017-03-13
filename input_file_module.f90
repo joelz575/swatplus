@@ -201,7 +201,6 @@
        character(len=25) :: cal_upd = "calibration.cal"
        character(len=25) :: ls_parms_cal = "ls_parms.cal"
        character(len=25) :: ls_regions_cal = "ls_regions.cal"
-       character(len=25) :: ls_regions_cal_lte = "ls_regions_lte.cal"
        character(len=25) :: ch_orders_cal = "ch_orders.cal"
        character(len=25) :: ch_parms_cal = "ch_parms.cal"
       end type input_chg
@@ -232,6 +231,26 @@
         character(len=25) :: saltcom_db = "salt.cs"
       end type input_constituents
       type (input_constituents) :: in_const
+      
+     type input_regions
+        character(len=25) :: ele_lcu = "ls_catunit.ele"
+        character(len=25) :: def_lcu = "ls_catunit.def"
+        character(len=25) :: def_lcu_reg = "ls_reg.def"
+        character(len=25) :: cal_lcu = "ls_cal.reg"
+        character(len=25) :: ele_cha = "ch_catunit.ele"
+        character(len=25) :: def_cha = "ch_catunit.def"
+        character(len=25) :: def_cha_reg = "ch_reg.def"
+        character(len=25) :: ele_aqu = "aqu_catunit.ele"
+        character(len=25) :: def_aqu = "aqu_catunit.def"
+        character(len=25) :: def_aqu_reg = "aqu_reg.def"
+        character(len=25) :: ele_res = "res_catunit.ele"
+        character(len=25) :: def_res = "res_catunit.def"
+        character(len=25) :: def_res_reg = "res_reg.def"
+        character(len=25) :: ele_psc = "rec_catunit.ele"
+        character(len=25) :: def_psc = "rec_catunit.def"
+        character(len=25) :: def_psc_reg = "rec_reg.def"
+      end type input_regions
+      type (input_regions) :: in_regs
       
       contains
 

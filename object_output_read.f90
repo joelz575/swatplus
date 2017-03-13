@@ -69,7 +69,10 @@
                ob_out(i)%hydno = 5  
             end select
          iunit = ob_out(i)%unitno
+         
          open (iunit+i,file = ob_out(i)%filename,recl=800)
+         write (9000,*)   'OBJECT.PRT          ', ob_out(i)%filename
+         
          write (iunit+i,100) hyd_hdr  !! write header !H
         enddo    
         exit

@@ -45,6 +45,7 @@
       use conditional_module
       use reservoir_module
       use input_file_module
+      use organic_mineral_mass_module
       !use output_landscape_module
       
       implicit none
@@ -54,17 +55,17 @@
       integer :: ibac, mbac, mbac_db, ii, iob, idfn, isb, ielem, ifld
       integer :: istr_db, mstr_prac, istr, iscenario, j, ichan, idat
       integer :: isched, iauto, ictl
-      integer :: isdh, idb, ihru_s, ical
+      integer :: isdh, idb, ihru_s, ical, icvmax
       real :: rto, sumn, t_ch, ch_slope, ch_n, ch_l, tov
       character(len=16):: chg_typ
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
 
-      prog = "SWAT+ Nov 2 2016    MODULAR Rev 2016.28"
+      prog = "SWAT+ Mar 6 2017    MODULAR Rev 2017.31"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 28             ",/,             &
+     &          "              Revision 31             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -74,8 +75,6 @@
       open (4444,file="diagnostics.out")
       write (4444,4445) 
 4445  format (1x,'FILENAME',21x,'REC',3x,'MAX',9x,'FILE STATUS')
-      
-      open (6001,file="actions.out")
 		
       call hyd_read_objs
       call readtime_read
@@ -91,9 +90,9 @@
       call basin_prm_read
       call basin_prm_default
       call basin_print_codes_read
-
    
       call DATE_AND_TIME (b(1), b(2), b(3), date_time)
+      
       write (*,111) 'reading from precipitation file    ', date_time(5), date_time(6), date_time(7)
 111   format (1x,a, 5x,'Time',2x,i2,':',i2,':',i2)
       call cli_pmeas
@@ -229,7 +228,7 @@
         call ch_initial (idat, irch)
       end do
 
-      call sub_read
+      !call sub_read
       
       call time_conc_init
 
@@ -252,14 +251,19 @@
             
       !! read soft calibration parameters
       call codes_cal_read
-      call ls_regions_cal_read      !soft data for hru calibration
-      call ls_regions_calt_read     !soft data for hru_lte calibration
+      call lcu_elements_read        !defining regions by hru
+      call lcu_softcal_read         !soft data for landscape calibration (needs to be renamed)***
       call ls_parms_cal_read
-      call pl_regions_cal_read     !soft data for hru_lte calibration
+      call pl_regions_cal_read      !soft data for hru_lte calibration
       call pl_parms_cal_read
+      call aqu_elements_read        !defining regions by aquifer
+      call cha_elements_read        !defining regions by channel
+      call res_elements_read        !defining regions by reservoir
+      call rec_elements_read        !defining regions by recall object (point source, gage data, model output, etc)
       call ch_regions_cal_read
       call ch_parms_cal_read
 
+      !! set
       call output_landscape_init
 
       call header_write
@@ -291,6 +295,7 @@
         do ihru = 1, mhru
           hru_init(ihru) = hru(ihru)
           soil_init(ihru) = soil(ihru)
+          rsd_init(ihru) = rsd1(ihru)
           pcom_init(ihru) = pcom(ihru)
         end do
       end if
@@ -334,7 +339,7 @@
       if (cal_codes%hyd_hru == 'y') then
         call cal_hyd
         !print calibrated hydrology for hru_lte
-		do ireg = 1, db_mx%lscal_reg
+		do ireg = 1, db_mx%lcu_reg
 		  do ilum = 1, lscal(ireg)%lum_num
             lscal(ireg)%lum(ilum)%meas%srr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%srr
             lscal(ireg)%lum(ilum)%meas%lfr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%lfr
@@ -348,8 +353,80 @@
 		  end do
         end do  
 
-	    do ireg = 1, db_mx%lscal_reg
-	      !write to calibration.upd and use land use as a condition
+        !loop through to find the number of variable updates for calibration.upd from soft calibration
+        icvmax = 0
+        do ireg = 1, db_mx%lcu_reg
+          do ilum = 1, lscalt(ireg)%lum_num
+            if (abs(lscalt(ireg)%lum(ilum)%prm%cn) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%esco) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%lat_len) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%k_lo) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%slope) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%tconc) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%etco) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%perco) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%revapc) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscalt(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) icvmax = icvmax + 1
+	      end do
+	    end do
+        write (5000,500) ' calibration.upd developed from soft data calibration'
+        write (5000,500) icvmax
+        write (5000,500) ' NAME   CHG_TYP   VAL    CONDS    LYR1   LYR2    YEAR1   YEAR2   DAY1   DAY2   OBJ_TOT'
+        
+        !write to calibration.upd and use region and land use as conditions
+	    do ireg = 1, db_mx%lcu_reg
+          do ilum = 1, lscalt(ireg)%lum_num
+            if (abs(lscalt(ireg)%lum(ilum)%prm%cn) > 1.e-6) then
+              write (5000,500) ls_prms(1)%name, ls_prms(1)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%esco) > 1.e-6) then
+              write (5000,500) ls_prms(2)%name, ls_prms(2)%chg_typ, lscal(ireg)%lum(ilum)%prm%esco, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%lat_len) > 1.e-6) then
+              write (5000,500) ls_prms(3)%name, ls_prms(3)%chg_typ, lscal(ireg)%lum(ilum)%prm%lat_len, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%k_lo) > 1.e-6) then
+              write (5000,500) ls_prms(4)%name, ls_prms(4)%chg_typ, lscal(ireg)%lum(ilum)%prm%k_lo, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%slope) > 1.e-6) then
+              write (5000,500) ls_prms(5)%name, ls_prms(5)%chg_typ, lscal(ireg)%lum(ilum)%prm%slope, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%tconc) > 1.e-6) then
+              write (5000,500) ls_prms(6)%name, ls_prms(6)%chg_typ, lscal(ireg)%lum(ilum)%prm%tconc, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%etco) > 1.e-6) then
+              write (5000,500) ls_prms(7)%name, ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%perco) > 1.e-6) then
+              write (5000,500) ls_prms(8)%name, ls_prms(8)%chg_typ, lscal(ireg)%lum(ilum)%prm%perco, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%revapc) > 1.e-6) then
+              write (5000,500) ls_prms(9)%name, ls_prms(9)%chg_typ, lscal(ireg)%lum(ilum)%prm%revapc, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+            if (abs(lscalt(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) then
+              write (5000,500) ls_prms(10)%name, ls_prms(10)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn3_swf, '   0    2    0    0    0    0    0    0    0'
+              write (5000,500) '   region    =', lscal(ireg)%name
+              write (5000,500) '   landuse   =', lscal(ireg)%lum(ilum)%name
+            end if
+	      end do
 	    end do
       end if
 
@@ -357,7 +434,7 @@
       if (cal_codes%hyd_hrul == 'y') then
         call calt_hyd
         !print calibrated hydrology for hru_lte
-		do ireg = 1, db_mx%lscalt_reg
+		do ireg = 1, db_mx%lcu_reg
 		  do ilum = 1, lscalt(ireg)%lum_num
             lscalt(ireg)%lum(ilum)%meas%srr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%srr
             lscalt(ireg)%lum(ilum)%meas%lfr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%lfr
@@ -365,9 +442,9 @@
             lscalt(ireg)%lum(ilum)%meas%etr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%etr
             lscalt(ireg)%lum(ilum)%meas%tfr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%tfr
             
-            write (5000,500) lscalt(ireg)%lum(ilum)%name, lscalt(ireg)%lum(ilum)%ha, lscalt(ireg)%lum(ilum)%nbyr, &
+            write (5000,500) lscalt(ireg)%name, lscalt(ireg)%lum(ilum)%ha, lscalt(ireg)%lum(ilum)%nbyr,           &
                     lscalt(ireg)%lum(ilum)%precip_aa_sav, lscalt(ireg)%lum(ilum)%meas, lscalt(ireg)%lum(ilum)%aa, &
-                    lscalt(ireg)%lum(ilum)%prm
+                    lscalt(ireg)%lum(ilum)%prm	
 		  end do
         end do  
 
@@ -393,15 +470,15 @@
       if (cal_codes%sed == 'y') then
         call cal_sed
         !print calibrated hydrology for hru_lte
-		do ireg = 1, db_mx%chcal_reg
+		do ireg = 1, db_mx%ch_reg
           do iord = 1, chcal(ireg)%ord_num
-            write (5000,500) chcal(ireg)%ord(iord)%name, chcal(ireg)%ord(iord)%length, chcal(ireg)%ord(iord)%nbyr,  &
+            write (5000,502) chcal(ireg)%ord(iord)%name, chcal(ireg)%ord(iord)%length, chcal(ireg)%ord(iord)%nbyr,  &
                     chcal(ireg)%ord(iord)%meas, chcal(ireg)%ord(iord)%aa, chcal(ireg)%ord(iord)%prm
 		  end do
         end do  
 
 	    do isdc = 1, sp_ob%chandeg
-	      idb = sd(isdh)%props
+	      idb = sd_ch(isdc)%props
 		  write (4999,400) sd_chd(idb)%name, sd_chd(idb)%order, sd_chd(idb)%route_db, sd_chd(idb)%chw,          &
               sd_chd(idb)%chd, sd_chd(idb)%chs, sd_chd(idb)%chl, sd_chd(idb)%chn, sd_chd(idb)%chk,              &
               sd_ch(isdc)%cherod, sd_ch(isdc)%cov, sd_chd(idb)%hc_cov, sd_chd(idb)%chseq, sd_chd(idb)%d50,      &
@@ -422,7 +499,11 @@
       
       write (*,1001)
  1001 format (/," Execution successfully completed ")
-  400 format (a16,19f12.3,4i12,12x,a4,f12.3,3i12,5f12.3)
-  500 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),9f12.3)	
+  !400 format (a16,19f12.3,4i12,12x,a4,f12.3,3i12,5f12.3)
+  400 format (2a16,i12,20f12.3)
+  500 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),10f12.3)
+  501 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),10f12.3,9i5)
+  !502 format (a16,f12.3,i12,2(1x,a16,10f12.3),10f12.3)
+  502 format (a16,f12.3,i12,2(1x,a16,4f12.3),4f12.3)
 	  stop
       end

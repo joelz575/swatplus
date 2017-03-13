@@ -7,6 +7,7 @@
       integer :: icmd, ich, mobj_out, isd_chsur
       integer, dimension (:), allocatable :: rcv_sum, dfn_sum, elem_cnt
       real, dimension (:), allocatable :: hyd_km2
+      integer, dimension (:), allocatable :: ob_order
       real, dimension(:,:,:), allocatable:: rchhr
       integer, dimension (8) :: fdc_p = (/18,36,91,182,274,328,347,366/)
       
@@ -40,9 +41,18 @@
       end type hyd_output
       
       type (hyd_output), dimension(:),allocatable :: hd
-      type (hyd_output), dimension(:),allocatable :: hm
-      type (hyd_output), dimension(:),allocatable :: ha
-      type (hyd_output), dimension(:),allocatable :: haa
+      type (hyd_output), dimension(:), allocatable :: rec_d
+      type (hyd_output), dimension(:), allocatable :: rec_m
+      type (hyd_output), dimension(:), allocatable :: rec_y
+      type (hyd_output), dimension(:), allocatable :: rec_a
+      type (hyd_output), dimension(:), allocatable :: srec_d
+      type (hyd_output), dimension(:), allocatable :: srec_m
+      type (hyd_output), dimension(:), allocatable :: srec_y
+      type (hyd_output), dimension(:), allocatable :: srec_a
+      type (hyd_output) :: brec_d
+      type (hyd_output) :: brec_m
+      type (hyd_output) :: brec_y
+      type (hyd_output) :: brec_a
       type (hyd_output) :: hz
       type (hyd_output), dimension(:),allocatable :: hcnst
       type (hyd_output), dimension(:),allocatable :: hhr
@@ -147,12 +157,13 @@
         character (len=12) :: max =     '    max '
         character (len=12) :: mean =    '   mean '
       end type output_flow_duration_header    
-      type (output_flow_duration_header), dimension(:), allocatable, save  :: fdc_hdr
+      type (output_flow_duration_header) :: fdc_hdr
 	  
       type calibration_header          
         character (len=16) :: name        =   '     name      '        
         character (len=12) :: ha          =   '     ha     '                                             
         character (len=12) :: nbyr        =   '   nbyr     '
+        character (len=12) :: prec        =   '   precip   '
 		character (len=16) :: meas        =   '     name      '
 		character (len=12) :: srr         =   '    srr     '
 		character (len=12) :: lfr         =   '    lfr     '
@@ -186,7 +197,7 @@
 		character (len=12) :: revapc      =   '  revapc    '
 		character (len=12) :: cn3_swf     =   ' cn3_swf    '	
       end type calibration_header    
-      type (calibration_header), dimension(:), allocatable, save  :: calb_hdr	 
+      type (calibration_header) :: calb_hdr	 
 	  
       type calibration2_header         
         character (len=16) :: name     =   '       name '
@@ -222,8 +233,23 @@
         character (len=12) :: uslep    =   '      uslep '
         character (len=12) :: uslels   =   '     uslels '
       end type calibration2_header    
-      type (calibration2_header), dimension(:), allocatable, save  :: calb2_hdr	   
-
+      type (calibration2_header) :: calb2_hdr	
+      
+      type calibration3_header         
+        character (len=16) :: name     =   '       name '
+        character (len=12) :: chgtyp   =   '    chg_typ '                                            
+        character (len=12) :: val      =   '        val '
+        character (len=12) :: conds    =   '      conds '
+        character (len=12) :: lyr1     =   '       lyr1 '
+        character (len=12) :: lyr2     =   '       lyr2 '
+        character (len=12) :: year1    =   '      year1 '
+        character (len=12) :: year2    =   '      year2 '
+        character (len=12) :: day1     =   '       day1 '
+        character (len=12) :: day2     =   '       day2 '
+        character (len=12) :: objtot   =   '    obj_tot '
+      end type calibration3_header    
+      type (calibration3_header) :: calb3_hdr	     
+         
       type object_connectivity
         character(len=16) :: name = "default"
         character(len=8) :: typ = " "   !object type - ie hru, hru_lte, sub, chan, res, recall
@@ -246,11 +272,12 @@
         integer :: rcvob_tot = 0        !total number of incoming (receiving) objects
         integer :: dfn_tot = 0          !total number of defining objects (ie hru's within a subbasin)
         integer :: subs_tot             !number of subbasins that contain this object
-        integer :: elem                 !subbasins element number for this object
+        integer,  dimension(:), allocatable :: sub                  !subbasin the element is in
+        integer :: elem                 !subbasins element number for this object- used for routing over (can only have one)
         integer :: flood_ch_lnk = 0     !channel the landscape unit is linked to
         integer :: flood_ch_elem = 0    !landscape unit number - 1 is nearest to stream
         integer :: wr_ob = 0            !1=element in a water rights object; 0=not an element
-        character (len=3), dimension(:), allocatable :: obtyp_out    !outflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
+        character (len=3), dimension(:), allocatable :: obtyp_out   !outflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
         integer, dimension(:), allocatable :: obtypno_out           !outflow object type name
         integer, dimension(:), allocatable :: obj_out               !outflow object
         character (len=3), dimension(:), allocatable :: htyp_out    !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
@@ -383,7 +410,6 @@
         real :: frac = 0                !fraction of element in sub (expansion factor)
         integer :: idr = 0               !points to dr's in delratio.dat
         type (hyd_output), dimension (:), allocatable :: dr    !calculated del ratios for element
-        integer,  dimension(:), allocatable :: sub   !subbasin the element is in
       end type subbasin_elements
       type (subbasin_elements), dimension(:), allocatable :: sub_elem
       

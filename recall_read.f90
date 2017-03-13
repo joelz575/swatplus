@@ -30,6 +30,11 @@
           end do
           
       allocate (recall(0:imax))
+      allocate (rec_d(imax))
+      allocate (rec_m(imax))
+      allocate (rec_y(imax))
+      allocate (rec_a(imax))
+      
       rewind (107)
       read (107,*) titldum
       read (107,*) header

@@ -14,6 +14,7 @@
       use jrw_datalib_module
       use conditional_module
       use reservoir_module
+      use organic_mineral_mass_module
 
       !calibrate hydrology
         ical_hyd = 0
@@ -23,7 +24,8 @@
       do iterall = 1, iter_all
         ! 1st cn2 adjustment
         isim = 0
-        do ireg = 1, db_mx%lscal_reg
+        do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -51,12 +53,13 @@
                   lscal(ireg)%lum(ilum)%prm_lim%cn = 1.
                 end if
 
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for 1st surface runoff calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
+                rsd1(iihru) = rsd_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 cn2(iihru) = cn2(iihru) + chg_val
                 cn2(iihru) = amin1 (cn2(iihru), ls_prms(1)%up)
@@ -88,7 +91,8 @@
           ! adjust surface runoff using cn2
           do icn = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lscal_reg
+          do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -120,12 +124,13 @@
                 end if
             
             !check all hru's for proper lum
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for 1st surface runoff calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
+                rsd1(iihru) = rsd_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 cn2(iihru) = cn2(iihru) + chg_val
                 cn2(iihru) = amin1 (cn2(iihru), ls_prms(1)%up)
@@ -159,7 +164,8 @@
           
         ! 1st esco adjustment
         isim = 0
-        do ireg = 1, db_mx%lscal_reg
+        do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%etr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -187,9 +193,9 @@
                   lscal(ireg)%lum(ilum)%prm_lim%etco = 1.
                 end if
                            
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for 1st et calibration
                 hru(iihru)%hyd%esco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%esco = amin1 (hru(iihru)%hyd%esco, ls_prms(2)%up)
@@ -231,7 +237,8 @@
         ! adjust et using esco
         do ietco = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lscal_reg
+          do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             !check all hru's for proper lum
             soft = lscal(ireg)%lum(ilum)%meas%etr * lscal(ireg)%lum(ilum)%precip_aa
@@ -263,9 +270,9 @@
                   lscal(ireg)%lum(ilum)%prm_lim%etco = 1.
                 end if
                 
-            do ihru_s = 1, lscal(ireg)%num_tot
-                iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+                iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for et calibration
                 hru(iihru)%hyd%esco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%esco = amin1 (hru(iihru)%hyd%esco, ls_prms(2)%up)
@@ -288,6 +295,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
+            rsd1(iihru) = rsd_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
           !zero plant calibration data in case plants are calibrated
@@ -302,6 +310,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
+            rsd1(iihru) = rsd_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
           ! et adjustment 
@@ -314,7 +323,8 @@
 
         ! 1st perco adjustment (bottom layer) for percolation
         isim = 0
-        do ireg = 1, db_mx%lscal_reg
+        do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             !check all hru's for proper lum
             soft = lscal(ireg)%lum(ilum)%meas%pcr * lscal(ireg)%lum(ilum)%precip_aa
@@ -342,8 +352,8 @@
                   lscal(ireg)%lum(ilum)%prm_lim%perco = 1.
                 end if
 
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%perco = hru(iihru)%hyd%perco + chg_val
@@ -373,6 +383,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
+            rsd1(iihru) = rsd_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! 1st perco adjustment 
@@ -384,7 +395,8 @@
           ! adjust percolation using perco
           do iperco = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lscal_reg
+          do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%pcr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -416,9 +428,9 @@
                 end if
 
             !check all hru's for proper lum
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%perco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%perco = amin1 (hru(iihru)%hyd%perco, ls_prms(8)%up)
@@ -447,6 +459,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
+            rsd1(iihru) = rsd_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! perco adjustment 
@@ -459,7 +472,8 @@
 
         ! 1st lat_len adjustment for lateral soil flow
         isim = 0
-        do ireg = 1, db_mx%lscal_reg
+        do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             !check all hru's for proper lum
             soft = lscal(ireg)%lum(ilum)%meas%lfr * lscal(ireg)%lum(ilum)%precip_aa
@@ -488,9 +502,9 @@
                   lscal(ireg)%lum(ilum)%prm_lim%lat_len = 1.
                 end if
                 
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val
                 hru(iihru)%topo%lat_len = amin1 (hru(iihru)%topo%lat_len, ls_prms(3)%up)
@@ -517,6 +531,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
+            rsd1(iihru) = rsd_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! 1st lat_len adjustment 
@@ -528,7 +543,8 @@
         ! adjust lat_len adjustment for lateral soil flow
         do ik = 1, iter_ind
           isim = 0
-        do ireg = 1, db_mx%lscal_reg
+        do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%lfr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -560,9 +576,9 @@
                 end if
                 
             !check all hru's for proper lum
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val
                 hru(iihru)%topo%lat_len = amin1 (hru(iihru)%topo%lat_len, ls_prms(3)%up)
@@ -589,6 +605,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
+            rsd1(iihru) = rsd_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! lat_len adjustment for lateral soil flow
@@ -600,7 +617,8 @@
           
         ! 1st cn3_swf adjustment
         isim = 0
-        do ireg = 1, db_mx%lscal_reg
+        do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -628,9 +646,9 @@
                   lscal(ireg)%lum(ilum)%prm_lim%cn3_swf = 1.
                 end if
 
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%cn3_swf = hru(iihru)%hyd%cn3_swf + chg_val
                 hru(iihru)%hyd%cn3_swf = amin1 (hru(iihru)%hyd%cn3_swf, ls_prms(10)%up)
@@ -658,6 +676,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
+            rsd1(iihru) = rsd_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! 1st cn3_swf adjustment 
@@ -669,7 +688,8 @@
           ! adjust surface runoff using cn3_swf
           do icn = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lscal_reg
+          do iregion = 1, db_mx%lcu_reg
+          ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -701,9 +721,9 @@
                 end if
             
             !check all hru's for proper lum
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%cn3_swf = hru(iihru)%hyd%cn3_swf + chg_val
                 hru(iihru)%hyd%cn3_swf = amin1 (hru(iihru)%hyd%cn3_swf, ls_prms(10)%up)
@@ -731,6 +751,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
+            rsd1(iihru) = rsd_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! cn3_swf adjustment

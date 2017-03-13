@@ -71,6 +71,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
       
 	implicit none
 	      
@@ -109,9 +110,9 @@
 	hvol = soil(j)%phys(bz_lyr)%st * bza * 10.
 	rtof = 0.5
 
-	nh3_init = soil(j)%nut(bz_lyr)%nh3
-	no3_init = soil(j)%nut(bz_lyr)%no3
-	solp_init = soil(j)%nut(bz_lyr)%solp
+	nh3_init = soil1(j)%mn(bz_lyr)%nh4
+	no3_init = soil1(j)%mn(bz_lyr)%no3
+	solp_init = soil1(j)%mp(bz_lyr)%lab
 
 	!! Failing system: STE saturates upper soil layers
 	if (sep(isep)%opt == 2) then
@@ -126,13 +127,13 @@
            (soil(j)%phys(bz_lyr)%por - soil(j)%phys(bz_lyr)%wp) 
          soil(j)%phys(bz_lyr)%fc=sep(isep)%thk*(soil(j)%phys(bz_lyr)%up-   &
            soil(j)%phys(bz_lyr)%wp)
-		 soil(j)%nut(bz_lyr)%nh3 = 0
-		 soil(j)%nut(bz_lyr)%no3 = 0
-		 soil(j)%nut(bz_lyr)%orgn = 0
-		 soil(j)%nut(bz_lyr)%orgp = 0
-		 soil(j)%nut(bz_lyr)%fop = 0
-		 soil(j)%nut(bz_lyr)%solp = 0
-           soil(j)%nut(bz_lyr)%actp = 0
+		 soil1(j)%mn(bz_lyr)%nh4 = 0
+		 soil1(j)%mn(bz_lyr)%no3 = 0
+		 soil1(j)%hp(bz_lyr)%n = 0
+		 soil1(j)%hp(bz_lyr)%p = 0
+		 soil1(j)%tot(bz_lyr)%p = 0    !! nbs ?
+		 soil1(j)%mp(bz_lyr)%lab = 0
+         soil1(j)%mp(bz_lyr)%act = 0
 		 biom(j) = 0		
          plqm(j) = 0
 		 bio_bod(j) = 0
@@ -152,21 +153,21 @@
 
 	! Add STE nutrients to appropriate soil pools in mass unit
 	xx = qin / bza / 1000. ! used for unit conversion: mg/l -> kg/ha
-      soil(j)%nut(bz_lyr)%no3 = soil(j)%nut(bz_lyr)%no3 + xx *            &
+      soil1(j)%mn(bz_lyr)%no3 = soil1(j)%mn(bz_lyr)%no3 + xx *            &
                     (sepdb(sep(isep)%typ)%no3concs +                      &                   
                      sepdb(sep(isep)%typ)%no2concs)  
-      soil(j)%nut(bz_lyr)%nh3 = soil(j)%nut(bz_lyr)%nh3 + xx *            &
+      soil1(j)%mn(bz_lyr)%nh4 = soil1(j)%mn(bz_lyr)%nh4 + xx *            &
                                     sepdb(sep(isep)%typ)%nh4concs 
-      soil(j)%nut(bz_lyr)%orgn = soil(j)%nut(bz_lyr)%orgn+xx*             & 
+      soil1(j)%hp(bz_lyr)%n = soil1(j)%hp(bz_lyr)%n + xx *                & 
                                    sepdb(sep(isep)%typ)%orgnconcs*rtof
-      soil(j)%nut(bz_lyr)%fon = soil(j)%nut(bz_lyr)%fon +                 &
+      soil1(j)%tot(bz_lyr)%n = soil1(j)%tot(bz_lyr)%n +                 &
                xx*sepdb(sep(isep)%typ)%orgnconcs*(1-rtof)
-      soil(j)%nut(bz_lyr)%orgp=soil(j)%nut(bz_lyr)%orgp+xx*               &
+      soil1(j)%hp(bz_lyr)%p = soil1(j)%hp(bz_lyr)%p + xx *                &
                                     sepdb(sep(isep)%typ)%orgps*rtof
-      soil(j)%nut(bz_lyr)%fop = soil(j)%nut(bz_lyr)%fop+xx *              &
+      soil1(j)%tot(bz_lyr)%p = soil1(j)%tot(bz_lyr)%p + xx *              &
                                     sepdb(sep(isep)%typ)%orgps*           &        
                                     (1-rtof)
-      soil(j)%nut(bz_lyr)%solp=soil(j)%nut(bz_lyr)%solp+xx*               &
+      soil1(j)%mp(bz_lyr)%lab = soil1(j)%mp(bz_lyr)%lab + xx*             &
                      sepdb(sep(isep)%typ)%minps  
       bio_bod(j)=bio_bod(j)+xx*sepdb(sep(isep)%typ)%bodconcs   ! J.Jeong 4/03/09
 
@@ -179,7 +180,7 @@
 
 	!! Saturated water content in the biozone - Eq. 4-7    
 	! mm = mm - kg/ha / (kg/m^3 * 10)
-      soil(j)%phys(bz_lyr)%ul = soil(j)%phys(bz_lyr)%por *               & 
+      soil(j)%phys(bz_lyr)%ul = soil(j)%phys(bz_lyr)%por *                & 
                           sep(isep)%thk-plqm(j) /(sep(isep)%bd*10.)
 
 	if(soil(j)%phys(bz_lyr)%ul.le.soil(j)%phys(bz_lyr)%fc) then
@@ -210,12 +211,12 @@
 	nh3_inflw_ste = xx * sepdb(sep(isep)%typ)%nh4concs
 	no3_inflow_ste = xx*(sepdb(sep(isep)%typ)%no3concs +                   &                  
            sepdb(sep(isep)%typ)%no2concs) 
-	nh3_begin = soil(j)%nut(bz_lyr)%nh3
-	no3_begin = soil(j)%nut(bz_lyr)%no3
-	solp_begin = soil(j)%nut(bz_lyr)%solp
+	nh3_begin = soil1(j)%mn(bz_lyr)%nh4
+	no3_begin = soil1(j)%mn(bz_lyr)%no3
+	solp_begin = soil1(j)%mp(bz_lyr)%lab
 
 	!! Add STE f.coli concentration by volumetric averaging
-      xx = 10.* soil(j)%phys(bz_lyr)%st * bza / (qin                         &
+      xx = 10.* soil(j)%phys(bz_lyr)%st * bza / (qin                       &
            + 10.* soil(j)%phys(bz_lyr)%st * bza)
 	fcoli(j) = fcoli(j) * xx + sepdb(sep(isep)%typ)%fcolis * (1.- xx)      ! J.Jeong 3/09/09
 	
@@ -236,48 +237,48 @@
 
 	!! change in nh3 & no3 in soil pools due to nitrification(kg/ha) Eq.4-13, 4-14  
 	ntr_rt = max(0.,sep(isep)%nitr * rtrate)			!nitrification
-	rnit = soil(j)%nut(bz_lyr)%nh3 * (1. - Exp(-ntr_rt)) !! J.Jeong 4/03/09
-	soil(j)%nut(bz_lyr)%nh3 = soil(j)%nut(bz_lyr)%nh3 - rnit	!J.Jeong 3/09/09
-	soil(j)%nut(bz_lyr)%no3 = soil(j)%nut(bz_lyr)%no3 + rnit	!J.Jeong 3/09/09
+	rnit = soil1(j)%mn(bz_lyr)%nh4 * (1. - Exp(-ntr_rt)) !! J.Jeong 4/03/09
+	soil1(j)%mn(bz_lyr)%nh4 = soil1(j)%mn(bz_lyr)%nh4 - rnit	!J.Jeong 3/09/09
+	soil1(j)%mn(bz_lyr)%no3 = soil1(j)%mn(bz_lyr)%no3 + rnit	!J.Jeong 3/09/09
 	
 	!ammonium percolation
-	nperc = 0.2 * qout / qi * soil(j)%nut(bz_lyr)%nh3
-	nperc = min(nperc,0.5*soil(j)%nut(bz_lyr)%nh3)
-	soil(j)%nut(bz_lyr)%nh3 = soil(j)%nut(bz_lyr)%nh3 - nperc
-	soil(j)%nut(bz_lyr+1)%nh3 = soil(j)%nut(bz_lyr+1)%nh3 + nperc
+	nperc = 0.2 * qout / qi * soil1(j)%mn(bz_lyr)%nh4
+	nperc = min(nperc,0.5 * soil1(j)%mn(bz_lyr)%nh4)
+	soil1(j)%mn(bz_lyr)%nh4 = soil1(j)%mn(bz_lyr)%nh4 - nperc
+	soil1(j)%mn(bz_lyr+1)%nh4 = soil1(j)%mn(bz_lyr+1)%nh4 + nperc
 
 	!! denitrification,(kg/ha) Eq 4-14  
 	dentr_rt = max(0.,sep(isep)%denitr * rtrate)		!denitrification
-      rdenit = soil(j)%nut(bz_lyr)%no3 * (1. - Exp(-dentr_rt))	!J.Jeong 3/09/09
-	soil(j)%nut(bz_lyr)%no3 = soil(j)%nut(bz_lyr)%no3 - rdenit		!J.Jeong 3/09/09
+      rdenit = soil1(j)%mn(bz_lyr)%no3 * (1. - Exp(-dentr_rt))	!J.Jeong 3/09/09
+	soil1(j)%mn(bz_lyr)%no3 = soil1(j)%mn(bz_lyr)%no3 - rdenit		!J.Jeong 3/09/09
 
  	!soil volume for sorption: soil thickness below biozone 
       svolp = (soil(j)%phys(nly)%d - sep(isep)%z) * bza * 10. !m3, 
    
    !max adsorption amnt: linear isotherm, McCray 2005
-      solpconc = soil(j)%nut(bz_lyr)%solp * bza / qi * 1000. !mg/l
+      solpconc = soil1(j)%mp(bz_lyr)%lab * bza / qi * 1000. !mg/l
 	solpsorb = min(sep(isep)%pdistrb * solpconc,sep(isep)%psorpmax) !mgP/kgSoil
 	solpsorb = 1.6 * 1.e-3 * solpsorb * svolp *                    &
             (1-soil(j)%phys(bz_lyr)%por) !kgP sorption potential	
 
   !check if max. P sorption is reached 
-      if(soil(j)%nut(bz_lyr)%solp*bza<solpsorb) then
-       totalp = soil(j)%nut(bz_lyr)%solp + soil(j)%nut(bz_lyr)%actp 
+      if(soil1(j)%mp(bz_lyr)%lab * bza<solpsorb) then
+       totalp = soil1(j)%mp(bz_lyr)%lab + soil1(j)%mp(bz_lyr)%act 
        solp_end = sep(isep)%solpslp * totalp  + sep(isep)%solpintc
-        if (solp_end>soil(j)%nut(bz_lyr)%solp) then
-         solp_end = soil(j)%nut(bz_lyr)%solp
+        if (solp_end > soil1(j)%mp(bz_lyr)%lab) then
+         solp_end = soil1(j)%mp(bz_lyr)%lab
         endif 
-      soil(j)%nut(bz_lyr)%actp = soil(j)%nut(bz_lyr)%actp +          &
-           soil(j)%nut(bz_lyr)%solp-solp_end
-      soil(j)%nut(bz_lyr)%solp = solp_end
+      soil1(j)%mp(bz_lyr)%act = soil1(j)%mp(bz_lyr)%act +          &
+           soil1(j)%mp(bz_lyr)%lab - solp_end
+      soil1(j)%mp(bz_lyr)%lab = solp_end
       endif	     
-      solpconc = soil(j)%nut(bz_lyr)%solp * bza / qi * 1000. !mg/l
+      solpconc = soil1(j)%mp(bz_lyr)%lab * bza / qi * 1000. !mg/l
 	percp(j) = 0.01*solpconc * qout / bza * 1.e-3
-	soil(j)%nut(bz_lyr)%solp = soil(j)%nut(bz_lyr)%solp - percp(j) !kg/ha
-      soil(j)%nut(bz_lyr+1)%solp =soil(j)%nut(bz_lyr+1)%solp + percp(j) !kg/ha	     
-      nh3_end = soil(j)%nut(bz_lyr)%nh3
-	no3_end = soil(j)%nut(bz_lyr)%no3
-      solp_end = soil(j)%nut(bz_lyr)%solp  
+	soil1(j)%mp(bz_lyr)%lab = soil1(j)%mp(bz_lyr)%lab - percp(j) !kg/ha
+      soil1(j)%mp(bz_lyr+1)%lab = soil1(j)%mp(bz_lyr+1)%lab + percp(j) !kg/ha	     
+      nh3_end = soil1(j)%mn(bz_lyr)%nh4
+	no3_end = soil1(j)%mn(bz_lyr)%no3
+      solp_end = soil1(j)%mp(bz_lyr)%lab  
 
 	!! daily change in live bacteria biomass(kg/ha) Eq. 4-1 
 	! kg/ha = m^3 * mg/L/(1000.*ha)6
@@ -305,7 +306,7 @@
          p4 = solpconc
 
 	write(173,1000) ihru,time%yrc,iida,precipday,qout,             &
-        soil(j)%phys(bz_lyr)%ul, soil(j)%phys(bz_lyr)%st,            &
+        soil(j)%phys(bz_lyr)%ul, soil(j)%phys(bz_lyr)%st,          &
         soil(j)%phys(bz_lyr)%fc,n1,n2,n3,n4,n5,n6,n7,n8,p1,p2,p3,p4
 	endif 	
        

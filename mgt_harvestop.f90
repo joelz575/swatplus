@@ -79,6 +79,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
       
       integer :: j, k
 
@@ -224,9 +225,9 @@
       
             
       !! add clippings to residue and organic n and p
-      hru(j)%rsd_flt(ipl)%mass = hru(j)%rsd_flt(ipl)%mass + clip
-      hru(j)%rsd_flt(ipl)%nmass = clipn + hru(j)%rsd_flt(ipl)%nmass
-      hru(j)%rsd_flt(ipl)%pmass = clipp + hru(j)%rsd_flt(ipl)%pmass
+      rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m + clip
+      rsd1(j)%tot(ipl)%n = clipn + rsd1(j)%tot(ipl)%n
+      rsd1(j)%tot(ipl)%p = clipp + rsd1(j)%tot(ipl)%p
 
             !!insert new biomss by zhang
             !!===============================
@@ -268,7 +269,7 @@
 
                !kg/ha  
 	          sol_min_n = 0.	
-	          sol_min_n = (soil(j)%nut(1)%no3 + soil(j)%nut(1)%nh3)
+	          sol_min_n = (rsd1(j)%mn%no3 + rsd1(j)%mn%nh4)
 	          	          
 	          resnew = clip 
 	          resnew_n = clipn   	    
@@ -299,38 +300,38 @@
 
 	          LSF =  1 - LMF  
         	  
-	          soil(j)%cbn(1)%lm = soil(j)%cbn(1)%lm + LMF * resnew
-	          soil(j)%cbn(1)%ls = soil(j)%cbn(1)%ls + LSF * resnew
+	          rsd1(j)%meta%m = rsd1(j)%meta%m + LMF * resnew
+	          rsd1(j)%str%m = rsd1(j)%str%m + LSF * resnew
         	  
 	          !In Jimmy's code, lignin added to sol_LSL is calculated as RLR*LSF*resnew
 	          !However, I think we should use RLR*resnew; Confirmed with Jimmy
 	          !sol_LSL(1,j) = sol_LSL(1,j) + RLR* LSF * resnew	
-	          soil(j)%cbn(1)%lsl = soil(j)%cbn(1)%lsl + RLR*resnew
+	          rsd1(j)%lig%m = rsd1(j)%lig%m + RLR *resnew
 	                    
-	          soil(j)%cbn(1)%lsc = soil(j)%cbn(1)%lsc + 0.42*LSF * resnew  
+	          rsd1(j)%str%c = rsd1(j)%str%c + 0.42*LSF * resnew  
 	          !In allignment with the sol_LSL calculation, sol_LSLC is also changed
 	          !sol_LSLC(1,j) = sol_LSLC(1,j) + RLR*0.42*LSF * resnew
-	          soil(j)%cbn(1)%lslc = soil(j)%cbn(1)%lslc + RLR*0.42+resnew
-	          soil(j)%cbn(1)%lslnc=soil(j)%cbn(1)%lsc-soil(j)%cbn(1)%lslc 
+	          rsd1(j)%lig%c = rsd1(j)%lig%c + RLR*0.42+resnew
+	          rsd1(j)%lig%n = rsd1(j)%str%c - rsd1(j)%lig%c 
                 
                 !X3 = MIN(X6,0.42*LSF * resnew/150)                 
 	          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
-		         soil(j)%cbn(1)%lsn=soil(j)%cbn(1)%lsn+0.42*LSF*resnew/150
-		         soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn + resnew_ne -         &
+		         rsd1(j)%str%n = rsd1(j)%str%n + 0.42*LSF*resnew/150
+		         rsd1(j)%meta%n = rsd1(j)%meta%n + resnew_ne -         &
                                (0.42 * LSF * resnew / 150) + 1.E-25
 	          else
-		         soil(j)%cbn(1)%lsn = soil(j)%cbn(1)%lsn + resnew_ne
-		         soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn + 1.E-25
+		         rsd1(j)%str%n = rsd1(j)%str%n + resnew_ne
+		         rsd1(j)%meta%n = rsd1(j)%meta%n + 1.E-25
 	          end if
         	
 	          !LSNF = sol_LSN(1,j)/(sol_LS(1,j)+1.E-5)	
         	  
-	          soil(j)%cbn(1)%lmc = soil(j)%cbn(1)%lmc + 0.42 * LMF * resnew
+	          rsd1(j)%meta%c = rsd1(j)%meta%c + 0.42 * LMF * resnew
 	          !LMNF = sol_LMN(1,j)/(sol_LM(1,j) + 1.E-5)           
                 
                 !update no3 and nh3 in soil
-                soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 * (1-sf)
-                soil(j)%nut(1)%nh3 = soil(j)%nut(1)%nh3 * (1-sf)
+                rsd1(j)%mn%no3 = rsd1(j)%mn%no3 * (1-sf)
+                rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 * (1-sf)
             end if
             !!insert new biomss by zhang
             !!=============================
@@ -391,8 +392,8 @@
       !! allocate roots, N, and P to soil pools	! Armen 20 May 2008
       do l = 1, soil(j)%nly
        soil(j)%ly(l)%rsd=soil(j)%ly(l)%rsd+soil(j)%ly(l)%rtfr * rtresnew
-       soil(j)%nut(l)%fon=soil(j)%nut(l)%fon+soil(j)%ly(l)%rtfr * rtresn
-       soil(j)%nut(l)%fop=soil(j)%nut(l)%fop+soil(j)%ly(l)%rtfr * rtresp
+       soil1(j)%tot(l)%n = soil1(j)%tot(l)%n + soil(j)%ly(l)%rtfr * rtresn
+       soil1(j)%tot(l)%p = soil1(j)%tot(l)%p + soil(j)%ly(l)%rtfr * rtresp
 
              !!insert new biomss by zhang
              !!=============================
@@ -430,7 +431,7 @@
 
                 !kg/ha  
 	          sol_min_n = 0.	
-	          sol_min_n = (soil(j)%nut(l)%no3 + soil(j)%nut(l)%nh3)
+	          sol_min_n = (soil1(j)%mn(l)%no3 + soil1(j)%mn(l)%nh4)
 	          	          
 	          resnew = soil(j)%ly(l)%rtfr * rtresnew
 	          !resnew_n = resnew * pcom(j)%plm(ipl)%n_fr     	    
@@ -458,30 +459,34 @@
 
 	          LSF =  1 - LMF  
         	  
-	          soil(j)%cbn(l)%lm = soil(j)%cbn(l)%lm + LMF * resnew
-	          soil(j)%cbn(l)%ls = soil(j)%cbn(l)%ls + LSF * resnew
+	          soil1(j)%meta(l)%m = soil1(j)%meta(l)%m + LMF * resnew
+	          soil1(j)%str(l)%m = soil1(j)%str(l)%m + LSF * resnew
 
                 
 	          !here a simplified assumption of 0.5 LSL
 	          LSLF = 0.0
 	          LSLF = CLG          
 	          
-	          soil(j)%cbn(l)%lsl = soil(j)%cbn(l)%lsl + RLR* LSF * resnew
-	          soil(j)%cbn(l)%lsc = soil(j)%cbn(l)%lsc + 0.42*LSF * resnew  
+	          soil1(j)%lig(l)%m = soil1(j)%lig(l)%m + RLR* LSF * resnew
+	          soil1(j)%str(l)%c = soil1(j)%str(l)%c + 0.42*LSF * resnew  
 	          
-	          soil(j)%cbn(l)%lslc=soil(j)%cbn(l)%lslc+RLR*0.42*LSF * resnew
-	          soil(j)%cbn(l)%lslnc = soil(j)%cbn(l)%lsc -                   & 
-                           soil(j)%cbn(1)%lslc
+	          soil1(j)%lig(l)%c = soil1(j)%lig(l)%c + RLR * 0.42 * LSF * resnew
+        !!!!!!!!!!!!!!The following two lines have not been renamed completely because 
+        !!!!!!!!!!!!!!of an error; the two commented lines are the renamed vars that won't compile
+              soil1(j)%lig(l)%n = soil1(j)%str(l)%c -                   & 
+                           soil1(j)%lig(1)%c
+              !soil1(j)%lig(l)%n = soil1(j)%str(l)%c -                   & 
+              !             rsd1(j)%lig%c
                 
                
 	          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
-		         soil(j)%cbn(l)%lsn = soil(j)%cbn(l)%lsn + 0.42 *             & 
+		         soil1(j)%str(l)%n = soil1(j)%str(l)%n + 0.42 *             & 
                                LSF * resnew/150.
-		         soil(j)%cbn(l)%lmn = soil(j)%cbn(l)%lmn + resnew_ne -        &
+		         soil1(j)%meta(l)%n = soil1(j)%meta(l)%n + resnew_ne -        &
                                (0.42 * LSF * resnew / 150) + 1.E-25
 	          else
-		         soil(j)%cbn(l)%lsn = soil(j)%cbn(l)%lsn + resnew_ne
-		         soil(j)%cbn(l)%lmn = soil(j)%cbn(l)%lmn + 1.E-25
+		         soil1(j)%str(l)%n = soil1(j)%str(l)%n + resnew_ne
+		         soil1(j)%meta(l)%n = soil1(j)%meta(l)%n + 1.E-25
 	          end if	
 	          
 	          
@@ -489,12 +494,12 @@
         	
 	          !LSNF = sol_LSN(1,j)/(sol_LS(1,j)+1.E-5)	
         	  
-	          soil(j)%cbn(l)%lmc = soil(j)%cbn(l)%lmc + 0.42 * LMF * resnew
+	          soil1(j)%meta(l)%c = soil1(j)%meta(l)%c + 0.42 * LMF * resnew
 	          !LMNF = sol_LMN(1,j)/(sol_LM(1,j) + 1.E-5)           
                 
                 !update no3 and nh3 in soil
-                soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 * (1-sf)
-                soil(j)%nut(1)%nh3 = soil(j)%nut(1)%nh3 * (1-sf)  
+                rsd1(j)%mn%no3 = rsd1(j)%mn%no3 * (1-sf)
+                rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 * (1-sf)  
              end if        
              !!insert new biomass by zhang
              !!=============================

@@ -76,18 +76,30 @@
             select case (cal_parms(ipar)%ob_typ)
             case ('hru')
               cal_upd(i)%num_elem = sp_ob%hru
-            case ('hru_lte')
+            case ('lyr')
+              cal_upd(i)%num_elem = sp_ob%hru
+            case ('sol')
+              cal_upd(i)%num_elem = sp_ob%hru
+            case ('hlt')
               cal_upd(i)%num_elem = sp_ob%hru_lte
             case ('sub')
               cal_upd(i)%num_elem = sp_ob%sub
-            case ('aqu')
+            case ('gw')
               cal_upd(i)%num_elem = sp_ob%aqu
-            case ('chan')
+            case ('rte')
+              cal_upd(i)%num_elem = sp_ob%chan
+            case ('swq')
               cal_upd(i)%num_elem = sp_ob%chan
             case ('res')
               cal_upd(i)%num_elem = sp_ob%res
-            case ('chandeg')
+            case ('sdc')
               cal_upd(i)%num_elem = sp_ob%chandeg
+            case ('bsn')
+              cal_upd(i)%num_elem = 1
+            case ('pcp')
+              cal_upd(i)%num_elem = db_mx%pcpfiles
+            case ('tmp')
+              cal_upd(i)%num_elem = db_mx%tmpfiles
             end select
             
             allocate (cal_upd(i)%num(cal_upd(i)%num_elem))

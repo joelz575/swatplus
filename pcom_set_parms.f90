@@ -27,6 +27,8 @@
       use hru_module
       use jrw_datalib_module
       use conditional_module
+      use organic_mineral_mass_module
+      
       integer, intent (in) :: init
          
       j = ihru
@@ -62,21 +64,24 @@
           deallocate (hru(j)%veg_ag)
           deallocate (hru(j)%grain)
           deallocate (hru(j)%root)
+          
           deallocate (hru(j)%rsd_flt)
-          deallocate (hru(j)%rsd_std)
+          deallocate (rsd1(j)%tot)
         end if
         
         pcom(j)%npl = pcomdb(icom)%plants_com
         nop(j) = 1
-        allocate (pcom(j)%plg(pcom(j)%npl)) 
-        allocate (pcom(j)%plm(pcom(j)%npl)) 
-        allocate (pcom(j)%plstr(pcom(j)%npl)) 
-        allocate (pcom(j)%plcur(pcom(j)%npl)) 
-        allocate (hru(j)%veg_ag(pcom(j)%npl))
-        allocate (hru(j)%grain(pcom(j)%npl))
-        allocate (hru(j)%root(pcom(j)%npl))
-        allocate (hru(j)%rsd_flt(pcom(j)%npl))
-        allocate (hru(j)%rsd_std(pcom(j)%npl))
+        ipl = pcom(j)%npl
+        allocate (pcom(j)%plg(ipl)) 
+        allocate (pcom(j)%plm(ipl)) 
+        allocate (pcom(j)%plstr(ipl)) 
+        allocate (pcom(j)%plcur(ipl)) 
+        allocate (hru(j)%veg_ag(ipl))
+        allocate (hru(j)%grain(ipl))
+        allocate (hru(j)%root(ipl))
+        
+        allocate (hru(j)%rsd_flt(ipl))
+        allocate (rsd1(j)%tot(ipl))
 
         cvm_com(j) = 0.
         blai_com(j) = 0.
@@ -88,10 +93,10 @@
           pcom(j)%plcur(ipl)%gro = pcomdb(icom)%pl(ipl)%igro
           pcom(j)%plcur(ipl)%idorm = 1
           idp = pcomdb(icom)%pl(ipl)%db_num
-          hru(j)%rsd_flt(ipl)%mass = pcomdb(icom)%pl(ipl)%rsdin
+          rsd1(j)%tot(ipl)%m = pcomdb(icom)%pl(ipl)%rsdin
           !set fresh organic pools--assume cn ratio = 57 and cp ratio = 300
-          hru(j)%rsd_flt(ipl)%nmass = 0.43 * hru(j)%rsd_flt(ipl)%mass / 57.
-          hru(j)%rsd_flt(ipl)%pmass = 0.43 * hru(j)%rsd_flt(ipl)%mass / 300.
+          rsd1(j)%tot(ipl)%n = 0.43 * rsd1(j)%tot(ipl)%m / 57.
+          rsd1(j)%tot(ipl)%p = 0.43 * rsd1(j)%tot(ipl)%m / 300.
           pcom(j)%plg(ipl)%phumat = pcomdb(icom)%pl(ipl)%phu
           pcom(j)%plg(ipl)%lai = pcomdb(icom)%pl(ipl)%lai
           pcom(j)%plm(ipl)%mass = pcomdb(icom)%pl(ipl)%bioms

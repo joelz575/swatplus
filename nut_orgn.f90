@@ -40,6 +40,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
+      use organic_mineral_mass_module
 
       integer, intent (in) :: iwave
       integer :: j
@@ -53,7 +54,7 @@
       er = 0.		!! enrichment ratio
       if (iwave <= 0) then
         !! HRU calculations
-        xx = soil(j)%nut(1)%orgn+soil(j)%nut(1)%aorgn+soil(j)%nut(1)%fon
+        xx = soil1(j)%hp(1)%n + soil1(j)%hs(1)%n + rsd1(j)%tot(1)%n
         wt1 = soil(j)%phys(1)%bd * soil(j)%phys(1)%d / 100.
 
         if (hru(j)%hyd%erorgn > .001) then
@@ -82,26 +83,26 @@
 
 	!! update soil nitrogen pools only for HRU calculations
       if (iwave <= 0 .and. xx > 1.e-6) then
-       soil(j)%nut(1)%aorgn = soil(j)%nut(1)%aorgn - sedorgn(j) *       &
-                                      (soil(j)%nut(1)%aorgn / xx)
-       soil(j)%nut(1)%orgn = soil(j)%nut(1)%orgn - sedorgn(j) *         &   
-                                      (soil(j)%nut(1)%orgn / xx)
-       soil(j)%nut(1)%fon = soil(j)%nut(1)%fon - sedorgn(j) *           &   
-                                      (soil(j)%nut(1)%fon / xx)
+       soil1(j)%hs(1)%n = soil1(j)%hs(1)%n - sedorgn(j) *       &
+                                      (soil1(j)%hs(1)%n / xx)
+       soil1(j)%hp(1)%n = soil1(j)%hp(1)%n - sedorgn(j) *       &   
+                                      (soil1(j)%hp(1)%n / xx)
+       rsd1(j)%tot(1)%n = rsd1(j)%tot(1)%n - sedorgn(j) *   &   
+                                      (rsd1(j)%tot(1)%n / xx)
 
-       if (soil(j)%nut(1)%aorgn < 0.) then
-         sedorgn(j) = sedorgn(j) + soil(j)%nut(1)%aorgn
-         soil(j)%nut(1)%aorgn = 0.
+       if (soil1(j)%hs(1)%n < 0.) then
+         sedorgn(j) = sedorgn(j) + soil1(j)%hs(1)%n
+         soil1(j)%hs(1)%n = 0.
        end if
 
-       if (soil(j)%nut(1)%orgn < 0.) then
-         sedorgn(j) = sedorgn(j) + soil(j)%nut(1)%orgn
-         soil(j)%nut(1)%orgn = 0.
+       if (soil1(j)%hp(1)%n < 0.) then
+         sedorgn(j) = sedorgn(j) + soil1(j)%hp(1)%n
+         soil1(j)%hp(1)%n = 0.
        end if
 
-       if (soil(j)%nut(1)%fon < 0.) then
-         sedorgn(j) = sedorgn(j) + soil(j)%nut(1)%fon
-         soil(j)%nut(1)%fon = 0.
+       if (rsd1(j)%tot(1)%n < 0.) then
+         sedorgn(j) = sedorgn(j) + rsd1(j)%tot(1)%n
+         rsd1(j)%tot(1)%n = 0.
        end if
       end if
 

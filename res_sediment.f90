@@ -33,8 +33,8 @@
 
         !! compute new sediment concentration in reservoir
 	  if (ressedi < 1.e-6) ressedi = 0.0      
-	  if (ressa == 0.) ressa = 1.e-6     !! MJW added 040711
-	  velofl = (resflwo / ressa) / 10000.  !!m3/d / ha * 10000. = m/d
+	  if (res_ob(jres)%area_ha == 0.) res_ob(jres)%area_ha = 1.e-6     !! MJW added 040711
+	  velofl = (resflwo / res_ob(jres)%area_ha) / 10000.  !!m3/d / ha * 10000. = m/d
 !!	  velsetl = 1.35      !! for clay particle m/d
 	  if (velofl > 1.e-6) then
 	    trapres = res_sed(ised)%velsetlr / velofl

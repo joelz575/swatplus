@@ -38,6 +38,7 @@
       use basin_module
       use jrw_datalib_module
       use conditional_module
+      use organic_mineral_mass_module
 
       integer :: eof, isched
       character (len=80) :: titldum
@@ -100,6 +101,7 @@
       !!this section sets, allocates, and initializes the original soil database
        msoils = Max(0,db_mx%soil)
        allocate (sol(0:msoils))
+       allocate (sol1(0:msoils))       
       do isol = 1, msoils
         sol(isol)%s%snam = soildb(isol)%s%snam
         sol(isol)%s%nly = soildb(isol)%s%nly + 1    !add 10 mm layer
@@ -111,8 +113,25 @@
         mlyr = sol(isol)%s%nly
         allocate (sol(isol)%ly(mlyr))
         allocate (sol(isol)%phys(mlyr))
-        allocate (sol(isol)%nut(mlyr))   !!  nbs
-        allocate (sol(isol)%cbn(mlyr))   !!  nbs
+        
+        allocate (sol1(isol)%tot(mlyr))     !!  nbs 
+        allocate (sol(isol)%cbn(mlyr))      !!  nbs
+        allocate (sol1(isol)%hs(mlyr))      !!  nbs
+        allocate (sol1(isol)%hp(mlyr))      !!  nbs
+        allocate (sol1(isol)%microb(mlyr))  !!  nbs
+        
+        allocate (sol1(isol)%sw(mlyr))
+        allocate (sol1(isol)%sed(mlyr))
+        allocate (sol1(isol)%mn(mlyr))
+        allocate (sol1(isol)%mp(mlyr))
+        allocate (sol1(isol)%sta(mlyr))
+        allocate (sol1(isol)%act(mlyr))
+        allocate (sol1(isol)%str(mlyr))
+        allocate (sol1(isol)%lig(mlyr))
+        allocate (sol1(isol)%meta(mlyr))
+        allocate (sol1(isol)%bm(mlyr))
+        allocate (sol1(isol)%man(mlyr))
+        
         !!set first 10 mm layer
         sol(isol)%phys(1)%d = 10.
         sol(isol)%phys(1)%bd = soildb(isol)%ly(1)%bd
@@ -174,12 +193,29 @@
         nly = soil(ihru)%nly
         allocate (soil(ihru)%ly(nly))
         allocate (soil(ihru)%phys(nly))
-        allocate (soil(ihru)%nut(nly))    !!  nbs
+        allocate (soil1(ihru)%tot(nly))    !!  nbs ?
+        !!!allocate (soil(ihru)%nut(nly))     !! remove after nuts are gone
         allocate (soil(ihru)%cbn(nly))    !!  nbs
+        
+        allocate (soil1(ihru)%sw(nly))
+        allocate (soil1(ihru)%sed(nly))
+        allocate (soil1(ihru)%mn(nly))
+        allocate (soil1(ihru)%mp(nly))
+        allocate (soil1(ihru)%sta(nly))
+        allocate (soil1(ihru)%act(nly))
+        allocate (soil1(ihru)%str(nly))
+        allocate (soil1(ihru)%lig(nly))
+        allocate (soil1(ihru)%meta(nly))
+        allocate (soil1(ihru)%bm(nly))
+        allocate (soil1(ihru)%man(nly))
+        
         !! set hru soils to appropriate database soil layers
+        
+        soil1(ihru) = sol1(isol)
+        
         do ly = 1, nly
           soil(ihru)%phys(ly) = sol(isol)%phys(ly)
-          soil(ihru)%nut(ly) = sol(isol)%nut(ly)
+          soil1(ihru)%tot(ly) = sol1(isol)%tot(ly)
           soil(ihru)%cbn(ly) = sol(isol)%cbn(ly)
           soil(ihru)%ly(ly) = sol(isol)%ly(ly)
           !! set arrays that are layer and plant dependent - residue and roots

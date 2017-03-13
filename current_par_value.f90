@@ -534,19 +534,19 @@
  
       !!RES
          case ("esa")
-           res_hyd(ielem)%esa = chg_par(res_hyd(ielem)%esa,             &
+           res_ob(ielem)%esa = chg_par(res_ob(ielem)%esa,             &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
          case ("evol")
-           res_hyd(ielem)%evol = chg_par(res_hyd(ielem)%evol,           &
+           res_ob(ielem)%evol = chg_par(res_ob(ielem)%evol,           &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db) 
         
          case ("psa")
-           res_hyd(ielem)%psa = chg_par(res_hyd(ielem)%psa,             &
+           res_ob(ielem)%psa = chg_par(res_ob(ielem)%psa,             &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
          case ("pvol")
-           res_hyd(ielem)%pvol = chg_par(res_hyd(ielem)%pvol,           &
+           res_ob(ielem)%pvol = chg_par(res_ob(ielem)%pvol,           &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
          case ("nsed")

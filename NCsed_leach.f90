@@ -46,6 +46,7 @@
 
       use parm
       use jrw_datalib_module
+      use organic_mineral_mass_module
 
       integer, intent (in) :: iwave
       integer :: j
@@ -58,17 +59,12 @@
       j = 0
       j = ihru
       
-      !!for debug purpose by zhang
-      !if (iyr == 1991 .and. i==235) then
-      ! write(*,*) 'stop'
-      !end if
-
       xx = 0.
 	  wt1 = 0.  !! conversion factor
       er = 0.	!! enrichment ratio
         !! HRU calculations
         !xx = sol_n(1,j) + sol_fon(1,j) + sol_mn(1,j)
-        xx = soil(j)%cbn(1)%lsn+soil(j)%cbn(1)%lmn+soil(j)%cbn(1)%hpn+soil(j)%cbn(1)%hsn
+        xx = rsd1(j)%str%n + rsd1(j)%meta%n + soil(j)%cbn(1)%hpn + soil(j)%cbn(1)%hsn
         !wt = sol_bd(1,j) * sol_z(1,j) * 10. (tons/ha)
         !wt1 = wt/1000
         wt1 = soil(j)%phys(1)%bd * soil(j)%phys(1)%d / 100.
@@ -95,8 +91,8 @@
         
         !!add by zhang to update soil nitrogen pools
         
-		soil(j)%cbn(1)%lsn = soil(j)%cbn(1)%lsn * xx1
-		soil(j)%cbn(1)%lmn = soil(j)%cbn(1)%lmn * xx1
+		rsd1(j)%str%n = rsd1(j)%str%n * xx1
+		rsd1(j)%meta%n = rsd1(j)%meta%n * xx1
 		soil(j)%cbn(1)%hpn = soil(j)%cbn(1)%hpn * xx1
 		soil(j)%cbn(1)%hsn = soil(j)%cbn(1)%hsn * xx1
 		!sol_BMN(1,j) = sol_BMN(1,j) * xx1
@@ -116,7 +112,7 @@
       YBC=0.    !BMC LOSS WITH SEDIMENT
       YOC=0.    !Organic C loss with sediment
       YW=0.     !YW = WIND EROSION (T/HA)
-      TOT=soil(j)%cbn(1)%hpc+soil(j)%cbn(1)%hsc+soil(j)%cbn(1)%lmc+soil(j)%cbn(1)%lsc !Total organic carbon in layer 1
+      TOT = soil1(j)%hp(1)%c + soil1(j)%hs(1)%c + rsd1(j)%meta%c + rsd1(j)%str%c !Total organic carbon in layer 1
       !YEW = MIN(er*(sedyld(j)/hru(j)%area_ha+YW/hru(j)%area_ha)/(sol_mass/1000.),.9)
       ! Not sure whether should consider enrichment ratio or not!
       YEW = MIN((sedyld(j)/hru(j)%area_ha+YW/hru(j)%area_ha)/(sol_mass/1000.),.9) !fraction of soil erosion of total soil mass
@@ -126,22 +122,22 @@
 	  !YSD water erosion
 	  !YW wind erosion
       YOC=YEW*TOT
-      soil(j)%cbn(1)%hsc=soil(j)%cbn(1)%hsc*X1
-      soil(j)%cbn(1)%hpc=soil(j)%cbn(1)%hpc*X1
-      soil(j)%cbn(1)%ls=soil(j)%cbn(1)%ls*X1
-      soil(j)%cbn(1)%lm=soil(j)%cbn(1)%lm*X1
-      soil(j)%cbn(1)%lsl=soil(j)%cbn(1)%lsl*X1
-      soil(j)%cbn(1)%lsc=soil(j)%cbn(1)%lsc*X1
-      soil(j)%cbn(1)%lmc=soil(j)%cbn(1)%lmc*X1
-      soil(j)%cbn(1)%lslc=soil(j)%cbn(1)%lslc*X1
-      soil(j)%cbn(1)%lslc=soil(j)%cbn(1)%lsc-soil(j)%cbn(1)%lslc
+      soil1(j)%hs(1)%c = soil1(j)%hs(1)%c * X1
+      soil1(j)%hp(1)%c = soil1(j)%hp(1)%c * X1
+      rsd1(j)%str%m = rsd1(j)%str%m * X1
+      rsd1(j)%meta%m = rsd1(j)%meta%m * X1
+      rsd1(j)%lig%m = rsd1(j)%lig%m * X1
+      rsd1(j)%str%c = rsd1(j)%str%c * X1
+      rsd1(j)%meta%c = rsd1(j)%meta%c * X1
+      rsd1(j)%lig%c = rsd1(j)%lig%c * X1
+      rsd1(j)%lig%c = rsd1(j)%str%c - rsd1(j)%lig%c
       if (surfq(j) > 0) then
         !write(*,*) 'stop'
       end if
-      IF(soil(j)%cbn(1)%bmc>.01) THEN
+      IF(soil(j)%cbn(1)%bmc > .01) THEN
           PRMT_21 = 0.  !KOC FOR CARBON LOSS IN WATER AND SEDIMENT(500._1500.) KD = KOC * C
           PRMT_21 = 1000.
-          soil(j)%cbn(1)%woc = soil(j)%cbn(1)%lsc+soil(j)%cbn(1)%lmc+soil(j)%cbn(1)%hpc+soil(j)%cbn(1)%hsc+soil(j)%cbn(1)%bmc 
+          soil(j)%cbn(1)%woc = rsd1(j)%str%c + rsd1(j)%meta%c + soil1(j)%hp(1)%c + soil1(j)%hs(1)%c + soil(j)%cbn(1)%bmc 
           DK=.0001*PRMT_21*soil(j)%cbn(1)%woc
           !X1=PO(LD1)-S15(LD1)
           X1 = soil(j)%phys(1)%por*soil(j)%phys(1)%d-soil(j)%phys(1)%wpmm !mm
@@ -154,13 +150,13 @@
 	      !QD surface runoff
           X3=0.
           IF(V>1.E-10)THEN
-              X3=soil(j)%cbn(1)%bmc*(1.-EXP(-V/XX)) !loss of biomass C
+              X3 = soil(j)%cbn(1)%bmc * (1.-EXP(-V/XX)) !loss of biomass C
               PRMT_44 = 0. !RATIO OF SOLUBLE C CONCENTRATION IN RUNOFF TO PERCOLATE(0.1_1.)
               PRMT_44 = .5
               CO=X3/(soil(j)%ly(k)%prk + PRMT_44*(surfq(j)+soil(j)%ly(1)%flat)) !CS is the horizontal concentration
               CS=PRMT_44*CO                                     !CO is the vertical concentration
               VBC=CO*(soil(j)%ly(k)%prk) 
-              soil(j)%cbn(1)%bmc=soil(j)%cbn(1)%bmc-X3
+              soil(j)%cbn(1)%bmc = soil(j)%cbn(1)%bmc - X3
               QBC=CS*(surfq(j)+soil(j)%ly(1)%flat)
         !     COMPUTE WBMC LOSS WITH SEDIMENT
               IF(YEW>0.)THEN
@@ -184,8 +180,8 @@
           end if
           sol_thick = 0.
           sol_thick = soil(j)%phys(k)%d-soil(j)%phys(k-1)%d
-          soil(j)%cbn(1)%woc = soil(j)%cbn(k)%lsc+soil(j)%cbn(k)%lmc+soil(j)%cbn(k)%hpc+soil(j)%cbn(k)%hsc 
-          Y1=soil(j)%cbn(k)%bmc+VBC
+          soil(j)%cbn(1)%woc = soil1(j)%str(k)%c + soil1(j)%meta(k)%c + soil1(j)%hp(k)%c + soil1(j)%hs(k)%c 
+          Y1 = soil1(j)%microb(k)%c + VBC
           VBC=0.
           IF(Y1>=.01)THEN
               V=soil(j)%ly(k)%prk + soil(j)%ly(k)%flat
@@ -193,7 +189,7 @@
           END IF
           soil(j)%ly(k)%latc = VBC*(soil(j)%ly(k)%flat/(soil(j)%ly(k)%prk + soil(j)%ly(k)%flat+1.e-6))
           soil(j)%ly(k)%percc = VBC-soil(j)%ly(k)%latc
-          soil(j)%cbn(k)%bmc=Y1-VBC
+          soil1(j)%microb(k)%c = Y1 - VBC
 
         !! calculate nitrate in percolate        
         !perc_clyr = 0.

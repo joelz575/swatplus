@@ -90,6 +90,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       real, parameter :: rtoaf = 0.50
       integer :: j, ly, ifrt
@@ -107,7 +108,7 @@
          tsno3 = 0.
          tpno3 = 0.
          do ly = 1, soil(j)%nly
-           tsno3 = tsno3 + soil(j)%nut(ly)%no3 + soil(j)%nut(ly)%nh3
+           tsno3 = tsno3 + soil1(j)%mn(ly)%no3 + soil1(j)%mn(ly)%nh4
          end do
          tpno3 = pcom(j)%plm(ipl)%nmass
 
@@ -161,41 +162,42 @@
             xx = 1. - afrt_surface(j)
           endif
   
-          soil(j)%nut(ly)%no3 = soil(j)%nut(ly)%no3 + xx * dwfert *      &
+          soil1(j)%mn(ly)%no3 = soil1(j)%mn(ly)%no3 + xx * dwfert *      &
                   fertdb(ifrt)%fminn *  (1. - fertdb(ifrt)%fnh3n)
-          soil(j)%nut(ly)%nh3 = soil(j)%nut(ly)%nh3 + xx * dwfert *      &
+          soil1(j)%mn(ly)%nh4 = soil1(j)%mn(ly)%nh4 + xx * dwfert *      &
                     fertdb(ifrt)%fminn * fertdb(ifrt)%fnh3n
 
           if (bsn_cc%cswat == 0) then
-		  soil(j)%nut(ly)%fon = soil(j)%nut(ly)%fon + rtoaf * xx * dwfert     &
+		  soil1(j)%tot(ly)%n = soil1(j)%tot(ly)%n + rtoaf * xx * dwfert     &
                           * fertdb(ifrt)%forgn
-            soil(j)%nut(ly)%aorgn = soil(j)%nut(ly)%aorgn + (1. - rtoaf) &
+            soil1(j)%hs(ly)%n = soil1(j)%hs(ly)%n + (1. - rtoaf) &
                        * xx * dwfert * fertdb(ifrt)%forgn
-            soil(j)%nut(ly)%fop = soil(j)%nut(ly)%fop + rtoaf*xx*dwfert  & 
+            soil1(j)%tot(ly)%p = soil1(j)%tot(ly)%p + rtoaf*xx*dwfert  & 
                           * fertdb(ifrt)%forgp
-            soil(j)%nut(ly)%orgp=soil(j)%nut(ly)%orgp + (1.-rtoaf)*xx *  & 
+            soil1(j)%hp(ly)%p = soil1(j)%hp(ly)%p + (1.-rtoaf)*xx *      & 
                           dwfert* fertdb(ifrt)%forgp
 	    end if
 	    if (bsn_cc%cswat == 1) then
-            soil(j)%cbn(ly)%mc = soil(j)%cbn(ly)%mc + xx * dwfert *     &
+            soil1(j)%man(ly)%c = soil1(j)%man(ly)%c + xx * dwfert *     &
                                              fertdb(ifrt)%forgn * 10.
-            soil(j)%nut(ly)%mn = soil(j)%nut(ly)%mn + xx * dwfert *     &
+            soil1(j)%man(ly)%n = soil1(j)%man(ly)%n + xx * dwfert *     &
                                              fertdb(ifrt)%forgn
-            soil(j)%nut(ly)%mp = soil(j)%nut(ly)%mp + xx * dwfert *     &
+            soil1(j)%man(ly)%p = soil1(j)%man(ly)%p + xx * dwfert *     &
                                              fertdb(ifrt)%forgp
 	    end if
 
 	    !! add by zhang
 	    !!=================
 	    if (bsn_cc%cswat == 2) then
-            soil(j)%nut(ly)%fop = soil(j)%nut(ly)%fop + rtoaf*xx*dwfert  & 
+            soil1(j)%tot(ly)%p = soil1(j)%tot(ly)%p + rtoaf*xx*dwfert  & 
                           * fertdb(ifrt)%forgp
-            soil(j)%nut(ly)%orgp=soil(j)%nut(ly)%orgp+(1. - rtoaf)*xx *  & 
+            soil1(j)%hp(ly)%p = soil1(j)%hp(ly)%p + (1. - rtoaf)*xx *    & 
                           dwfert* fertdb(ifrt)%forgp	    
             !!Allocate organic fertilizer to Slow (SWAT_active) N pool;
-            soil(j)%cbn(ly)%hsn = soil(j)%cbn(ly)%hsn + (1. - rtoaf)*xx  &
+            soil1(j)%hs(ly)%n = soil1(j)%hs(ly)%n + (1. - rtoaf)*xx  &
                           * dwfert * fertdb(ifrt)%forgn
-            soil(j)%nut(ly)%aorgn = soil(j)%cbn(ly)%hsn
+            soil1(j)%hs(ly)%n = soil1(j)%hs(ly)%n          !!!!! same vars when renamed
+            
 
           !orgc_f is the fraction of organic carbon in fertilizer
           !for most fertilziers this value is set to 0.
@@ -216,25 +218,24 @@
                 end if
               end if
               XXX = X8 * X10
-              soil(j)%cbn(ly)%lmc = soil(j)%cbn(ly)%lmc + XXX
+              soil1(j)%meta(ly)%c = soil1(j)%meta(ly)%c + XXX
               YY = X1 * X10
-              soil(j)%cbn(ly)%lm = soil(j)%cbn(ly)%lm + YY
+              soil1(j)%meta(ly)%m = soil1(j)%meta(ly)%m + YY
               
               ZZ = X1 *rtoaf * fertdb(ifrt)%forgn * X10
               
-              soil(j)%cbn(ly)%lmn = soil(j)%cbn(ly)%lmn + ZZ
-              soil(j)%cbn(ly)%lsn = soil(j)%cbn(ly)%lsn + X1             &
-                            *fertdb(ifrt)%forgn -ZZ
+              soil1(j)%meta(ly)%n = soil1(j)%meta(ly)%n + ZZ
+              soil1(j)%str(ly)%n = soil1(j)%str(ly)%n + X1 * fertdb(ifrt)%forgn -ZZ
               XZ = X1 *orgc_f-XXX
-              soil(j)%cbn(ly)%lsc = soil(j)%cbn(ly)%lsc + XZ
-              soil(j)%cbn(ly)%lslc = soil(j)%cbn(ly)%lslc + XZ * .175 
-              soil(j)%cbn(ly)%lslnc=soil(j)%cbn(ly)%lslnc + XZ*(1.175)
+              soil1(j)%str(ly)%c = soil1(j)%str(ly)%c + XZ
+              soil1(j)%lig(ly)%c = soil1(j)%lig(ly)%c + XZ * .175 
+              soil1(j)%lig(ly)%n = soil1(j)%lig(ly)%n + XZ*(1.175)
               YZ = X1 - YY
-              soil(j)%cbn(ly)%ls = soil(j)%cbn(ly)%ls + YZ
-              soil(j)%cbn(ly)%lsl = soil(j)%cbn(ly)%lsl + YZ*.175
+              soil1(j)%str(ly)%m = soil1(j)%str(ly)%m + YZ
+              soil1(j)%lig(ly)%m = soil1(j)%lig(ly)%m + YZ*.175
               
-              soil(j)%nut(ly)%fon=soil(j)%cbn(ly)%lmn+                   &
-                       soil(j)%cbn(ly)%lsn
+              soil1(j)%tot(ly)%n = soil1(j)%meta(ly)%n+                   &
+                       soil1(j)%str(ly)%n
 	    
 	    end if
 	    !! add by zhang
@@ -247,22 +248,22 @@
           else
             tfp = fertdb(ifrt)%fminp
           end if
-          soil(j)%nut(ly)%solp = soil(j)%nut(ly)%solp + xx * dwfert*tfp
+          soil1(j)%mp(ly)%lab = soil1(j)%mp(ly)%lab + xx * dwfert*tfp
         end do
         
 
 !! summary calculations
-          auton = auton + dwfert * (fertdb(ifrt)%fminn +                &
+          auton = auton + dwfert * (fertdb(ifrt)%fminn +                 &
                                                    fertdb(ifrt)%forgn)
           autop = autop + dwfert * (tfp + fertdb(ifrt)%forgp)
           tauton(j) = tauton(j) + auton
           tautop(j) = tautop(j) + autop
         
-        if (pco%mgtout ==  1) then
+        if (pco%mgtout ==  'year') then
               write (143, 1000) j, time%yrc,i_mo,iida,                   & 
               fertdb(mgt%op1)%fertnm,                                    &
             "AUTOFERT", phubase(j),pcom(j)%plcur(ipl)%phuacc,            &
-              soil(j)%sw, pcom(j)%plm(ipl)%mass,                      &
+              soil(j)%sw, pcom(j)%plm(ipl)%mass,                         &
               soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j), dwfert,    &
               fertno3, fertnh3, fertorgn, fertsolp, fertorgp            
         end if

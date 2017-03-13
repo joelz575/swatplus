@@ -14,24 +14,26 @@
       use jrw_datalib_module
       use conditional_module
       use reservoir_module
+      use organic_mineral_mass_module
 
       !calibrate sediment
 
         ! 1st time of concentration adjustment
         isim = 0
-        do ireg = 1, db_mx%lscal_reg
+        do ireg = 1, db_mx%cha_reg
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%sed
             diff = 0.
             if (soft > 1.e-6) diff = abs((soft - lscal(ireg)%lum(ilum)%aa%sed) / soft)
             if (diff > .1 .and. lscal(ireg)%lum(ilum)%ha > 1.e-6 .and. lscal(ireg)%lum(ilum)%prm_lim%tconc < 1.e-6) then
             isim = 1
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                 !set parms for 1st sediment yield calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
+                rsd1(iihru) = rsd_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
@@ -43,13 +45,13 @@
                 lscal(ireg)%lum(ilum)%prev%sed = lscal(ireg)%lum(ilum)%aa%sed
                 
                 if (lscal(ireg)%lum(ilum)%prm_prev%tconc >= ls_prms(1)%pos) then
-                  chg_val = ls_prms(5)%pos - lscal(ireg)%lum(ilum)%prm_prev%tconc
-                  lscal(ireg)%lum(ilum)%prm_prev%tconc = ls_prms(5)%pos
+                  chg_val = ls_prms(6)%pos - lscal(ireg)%lum(ilum)%prm_prev%tconc
+                  lscal(ireg)%lum(ilum)%prm_prev%tconc = ls_prms(6)%pos
                   lscal(ireg)%lum(ilum)%prm_lim%tconc = 1.
                 end if
-                if (lscal(ireg)%lum(ilum)%prm_prev%tconc <= ls_prms(5)%neg) then
-                  chg_val = ls_prms(5)%pos - lscal(ireg)%lum(ilum)%prm_prev%tconc
-                  lscal(ireg)%lum(ilum)%prm_prev%tconc = ls_prms(1)%neg
+                if (lscal(ireg)%lum(ilum)%prm_prev%tconc <= ls_prms(6)%neg) then
+                  chg_val = ls_prms(6)%pos - lscal(ireg)%lum(ilum)%prm_prev%tconc
+                  lscal(ireg)%lum(ilum)%prm_prev%tconc = ls_prms(6)%neg
                   lscal(ireg)%lum(ilum)%prm_lim%tconc = 1.
                 end if
 
@@ -70,23 +72,24 @@
         do iter = 1, 2
           ! additional adjust sediment using tconc
           do isl = 1, 3
-          do ireg = 1, db_mx%lscal_reg
+          do ireg = 1, db_mx%cha_reg
           do ilum = 1, lscal(ireg)%lum_num
-            do ihru_s = 1, lscal(ireg)%num_tot
-              iihru = lscal(ireg)%num(ihru_s)
+            do ihru_s = 1, region(ireg)%num_tot
+              iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                 !set parms for 1st sediment tconc calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
+                rsd1(iihru) = rsd_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 
-                meas = lscal(ireg)%lum(ilum)%meas%sed
+                rmeas = lscal(ireg)%lum(ilum)%meas%sed
                 chg_val = - (lscal(ireg)%lum(ilum)%prm_prev%tconc - lscal(ireg)%lum(ilum)%prm_prev%tconc)                  &
-                            * (lscal(ireg)%lum(ilum)%aa%sed - meas) / (lscal(ireg)%lum(ilum)%prev%sed - meas)
-                chg_val = amin1 (chg_val, ls_prms(4)%pos)
-                chg_val = Max (chg_val, ls_prms(4)%neg)
+                            * (lscal(ireg)%lum(ilum)%aa%sed - rmeas) / (lscal(ireg)%lum(ilum)%prev%sed - rmeas)
+                chg_val = amin1 (chg_val, ls_prms(6)%pos)
+                chg_val = Max (chg_val, ls_prms(6)%neg)
                 lscal(ireg)%lum(ilum)%prm%tconc = chg_val
                 if (chg_val > .001) then
                 tconc(iihru) = tconc(iihru) / chg_val
@@ -100,27 +103,31 @@
             lscal(ireg)%lum(ilum)%aa = lscal_z
           end do
         end do
-        ! cn adjustment 
+        ! tc adjustment 
         call time_control
-        ! if within uncertainty limits (in each lum) - go on to next variable
-        
-        end do      ! icn
+        end do      ! tc
           
         ! 1st slope adjustment
-        do ireg = 1, db_mx%lscal_reg
+        do ireg = 1, db_mx%cha_reg
           do ilum = 1, lscal(ireg)%lum_num
               !check all hru's for proper lum
               do iihru = 1, mhru
-                !set parms for 1st surface runoff calibration and rerun
+                !set parms for 1st slope calibration and rerun
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                   hru(iihru) = hru_init(iihru)
                   soil(iihru) = soil_init(iihru)
+                  rsd1(iihru) = rsd_init(iihru)
                   pcom(iihru) = pcom_init(iihru)
                   lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
-                  !call time_control - check if reinitializing in working
-
-                  chg_val = lscal(ireg)%lum(ilum)%meas%sed / lscal(ireg)%lum(ilum)%aa%sed
+ 
+                  denom = lscal(ireg)%lum(ilum)%prev%srr - lscal(ireg)%lum(ilum)%aa%srr
+                  if (abs(denom) > 1.e-6) then
+                    chg_val = lscal(ireg)%lum(ilum)%meas%sed / lscal(ireg)%lum(ilum)%aa%sed
+                  else
+                    chg_val = diff / 200.
+                  end if
+                  
                   chg_val = amin1 (chg_val, ls_prms(5)%pos)
                   chg_val = Max (chg_val, ls_prms(5)%neg)
                   lscal(ireg)%lum(ilum)%prm%slope = chg_val
@@ -139,26 +146,27 @@
             lscal(ireg)%lum(ilum)%aa = lscal_z
           end do
         end do
-        ! 1st esco adjustment 
+        ! 1st tc adjustment 
         call time_control
         
         ! adjust sediment using slope and slope length
-        do isl = 1, 3
-          do ireg = 1, db_mx%lscal_reg
+        do isl = 1, 2
+          do ireg = 1, db_mx%cha_reg
           do ilum = 1, lscal(ireg)%lum_num
               !check all hru's for proper lum
               do iihru = 1, mhru
-                !set parms for 1st surface runoff calibration and rerun
+                !set parms for 1st slope calibration and rerun
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                   hru(iihru) = hru_init(iihru)
                   soil(iihru) = soil_init(iihru)
+                  rsd1(iihru) = rsd_init(iihru)
                   pcom(iihru) = pcom_init(iihru)
                   lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 
-                  meas = lscal(ireg)%lum(ilum)%meas%sed
-                  chg_val = - (lscal(ireg)%lum(ilum)%prm_prev%tconc - lscal(ireg)%lum(ilum)%prm_prev%tconc)                  &
-                            * (lscal(ireg)%lum(ilum)%aa%sed - meas) / (lscal(ireg)%lum(ilum)%prev%sed - meas)
+                  rmeas = lscal(ireg)%lum(ilum)%meas%sed
+                  chg_val = - (lscal(ireg)%lum(ilum)%prm_prev%slope - lscal(ireg)%lum(ilum)%prm_prev%slope)                  &
+                            * (lscal(ireg)%lum(ilum)%aa%sed - rmeas) / (lscal(ireg)%lum(ilum)%prev%sed - rmeas)
                   chg_val = amin1 (chg_val, ls_prms(5)%pos)
                   chg_val = Max (chg_val, ls_prms(5)%neg)
                   lscal(ireg)%lum(ilum)%prm%slope = chg_val

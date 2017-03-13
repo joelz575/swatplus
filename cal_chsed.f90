@@ -14,6 +14,7 @@
       use jrw_datalib_module
       use conditional_module
       use reservoir_module
+      use organic_mineral_mass_module
 
       !calibrate sediment
         ical_sed = 0
@@ -26,7 +27,7 @@
       do iterall = 1, iter_all
         ! 1st cover adjustment for channel widening
         isim = 0
-        do ireg = 1, db_mx%chcal_reg
+        do ireg = 1, db_mx%ch_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%chw
             diff = 0.
@@ -72,6 +73,7 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
+          rsd1(iihru) = rsd_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
@@ -90,7 +92,7 @@
           ! cover adjustment for channel widening
           do icov = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lscal_reg
+          do ireg = 1, db_mx%cha_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%chw
             diff = 0.
@@ -140,6 +142,7 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
+          rsd1(iihru) = rsd_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
@@ -158,7 +161,7 @@
 
         ! 1st bank shear coefficient adjustment for channel widening
         isim = 0
-        do ireg = 1, db_mx%chcal_reg
+        do ireg = 1, db_mx%ch_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%chw
             diff = 0.
@@ -204,6 +207,7 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
+          rsd1(iihru) = rsd_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
@@ -222,7 +226,7 @@
           ! bank shear coefficient adjustment for channel widening
           do icov = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lscal_reg
+          do ireg = 1, db_mx%cha_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%chw
             diff = 0.
@@ -272,6 +276,7 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
+          rsd1(iihru) = rsd_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
@@ -290,7 +295,7 @@
 
         ! 1st erodibility adjustment for channel downcutting
         isim = 0
-        do ireg = 1, db_mx%chcal_reg
+        do ireg = 1, db_mx%ch_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%chd
             diff = 0.
@@ -336,6 +341,7 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
+          rsd1(iihru) = rsd_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
@@ -354,7 +360,7 @@
           ! erodibility adjustment for channel downcutting
           do ierod = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lscal_reg
+          do ireg = 1, db_mx%cha_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%chd
             diff = 0.
@@ -404,6 +410,7 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
+          rsd1(iihru) = rsd_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
@@ -422,7 +429,7 @@
         
         ! 1st erodibility adjustment for head cut
         isim = 0
-        do ireg = 1, db_mx%chcal_reg
+        do ireg = 1, db_mx%ch_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%hc
             diff = 0.
@@ -469,6 +476,7 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
+          rsd1(iihru) = rsd_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
@@ -487,7 +495,7 @@
           ! erodibility adjustment for head cut
           do ierod = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lscal_reg
+          do ireg = 1, db_mx%cha_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%hc
             diff = 0.
@@ -539,6 +547,7 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
+          rsd1(iihru) = rsd_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte

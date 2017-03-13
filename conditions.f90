@@ -73,7 +73,7 @@
             
         !potentail heat units - base zero
         case ("phu_base0")
-          iwst = ob_num
+          iwst = ob(ob_num)%wst
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
               if (wst(iwst)%weat%phubase0 > d_tbl(id)%cond(ic)%lim_const) then
@@ -260,9 +260,9 @@
           ires = ob_num   !reservoir number
           select case (d_tbl(id)%cond(ic)%lim_var)
           case ("pvol")   !prinicpal storage volume
-            targ_val = res_hyd(ires)%pvol
+            targ_val = res_ob(ires)%pvol
           case ("evol")   !emergency storage volume
-            targ_val = res_hyd(ires)%evol
+            targ_val = res_ob(ires)%evol
           end select
                       
           !perform operation on target variable to get target
@@ -276,15 +276,15 @@
           case ("/")
             targ = targ_val / d_tbl(id)%cond(ic)%lim_const
           end select
-          
+
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then
-              if (phubase(ihru) > targ) then
+              if (res(ires)%flo > targ) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == ">") then
-              if (phubase(ihru) < targ) then
+              if (res(ires)%flo < targ) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if

@@ -13,7 +13,7 @@
       if (res(jres)%flo > 1.) then
         !! calculate depth of lake
         dlake = 0.
-        dlake = res(jres)%flo / (ressa * 10000.)
+        dlake = res(jres)%flo / (res_ob(jres)%area_ha * 10000.)
 
         fd1 = 1. / (1. + res_pst(ipst)%pst_koc * res(jres)%sed * 1.e6)
         fp1 = 1. - fd1
@@ -124,7 +124,7 @@
         res(jres)%psor = tpest2
         res_pst(ipst)%pst_conc = tpest1 / res(jres)%flo
         res_pst(ipst)%spst_conc = tpest2 /                               &
-                         (res_pst(ipst)%spst_act * ressa * 10000. + 1.)
+                         (res_pst(ipst)%spst_act * res_ob(jres)%area_ha * 10000. + 1.)
       else
         solpesto = 0.
         sorpesto = 0.

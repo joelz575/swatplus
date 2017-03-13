@@ -1,14 +1,12 @@
       module organic_mineral_mass_module
     
       type organic_mass
-        real :: m = 0.              !kg or kg/ha      |total object mass
-        real :: c = 0.              !kg or kg/ha      |carbon mass
-        real :: n = 0.              !kg or kg/ha      |organic nitrogen mass
-        real :: p = 0.              !kg or kg/ha      |organic phosphorus mass
+        real :: m               !kg or kg/ha      |total object mass
+        real :: c               !kg or kg/ha      |carbon mass
+        real :: n               !kg or kg/ha      |organic nitrogen mass
+        real :: p               !kg or kg/ha      |organic phosphorus mass
       end type organic_mass
-      type (organic_mass)  :: om_mass_z
-      
-      !!new stuff
+
       type clay_mass
         real :: m               !kg or kg/ha      |total object mass
         real :: nh4             !kg or kg/ha      |ammonium mass
@@ -22,34 +20,60 @@
         real :: gravel              !kg or kg/ha      |gravel mass
       end type sediment
       
+      type mineral_nitrogen
+        real :: no3                      !kg/ha  |nitrate dimensioned by layer
+        real :: nh4                      !kg/ha  |ammonium dimensioned by layer
+      end type mineral_nitrogen
+            
+      type mineral_phosphorus
+        real :: wsol                     !kg/ha  |water soluble p dimensioned by layer
+        real :: lab                      !kg/ha  |labile p dimensioned by layer
+        real :: act                      !kg/ha  |active mineral p dimensioned by layer
+        real :: sta                      !kg/ha  |stable mineral p dimensioned by layer
+      end type mineral_phosphorus
+      
       type soil_profile_mass1
         character (len=16) :: name
         real, dimension(:), allocatable :: sw                       !mm     |soil water dimensioned by layer
-        real, dimension(:), allocatable :: no3                      !kg/ha  |nitrate dimensioned by layer
-        real, dimension(:), allocatable :: nh4                      !kg/ha  |ammonium dimensioned by layer
-        real, dimension(:), allocatable :: po4                      !kg/ha  |phosphate dimensioned by layer
-        type (sediment), dimension(:), allocatable :: sed           !       |sediment
-        type (organic_mass), dimension(:), allocatable :: sta       !       |stable humus pool
-        type (organic_mass), dimension(:), allocatable :: act       !       |active humus pool
+        type (sediment), dimension(:), allocatable :: sed           !       |sediment dimensioned by layer
+        type (mineral_nitrogen), dimension(:), allocatable :: mn    !       |stable humus pool dimensioned by layer
+        type (mineral_phosphorus), dimension(:), allocatable :: mp  !       |active humus pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: sta       !       |stable humus pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: act       !       |active humus pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: tot       !       |total litter pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: str       !       |structural litter pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: lig       !       |lignin pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: meta      !       |metabolic litter pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: bm        !       |microbial biomass pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: man       !       |manure pool dimensioned by layer
+        type (organic_mass), dimension(:), allocatable :: hs        !       |slow humus (nbs added)
+        type (organic_mass), dimension(:), allocatable :: hp        !       |passive humus (nbs added)
+        type (organic_mass), dimension(:), allocatable :: microb    !       |microbial biomass (nbs added)     
       end type soil_profile_mass1
       !soil profile object - dimensioned to number of hrus, using the hru pointer
       type (soil_profile_mass1), dimension(:), allocatable :: soil1
+      type (soil_profile_mass1), dimension(:), allocatable :: sol1
       
       type residue_mass1
         character (len=16) :: name
-        type (organic_mass), dimension(:), allocatable :: man       !kg/ha            |manure (by soil layer)
-        type (organic_mass), dimension(:), allocatable :: rsd_fl    !kg/ha            |flat residue on soil surface for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: rsd_st    !kg/ha            |standing residue for individual plant in community
-        type (organic_mass), dimension(:,:), allocatable :: rsd_s   !kg/ha            |root and incorporated residue for individual plant in community (by soil layer)
-        type (organic_mass) :: rsd_tfl                              !kg/ha            |total flat residue on surface (all plants)
-        type (organic_mass) :: rsd_tst                              !kg/ha            |total standing residue (all plants)
-        type (organic_mass), dimension(:), allocatable :: rsd_ts    !kg/ha            |total residue in each soil layer
+        type (organic_mass), dimension(:), allocatable :: tot       !       |total mass surface residue litter pool-dimensioned by plant
+        type (organic_mass), dimension(:), allocatable :: ls        !       |structural litter pool-dimensioned by plant
+        type (organic_mass), dimension(:), allocatable :: lig       !       |lignin pool-dimensioned by plant
+        type (organic_mass), dimension(:), allocatable :: lm        !       |metabolic litter pool-dimensioned by plant
+        type (organic_mass) :: tot_com                              !kg/ha  |total
+        type (organic_mass) :: meta                                 !       |                            nbs added
+        type (organic_mass) :: str                                  !       |                            nbs added
+        type (organic_mass) :: bm                                   !       |microbial biomass pool
+        type (organic_mass) :: man                                  !       |manure pool
+        type (mineral_nitrogen) :: mn
+        type (mineral_phosphorus) :: mp
       end type residue_mass1
       !soil profile object - dimensioned to number of hrus, using the hru pointer
-      type (residue_mass1), dimension(:), allocatable :: rsd
+      type (residue_mass1), dimension(:), allocatable :: rsd1
+      type (residue_mass1), dimension(:), allocatable :: rsd_init
       
       type plant_community_mass1
-        character (len=4) :: name                                   !                 |same as plant_community object
+        character (len=4) :: name                                !                 |same as plant_community object
         !live biomass
         type (organic_mass), dimension(:), allocatable :: tot    !kg/ha            |total biomass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: veg    !kg/ha            |vegetative mass for individual plant in community
@@ -92,11 +116,11 @@
         type (mineral_mass) :: min
       end type organic_mineral_mass
       
-      !type soil_profile_mass
-      !  character (len=16) :: name
-      !  type (organic_mineral_mass), dimension(:), allocatable :: sol       !soil matrix dimensioned by layer
-      !  type (organic_mineral_mass), dimension(:), allocatable :: sw        !soil water dimensioned by layer
-     ! end type soil_profile_mass
+      type soil_profile_mass
+        character (len=16) :: name
+        type (organic_mineral_mass), dimension(:), allocatable :: sol       !soil matrix dimensioned by layer
+        type (organic_mineral_mass), dimension(:), allocatable :: sw        !soil water dimensioned by layer
+      end type soil_profile_mass
       !soil profile object - dimensioned to number of hrus, using the hru pointer
       !type (soil_profile_mass), dimension(:), allocatable :: soil
       
@@ -221,12 +245,11 @@
       
       !objects needed for operators
       type (organic_mineral_mass) :: o_m1, o_m2, o_m3
-      type (organic_mineral_mass) :: o1, o2, o3
 
       !we may also need operators for organic and mineral operations
       
       interface operator (+)
-        module procedure o_add
+        module procedure om_add
       end interface
             
       interface operator (**)
@@ -273,15 +296,25 @@
       end subroutine om_convert
          
       !! routines for hydrograph module
-      function o_add (o1, o2) result (o3)
-        type (organic_mass), intent (in) :: o1
-        type (organic_mass), intent (in) :: o2
-        type (organic_mass) :: o3
-        o3%m = o1%m + o2%m
-        o3%c = o1%c + o2%c
-        o3%n = o1%n + o2%n
-        o3%p = o1%p + o2%p
-      end function o_add
+      function om_add (o_m1, o_m2) result (o_m3)
+        type (organic_mineral_mass), intent (in) :: o_m1
+        type (organic_mineral_mass), intent (in) :: o_m2
+        type (organic_mineral_mass) :: o_m3
+        o_m3%vol = o_m1%vol + o_m2%vol
+        o_m3%hum%m = o_m1%hum%m + o_m2%hum%m
+        o_m3%hum%c = o_m1%hum%c + o_m2%hum%c
+        o_m3%hum%n = o_m1%hum%n + o_m2%hum%n
+        o_m3%hum%p = o_m1%hum%p + o_m2%hum%p
+        o_m3%hum_act%m = o_m1%hum_act%m + o_m2%hum_act%m
+        o_m3%hum_act%c = o_m1%hum_act%c + o_m2%hum_act%c
+        o_m3%hum_act%n = o_m1%hum_act%n + o_m2%hum_act%n
+        o_m3%hum_act%p = o_m1%hum_act%p + o_m2%hum_act%p
+        o_m3%min%m = o_m1%min%m + o_m2%min%m
+        o_m3%min%no3 = o_m1%min%no3 + o_m2%min%no3
+        o_m3%min%no2 = o_m1%min%no2 + o_m2%min%no2
+        o_m3%min%nh4 = o_m1%min%nh4 + o_m2%min%nh4
+        o_m3%min%po4 = o_m1%min%po4 + o_m2%min%po4
+      end function om_add
             
       !! routines for hydrograph module
       function om_mult (o_m1, o_m2) result (o_m3)

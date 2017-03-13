@@ -4,6 +4,11 @@
       character (len=80) :: titldum
        
       maqu_sp = sp_ob%aqu
+      
+      sumrchrg = 0.
+      sumflo = 0.
+      sumseep = 0.
+      sumrevap = 0.
 
       !allocate objects for each aquifer
       allocate (aqu(maqu_sp))

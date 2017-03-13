@@ -58,10 +58,8 @@
       real :: v2
  
       zshape = (/3, 3/)
-      a = Reshape((/.567, .253, -.006, .086, .504, -.039, -.002, -.050,     &
-                  .244/), zshape)
-      b = Reshape((/.781, .328, .238, 0., .637, -.341, 0., 0., .873/),      & 
-                  zshape)
+      a = Reshape((/.567, .253, -.006, .086, .504, -.039, -.002, -.050, .244/), zshape)
+      b = Reshape((/.781, .328, .238, 0., .637, -.341, 0., 0., .873/), zshape)
       xx = 0.
       e = 0.
 
@@ -89,6 +87,8 @@
 
       do n = 1, 3
         wgncur(n,iwgn) = wgncur(n,iwgn) + xx(n)
+        if (wgncur(n,iwgn) > 1.) wgncur(n,iwgn) = 1.
+        if (wgncur(n,iwgn) < -1.) wgncur(n,iwgn) = -1.
         wgnold(n,iwgn) = wgncur(n,iwgn)
       end do
 

@@ -51,6 +51,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, icrop, l, ir
       real :: uapl, gx
@@ -77,9 +78,9 @@
         uapl = 0.
         upmx = uapd(ipl) * rto_solp * (1. - Exp(-bsn_prm%p_updis * gx /  &
                                   sol_rd)) / uobp
-        uapl = Min(upmx - pplnt(j), soil(j)%nut(l)%solp)
+        uapl = Min(upmx - pplnt(j), soil1(j)%mp(l)%lab)
         pplnt(j) = pplnt(j) + uapl
-        soil(j)%nut(l)%solp = soil(j)%nut(l)%solp - uapl
+        soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - uapl
       end do
       if (pplnt(j) < 0.) pplnt(j) = 0.
 

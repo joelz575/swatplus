@@ -44,6 +44,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, j1, ii, isp
       real:: ul_excess,qlyr,pormm,rtof
@@ -93,20 +94,20 @@
            !nutrients in the first 10mm layer
 		   qvol = soil(j)%phys(1)%st * hru(j)%area_ha * 10.
 		   xx = qvol / hru(j)%area_ha / 1000.
-           soil(j)%nut(1)%no3 = soil(j)%nut(1)%no3 + xx *                &   
+           rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + xx *                &   
             (sepdb(sep(isep)%typ)%no3concs +                             &                      
                        sepdb(sep(isep)%typ)%no2concs)  
-           soil(j)%nut(1)%nh3 = soil(j)%nut(1)%nh3 + xx *                &
+           rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 + xx *                &
                          sepdb(sep(isep)%typ)%nh4concs                  
-           soil(j)%nut(1)%orgn=soil(j)%nut(1)%orgn + xx *                &   
+           soil1(j)%hp(1)%n = soil1(j)%hp(1)%n + xx *                    &   
                      sepdb(sep(isep)%typ)%orgnconcs * rtof
-           soil(j)%nut(1)%fon = soil(j)%nut(1)%fon + xx *                &
+           rsd1(j)%tot(1)%n = rsd1(j)%tot(1)%n + xx *                    &
                      sepdb(sep(isep)%typ)%orgnconcs * (1.-rtof)
-           soil(j)%nut(1)%orgp=soil(j)%nut(1)%orgp+xx *                  &    
+           soil1(j)%hp(1)%p = soil1(j)%hp(1)%p + xx *                    &    
                    sepdb(sep(isep)%typ)%orgps * rtof
-           soil(j)%nut(1)%fop=soil(j)%nut(1)%fop+xx*                     &
+           rsd1(j)%tot(1)%p = rsd1(j)%tot(1)%p + xx*                     &
                    sepdb(sep(isep)%typ)%orgps*(1.-rtof)
-           soil(j)%nut(1)%solp = soil(j)%nut(1)%solp + xx *              &    
+           rsd1(j)%mp%lab = rsd1(j)%mp%lab + xx *                &    
                    sepdb(sep(isep)%typ)%minps  
      
 		 endif
@@ -116,20 +117,20 @@
          
 		 ! add nutrient to soil layer
 		 xx = qvol / hru(j)%area_ha / 1000.
-		 soil(j)%nut(ii)%no3 = soil(j)%nut(ii)%no3 + xx *        &
-                        sepdb(sep(isep)%typ)%no3concs              &
+       soil1(j)%mn(ii)%no3 = soil1(j)%mn(ii)%no3 + xx *        &
+                        sepdb(sep(isep)%typ)%no3concs          &
                         + sepdb(sep(isep)%typ)%no2concs
-	   soil(j)%nut(ii)%nh3=soil(j)%nut(ii)%nh3 + xx *            &
+	   soil1(j)%mn(ii)%nh4 = soil1(j)%mn(ii)%nh4 + xx *        &
                         sepdb(sep(isep)%typ)%nh4concs
-	   soil(j)%nut(ii)%orgn=soil(j)%nut(ii)%orgn + xx *          &        
+	   soil1(j)%hp(ii)%n = soil1(j)%hp(ii)%n + xx *            &        
                         sepdb(sep(isep)%typ)%orgnconcs*rtof
-         soil(j)%nut(ii)%fon=soil(j)%nut(ii)%fon + xx *            &
+       soil1(j)%tot(ii)%n = soil1(j)%tot(ii)%n + xx *          &
                          sepdb(sep(isep)%typ)%orgnconcs * (1.-rtof)
-         soil(j)%nut(ii)%orgp=soil(j)%nut(ii)%orgp+xx *            &
+       soil1(j)%hp(ii)%p = soil1(j)%hp(ii)%p + xx *            &
                          sepdb(sep(isep)%typ)%orgps * rtof
-	   soil(j)%nut(ii)%fop = soil(j)%nut(ii)%fop + xx *          &
+	   soil1(j)%tot(ii)%p = soil1(j)%tot(ii)%p + xx *        &
                          sepdb(sep(isep)%typ)%orgps*(1.-rtof)
-         soil(j)%nut(ii)%solp = soil(jj)%nut(l)%solp + xx *        &
+       soil1(j)%mp(ii)%lab = soil1(jj)%mp(l)%lab + xx *        &
                          sepdb(sep(isep)%typ)%minps
 
 	    ii = ii - 1

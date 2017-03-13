@@ -64,6 +64,7 @@
 
       use parm
       use jrw_datalib_module
+      use organic_mineral_mass_module
 
       integer :: j
 
@@ -179,8 +180,8 @@
       sum_no3 = 0.
       sum_solp = 0.
       do nly = 1, soil(j)%nly
-        sum_no3 = sum_no3 + soil(j)%nut(nly)%no3
-        sum_solp = sum_solp + soil(j)%nut(nly)%solp
+        sum_no3 = sum_no3 + soil1(j)%mn(nly)%no3
+        sum_solp = sum_solp + soil1(j)%mp(nly)%lab
       end do
      
       call pl_grow

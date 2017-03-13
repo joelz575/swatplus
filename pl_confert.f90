@@ -93,6 +93,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j, l, it
       real :: gc, gc1, swf, frt_t, xx
@@ -109,28 +110,28 @@
         if (cfrt_kg(j) > 0.) then
           l = 1
           if (bsn_cc%cswat == 0 .or. cswat == 1) then
-          soil(j)%nut(l)%no3 = soil(j)%nut(l)%no3 + cfrt_kg(j) *     &
+          soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 + cfrt_kg(j) *     &
                        (1. - fertdb(it)%fnh3n) * fertdb(it)%fminn
-          soil(j)%nut(l)%fon = soil(j)%nut(l)%fon + cfrt_kg(j) *     &
+          soil1(j)%tot(l)%n = soil1(j)%tot(l)%n + cfrt_kg(j) *     &
                        fertdb(it)%forgn
-          soil(j)%nut(l)%nh3 = soil(j)%nut(l)%nh3 + cfrt_kg(j) *     &
+          soil1(j)%mn(l)%nh4 = soil1(j)%mn(l)%nh4 + cfrt_kg(j) *     &
                        fertdb(it)%fnh3n * fertdb(it)%fminn
-          soil(j)%nut(l)%solp = soil(j)%nut(l)%solp + cfrt_kg(j) *   &
+          soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab + cfrt_kg(j) *     &
                        fertdb(it)%fminp
-          soil(j)%nut(l)%fop = soil(j)%nut(l)%fop + cfrt_kg(j) *     &
+          soil1(j)%tot(l)%p = soil1(j)%tot(l)%p + cfrt_kg(j) *     &
                        fertdb(it)%forgp
           end if
 
           !!Add by zhang
           !!========================
           if (bsn_cc%cswat == 2) then
-            soil(j)%nut(l)%fop = soil(j)%nut(l)%fop + cfrt_kg(j) *      &   
+            soil1(j)%tot(l)%p = soil1(j)%tot(l)%p + cfrt_kg(j) *      &   
                        fertdb(it)%forgp
-            soil(j)%nut(l)%no3 = soil(j)%nut(l)%no3 + cfrt_kg(j) *      &
+            soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 + cfrt_kg(j) *      &
                        (1. - fertdb(it)%fnh3n) * fertdb(it)%fminn   
-            soil(j)%nut(l)%nh3 = soil(j)%nut(l)%nh3 + cfrt_kg(j) *      &
+            soil1(j)%mn(l)%nh4 = soil1(j)%mn(l)%nh4 + cfrt_kg(j) *      &
                        fertdb(it)%fnh3n * fertdb(it)%fminn 
-            soil(j)%nut(l)%solp = soil(j)%nut(l)%solp + cfrt_kg(j) *    &
+            soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab + cfrt_kg(j) *      &
                        fertdb(it)%fminp   
      
               orgc_f = 0.35
@@ -148,22 +149,21 @@
                 end if
               end if
               XXX = X8 * X10
-              soil(j)%cbn(l)%lmc = soil(j)%cbn(l)%lmc + XXX
+              soil1(j)%meta(l)%c = soil1(j)%meta(l)%c + XXX
               YY = X1 * X10
-              soil(j)%cbn(l)%lm = soil(j)%cbn(l)%lm + YY
+              soil1(j)%meta(l)%m = soil1(j)%meta(l)%m + YY
               ZZ = X1 *fertdb(it)%forgn * X10
-              soil(j)%cbn(l)%lmn = soil(j)%cbn(l)%lmn + ZZ
-              soil(j)%cbn(l)%lsn = soil(j)%cbn(l)%lsn + X1       &
-                            *fertdb(it)%forgn -ZZ
+              soil1(j)%meta(l)%n = soil1(j)%meta(l)%n + ZZ
+              soil1(j)%str(l)%n = soil1(j)%str(l)%n + X1 * fertdb(it)%forgn -ZZ
               XZ = X1 *orgc_f-XXX
-              soil(j)%cbn(l)%lsc = soil(j)%cbn(l)%lsc + XZ
-              soil(j)%cbn(l)%lslc = soil(j)%cbn(l)%lslc + XZ * .175
-              soil(j)%cbn(l)%lslnc=soil(j)%cbn(l)%lslnc+XZ*(1.-.175) 
+              soil1(j)%str(l)%c = soil1(j)%str(l)%c + XZ
+              soil1(j)%lig(l)%c = soil1(j)%lig(l)%c + XZ * .175
+              soil1(j)%lig(l)%n = soil1(j)%lig(l)%n + XZ*(1.-.175) 
               YZ = X1 - YY
-              soil(j)%cbn(l)%ls = soil(j)%cbn(l)%ls + YZ
-              soil(j)%cbn(l)%lsl = soil(j)%cbn(l)%lsl + YZ*.175
+              soil1(j)%str(l)%m = soil1(j)%str(l)%m + YZ
+              soil1(j)%lig(l)%m = soil1(j)%lig(l)%m + YZ *.175
               
-               soil(j)%nut(l)%fon=soil(j)%cbn(l)%lmn+soil(j)%cbn(l)%lsn
+               soil1(j)%tot(l)%n = soil1(j)%meta(l)%n + soil1(j)%str(l)%n
           
           end if
           !!Add by zhang
@@ -180,11 +180,11 @@
         tcfrtn(j) = tcfrtn(j) + cfertn
         tcfrtp(j) = tcfrtp(j) + cfertp
           
-        if (pco%mgtout == 1) then
+        if (pco%mgtout == 'year') then
          write (143, 1000) j, time%yrc, i_mo, iida,                   &
             "         ",                                              &
           "CONT FERT", phubase(j), pcom(j)%plcur(ipl)%phuacc,         &
-            soil(j)%sw, pcom(j)%plm(ipl)%mass,                     &
+            soil(j)%sw, pcom(j)%plm(ipl)%mass,                        &
             soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j), cfrt_kg(j)
         end if
      

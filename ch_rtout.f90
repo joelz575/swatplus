@@ -95,7 +95,7 @@
       use basin_module
       use jrw_datalib_module
       use time_module
-
+      
       real :: sedcon, bedvol, sedpest, wtmp
 
       wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave

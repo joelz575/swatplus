@@ -2,6 +2,7 @@
         use parm
         use nutrient_module
         use basin_module
+        use organic_mineral_mass_module
 
         !!Transput variables;
         !!  STD(:)          : standing dead (kg ha-1)                                               (Not used)
@@ -297,12 +298,12 @@
                 end if
                 wdntl = wdntl + wdn
 
-              sol_min_n = soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3
+              sol_min_n = soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4
               
               
               !lignin content in structural litter (fraction)          
               RLR = 0.
-              RLR = min(0.8,soil(j)%cbn(k)%lsl/(soil(j)%cbn(k)%ls + 1.E-5))  
+              RLR = min(0.8, soil1(j)%lig(k)%m / (soil1(j)%str(k)%m + 1.E-5))  
 
 	          !HSR=PRMT(47) !CENTURY SLOW HUMUS TRANSFORMATION RATE D^-1(0.00041_0.00068) ORIGINAL VALUE = 0.000548,
 	          HSR = 5.4799998E-04
@@ -324,7 +325,7 @@
                   XBM=1.
             !     COMPUTE N/C RATIOS
                   !X1=.1*(WLMN(LD1)+WLSN(LD1))/(RSD(LD1)+1.E-5)
-                  X1 = 0.1*(soil(j)%cbn(k)%lsn+soil(j)%cbn(k)%lmn)/(soil(j)%ly(k)%rsd/1000+1.E-5) !relative notrogen content in residue
+                  X1 = 0.1 * (soil1(j)%str(k)%n + soil1(j)%meta(k)%n) / (soil(j)%ly(k)%rsd/1000+1.E-5) !relative notrogen content in residue
                   IF(X1>2.)THEN
                       NCBM=.1
                       GO TO 6
@@ -362,25 +363,25 @@
               ASP=MAX(.001,PRMT_45-.00009*soil(j)%phys(k)%clay)
         !     POTENTIAL TRANSFORMATIONS STRUCTURAL LITTER
               X1=LSR*CS*EXP(-3.*RLR)
-              LSCTP=X1*soil(j)%cbn(k)%lsc
+              LSCTP = X1*soil1(j)%str(k)%c
               LSLCTP=LSCTP*RLR
               LSLNCTP=LSCTP*(1.-RLR)
-              LSNTP=X1 * soil(j)%cbn(k)%lsn
+              LSNTP=X1 * soil1(j)%str(k)%n
         !     POTENTIAL TRANSFORMATIONS METABOLIC LITTER
               X1=LMR*CS
-              LMCTP=soil(j)%cbn(k)%lmc*X1
-              LMNTP=soil(j)%cbn(k)%lmn*X1
+              LMCTP = soil1(j)%meta(k)%c * X1
+              LMNTP = soil1(j)%meta(k)%n * X1
         !     POTENTIAL TRANSFORMATIONS MICROBIAL BIOMASS
               X1=BMR*CS*XBM
-              BMCTP = soil(j)%cbn(k)%bmc * X1
-              BMNTP=soil(j)%cbn(k)%bmn*X1
+              BMCTP = soil1(j)%microb(k)%c * X1
+              BMNTP = soil1(j)%microb(k)%n*X1
         !     POTENTIAL TRANSFORMATIONS SLOW HUMUS
               X1=HSR*CS
-              HSCTP=soil(j)%cbn(k)%hsc*X1
-              HSNTP=soil(j)%cbn(k)%hsn*X1
+              HSCTP = soil1(j)%hs(k)%c * X1
+              HSNTP = soil1(j)%hs(k)%n * X1
         !     POTENTIAL TRANSFORMATIONS PASSIVE HUMUS
               X1=CS*HPR
-              HPCTP=soil(j)%cbn(k)%hpc*X1
+              HPCTP = soil1(j)%hp(k)%c * X1
               HPNTP=soil(j)%cbn(k)%hpn*X1
         !     ESTIMATE N DEMAND
               A1=1.-A1CO2
@@ -442,7 +443,7 @@
               END IF
         !     WNH3(ISL)=WNH3(ISL)+SUM
               !total available N
-              WMIN=MAX(1.E-5,soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3+SUM)
+              WMIN=MAX(1.E-5,soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4 + SUM)
               !total demand for potential tranformaiton of SOM
               DMDN=CPN1+CPN2+CPN3+CPN4+CPN5
               
@@ -541,7 +542,7 @@
                   END IF
             !     WNH3(ISL)=WNH3(ISL)+SUM
                   !total available N
-                  WMIN=MAX(1.E-5,soil(j)%nut(k)%no3 + soil(j)%nut(k)%nh3 + SUM)
+                  WMIN=MAX(1.E-5,soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4 + SUM)
                   !total demand for potential tranformaiton of SOM
                   DMDN=CPN1+CPN2+CPN3+CPN4+CPN5              
                               
@@ -552,16 +553,16 @@
               soil(j)%cbn(k)%rnmn=SUM-DMDN
         !     UPDATE
               IF(soil(j)%cbn(k)%rnmn>0.)THEN
-                  soil(j)%nut(k)%nh3=soil(j)%nut(k)%nh3+soil(j)%cbn(k)%rnmn
+                  soil1(j)%mn(k)%nh4 = soil1(j)%mn(k)%nh4 + soil(j)%cbn(k)%rnmn
         !  	      WNO3(ISL)=WNO3(ISL)+RNMN(ISL)
                   GO TO 21
               END IF      
-	          X1=soil(j)%nut(k)%no3+soil(j)%cbn(k)%rnmn
+	          X1 = soil1(j)%mn(k)%no3 + soil(j)%cbn(k)%rnmn
 	          IF(X1<0.)THEN
-	              soil(j)%cbn(k)%rnmn=-soil(j)%nut(k)%no3
-	              soil(j)%nut(k)%no3=1.E-10
+	              soil(j)%cbn(k)%rnmn = -soil1(j)%mn(k)%no3
+	              soil1(j)%mn(k)%no3 = 1.E-10
 	          ELSE
-	              soil(j)%nut(k)%no3=X1
+	              soil1(j)%mn(k)%no3 = X1
               END IF   
            21 DF1=LSNTA
             
@@ -573,59 +574,59 @@
               !! compute humus mineralization on active organic p
               hmp = 0.
               hmp_rate = 0.
-              hmp_rate = 1.4* (HSNTA + HPNTA)/(soil(j)%cbn(k)%hsn + soil(j)%cbn(k)%hpn + 1.e-6)
+              hmp_rate = 1.4* (HSNTA + HPNTA) / (soil1(j)%hs(k)%n + soil(j)%cbn(k)%hpn + 1.e-6)
               !hmp_rate = 1.4* (HSNTA )/(sol_HSN(k,j) + sol_HPN(k,j) + 1.e-6)
-              hmp = hmp_rate*soil(j)%nut(k)%orgp
-              hmp = Min(hmp, soil(j)%nut(k)%orgp)
-              soil(j)%nut(k)%orgp = soil(j)%nut(k)%orgp - hmp
-              soil(j)%nut(k)%solp = soil(j)%nut(k)%solp + hmp	          
+              hmp = hmp_rate * soil1(j)%hp(k)%p
+              hmp = Min(hmp, soil1(j)%hp(k)%p)
+              soil1(j)%hp(k)%p = soil1(j)%hp(k)%p - hmp
+              soil1(j)%mp(k)%lab = soil1(j)%mp(k)%lab + hmp	          
 	
 	          !! compute residue decomp and mineralization of 
               !! fresh organic n and p (upper two layers only)  
                 rmp = 0.             
                 decr = 0.
-                decr = (LSCTA + LMCTA)/(soil(j)%cbn(k)%lsc + soil(j)%cbn(k)%lmc + 1.e-6)
+                decr = (LSCTA + LMCTA) / (soil1(j)%str(k)%c + soil1(j)%meta(k)%c + 1.e-6)
                 decr = min(1., decr)
-                rmp = decr * soil(j)%nut(k)%fop
+                rmp = decr * soil1(j)%tot(k)%p
 
-                soil(j)%nut(k)%fop = soil(j)%nut(k)%fop - rmp
-                soil(j)%nut(k)%solp= soil(j)%nut(k)%solp + .8 * rmp
-                soil(j)%nut(k)%orgp = soil(j)%nut(k)%orgp + .2 * rmp	          
+                soil1(j)%tot(k)%p = soil1(j)%tot(k)%p - rmp
+                soil1(j)%mp(k)%lab = soil1(j)%mp(k)%lab + .8 * rmp
+                soil1(j)%hp(k)%p = soil1(j)%hp(k)%p + .2 * rmp	          
 	          !calculate P flows
        
 	          
 	          !SMS(9,ISL)=SMS(9,ISL)+RNMN(ISL)
-	          LSCTA = Min(soil(j)%cbn(k)%lsc,LSCTA)
-              soil(j)%cbn(k)%lsc=MAX(1.E-10,soil(j)%cbn(k)%lsc-LSCTA)
-              LSLCTA = min(soil(j)%cbn(k)%lslc,LSLCTA)
-              soil(j)%cbn(k)%lslc=MAX(1.E-10,soil(j)%cbn(k)%lslc-LSLCTA)
-              soil(j)%cbn(k)%lslnc=MAX(1.E-10,soil(j)%cbn(k)%lslnc-LSLNCTA)
-              LMCTA=MIN(soil(j)%cbn(k)%lmc,LMCTA)
-              IF (soil(j)%cbn(k)%lm > 0.) THEN
-                RTO = MAX(0.42,soil(j)%cbn(k)%lmc/soil(j)%cbn(k)%lm)
-                soil(j)%cbn(k)%lm = soil(j)%cbn(k)%lm - LMCTA/RTO
-                soil(j)%cbn(k)%lmc = soil(j)%cbn(k)%lmc - LMCTA
+	          LSCTA = Min(soil1(j)%str(k)%c, LSCTA)
+              soil1(j)%str(k)%c = MAX(1.E-10, soil1(j)%lig(k)%c-LSCTA)
+              LSLCTA = min(soil1(j)%lig(k)%c,LSLCTA)
+              soil1(j)%lig(k)%c = MAX(1.E-10,soil1(j)%lig(k)%c - LSLCTA)
+              soil1(j)%lig(k)%n = MAX(1.E-10,soil1(j)%lig(k)%n - LSLNCTA)
+              LMCTA = MIN(soil1(j)%meta(k)%c, LMCTA)
+              IF (soil1(j)%meta(k)%m > 0.) THEN
+                RTO = MAX(0.42, soil1(j)%meta(k)%c / soil1(j)%meta(k)%m)
+                soil1(j)%meta(k)%m = soil1(j)%meta(k)%m - LMCTA/RTO
+                soil1(j)%meta(k)%c = soil1(j)%meta(k)%c - LMCTA
               END IF
               !sol_LMC(k,j)=MAX(1.E-10,sol_LMC(k,j)-LMCTA)
               !sol_LM(k,j)=MAX(1.E-10,sol_LM(k,j)-LMCTA/.42)
-              soil(j)%cbn(k)%lsl=MAX(1.E-10,soil(j)%cbn(k)%lsl-LSLCTA/.42)
-              soil(j)%cbn(k)%ls=MAX(1.E-10,soil(j)%cbn(k)%ls-LSCTA/.42)
+              soil1(j)%lig(k)%m = MAX(1.E-10,soil1(j)%lig(k)%m -LSLCTA/.42)
+              soil1(j)%str(k)%m = MAX(1.E-10,soil1(j)%str(k)%m - LSCTA/.42)
               
               X3=APX*HPCTA+ASX*HSCTA+A1*(LMCTA+LSLNCTA)
-              soil(j)%cbn(k)%bmc=soil(j)%cbn(k)%bmc-BMCTA+X3
+              soil1(j)%microb(k)%c = soil1(j)%microb(k)%c - BMCTA+X3
               !DeltaBMC = DeltaBMC -BMCTA+X3
               DF3=BMNTA-NCBM*X3
               !!DF3 is the supply of BMNTA - demand of N to meet the Passive, Slow, Metabolic, and Non-lignin Structural 
               !! C pools transformaitons into microbiomass pool
               X1=.7*LSLCTA+BMCTA*(1.-ABP-ABCO2)
-              soil(j)%cbn(k)%hsc=soil(j)%cbn(k)%hsc-HSCTA+X1
+              soil1(j)%hs(k)%c = soil1(j)%hs(k)%c - HSCTA+X1
               DF4=HSNTA-NCHS*X1
               !!DF4 Slow pool supply of N - N demand for microbiomass C transformed into slow pool
               X1=HSCTA*ASP+BMCTA*ABP
-              soil(j)%cbn(k)%hpc=soil(j)%cbn(k)%hpc-HPCTA+X1
+              soil1(j)%hp(k)%c = soil1(j)%hp(k)%c - HPCTA + X1
               DF5=HPNTA-NCHP*X1
               !!DF5 Passive pool demand of N - N demand for microbiomass C transformed into passive pool
-              DF6=sol_min_n-soil(j)%nut(k)%no3-soil(j)%nut(k)%nh3
+              DF6=sol_min_n - soil1(j)%mn(k)%no3 - soil1(j)%mn(k)%nh4
               !!DF6 Supply of mineral N - available mineral N = N demanded from mineral pool
               !SMS(10,ISL)=SMS(10,ISL)-DF6
               ADD=DF1+DF2+DF3+DF4+DF5+DF6
@@ -636,10 +637,10 @@
               ADF5=ABS(DF5)
               TOT=ADF1+ADF2+ADF3+ADF4+ADF5
               XX=ADD/(TOT+1.E-10)
-              soil(j)%cbn(k)%lsn=MAX(.001,soil(j)%cbn(k)%lsn-DF1+XX*ADF1)
-              soil(j)%cbn(k)%lmn=MAX(.001,soil(j)%cbn(k)%lmn-DF2+XX*ADF2)
-              soil(j)%cbn(k)%bmn=soil(j)%cbn(k)%bmn-DF3+XX*ADF3
-              soil(j)%cbn(k)%hsn=soil(j)%cbn(k)%hsn-DF4+XX*ADF4
+              soil1(j)%str(k)%n = MAX(.001, soil1(j)%str(k)%n - DF1 + XX * ADF1)
+              soil1(j)%meta(k)%n = MAX(.001, soil1(j)%meta(k)%n -DF2 + XX * ADF2)
+              soil1(j)%microb(k)%n = soil1(j)%microb(k)%n - DF3 + XX * ADF3
+              soil1(j)%hs(k)%n = soil1(j)%hs(k)%n - DF4 + XX * ADF4
               soil(j)%cbn(k)%hpn=soil(j)%cbn(k)%hpn-DF5+XX*ADF5
               soil(j)%cbn(k)%rspc=.3*LSLCTA+A1CO2*(LSLNCTA+LMCTA)+ABCO2*BMCTA+ASCO2*HSCTA+APCO2*HPCTA
               rspc_d(j) = rspc_d(j) +  soil(j)%cbn(k)%rspc 
@@ -648,11 +649,15 @@
               !TRSP=TRSP+RSPC(ISL)      
               !VAR(74)=VAR(74)+RSPC(ISL)
               !RSD(ISL)=.001*(WLS(ISL)+WLM(ISL)) 
-              soil(j)%ly(k)%rsd = soil(j)%cbn(k)%ls+soil(j)%cbn(k)%lm            
-              soil(j)%nut(k)%orgn = soil(j)%cbn(k)%hpn
-              soil(j)%nut(k)%aorgn = soil(j)%cbn(k)%hsn
-              soil(j)%nut(k)%fon = soil(j)%cbn(k)%lmn + soil(j)%cbn(k)%lsn 
-              soil(j)%cbn(k)%cbn = 100*(soil(j)%cbn(k)%lsc+soil(j)%cbn(k)%lmc +soil(j)%cbn(k)%hsc + soil(j)%cbn(k)%hpc + soil(j)%cbn(k)%bmc)/sol_mass    
+              soil(j)%ly(k)%rsd = soil1(j)%str(k)%m + soil1(j)%meta(k)%m            
+              soil1(j)%hs(k)%n = soil(j)%cbn(k)%hpn
+              
+              soil1(j)%hs(k)%n = soil1(j)%hs(k)%n     !!!!nbs note same var
+              !!!!!!line above originally was the following: 
+              !  soil(j)%nut(k)%aorgn = soil(j)%cbn(k)%hsn
+              
+              soil1(j)%tot(k)%n = soil1(j)%meta(k)%n + soil1(j)%str(k)%n 
+              soil(j)%cbn(k)%cbn = 100*(soil1(j)%str(k)%c + soil1(j)%meta(k)%c + soil1(j)%hs(k)%c + soil1(j)%hp(k)%c + soil1(j)%microb(k)%c) / sol_mass    
  
 !! septic changes 1/28/09 gsm
 !!  compute denitrification while simulating septic tank

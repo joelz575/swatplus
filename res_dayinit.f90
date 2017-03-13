@@ -22,7 +22,6 @@
       resorgno = 0.
       resorgpo = 0.
       respesti = 0.
-      ressa = 0.
       ressedc = 0.
       ressedi = 0.
       ressedo = 0.

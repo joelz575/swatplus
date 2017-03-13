@@ -281,38 +281,6 @@
       end type soil_hru_database
       type (soil_hru_database), dimension(:), allocatable :: sol
 
-      type snu_header
-          character (len=6) ::  day =    ' '
-          character (len=10) :: gisnum = ' '
-          character (len=60) :: rsd =    '       SURFACE       -----------   SOIL PROFILE   ----------'
-
-       end type snu_header
-       type (snu_header), dimension(:), allocatable, save :: snu_hdr
-       
-      type snu_header_unit1
-          character (len=10) :: day =    '      DAY   '
-          character (len=10) :: gisnum = '   GISNUM   '
-          character (len=10) :: rsd =    '   SOL_RSD  '
-          character (len=10) :: solp =   '     SOL_P  ' 
-          character (len=10) :: no3 =    '       NO3  '
-          character (len=10) :: orgn =   '      ORGN  '
-          character (len=10) :: orgp =   '      ORGP  '
-          character (len=10) :: cn   =   '        CN  '
-      end type snu_header_unit1
-      type(snu_header_unit1),dimension(:),allocatable,save::snu_hdr_unt1
-      
-      type snu_header_unit2
-          character (len=10) :: day =    ' '
-          character (len=10) :: gisnum = ' '
-          character (len=10) :: rsd =    '   (t/ha)  '
-          character (len=10) :: solp =   '   (kg/ha)' 
-          character (len=10) :: no3 =    '   (kg/ha)'
-          character (len=10) :: orgn =   '   (kg/ha)'
-          character (len=10) :: orgp =   '   (kg/ha)'
-          character (len=10) :: cn   =   ' '
-      end type snu_header_unit2
-      type(snu_header_unit2),dimension(:),allocatable,save::snu_hdr_unt2
-
       type irrigation_sources
         integer :: flag = 0   !0= don't irrigate, 1=irrigate
         integer, dimension(:), allocatable :: chan
@@ -455,6 +423,7 @@
         type (hru_parms_db) :: parms      !!calibration parameters
         integer :: land_use_mgt
         character(len=16) :: land_use_mgt_c
+        character(len=16) :: region
         integer :: plant_cov
         integer :: mgt_ops
         integer :: tiledrain = 0
@@ -648,29 +617,6 @@
       end type mgt_header_unit2
       type(mgt_header_unit2) :: mgt_hdr_unt2
 
-      type snw_header
-          character (len=35) :: day = ' '
-          character (len=40) ::head ='SNOW(mm) at ELEVATION BAND (1-10)'
-      end type snw_header
-      type (snw_header), dimension(:), allocatable, save :: snw_hdr
-  
-      type snw_header_unt
-          character (len=4) :: day =     'DAY '
-          character (len=5) :: year =    'YEAR '
-          character (len=10) :: gisnum = '   GISNUM     '
-          character (len=8) :: snoeb1 =  '       1 '
-          character (len=8) :: snoeb2 =  '       2 '
-          character (len=8) :: snoeb3 =  '       3 '
-          character (len=8) :: snoeb4 =  '       4 '
-          character (len=8) :: snoeb5 =  '       5 '
-          character (len=8) :: snoeb6 =  '       6 '
-          character (len=8) :: snoeb7 =  '       7 '
-          character (len=8) :: snoeb8 =  '       8 '
-          character (len=8) :: snoeb9 =  '       9 '
-          character (len=8) :: snoeb10 = '      10 '
-      end type snw_header_unt
-      type (snw_header_unt),dimension(:),allocatable,save::snw_hdr_unt
-
           
 
 !!    change per JGA 8/31/2011 gsm for output.mgt 
@@ -706,7 +652,7 @@
       real :: da_ha, vpd
       real :: bactrolp, bactsedlp, pet_day, ep_day
       real :: snoev, sno3up, nactfr
-      real :: es_day
+      real :: es_day, ls_overq, latqrunon
       real :: sbactrop, sbactrolp, sbactsedp, sbactsedlp, ep_max
       real :: sbactlchlp
       real :: bsprev

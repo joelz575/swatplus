@@ -1,4 +1,4 @@
-      subroutine res_hydro (jres, id, iac, ihyd, ised)
+      subroutine res_hydro (jres, id, ihyd, ised)
 
       use jrw_datalib_module
       use reservoir_module
@@ -11,19 +11,28 @@
       
       !! store initial values
       vol = res(jres)%flo
+      resflwo = 0.
       nstep = 1
 
       do tstep = 1, nstep
           
         !calc release from decision table
-        select case (d_tbl(id)%act(iac)%name)
-        case ("release")
+        do iac = 1, d_tbl(id)%acts
             !condition is met - set the release rate
+          if (d_tbl(id)%act_hit(iac) == 'y') then
             select case (d_tbl(id)%act(iac)%option)
             case ("rate")
               resflwo = d_tbl(id)%act(iac)%const * 86400.
             case ("days")
-              resflwo = (res(ob_num)%flo - b_lo) / d_tbl(id)%act(iac)%const
+              select case (d_tbl(id)%act(iac)%file_pointer)
+                case ("null")
+                  b_lo = 0.
+                case ("pvol")
+                  b_lo = res_ob(ihyd)%pvol
+                case ("evol")
+                  b_lo = res_ob(ihyd)%evol
+              end select
+              resflwo = (res(jres)%flo - b_lo) / d_tbl(id)%act(iac)%const
             case ("weir")
               resflwo = res_weir(ihyd)%c * res_weir(ihyd)%k * res_weir(ihyd)%w * (res_h ** 1.5)
             case ("meas")
@@ -37,31 +46,15 @@
                 resflwo = recall(irel)%hd(1,time%yrs)%flo
               end select
             end select
-        end select
-            
-      !! calculate surface area for day
-      if (ires == 0) then       !ires??
-        ressa = res_hyd(ihyd)%br1 * res(jres)%flo ** res_hyd(ihyd)%br2
-      else
-        !wetland on hru
-        !! solve quadratic to find new depth
-        !testing relationship res_vol(jres) = float(jj) * .1 * res_pvol(jres)
-        x1 = res_hyd(ihyd)%bcoef ** 2 + 4. * res_hyd(ihyd)%ccoef * (1. - res(jres)%flo / res_hyd(ihyd)%pvol)
-        if (x1 < 1.e-6) then
-          res_h = 0.
-        else
-          res_h1 = (-res_hyd(ihyd)%bcoef - sqrt(x1)) / (2. * res_hyd(ihyd)%ccoef)
-          res_h = res_h1 + res_hyd(ihyd)%bcoef
-        end if
-        ressa = res_hyd(ihyd)%psa * (1. + res_hyd(ihyd)%acoef * res_h)
-      end if
+          end if
+        end do    ! iac
 
       !! calculate water balance for day
       iob = res_ob(jres)%ob
       iwst = ob(iob)%wst
-      resev = 10. * res_hyd(ihyd)%evrsv * wst(iwst)%weat%pet * ressa
-      ressep = res_hyd(ihyd)%k * ressa * 240.
-      respcp = respcp * ressa * 10.
+      resev = 10. * res_hyd(ihyd)%evrsv * wst(iwst)%weat%pet * res_ob(jres)%area_ha
+      ressep = 240. * res_hyd(ihyd)%k * res_ob(jres)%area_ha
+      respcp = 10. * wst(iwst)%weat%precip * res_ob(jres)%area_ha
 
       !! new water volume for day
       res(jres)%flo = res(jres)%flo + respcp + resflwi - resev - ressep  !resflwi ??
@@ -73,7 +66,7 @@
         !! that reservoir volume is zero
         ressep = ressep + res(jres)%flo
         res(jres)%flo = 0.
-        ressa = 0.
+        res_ob(jres)%area_ha = 0.
 
         !! if seepage is less than volume deficit, take remainder
         !! from evaporation
@@ -92,8 +85,22 @@
           res(jres)%flo = 0.
         end if
 
-        !! update surface area for day
-        ressa = res_hyd(ihyd)%br1 * res(jres)%flo ** res_hyd(ihyd)%br2
+        !! update surface area
+        if (res_ob(jres)%typ == 'res') then       
+          !! reservoir - old area volume relationship
+          res_ob(jres)%area_ha = res_ob(jres)%br1 * res(jres)%flo ** res_ob(jres)%br2
+        else
+          !! wetland on hru - solve quadratic to find new depth
+          !testing relationship res_vol(jres) = float(jj) * .1 * res_pvol(jres)
+          x1 = res_hyd(ihyd)%bcoef ** 2 + 4. * res_hyd(ihyd)%ccoef * (1. - res(jres)%flo / res_ob(ihyd)%pvol)
+          if (x1 < 1.e-6) then
+            res_h = 0.
+          else
+            res_h1 = (-res_hyd(ihyd)%bcoef - sqrt(x1)) / (2. * res_hyd(ihyd)%ccoef)
+            res_h = res_h1 + res_hyd(ihyd)%bcoef
+          end if
+          res_ob(jres)%area_ha = res_ob(ihyd)%psa * (1. + res_hyd(ihyd)%acoef * res_h)
+        end if
 
       end if    !res volume < > 0.
       end do    !tstep loop

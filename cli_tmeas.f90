@@ -76,13 +76,15 @@
          read (108,*,iostat=eof) iyr, istep, tmp(i)%ts(istep,iyrs),      &
                              tmp(i)%ts2(istep,iyrs)
          if (eof < 0) exit
-         read (108,*,iostat=eof) iyr, istep
-         if (eof < 0) exit
-         backspace (108)
-         if (iyr /= iyr_prev) then
-           iyr_prev = iyr
-           iyrs = iyrs + 1
-         endif
+         if (istep == 365 .or. istep == 366) then
+           read (108,*,iostat=eof) iyr, istep
+           if (eof < 0) exit
+           backspace (108)
+           if (iyr /= iyr_prev) then
+             iyr_prev = iyr
+             iyrs = iyrs + 1
+           end if
+         end if
        end do
        close (108)
        

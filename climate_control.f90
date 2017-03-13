@@ -133,7 +133,7 @@
           wst(iwst)%weat%tmax = tmp(ig)%ts(time%day,time%yrs)
           wst(iwst)%weat%tmin = tmp(ig)%ts2(time%day,time%yrs)
           if (wst(iwst)%weat%tmax <= -97. .or. wst(iwst)%weat%tmin <= -97.) then
-            call cli_weatgn(iwgn)
+            !call cli_weatgn(iwgn)
             call cli_tgen(iwgn)
           end if
         end if
@@ -226,7 +226,7 @@
       do ii = 1, mwst
         iwst = wst_pointer(ii)
         iwgn = wst(iwst)%wco%wgn
-        if (wst(iwst)%weat%tave > 0.) wst(iwst)%weat%phubase0 = wst(iwst)%weat%phubase0   &
+        if (wst(iwst)%weat%tave > 0.) wst(iwst)%weat%phubase0 = wst(iwst)%weat%phubase0         &
                                                 + wst(iwst)%weat%tave / wgn_pms(iwgn)%phutot
         if (time%end_yr == 1) wst(iwst)%weat%phubase0 = 0.
       end do
@@ -235,25 +235,19 @@
 !! Climate Change Adjustments !!
       do iip = 1, mwst
         iwst = wst_pointer(iip)
-        wst(iwst)%weat%precip = wst(iwst)%weat%precip * (1. +           &          
-                          wst(iwst)%rfinc(i_mo) / 100.)
+        wst(iwst)%weat%precip = wst(iwst)%weat%precip * (1. + wst(iwst)%rfinc(i_mo) / 100.)
         if (wst(iwst)%weat%precip < 0.) wst(iwst)%weat%precip = 0.
         if (time%step > 0) then
           do ii = 1, time%step
-            wst(iwst)%weat%ts(ii) = wst(iwst)%weat%ts(ii) *                       &                      
-                          (1. + wst(iwst)%rfinc(i_mo) / 100.)
+            wst(iwst)%weat%ts(ii) = wst(iwst)%weat%ts(ii) * (1. + wst(iwst)%rfinc(i_mo) / 100.)
             if (wst(iwst)%weat%ts(ii) < 0.) wst(iwst)%weat%ts(ii) = 0.
           end do
         end if
-        wst(iwst)%weat%tmax = wst(iwst)%weat%tmax +                     &                    
-                                                 wst(iwst)%tmpinc(i_mo)
-        wst(iwst)%weat%tmin = wst(iwst)%weat%tmin +                     &
-                                                 wst(iwst)%tmpinc(i_mo)
-        wst(iwst)%weat%solrad = wst(iwst)%weat%solrad +                 &
-                                                 wst(iwst)%radinc(i_mo)
+        wst(iwst)%weat%tmax = wst(iwst)%weat%tmax + wst(iwst)%tmpinc(i_mo)
+        wst(iwst)%weat%tmin = wst(iwst)%weat%tmin + wst(iwst)%tmpinc(i_mo)
+        wst(iwst)%weat%solrad = wst(iwst)%weat%solrad + wst(iwst)%radinc(i_mo)
         wst(iwst)%weat%solrad = Max(0.,wst(iwst)%weat%solrad)
-        wst(iwst)%weat%rhum = wst(iwst)%weat%rhum +                     &        
-                                                 wst(iwst)%huminc(i_mo)
+        wst(iwst)%weat%rhum = wst(iwst)%weat%rhum + wst(iwst)%huminc(i_mo)
         wst(iwst)%weat%rhum = Max(0.01,wst(iwst)%weat%rhum)
         wst(iwst)%weat%rhum = Min(0.99,wst(iwst)%weat%rhum)
       end do

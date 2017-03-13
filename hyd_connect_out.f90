@@ -1,4 +1,6 @@
       subroutine hyd_connect_out
+    
+      use basin_module
       
       !!  0 = average annual (always print)
       !!  1 = yearly
@@ -8,7 +10,7 @@
       ii = 0
       icmd = sp_ob1%objs
 
-      if (pco%hydcon > 0) then
+      if (pco%hydcon == 'avann') then
         do while (icmd /= 0)
           ii = ii + 1
           write (7000,*) ii, ob(icmd)%name, ob(icmd)%typ,               &  

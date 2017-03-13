@@ -19,6 +19,7 @@
       use climate_parms
 
       integer :: iaq, iaqdb
+      real :: sumrchrg, sumflo, sumseep, sumrevap
        
       !>@brief type for reading aquifer input files rows
       type aquifer_database
@@ -96,9 +97,21 @@
         real :: seepno3 = 0.   !kg        |seepage of no3 to next object
       end type aquifer_dynamic
       type (aquifer_dynamic), dimension(:), allocatable :: aqu
-      type (aquifer_dynamic), dimension(:), allocatable, save :: aqu_m
-      type (aquifer_dynamic), dimension(:), allocatable, save :: aqu_y
-      type (aquifer_dynamic), dimension(:), allocatable, save :: aqu_a
+      type (aquifer_dynamic), dimension(:), allocatable :: aqu_m
+      type (aquifer_dynamic), dimension(:), allocatable :: aqu_y
+      type (aquifer_dynamic), dimension(:), allocatable :: aqu_a
+      type (aquifer_dynamic), dimension(:), allocatable :: saqu_d
+      type (aquifer_dynamic), dimension(:), allocatable :: saqu_m
+      type (aquifer_dynamic), dimension(:), allocatable :: saqu_y
+      type (aquifer_dynamic), dimension(:), allocatable :: saqu_a
+      !type (aquifer_dynamic), dimension(:), allocatable :: raqu_d
+      !type (aquifer_dynamic), dimension(:), allocatable :: raqu_m
+      !type (aquifer_dynamic), dimension(:), allocatable :: raqu_y
+      !type (aquifer_dynamic), dimension(:), allocatable :: raqu_a
+      type (aquifer_dynamic) :: baqu_d
+      type (aquifer_dynamic) :: baqu_m
+      type (aquifer_dynamic) :: baqu_y
+      type (aquifer_dynamic) :: baqu_a
       type (aquifer_dynamic) :: aquz
       
       type aqu_header
@@ -137,7 +150,7 @@
       include 'aquifer_output.f90'
       include 'aqu_read.f90'
 
-      
+     
       function aqu_add(aqo1,aqo2) result (aqo3)
       type (aquifer_dynamic),  intent (in) :: aqo1
       type (aquifer_dynamic),  intent (in) :: aqo2
@@ -162,21 +175,21 @@
         type (aquifer_dynamic), intent (in) :: aq1
         real, intent (in) :: const
         type (aquifer_dynamic) :: aq2
-        consta = time%nbyr
-        aq2%flo = aq1%flo / consta
-        aq2%stor = aq1%stor / consta
-        aq2%hgt = aq1%hgt / consta
-        aq2%no3 = aq1%no3 / consta  
-        aq2%minp = aq1%minp / consta  
-        aq2%orgn = aq1%orgn / consta 
-        aq2%orgp = aq1%orgp / consta           
-        aq2%rchrg = aq1%rchrg / consta            
-        aq2%rchrg_n = aq1%rchrg_n / consta               
-        aq2%nloss = aq1%nloss / consta
-        aq2%seep = aq1%seep / consta  
-        aq2%revap = aq1%revap / consta
-        aq2%no3gw = aq1%no3gw / consta
-        aq2%seepno3 = aq1%seepno3 / consta
+        ! consta = time%nbyr
+        aq2%flo = aq1%flo / const
+        aq2%stor = aq1%stor / const
+        aq2%hgt = aq1%hgt / const
+        aq2%no3 = aq1%no3 / const
+        aq2%minp = aq1%minp / const
+        aq2%orgn = aq1%orgn / const
+        aq2%orgp = aq1%orgp / const
+        aq2%rchrg = aq1%rchrg / const
+        aq2%rchrg_n = aq1%rchrg_n / const
+        aq2%nloss = aq1%nloss / const
+        aq2%seep = aq1%seep / const
+        aq2%revap = aq1%revap / const
+        aq2%no3gw = aq1%no3gw / const
+        aq2%seepno3 = aq1%seepno3 / const
       end function aqu_div
         
       end module aquifer_module

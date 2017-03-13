@@ -37,6 +37,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm
+      use organic_mineral_mass_module
 
       !!initialize variables at beginning of day
       cbodu = 0.
@@ -124,9 +125,9 @@
           sol_sumsolp = 0.
           do j = 1, mhru
             do ly = 1, soil(j)%nly
-              sol_sumno3(j) = sol_sumno3(j) + soil(j)%nut(ly)%no3 +          &
-                soil(j)%nut(ly)%nh3
-              sol_sumsolp(j) = sol_sumsolp(j) +  soil(j)%nut(ly)%solp
+              sol_sumno3(j) = sol_sumno3(j) + soil1(j)%mn(ly)%no3 +          &
+                soil1(j)%mn(ly)%nh4
+              sol_sumsolp(j) = sol_sumsolp(j) +  soil1(j)%mp(ly)%lab
             enddo
           enddo
 

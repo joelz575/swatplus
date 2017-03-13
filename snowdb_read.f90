@@ -12,7 +12,7 @@
       imax = 0
       
       
-      !! read snow database data from snow.dat
+      !! read snow database data from snow.sno
       inquire (file=in_parmdb%snow, exist=i_exist)
       if (i_exist == 0 .or. in_parmdb%snow == 'null') then
         allocate (snodb(0:0))

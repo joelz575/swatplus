@@ -34,6 +34,7 @@
 !! initialize variables    
       mvaro = 33
       mstdo = 113
+      mhyd = 1  !!added for jaehak vars
 
       allocate (isdr_no(mhru))
             
@@ -358,11 +359,11 @@
 !! additional var by Ann
 
       ! detention pond
- 	allocate(dtp_subnum(mhyd),dtp_imo(mhyd),dtp_iyr(mhyd),                &
+ 	allocate(dtp_subnum(mhyd),dtp_imo(mhyd),dtp_iyr(mhyd),                  &
         dtp_numweir(mhyd),dtp_numstage(mhyd),                               &
         dtp_stagdis(mhyd),dtp_reltype(mhyd),dtp_onoff(mhyd))
 	
-	allocate(dtp_evrsv(msub),                                             &
+	allocate(dtp_evrsv(msub),                                               &
         dtp_inflvol(msub),dtp_totwrwid(msub),dtp_parm(msub),                &
         dtp_wdep(msub),dtp_totdep(msub),dtp_watdepact(msub),                &
         dtp_outflow(msub),dtp_totrel(msub),dtp_backoff(msub),               &
@@ -372,7 +373,7 @@
         dtp_expont(msub),dtp_coef1(msub),dtp_coef2(msub),                   &
         dtp_coef3(msub),dtp_ivol(msub),dtp_ised(msub))
  
-  	allocate(dtp_wdratio(msub,10),dtp_depweir(msub,10),                   &
+  	allocate(dtp_wdratio(msub,10),dtp_depweir(msub,10),                     &
         dtp_diaweir(msub,10),dtp_retperd(msub,10),dtp_pcpret(msub,10),      &
         dtp_cdis(msub,10),dtp_flowrate(msub,10),                            &
         dtp_wrwid(msub,10),dtp_weirtype(msub,10),dtp_weirdim(msub,10),      &
@@ -387,8 +388,8 @@
          ri_im(msub,10),ri_iy(msub,10),ri_sa(msub,10),ri_vol(msub,10),   &
          ri_qi(msub,10),ri_k(msub,10),ri_dd(msub,10),ri_evrsv(msub,10),  &
          ri_dep(msub,10),ri_ndt(msub,10),                                &
-         ri_totpvol(time%step),ri_luflg(mhru),                          &
-         ri_subkm(msub),ri_sed_cumul(msub,10),irmmdt(time%step),        &
+         ri_totpvol(time%step),ri_luflg(mhru),                           &
+         ri_subkm(msub),ri_sed_cumul(msub,10),irmmdt(time%step),         &
          ri_pumpv(msub,10),ri_sedi(msub,10))   
       allocate(num_ri(msub), ri_pmpvol(10,time%step),hrnopcp(mhru,0:time%step), &
          ri_qloss(10,time%step))

@@ -40,11 +40,11 @@
             
           !reservoir release - res_hydro does release and water balance
           case ("release")
-            idat = res_ob(ob_num)%props
-            ihyd = res_dat(idat)%hyd
-            ised = res_dat(idat)%sed
-            call res_hydro (ob_num, id, iac, ihyd, ised)
-            call res_sediment (ob_num, ihyd, ised)
+            !idat = res_ob(ob_num)%props
+            !ihyd = res_dat(idat)%hyd
+            !ised = res_dat(idat)%sed
+            !call res_hydro (ob_num, id,ihyd, ised)
+            !call res_sediment (ob_num, ihyd, ised)
             
           !fertilize
           case ("fertilize")
@@ -83,8 +83,18 @@
             
           !end growing season for hru_lte
           case ("grow_end")
-            !calculate yield - print lai, biomass and yield - add stress to yield?
-            yield = sd(ihru)%dm * pldb(sd(ihru)%iplant)%hvsti  ! * sd(isd)%stress
+            !calculate yield - print lai, biomass and yield
+            ihru = ob_num
+            idp = sd(ihru)%iplant
+            if (sd(ihru)%pet < 10.) then
+              wur = 100.
+            else
+              wur = 100. * sd(ihru)%aet / sd(ihru)%pet
+            endif
+            hiad1 = (pldb(idp)%hvsti - pldb(idp)%wsyf) *                            &   
+                        (wur / (wur + Exp(6.13 - .0883 * wur))) + pldb(idp)%wsyf
+            hiad1 = amin1 (hiad1, pldb(idp)%hvsti)
+            yield = 0.8 * sd(ihru)%dm * hiad1  ! * sd(isd)%stress
             sd(ihru)%yield = yield / 1000.
             sd(ihru)%npp = sd(ihru)%dm / 1000.
             sd(ihru)%lai_mx = sd(ihru)%alai
@@ -96,6 +106,8 @@
             sd(ihru)%alai = 0.
             sd(ihru)%dm = 0.     !adjust for non-harvested perennials?
             sd(ihru)%hufh = 0.
+            sd(ihru)%aet = 0.
+            sd(ihru)%pet = 0.
               
           !drainage water management
           case ("drainage")

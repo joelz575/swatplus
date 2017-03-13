@@ -38,6 +38,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
 
       real, parameter :: bk = .0006
       integer :: j, l
@@ -51,26 +52,26 @@
 
       do l = 1, soil(j)%nly
         rmn1 = 0.
-        rmn1 = (soil(j)%nut(l)%solp - soil(j)%nut(l)%actp * rto)
+        rmn1 = (soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto)
 !!  mike changed/added per isabelle beaudin's email from 01/21/09
         if (rmn1 > 0.) rmn1 = rmn1 * 0.1
         if (rmn1 < 0.) rmn1 = rmn1 * 0.6
 !!  mike changed/added per isabelle beaudin's email from 01/21/09
-        rmn1 = Min(rmn1, soil(j)%nut(l)%solp)
+        rmn1 = Min(rmn1, soil1(j)%mp(l)%lab)
 
         roc = 0.
-        roc = bk * (4. * soil(j)%nut(l)%actp - soil(j)%nut(l)%stap)
+        roc = bk * (4. * soil1(j)%mp(l)%act - soil1(j)%mp(l)%sta)
         if (roc < 0.) roc = roc * .1
-        roc = Min(roc, soil(j)%nut(l)%actp)
+        roc = Min(roc, soil1(j)%mp(l)%act)
 
-        soil(j)%nut(l)%stap = soil(j)%nut(l)%stap + roc
-        if (soil(j)%nut(l)%stap < 0.) soil(j)%nut(l)%stap = 0.
+        soil1(j)%mp(l)%sta = soil1(j)%mp(l)%sta + roc
+        if (soil1(j)%mp(l)%sta < 0.) soil1(j)%mp(l)%sta = 0.
 
-        soil(j)%nut(l)%actp = soil(j)%nut(l)%actp - roc + rmn1
-        if (soil(j)%nut(l)%actp < 0.) soil(j)%nut(l)%actp = 0.
+        soil1(j)%mp(l)%act = soil1(j)%mp(l)%act - roc + rmn1
+        if (soil1(j)%mp(l)%act < 0.) soil1(j)%mp(l)%act = 0.
 
-        soil(j)%nut(l)%solp = soil(j)%nut(l)%solp - rmn1
-        if (soil(j)%nut(l)%solp < 0.) soil(j)%nut(l)%solp = 0.
+        soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - rmn1
+        if (soil1(j)%mp(l)%lab < 0.) soil1(j)%mp(l)%lab = 0.
 
       end do
 

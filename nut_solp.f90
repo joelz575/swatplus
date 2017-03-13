@@ -34,6 +34,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: j
       real :: xx, vap
@@ -44,35 +45,35 @@
 !! compute soluble P lost in surface runoff
       xx = 0.
       xx = soil(j)%phys(1)%bd * soil(j)%phys(1)%d * bsn_prm%phoskd
-      surqsolp(j) = soil(j)%nut(1)%solp  * surfq(j) / (xx + 1.)   !dont merge
+      surqsolp(j) = rsd1(j)%mp%lab  * surfq(j) / (xx + 1.)   !dont merge
         !!units ==> surqsolp = [kg/ha * mm] / [t/m^3 * mm * m^3/t] = kg/ha
-      surqsolp(j) = Min(surqsolp(j), soil(j)%nut(1)%solp)
+      surqsolp(j) = Min(surqsolp(j), rsd1(j)%mp%lab)
       surqsolp(j) = Max(surqsolp(j), 0.)
-      soil(j)%nut(1)%solp = soil(j)%nut(1)%solp - surqsolp(j)
+      rsd1(j)%mp%lab = rsd1(j)%mp%lab - surqsolp(j)
 
 
 !! compute soluble P leaching
       vap = 0.
-      vap = soil(j)%nut(1)%solp * soil(j)%ly(1)%prk /                   &
+      vap = rsd1(j)%mp%lab * soil(j)%ly(1)%prk /                   &
         ((soil(j)%phys(1)%conv_wt/ 1000.) * bsn_prm%pperco + .1)   !dont merge
-      vap = Min(vap, .5 * soil(j)%nut(1)%solp)
-      soil(j)%nut(1)%solp = soil(j)%nut(1)%solp - vap
+      vap = Min(vap, .5 * rsd1(j)%mp%lab)
+      rsd1(j)%mp%lab = rsd1(j)%mp%lab - vap
       if (soil(j)%nly >= 2) then
-        soil(j)%nut(2)%solp = soil(j)%nut(2)%solp + vap
+        soil1(j)%mp(2)%lab = soil1(j)%mp(2)%lab + vap
       end if
    
       do ii = 2, soil(j)%nly-1
         vap = 0.
 	 if (ii/=i_sep(j)) then
-       vap = soil(j)%nut(ii)%solp * soil(j)%ly(ii)%prk /                &
+       vap = soil1(j)%mp(ii)%lab * soil(j)%ly(ii)%prk /                &
         ((soil(j)%phys(ii)%conv_wt / 1000.) * bsn_prm%pperco + .1)  !dont merge
-	   vap = Min(vap, .2 * soil(j)%nut(ii)%solp)
-	   soil(j)%nut(ii)%solp = soil(j)%nut(ii)%solp - vap
-	   soil(j)%nut(ii+1)%solp = soil(j)%nut(ii+1)%solp + vap
+	   vap = Min(vap, .2 * soil1(j)%mp(ii)%lab)
+	   soil1(j)%mp(ii)%lab = soil1(j)%mp(ii)%lab - vap
+	   soil1(j)%mp(ii+1)%lab = soil1(j)%mp(ii+1)%lab + vap
            if (ii == hru(j)%lumv%ldrain) then
-             vap = soil(j)%nut(ii)%solp * qtile /                        &
+             vap = soil1(j)%mp(ii)%lab * qtile /                        &
               (soil(j)%phys(ii)%conv_wt / 1000. * bsn_prm%pperco + .1)  !dont merge
-             soil(j)%nut(ii)%solp = soil(j)%nut(ii)%solp - vap
+             soil1(j)%mp(ii)%lab = soil1(j)%mp(ii)%lab - vap
            endif
 	 endif
 	end do

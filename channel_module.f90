@@ -201,10 +201,22 @@
           real :: tot_ssed = 0.                ! total suspended sediments
       end type ch_output
       
+      type regional_output_channel
+        type (ch_output), dimension (:), allocatable :: ord
+      end type regional_output_channel
+      type (regional_output_channel), dimension (:), allocatable :: rch_d
+      type (regional_output_channel), dimension (:), allocatable :: rch_m
+      type (regional_output_channel), dimension (:), allocatable :: rch_y
+      type (regional_output_channel), dimension (:), allocatable :: rch_a
+      
       type (ch_output), dimension(:), allocatable, save :: ch_d
       type (ch_output), dimension(:), allocatable, save :: ch_m
       type (ch_output), dimension(:), allocatable, save :: ch_y
       type (ch_output), dimension(:), allocatable, save :: ch_a
+      type (ch_output) :: bch_d
+      type (ch_output) :: bch_m
+      type (ch_output) :: bch_y
+      type (ch_output) :: bch_a
       type (ch_output) :: chz
       
       type ch_header

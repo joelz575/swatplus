@@ -59,6 +59,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use organic_mineral_mass_module
 
       integer :: nly, j, jj, n
       real :: xx, dg, wt1, zdst, soldepth, sumno3, sumorgn, summinp
@@ -135,37 +136,37 @@
         wt1 = sol(isol)%phys(j)%bd * dg / 100.          !! mg/kg => kg/ha
         sol(isol)%phys(j)%conv_wt = 1.e6 * wt1          !! kg/kg => kg/ha
 
-        if (sol(isol)%nut(j)%no3 <= 0.) then
+        if (sol1(isol)%mn(j)%no3 <= 0.) then
           zdst = Exp(-sol(isol)%phys(j)%d / 1000.)
-          sol(isol)%nut(j)%no3 = 10. * zdst * .7
+          sol1(isol)%mn(j)%no3 = 10. * zdst * .7
         end if
-        sol(isol)%nut(j)%no3 =  sol(isol)%nut(j)%no3 * wt1      !! mg/kg => kg/ha
-        sumno3 = sumno3 +  sol(isol)%nut(j)%no3
+        sol1(isol)%mn(j)%no3 =  sol1(isol)%mn(j)%no3 * wt1      !! mg/kg => kg/ha
+        sumno3 = sumno3 +  sol1(isol)%mn(j)%no3
 
-        if (sol(isol)%nut(j)%orgn > 0.0001) then
-          sol(isol)%nut(j)%orgn = sol(isol)%nut(j)%orgn * wt1   !! mg/kg => kg/ha
+        if (sol1(isol)%hp(j)%n > 0.0001) then
+          sol1(isol)%hp(j)%n = sol1(isol)%hp(j)%n * wt1   !! mg/kg => kg/ha
         else
           !! assume C:N ratio of 10:1
-          sol(isol)%nut(j)%orgn = 10000. * (sol(isol)%cbn(j)%cbn / 11.)*      &
+          sol1(isol)%hp(j)%n = 10000. * (sol(isol)%cbn(j)%cbn / 11.)*      &
                                   wt1  !! CN ratio was 14 before 01-22-09 Armen
         end if
-        sol(isol)%nut(j)%aorgn = sol(isol)%nut(j)%orgn * nactfr
-        sol(isol)%nut(j)%orgn = sol(isol)%nut(j)%orgn * (1. - nactfr)
-        sumorgn = sumorgn + sol(isol)%nut(j)%aorgn +                          &
-            sol(isol)%nut(j)%orgn + sol(isol)%nut(j)%fon
+        sol1(isol)%hs(j)%n = sol1(isol)%hs(j)%n * nactfr
+        sol1(isol)%hp(j)%n = sol1(isol)%hp(j)%n * (1. - nactfr)
+        sumorgn = sumorgn + sol1(isol)%hs(j)%n +                          &
+            sol1(isol)%hp(j)%n + sol1(isol)%tot(j)%n
 
-        if (sol(isol)%nut(j)%orgp > 0.0001) then
-          sol(isol)%nut(j)%orgp = sol(isol)%nut(j)%orgp * wt1   !! mg/kg => kg/ha
+        if (sol1(isol)%hp(j)%p > 0.0001) then
+          sol1(isol)%hp(j)%p = sol1(isol)%hp(j)%p * wt1   !! mg/kg => kg/ha
         else
 	!! assume N:P ratio of 8:1 
-          sol(isol)%nut(j)%orgp = .125 * sol(isol)%nut(j)%orgn   
+          sol1(isol)%hp(j)%p = .125 * sol1(isol)%hp(j)%n   
         end if
 
-        if (sol(isol)%nut(j)%solp > 0.0001) then
-          sol(isol)%nut(j)%solp = sol(isol)%nut(j)%solp * wt1   !! mg/kg => kg/ha
+        if (sol1(isol)%mp(j)%lab > 0.0001) then
+          sol1(isol)%mp(j)%lab = sol1(isol)%mp(j)%lab * wt1   !! mg/kg => kg/ha
         else
           !! assume initial concentration of 5 mg/kg
-          sol(isol)%nut(j)%solp = 5. * wt1
+          sol1(isol)%mp(j)%lab = 5. * wt1
         end if
 
         !! Set active pool based on dynamic PSP MJW
@@ -173,7 +174,7 @@
 	    if (bsn_cc%sol_P_model == 0) then 
 	      !! Allow Dynamic PSP Ratio
             !! convert to concentration
-            solp = sol(isol)%nut(j)%solp / sol(isol)%phys(j)%conv_wt *          &
+            solp = sol1(isol)%mp(j)%lab / sol(isol)%phys(j)%conv_wt *          &
                                                              1000000.
 	      !! PSP = -0.045*log (% clay) + 0.001*(Solution P, mg kg-1) - 0.035*(% Organic C) + 0.43
 	      if (sol(isol)%phys(j)%clay > 0.) then
@@ -192,33 +193,33 @@
             end if
             end if
 	    
-        sol(isol)%nut(j)%actp = sol(isol)%nut(j)%solp *                  &
+        sol1(isol)%mp(j)%act = sol1(isol)%mp(j)%lab *                  &
                      (1. - bsn_prm%psp) / bsn_prm%psp
 
           !! Set Stable pool based on dynamic coefficant
 	    if (bsn_cc%sol_P_model == 0) then  !! From White et al 2009 
             !! convert to concentration for ssp calculation
-	        actp = sol(isol)%nut(j)%actp/sol(isol)%phys(j)%conv_wt*1000000.
-		    solp = sol(isol)%nut(j)%solp / sol(isol)%phys(j)%conv_wt *1000000.
+	        actp = sol1(isol)%mp(j)%act / sol(isol)%phys(j)%conv_wt*1000000.
+		    solp = sol1(isol)%mp(j)%lab / sol(isol)%phys(j)%conv_wt *1000000.
             !! estimate Total Mineral P in this soil based on data from sharpley 2004
 		    ssp = 25.044 * (actp + solp)** -0.3833
 		    !!limit SSP Range
 		    if (SSP > 7.) SSP = 7.
 		    if (SSP < 1.) SSP = 1.	      	  
-		    sol(isol)%nut(j)%stap = SSP * (sol(isol)%nut(j)%actp +               &
-                                                 sol(isol)%nut(j)%solp)
+		    sol1(isol)%mp(j)%sta = SSP * (sol1(isol)%mp(j)%act +               &
+                                                 sol1(isol)%mp(j)%lab)
          else
 	!! The original code
-		  sol(isol)%nut(j)%stap = 4. * sol(isol)%nut(j)%actp
+		  sol1(isol)%mp(j)%sta = 4. * sol1(isol)%mp(j)%act
 	   end if
 
         sol(isol)%ly(j)%hum = sol(isol)%cbn(j)%cbn * wt1 * 17200.
         xx = sol(isol)%phys(j)%d
-        summinp = summinp + sol(isol)%nut(j)%solp+sol(isol)%nut(j)%actp           &
-                 + sol(isol)%nut(j)%stap
-        sumorgn = sumorgn + sol(isol)%nut(j)%aorgn +                              &
-         sol(isol)%nut(j)%orgn+sol(isol)%nut(j)%fon+sol(isol)%cbn(j)%bmn
-        sumorgp = sumorgp + sol(isol)%nut(j)%orgp + sol(isol)%nut(j)%fop
+        summinp = summinp + sol1(isol)%mp(j)%lab + sol1(isol)%mp(j)%act          &
+                 + sol1(isol)%mp(j)%sta
+        sumorgn = sumorgn + sol1(isol)%hs(j)%n +                              &
+         sol1(isol)%hp(j)%n + sol1(isol)%tot(j)%n + sol1(isol)%microb(j)%n
+        sumorgp = sumorgp + sol1(isol)%hp(j)%p + sol1(isol)%tot(j)%p
       end do
 
       !! By Zhang for C/N cycling
@@ -238,7 +239,7 @@
             sol_mass = sol_mass * (1- sol(isol)%phys(j)%rock / 100.) 			
 		end if
 		!!kg/ha mineral nitrogen
-		sol_min_n =  sol(isol)%nut(j)%no3 + sol(isol)%nut(j)%nh3	     
+		sol_min_n =  sol1(isol)%mn(j)%no3 + sol1(isol)%mn(j)%nh4	     
  
         !XCB = 0.2
         !mm
@@ -278,8 +279,8 @@
         !      sol_WON(j,ihru)=WT1*sol_WON(j,ihru)  
         !      KK=0 
         !else
-        sol(isol)%cbn(j)%woc = sol(isol)%nut(j)%aorgn +                          &
-                               sol(isol)%nut(j)%orgn  !0.1 * sol_WOC(j,i)
+        sol(isol)%cbn(j)%woc = sol1(isol)%hs(j)%n +                          &
+                               sol1(isol)%hp(j)%n  !0.1 * sol_WOC(j,i)
         !      KK=1 
         !end if     
 
@@ -299,45 +300,45 @@
         !IF(NCC==0)THEN
             !sol_WBM(j,ihru)=FBM*X1
             sol(isol)%ly(j)%bm=FBM*sol(isol)%cbn(j)%woc
-            sol(isol)%cbn(j)%bmc=sol(isol)%ly(j)%bm
+            sol1(isol)%microb(j)%c = sol(isol)%ly(j)%bm
             !IF(KK==0)THEN                                                                  
 	            RTO=sol(isol)%cbn(j)%won/sol(isol)%cbn(j)%woc   
 	      !ELSE                                                                                
 	      !      RTO=.1                                                                            
 	      !END IF                                                                              
-            sol(isol)%cbn(j)%bmn=RTO*sol(isol)%cbn(j)%bmc     
+            sol1(isol)%microb(j)%n = RTO * sol1(isol)%microb(j)%c     
             !sol_HP(j,ihru)=FHP*(X1-sol_BM(j,ihru))  
             sol(isol)%ly(j)%hp=FHP*(sol(isol)%cbn(j)%woc-                    &     
                                                 sol(isol)%ly(j)%bm)    
             sol(isol)%ly(j)%hs=sol(isol)%cbn(j)%woc-sol(isol)%ly(j)%bm-      &
                    sol(isol)%ly(j)%hp
             !sol_HP(j,i)=sol_WOC(j,i)-sol_BM(j,i)-sol_HP(j,i)                                                                
-            sol(isol)%cbn(j)%hsc = sol(isol)%ly(j)%hs     
-            sol(isol)%cbn(j)%hsn= RTO*sol(isol)%cbn(j)%hsc  !sol_aorgn(j,i)
-            sol(isol)%cbn(j)%hpc=sol(isol)%ly(j)%hp          
-            sol(isol)%cbn(j)%hpn= RTO*sol(isol)%cbn(j)%hpc  !sol_orgn(j,i)
+            sol1(isol)%hs(j)%c = sol(isol)%ly(j)%hs     
+            sol1(isol)%hs(j)%n = RTO * sol1(isol)%hs(j)%c  !sol_aorgn(j,i)
+            sol1(isol)%hp(j)%c = sol(isol)%ly(j)%hp          
+            sol(isol)%cbn(j)%hpn = RTO * sol1(isol)%hp(j)%c  !sol_orgn(j,i)
             
                                                                     
             X1=sol(isol)%ly(j)%rsd /1000.  
             !!skip std in SWAT                                                                   
             !IF(j==1)X1=X1+STD(j)/1000.
                                                                   
-            sol(isol)%cbn(j)%lm = 500.*X1                             
-            sol(isol)%cbn(j)%ls = sol(isol)%cbn(j)%lm
-            sol(isol)%cbn(j)%lsl = .8 * sol(isol)%cbn(j)%ls
-            sol(isol)%cbn(j)%lmc = .42*sol(isol)%cbn(j)%lm
+            sol1(isol)%meta(j)%m = 500. * X1                             
+            sol1(isol)%str(j)%m = sol1(isol)%meta(j)%m
+            sol1(isol)%lig(j)%m = .8 * sol1(isol)%str(j)%m
+            sol1(isol)%meta(j)%c = .42 * sol1(isol)%meta(j)%m
                                                                         
-            sol(isol)%cbn(j)%lmn=.1*sol(isol)%cbn(j)%lmc
-            sol(isol)%cbn(j)%lsc=.42* sol(isol)%cbn(j)%ls
-            sol(isol)%cbn(j)%lslc=.8*sol(isol)%cbn(j)%lsc
-            sol(isol)%cbn(j)%lslnc=.2*sol(isol)%cbn(j)%lsc
-            sol(isol)%cbn(j)%lsn=sol(isol)%cbn(j)%lsc/150.
+            sol1(isol)%meta(j)%n = .1 * sol1(isol)%meta(j)%c
+            sol1(isol)%str(j)%c = .42* sol1(isol)%str(j)%m
+            sol1(isol)%lig(j)%c = .8 * sol1(isol)%lig(j)%c
+            sol1(isol)%lig(j)%n = .2 * sol1(isol)%lig(j)%c
+            sol1(isol)%str(j)%n = sol1(isol)%lig(j)%c / 150.
             !sol_WOC(j,ihru)=sol_WOC(j,ihru)+sol_LSC(j,ihru)+sol_WLMC(j,ihru)
             sol(isol)%cbn(j)%woc=sol(isol)%cbn(j)%woc +                               &
-                sol(isol)%cbn(j)%lsc + sol(isol)%cbn(j)%lmc
+                sol1(isol)%str(j)%c + sol1(isol)%meta(j)%c
             !sol_WON(j,ihru)=sol_WON(j,ihru)+sol_LSN(j,ihru)+sol_WLMN(j,ihru)
             sol(isol)%cbn(j)%won=sol(isol)%cbn(j)%won +                               &
-                sol(isol)%cbn(j)%lsn + sol(isol)%cbn(j)%lmn
+                sol1(isol)%str(j)%n + sol1(isol)%meta(j)%n
             !END IF 		
             
             !if (sol_orgn(j,i) > 0.0001) then
@@ -346,10 +347,9 @@
               !! assume C:N ratio of 10:1
             !  sol_orgn(j,i) = 10000. * (sol_cbn(j,i) / 11.) * wt1  !! CN ratio was 14 before 01-22-09 Armen
             !end if
-            sol(isol)%nut(j)%orgn = sol(isol)%cbn(j)%hpn
-            sol(isol)%nut(j)%aorgn = sol(isol)%cbn(j)%hsn
-            sol(isol)%nut(1)%fon = sol(isol)%cbn(j)%lmn +                         &
-                                             sol(isol)%cbn(j)%lsn
+            sol1(isol)%hp(j)%n = sol(isol)%cbn(j)%hpn
+            sol1(isol)%hs(j)%n = sol1(isol)%hs(j)%n
+            sol1(isol)%tot(j)%n = sol1(isol)%meta(j)%n + sol1(isol)%str(j)%n
             !sol_aorgn(j,i) = sol_orgn(j,i) * nactfr
             !sol_orgn(j,i) = sol_orgn(j,i) * (1. - nactfr)
 

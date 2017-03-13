@@ -101,6 +101,16 @@
             read (107,*,iostat=eof) chcal(i)%ord(iord)%meas
             if (eof < 0) exit
             
+            ! set hru number from element number and set hru areas in the region
+            if (db_mx%cha_reg > 0) then
+              do ihru = 1, ccu_reg(i)%num_tot      !elements have to be hru or hru_lte
+                ielem = ccu_reg(i)%num(ihru)
+                !switch %num from element number to hru number
+                ccu_cal(i)%num(ihru) = ccu_elem(ielem)%obtypno
+                ccu_cal(i)%hru_ha(ihru) = ccu_elem(ielem)%sub_frac * ccu_cal(i)%area_ha
+              end do
+            end if
+        
             !! sum total channel length for
             do ich_s = 1, chcal(i)%num_tot
               ich = chcal(i)%num(ich_s)
@@ -116,7 +126,7 @@
       end do    
       end if
         
-      db_mx%chcal_reg = mreg
+      db_mx%ch_reg = mreg
       
       return
       end subroutine ch_regions_cal_read

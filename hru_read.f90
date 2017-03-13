@@ -3,6 +3,7 @@
       use jrw_datalib_module
       use input_file_module
       use parm 
+      use organic_mineral_mass_module
       
       character (len=500) :: header
       character (len=80) :: titldum
@@ -19,7 +20,9 @@
         allocate (hru_db(0:0))
         allocate (hru(0:0))
         allocate (soil(0:0))
+        allocate (soil1(0:0))
         allocate (pcom(0:0))
+        allocate (rsd1(0:0))
       else 
       do
         open (113,file=in_hru%hru_data)
@@ -37,7 +40,9 @@
         allocate (hru_db(0:imax))
         allocate (hru(0:imax))
         allocate (soil(0:imax))
+        allocate (soil1(0:imax))
         allocate (pcom(0:imax))
+        allocate (rsd1(0:imax))
         
         rewind (113)
         read (113,*) titldum
@@ -59,6 +64,10 @@
                hru_db(i)%dbs%land_use_mgt = ilum
             exit
             end if
+           ! write (*,*) 'LUM not found during crosswalk.  Please ensure it is included in landuse.lum'
+           ! write (*,*) 'For LUM not found, the model will default to #1 in the file'
+           ! write (*,*) 'Enter to continue/CNTRL break to cancel simulation'
+           ! stop
           end do
           do isolt = 1, db_mx%soiltest
             if (hru_db(i)%dbsc%soil_nutr_init == solt_db(isolt)%name) then

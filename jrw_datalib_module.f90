@@ -66,10 +66,22 @@
         integer :: hmetcom = 0
         integer :: saltcom = 0
         integer :: res = 0            !! none     |max number of reservoir data
-        integer :: lscal_reg = 0      !! none     |max number of regions for landscape hru calibration
-        integer :: lscalt_reg = 0     !! none     |max number of regions for landscape hru_lte calibration
+        integer :: lcu_elem = 0       !! none     |max number of landscape elements
+        integer :: lcu_out = 0        !! none     |max number of landscape regions for output
+        integer :: lcu_reg = 0        !! none     |max number of landscape regions for soft cal and output by lum
+        integer :: lscal_reg = 0      !! none     |max number of soft data for landscape calibration (for each cal region)
+        integer :: aqu_elem = 0       !! none     |max number of aquifer elements
+        integer :: aqu_out = 0        !! none     |max number of aquifer regions for output
+        integer :: aqu_reg = 0        !! none     |max number of aquifer regions for soft cal and output by aquifer type
+        integer :: cha_out = 0        !! none     |max number of channel regions for output
+        integer :: cha_reg = 0        !! none     |max number of channel regions for soft cal and output by channel order
+        integer :: res_out = 0        !! none     |max number of reservoir regions for output
+        integer :: res_reg = 0        !! none     |max number of reservoir regions for soft cal and output by reservoir type
+        integer :: rec_out = 0        !! none     |max number of recall regions for output
+        integer :: rec_reg = 0        !! none     |max number of recall regions for soft cal and output by recall type
         integer :: plcal_reg = 0      !! none     |max number of regions for plant calibration
-        integer :: chcal_reg = 0      !! none     |max number of regions for channel calibration
+        integer :: ch_reg = 0         !! none     |max number of regions for channel calibration
+        integer :: lscal_prms = 0     !! none     |max number of parameters for landscape hru calibration
         integer :: res_dat       
         integer :: res_init
         integer :: res_hyd
@@ -573,8 +585,8 @@
       type soft_calib_ls_adjust
         real :: cn = 0.         !+/- or 0/1       |cn2 adjustment or at limit
         real :: esco = 0.       !+/- or 0/1       |esco adjustment or at limit
-        real :: lat_len = 0.    !+/- or 0/1       |k (upper layers) adjustment or at limit
-        real :: k_lo = 0.       !+/- or 0/1       |l (lowest layer) adjustment or at limit
+        real :: lat_len = 0.    !+/- or 0/1       |lateral flow soil length adjustment or at limit
+        real :: k_lo = 0.       !+/- or 0/1       |k (lowest layer) adjustment or at limit
         real :: slope = 0.      !+/- or 0/1       |slope adjustment or at limit        
         real :: tconc = 0.      !+/- or 0/1       |time of concentration adjustment or at limit
         real :: etco = 0.       !+/- or 0/1       |etco adjustment or at limit
@@ -582,7 +594,7 @@
         real :: revapc = 0.     !+/- or 0/1       |slope adjustment or at limit
         real :: cn3_swf = 0.    !+/- or 0/1       |cn3_swf adjustment or at limit
       end type soft_calib_ls_adjust
-      
+
       type soft_calib_ls_processes
         !database of soft ave annual landscape calibration values
         character(len=16) :: name = 'default'
@@ -617,11 +629,65 @@
         type (soft_calib_ls_adjust) :: prm_lim                  !code if parameters are at limits
       end type ls_calib_regions
       
+      type cataloging_units
+        character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lcu_reg)
+        real :: area_ha                                         !area of landscape cataloging unit -hectares
+        integer :: num_tot                                      !number of hru's in each region
+        integer, dimension(:), allocatable :: num               !hru's that are included in the region
+        integer :: nlum                                         !number of land use and mgt in the region
+        integer :: lscal                                        !points to soft calibration data
+        integer, dimension(:), allocatable :: lum_num           !db nunmber of land use in the region - dimensioned by lum in the region
+        integer, dimension(:), allocatable :: lum_num_tot       !db nunmber of land use in the region each year- dimensioned by lum in database
+        real, dimension(:), allocatable :: lum_ha               !area (ha) of land use in the region - dimensioned by lum in the region
+        real, dimension(:), allocatable :: lum_ha_tot           !sum of area (ha) of land use in the region each year- dimensioned by lum in database
+        real, dimension(:), allocatable :: hru_ha               !area (ha) of hrus in the region 
+      end type cataloging_units
+      type (cataloging_units), dimension(:), allocatable :: region     !dimension by region for hru's
+      type (cataloging_units), dimension(:), allocatable :: ccu_cal    !channel cataoging unit region
+      type (cataloging_units), dimension(:), allocatable :: acu_cal    !aquifer cataoging unit region
+      type (cataloging_units), dimension(:), allocatable :: rcu_cal    !reservoir cataoging unit region
+      type (cataloging_units), dimension(:), allocatable :: pcu_cal    !point source cataoging unit region
+      
+      type land_cataloging_units
+        character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lcu_out)
+        real :: area_ha                                         !area of landscape cataloging unit -hectares
+        integer :: num_tot                                      !number of hru's in each region
+        integer, dimension(:), allocatable :: num               !hru's that are included in the region
+      end type land_cataloging_units
+      type (land_cataloging_units), dimension(:), allocatable :: lcu_out     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: lcu_reg     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: acu_out     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: acu_reg     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: ccu_out     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: ccu_reg     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: rcu_out     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: rcu_reg     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: pcu_out     !dimension by region for hru's
+      type (land_cataloging_units), dimension(:), allocatable :: pcu_reg     !dimension by region for hru's
+      
+      type land_cataloging_unit_elements
+        character(len=16) :: name
+        integer :: obj = 1              !object number
+        character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
+        integer :: obtypno = 0          !2-number of hru_lte's or 1st hru_lte command
+        real :: bsn_frac = 0            !fraction of element in basin (expansion factor)
+        real :: sub_frac = 0            !fraction of element in sub (expansion factor)
+        real :: reg_frac = 0            !fraction of element in calibration region (expansion factor)
+      end type land_cataloging_unit_elements
+      type (land_cataloging_unit_elements), dimension(:), allocatable :: lcu_elem       !landscape cataoging unit
+      type (land_cataloging_unit_elements), dimension(:), allocatable :: ccu_elem       !channel cataoging unit
+      type (land_cataloging_unit_elements), dimension(:), allocatable :: acu_elem       !aquifer cataoging unit
+      type (land_cataloging_unit_elements), dimension(:), allocatable :: rcu_elem       !reservoir cataoging unit
+      type (land_cataloging_unit_elements), dimension(:), allocatable :: pcu_elem       !point source cataoging unit
+      
       type soft_data_calib_landscape
-        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lscal_reg)
+        character(len=16) :: name = 'default'                               !name of region - (number of regions = db_mx%lcu_reg)
         integer :: lum_num                                                  !number of land uses in each region
         integer :: num_tot                                                  !number of hru's in each region
         integer, dimension(:), allocatable :: num                           !hru's that are included in the region
+        integer :: num_reg                                                  !number of regions the soft data applies to
+        character(len=16), dimension(:), allocatable :: reg                 !name of regions the soft data applies to
+        integer, dimension(:), allocatable :: ireg                          !name of regions the soft data applies to
         type (ls_calib_regions), dimension(:), allocatable :: lum           !dimension for land uses within a region
       end type soft_data_calib_landscape
       type (soft_data_calib_landscape), dimension(:), allocatable :: lscal  !dimension by region for hru's
@@ -661,7 +727,7 @@
       end type pl_calib_regions
       
       type soft_data_calib_plant
-        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lscal_reg)
+        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lcu_reg)
         integer :: lum_num                                                  !number of land uses in each region
         integer :: num_tot                                                  !number of hru's in each region
         integer, dimension(:), allocatable :: num                           !hru's that are included in the region
@@ -700,7 +766,7 @@
       end type chan_calib_regions
       
       type soft_data_calib_channel
-        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lscal_reg)
+        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lcu_reg)
         integer :: ord_num                                                  !number of stream orders in each region
         integer :: num_tot                                                  !number of channels in each region
         integer, dimension(:), allocatable :: num                           !channels that are included in the region
@@ -1288,13 +1354,14 @@
         !surface areas are ha for 0 and frac of hru for 1; volumes are ha-m for 0 and mm for 1
         !br1 and br2 are used for 0 and acoef for 0 -- for surface area - volume relationship
         character(len=16) :: name = "default"
+        integer :: in_unit = 0    !none          |0=input ha/ha-m; 1=input frac/mm
         integer :: iyres = 0      !none          |year of the sim that the res becomes operational
         integer :: mores = 0      !none          |month the res becomes operational
         real :: psa = 0.          !ha or frac    |res surface area when res is filled to princ spillway
-        real :: pvol = 0.         !ha-m or mm    |vol of water needed to fill the res to the princ spillway (read in as 10^4 m^3
+        real :: pvol = 0.         !ha-m or mm    |vol of water needed to fill the res to the princ spillway (read in as ha-m
                                   !                and converted to m^3)
         real :: esa = 0.          !ha or frac    |res surface area when res is filled to emerg spillway 
-        real :: evol = 0.         !ha-m or mm    |vol of water needed to fill the res to the emerg spillway (read in as 10^4 m^3
+        real :: evol = 0.         !ha-m or mm    |vol of water needed to fill the res to the emerg spillway (read in as ha-m
                                   !                and converted to m^3)
         real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom
         real :: evrsv = .7        !none          |lake evap coeff

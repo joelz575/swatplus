@@ -281,10 +281,8 @@
             pcom(j)%plg(ipl)%plpet = pcom(j)%plg(ipl)%plpet + pet_day
           end if
 
-          pcom(j)%plg(ipl)%hvstiadj=pldb(idp)%hvsti * 100. *             &
-            pcom(j)%plcur(ipl)%phuacc                                    &
-              / (100. * pcom(j)%plcur(ipl)%phuacc + Exp(11.1 - 10. *     &
-              pcom(j)%plcur(ipl)%phuacc))
+          pcom(j)%plg(ipl)%hvstiadj = pldb(idp)%hvsti * 100. * pcom(j)%plcur(ipl)%phuacc                    &
+                     / (100. * pcom(j)%plcur(ipl)%phuacc + Exp(11.1 - 10. * pcom(j)%plcur(ipl)%phuacc))
           
 
 !!  added per JGA for Srini by gsm 9/8/2011

@@ -75,6 +75,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       integer, intent (in) :: jj
       real, intent (in) :: bmix
@@ -135,16 +136,16 @@
           !! calculate amount of each substance in the profile being
           !! redistributed between layers   
           if (thtill(l) > 0.) then
-            smix(1) = smix(1) + thtill(l) * emix * soil(jj)%nut(l)%no3
-            smix(2) = smix(2) + thtill(l) * emix * soil(jj)%nut(l)%orgn
-            smix(3) = smix(3) + thtill(l) * emix * soil(jj)%nut(l)%nh3
-            smix(4) = smix(4) + thtill(l) * emix * soil(jj)%nut(l)%solp
-            smix(5) = smix(5) + thtill(l) * emix * soil(jj)%nut(l)%orgp
-            smix(6) = smix(6) + thtill(l) * emix * soil(jj)%nut(l)%aorgn
-            smix(7) = smix(7) + thtill(l) * emix * soil(j)%nut(l)%actp
-            smix(8) = smix(8) + thtill(l) * emix * soil(jj)%nut(l)%fon
-            smix(9) = smix(9) + thtill(l) * emix * soil(jj)%nut(l)%fop
-            smix(10) = smix(10) + thtill(l) * emix*soil(jj)%nut(l)%stap
+            smix(1) = smix(1) + thtill(l) * emix * soil1(jj)%mn(l)%no3
+            smix(2) = smix(2) + thtill(l) * emix * soil1(jj)%hp(l)%n
+            smix(3) = smix(3) + thtill(l) * emix * soil1(jj)%mn(l)%nh4
+            smix(4) = smix(4) + thtill(l) * emix * soil1(jj)%mp(l)%lab
+            smix(5) = smix(5) + thtill(l) * emix * soil1(jj)%hp(l)%p
+            smix(6) = smix(6) + thtill(l) * emix * soil1(jj)%hs(l)%n
+            smix(7) = smix(7) + thtill(l) * emix * soil1(j)%mp(l)%act
+            smix(8) = smix(8) + thtill(l) * emix * soil1(jj)%tot(l)%n
+            smix(9) = smix(9) + thtill(l) * emix * soil1(jj)%tot(l)%p
+            smix(10) = smix(10) + thtill(l) * emix * soil1(jj)%mp(l)%sta
             smix(11) = smix(11) + thtill(l) * emix * soil(jj)%ly(l)%rsd
             do k = 1, npmx
             smix(11+k) = smix(11+k) + thtill(l) * emix *                &             
@@ -165,48 +166,48 @@
 
           !! calculate new amount of each substance in each layer
           !! undergoing mixing
-          soil(jj)%nut(l)%no3 = soil(jj)%nut(l)%no3 * (1. - thtill(l)) +    &
-                          soil(jj)%nut(l)%no3 * thtill(l) * (1. - emix)+    &
+          soil1(jj)%mn(l)%no3 = soil1(jj)%mn(l)%no3 * (1. - thtill(l)) +    &
+                          soil1(jj)%mn(l)%no3 * thtill(l) * (1. - emix)+    &
                           smix(1) * thtill(l) * dg / dtil
 
-          soil(jj)%nut(l)%orgn=soil(jj)%nut(l)%orgn * (1. - thtill(l)) +    &
-                          soil(j)%nut(l)%orgn*thtill(l) * (1. - emix) +     &
+          soil1(jj)%hp(l)%n = soil1(jj)%hp(l)%n * (1. - thtill(l)) +        &
+                          soil1(j)%hp(l)%n * thtill(l) * (1. - emix) +      &
                           smix(2) * thtill(l) * dg / dtil
 
-          soil(jj)%nut(l)%nh3 = soil(jj)%nut(l)%nh3 * (1. - thtill(l)) +    &
-                          soil(jj)%nut(l)%nh3 * thtill(l) * (1. - emix)+    &
+          soil1(jj)%mn(l)%nh4 = soil1(jj)%mn(l)%nh4 * (1. - thtill(l)) +    &
+                          soil1(jj)%mn(l)%nh4 * thtill(l) * (1. - emix)+    &
                           smix(3) * thtill(l) * dg / dtil
 
-          soil(jj)%nut(l)%solp = soil(jj)%nut(l)%solp * (1.-thtill(l)) +    &
-                          soil(jj)%nut(l)%solp * thtill(l) * (1.-emix) +    &
+          soil1(jj)%mp(l)%lab = soil1(jj)%mp(l)%lab * (1.-thtill(l)) +      &
+                          soil1(jj)%mp(l)%lab * thtill(l) * (1.-emix) +     &
                           smix(4) * thtill(l) * dg / dtil
 
-          soil(jj)%nut(l)%orgp=soil(jj)%nut(l)%orgp * (1. - thtill(l))+    &
-                      soil(jj)%nut(l)%orgp * thtill(l) * (1. - emix) +     &
+          soil1(jj)%hp(l)%p = soil1(jj)%hp(l)%p * (1. - thtill(l))+         &
+                      soil1(jj)%hp(l)%p * thtill(l) * (1. - emix) +         &
                       smix(5) * thtill(l) * dg / dtil
 
-          soil(jj)%nut(l)%aorgn=soil(jj)%nut(l)%aorgn*(1. - thtill(l)) +   &
-                      soil(jj)%nut(l)%aorgn * thtill(l) * (1. - emix) +    &
+          soil1(jj)%hs(l)%n=soil1(jj)%hs(l)%n*(1. - thtill(l)) +            &
+                      soil1(jj)%hs(l)%n * thtill(l) * (1. - emix) +         &
                       smix(6) * thtill(l) * dg / dtil
 
-          soil(j)%nut(l)%actp = soil(j)%nut(l)%actp * (1. - thtill(l)) +   &
-                      soil(j)%nut(l)%actp * thtill(l) * (1. - emix) +      &
+          soil1(j)%mp(l)%act = soil1(j)%mp(l)%act * (1. - thtill(l)) +      &
+                      soil(j)%nut(l)%actp * thtill(l) * (1. - emix) +       &
                       smix(7) * thtill(l) * dg / dtil
 
-          soil(jj)%nut(l)%fon = soil(jj)%nut(l)%fon * (1. - thtill(l)) +   &
-                          soil(jj)%nut(l)%fon * thtill(l) * (1. - emix)+   &
+          soil1(jj)%tot(l)%n = soil1(jj)%tot(l)%n * (1. - thtill(l)) +    &
+                          soil1(jj)%tot(l)%n * thtill(l) * (1. - emix)+    &
                           smix(8) * thtill(l) * dg / dtil
 
-          soil(jj)%nut(l)%fop = soil(jj)%nut(l)%fop * (1. - thtill(l)) +   &
-                          soil(jj)%nut(l)%fop * thtill(l) * (1. - emix)+   &
+          soil1(jj)%tot(l)%p = soil1(jj)%tot(l)%p * (1. - thtill(l)) +    &
+                          soil1(jj)%tot(l)%p * thtill(l) * (1. - emix)+    &
                           smix(9) * thtill(l) * dg / dtil
 
-          soil(jj)%nut(l)%stap = soil(jj)%nut(l)%stap * (1.-thtill(l))+    &
-                          soil(jj)%nut(l)%stap * thtill(l) * (1.-emix) +   &
+          soil1(jj)%mp(l)%sta = soil1(jj)%mp(l)%sta * (1.-thtill(l))+       &
+                          soil1(jj)%mp(l)%sta * thtill(l) * (1.-emix) +     &
                           smix(10) * thtill(l) * dg / dtil
 
-          soil(jj)%ly(l)%rsd = soil(jj)%ly(l)%rsd * (1. - thtill(l)) +     &
-                          soil(jj)%ly(l)%rsd * thtill(l) * (1. - emix) +   &
+          soil(jj)%ly(l)%rsd = soil(jj)%ly(l)%rsd * (1. - thtill(l)) +      &
+                          soil(jj)%ly(l)%rsd * thtill(l) * (1. - emix) +    &
                           smix(11) * thtill(l) * dg / dtil
           soil(jj)%ly(l)%rsd = Max(soil(jj)%ly(l)%rsd,0.)
 

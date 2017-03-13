@@ -75,6 +75,7 @@
 
       use jrw_datalib_module
       use basin_module
+      use organic_mineral_mass_module
 
       integer, intent (in) :: jj
       real, intent (in) :: bmix
@@ -186,20 +187,20 @@
           !! calculate the mass or concentration of each mixed element 
           !! mass based mixing
           WW1 = sol_msm(l)/(sol_msm(l) + sol_msn(l))
-          smix(1) = smix(1) + soil(jj)%nut(l)%no3 * WW1
-          smix(2) = smix(2) + soil(jj)%nut(l)%orgn * WW1
-          smix(3) = smix(3) + soil(jj)%nut(l)%nh3 * WW1
-          smix(4) = smix(4) + soil(jj)%nut(l)%solp * WW1
-          smix(5) = smix(5) + soil(jj)%nut(l)%orgp * WW1
-          smix(6) = smix(6) + soil(jj)%nut(l)%aorgn * WW1
-          smix(7) = smix(7) + soil(jj)%nut(l)%actp * WW1
-          smix(8) = smix(8) + soil(jj)%nut(l)%fon * WW1
-          smix(9) = smix(9) + soil(jj)%nut(l)%fop * WW1
-          smix(10) = smix(10) + soil(jj)%nut(l)%stap * WW1
+          smix(1) = smix(1) + soil1(jj)%mn(l)%no3 * WW1
+          smix(2) = smix(2) + soil1(jj)%hp(l)%n * WW1
+          smix(3) = smix(3) + soil1(jj)%mn(l)%nh4 * WW1
+          smix(4) = smix(4) + soil1(jj)%mp(l)%lab * WW1
+          smix(5) = smix(5) + soil1(jj)%hp(l)%p * WW1
+          smix(6) = smix(6) + soil1(jj)%hs(l)%n * WW1
+          smix(7) = smix(7) + soil1(jj)%mp(l)%act * WW1
+          smix(8) = smix(8) + soil1(jj)%tot(l)%n * WW1
+          smix(9) = smix(9) + soil1(jj)%tot(l)%p * WW1
+          smix(10) = smix(10) + soil1(jj)%mp(l)%sta * WW1
           smix(11) = smix(11) + soil(jj)%ly(l)%rsd * WW1
-          smix(12) = smix(12) + soil(jj)%cbn(l)%mc * WW1
-          smix(13) = smix(13) + soil(jj)%nut(l)%mn * WW1
-          smix(14) = smix(14) + soil(jj)%nut(l)%mp * WW1
+          smix(12) = smix(12) + soil1(jj)%man(l)%c * WW1
+          smix(13) = smix(13) + soil1(jj)%man(l)%n * WW1
+          smix(14) = smix(14) + soil1(jj)%man(l)%p * WW1
 
 		!! concentration based mixing
           WW2 = XX + sol_msm(l)
@@ -218,18 +219,18 @@
             !!by zhang
             !!============== 
             if (bsn_cc%cswat == 2) then         
-	        smix(20+npmx+1) = smix(20+npmx+1) +soil(jj)%cbn(l)%lsc* WW1
-	        smix(20+npmx+2) = smix(20+npmx+2) +soil(jj)%cbn(l)%lslc* WW1
-	        smix(20+npmx+3) = smix(20+npmx+3) +soil(jj)%cbn(l)%lslnc* WW1
-	        smix(20+npmx+4) = smix(20+npmx+4) +soil(jj)%cbn(l)%lmc* WW1
-	        smix(20+npmx+5) = smix(20+npmx+5) +soil(jj)%cbn(l)%lm* WW1
-	        smix(20+npmx+6) = smix(20+npmx+6) +soil(jj)%cbn(l)%lsl* WW1
-	        smix(20+npmx+7) = smix(20+npmx+7) +soil(jj)%cbn(l)%ls* WW1  
+	        smix(20+npmx+1) = smix(20+npmx+1) + soil1(jj)%str(l)%c * WW1
+	        smix(20+npmx+2) = smix(20+npmx+2) + soil1(jj)%lig(l)%c * WW1
+	        smix(20+npmx+3) = smix(20+npmx+3) + soil1(jj)%lig(l)%n* WW1
+	        smix(20+npmx+4) = smix(20+npmx+4) + soil1(jj)%meta(l)%c * WW1
+	        smix(20+npmx+5) = smix(20+npmx+5) + soil1(jj)%meta(l)%m * WW1
+	        smix(20+npmx+6) = smix(20+npmx+6) + soil1(jj)%lig(l)%m * WW1
+	        smix(20+npmx+7) = smix(20+npmx+7) + soil1(jj)%str(l)%m * WW1  
 	        
-	        smix(20+npmx+8) = smix(20+npmx+8) +soil(jj)%cbn(l)%lsn* WW1
-	        smix(20+npmx+9) = smix(20+npmx+9) +soil(jj)%cbn(l)%lmn* WW1
-	        smix(20+npmx+10) = smix(20+npmx+10) +soil(jj)%cbn(l)%bmn* WW1
-	        smix(20+npmx+11) = smix(20+npmx+11) +soil(jj)%cbn(l)%hsn* WW1
+	        smix(20+npmx+8) = smix(20+npmx+8) + soil1(jj)%str(l)%n * WW1
+	        smix(20+npmx+9) = smix(20+npmx+9) + soil1(jj)%meta(l)%n * WW1
+	        smix(20+npmx+10) = smix(20+npmx+10) +soil1(jj)%microb(l)%n* WW1
+	        smix(20+npmx+11) = smix(20+npmx+11) + soil1(jj)%hs(l)%n * WW1
 	        smix(20+npmx+12) = smix(20+npmx+12) +soil(jj)%cbn(l)%hpn* WW1  
 	      end if
             !!by zhang 	
@@ -245,22 +246,21 @@
             WW3 = sol_msn(l) / sol_mass(l)
             WW4 = sol_msm(l) / XX
 
-            soil(jj)%nut(l)%no3=soil(jj)%nut(l)%no3 * WW3 + smix(1)*WW4
-            soil(jj)%nut(l)%orgn=soil(jj)%nut(l)%orgn*WW3 + smix(2)*WW4
-            soil(jj)%nut(l)%nh3=soil(jj)%nut(l)%nh3 * WW3 + smix(3)*WW4
-            soil(jj)%nut(l)%solp=soil(jj)%nut(l)%solp * WW3+smix(4)*WW4
-            soil(jj)%nut(l)%orgp = soil(jj)%nut(l)%orgp*WW3+smix(5)*WW4
-            soil(jj)%nut(l)%aorgn = soil(jj)%nut(l)%aorgn *                &
-                   WW3+smix(6)*WW4
-            soil(jj)%nut(l)%actp = soil(jj)%nut(l)%actp*WW3+smix(7)*WW4
-            soil(jj)%nut(l)%fon=soil(jj)%nut(l)%fon * WW3 + smix(8)*WW4
-            soil(jj)%nut(l)%fop=soil(jj)%nut(l)%fop * WW3 + smix(9)*WW4
-            soil(jj)%nut(l)%stap=soil(jj)%nut(l)%stap*WW3+smix(10)*WW4
+            soil1(jj)%mn(l)%no3 = soil1(jj)%mn(l)%no3 * WW3 + smix(1) * WW4
+            soil1(jj)%hp(l)%n = soil1(jj)%hp(l)%n * WW3 + smix(2) * WW4
+            soil1(jj)%mn(l)%nh4 = soil1(jj)%mn(l)%nh4 * WW3 + smix(3) * WW4
+            soil1(jj)%mp(l)%lab = soil1(jj)%mp(l)%lab * WW3+smix(4) * WW4
+            soil1(jj)%hp(l)%p = soil1(jj)%hp(l)%p * WW3 + smix(5) * WW4
+            soil1(jj)%hs(l)%n = soil1(jj)%hs(l)%n * WW3+smix(6) * WW4
+            soil1(jj)%mp(l)%act = soil1(jj)%mp(l)%act * WW3+smix(7) * WW4
+            soil1(jj)%tot(l)%n = soil1(jj)%tot(l)%n * WW3 + smix(8) * WW4
+            soil1(jj)%tot(l)%p = soil1(jj)%tot(l)%p * WW3 + smix(9)*WW4
+            soil1(jj)%mp(l)%sta = soil1(jj)%mp(l)%sta * WW3+smix(10) * WW4
             soil(jj)%ly(l)%rsd = soil(jj)%ly(l)%rsd * WW3 + smix(11)*WW4
             if (soil(jj)%ly(l)%rsd < 1.e-10) soil(jj)%ly(l)%rsd = 1.e-10
-            soil(jj)%cbn(l)%mc = soil(jj)%cbn(l)%mc * WW3 + smix(12)*WW4
-            soil(jj)%nut(l)%mn = soil(jj)%nut(l)%mn * WW3 + smix(13)*WW4
-            soil(jj)%nut(l)%mp = soil(jj)%nut(l)%mp * WW3 + smix(14)*WW4
+            soil1(jj)%man(l)%c = soil1(jj)%man(l)%c * WW3 + smix(12)*WW4
+            soil1(jj)%man(l)%n = soil1(jj)%man(l)%n * WW3 + smix(13)*WW4
+            soil1(jj)%man(l)%p = soil1(jj)%man(l)%p * WW3 + smix(14)*WW4
 
             soil(jj)%cbn(l)%cbn=(soil(jj)%cbn(l)%cbn*sol_msn(l)+smix(15)    &
                  * sol_msm(l)) / sol_mass(l)
@@ -281,17 +281,17 @@
              !!by zhang
              !!=============
              if (bsn_cc%cswat == 2) then
-      soil(jj)%cbn(l)%lsc=soil(jj)%cbn(l)%lsc*WW3+smix(20+npmx+1)*WW4
-      soil(jj)%cbn(l)%lslc=soil(jj)%cbn(l)%lslc*WW3+smix(20+npmx+2)*WW4
-      soil(jj)%cbn(l)%lslnc=soil(jj)%cbn(l)%lslnc*WW3+smix(20+npmx+3)*WW4
-      soil(jj)%cbn(l)%lmc=soil(jj)%cbn(l)%lmc*WW3+smix(20+npmx+4)*WW4
-      soil(jj)%cbn(l)%lm=soil(jj)%cbn(l)%lm*WW3+smix(20+npmx+5)*WW4
-      soil(jj)%cbn(l)%lsl=soil(jj)%cbn(l)%lsl*WW3 + smix(20+npmx+6)* WW4
-       soil(jj)%cbn(l)%ls=soil(jj)%cbn(l)%ls*WW3 + smix(20+npmx+7)* WW4
-       soil(jj)%cbn(l)%lsn=soil(jj)%cbn(l)%lsn*WW3 + smix(20+npmx+8)*WW4
-       soil(jj)%cbn(l)%lmn=soil(jj)%cbn(l)%lmn*WW3+smix(20+npmx+9)* WW4
-       soil(jj)%cbn(l)%bmn=soil(jj)%cbn(l)%bmn*WW3+smix(20+npmx+10)*WW4
-       soil(jj)%cbn(l)%hsn=soil(jj)%cbn(l)%hsn*WW3+smix(20+npmx+11)*WW4
+      soil1(jj)%str(l)%c = soil1(jj)%str(l)%c * WW3+smix(20+npmx+1) * WW4
+      soil1(jj)%lig(l)%c = soil1(jj)%lig(l)%c * WW3 + smix(20+npmx+2) * WW4
+      soil1(jj)%lig(l)%n = soil1(jj)%lig(l)%n * WW3 + smix(20+npmx+3) * WW4
+      soil1(jj)%meta(l)%c = soil1(jj)%meta(l)%c * WW3 + smix(20+npmx+4) * WW4
+      soil1(jj)%meta(l)%m = soil1(jj)%meta(l)%m * WW3 + smix(20+npmx+5) * WW4
+      soil1(jj)%lig(l)%m = soil1(jj)%lig(l)%m * WW3 + smix(20+npmx+6) * WW4
+       soil1(jj)%str(l)%m = soil1(jj)%str(l)%m * WW3 + smix(20+npmx+7)* WW4
+       soil1(jj)%str(l)%n = soil1(jj)%str(l)%n * WW3 + smix(20+npmx+8) * WW4
+       soil1(jj)%meta(l)%n = soil1(jj)%meta(l)%n * WW3 + smix(20+npmx+9) * WW4
+       soil1(jj)%microb(l)%n = soil1(jj)%microb(l)%n * WW3 + smix(20 + npmx + 10) * WW4
+       soil1(jj)%hs(l)%n = soil1(jj)%hs(l)%n * WW3 + smix(20 + npmx + 11) * WW4
        soil(jj)%cbn(l)%hpn=soil(jj)%cbn(l)%hpn*WW3+smix(20+npmx+12)* WW4
              end if
             !!by zhang 

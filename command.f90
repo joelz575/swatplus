@@ -68,8 +68,8 @@
             if (ob(icmd)%subs_tot > 0) then
               if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "hru_lte") then
                 ielem = ob(icmd)%elem
-                isub = sub_elem(ielem)%sub(1) !can only be in one subbasin if routing over
-                isub = sp_ob1%sub + isub - 1  !object number of the subbasin
+                isub = ob(icmd)%sub(1)          !can only be in one subbasin if routing over
+                isub = sp_ob1%sub + isub - 1    !object number of the subbasin
                 iob = ob(isub)%obj_in(in)
                 ihyd = ob(isub)%htyp_in(in)
                 ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)  !fraction of hydrograph
@@ -120,7 +120,7 @@
             if (ob(icmd)%subs_tot > 0) then
               !object is in a subbasin
               ielem = ob(icmd)%elem
-              isub = sub_elem(ielem)%sub(1)  !can only be in one subbasin if routing over
+              isub = ob(icmd)%sub(1)  !can only be in one subbasin if routing over
               conv = 100. * sub(isub)%da_km2 * sub_elem(ielem)%frac
             else
               conv = ob(icmd)%area_ha
@@ -173,16 +173,19 @@
               call res_control (jres)
             end if
               
-            case ("recall")   ! recall hydrograph
-                irec = ob(icmd)%num
-                select case (recall(irec)%typ)
-                  case (1)    !daily
-                    ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
-                  case (2)    !monthly
-                    ob(icmd)%hd(1) = recall(irec)%hd(time%mo,time%yrs)
-                  case (3)    !annual
-                    ob(icmd)%hd(1) = recall(irec)%hd(1,time%yrs)
-                end select
+          case ("recall")   ! recall hydrograph
+            irec = ob(icmd)%num
+            select case (recall(irec)%typ)
+              case (1)    !daily
+                ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
+              case (2)    !monthly
+                ob(icmd)%hd(1) = recall(irec)%hd(time%mo,time%yrs)
+              case (3)    !annual
+                ob(icmd)%hd(1) = recall(irec)%hd(1,time%yrs)
+              end select
+              
+              rec_d(rec) = ob(icmd)%hd(1)
+              call recall_output
 
           !case ("exco")   ! export coefficient hyds are set at start
 
@@ -190,7 +193,7 @@
             ob(icmd)%hd(1) = ob(icmd)%hin ** dr(ob(icmd)%props)
             
           case ("outlet")  !outlet
-            !all recieving hydrographs have been summed
+            ob(icmd)%hd(1) = ob(icmd)%hin
               
           case ("chandeg")  !swatdeg channel
             isdch = ob(icmd)%num
@@ -198,7 +201,7 @@
             call sd_channel_control
             
           end select
-        if (pco%fdcout == 1) call flow_dur_curve
+        if (pco%fdcout == 'yes') call flow_dur_curve
         
         !print all outflow hydrographs
         if (ob(icmd)%src_tot > 0) then
@@ -214,11 +217,22 @@
       end do
           
       if (time%yrs > pco%nyskip) then
+          call recall_output
           call obj_output
       end if
       
       if (time%yrs > pco%nyskip .and. time%step == 0) then 
-        call basin_output
+        if (db_mx%lcu_elem > 0) call basin_output
+        if (db_mx%lcu_out > 0) call subbasin_output
+        if (db_mx%aqu_out > 0) call basin_aquifer_output
+        if (sp_ob%res > 0) call basin_reservoir_output
+        if (sp_ob%chandeg > 0) call basin_channel_output
+        if (sp_ob%recall > 0) call basin_recall_output
+        !call lcu_output
+        !call region_aquifer_output
+        !call region_reservoir_output
+        !call region_channel_output
+        !call region_recall_output
       end if
       
       return

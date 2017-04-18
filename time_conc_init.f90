@@ -1,38 +1,38 @@
       subroutine time_conc_init 
     
       use hydrograph_module
-      use subbasin_module
+      use ru_module
           
      ! compute weighted Mannings n for each subbasin
       do isub = 1, sp_ob%sub
-        sub_n(isub) = 0.
-        do ii = 1, sub_d(isub)%num_tot
-          ielem = sub_d(isub)%num(ii)
-          if (sub_elem(ielem)%obtyp == "hru") then
-            ihru = sub_elem(ielem)%obtypno 
-            sub_n(isub) = sub_n(isub) + hru(ihru)%luse%ovn * hru(ihru)%km
+        ru_n(isub) = 0.
+        do ii = 1, ru_def(isub)%num_tot
+          ielem = ru_def(isub)%num(ii)
+          if (ru_elem(ielem)%obtyp == "hru") then
+            ihru = ru_elem(ielem)%obtypno 
+            ru_n(isub) = ru_n(isub) + hru(ihru)%luse%ovn * hru(ihru)%km
           else
-            sub_n(isub) = 0.1
+            ru_n(isub) = 0.1
           end if
         end do
       end do
             
       do isub = 1, sp_ob%sub
         iob = sp_ob1%sub + isub - 1
-        sub(isub)%da_km2 = ob(iob)%area_ha / 100.
+        ru(isub)%da_km2 = ob(iob)%area_ha / 100.
         bsn%area_ha = bsn%area_ha + ob(iob)%area_ha
-        sub_n(isub) = sub_n(isub) / sub(isub)%da_km2
-        ith = sub(isub)%dbs%toposub_db
-        ifld = sub(isub)%dbs%field_db
+        ru_n(isub) = ru_n(isub) / ru(isub)%da_km2
+        ith = ru(isub)%dbs%toposub_db
+        ifld = ru(isub)%dbs%field_db
         !if (ith > 0 .and. ichan > 0) then                  
         ! compute tc for the subbasin
-          tov = .0556 * (toposub_db(ith)%slope_len * sub_n(isub)) ** .6 /     &
-                                              (toposub_db(ith)%slope + .0001) ** .3
-          ch_slope = .5 * (toposub_db(ith)%slope + 0001)
-          ch_n = sub_n(isub)
+          tov = .0556 * (topo_db(ith)%slope_len * ru_n(isub)) ** .6 /     &
+                                              (topo_db(ith)%slope + .0001) ** .3
+          ch_slope = .5 * (topo_db(ith)%slope + 0001)
+          ch_n = ru_n(isub)
           ch_l = field_db(ifld)%length / 1000.
-          t_ch = .62 * ch_l * ch_n**.75 / (sub(isub)%da_km2**.125 * ch_slope**.375)
-          sub_tc(isub) = tov + t_ch
+          t_ch = .62 * ch_l * ch_n**.75 / (ru(isub)%da_km2**.125 * ch_slope**.375)
+          ru_tc(isub) = tov + t_ch
         !end if                                             
       end do
       

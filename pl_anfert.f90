@@ -260,7 +260,7 @@
           tautop(j) = tautop(j) + autop
         
         if (pco%mgtout ==  'year') then
-              write (143, 1000) j, time%yrc,i_mo,iida,                   & 
+              write (2612, 1000) j, time%yrc,i_mo,iida,                   & 
               fertdb(mgt%op1)%fertnm,                                    &
             "AUTOFERT", phubase(j),pcom(j)%plcur(ipl)%phuacc,            &
               soil(j)%sw, pcom(j)%plm(ipl)%mass,                         &

@@ -28,9 +28,9 @@
 
         do j = 1, mhru
         solp_t = 0.
-	  solno3_t = 0.
-	  solorgn_t = 0.
-	  solorgp_t = 0.
+	    solno3_t = 0.
+	    solorgn_t = 0.
+	    solorgp_t = 0.
          do l = 1, soil(j)%nly
            solp_t = solp_t + soil1(j)%mp(l)%lab 
            solno3_t = solno3_t + soil1(j)%mn(l)%no3
@@ -56,16 +56,16 @@
 		   
            solorgp_t = solorgp_t + soil1(j)%hp(l)%p
          end do
-       if (pco%solout == 'year') then
-         write (121,1000) i,soil(j)%ly(1)%rsd,solp_t, solno3_t,         &
+       if (pco%solout == 'y') then
+         write (2610,1000) time%day, j, soil(j)%ly(1)%rsd,solp_t, solno3_t,         &
                   solorgn_t, solorgp_t, cnday(j)
-           if (pco%csvout == 'yes' .and. pco%solout == 'year') then
-             write (121,1000) i,soil(j)%ly(1)%rsd,solp_t, solno3_t,     &
+           if (pco%csvout == 'y') then
+             write (2610,1000) time%day, j, soil(j)%ly(1)%rsd,solp_t, solno3_t,     &
                   solorgn_t, solorgp_t, cnday(j)
            end if
        endif
       end do
       
       return
- 1000 format ('SOIL   ',i4,1x,6f10.2)
+ 1000 format (i4,i6,1x,6f10.2)
       end

@@ -2,13 +2,13 @@
 
       use parm
       use hydrograph_module
-      use subbasin_module
+      use ru_module
       use hru_module
 !      use wateruse_module
       use climate_module
       use aquifer_module
       use channel_module
-      use sd_hru_module
+      use hru_lte_module
       use sd_channel_module
       use basin_module
       use jrw_datalib_module
@@ -23,7 +23,7 @@
       do iterall = 1, iter_all
         ! 1st cn2 adjustment
         isim = 0
-        do ireg = 1, db_mx%lcu_reg
+        do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             soft = lscalt(ireg)%lum(ilum)%meas%srr * lscalt(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -55,23 +55,23 @@
               iihru = region(ireg)%num(ihru_s)
               !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for 1st surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%cn2 = sd(iihru)%cn2 + chg_val
-                sd(iihru)%cn2 = amin1 (sd(iihru)%cn2, ls_prms(1)%up)
-                sd(iihru)%cn2 = Max (sd(iihru)%cn2, ls_prms(1)%lo)
-                qn1 = sd(iihru)%cn2 - (20. * (100. - sd(iihru)%cn2)) /                     &
-                     (100. - sd(iihru)%cn2 + EXP(2.533 - .063 * (100. - sd(iihru)%cn2)))
-                qn1 = Max(qn1, .4 * sd(iihru)%cn2)
-                qn3 = sd(iihru)%cn2 * EXP(.00673 * (100. - sd(iihru)%cn2))
-                sd(iihru)%smx = 254. * (100. / qn1 - 1.) 
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%cn2 = hlt(iihru)%cn2 + chg_val
+                hlt(iihru)%cn2 = amin1 (hlt(iihru)%cn2, ls_prms(1)%up)
+                hlt(iihru)%cn2 = Max (hlt(iihru)%cn2, ls_prms(1)%lo)
+                qn1 = hlt(iihru)%cn2 - (20. * (100. - hlt(iihru)%cn2)) /                     &
+                     (100. - hlt(iihru)%cn2 + EXP(2.533 - .063 * (100. - hlt(iihru)%cn2)))
+                qn1 = Max(qn1, .4 * hlt(iihru)%cn2)
+                qn3 = hlt(iihru)%cn2 * EXP(.00673 * (100. - hlt(iihru)%cn2))
+                hlt(iihru)%smx = 254. * (100. / qn1 - 1.) 
                 s3 = 254. * (100. / qn3 - 1.)
-                rto3 = 1. - s3 / sd(iihru)%smx
-                rtos = 1. - 2.54 / sd(iihru)%smx
-                sumul = sd(iihru)%por
-                sumfc = sd(iihru)%awc + sd(iihru)%cn3_swf * (sumul - sd(iihru)%awc)
+                rto3 = 1. - s3 / hlt(iihru)%smx
+                rtos = 1. - 2.54 / hlt(iihru)%smx
+                sumul = hlt(iihru)%por
+                sumfc = hlt(iihru)%awc + hlt(iihru)%cn3_swf * (sumul - hlt(iihru)%awc)
                 !! calculate shape parameters
-                call ascrv(rto3, rtos, sumfc, sumul, sd(iihru)%wrt1, sd(iihru)%wrt2)
-                sd_init(iihru) = sd(iihru)
+                call ascrv(rto3, rtos, sumfc, sumul, hlt(iihru)%wrt1, hlt(iihru)%wrt2)
+                hlt_init(iihru) = hlt(iihru)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -98,7 +98,7 @@
           ! adjust surface runoff using cn2
           do icn = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lcu_reg
+          do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             soft = lscalt(ireg)%lum(ilum)%meas%srr * lscalt(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -134,23 +134,23 @@
               iihru = region(ireg)%num(ihru_s)
               !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%cn2 = sd(iihru)%cn2 + chg_val
-                sd(iihru)%cn2 = amin1 (sd(iihru)%cn2, ls_prms(1)%up)
-                sd(iihru)%cn2 = Max (sd(iihru)%cn2, ls_prms(1)%lo)
-                qn1 = sd(iihru)%cn2 - (20. * (100. - sd(iihru)%cn2)) /                     &
-                     (100. - sd(iihru)%cn2 + EXP(2.533 - .063 * (100. - sd(iihru)%cn2)))
-                qn1 = Max(qn1, .4 * sd(iihru)%cn2)
-                qn3 = sd(iihru)%cn2 * EXP(.00673 * (100. - sd(iihru)%cn2))
-                sd(iihru)%smx = 254. * (100. / qn1 - 1.) 
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%cn2 = hlt(iihru)%cn2 + chg_val
+                hlt(iihru)%cn2 = amin1 (hlt(iihru)%cn2, ls_prms(1)%up)
+                hlt(iihru)%cn2 = Max (hlt(iihru)%cn2, ls_prms(1)%lo)
+                qn1 = hlt(iihru)%cn2 - (20. * (100. - hlt(iihru)%cn2)) /                     &
+                     (100. - hlt(iihru)%cn2 + EXP(2.533 - .063 * (100. - hlt(iihru)%cn2)))
+                qn1 = Max(qn1, .4 * hlt(iihru)%cn2)
+                qn3 = hlt(iihru)%cn2 * EXP(.00673 * (100. - hlt(iihru)%cn2))
+                hlt(iihru)%smx = 254. * (100. / qn1 - 1.) 
                 s3 = 254. * (100. / qn3 - 1.)
-                rto3 = 1. - s3 / sd(iihru)%smx
-                rtos = 1. - 2.54 / sd(iihru)%smx
-                sumul = sd(iihru)%por
-                sumfc = sd(iihru)%awc + sd(iihru)%cn3_swf * (sumul - sd(iihru)%awc)
+                rto3 = 1. - s3 / hlt(iihru)%smx
+                rtos = 1. - 2.54 / hlt(iihru)%smx
+                sumul = hlt(iihru)%por
+                sumfc = hlt(iihru)%awc + hlt(iihru)%cn3_swf * (sumul - hlt(iihru)%awc)
                 !! calculate shape parameters
-                call ascrv(rto3, rtos, sumfc, sumul, sd(iihru)%wrt1, sd(iihru)%wrt2)
-                sd_init(iihru) = sd(iihru)
+                call ascrv(rto3, rtos, sumfc, sumul, hlt(iihru)%wrt1, hlt(iihru)%wrt2)
+                hlt_init(iihru) = hlt(iihru)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -177,7 +177,7 @@
           
         ! 1st etco adjustment
         isim = 0
-        do ireg = 1, db_mx%lcu_reg
+        do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             !check all hru's for proper lum
             soft = lscalt(ireg)%lum(ilum)%meas%etr * lscalt(ireg)%lum(ilum)%precip_aa
@@ -210,11 +210,11 @@
                 iihru = region(ireg)%num(ihru_s)
                 !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for 1st et calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%etco = sd(iihru)%etco + chg_val
-                sd(iihru)%etco = amin1 (sd(iihru)%etco, ls_prms(7)%up)
-                sd(iihru)%etco = Max (sd(iihru)%etco, ls_prms(7)%lo)
-                sd_init(iihru) = sd(iihru)
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%etco = hlt(iihru)%etco + chg_val
+                hlt(iihru)%etco = amin1 (hlt(iihru)%etco, ls_prms(7)%up)
+                hlt(iihru)%etco = Max (hlt(iihru)%etco, ls_prms(7)%lo)
+                hlt_init(iihru) = hlt(iihru)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -241,7 +241,7 @@
         ! adjust et using etco
         do ietco = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lcu_reg
+          do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             !check all hru's for proper lum
             soft = lscalt(ireg)%lum(ilum)%meas%etr * lscalt(ireg)%lum(ilum)%precip_aa
@@ -277,11 +277,11 @@
                 iihru = region(ireg)%num(ihru_s)
                 !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for et calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%etco = sd(iihru)%etco + chg_val
-                sd(iihru)%etco = amin1 (sd(iihru)%etco, ls_prms(7)%up)
-                sd(iihru)%etco = Max (sd(iihru)%etco, ls_prms(7)%lo)
-                sd_init(iihru) = sd(iihru)
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%etco = hlt(iihru)%etco + chg_val
+                hlt(iihru)%etco = amin1 (hlt(iihru)%etco, ls_prms(7)%up)
+                hlt(iihru)%etco = Max (hlt(iihru)%etco, ls_prms(7)%lo)
+                hlt_init(iihru) = hlt(iihru)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -309,7 +309,7 @@
 
         ! 1st perco adjustment (bottom layer) for percolation
         isim = 0
-        do ireg = 1, db_mx%lcu_reg
+        do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             !check all hru's for proper lum
             soft = lscalt(ireg)%lum(ilum)%meas%pcr * lscalt(ireg)%lum(ilum)%precip_aa
@@ -341,14 +341,14 @@
               iihru = region(ireg)%num(ihru_s)
               !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for 1st surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%perco = sd(iihru)%perco - chg_val
-                sd(iihru)%perco = amin1 (sd(iihru)%perco, ls_prms(8)%up)
-                sd(iihru)%perco = Max (sd(iihru)%perco, ls_prms(8)%lo)
-                sd_init(iihru) = sd(iihru)
-                !idb = sd(iihru)%props
-                !sd(iihru)%hk = (sd(iihru)%por - sd(iihru)%awc) / (scon(sd_db(idb)%itext) * sd(iihru)%perco)
-                !sd(iihru)%hk = Max(2., sd(iihru)%hk)
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%perco = hlt(iihru)%perco - chg_val
+                hlt(iihru)%perco = amin1 (hlt(iihru)%perco, ls_prms(8)%up)
+                hlt(iihru)%perco = Max (hlt(iihru)%perco, ls_prms(8)%lo)
+                hlt_init(iihru) = hlt(iihru)
+                !idb = hlt(iihru)%props
+                !hlt(iihru)%hk = (hlt(iihru)%por - hlt(iihru)%awc) / (scon(hlt_db(idb)%itext) * hlt(iihru)%perco)
+                !hlt(iihru)%hk = Max(2., hlt(iihru)%hk)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -377,7 +377,7 @@
           ! adjust percolation using perco
           do iperco = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lcu_reg
+          do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             soft = lscalt(ireg)%lum(ilum)%meas%pcr * lscalt(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -413,14 +413,14 @@
               iihru = region(ireg)%num(ihru_s)
               !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%perco = sd(iihru)%perco - chg_val
-                sd(iihru)%perco = amin1 (sd(iihru)%perco, ls_prms(8)%up)
-                sd(iihru)%perco = Max (sd(iihru)%perco, ls_prms(8)%lo)
-                sd_init(iihru) = sd(iihru)
-                !idb = sd(iihru)%props
-                !sd(iihru)%hk = (sd(iihru)%por - sd(iihru)%awc) / (scon(sd_db(idb)%itext) * sd(iihru)%perco)
-                !sd(iihru)%hk = Max(2., sd(iihru)%hk)
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%perco = hlt(iihru)%perco - chg_val
+                hlt(iihru)%perco = amin1 (hlt(iihru)%perco, ls_prms(8)%up)
+                hlt(iihru)%perco = Max (hlt(iihru)%perco, ls_prms(8)%lo)
+                hlt_init(iihru) = hlt(iihru)
+                !idb = hlt(iihru)%props
+                !hlt(iihru)%hk = (hlt(iihru)%por - hlt(iihru)%awc) / (scon(hlt_db(idb)%itext) * hlt(iihru)%perco)
+                !hlt(iihru)%hk = Max(2., hlt(iihru)%hk)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -450,7 +450,7 @@
 
         ! 1st revapc adjustment for groundwater flow
         isim = 0
-        do ireg = 1, db_mx%lcu_reg
+        do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             !check all hru's for proper lum
             soft = lscalt(ireg)%lum(ilum)%meas%lfr * lscalt(ireg)%lum(ilum)%precip_aa
@@ -483,12 +483,12 @@
               iihru = region(ireg)%num(ihru_s)
               !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for 1st surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%revapc = sd(iihru)%revapc + chg_val
-                sd(iihru)%revapc = amin1 (sd(iihru)%revapc, ls_prms(9)%up)
-                sd(iihru)%revapc = Max (sd(iihru)%revapc, ls_prms(9)%lo)
-                sd_init(iihru)%revapc = sd(iihru)%revapc
-                sd_init(iihru) = sd(iihru)
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%revapc = hlt(iihru)%revapc + chg_val
+                hlt(iihru)%revapc = amin1 (hlt(iihru)%revapc, ls_prms(9)%up)
+                hlt(iihru)%revapc = Max (hlt(iihru)%revapc, ls_prms(9)%lo)
+                hlt_init(iihru)%revapc = hlt(iihru)%revapc
+                hlt_init(iihru) = hlt(iihru)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -515,7 +515,7 @@
         ! adjust groundwater flow using revapc
         do ik = 1, iter_ind
           isim = 0
-        do ireg = 1, db_mx%lcu_reg
+        do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             soft = lscalt(ireg)%lum(ilum)%meas%lfr * lscalt(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -551,12 +551,12 @@
               iihru = region(ireg)%num(ihru_s)
               !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%revapc = sd(iihru)%revapc + chg_val
-                sd(iihru)%revapc = amin1 (sd(iihru)%revapc, ls_prms(9)%up)
-                sd(iihru)%revapc = Max (sd(iihru)%revapc, ls_prms(9)%lo)
-                sd_init(iihru)%revapc = sd(iihru)%revapc
-                sd_init(iihru) = sd(iihru)
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%revapc = hlt(iihru)%revapc + chg_val
+                hlt(iihru)%revapc = amin1 (hlt(iihru)%revapc, ls_prms(9)%up)
+                hlt(iihru)%revapc = Max (hlt(iihru)%revapc, ls_prms(9)%lo)
+                hlt_init(iihru)%revapc = hlt(iihru)%revapc
+                hlt_init(iihru) = hlt(iihru)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -583,7 +583,7 @@
           
         ! 1st cn3_swf adjustment
         isim = 0
-        do ireg = 1, db_mx%lcu_reg
+        do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             soft = lscalt(ireg)%lum(ilum)%meas%srr * lscalt(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -615,24 +615,24 @@
               iihru = region(ireg)%num(ihru_s)
               !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for 1st surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%cn3_swf = sd(iihru)%cn3_swf - chg_val
-                sd(iihru)%cn3_swf = amin1 (sd(iihru)%cn3_swf, ls_prms(10)%up)
-                sd(iihru)%cn3_swf = Max (sd(iihru)%cn3_swf, ls_prms(10)%lo)
-                qn1 = sd(iihru)%cn2 - (20. * (100. - sd(iihru)%cn2)) /                     &
-                     (100. - sd(iihru)%cn2 + EXP(2.533 - .063 * (100. - sd(iihru)%cn2)))
-                qn1 = Max(qn1, .4 * sd(iihru)%cn2)
-                qn3 = sd(iihru)%cn2 * EXP(.00673 * (100. - sd(iihru)%cn2))
-                sd(iihru)%smx = 254. * (100. / qn1 - 1.) 
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%cn3_swf = hlt(iihru)%cn3_swf - chg_val
+                hlt(iihru)%cn3_swf = amin1 (hlt(iihru)%cn3_swf, ls_prms(10)%up)
+                hlt(iihru)%cn3_swf = Max (hlt(iihru)%cn3_swf, ls_prms(10)%lo)
+                qn1 = hlt(iihru)%cn2 - (20. * (100. - hlt(iihru)%cn2)) /                     &
+                     (100. - hlt(iihru)%cn2 + EXP(2.533 - .063 * (100. - hlt(iihru)%cn2)))
+                qn1 = Max(qn1, .4 * hlt(iihru)%cn2)
+                qn3 = hlt(iihru)%cn2 * EXP(.00673 * (100. - hlt(iihru)%cn2))
+                hlt(iihru)%smx = 254. * (100. / qn1 - 1.) 
                 s3 = 254. * (100. / qn3 - 1.)
-                rto3 = 1. - s3 / sd(iihru)%smx
-                rtos = 1. - 2.54 / sd(iihru)%smx
-                sumul = sd(iihru)%por
-                sumfc = sd(iihru)%awc + sd(iihru)%cn3_swf * (sumul - sd(iihru)%awc)
-                sumfc = Max (sumfc, .5 * sd(iihru)%awc)
+                rto3 = 1. - s3 / hlt(iihru)%smx
+                rtos = 1. - 2.54 / hlt(iihru)%smx
+                sumul = hlt(iihru)%por
+                sumfc = hlt(iihru)%awc + hlt(iihru)%cn3_swf * (sumul - hlt(iihru)%awc)
+                sumfc = Max (sumfc, .5 * hlt(iihru)%awc)
                 !! calculate shape parameters
-                call ascrv(rto3, rtos, sumfc, sumul, sd(iihru)%wrt1, sd(iihru)%wrt2)
-                sd_init(iihru) = sd(iihru)
+                call ascrv(rto3, rtos, sumfc, sumul, hlt(iihru)%wrt1, hlt(iihru)%wrt2)
+                hlt_init(iihru) = hlt(iihru)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0
@@ -659,7 +659,7 @@
           ! adjust surface runoff using cn3_swf
           do icn = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%lcu_reg
+          do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             soft = lscalt(ireg)%lum(ilum)%meas%srr * lscalt(ireg)%lum(ilum)%precip_aa
             diff = 0.
@@ -695,24 +695,24 @@
               iihru = region(ireg)%num(ihru_s)
               !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
                 !set parms for surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%cn3_swf = sd(iihru)%cn3_swf - chg_val
-                sd(iihru)%cn3_swf = amin1 (sd(iihru)%cn3_swf, ls_prms(10)%up)
-                sd(iihru)%cn3_swf = Max (sd(iihru)%cn3_swf, ls_prms(10)%lo)
-                qn1 = sd(iihru)%cn2 - (20. * (100. - sd(iihru)%cn2)) /                     &
-                     (100. - sd(iihru)%cn2 + EXP(2.533 - .063 * (100. - sd(iihru)%cn2)))
-                qn1 = Max(qn1, .4 * sd(iihru)%cn2)
-                qn3 = sd(iihru)%cn2 * EXP(.00673 * (100. - sd(iihru)%cn2))
-                sd(iihru)%smx = 254. * (100. / qn1 - 1.) 
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%cn3_swf = hlt(iihru)%cn3_swf - chg_val
+                hlt(iihru)%cn3_swf = amin1 (hlt(iihru)%cn3_swf, ls_prms(10)%up)
+                hlt(iihru)%cn3_swf = Max (hlt(iihru)%cn3_swf, ls_prms(10)%lo)
+                qn1 = hlt(iihru)%cn2 - (20. * (100. - hlt(iihru)%cn2)) /                     &
+                     (100. - hlt(iihru)%cn2 + EXP(2.533 - .063 * (100. - hlt(iihru)%cn2)))
+                qn1 = Max(qn1, .4 * hlt(iihru)%cn2)
+                qn3 = hlt(iihru)%cn2 * EXP(.00673 * (100. - hlt(iihru)%cn2))
+                hlt(iihru)%smx = 254. * (100. / qn1 - 1.) 
                 s3 = 254. * (100. / qn3 - 1.)
-                rto3 = 1. - s3 / sd(iihru)%smx
-                rtos = 1. - 2.54 / sd(iihru)%smx
-                sumul = sd(iihru)%por
-                sumfc = sd(iihru)%awc + sd(iihru)%cn3_swf * (sumul - sd(iihru)%awc)
-                sumfc = Max (sumfc, .5 * sd(iihru)%awc)
+                rto3 = 1. - s3 / hlt(iihru)%smx
+                rtos = 1. - 2.54 / hlt(iihru)%smx
+                sumul = hlt(iihru)%por
+                sumfc = hlt(iihru)%awc + hlt(iihru)%cn3_swf * (sumul - hlt(iihru)%awc)
+                sumfc = Max (sumfc, .5 * hlt(iihru)%awc)
                 !! calculate shape parameters
-                call ascrv(rto3, rtos, sumfc, sumul, sd(iihru)%wrt1, sd(iihru)%wrt2)
-                sd_init(iihru) = sd(iihru)
+                call ascrv(rto3, rtos, sumfc, sumul, hlt(iihru)%wrt1, hlt(iihru)%wrt2)
+                hlt_init(iihru) = hlt(iihru)
               !end if
             end do
             lscalt(ireg)%lum(ilum)%nbyr = 0

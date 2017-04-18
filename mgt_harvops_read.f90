@@ -5,8 +5,7 @@
       character (len=80) :: titldum
       character (len=80) :: header
       integer :: eof, i, imax
-      
-      mharvops = 0
+
       eof = 0
       imax = 0
       
@@ -21,7 +20,7 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) header
         if (eof < 0) exit
-        do while (eof >= 0)
+        do while (eof == 0)
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
           imax = imax + 1
@@ -33,8 +32,8 @@
         read (107,*) header
         
         do iharvop = 1, imax
-            read (107,*,iostat=eof) harvop_db(iharvop)
-            if (eof < 0) exit
+          read (107,*,iostat=eof) harvop_db(iharvop)
+          if (eof < 0) exit
         end do
 
         exit

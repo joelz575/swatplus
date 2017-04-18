@@ -23,7 +23,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         imax = 0
-          do while (eof >= 0)
+          do while (eof == 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i) 
@@ -77,15 +77,22 @@
        iyr_prev = iyr
        iyrs = 1
        
-       do 
+       do
+         iyr_prev = iyr
  !        read (108,*,iostat=eof) iyr, istep, rec_om(i)%hd_om(istep,iyrs)
-          read (108,*,iostat=eof) iyr, istep, recall(i)%hd(istep,iyrs)
+         read (108,*,iostat=eof) iyr, istep, recall(i)%hd(istep,iyrs)
          if (eof < 0) exit
          !call hyd_convert_mass (rec_om(i)%hd_om(istep,iyrs))
-         if (iyr /= iyr_prev) then  
-           iyr_prev = iyr
-           iyrs = iyrs + 1
-         endif
+         !check to see when next year
+         if (istep == 365 .or. istep == 366) then
+           read (108,*,iostat=eof) iyr, istep
+           if (eof < 0) exit
+           backspace (108)
+           if (iyr /= iyr_prev) then
+             iyr_prev = iyr
+             iyrs = iyrs + 1
+           end if
+         end if
        end do
        close (108)
        
@@ -105,7 +112,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         imax = 0
-          do while (eof >= 0)
+          do while (eof == 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i) 
@@ -181,7 +188,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         imax = 0
-          do while (eof >= 0)
+          do while (eof == 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i) 

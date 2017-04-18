@@ -18,10 +18,10 @@
         !! daily print - AQUIFER
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                               .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
-          if (pco%aqu == 'day') then
-            write (4500,100) time%day, time%yrc, iaq, aqu(iaq)
-            if (pco%csvout == 'yes') then
-              write (4502,'(*(G0.3,:","))') time%day, time%yrc, iaq, aqu(iaq)
+          if (pco%aqu%d == 'y') then
+            write (2520,100) time%day, time%yrc, iaq, aqu(iaq)
+            if (pco%csvout == 'y') then
+              write (2524,'(*(G0.3,:","))') time%day, time%yrc, iaq, aqu(iaq)
             end if
           end if
         end if
@@ -33,10 +33,10 @@
           aqu_m(iaq)%hgt = aqu_m(iaq)%hgt / const
           aqu_m(iaq)%no3 = aqu_m(iaq)%no3 / const
           aqu_y(iaq) = aqu_y(iaq) + aqu_m(iaq)
-          if (pco%aqu == 'mon') then
-            write (4500,100) time%mo, time%yrc, iaq, aqu_m(iaq)
-            if (pco%csvout == 'yes') then
-              write (4502,'(*(G0.3,:","))') time%mo, time%yrc, iaq, aqu_m(iaq)
+          if (pco%aqu%m == 'y') then
+            write (2521,100) time%mo, time%yrc, iaq, aqu_m(iaq)
+            if (pco%csvout == 'y') then
+              write (2525,'(*(G0.3,:","))') time%mo, time%yrc, iaq, aqu_m(iaq)
             endif
           end if
           aqu_m(iaq) = aquz
@@ -48,10 +48,10 @@
           aqu_y(iaq)%hgt = aqu_y(iaq)%hgt / 12.
           aqu_y(iaq)%no3 = aqu_y(iaq)%no3 / 12.
           aqu_a(iaq) = aqu_a(iaq) + aqu_y(iaq)
-          if (pco%aqu == 'year') then
-            write (4500,102) '     0', time%yrc, iaq, aqu_y(iaq)
-            if (pco%csvout == 'yes') then
-              write (4502,'(*(G0.3,:","))') '     0', time%yrc, iaq, aqu_y(iaq) 
+          if (pco%aqu%y == 'y') then
+            write (2522,102) '     0', time%yrc, iaq, aqu_y(iaq)
+            if (pco%csvout == 'y') then
+              write (2526,'(*(G0.3,:","))') '     0', time%yrc, iaq, aqu_y(iaq) 
             end if
           end if
           !! zero yearly variables        
@@ -59,11 +59,11 @@
         end if
         
       !! average annual print - AQUIFER
-      if (time%end_sim == 1 .and. pco%aqu /= 'null') then
+      if (time%end_sim == 1 .and. pco%aqu%a == 'y') then
         aqu_a(iaq) = aqu_a(iaq) / time%yrs_prt
-        write (4501,102) '     0', time%yrs, iaq, aqu_a(iaq)
-        if (pco%csvout == 'yes') then 
-          write (4503,'(*(G0.3,:","))') '     0', time%yrs, iaq, aqu_a(iaq)  
+        write (2523,102) '     0', time%yrs, iaq, aqu_a(iaq)
+        if (pco%csvout == 'y') then 
+          write (2527,'(*(G0.3,:","))') '     0', time%yrs, iaq, aqu_a(iaq)  
         end if 
       end if
       

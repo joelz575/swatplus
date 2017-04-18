@@ -1,4 +1,4 @@
-      subroutine hru_soil_chem (isol)
+     subroutine hru_soil_chem (isol)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine initializes soil chemical properties
@@ -174,8 +174,7 @@
 	    if (bsn_cc%sol_P_model == 0) then 
 	      !! Allow Dynamic PSP Ratio
             !! convert to concentration
-            solp = sol1(isol)%mp(j)%lab / sol(isol)%phys(j)%conv_wt *          &
-                                                             1000000.
+            solp = sol1(isol)%mp(j)%lab / sol(isol)%phys(j)%conv_wt * 1000000.
 	      !! PSP = -0.045*log (% clay) + 0.001*(Solution P, mg kg-1) - 0.035*(% Organic C) + 0.43
 	      if (sol(isol)%phys(j)%clay > 0.) then
               bsn_prm%psp = -0.045 * log(sol(isol)%phys(j)%clay) +              &

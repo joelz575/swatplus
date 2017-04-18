@@ -143,6 +143,9 @@
         pet_day = 0.
         qday = 0.
         qtile = 0.
+        ls_overq = 0.
+        over_flow = 0.
+        latqrunon = 0.
         revapday = 0.
         rmn2tl = 0.
         rmp1tl = 0.

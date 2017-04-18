@@ -95,7 +95,7 @@
         
  
         if (pco%mgtout ==  'year') then
-         write (143, 1000) j, time%yrc, i_mo, iida,                       & 
+         write (2612, 1000) j, time%yrc, i_mo, iida,                       & 
          "         ", "CONT PEST", phubase(j),pcom(j)%plcur(ipl)%phuacc,  &
             soil(j)%sw,pcom(j)%plm(ipl)%mass,                          &
             soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j), cpst_kg(j)

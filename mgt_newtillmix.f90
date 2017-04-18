@@ -1,4 +1,4 @@
-      subroutine mgt_newtillmix(jj,bmix)
+      subroutine mgt_newtillmix (jj, bmix, idtill)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine mixes residue and nutrients during tillage and 
@@ -77,7 +77,7 @@
       use basin_module
       use organic_mineral_mass_module
 
-      integer, intent (in) :: jj
+      integer, intent (in) :: jj, idtill
       real, intent (in) :: bmix
       integer :: l, k              !CB 12/2/09 nl and a are not used.
       real :: emix, dtil, XX, WW1, WW2, WW3, WW4, maxmix

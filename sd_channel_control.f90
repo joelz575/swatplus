@@ -1,4 +1,4 @@
-      subroutine sd_channel_control
+    subroutine sd_channel_control
       
       ich = isdch
       isd_db = ob(icmd)%props
@@ -272,9 +272,10 @@
         !! calculate nutrient concentrations
         ht1 = hz
         ht1 = ob(icmd)%hin
+        ht2 = ht1
         !convert mass to concentration
         call hyd_convert_conc (ht1)
-        call sd_channel_nutrients (ht1)
+        call sd_channel_nutrients (ht1, ht2)
       END IF
           
       !! compute sediment leaving the channel
@@ -299,31 +300,10 @@
       
       !! set values for outflow hydrograph
       !! storage locations set to zero are not currently used
+      ob(icmd)%hd(1) = ht2
       ob(icmd)%hd(1)%temp = 5. + .75 * tave        !!wtmp
-      ob(icmd)%hd(1)%flo = chflow_m3               !!qdr m3/d
-      ob(icmd)%hd(1)%sed = Max (0., ob(icmd)%hin%sed - sed_reduc_t)  !!sedyld
-      ob(icmd)%hd(1)%orgn = Max (0., (ht1%orgn - tp_reduc) * ob(icmd)%hin%flo / 1000.) 
-      ob(icmd)%hd(1)%sedp = Max (0., (ht1%sedp - tp_reduc) * ob(icmd)%hin%flo / 1000.)
-      ob(icmd)%hd(1)%no3 = Max (0., ob(icmd)%hin%no3 - no3_reduc_t) 
-      ob(icmd)%hd(1)%solp = Max (0., ob(icmd)%hin%solp - srp_reduc_t) 
-      ob(icmd)%hd(1)%chla = 0.
-      ob(icmd)%hd(1)%nh3 = 0.                         !! NH3
-      ob(icmd)%hd(1)%no2 = 0.                         !! NO2
-      ob(icmd)%hd(1)%cbod = 0.
-      ob(icmd)%hd(1)%dox = 0.
-      if (ob(icmd)%hd(1)%flo > .1) then
-        ob(icmd)%hd(1)%bacp = 0.
-        ob(icmd)%hd(1)%baclp = 0.
-      end if
-      ob(icmd)%hd(1)%met1 = 0.                            !! cmetal #1
-      ob(icmd)%hd(1)%met2 = 0.                            !! cmetal #2
-      ob(icmd)%hd(1)%met3 = 0.                            !! cmetal #3
-      ob(icmd)%hd(1)%san = 0.                             !! det sand
-      ob(icmd)%hd(1)%sil = 0.                             !! det silt
-      ob(icmd)%hd(1)%cla = 0.                             !! det clay
-      ob(icmd)%hd(1)%sag = 0.                             !! det sml ag
-      ob(icmd)%hd(1)%lag = 0.                             !! det lrg ag
-         
+      !ob(icmd)%hd(1)%flo = chflow_m3               !!qdr m3/d
+
       !! set values for recharge hydrograph
       ob(icmd)%hd(2)%flo = perc  
 

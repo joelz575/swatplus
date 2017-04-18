@@ -82,34 +82,34 @@
         
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                  .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
-          if (pco%wb_hru == 'day') then
+          if (pco%wb_hru%d == 'y') then
             write (4412,100) time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_d(ireg)%lum(ilum)  !! waterbal
-             if (pco%csvout == 'yes' .and. pco%wb_hru == 'day') then
+             if (pco%csvout == 'y') then
                write (4413,'(*(G0.3,:","))') time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_d(ireg)%lum(ilum)  !! waterbal
              end if
           end if
-          if (pco%nb_hru == 'day') then
+          if (pco%nb_hru%d == 'y') then
             write (4414,100) time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_d(ireg)%lum(ilum)  !! nutrient bal
-              if (pco%csvout == 'yes' .and. pco%nb_hru == 'day') then
+              if (pco%csvout == 'y') then
                 write (4415,'(*(G0.3,:","))') time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_d(ireg)%lum(ilum)  !! nutrient bal
               end if
           end if
-          if (pco%ls_hru == 'day') then
+          if (pco%ls_hru%d == 'y') then
             write (4416,102) time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_d(ireg)%lum(ilum)  !! losses
-              if (pco%csvout == 'yes' .and. pco%ls_hru == 'day') then
+              if (pco%csvout == 'y') then
                 write (4417,'(*(G0.3,:","))') time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_d(ireg)%lum(ilum)  !! losses
               end if
           end if
-          if (pco%pw_hru == 'day') then
+          if (pco%pw_hru%d == 'y') then
             write (4418,101) time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_d(ireg)%lum(ilum)  !! plant weather 
-              if (pco%csvout == 'yes' .and. pco%pw_hru == 'day') then 
+              if (pco%csvout == 'y') then 
                 write (4419,'(*(G0.3,:","))') time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_d(ireg)%lum(ilum)  !! plant weather
               end if 
@@ -129,34 +129,34 @@
           rpw_y(ireg)%lum(ilum) = rpw_y(ireg)%lum(ilum) + rpw_m(ireg)%lum(ilum)
           
           !! monthly print
-           if (pco%wb_hru == 'mon') then
+           if (pco%wb_hru%m == 'y') then
              write (4412,100) time%mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_m(ireg)%lum(ilum)
-               if (pco%csvout == 'yes' .and. pco%wb_hru == 'mon') then
+               if (pco%csvout == 'y') then
                  write (4413,'(*(G0.3,:","))') time%mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_m(ireg)%lum(ilum)
                end if
            end if
-           if (pco%nb_hru == 'mon') then
+           if (pco%nb_hru%m == 'y') then
              write (4414,100) time%mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_m(ireg)%lum(ilum)
-               if (pco%csvout == 'yes' .and. pco%nb_hru == 'mon') then
+               if (pco%csvout == 'y') then
                  write (4415,'(*(G0.3,:","))') time%mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_m(ireg)%lum(ilum)
                end if
            end if
-           if (pco%ls_hru == 'mon') then
+           if (pco%ls_hru%m == 'y') then
              write (4416,102) time%mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_m(ireg)%lum(ilum)
-               if (pco%csvout == 'yes' .and. pco%ls_hru == 'mon') then 
+               if (pco%csvout == 'y') then 
                  write (4417,'(*(G0.3,:","))') time%mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_m(ireg)%lum(ilum)
                end if
            end if
-           if (pco%pw_hru == 'mon') then
+           if (pco%pw_hru%m == 'y') then
              write (4418,101) time%mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_m(ireg)%lum(ilum)
-               if (pco%csvout == 'yes' .and. pco%pw_hru == 'mon') then 
+               if (pco%csvout == 'y') then 
                  write (4419,'(*(G0.3,:","))') time%mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_m(ireg)%lum(ilum)
                end if 
@@ -185,34 +185,34 @@
           rpw_a(ireg)%lum(ilum_db) = rpw_a(ireg)%lum(ilum_db) + rpw_y(ireg)%lum(ilum) / constpw
           
           !! yearly print
-           if (pco%wb_hru == 'year') then
+           if (time%end_yr == 1 .and. pco%wb_hru%y == 'y') then
              write (4412,100) time%end_yr, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_y(ireg)%lum(ilum)
-               if (pco%csvout == 'yes' .and. pco%wb_hru == 'year') then
+               if (pco%csvout == 'y') then
                  write (4413,'(*(G0.3,:","))') time%end_yr, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_y(ireg)%lum(ilum)
                end if
            end if
-           if (pco%nb_hru == 'year') then
+           if (time%end_yr == 1 .and. pco%nb_hru%y == 'y') then
              write (4414,100) time%end_yr, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_y(ireg)%lum(ilum)
-               if (pco%csvout == 'yes' .and. pco%nb_hru == 'year') then
+               if (pco%csvout == 'y') then
                  write (4415,'(*(G0.3,:","))') time%end_yr, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_y(ireg)%lum(ilum)
                end if
            end if
-           if (pco%ls_hru == 'year') then
+           if (time%end_yr == 1 .and. pco%ls_hru%y == 'y') then
              write (4416,102) time%end_yr, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_y(ireg)%lum(ilum)
-               if (pco%csvout == 'yes' .and. pco%ls_hru == 'year') then
+               if (pco%csvout == 'y') then
                  write (4417,'(*(G0.3,:","))') time%end_yr, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_y(ireg)%lum(ilum)
                end if
            end if
-           if (pco%pw_hru == 'year') then
+           if (time%end_yr == 1 .and. pco%pw_hru%y == 'y') then
              write (4418,101) time%end_yr, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_y(ireg)%lum(ilum)
-               if (pco%csvout == 'yes' .and. pco%pw_hru == 'year') then 
+               if (pco%csvout == 'y') then 
                  write (4419,'(*(G0.3,:","))') time%end_yr, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_y(ireg)%lum(ilum)
                end if 
@@ -253,44 +253,44 @@
         do ilum = 1, region(icu)%nlum
          ilum_db = region(ireg)%lum_num_tot(ilum)
          region(ireg)%lum_ha_tot(ilum)  = region(ireg)%lum_ha_tot(ilum) / time%yrs_prt_int
-         if (time%end_aa_prt == 1 .and. pco%wb_hru == 'avann') then
+         if (time%end_aa_prt == 1 .and. pco%wb_hru%a == 'y') then
            rwb_a(ireg)%lum(ilum) = rwb_a(ireg)%lum(ilum) / time%yrs_prt_int
            write (4420,100) time%end_yr, time%yrs, region(ireg)%name, lum(ilum_db)%plant_cov,     &
               region(ireg)%lum_ha_tot(ilum), rwb_a(ireg)%lum(ilum)
-           if (pco%csvout == 'avann') then
+           if (pco%csvout == 'y') then
              write (4421,100) time%end_yr, time%yrs, region(ireg)%name, lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rwb_a(ireg)%lum(ilum)
            end if
            rwb_a(ireg)%lum(ilum) = hwbz
          end if
          
-         if (time%end_aa_prt == 1 .and. pco%nb_hru == 'avann') then 
+         if (time%end_aa_prt == 1 .and. pco%nb_hru%a == 'y') then 
            rnb_a(ireg)%lum(ilum) = rnb_a(ireg)%lum(ilum) / time%yrs_prt_int
            write (4422,100) time%end_yr, time%yrs, region(ireg)%name, lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rnb_a(ireg)%lum(ilum)
-             if (pco%csvout == 'avann') then 
+             if (pco%csvout == 'y') then 
                write (4423,'(*(G0.3,:","))') time%end_yr, time%yrs, region(ireg)%name, lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rnb_a(ireg)%lum(ilum)
              end if
              rnb_a(ireg)%lum(ilum) = hnbz
          end if
         
-         if (time%end_aa_prt == 1 .and. pco%ls_hru == 'avann') then
+         if (time%end_aa_prt == 1 .and. pco%ls_hru%a == 'y') then
            rls_a(ireg)%lum(ilum) = rls_a(ireg)%lum(ilum) / time%yrs_prt_int 
            write (4424,101) time%end_yr, time%yrs, region(ireg)%name, lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rls_a(ireg)%lum(ilum)
-             if (pco%csvout == 'avann') then 
+             if (pco%csvout == 'y') then 
                write (4425,'(*(G0.3,:","))') time%end_yr, time%yrs, region(ireg)%name, lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rls_a(ireg)%lum(ilum)
              end if
              rls_a(ireg)%lum(ilum) = hlsz
          end if
         
-         if (time%end_aa_prt == 1 .and. pco%pw_hru == 'avann') then     
+         if (time%end_aa_prt == 1 .and. pco%pw_hru%a == 'y') then     
            rpw_a(ireg)%lum(ilum) = rpw_a(ireg)%lum(ilum) / time%yrs_prt_int      
            write (4426,102) time%end_yr, time%yrs, region(ireg)%name, lum(ilum_db)%plant_cov,   &
               region(ireg)%lum_ha_tot(ilum), rpw_a(ireg)%lum(ilum)
-             if (pco%csvout == 'avann') then 
+             if (pco%csvout == 'y') then 
                write (4427,'(*(G0.3,:","))') time%end_yr, time%yrs, region(ireg)%name, lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rpw_a(ireg)%lum(ilum)
              end if
@@ -310,7 +310,7 @@
              endif
             write (4428,103) time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
                                                  pcom(j)%plg(ipl)%yield
-            if (pco%csvout == 'yes') then
+            if (pco%csvout == 'y') then
               write (4429,'(*(G0.3,:","))') time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
                                                  pcom(j)%plg(ipl)%yield 
             end if

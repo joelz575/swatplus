@@ -102,8 +102,6 @@
       allocate (sub_km(msub))
       allocate (sub_orgn(msub))
       allocate (sub_surfq(msub))
-      
-      allocate (sub_wyld(msub))
       allocate (sub_pst(mpst,msub))
       allocate (sub_hhwtmp(msub,time%step))   ! 24 changed to nstep 4 urban modeling  Oct. 19,2007
       allocate (uh(mhru,time%step+1))         !! was 49 changed to nstep  OCt22, 2007
@@ -168,7 +166,6 @@
       allocate (manure_kg(mhru))
 
 !!    arrays which contain data related to HRUs
-      allocate (aairr(mhru))
       allocate (afrt_surface(mhru))
       allocate (aird(mhru))
       allocate (anano3(mhru))
@@ -232,7 +229,6 @@
       allocate (ndeat(mhru))
       allocate (ndcfrt(mhru))
       allocate (ndcpst(mhru))
-      allocate (nfert(mhru))
       allocate (ngr(mhru))
       allocate (nirr(mhru))
       allocate (nop(mhru))
@@ -287,8 +283,6 @@
       allocate (tcfrtp(mhru))
       allocate (tconc(mhru))
       allocate (tc_gwat(mhru))
-      allocate (tfertn(mhru))
-      allocate (tfertp(mhru))
       allocate (tgrazn(mhru))
       allocate (tgrazp(mhru))
       allocate (tileno3(mhru))

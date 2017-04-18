@@ -1,37 +1,101 @@
-      subroutine sd_channel_nutrients (ht1)
-      type (hyd_output), intent (inout) :: ht1
+    subroutine sd_channel_nutrients (ht1, ht2)
+      type (hyd_output), intent (inout) :: ht1, ht2
       integer :: nb_overb = 0
+      real :: no3_conc
       
       inut = 0
-      ifld = 1
-      if (ob(icmd)%props2 > 0) then   
-        !! 2-stage ditch
-        if (sd_ch(ich)%overbank == "ob") then
-          nd_overb = nd_overb + 1
-          !! over-bank full flow
-          conc_no3 = 1000. * ht1%no3 / ht1%flo
-          denit = exp(rte_nut(inut)%no3_slp_ob * alog(conc_no3) + rte_nut(inut)%no3_int_ob)
-          area_m2 = 1000. * sd_ch(ich)%chl * field_db(ifld)%wid
-          turbid = ht1%sed / rte_nut(inut)%turb_tss_slp
-          turbid_reduc = - (rte_nut(inut)%turb_slp * turbid + rte_nut(inut)%turb_int) * area_m2   !reduction is positive
-          turbid_reduc = Max (0., turbid_reduc)
-          sed_reduc = rte_nut(inut)%tss_slp * turbid_reduc + rte_nut(inut)%tss_int
-          tp_reduc = rte_nut(inut)%tp_slp * turbid_reduc + rte_nut(inut)%tp_int
-          srp_reduc = rte_nut(inut)%srp_slp * tp_reduc + rte_nut(inut)%srp_int
-        else
-          !! under-bank full flow
-          denit = rte_nut(inut)%no3_slp_ub * ht1%no3 + rte_nut(inut)%no3_int_ub
+      ifld = 0
+      istop = 0
+      ch_len_inc = rte_nut(inut)%len_inc
+      ch_len = 0.
+      denit = 0.
+      sed_reduc = 0.
+      tp_reduc = 0.
+      srp_reduc = 0.
+      no3_conc = ht1%no3
+      sed_conc = ht1%sed
+      tp_conc = ht1%sedp + ht1%solp
+      
+      !! loop for channel increment
+      do while (istop == 0)
+        ch_len = ch_len + ch_len_inc
+        if (ch_len > 1000. * sd_ch(ich)%chl) then
+          ch_len_inc = ch_len - sd_ch(ich)%chl
+          istop = 1
         end if
-      else
-        !! single stage ditch
-        denit = rte_nut(inut)%no3_slp * ht1%no3 + rte_nut(inut)%no3_int
-      end if
+        if (ob(icmd)%props > 0) then   
+          !! 2-stage ditch
+          if (sd_ch(ich)%overbank == "ob") then
+            nd_overb = nd_overb + 1
+            !! over-bank full flow
+            area_m2 = ch_len_inc * field_db(ifld)%wid
+            if (no3_conc > rte_nut(inut)%no3_min_conc .and. no3_conc > 1.e-6) then
+              !alog_no3 = alog(no3_conc)
+              !denit_log = rte_nut(inut)%no3_slp_ob * alog(no3_conc) + rte_nut(inut)%no3_int_ob
+              denit = 10. ** (rte_nut(inut)%no3_slp_ob * alog(no3_conc) + rte_nut(inut)%no3_int_ob)  !mg-N/m^2/hr
+              denit = denit * area_m2 * 24. / 1.e6     !kg/d = mg/m2/h * m2 * hr/d)
+              ht2%no3 = ht2%no3 - denit
+              ht2%no3 = amax1(0., ht2%no3)
+            end if
+            no3_conc = 1000. * ht2%no3 / ht2%flo
+            !turbid = ht1%sed / rte_nut(inut)%turb_tss_slp
+            !turbid_reduc = - (rte_nut(inut)%turb_slp * turbid + rte_nut(inut)%turb_int) * area_m2
+            !turbid_reduc = Max (0., turbid_reduc)
+            
+            if (tss_conc > rte_nut(inut)%tss_min_conc .and. tss_conc > 1.e-6) then
+              sed_reduc = (rte_nut(inut)%tss_slp * tss_conc + rte_nut(inut)%tss_int)        !mg/L/m^2
+              sed_reduc = sed_reduc * area_m2 * ht2%flo / 1000000.     !ton/d = mg/L/m^2 * m2 * (t / 1000000000. mg) * flo(m3/d) 1000. L/m3
+              ht2%sed = ht2%sed - sed_reduc
+              ht2%sed = amax1(0., ht2%sed)
+            end if
+            sed_conc = 1000000. * ht2%sed / ht2%flo
+            
+            if (tp_conc > rte_nut(inut)%tp_min_conc .and. tp_conc > 1.e-6) then
+              tp_reduc = (rte_nut(inut)%tp_slp * (tp_conc) + rte_nut(inut)%tp_int)
+              tp_reduc = tp_reduc * area_m2 * ht2%flo / 1000.          !kg/d = mg/L/m^2 * m2 * (kg / 1000000. mg) * flo(m3/d) 1000. L/m3
+              
+               srp_reduc = 0.10 * tp_reduc
+               ht2%solp = ht2%solp - srp_reduc
+               ht2%solp = amax1(0., ht2%solp)
+            
+               sedp_reduc = 0.90 * tp_reduc
+               ht2%sedp = ht2%sedp - sedp_reduc
+               ht2%sedp = amax1(0., ht2%sedp)
+            end if
+            tp_conc = 1000. * (ht1%sedp + ht1%solp) / ht2%flo
+            
+            ! if (srp_conc > rte_nut(inut)%tp_min_conc) then
+            !  srp_reduc = srp_reduc + exp(rte_nut(inut)%srp_slp * alog(tp_reduc) + rte_nut(inut)%srp_int)
+            ! srp_reduc = 1000. * srp_reduc / ht2%flo !kg =  1000 *mg/L / flow
+            ! ht2%solp = ht2%solp - srp_reduc
+            ! end if
+            !srp_conc = 1000. * ht2%srp / ht2%flo
+            
+          else
+              
+            !! under-bank full flow
+            if (no3_conc > rte_nut(inut)%no3_min_conc .and. no3_conc > 1.e-6) then
+              denit = 10. ** (rte_nut(inut)%no3_slp_ub * alog(no3_conc) + rte_nut(inut)%no3_int_ub)  !mg-N/m^2/hr
+              denit = denit * area_m2 * 24. / 1.e6     !kg/d = mg/m2/h * m2 * hr/d)
+              ht2%no3 = ht2%no3 - denit
+              ht2%no3 = amax1(0., ht2%no3)
+            end if
+            no3_conc = 1000. * ht2%no3 / ht2%flo
+          end if
+        else
+          !! single stage ditch
+        
+          if (no3_conc > rte_nut(inut)%no3_min_conc .and. no3_conc > 1.e-6) then
+            denit = 10. ** (rte_nut(inut)%no3_slp * alog(no3_conc) + rte_nut(inut)%no3_int) !mg-N/m^2/hr
+            denit = denit * area_m2 * 24. / 1.e6     !kg/d = mg/m2/h * m2 * hr/d)
+            ht2%no3 = ht2%no3 - denit
+            ht2%no3 = amax1(0., ht2%no3)
+          end if
+          no3_conc = 1000. * ht2%no3 / ht2%flo
+        end if
 
-      !! calc reductions in t and kg --> kg=ppm*m3/1000.
-      sed_reduc_t = sed_reduc * ht1%flo / 1000000.
-      no3_reduc_kg = denit * area_m2* 24.
-      tp_reduc_kg = tp_reduc * ht1%flo / 1000.
-      srp_reduc_kg = srp_reduc * ht1%flo / 1000.
+      end do
+        
       
       return
       

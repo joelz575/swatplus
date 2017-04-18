@@ -1,4 +1,4 @@
-       subroutine pl_irrigate(jj,volmm)
+       subroutine pl_irrigate(jj, volmm, irrop)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine applies irrigation water to HRU
@@ -6,16 +6,12 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    aairr(:)    |mm H2O        |average annual amount of irrigation water
-!!                               |applied to HRU
 !!    curyr       |none          |current year of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    aairr(:)    |mm H2O        |average annual amount of irrigation water
-!!                               |applied to HRU
 !!    aird(:)     |mm H2O        |amount of water applied to HRU on current
 !!                               |day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -35,26 +31,19 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use basin_module
+      use jrw_datalib_module
       
-      integer, intent (in) :: jj
+      integer, intent (in) :: jj, irrop
       real, intent (in out) :: volmm
-      integer :: k
-      real :: fcx, stx, yy
 
-!! if unlimited source, store volume and runoff to send to swr_percmain and surface
+      !! if unlimited source, store volume and runoff to send to swr_percmain and surface
       if (hru(jj)%irrsrc == 0) then
         !!unlimited source
-        aird(jj) = volmm * (1. - sq_rto)
-        qird(jj) = volmm * sq_rto
+        aird(jj) = volmm * (1. - irrop_db(ir)%surq)
+        qird(jj) = volmm * irrop_db(ir)%surq
       else
         !!set demand for water rights object in water_allocation
         !wat_allo(iwr)%demand() = volmm * hru(jj)%ha * 10.
-      end if
-
-!! summary calculations
-      if (time%yrs > pco%nyskip) then 
-        aairr(jj) = aairr(jj) + aird(jj)
       end if
 
       return

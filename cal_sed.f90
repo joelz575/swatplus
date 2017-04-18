@@ -2,13 +2,13 @@
 
       use parm
       use hydrograph_module
-      use subbasin_module
+      use ru_module
       use hru_module
 !      use wateruse_module
       use climate_module
       use aquifer_module
       use channel_module
-      use sd_hru_module
+      use hru_lte_module
       use sd_channel_module
       use basin_module
       use jrw_datalib_module
@@ -33,7 +33,7 @@
                 !set parms for 1st sediment yield calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
-                rsd1(iihru) = rsd_init(iihru)
+                rsd1(iihru) = rhlt_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
@@ -80,7 +80,7 @@
                 !set parms for 1st sediment tconc calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
-                rsd1(iihru) = rsd_init(iihru)
+                rsd1(iihru) = rhlt_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
@@ -116,7 +116,7 @@
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                   hru(iihru) = hru_init(iihru)
                   soil(iihru) = soil_init(iihru)
-                  rsd1(iihru) = rsd_init(iihru)
+                  rsd1(iihru) = rhlt_init(iihru)
                   pcom(iihru) = pcom_init(iihru)
                   lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
@@ -138,7 +138,7 @@
                   xm = 0.6 * (1. - Exp(-35.835 * hru(iihru)%topo%slope))    
                   sin_sl = Sin(Atan(hru(iihru)%topo%slope))
                   hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
-                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * terr_p * hru(iihru)%lumv%usle_ls * 11.8
+                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p * hru(iihru)%lumv%usle_ls * 11.8
                 end if
               end do
             lscal(ireg)%lum(ilum)%nbyr = 0
@@ -159,7 +159,7 @@
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
                   hru(iihru) = hru_init(iihru)
                   soil(iihru) = soil_init(iihru)
-                  rsd1(iihru) = rsd_init(iihru)
+                  rsd1(iihru) = rhlt_init(iihru)
                   pcom(iihru) = pcom_init(iihru)
                   lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
@@ -177,7 +177,7 @@
                   xm = 0.6 * (1. - Exp(-35.835 * hru(iihru)%topo%slope))    
                   sin_sl = Sin(Atan(hru(iihru)%topo%slope))
                   hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
-                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * terr_p * hru(iihru)%lumv%usle_ls * 11.8
+                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p * hru(iihru)%lumv%usle_ls * 11.8
                 end if
               end do
             lscal(ireg)%lum(ilum)%nbyr = 0

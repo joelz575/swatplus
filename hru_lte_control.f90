@@ -1,4 +1,4 @@
-      subroutine sd_hru_control (isd)
+      subroutine hru_lte_control (isd)
       
       use jrw_datalib_module
       use basin_module
@@ -7,18 +7,15 @@
       real :: timeint(1000)
       !real :: ws, ts
 
-      iob = sp_ob1%hru_lte + isd - 1
-      isd_db = ob(icmd)%props
+      ihlt_db = ob(icmd)%props
       iwst = ob(icmd)%wst
       iwgn = wst(iwst)%wco%wgn
-      iplt = sd(isd)%iplant
+      iplt = hlt(isd)%iplant
       precip = wst(iwst)%weat%precip
       tmax = wst(iwst)%weat%tmax
       tmin = wst(iwst)%weat%tmin
       raobs = wst(iwst)%weat%solrad
       rmx = wst(iwst)%weat%solradmx
-      wndspd = wst(iwst)%weat%windsp     
-      rhum = wst(iwst)%weat%rhum         
       
       tave  = (tmax + tmin) / 2. 
       yield = 0.
@@ -27,28 +24,27 @@
       tstress = 0.
       snowfall = 0.
       snowmelt = 0.
-      air = 0.
           IF (tave .lt.0.) THEN 
             ! IF ave temp < 0  compute snowfall    
             snowfall = precip 
-            sd(isd)%snow = sd(isd)%snow + precip 
+            hlt(isd)%snow = hlt(isd)%snow + precip 
             runoff = 0. 
           ELSE
             snowfall = 0.     
             ! IF ave temp > 0  compute runoff                             
             snowmelt = 4.57 * tave  
-            IF (snowmelt > sd(isd)%snow) THEN 
-              snowmelt = sd(isd)%snow 
-              sd(isd)%snow = 0.
+            IF (snowmelt > hlt(isd)%snow) THEN 
+              snowmelt = hlt(isd)%snow 
+              hlt(isd)%snow = 0.
             ELSE
-              sd(isd)%snow = sd(isd)%snow - snowmelt
+              hlt(isd)%snow = hlt(isd)%snow - snowmelt
             END IF 
             
-            xx = sd(isd)%wrt1 - sd(isd)%wrt2 * sd(isd)%sw
+            xx = hlt(isd)%wrt1 - hlt(isd)%wrt2 * hlt(isd)%sw
             if (xx < -20.) xx = -20.
             if (xx > 20.) xx = 20.
-            if ((sd(isd)%sw + Exp(xx)) > 0.001) then
-              r2 = sd(isd)%smx * (1. - sd(isd)%sw / (sd(isd)%sw + Exp(xx)))
+            if ((hlt(isd)%sw + Exp(xx)) > 0.001) then
+              r2 = hlt(isd)%smx * (1. - hlt(isd)%sw / (hlt(isd)%sw + Exp(xx)))
             end if
             r2 = amax1(3.,r2)
             cn_sd = 25400. / (r2 + 254.)
@@ -59,12 +55,12 @@
             ELSE 
               runoff = 0. 
             END IF 
-            sd(isd)%sw = sd(isd)%sw + (precipeff - runoff) 
+            hlt(isd)%sw = hlt(isd)%sw + (precipeff - runoff) 
           END IF 
                                                                         
           xxi = 30. * time%mo - 15. 
           xsd = .4102 * SIN((xxi-80.25)/58.13) 
-          ch = -sd(isd)%yls * tan(xsd) / sd(isd)%ylc 
+          ch = -hlt(isd)%yls * tan(xsd) / hlt(isd)%ylc 
           IF (ch.lt.1.) THEN 
             IF (ch.le.-1.) THEN 
               h = 3.1415 
@@ -75,7 +71,7 @@
             h = 0. 
           END IF 
           
-          IF (sd_db(isd_db)%ipet .eq. 0) THEN
+          IF (hlt_db(ihlt_db)%ipet .eq. 0) THEN
             ! compute potential et with Hargrove Method
             ramm = rmx / (2.5 - .0022 * tave )
             pet = .0032 * ramm * (tave +17.8) * (tmax - tmin) ** .6
@@ -89,60 +85,60 @@
             aph = 1.28
             pet = aph * ho * gma
           END IF
-          pet = sd(isd)%etco * pet
+          pet = hlt(isd)%etco * pet
 !
 !         compute actual et
 !
-          xx = 1. - sd(isd)%sw / sd(isd)%awc
+          xx = 1. - hlt(isd)%sw / hlt(isd)%awc
           IF (xx.lt.0.0001) xx = 0.0001 
           aet = pet * EXP(-xx)                  !at sw=0, exp(-xx)=.368
-          aet = pet * sd(isd)%sw / sd(isd)%awc  !try linear- may need s-curve
+          aet = pet * hlt(isd)%sw / hlt(isd)%awc  !try linear- may need s-curve
            
 !         begin growth for plants
-          if (sd(isd)%igro == 0) then
+          if (hlt(isd)%igro == 0) then
             ! istart points to rule set in d_table
-            istart = sd_db(isd_db)%igrow1
-            call conditions (istart, iob)
+            istart = hlt_db(ihlt_db)%igrow1
+            call conditions (istart, isd)
             call actions (istart, isd)
           end if
           
 !         end growth for plants
-          if (sd(isd)%igro == 1) then
+          if (hlt(isd)%igro == 1) then
             ! sum aet and pet for water stress on hi
-            sd(isd)%aet = sd(isd)%aet + aet
-            sd(isd)%pet = sd(isd)%pet + pet
+            hlt(isd)%aet = hlt(isd)%aet + aet
+            hlt(isd)%pet = hlt(isd)%pet + pet
             ! iend points to rule set in d_table
-            iend = sd_db(isd_db)%igrow2
-            call conditions (iend, iob)
+            iend = hlt_db(ihlt_db)%igrow2
+            call conditions (iend, isd)
             call actions (iend, isd)
           end if
 
          ! calc yield, print max lai, dm and yield
-          if (pco%mgtout == 'year') then
-            write (4700,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
-            if (pco%csvout == 'yes' .and. pco%mgtout == 'year') then
-              write (4701,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, sd(isd)%alai, sd(isd)%dm, yield
+          if (pco%mgtout == 'y') then
+            write (4700,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, hlt(isd)%alai, hlt(isd)%dm, yield
+            if (pco%csvout == 'y') then
+              write (4701,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, hlt(isd)%alai, hlt(isd)%dm, yield
             end if
           end if
                                                               
 !                                                                       
 !         compute plant growth - b1=et adjustment factor b1=1 during growing season b1=.6 IF no
 !    
-          b1 = sd(isd)%etco - .4        !evap coef ranges from .4-.8 when etco ranges from .8-1.2
-          IF (sd(isd)%igro == 1) THEN
-            b1 = sd(isd)%etco
-            delg = (tave - pldb(iplt)%t_base) / sd(isd)%phu 
+          b1 = hlt(isd)%etco - .4        !evap coef ranges from .4-.8 when etco ranges from .8-1.2
+          IF (hlt(isd)%igro == 1) THEN
+            b1 = hlt(isd)%etco
+            delg = (tave - pldb(iplt)%t_base) / hlt(isd)%phu 
             IF (delg.lt.0.) THEN 
               delg = 0. 
             END IF 
-            sd(isd)%g = sd(isd)%g + delg 
-            parad = .5 * raobs * (1.-EXP(-.65 * (sd(isd)%alai + .05))) 
-            drymat = parad * pldb(iplt)%bio_e * sd(isd)%stress
+            hlt(isd)%g = hlt(isd)%g + delg 
+            parad = .5 * raobs * (1.-EXP(-.65 * (hlt(isd)%alai + .05))) 
+            drymat = parad * pldb(iplt)%bio_e * hlt(isd)%stress
             ws = aet / pet
             
             !compute aeration stress
-            if (sd(isd)%sw .gt. sd(isd)%awc) THEN 
-              satco = (sd(isd)%sw - sd(isd)%awc) / (sd(isd)%por - sd(isd)%awc) 
+            if (hlt(isd)%sw .gt. hlt(isd)%awc) THEN 
+              satco = (hlt(isd)%sw - hlt(isd)%awc) / (hlt(isd)%por - hlt(isd)%awc) 
               pl_aerfac = .85
               scparm = 100. * (satco - pl_aerfac) / (1.0001 - pl_aerfac)
               if (scparm > 0.) then
@@ -154,29 +150,29 @@
                                                                         
             !irrigate IF water stress is < 0.7                             
                                                                         
-            IF (sd_db(isd_db)%irr > 0) THEN 
+            IF (hlt_db(ihlt_db)%irr > 0) THEN 
               IF (ws < 0.8) THEN 
-                air = sd(isd)%awc - sd(isd)%sw 
-                air = amin1 (76.2, air)         !! max application = 3 inches
+                air = hlt(isd)%awc - hlt(isd)%sw 
+                air = amin1 (76.2, air)     ! max application = 3 inches
                 
                 ! take from shallow aquifer
-                IF (sd_db(isd_db)%irrsrc == 1) THEN 
-                  sd(isd)%gw = sd(isd)%gw - air 
-                  IF (sd(isd)%gw < 0.) THEN 
-                    air = air + sd(isd)%gw 
-                    sd(isd)%gw = 0. 
+                IF (hlt_db(ihlt_db)%irrsrc == 1) THEN 
+                  hlt(isd)%gw = hlt(isd)%gw - air 
+                  IF (hlt(isd)%gw < 0.) THEN 
+                    air = air + hlt(isd)%gw 
+                    hlt(isd)%gw = 0. 
                   END IF 
                 END IF
                 
                 ! take from deep aquifer
-                IF (sd_db(isd_db)%irrsrc == 2) THEN
-                  sd(isd)%gwdeep = sd(isd)%gwdeep - air 
-                  IF (sd(isd)%gwdeep < 0.) THEN 
-                    air = air + sd(isd)%gwdeep 
-                    sd(isd)%gwdeep = 0. 
+                IF (hlt_db(ihlt_db)%irrsrc == 2) THEN
+                  hlt(isd)%gwdeep = hlt(isd)%gwdeep - air 
+                  IF (hlt(isd)%gwdeep < 0.) THEN 
+                    air = air + hlt(isd)%gwdeep 
+                    hlt(isd)%gwdeep = 0. 
                   END IF 
                 END IF
-                sd(isd)%sw = sd(isd)%sw + air
+                hlt(isd)%sw = hlt(isd)%sw + air
               END IF 
             END IF                                  
                                                                   
@@ -197,94 +193,94 @@
 !         compute boimass and leaf area                  
 !    
             reg = amin1(ws,tstress,strsair) 
-            sd(isd)%dm = sd(isd)%dm + reg * drymat 
-            f = sd(isd)%g / (sd(isd)%g + EXP(plcp(iplt)%leaf1 - plcp(iplt)%leaf2 * sd(isd)%g))
-            ff = f - sd(isd)%hufh
-            sd(isd)%hufh = f
-            deltalai = ff * pldb(iplt)%blai * (1.0 - EXP(5.0 *(sd(isd)%alai - pldb(iplt)%blai))) * sqrt(reg)
-            sd(isd)%alai = sd(isd)%alai + deltalai
+            hlt(isd)%dm = hlt(isd)%dm + reg * drymat 
+            f = hlt(isd)%g / (hlt(isd)%g + EXP(plcp(iplt)%leaf1 - plcp(iplt)%leaf2 * hlt(isd)%g))
+            ff = f - hlt(isd)%hufh
+            hlt(isd)%hufh = f
+            deltalai = ff * pldb(iplt)%blai * (1.0 - EXP(5.0 *(hlt(isd)%alai - pldb(iplt)%blai))) * sqrt(reg)
+            hlt(isd)%alai = hlt(isd)%alai + deltalai
           END IF
                                                                   
 !         adjust actual et for growing season
           aet = b1 * aet
           
           !compute lateral soil flow
-          sw_excess = sd(isd)%sw - sd(isd)%awc
+          sw_excess = hlt(isd)%sw - hlt(isd)%awc
           if (sw_excess > 0.) then
-            swf = (sd(isd)%sw - sd(isd)%awc) / (sd(isd)%por - sd(isd)%awc) 
-            flowlat = .024 * swf * sd(isd)%sc * sd_db(isd_db)%slope / sd_db(isd_db)%slopelen
-            flowlat = amin1(sd(isd)%sw, flowlat)
-            sd(isd)%sw = sd(isd)%sw - flowlat
+            swf = (hlt(isd)%sw - hlt(isd)%awc) / (hlt(isd)%por - hlt(isd)%awc) 
+            flowlat = .024 * swf * hlt(isd)%sc * hlt_db(ihlt_db)%slope / hlt_db(ihlt_db)%slopelen
+            flowlat = amin1(hlt(isd)%sw, flowlat)
+            hlt(isd)%sw = hlt(isd)%sw - flowlat
           else
             flowlat = 0.
           end if
         
           !compute tile flow
-          sw_excess = sd(isd)%sw - sd(isd)%awc
-          if (sw_excess > 0. .and. sd(isd)%tdrain > 0.) then
-            flow_tile = sw_excess * (1. - Exp(-24. / sd(isd)%tdrain))
+          sw_excess = hlt(isd)%sw - hlt(isd)%awc
+          if (sw_excess > 0. .and. hlt(isd)%tdrain > 0.) then
+            flow_tile = sw_excess * (1. - Exp(-24. / hlt(isd)%tdrain))
             flow_tile = amin1(flow_tile, 10.)     !assume a drainage coefficient of 12.5 mm
           else
             flow_tile = 0.
           end if
-          flow_tile = amin1(sd(isd)%sw, flow_tile)
-          sd(isd)%sw = sd(isd)%sw - flow_tile
+          flow_tile = amin1(hlt(isd)%sw, flow_tile)
+          hlt(isd)%sw = hlt(isd)%sw - flow_tile
           
           !compute percolation from bottom of soil profile
-          sw_excess = sd(isd)%sw - sd(isd)%awc * sd(isd)%perco
+          sw_excess = hlt(isd)%sw - hlt(isd)%awc * hlt(isd)%perco
           if (sw_excess > 0.) then
-            perc = sw_excess * (1. - Exp(-24. / sd(isd)%hk))
+            perc = sw_excess * (1. - Exp(-24. / hlt(isd)%hk))
           else
             perc = 0.
           end if
           if (perc.lt.0.) perc = 0.
-          perc = amin1(sd(isd)%sw, perc)
-          sd(isd)%sw = sd(isd)%sw - perc
+          perc = amin1(hlt(isd)%sw, perc)
+          hlt(isd)%sw = hlt(isd)%sw - perc
           !limit perc for depth to impermeable layer
-          !xx = (sd(isd)%dep_imp - sd_db(isd_db)%soildep) / 1000.
+          !xx = (hlt(isd)%dep_imp - hlt_db(ihlt_db)%soildep) / 1000.
           !if (xx < 1.e-4) then
           !  perc = 0.
           !else
           !  perc = perc * xx / (xx + Exp(8.833 - 2.598 * xx))
           !end if
                                                                         
-          aet = amin1(sd(isd)%sw, aet)
-          sd(isd)%sw = sd(isd)%sw - aet 
+          aet = amin1(hlt(isd)%sw, aet)
+          hlt(isd)%sw = hlt(isd)%sw - aet 
                                                                         
-          sd(isd)%gw = sd(isd)%gw + perc 
-          revap = aet * sd_db(isd_db)%revapc 
-          percdeep = perc * sd_db(isd_db)%percc
-          sd(isd)%gwflow = sd(isd)%gwflow * sd_db(isd_db)%abf + perc * (1. - sd_db(isd_db)%abf)
-          sd(isd)%gwflow = amin1(sd(isd)%gwflow, sd(isd)%gw)
-          sd(isd)%gw = sd(isd)%gw - sd(isd)%gwflow
+          hlt(isd)%gw = hlt(isd)%gw + perc 
+          revap = aet * hlt_db(ihlt_db)%revapc 
+          percdeep = perc * hlt_db(ihlt_db)%percc
+          hlt(isd)%gwflow = hlt(isd)%gwflow * hlt_db(ihlt_db)%abf + perc * (1. - hlt_db(ihlt_db)%abf)
+          hlt(isd)%gwflow = amin1(hlt(isd)%gwflow, hlt(isd)%gw)
+          hlt(isd)%gw = hlt(isd)%gw - hlt(isd)%gwflow
                                                                         
-          revap = amin1(revap, sd(isd)%gw)
-          sd(isd)%gw = sd(isd)%gw - revap
+          revap = amin1(revap, hlt(isd)%gw)
+          hlt(isd)%gw = hlt(isd)%gw - revap
                                                                         
-          percdeep = amin1(percdeep, sd(isd)%gw)
-          sd(isd)%gw = sd(isd)%gw - percdeep
+          percdeep = amin1(percdeep, hlt(isd)%gw)
+          hlt(isd)%gw = hlt(isd)%gw - percdeep
                                                                         
-          sd(isd)%gwdeep = sd(isd)%gwdeep + percdeep
+          hlt(isd)%gwdeep = hlt(isd)%gwdeep + percdeep
                                                                         
-          chflow = runoff + flowlat + flow_tile + sd(isd)%gwflow
+          chflow = runoff + flowlat + flow_tile + hlt(isd)%gwflow
 
 !!        compute channel peak rate using SCS triangular unit hydrograph
-          chflow_m3 = 1000. * chflow * sd_db(isd_db)%dakm2
-	      runoff_m3 = 1000. * runoff * sd_db(isd_db)%dakm2
-	      bf_m3 = 1000. * (flowlat + sd(isd)%gwflow)*sd_db(isd_db)%dakm2
-          peakr = 2. * runoff_m3 / (1.5 * sd_db(isd_db)%tc)
+          chflow_m3 = 1000. * chflow * hlt_db(ihlt_db)%dakm2
+	      runoff_m3 = 1000. * runoff * hlt_db(ihlt_db)%dakm2
+	      bf_m3 = 1000. * (flowlat + hlt(isd)%gwflow)*hlt_db(ihlt_db)%dakm2
+          peakr = 2. * runoff_m3 / (1.5 * hlt_db(ihlt_db)%tc)
 	      peakrbf = bf_m3 / 86400.
           peakr = (peakr + peakrbf)     !* prf     
           
 !!        compute sediment yield with MUSLE
-          sedin = (runoff * peakr * 1000. * sd_db(isd_db)%dakm2) ** .56 * sd(isd)%uslefac
+          sedin = (runoff * peakr * 1000. * hlt_db(ihlt_db)%dakm2) ** .56 * hlt(isd)%uslefac
           
 	    !! add subsurf sediment - t=ppm*mm*km2/1000.
 	    qssubconc = 500.
-	    qssub = qssubconc * (flowlat + sd(isd)%gwflow) * sd_db(isd_db)%dakm2 / 1000.
+	    qssub = qssubconc * (flowlat + hlt(isd)%gwflow) * hlt_db(ihlt_db)%dakm2 / 1000.
 	    sedin = sedin + qssub
 
-          cnv = sd_db(isd_db)%dakm2 * 1000.
+          cnv = hlt_db(ihlt_db)%dakm2 * 1000.
           
          !! set values for outflow hydrograph
          !! storage locations set to zero are not currently used
@@ -318,9 +314,9 @@
          !ob(icmd)%hd(2)%flo = perc
          
          if (time%yrs > pco%nyskip) then
-           call sd_hru_output (isd, isd_db)
+           call hru_lte_output (isd, ihlt_db)
          end if
          
        return
  
-      end subroutine sd_hru_control
+      end subroutine hru_lte_control

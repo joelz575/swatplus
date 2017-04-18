@@ -5,7 +5,6 @@
 
       use parm
 
-      aairr = 0.
       fr_curb = 0.
       bactlpcnst = 0.
       bactlpmon = 0.

@@ -1,4 +1,4 @@
-      subroutine subbasin_control
+      subroutine ru_control
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 
@@ -17,7 +17,7 @@
       
       iday = 1
       ihdmx = 2
-      cnv_m3 = 1000. * sub(isub)%da_km2
+      cnv_m3 = 1000. * ru(isub)%da_km2
       
       hyd_flo = 0.
       ob(icmd)%hd(1) = hz
@@ -29,11 +29,11 @@
       sumfrac = 0.
       sumarea = 0.
       
-      do ielem = 1, sub_d(isub)%num_tot
-        ise = sub_d(isub)%num(ielem)
-        iob = sub_elem(ise)%obj
-        ihru = sub_elem(ise)%obtypno
-        ihtyp = sub_elem(ise)%htyp
+      do ielem = 1, ru_def(isub)%num_tot
+        ise = ru_def(isub)%num(ielem)
+        iob = ru_elem(ise)%obj
+        ihru = ru_elem(ise)%obtypno
+        ihtyp = ru_elem(ise)%htyp
         ht1 = hz
         ht2 = hz
         ht3 = hz
@@ -41,40 +41,40 @@
         ht5 = hz
         delrto = hz
         
-        sumfrac = sumfrac + sub_elem(ise)%frac
+        sumfrac = sumfrac + ru_elem(ise)%frac
         sumarea = sumarea + ob(iob)%area_ha
         
         !define delivery ratio - all variables are hyd_output type
-        idr = sub_elem(ise)%idr
-        ihtypno = sub_elem(ise)%htypno
+        idr = ru_elem(ise)%idr
+        ihtypno = ru_elem(ise)%htypno
         if (idr > 0) then
           !input dr from sub_dr.dat
-          delrto = sub_dr(idr)
+          delrto = ru_dr(idr)
           else
           !calculated dr = f(tconc element/ tconc sub)
-          delrto = sub_elem(ielem)%dr(0)
+          delrto = ru_elem(ielem)%dr(0)
         end if
 
-        if (sub_elem(ielem)%obtyp == "exc") then
+        if (ru_elem(ielem)%obtyp == "exc") then
         !! compute hyds for export coefficients-ht1==surface,ht2==groundwater
-          ht1 = exco(ob(iob)%props) ** sub_dr(sub_elem(ise)%idr)
+          ht1 = exco(ob(iob)%props) ** ru_dr(ru_elem(ise)%idr)
           ht2 = hz
           if (ob(iob)%area_ha > .01) then
             !per area units - mm, t/ha, kg/ha (ie hru, apex)
-            ef = sub_elem(ise)%frac * sub(isub)%da_km2 /                   &
+            ef = ru_elem(ise)%frac * ru(isub)%da_km2 /                   &
                                                      (ob(iob)%area_ha / 100.)
             ht1 = ef * ht1
-            !ht2 = exco(ob(iob)%props2) ** dr(sub_elem(ise)%idr)
+            !ht2 = exco(ob(iob)%props2) ** dr(ru_elem(ise)%idr)
           end if
           
         else
 
-        select case (sub_elem(ielem)%obtyp)
+        select case (ru_elem(ielem)%obtyp)
         case ("hru")
         !define expansion factor to surface/soil and recharge
-        ef = sub_elem(ise)%frac * sub(isub)%da_km2 / (hru(ihru)%area_ha / 100.)
+        ef = ru_elem(ise)%frac * ru(isub)%da_km2 / (hru(ihru)%area_ha / 100.)
         case ("hlt")
-        ef = sub_elem(ise)%frac * sub(isub)%da_km2 / sd_db(ihru)%dakm2
+        ef = ru_elem(ise)%frac * ru(isub)%da_km2 / hlt_db(ihru)%dakm2
         end select
         
         !compute all hyd's needed for routing
@@ -103,17 +103,17 @@
           ht1 = ef * ob(iob)%hd(ihtypno)
           ht5 = ef * ob(iob)%hd(ihtypno)  !no dr on tile
         end select
-        end if      !sub_elem(ielem)%obtyp == "exc"
+        end if      !ru_elem(ielem)%obtyp == "exc"
         
         !recharge hyd - hru_lte computes gw flow and doesnt need recharge hyd
-        if (sub_elem(ielem)%obtyp /= "hlt") ht2 = ef * ob(iob)%hd(2)
+        if (ru_elem(ielem)%obtyp /= "hlt") ht2 = ef * ob(iob)%hd(2)
         
         ! sum subdaily hydrographs for each object
         if (time%step > 0) then
-          select case (sub_elem(ielem)%obtyp)
+          select case (ru_elem(ielem)%obtyp)
           case ("hru")
             do ii = 1, time%step
-              hyd_flo(ii) = hyd_flo(ii) + hhsurfq(ihru,ii) * sub_elem(ise)%frac * delrto%flo * cnv_m3
+              hyd_flo(ii) = hyd_flo(ii) + hhsurfq(ihru,ii) * ru_elem(ise)%frac * delrto%flo * cnv_m3
             end do
           end select
         end if
@@ -215,4 +215,4 @@
 
 	return
 
-      end subroutine subbasin_control
+      end subroutine ru_control

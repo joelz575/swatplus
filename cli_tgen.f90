@@ -46,14 +46,13 @@
 
       real :: tmxg, tmng, tamp, txxm
 
-      tamp = (wgn(iwgn)%tmpmx(i_mo) - wgn(iwgn)%tmpmn(i_mo)) / 2
-      txxm = wgn(iwgn)%tmpmx(i_mo)+ tamp * wgn_pms(iwgn)%pr_wdays(i_mo)
+      tamp = .5 * (wgn(iwgn)%tmpmx(i_mo) - wgn(iwgn)%tmpmn(i_mo))
+      txxm = wgn(iwgn)%tmpmx(i_mo) + tamp * wgn_pms(iwgn)%pr_wdays(i_mo)
       
       if (wst(iwst)%weat%precip > 0.0) txxm = txxm - tamp
 
       tmxg = txxm + wgn(iwgn)%tmpstdmx(i_mo) * wgncur(1,iwgn)
-      tmng = (wgn(iwgn)%tmpmn(i_mo)) +                                  &                                 
-           wgn(iwgn)%tmpstdmn(i_mo) *  wgncur(2,iwgn)
+      tmng = (wgn(iwgn)%tmpmn(i_mo)) + wgn(iwgn)%tmpstdmn(i_mo) *  wgncur(2,iwgn)
       if (tmng > tmxg) tmng = tmxg - .2 * Abs(tmxg)
 
       wst(iwst)%weat%tmax = tmxg

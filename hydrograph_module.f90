@@ -12,7 +12,7 @@
       integer, dimension (8) :: fdc_p = (/18,36,91,182,274,328,347,366/)
       
       type hyd_output
-        !H !character (len=13) :: name
+        !character (len=13) :: name
         real :: temp = 0.              !! deg c        |temperature
         real :: flo = 0.               !! m^3          |volume of water
         real :: sed = 0.               !! metric tons  |sediment
@@ -254,7 +254,8 @@
         character(len=16) :: name = "default"
         character(len=8) :: typ = " "   !object type - ie hru, hru_lte, sub, chan, res, recall
         real :: lat                     !latitude (degrees)
-        real :: long                    !longitude (degrees) 
+        real :: long                    !longitude (degrees)
+        real :: elev = 100.             !elevation (m)
         real :: area_ha = 80.           !area - ha
         integer :: props = 1            !properties number from data base (ie hru.dat, sub.dat) - change props to data
         integer :: wst = 1              !weather station number
@@ -276,6 +277,7 @@
         integer :: elem                 !subbasins element number for this object- used for routing over (can only have one)
         integer :: flood_ch_lnk = 0     !channel the landscape unit is linked to
         integer :: flood_ch_elem = 0    !landscape unit number - 1 is nearest to stream
+        integer :: flood_frac = 0       !fraction of flood flow assigned to the object
         integer :: wr_ob = 0            !1=element in a water rights object; 0=not an element
         character (len=3), dimension(:), allocatable :: obtyp_out   !outflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
         integer, dimension(:), allocatable :: obtypno_out           !outflow object type name
@@ -286,7 +288,8 @@
         character(len=8), dimension(:), allocatable :: obtyp_in     !inflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
         integer, dimension(:), allocatable :: obtypno_in            !outflow object type number
         integer, dimension(:), allocatable :: obj_in
-        integer, dimension(:), allocatable :: htyp_in
+        character (len=3), dimension(:), allocatable :: htyp_in     !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
+        integer, dimension(:), allocatable :: ihtyp_in
         real, dimension(:), allocatable :: frac_in
         type (flow_duration_curve) :: fdc                                   !use for daily flows and then use to get median of annual fdc's
         type (sorted_duration_curve), dimension(:),allocatable :: fdc_ll    !linked list of daily flow for year - dimensioned to 366
@@ -364,7 +367,7 @@
          character (len=16) :: name
          integer :: num = 0                    !number of elements
          integer :: typ                        !recall type - 1=day, 2=mon, 3=year
-         character(len=13) :: filename         !filename
+         character(len=16) :: filename         !filename
          !hyd_output units are in cms and mg/L
          type (hyd_output), dimension (:,:), allocatable :: hd     !export coefficients
       end type recall_hydrograph_inputs
@@ -394,13 +397,14 @@
       type (spatial_objects) :: sp_ob
       type (spatial_objects) :: sp_ob1
       
-      type subbasin_data
+      type routing_unit_data
+        character(len=16) :: name
         integer :: num_tot
         integer, dimension (:), allocatable :: num             !points to subbasin element (sub_elem)
-      end type subbasin_data
-      type (subbasin_data),dimension(:), allocatable:: sub_d
+      end type routing_unit_data
+      type (routing_unit_data),dimension(:), allocatable:: ru_def
       
-      type subbasin_elements
+      type routing_unit_elements
         character(len=16) :: name
         integer :: obj = 1              !object number
         character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
@@ -410,8 +414,8 @@
         real :: frac = 0                !fraction of element in sub (expansion factor)
         integer :: idr = 0               !points to dr's in delratio.dat
         type (hyd_output), dimension (:), allocatable :: dr    !calculated del ratios for element
-      end type subbasin_elements
-      type (subbasin_elements), dimension(:), allocatable :: sub_elem
+      end type routing_unit_elements
+      type (routing_unit_elements), dimension(:), allocatable :: ru_elem
       
       integer,  dimension(:), allocatable :: ielem_sub   !sequential counter for subbasin the hru is in
             
@@ -438,7 +442,7 @@
       
       !export coefficient is hyd_output type but not part of an object 
       type (hyd_output), dimension(:), allocatable :: dr          !delivery ratio for objects- chan, res, lu
-      type (hyd_output), dimension(:), allocatable :: sub_dr      !delivery ratio for subbasin elements
+      type (hyd_output), dimension(:), allocatable :: ru_dr      !delivery ratio for subbasin elements
       
       !delevery ratio is hyd_output type but not part of an object 
       type (hyd_output), dimension(:), allocatable :: exco        !export coefficient
@@ -635,6 +639,7 @@
         type (hyd_output), intent (in) :: hyd1
         real, intent (in) :: const
         type (hyd_output) :: hyd2
+        hyd2%temp = hyd1%temp
         hyd2%flo = const * hyd1%flo 
         hyd2%sed = const * hyd1%sed       
         hyd2%orgn = const * hyd1%orgn       

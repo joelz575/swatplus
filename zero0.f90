@@ -92,7 +92,6 @@
 !    Drainmod tile equations  01/2006 
       hdrain = 0.
 !    Drainmod tile equations  01/2006
-      hi_ovr = 0.
       hi_targ = 0.
       hqd = 0.
       hru_dafr = 0.

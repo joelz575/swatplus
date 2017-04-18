@@ -32,9 +32,9 @@
       use time_module
       use hydrograph_module
       use hru_module
-      use subbasin_module
+      use ru_module
       use channel_module
-      use sd_hru_module
+      use hru_lte_module
       use aquifer_module
       use sd_channel_module
       use reservoir_module
@@ -71,18 +71,18 @@
                 isub = ob(icmd)%sub(1)          !can only be in one subbasin if routing over
                 isub = sp_ob1%sub + isub - 1    !object number of the subbasin
                 iob = ob(isub)%obj_in(in)
-                ihyd = ob(isub)%htyp_in(in)
+                ihyd = ob(isub)%ihtyp_in(in)
                 ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)  !fraction of hydrograph
-                ht1 = sub_elem(ielem)%frac * ht1               !fraction of hru in subbasin
+                ht1 = ru_elem(ielem)%frac * ht1               !fraction of hru in subbasin
               else
                 iob = ob(icmd)%obj_in(in)
-                ihyd = ob(icmd)%htyp_in(in)
+                ihyd = ob(icmd)%ihtyp_in(in)
                 ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
                 ob(icmd)%peakrate = ob(iob)%peakrate
               end if
             else
               iob = ob(icmd)%obj_in(in)
-              ihyd = ob(icmd)%htyp_in(in)
+              ihyd = ob(icmd)%ihtyp_in(in)
               ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
               ob(icmd)%peakrate = ob(iob)%peakrate
             end if
@@ -104,24 +104,25 @@
                 ob(icmd)%tsin(kk) = ob(icmd)%tsin(kk) + ob(iob)%ts(iday,kk)
               end do
             end if
-          end do
+                        
+            if (isur_in == 1) then
+              ht1 = ob(icmd)%hin
+              call hydin_output (in)
+            end if
+            if (isub_in == 1) then
+              ht1 = ob(icmd)%hin_s
+              call hydin_output (in)
+            end if
             
-          if (isur_in == 1) then
-            ht1 = ob(icmd)%hin
-            call hydin_output (1,'sur')
-          end if
-          if (isub_in == 1) then
-            ht1 = ob(icmd)%hin_s
-            call hydin_output (2,'sub')
-          end if
-            
+          end do    ! in = 1, ob(icmd)%rcv_tot
+
           !convert to per area basis
           if (ob(icmd)%typ == "sub" .or. ob(icmd)%typ == "hru") then  !only convert hru and subbasin hyds for routing
             if (ob(icmd)%subs_tot > 0) then
               !object is in a subbasin
               ielem = ob(icmd)%elem
               isub = ob(icmd)%sub(1)  !can only be in one subbasin if routing over
-              conv = 100. * sub(isub)%da_km2 * sub_elem(ielem)%frac
+              conv = 100. * ru(isub)%da_km2 * ru_elem(ielem)%frac
             else
               conv = ob(icmd)%area_ha
             end if
@@ -141,12 +142,12 @@
                       
           case ("hru_lte")   ! hru_lte
             isd = ob(icmd)%num
-            call sd_hru_control (isd)
+            call hru_lte_control (isd)
             if (ob(icmd)%rcv_tot > 0) call hyddep_output
             
           case ("sub")   ! subbasin
             isub = ob(icmd)%num
-            call subbasin_control
+            call ru_control
             if (ob(icmd)%rcv_tot > 0) call hyddep_output
 
           case ("modflow")   ! modflow
@@ -184,7 +185,7 @@
                 ob(icmd)%hd(1) = recall(irec)%hd(1,time%yrs)
               end select
               
-              rec_d(rec) = ob(icmd)%hd(1)
+              rec_d(irec) = ob(icmd)%hd(1)
               call recall_output
 
           !case ("exco")   ! export coefficient hyds are set at start
@@ -201,7 +202,7 @@
             call sd_channel_control
             
           end select
-        if (pco%fdcout == 'yes') call flow_dur_curve
+        if (pco%fdcout == 'y') call flow_dur_curve
         
         !print all outflow hydrographs
         if (ob(icmd)%src_tot > 0) then
@@ -222,13 +223,14 @@
       end if
       
       if (time%yrs > pco%nyskip .and. time%step == 0) then 
-        if (db_mx%lcu_elem > 0) call basin_output
-        if (db_mx%lcu_out > 0) call subbasin_output
-        if (db_mx%aqu_out > 0) call basin_aquifer_output
+        if (db_mx%lsu_elem > 0) call basin_output
+        !if (db_mx%lsu_out > 0) call lsu_output
+        if (db_mx%aqu_elem > 0) call basin_aquifer_output
         if (sp_ob%res > 0) call basin_reservoir_output
-        if (sp_ob%chandeg > 0) call basin_channel_output
+        if (sp_ob%chan > 0) call basin_channel_output
+        if (sp_ob%chandeg > 0) call basin_sdchannel_output
         if (sp_ob%recall > 0) call basin_recall_output
-        !call lcu_output
+        !call lsreg_output
         !call region_aquifer_output
         !call region_reservoir_output
         !call region_channel_output

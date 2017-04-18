@@ -131,11 +131,11 @@
           rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m - rdc
           if (rsd1(j)%tot(ipl)%m < 0.) rsd1(j)%tot(ipl)%m = 0.
           rmn1 = decr * rsd1(j)%tot(ipl)%n 
-          rsd1(j)%tot(ipl)%p = Max(1.e-6,rsd1(j)%tot(ipl)%p)
+          rsd1(j)%tot(ipl)%p = Max(1.e-6, rsd1(j)%tot(ipl)%p)
           rmp = decr * rsd1(j)%tot(ipl)%p
 
           rsd1(j)%tot(ipl)%p = rsd1(j)%tot(ipl)%p - rmp
-          rsd1(j)%tot(ipl)%n  = Max(1.e-6,rsd1(j)%tot(ipl)%n)
+          rsd1(j)%tot(ipl)%n  = Max(1.e-6, rsd1(j)%tot(ipl)%n)
           rsd1(j)%tot(ipl)%n  = rsd1(j)%tot(ipl)%n  - rmn1
           rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + .8 * rmn1
           soil1(j)%hs(1)%n = soil1(j)%hs(1)%n + .2 * rmn1
@@ -245,11 +245,11 @@
             soil(j)%ly(k)%rsd = soil(j)%ly(k)%rsd - rdc
             if (soil(j)%ly(k)%rsd < 0.) soil(j)%ly(k)%rsd = 0.
             rmn1 = decr * soil1(j)%tot(k)%n 
-            soil1(j)%tot(k)%p = Max(1.e-6,soil1(j)%tot(k)%p)
+            soil1(j)%tot(k)%p = Max(1.e-6, soil1(j)%tot(k)%p)
             rmp = decr * soil1(j)%tot(k)%p
 
             soil1(j)%tot(k)%p = soil1(j)%tot(k)%p - rmp
-            soil1(j)%tot(k)%n  = Max(1.e-6,soil1(j)%tot(k)%n)
+            soil1(j)%tot(k)%n  = Max(1.e-6, soil1(j)%tot(k)%n)
             soil1(j)%tot(k)%n  = soil1(j)%tot(k)%n  - rmn1
             soil1(j)%mn(k)%no3 = soil1(j)%mn(k)%no3 + .8 * rmn1
             soil1(j)%hs(k)%n = soil1(j)%hs(k)%n + .2 * rmn1

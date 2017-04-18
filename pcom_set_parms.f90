@@ -42,12 +42,9 @@
         hru(j)%septic = lum_str(ilu)%septic
         hru(j)%fstrip = lum_str(ilu)%fstrip
         hru(j)%grassww = lum_str(ilu)%grassww
-        hru(j)%terrace = lum_str(ilu)%terrace
-        hru(j)%contour = lum_str(ilu)%contour
-        hru(j)%stcrop = lum_str(ilu)%stcrop
         hru(j)%bmpuser = lum_str(ilu)%bmpuser
         hru(j)%luse%cn_lu = lum_str(ilu)%cn_lu
-        hru(j)%luse%usle_p = 1.
+        hru(j)%luse%cons_prac = lum_str(ilu)%cons_prac
         hru(j)%luse%urb_lu = lum(ilu)%urb_lu
         hru(j)%luse%ovn = lum(ilu)%ovn
 
@@ -145,7 +142,16 @@
         end select
  
         call curno(cn2(j),j)
-       
+        
+        !! set p factor and slope length (ls factor)
+        icp = lum_str(ilu)%cons_prac
+        xm = .6 * (1. - Exp(-35.835 * hru(ihru)%topo%slope))
+        sin_sl = Sin(Atan(hru(ihru)%topo%slope))
+        sl_len = amin1 (hru(ihru)%topo%slope_len, cons_prac(icp)%sl_len_mx)
+        hru(ihru)%lumv%usle_ls = (hru(ihru)%topo%slope_len / 22.128) ** xm *          & 
+                      (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
+        hru(ihru)%lumv%usle_p = cons_prac(icp)%pfac
+        
         !! set parameters for structural land use/managment
         if (lum(ilu)%tiledrain /= 'null') then
           call structure_set_parms('tiledrain       ', lum_str(ilu)%tiledrain, j)
@@ -162,25 +168,13 @@
         if (lum(ilu)%grassww /= 'null') then
           call structure_set_parms('grassww         ', lum_str(ilu)%grassww, j)
         end if
-        
-        if (lum(ilu)%terrace /= 'null') then
-          call structure_set_parms('terrace         ', lum_str(ilu)%terrace, j)
-        end if
-        
-        if (lum(ilu)%contour /= 'null') then
-          call structure_set_parms('contour         ', lum_str(ilu)%contour, j)
-        end if
-        
-        if (lum(ilu)%stcrop /= 'null') then
-          call structure_set_parms('stcrop          ', lum_str(ilu)%stcrop, j)
-        end if
-        
+
         if (lum(ilu)%bmpuser /= 'null') then
           call structure_set_parms('bmpuser         ', lum_str(ilu)%bmpuser, j)
         end if
 
-      !! set linked-list array for all hru's with unlimited source irrigation (hru_irr_nosrc)
-      db_mx%irr_nosrc = 0
+        !! set linked-list array for all hru's with unlimited source irrigation (hru_irr_nosrc)
+        db_mx%irr_nosrc = 0
         isched = hru(j)%mgt_ops
         icmd = hru(j)%obj_no
         if (sched(isched)%irr > 0 .and. ob(icmd)%wr_ob == 0) then

@@ -1,4 +1,4 @@
-      subroutine mgt_killop
+      subroutine mgt_killop (jj, iplant)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the kill operation
@@ -43,6 +43,7 @@
       use organic_mineral_mass_module
   
       integer :: j, k
+      integer, intent (in) :: jj, iplant
       real :: resnew
       
       !!by zhang
@@ -68,7 +69,8 @@
       !!by zhang
       !!====================      
  
-      j = ihru
+      j = jj
+      ipl = iplant
 
 	  !! 22 January 2008	
       resnew = pcom(j)%plm(ipl)%mass * (1. - pcom(j)%plg(ipl)%rwt)

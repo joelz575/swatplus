@@ -40,7 +40,7 @@
         integer :: wq = 0        !! stream water quality code
                                  !!   0 do not model
                                  !!   1 model (QUAL2E)
-        integer :: rtpest = 0    !! redeinfed to the sequence number  -- changed to no nutrient stress
+        integer :: nostress = 0    !! redeinfed to the sequence number  -- changed to no nutrient stress
                                  !!   of pest in NPNO(:) to be routed
                                  !!   through the watershed
         integer :: cn = 0        !! CN method flag
@@ -152,6 +152,13 @@
       end type basin_parms
       type (basin_parms) :: bsn_prm
 
+      type print_interval
+        character(len=1) :: d
+        character(len=1) :: m
+        character(len=1) :: y
+        character(len=1) :: a
+      end type print_interval
+      
       type basin_print_codes
       !!    PRINT CODES: 'avann' = average annual (always print....unless input is 'null')
       !!                 'year'  = yearly
@@ -167,59 +174,66 @@
       ! AVE ANNUAL END YEARS
         integer :: aa_numint                          !! number of print intervals for ave annual output
         integer, dimension(:), allocatable :: aa_yrs  !! end years for ave annual output
+      ! SPECIAL OUTPUTS
+        character(len=1) :: csvout = '    n'         !!  code to print .csv files n=no print; y=print;
+        character(len=1) :: dbout  = '    n'         !!  code to print database (db) files n=no print; y=print;
+        character(len=1) :: cdfout = '    n'         !!  code to print netcdf (cdf) files n=no print; y=print;
+      ! OTHER OUTPUTS
+        character(len=1) :: solout = '    n'         !!  soils output file (soils.out)
+        character(len=1) :: mgtout = '    n'         !!  management output file (mgt.out)
+        character(len=1) :: hydcon = '    n'         !!  hydrograph connect output file (hydcon.out)
+        character(len=1) :: fdcout = '    n'         !!  flow duration curve output n=no print; avann=print;
       ! BASIN
-        character(len=16) :: wb_bsn = 'avann'         !!  water balance BASIN output
-        character(len=16) :: nb_bsn = 'avann'         !!  nutrient balance BASIN output
-        character(len=16) :: ls_bsn = 'avann'         !!  losses BASIN output
-        character(len=16) :: pw_bsn = 'avann'         !!  plant weather BASIN output
-        character(len=16) :: aqu_bsn = 'avann'        !!  
-        character(len=16) :: res_bsn = 'avann'        !!
-        character(len=16) :: chan_bsn = 'avann'       !!
-        character(len=16) :: recall_bsn = 'avann'     !!
-        character(len=16) :: sd_chan_bsn = 'avann'    !! 
+        type(print_interval) :: wb_bsn          !!  water balance BASIN output
+        type(print_interval) :: nb_bsn          !!  nutrient balance BASIN output
+        type(print_interval) :: ls_bsn          !!  losses BASIN output
+        type(print_interval) :: pw_bsn          !!  plant weather BASIN output
+        type(print_interval) :: aqu_bsn         !!  
+        type(print_interval) :: res_bsn         !!
+        type(print_interval) :: chan_bsn        !!
+        type(print_interval) :: recall_bsn      !!
+        type(print_interval) :: sd_chan_bsn     !! 
       ! REGION
-        character(len=16) :: wb_reg = 'avann'         !!  water balance REGION output
-        character(len=16) :: nb_reg = 'avann'         !!  nutrient balance REGION output
-        character(len=16) :: ls_reg = 'avann'         !!  losses REGION output
-        character(len=16) :: pw_reg = 'avann'         !!  plant weather REGION output
-        character(len=16) :: aqu_reg = 'avann'        !!  
-        character(len=16) :: res_reg = 'avann'        !!
-        character(len=16) :: chan_reg = 'avann'       !!
-        character(len=16) :: recall_reg = 'avann'     !!
-        character(len=16) :: sd_chan_reg = 'avann'    !! 
+        type(print_interval) :: wb_reg          !!  water balance REGION output
+        type(print_interval) :: nb_reg          !!  nutrient balance REGION output
+        type(print_interval) :: ls_reg          !!  losses REGION output
+        type(print_interval) :: pw_reg          !!  plant weather REGION output
+        type(print_interval) :: aqu_reg         !!  
+        type(print_interval) :: res_reg         !!
+        type(print_interval) :: chan_reg        !!
+        type(print_interval) :: recall_reg      !!
+        type(print_interval) :: sd_chan_reg     !! 
        ! SUBBASIN
-        character(len=16) :: wb_sub = 'avann'         !!  water balance SUBBASIN output
-        character(len=16) :: nb_sub = 'avann'         !!  nutrient balance SUBBASIN output
-        character(len=16) :: ls_sub = 'avann'         !!  losses SUBBASIN output
-        character(len=16) :: pw_sub = 'avann'         !!  plant weather SUBBASIN output
+        type(print_interval) :: wb_sub          !!  water balance SUBBASIN output
+        type(print_interval) :: nb_sub          !!  nutrient balance SUBBASIN output
+        type(print_interval) :: ls_sub          !!  losses SUBBASIN output
+        type(print_interval) :: pw_sub          !!  plant weather SUBBASIN output
         ! HRU
-        character(len=16) :: wb_hru = 'avann'         !!  water balance HRU output
-        character(len=16) :: nb_hru = 'avann'         !!  nutrient balance HRU output
-        character(len=16) :: ls_hru = 'avann'         !!  losses HRU output
-        character(len=16) :: pw_hru = 'avann'         !!  plant weather HRU output
+        type(print_interval) :: wb_hru          !!  water balance HRU output
+        type(print_interval) :: nb_hru          !!  nutrient balance HRU output
+        type(print_interval) :: ls_hru          !!  losses HRU output
+        type(print_interval) :: pw_hru          !!  plant weather HRU output
         ! HRU-LTE
-        character(len=16) :: wb_sd = 'avann'          !!  water balance SWAT-DEG output 
-        character(len=16) :: nb_sd = 'avann'          !!  nutrient balance SWAT-DEG output
-        character(len=16) :: ls_sd = 'avann'          !!  losses SWAT-DEG output
-        character(len=16) :: pw_sd = 'avann'          !!  plant weather SWAT-DEG output
+        type(print_interval) :: wb_sd           !!  water balance SWAT-DEG output 
+        type(print_interval) :: nb_sd           !!  nutrient balance SWAT-DEG output
+        type(print_interval) :: ls_sd           !!  losses SWAT-DEG output
+        type(print_interval) :: pw_sd           !!  plant weather SWAT-DEG output
         ! CHANNEL
-        character(len=16) :: chan = 'avann'           !!  channel output 
+        type(print_interval) :: chan            !!  channel output
+        ! CHANNEL_LTE
+        type(print_interval) :: sd_chan         !!  swat deg (lte) channel output
         ! AQUIFER
-        character(len=16) :: aqu = 'avann'            !!  aqufier output
+        type(print_interval) :: aqu             !!  aqufier output
         ! RESERVOIR
-        character(len=16) :: res = 'avann'            !!  reservoir output
+        type(print_interval) :: res             !!  reservoir output
         ! RECALL
-        character(len=16) :: recall = 'avann'         !!  recall output
+        type(print_interval) :: recall          !!  recall output
         ! HYDIN AND HYDOUT
-        character(len=16) :: hyd = 'avann'            !!  hydin_output and hydout_output
-        ! HYD CONNECT OUTPUT
-        character(len=16) :: hydcon = 'avann'         !!  hydrograph connect output file (hydcon.out)
-        character(len=16) :: solout = 'avann'         !!  soils output file (soils.out)
-        character(len=16) :: mgtout = 'avann'         !!  management output file (mgt.out)
-        character(len=16) :: csvout = '   no'         !!  code to print .csv files no=no print; yes=print;
-        character(len=16) :: fdcout = '   no'         !!  flow duration curve output null=no print; avann=print;
+        type(print_interval) :: hyd             !!  hydin_output and hydout_output
       end type basin_print_codes
       type (basin_print_codes) :: pco
+      
+  
            
       contains
       include 'basin_cc_read.f90'

@@ -1,4 +1,4 @@
-      subroutine sub_allo
+      subroutine ru_allo
       
       use basin_module
       use time_module
@@ -9,7 +9,7 @@
       do isb = 1, sp_ob%sub
         ql = 0.
         sumq = 0.
-        tb = .5 + .6 * sub_tc(isb) + bsn_prm%tb_adj  !baseflow time, hr
+        tb = .5 + .6 * ru_tc(isb) + bsn_prm%tb_adj  !baseflow time, hr
         if (tb > 48.) tb = 48.			   !maximum 48hrs
         tp = .375 * tb                       ! time to peak flow
 	  !! convert to time step (from hr), J.Jeong March 2009
@@ -62,4 +62,4 @@
       end if
 
       return
-      end subroutine sub_allo
+      end subroutine ru_allo

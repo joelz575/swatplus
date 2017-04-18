@@ -1,4 +1,4 @@
-      subroutine hydin_output (iin, surlat)
+      subroutine hydin_output (iin)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs hyd variables on daily, monthly and annual time steps
@@ -9,17 +9,18 @@
       !!  3 = daily  
              
       character (len=3) :: surlat
-      integer :: iin  !1==surf 2==lateral
+      integer :: iin  !inflow hyd for the object (sequential - 1,2,...)
       
 !!!!! daily print
       if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                                     .and. time%day <= pco%jd_end) then
-        if (pco%hyd == 'day') then
-            write (5004,101) time%day, time%yrs, icmd, ob(icmd)%typ,            &
-               ob(icmd)%props, surlat, ht1
-              if (pco%csvout == 'yes' .and. pco%hyd == 'day') then
-                write (5008,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,     &
-                ob(icmd)%props, surlat, ht1
+        if (pco%hyd%d == 'y') then
+            write (2560,*) time%day, time%yrs, icmd, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%obtyp_in(iin),        &
+             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%obj_in(iin), ht1
+            
+              if (pco%csvout == 'y') then
+                write (2564,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%obtyp_in(iin),        &
+             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%obj_in(iin), ht1
               end if       
         endif
       end if
@@ -28,12 +29,12 @@
 
 !!!!! monthly print
       if (time%end_mo == 1) then
-        if (pco%hyd == 'mon') then
-            write (5004,101) time%day, time%yrs, icmd, ob(icmd)%typ,      &
-             ob(icmd)%props, surlat, ob(icmd)%hin_m(iin)
-              if (pco%csvout == 'yes' .and. pco%hyd == 'mon') then
-                write (5008,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,      &
-                 ob(icmd)%props, surlat, ob(icmd)%hin_m(iin)
+        if (pco%hyd%m == 'y') then
+            write (2561,*) time%mo, time%yrs, icmd, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%obtyp_in(iin),        &
+             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%obj_in(iin), ob(icmd)%hin_m(iin)
+              if (pco%csvout == 'y') then
+                write (2565,'(*(G0.3,:","))') time%mo, time%yrs, icmd, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%obtyp_in(iin),        &
+             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%obj_in(iin), ob(icmd)%hin_m(iin)
               end if
         end if
           ob(icmd)%hin_y(iin) = ob(icmd)%hin_y(iin)+ ob(icmd)%hin_m(iin)
@@ -42,12 +43,12 @@
         
 !!!!! yearly print
       if (time%end_yr == 1) then
-        if (pco%hyd == 'year') then
-            write (5004,101) time%day, time%yrs, icmd, ob(icmd)%typ,     & 
-             ob(icmd)%props, surlat, ob(icmd)%hin_y(iin)
-          if (pco%csvout == 'yes' .and. pco%hyd == 'year') then
-             write (5008,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,     & 
-               ob(icmd)%props, surlat, ob(icmd)%hin_y(iin)
+        if (pco%hyd%y == 'y') then
+            write (2562,*) time%yrc, time%yrs, icmd, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%obtyp_in(iin),        &
+             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%obj_in(iin), ob(icmd)%hin_y(iin)
+          if (pco%csvout == 'y') then
+             write (2566,'(*(G0.3,:","))') time%yrc, time%yrs, icmd, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%obtyp_in(iin),        &
+             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%obj_in(iin), ob(icmd)%hin_y(iin)
           endif
         end if
           ob(icmd)%hin_a(iin) = ob(icmd)%hin_a(iin)+ ob(icmd)%hin_y(iin)
@@ -55,19 +56,14 @@
       endif
         
 !!!!! average annual print
-        if (time%end_sim == 1 .and. pco%hyd /= 'null') then
+        if (time%end_sim == 1 .and. pco%hyd%a == 'y') then
           ob(icmd)%hin_a(iin) = ob(icmd)%hin_a(iin) / time%yrs_prt
-          write (5004,100) ob(icmd)%name, time%day, time%yrs, icmd,     & 
-             ob(icmd)%typ, ob(icmd)%props, surlat, ht1
-            if (pco%csvout == 'yes') then
-              write (5008,'(*(G0.3,:","))') ob(icmd)%name, time%day, time%yrs, icmd,     & 
-              ob(icmd)%typ, ob(icmd)%props, surlat, ht1 
+          write (2563,*) time%yrc, time%yrs, icmd, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%obtyp_in(iin),        &
+             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%obj_in(iin), ht1
+            if (pco%csvout == 'y') then
+              write (2567,'(*(G0.3,:","))') time%yrc, time%yrs, icmd, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%obtyp_in(iin),        &
+             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%obj_in(iin), ht1
             end if
         end if
-        
-      return
 
-100   format (a16,3i8,a8,i8,a6,a13,30(1x,e11.4))
-101   format (3i8,a8,i8,a6,a13,30(1x,e11.4))
-      
       end subroutine hydin_output

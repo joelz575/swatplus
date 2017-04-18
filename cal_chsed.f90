@@ -2,13 +2,13 @@
 
       use parm
       use hydrograph_module
-      use subbasin_module
+      use ru_module
       use hru_module
 !      use wateruse_module
       use climate_module
       use aquifer_module
       use channel_module
-      use sd_hru_module
+      use hru_lte_module
       use sd_channel_module
       use basin_module
       use jrw_datalib_module
@@ -73,11 +73,11 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rsd_init(iihru)
+          rsd1(iihru) = rhlt_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
-          sd_init(iihru) = sd(iihru)
+          hlt_init(iihru) = hlt(iihru)
         end do
         !initialize swat deg channel data
         do iihru = 1, sp_ob%hru_lte
@@ -142,11 +142,11 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rsd_init(iihru)
+          rsd1(iihru) = rhlt_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
-          sd_init(iihru) = sd(iihru)
+          hlt_init(iihru) = hlt(iihru)
         end do
         !initialize swat deg channel data
         do iihru = 1, sp_ob%hru_lte
@@ -207,11 +207,11 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rsd_init(iihru)
+          rsd1(iihru) = rhlt_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
-          sd_init(iihru) = sd(iihru)
+          hlt_init(iihru) = hlt(iihru)
         end do
         !initialize swat deg channel data
         do iihru = 1, sp_ob%hru_lte
@@ -276,11 +276,11 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rsd_init(iihru)
+          rsd1(iihru) = rhlt_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
-          sd_init(iihru) = sd(iihru)
+          hlt_init(iihru) = hlt(iihru)
         end do
         !initialize swat deg channel data
         do iihru = 1, sp_ob%hru_lte
@@ -341,11 +341,11 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rsd_init(iihru)
+          rsd1(iihru) = rhlt_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
-          sd_init(iihru) = sd(iihru)
+          hlt_init(iihru) = hlt(iihru)
         end do
         !initialize swat deg channel data
         do iihru = 1, sp_ob%hru_lte
@@ -410,11 +410,11 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rsd_init(iihru)
+          rsd1(iihru) = rhlt_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
-          sd_init(iihru) = sd(iihru)
+          hlt_init(iihru) = hlt(iihru)
         end do
         !initialize swat deg channel data
         do iihru = 1, sp_ob%hru_lte
@@ -476,11 +476,11 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rsd_init(iihru)
+          rsd1(iihru) = rhlt_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
-          sd_init(iihru) = sd(iihru)
+          hlt_init(iihru) = hlt(iihru)
         end do
         !initialize swat deg channel data
         do iihru = 1, sp_ob%hru_lte
@@ -547,11 +547,11 @@
         do iihru = 1, sp_ob%hru
           hru(iihru) = hru_init(iihru)
           soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rsd_init(iihru)
+          rsd1(iihru) = rhlt_init(iihru)
           pcom(iihru) = pcom_init(iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
-          sd_init(iihru) = sd(iihru)
+          hlt_init(iihru) = hlt(iihru)
         end do
         !initialize swat deg channel data
         do iihru = 1, sp_ob%hru_lte

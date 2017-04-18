@@ -25,7 +25,7 @@
             read (107,*,iostat=eof) header
             if (eof < 0) exit
             !! determine max number for array (imax) and total number in file (mwst)
-            do while (eof >= 0)
+            do while (eof == 0)
                 read (107,*,iostat=eof) i
                 if (eof < 0) exit
                 imax = Max(imax,i)

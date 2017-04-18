@@ -78,9 +78,6 @@
       swtrg = 0
       t_ov = 0.
       tconc = 0.
-      terr_p = 0.
-      terr_cn = 0.
-      terr_sl = 0.
       thalf = 0.
       tnconc = 0.
       tno3conc = 0.

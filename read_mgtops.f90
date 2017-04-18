@@ -7,15 +7,14 @@
       integer :: iyear, day, mon
 
       iyear = 1
-      do iop = 1, sched(isched)%num_ops             !! operation loop
-        read (107,*)   sched(isched)%mgt_ops(iop)%op,                    & !! operation character
-                       sched(isched)%mgt_ops(iop)%mon,                   &
-                       sched(isched)%mgt_ops(iop)%day,                   &
-                       sched(isched)%mgt_ops(iop)%husc,                  &
-                       sched(isched)%mgt_ops(iop)%cond,                  &
-                       sched(isched)%mgt_ops(iop)%op_char,               & !! operation type character
-                       sched(isched)%mgt_ops(iop)%op_plant,              & !! plant character 
-                       sched(isched)%mgt_ops(iop)%op3                      !! override
+      do iop = 1, sched(isched)%num_ops                             !! operation loop
+        read (107,*)   sched(isched)%mgt_ops(iop)%op,               & !! operation character
+                       sched(isched)%mgt_ops(iop)%mon,              &
+                       sched(isched)%mgt_ops(iop)%day,              &
+                       sched(isched)%mgt_ops(iop)%husc,             &
+                       sched(isched)%mgt_ops(iop)%op_char,          & !! operation type character
+                       sched(isched)%mgt_ops(iop)%op_plant,         & !! plant character 
+                       sched(isched)%mgt_ops(iop)%op3               !! override
         
           day = sched(isched)%mgt_ops(iop)%day
           mon = sched(isched)%mgt_ops(iop)%mon
@@ -35,7 +34,7 @@
           
         case ("plnt")
           do idb = 1, db_mx%plantparm
-              if (sched(isched)%mgt_ops(iop)%op_plant == plnt_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == plnt_xw(idb)) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -43,16 +42,15 @@
           
         case ("harv")
           do idb = 1, db_mx%harvop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == harvop_db(idb)%name) then
+              if (sched(isched)%mgt_ops(iop)%op_plant == harvop_db(idb)%typ) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
           end do
-  
 
         case ("hvkl")
           do idb = 1, db_mx%harvop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == harvop_db(idb)%name) then
+              if (sched(isched)%mgt_ops(iop)%op_plant == harvop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -69,56 +67,60 @@
         case ("irrm")
           sched(isched)%irr = 1
           do idb = 1, db_mx%irrop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == irrop_db(idb)%name) then
-                  sched(isched)%mgt_ops(iop)%op1 = idb
-                  exit
-              endif
+            if (sched(isched)%mgt_ops(iop)%op_char == irrop_db(idb)%name) then
+              sched(isched)%mgt_ops(iop)%op1 = idb
+              exit
+            endif
           end do
 
         case ("fert")
-          do iopdb = 1, db_mx%fertop_db
-            if (sched(isched)%mgt_ops(iop)%op_char == fertop_db(iopdb)%name) then
-              sched(isched)%mgt_ops(iop)%op1 = iopdb
-              do idb = 1, db_mx%fertparm
-                if (fertop_db(iopdb)%fertnm == fertdb(idb)%fertnm) then
-                  sched(isched)%mgt_ops(iop)%op4 = idb
-                  exit
-                endif
-              end do
-            end if
+          !xwalk fert name with fertilizer data base
+          do idb = 1, db_mx%fertparm
+            if (sched(isched)%mgt_ops(iop)%op_char == fertdb(idb)%fertnm) then
+              sched(isched)%mgt_ops(iop)%op1 = idb
+              exit
+            endif
+          end do
+          !xwalk application type with chemical application data base
+          do idb = 1, db_mx%chemapp_db
+            if (sched(isched)%mgt_ops(iop)%op_plant == chemapp_db(idb)%name) then
+              sched(isched)%mgt_ops(iop)%op4 = idb
+              exit
+            endif
           end do
 
-          case ("pest")
-          do idb = 1, db_mx%pstop_db
-              if (sched(isched)%mgt_ops(iop)%op_char == pestop_db(idb)%name) then
-                  sched(isched)%mgt_ops(iop)%op1 = idb
-                  exit
-              endif
+        case ("pest")
+          !xwalk application type with chemical application data base
+          do idb = 1, db_mx%chemapp_db
+            if (sched(isched)%mgt_ops(iop)%op_plant == chemapp_db(idb)%name) then
+              sched(isched)%mgt_ops(iop)%op4 = idb
+              exit
+            endif
           end do
 
           case ("graz")
-          do idb = 1, db_mx%grazeop_db
+            do idb = 1, db_mx%grazeop_db
               if (sched(isched)%mgt_ops(iop)%op_char == grazeop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
-          end do
+            end do
  
           case ("burn")
-          do idb = 1, db_mx%fireop_db
+            do idb = 1, db_mx%fireop_db
               if (sched(isched)%mgt_ops(iop)%op_char == fire_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
-          end do
+            end do
           
           case ("swep")
-          do idb = 1, db_mx%sweepop_db
+            do idb = 1, db_mx%sweepop_db
               if (sched(isched)%mgt_ops(iop)%op_char == sweepop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
-          end do      
+            end do      
        end select          
       end do                                  !! operation loop
     

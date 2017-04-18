@@ -180,8 +180,8 @@
         tcfrtn(j) = tcfrtn(j) + cfertn
         tcfrtp(j) = tcfrtp(j) + cfertp
           
-        if (pco%mgtout == 'year') then
-         write (143, 1000) j, time%yrc, i_mo, iida,                   &
+        if (pco%mgtout == 'y') then
+         write (2612, 1000) j, time%yrc, i_mo, iida,                   &
             "         ",                                              &
           "CONT FERT", phubase(j), pcom(j)%plcur(ipl)%phuacc,         &
             soil(j)%sw, pcom(j)%plm(ipl)%mass,                        &

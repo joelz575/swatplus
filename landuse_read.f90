@@ -23,7 +23,7 @@
        if (eof < 0) exit
        read (107,*,iostat=eof) header
        if (eof < 0) exit
-       do while (eof >= 0)
+       do while (eof == 0)
          read (107,*,iostat=eof) titldum
          if (eof < 0) exit
          imax = imax + 1
@@ -67,7 +67,15 @@
              end if
            end do
          end if
-      
+                  
+         if (lum(ilu)%cons_prac /= 'null') then
+           do ipr = 1, db_mx%cons_prac
+             if (lum(ilu)%cons_prac == cons_prac(ipr)%name) then
+               lum_str(ilu)%cons_prac = ipr
+               exit
+             end if
+           end do
+         end if
          
          if (lum(ilu)%tiledrain /= 'null') then
            do ipr = 1, db_mx%sdr
@@ -104,34 +112,7 @@
              end if
            end do
          end if
-                           
-         if (lum(ilu)%terrace /= 'null') then
-           do ipr = 1, db_mx%terrop_db
-             if (lum(ilu)%terrace == terrace_db(ipr)%name) then
-               lum_str(ilu)%terrace = ipr
-               exit
-             end if
-           end do
-         end if
-                                    
-         if (lum(ilu)%contour /= 'null') then
-           do ipr = 1, db_mx%contop_db
-             if (lum(ilu)%contour == contour_db(ipr)%name) then
-               lum_str(ilu)%contour = ipr
-               exit
-             end if
-           end do
-         end if
-                                             
-         if (lum(ilu)%stcrop /= 'null') then
-           do ipr = 1, db_mx%stripop_db
-             if (lum(ilu)%stcrop == stripcrop_db(ipr)%name) then
-               lum_str(ilu)%stcrop = ipr
-               exit
-             end if
-           end do
-         end if
-                                                      
+                             
          if (lum(ilu)%bmpuser /= 'null') then
            do ipr = 1, db_mx%bmpuserop_db
              if (lum(ilu)%bmpuser == bmpuser_db(ipr)%name) then

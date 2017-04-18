@@ -9,10 +9,10 @@
 !!!!! daily print
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                          .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
-          if (pco%res == 'day') then
-            write (5002,100) time%day, time%yrs, j, res(j)%flo, res_d(j)
-             if (pco%csvout == 'yes') then
-               write (5006,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, res_d(j) 
+          if (pco%res%d == 'y') then
+            write (2540,100) time%day, time%yrs, j, res(j)%flo, res_d(j)
+             if (pco%csvout == 'y') then
+               write (2544,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, res_d(j) 
              end if
           end if 
         end if 
@@ -22,10 +22,10 @@
 !!!!! monthly print
         if (time%end_mo == 1) then
           res_y(j) = res_y(j) + res_m(j)
-          if (pco%res == 'mon') then
-            write (5002,100) time%day, time%yrs, j, res(j)%flo, res_m(j)
-              if (pco%csvout == 'yes') then
-                write (5006,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, res_m(j) 
+          if (pco%res%m == 'y') then
+            write (2541,100) time%day, time%yrs, j, res(j)%flo, res_m(j)
+              if (pco%csvout == 'y') then
+                write (2545,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, res_m(j) 
               end if 
           end if
           res_m(j) = resmz
@@ -34,21 +34,21 @@
 !!!!! yearly print
        if (time%end_yr == 1) then
           res_a(j) = res_a(j) + res_y(j)
-          if (pco%res == 'year') then
-            write (5002,100) time%day, time%yrs, j, res(j)%flo, res_y(j)
-              if (pco%csvout == 'yes') then
-                write (5006,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, res_y(j)
+          if (pco%res%y == 'y') then
+            write (2542,100) time%day, time%yrs, j, res(j)%flo, res_y(j)
+              if (pco%csvout == 'y') then
+                write (2546,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, res_y(j)
               end if
           end if
           res_y(j) = resmz
        end if
 
 !!!!! average annual print
-        if (time%end_sim == 1 .and. pco%res /= 'null') then
+        if (time%end_sim == 1 .and. pco%res%a == 'y') then
           res_a(j) = res_y(j) / time%yrs_prt
-          write (7008,100) time%day, time%yrs, j, res(j)%flo, res_a(j)
-          if (pco%csvout == 'yes') then
-            write (7009,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, res_a(j)
+          write (2543,100) time%day, time%yrs, j, res(j)%flo, res_a(j)
+          if (pco%csvout == 'y') then
+            write (2547,'(*(G0.3,:","))') time%day, time%yrs, j, res(j)%flo, res_a(j)
           end if 
         end if
         

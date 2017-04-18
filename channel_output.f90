@@ -88,10 +88,10 @@
 !!!!! daily print
       if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                             .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
-        if (pco%chan == 'day') then
-          write (4400,100) time%day, time%yrc, jrch, ch_d(jrch)
-          if (pco%csvout == 'yes') then
-            write (4402,'(*(g0.3,:","))') time%day, time%yrc, jrch, ch_d(jrch)
+        if (pco%chan%d == 'y') then
+          write (2480,100) time%day, time%yrc, jrch, ch_d(jrch)
+          if (pco%csvout == 'y') then
+            write (2484,'(*(g0.3,:","))') time%day, time%yrc, jrch, ch_d(jrch)
           end if 
         end if 
       end if
@@ -99,22 +99,22 @@
 !!!!! monthly print
       if (time%end_mo == 1) then
         ch_y(jrch) = ch_y(jrch) + ch_m(jrch)
-        if (pco%chan == 'mon') then
-          write (4400,100) time%mo, time%yrc, jrch, ch_m(jrch)
-          if (pco%csvout == 'yes') then
-            write (4402,'(*(g0.3,:","))') time%mo, time%yrc, jrch, ch_m(jrch)
+        if (pco%chan%m == 'y') then
+          write (2481,100) time%mo, time%yrc, jrch, ch_m(jrch)
+          if (pco%csvout == 'y') then
+            write (2485,'(*(g0.3,:","))') time%mo, time%yrc, jrch, ch_m(jrch)
           end if
         end if
         ch_m(jrch) = chz
       end if
 
 !!!!! yearly print
-      if (time%end_yr == 'year') then
+      if (time%end_yr == 1) then
         ch_a(jrch) = ch_a(jrch) + ch_y(jrch)
-        if (pco%chan == 'year') then 
-          write (4400,100) time%day, time%yrs, jrch, ch_y(jrch)
-          if (pco%csvout == 'yes') then
-            write (4402,'(*(g0.3,:","))') time%day, time%yrs, jrch, ch_y(jrch)
+        if (pco%chan%y == 'y') then 
+          write (2482,100) time%day, time%yrs, jrch, ch_y(jrch)
+          if (pco%csvout == 'y') then
+            write (2486,'(*(g0.3,:","))') time%day, time%yrs, jrch, ch_y(jrch)
           end if
         end if
         
@@ -122,11 +122,11 @@
       end if
 
 !!!!! average annual print
-      if (time%end_sim == 1 .and. pco%chan /= 'null') then
+      if (time%end_sim == 1 .and. pco%chan%a == 'y') then
         ch_a(jrch) = ch_a(jrch) / time%yrs_prt
-        write (4401,100) time%day, time%yrs, jrch, ch_a(jrch)
-        if (pco%csvout == 'yes') then
-          write (4403,'(*(g0.3,:","))') time%day, time%yrs, jrch, ch_a(jrch)
+        write (2483,100) time%day, time%yrs, jrch, ch_a(jrch)
+        if (pco%csvout == 'y') then
+          write (2487,'(*(g0.3,:","))') time%day, time%yrs, jrch, ch_a(jrch)
         end if
       end if
 

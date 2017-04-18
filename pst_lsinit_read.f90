@@ -22,7 +22,7 @@
           if (eof < 0) exit
           read (107,*,iostat=eof) header
           if (eof < 0) exit
-           do while (eof >= 0)
+           do while (eof == 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i)
@@ -38,8 +38,7 @@
           do ipestdb = 1, imax
             read (107,*,iostat=eof) i
             backspace (107)
-            read (107,*,iostat=eof) k, pesti_db(i)%name, pesti_db(i)%num,  &
-                                    pesti_db(i)%exco_df, pesti_db(i)%dr_df
+            read (107,*,iostat=eof) k, pesti_db(i)%name, pesti_db(i)%num, pesti_db(i)%exco_df, pesti_db(i)%dr_df
             if (eof < 0) exit
             !allocate initial pest and exco and dr for pesticides
             allocate (pesti_db(ipestdb)%pesti(pesti_db(i)%num))
@@ -48,8 +47,16 @@
             
             !read initial pesticide concentrations on plant and soil
             do ipest = 1, pesti_db(i)%num
-              read (107,*,iostat=eof) pesti_db(i)%pesti(ipest)
+              read (107,*,iostat=eof) pesti_db(i)%pesti(ipest)%name, pesti_db(i)%pesti(ipest)%plt,      &
+                  pesti_db(i)%pesti(ipest)%soil, pesti_db(i)%pesti(ipest)%enr
               if (eof < 0) exit
+              !xwalk pest name with database name
+              do idb = 1, db_mx%pestparm
+                if (sched(isched)%mgt_ops(iop)%op_char == pestdb(ip)%pestnm) then
+                  pesti_db(i)%pesti(ipest)%num_db = idb
+                  exit
+                endif
+              end do
             end do
             
             !read export coefficients for pesticides

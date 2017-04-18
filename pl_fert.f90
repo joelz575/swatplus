@@ -1,4 +1,4 @@
-      subroutine pl_fert
+      subroutine pl_fert (jj, ifrt, frt_kg, fertop)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine applies N and P specified by date and
@@ -7,61 +7,17 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition                  
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactkddb(:)   |none          |fraction of bacteria in solution (the
-!!                                 |remaining fraction is sorbed to soil
-!!                                 |particles)
-!!    bactlpdb(:)   |# cfu/g   frt |concentration of less persistent bacteria
-!!                                 |in fertilizer
-!!    bactpdb(:)    |# cfu/g   frt |concentration of persistent bacteria in
-!!                                 |fertilizer
-!!    bactlpq(:)    |# cfu/m^2     |less persistent bacteria in soil solution
-!!    bactlps(:)    |# cfu/m^2     |less persistent bacteria attached to soil
-!!                                 |particles
-!!    bactpq(:)     |# cfu/m^2     |persistent bacteria in soil solution
-!!    bactps(:)     |# cfu/m^2     |persistent bacteria attached to soil 
-!!                                 |particles
-!!    curyr         |none          |current year of simulation
-!!    fminn(:)      |kg minN/kg frt|fraction of fertilizer that is mineral N
-!!                                 |(NO3 + NH4)
-!!    fminp(:)      |kg minP/kg frt|fraction of fertilizer that is mineral P
-!!    fnh3n(:)      |kgNH3-N/kgminN|fraction of mineral N in fertilizer that
-!!                                 |is NH3-N
-!!    forgn(:)      |kg orgN/kg frt|fraction of fertilizer that is organic N
-!!    forgp(:)      |kg orgP/kg frt|fraction of fertilizer that is organic P
-!!    frt_kg        |kg/ha         |amount of fertilizer applied to HRU
-!!    frt_surface   |none          |fraction of fertilizer which is applied to
-!!                                 |the top 10 mm of soil (the remaining
-!!                                 |fraction is applied to first soil layer)
-!!    hru_dafr(:)   |km2/km2       |fraction of watershed area in HRU
-!!    ihru          |none          |HRU number
-!!    nfert(:)      |none          |sequence number of fertilizer application
-!!                                 |within the year
+
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactlpq(:)    |# cfu/m^2    |less persistent bacteria in soil solution
-!!    bactlps(:)    |# cfu/m^2    |less persistent bacteria attached to soil
-!!                                |particles
-!!    bactpq(:)     |# cfu/m^2    |persistent bacteria in soil solution
-!!    bactps(:)     |# cfu/m^2    |persistent bacteria attached to soil 
-!!                                |particles
-!!    nfert(:)      |none         |sequence number of fertilizer application
-!!                                |within the year
+
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name         |units        |definition                  
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    frt_t        |
-!!    gc           |
-!!    gc1          |
-!!    j            |none         |HRU number
-!!    l            |none         |counter (soil layer #)
-!!    rtof         |none         |weighting factor used to partition the 
-!!                               |organic N & P content of the fertilizer
-!!                               |between the fresh organic and the active 
-!!                               |organic pools
-!!    xx           |none         |fraction of fertilizer applied to layer
+
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -74,7 +30,9 @@
       use organic_mineral_mass_module
       
       real, parameter :: rtof=0.5
-      integer :: j, l, ifrt
+      integer :: j, l
+      integer, intent (in) :: jj, ifrt, fertop
+      real, intent (in) :: frt_kg
       real :: xx, gc, gc1, swf, frt_t
 
       !!added by zhang
@@ -93,17 +51,14 @@
       !!added by zhang
       !!======================  
 
-      j = ihru
-
-      ifrt = mgt%op4
-      frt_kg = fertop%amt_kgh
+      j = jj
 
       do l = 1, 2
         xx = 0.
         if (l == 1) then
-          xx = fertop%surface                       
+          xx = chemapp_db(fertop)%surf_frac
         else
-          xx = 1. - fertop%surface                     
+          xx = 1. - chemapp_db(fertop)%surf_frac                     
         endif
 
         soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 + xx * frt_kg *          &
@@ -220,12 +175,6 @@
 
       fertp = fertp + (frt_kg + cfertp) * (fertdb(ifrt)%fminp +         &         
                                                    fertdb(ifrt)%forgp)
-
-      tfertn(j) = tfertn(j) + fertn
-      tfertp(j) = tfertp(j) + fertp
-
-!! increase fertilizer sequence number by one
-      nfert(j) = nfert(j) + 1
 
       return
       end subroutine pl_fert

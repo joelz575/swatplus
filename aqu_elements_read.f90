@@ -218,7 +218,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         imax = 0
-          do while (eof <= 0)
+          do while (eof == 0)
               read (107,*,iostat=eof) i
               if (eof < 0) exit
               imax = Max(i,imax)
@@ -231,10 +231,8 @@
         rewind (107)
         read (107,*) titldum
         read (107,*) header
-        
-        ielem_sub = 0
-        db_mx%aqu_elem =  imax
-   
+
+        db_mx%aqu_elem = imax
         do isp = 1, imax
           read (107,*,iostat=eof) i
           backspace (107)

@@ -26,7 +26,7 @@
       use channel_module
       use reservoir_module
       use aquifer_module
-      use sd_hru_module
+      use hru_lte_module
 
       character(len=16), intent (in) :: chg_parm, chg_typ
       real, intent (in) :: chg_val, absmin, absmax
@@ -44,7 +44,7 @@
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("usle_p")
-        hru(ielem)%luse%usle_p = chg_par (hru(ielem)%luse%usle_p,       &
+        hru(ielem)%lumv%usle_p = chg_par (hru(ielem)%lumv%usle_p,       &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("ovn")
@@ -679,76 +679,76 @@
             
       !!LTE
          case ("cn2_lte")
-            sd_db(ielem)%cn2 = chg_par (sd_db(ielem)%cn2, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%cn2 = chg_par (hlt_db(ielem)%cn2, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("tc_lte")
-            sd_db(ielem)%tc = chg_par (sd_db(ielem)%tc, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%tc = chg_par (hlt_db(ielem)%tc, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("soildep_lte")
-            sd_db(ielem)%soildep = chg_par (sd_db(ielem)%soildep, ielem, chg_typ, chg_val, absmin, absmax, num_db)  
+            hlt_db(ielem)%soildep = chg_par (hlt_db(ielem)%soildep, ielem, chg_typ, chg_val, absmin, absmax, num_db)  
         
          case ("slope_lte")
-            sd_db(ielem)%slope = chg_par (sd_db(ielem)%slope, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%slope = chg_par (hlt_db(ielem)%slope, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("slopelen_lte")
-            sd_db(ielem)%slopelen = chg_par (sd_db(ielem)%slopelen, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%slopelen = chg_par (hlt_db(ielem)%slopelen, ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
          case ("sy_lte")
-            sd_db(ielem)%sy = chg_par (sd_db(ielem)%sy, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%sy = chg_par (hlt_db(ielem)%sy, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("abf_lte")
-            sd_db(ielem)%abf = chg_par (sd_db(ielem)%abf, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%abf = chg_par (hlt_db(ielem)%abf, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("revapc_lte")
-            sd_db(ielem)%revapc = chg_par (sd_db(ielem)%revapc, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%revapc = chg_par (hlt_db(ielem)%revapc, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("percc_lte")
-            sd_db(ielem)%percc = chg_par (sd_db(ielem)%percc, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%percc = chg_par (hlt_db(ielem)%percc, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("sw_lte")
-            sd_db(ielem)%sw = chg_par (sd_db(ielem)%sw, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%sw = chg_par (hlt_db(ielem)%sw, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("gw_lte")
-            sd_db(ielem)%gw = chg_par (sd_db(ielem)%gw, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%gw = chg_par (hlt_db(ielem)%gw, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("gwflow_lte")
-            sd_db(ielem)%gwflow = chg_par (sd_db(ielem)%gwflow, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%gwflow = chg_par (hlt_db(ielem)%gwflow, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("gwdeep_lte")
-            sd_db(ielem)%gwdeep = chg_par (sd_db(ielem)%gwdeep, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%gwdeep = chg_par (hlt_db(ielem)%gwdeep, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
         case ("snow_lte")
-            sd_db(ielem)%snow = chg_par (sd_db(ielem)%snow, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%snow = chg_par (hlt_db(ielem)%snow, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
 !        case ("itext_lte")
-!            sd_db(ielem)%itext = chg_par (sd_db(ielem)%itext, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!            hlt_db(ielem)%itext = chg_par (hlt_db(ielem)%itext, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
 !        case ("tropical_lte")
-!            sd_db(ielem)%tropical = chg_par (sd_db(ielem)%tropical, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!            hlt_db(ielem)%tropical = chg_par (hlt_db(ielem)%tropical, ielem, chg_typ, chg_val, absmin, absmax, num_db)
 
 !        case ("igrow1_lte")
-!            sd_db(ielem)%igrow1 = chg_par (sd_db(ielem)%igrow1, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!            hlt_db(ielem)%igrow1 = chg_par (hlt_db(ielem)%igrow1, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
 !        case ("igrow2_lte")
-!            sd_db(ielem)%igrow2 = chg_par (sd_db(ielem)%igrow2, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!            hlt_db(ielem)%igrow2 = chg_par (hlt_db(ielem)%igrow2, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
 !        case ("ipet_lte")
-!            sd_db(ielem)%ipet = chg_par (sd_db(ielem)%ipet, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!            hlt_db(ielem)%ipet = chg_par (hlt_db(ielem)%ipet, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
         case ("uslek_lte")
-            sd_db(ielem)%uslek = chg_par (sd_db(ielem)%uslek, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%uslek = chg_par (hlt_db(ielem)%uslek, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
         case ("uslec_lte")
-            sd_db(ielem)%uslec = chg_par (sd_db(ielem)%uslec, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%uslec = chg_par (hlt_db(ielem)%uslec, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
         case ("uslep_lte")
-            sd_db(ielem)%uslep = chg_par (sd_db(ielem)%uslep, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%uslep = chg_par (hlt_db(ielem)%uslep, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
         case ("uslels_lte")
-            sd_db(ielem)%uslels = chg_par (sd_db(ielem)%uslels, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%uslels = chg_par (hlt_db(ielem)%uslels, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
         case ("t_opt")
-            sd_db(ielem)%uslels = chg_par (sd_db(ielem)%uslels, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            hlt_db(ielem)%uslels = chg_par (hlt_db(ielem)%uslels, ielem, chg_typ, chg_val, absmin, absmax, num_db)
         end select
 
       return

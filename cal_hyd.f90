@@ -2,13 +2,13 @@
 
       use parm
       use hydrograph_module
-      use subbasin_module
+      use ru_module
       use hru_module
 !      use wateruse_module
       use climate_module
       use aquifer_module
       use channel_module
-      use sd_hru_module
+      use hru_lte_module
       use sd_channel_module
       use basin_module
       use jrw_datalib_module
@@ -24,7 +24,7 @@
       do iterall = 1, iter_all
         ! 1st cn2 adjustment
         isim = 0
-        do iregion = 1, db_mx%lcu_reg
+        do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa
@@ -59,7 +59,7 @@
                 !set parms for 1st surface runoff calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
-                rsd1(iihru) = rsd_init(iihru)
+                rsd1(iihru) = rhlt_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 cn2(iihru) = cn2(iihru) + chg_val
                 cn2(iihru) = amin1 (cn2(iihru), ls_prms(1)%up)
@@ -91,7 +91,7 @@
           ! adjust surface runoff using cn2
           do icn = 1, iter_ind
           isim = 0
-          do iregion = 1, db_mx%lcu_reg
+          do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa
@@ -130,7 +130,7 @@
                 !set parms for 1st surface runoff calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
-                rsd1(iihru) = rsd_init(iihru)
+                rsd1(iihru) = rhlt_init(iihru)
                 pcom(iihru) = pcom_init(iihru)
                 cn2(iihru) = cn2(iihru) + chg_val
                 cn2(iihru) = amin1 (cn2(iihru), ls_prms(1)%up)
@@ -164,7 +164,7 @@
           
         ! 1st esco adjustment
         isim = 0
-        do iregion = 1, db_mx%lcu_reg
+        do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%etr * lscal(ireg)%lum(ilum)%precip_aa
@@ -237,7 +237,7 @@
         ! adjust et using esco
         do ietco = 1, iter_ind
           isim = 0
-          do iregion = 1, db_mx%lcu_reg
+          do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             !check all hru's for proper lum
@@ -295,7 +295,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
-            rsd1(iihru) = rsd_init(iihru)
+            rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
           !zero plant calibration data in case plants are calibrated
@@ -310,7 +310,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
-            rsd1(iihru) = rsd_init(iihru)
+            rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
           ! et adjustment 
@@ -323,7 +323,7 @@
 
         ! 1st perco adjustment (bottom layer) for percolation
         isim = 0
-        do iregion = 1, db_mx%lcu_reg
+        do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             !check all hru's for proper lum
@@ -383,7 +383,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
-            rsd1(iihru) = rsd_init(iihru)
+            rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! 1st perco adjustment 
@@ -395,7 +395,7 @@
           ! adjust percolation using perco
           do iperco = 1, iter_ind
           isim = 0
-          do iregion = 1, db_mx%lcu_reg
+          do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%pcr * lscal(ireg)%lum(ilum)%precip_aa
@@ -459,7 +459,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
-            rsd1(iihru) = rsd_init(iihru)
+            rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! perco adjustment 
@@ -472,7 +472,7 @@
 
         ! 1st lat_len adjustment for lateral soil flow
         isim = 0
-        do iregion = 1, db_mx%lcu_reg
+        do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             !check all hru's for proper lum
@@ -531,7 +531,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
-            rsd1(iihru) = rsd_init(iihru)
+            rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! 1st lat_len adjustment 
@@ -543,7 +543,7 @@
         ! adjust lat_len adjustment for lateral soil flow
         do ik = 1, iter_ind
           isim = 0
-        do iregion = 1, db_mx%lcu_reg
+        do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%lfr * lscal(ireg)%lum(ilum)%precip_aa
@@ -605,7 +605,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
-            rsd1(iihru) = rsd_init(iihru)
+            rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! lat_len adjustment for lateral soil flow
@@ -617,7 +617,7 @@
           
         ! 1st cn3_swf adjustment
         isim = 0
-        do iregion = 1, db_mx%lcu_reg
+        do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa
@@ -676,7 +676,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
-            rsd1(iihru) = rsd_init(iihru)
+            rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! 1st cn3_swf adjustment 
@@ -688,7 +688,7 @@
           ! adjust surface runoff using cn3_swf
           do icn = 1, iter_ind
           isim = 0
-          do iregion = 1, db_mx%lcu_reg
+          do iregion = 1, db_mx%lsu_reg
           ireg = region(iregion)%lscal      !soft calibration data for the region
           do ilum = 1, lscal(ireg)%lum_num
             soft = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa
@@ -751,7 +751,7 @@
           do iihru = 1, sp_ob%hru
             hru(iihru) = hru_init(iihru)
             soil(iihru) = soil_init(iihru)
-            rsd1(iihru) = rsd_init(iihru)
+            rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
         ! cn3_swf adjustment

@@ -84,8 +84,7 @@
           gx = soil(j)%phys(l)%d
         end if
 
-        unmx = uno3d(ipl) * rto_no3 * (1. - Exp(-bsn_prm%n_updis *       &
-                                                   gx / sol_rd)) / uobn
+        unmx = uno3d(ipl) * rto_no3 * (1. - Exp(-bsn_prm%n_updis * gx / sol_rd)) / uobn
         uno3l = Min(unmx - nplnt(j), soil1(j)%mn(l)%no3)
         nplnt(j) = nplnt(j) + uno3l 
         soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 - uno3l
@@ -106,8 +105,7 @@
         case (1,2,3)
           pcom(j)%plstr(ipl)%strsn = 1.
         case default
-         call nuts(pcom(j)%plm(ipl)%nmass,un2(ipl),                      &
-                   pcom(j)%plstr(ipl)%strsn)
+         call nuts (pcom(j)%plm(ipl)%nmass, un2(ipl), pcom(j)%plstr(ipl)%strsn)
           if (uno3d(ipl) > 1.e-5) then
             xx = nplnt(j) / uno3d(ipl)
           else

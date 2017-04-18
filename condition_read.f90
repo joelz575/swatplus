@@ -34,7 +34,8 @@
             allocate (d_tbl(i)%alt(d_tbl(i)%conds,d_tbl(i)%alts))
             allocate (d_tbl(i)%act(d_tbl(i)%acts))
             allocate (d_tbl(i)%act_hit(d_tbl(i)%alts))
-            allocate (d_tbl(i)%act_ptr(d_tbl(i)%acts))
+            allocate (d_tbl(i)%act_typ(d_tbl(i)%acts))
+            allocate (d_tbl(i)%act_app(d_tbl(i)%acts))
             allocate (d_tbl(i)%act_outcomes(d_tbl(i)%acts,d_tbl(i)%alts))
             
             !read conditions and condition alternatives
@@ -57,21 +58,61 @@
             
             !cross walk characters to get array numbers
             do iac = 1, d_tbl(i)%acts
-              !if (d_tbl(i)%act(iac)%option == "file") then
-                select case (d_tbl(i)%act(iac)%name)
-                case ("irrigate")
+                select case (d_tbl(i)%act(iac)%typ)
+                    
+                case ("plant")
                   do idb = 1, db_mx%irrop_db
                     if (d_tbl(i)%act(iac)%file_pointer == irrop_db(idb)%name) then
-                      d_tbl(i)%act_ptr(iac) = idb
+                      d_tbl(i)%act_typ(iac) = idb
                       exit
                     end if
+                  end do
+                    
+                  case ("harvest_kill")
+                  do idb = 1, db_mx%harvop_db
+                    if (d_tbl(i)%act(iac)%file_pointer == harvop_db(idb)%name) then
+                      d_tbl(i)%act_typ(iac) = idb
+                      exit
+                    endif
+                  end do
+                
+                  case ("till")
+                  do idb = 1, db_mx%tillparm
+                    if (d_tbl(i)%act(iac)%option == tilldb(idb)%tillnm) then
+                      d_tbl(i)%act_typ(iac) = idb
+                      exit
+                    endif
+                  end do
+                
+                case ("irrigate")
+                  do idb = 1, db_mx%irrop_db
+                    if (d_tbl(i)%act(iac)%option == irrop_db(idb)%name) then
+                      d_tbl(i)%act_typ(iac) = idb
+                      exit
+                    end if
+                  end do
+                  
+                case ("fertilize")
+                  !xwalk fert name with fertilizer data base
+                  do idb = 1, db_mx%fertparm
+                    if (d_tbl(i)%act(iac)%option == fertdb(idb)%fertnm) then
+                      d_tbl(i)%act_typ(iac) = idb
+                      exit
+                    endif
+                  end do
+                  !xwalk application type with chemical application data base
+                  do idb = 1, db_mx%chemapp_db
+                    if (d_tbl(i)%act(iac)%file_pointer == chemapp_db(idb)%name) then
+                      d_tbl(i)%act_app(iac) = idb
+                      exit
+                    endif
                   end do
                   
                 case ("release")
                   do idb = 1, db_mx%res_weir
                     if (d_tbl(i)%act(iac)%option == 'weir') then
                     if (d_tbl(i)%act(iac)%file_pointer == res_weir(idb)%name) then
-                      d_tbl(i)%act_ptr(iac) = idb
+                      d_tbl(i)%act_typ(iac) = idb
                       exit
                     end if
                     end if
@@ -80,12 +121,20 @@
                 case ("lu_change")
                   do ilum = 1, db_mx%landuse
                     if (d_tbl(i)%act(iac)%file_pointer == lum(ilum)%name) then
-                      d_tbl(i)%act_ptr(iac) = ilum
+                      d_tbl(i)%act_typ(iac) = ilum
+                      exit
+                    end if
+                  end do
+                               
+                case ("burn")
+                  do iburn = 1, db_mx%fireop_db
+                    if (d_tbl(i)%act(iac)%option == fire_db(iburn)%name) then
+                      d_tbl(i)%act_typ(iac) = iburn
                       exit
                     end if
                   end do
                 end select
-              !end if
+                
             end do
             
           end do

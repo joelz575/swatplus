@@ -46,7 +46,7 @@
                 allocate (ob(i)%ts(ob(i)%day_max,time%step))
                 allocate (ob(i)%tsin(time%step))
               end if
-              read (107,*,iostat=eof) k, ob(i)%name, ob(i)%lat, ob(i)%long, ob(i)%area_ha,        &
+              read (107,*,iostat=eof) k, ob(i)%name, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,      &
                 ob(i)%props, ob(i)%wst, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
               ob(i)%num = k
               if (eof < 0) exit
@@ -62,9 +62,9 @@
                 allocate (ob(i)%hout_y(nout))
                 allocate (ob(i)%hout_a(nout))
                 backspace (107)
-                read (107,*,iostat=eof) k, ob(i)%name, ob(i)%lat, ob(i)%long, ob(i)%area_ha,         &
-                  ob(i)%props, ob(i)%wst, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot, &
-                  (ob(i)%obtyp_out(isp), ob(i)%obtypno_out(isp), ob(i)%htyp_out(isp),                &
+                read (107,*,iostat=eof) k, ob(i)%name, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &
+                  ob(i)%props, ob(i)%wst, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot,        &
+                  (ob(i)%obtyp_out(isp), ob(i)%obtypno_out(isp), ob(i)%htyp_out(isp),                       &
                   ob(i)%frac_out(isp), isp = 1, nout)
                 if (eof < 0) exit
               else
@@ -78,9 +78,9 @@
                 ipestmx = pestcom_db(ics)%num
                 allocate (obcs(i)%pests(ipestmx))
                 allocate (obcs(i)%pest_num(ipestmx))
-                obcs(i)%num_pests = pestcom_db(ics)%num     !set number of pesticides in object
-                obcs(i)%pests = pestcom_db(ics)%pests       !set 
-                obcs(i)%pest_num = pestcom_db(ics)%num_db
+                obcs(i)%num_pests = pestcom_db(ics)%num     !set number of pesticides of object
+                obcs(i)%pests = pestcom_db(ics)%pests       !set pesticide name array of object
+                obcs(i)%pest_num = pestcom_db(ics)%num_db   !set pesticide database number array of object
               end if
               
               !set arrays for flow duration curves

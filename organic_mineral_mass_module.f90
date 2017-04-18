@@ -1,35 +1,35 @@
       module organic_mineral_mass_module
     
       type organic_mass
-        real :: m               !kg or kg/ha      |total object mass
-        real :: c               !kg or kg/ha      |carbon mass
-        real :: n               !kg or kg/ha      |organic nitrogen mass
-        real :: p               !kg or kg/ha      |organic phosphorus mass
+        real :: m = 0.              !kg or kg/ha      |total object mass
+        real :: c = 0.              !kg or kg/ha      |carbon mass
+        real :: n = 0.              !kg or kg/ha      |organic nitrogen mass
+        real :: p = 0.              !kg or kg/ha      |organic phosphorus mass
       end type organic_mass
 
       type clay_mass
-        real :: m               !kg or kg/ha      |total object mass
-        real :: nh4             !kg or kg/ha      |ammonium mass
+        real :: m = 0.              !kg or kg/ha      |total object mass
+        real :: nh4 = 0.            !kg or kg/ha      |ammonium mass
       end type clay_mass
       
       type sediment
-        real :: m                   !kg or kg/ha      |total object mass
-        real :: sand                !kg or kg/ha      |sand mass
-        real :: silt                !kg or kg/ha      |silt mass
+        real :: m = 0.              !kg or kg/ha      |total object mass
+        real :: sand = 0.           !kg or kg/ha      |sand mass
+        real :: silt = 0.           !kg or kg/ha      |silt mass
         type (clay_mass) :: clay    !kg or kg/ha      |clay mass
-        real :: gravel              !kg or kg/ha      |gravel mass
+        real :: gravel = 0.         !kg or kg/ha      |gravel mass
       end type sediment
       
       type mineral_nitrogen
-        real :: no3                      !kg/ha  |nitrate dimensioned by layer
-        real :: nh4                      !kg/ha  |ammonium dimensioned by layer
+        real :: no3 = 0.            !kg/ha  |nitrate dimensioned by layer
+        real :: nh4 = 0.            !kg/ha  |ammonium dimensioned by layer
       end type mineral_nitrogen
             
       type mineral_phosphorus
-        real :: wsol                     !kg/ha  |water soluble p dimensioned by layer
-        real :: lab                      !kg/ha  |labile p dimensioned by layer
-        real :: act                      !kg/ha  |active mineral p dimensioned by layer
-        real :: sta                      !kg/ha  |stable mineral p dimensioned by layer
+        real :: wsol = 0.           !kg/ha  |water soluble p dimensioned by layer
+        real :: lab = 0.            !kg/ha  |labile p dimensioned by layer
+        real :: act = 0.            !kg/ha  |active mineral p dimensioned by layer
+        real :: sta = 0.            !kg/ha  |stable mineral p dimensioned by layer
       end type mineral_phosphorus
       
       type soil_profile_mass1
@@ -70,7 +70,7 @@
       end type residue_mass1
       !soil profile object - dimensioned to number of hrus, using the hru pointer
       type (residue_mass1), dimension(:), allocatable :: rsd1
-      type (residue_mass1), dimension(:), allocatable :: rsd_init
+      type (residue_mass1), dimension(:), allocatable :: rhlt_init
       
       type plant_community_mass1
         character (len=4) :: name                                !                 |same as plant_community object
@@ -229,12 +229,12 @@
       !export coefficient and delivery ratio pesticides
       type (organic_mineral_hydrograph), dimension(:,:), allocatable :: dr_om
       
-      type subbasin_elements_hydrographs
+      type routing_unit_elements_hydrographs
         character (len=16) :: name                                   !should match the object_connectivity object
         type (organic_mineral_mass), dimension(:), allocatable :: hd
-      end type subbasin_elements_hydrographs
+      end type routing_unit_elements_hydrographs
       !point to subbasin element objects - same as sub_elem
-      type (subbasin_elements_hydrographs), dimension(:), allocatable :: sub_e_hd
+      type (routing_unit_elements_hydrographs), dimension(:), allocatable :: sub_e_hd
       
       type channel_surface_elements_hydrographs
         character (len=16) :: name                                   !should match the channel_surface_elements object

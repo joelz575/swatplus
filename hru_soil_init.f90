@@ -65,12 +65,13 @@
 
       !!assign topography and hyd paramters
       do ihru = 1, mhru
+        iob = sp_ob1%hru + ihru - 1
         itopo_db = hru(ihru)%dbs%topo
         ihyd_db = hru(ihru)%dbs%hyd
         itopohd_db = hru(ihru)%dbs%topo
         ihyd_db = hru(ihru)%dbs%hyd
         hru(ihru)%topo%name = topo_db(itopo_db)%name
-        hru(ihru)%topo%elev = topo_db(itopohd_db)%elev
+        hru(ihru)%topo%elev = ob(iob)%elev
         hru(ihru)%topo%slope = topo_db(itopohd_db)%slope
         hru(ihru)%topo%slope_len = topo_db(itopohd_db)%slope_len
         hru(ihru)%hyd%name = hyd_db(ihyd_db)%name
@@ -166,7 +167,7 @@
         end do 
       end do
 
-      if (bsn_cc%rtpest > 0) irtpest = pstcp(bsn_cc%rtpest)%nope
+      !if (bsn_cc%rtpest > 0) irtpest = pstcp(bsn_cc%rtpest)%nope
 
       do isol = 1, msoils
         call hru_soil_chem(isol)      !! initialize soil chemical parameters
@@ -278,36 +279,33 @@
         icmd = hru(ihru)%obj_no
         mbac = obcs(icmd)%num_paths
         if (mbac > 0) then
-        !! allocate bacteria associated with
-        do ly = 1, soil(ihru)%nly
-          allocate (soil(ihru)%ly(ly)%bacsol(mbac))
-          allocate (soil(ihru)%ly(ly)%bacsor(mbac))
-        end do
-        do ibac = 1, mbac
-          if (ly == 1) then
-            soil(ihru)%ly(1)%bacsol(ibac) = bact(ibac_db)%bac(ibac)%sol
-            soil(ihru)%ly(1)%bacsor(ibac) = bact(ibac_db)%bac(ibac)%sor
-          else
-            soil(ihru)%ly(1)%bacsol(ibac) = 0.
-            soil(ihru)%ly(1)%bacsor(ibac) = 0.
-          end if
-        end do   
-        !! allocate bacteria associated with plant
-        mbac = obcs(icmd)%num_paths
-        if (mbac > 0) then
-          do ipl = 1, pcom(j)%npl
-            allocate (pcom(ihru)%plg(ipl)%bac(mbac))
+          !! allocate bacteria associated with
+          do ly = 1, soil(ihru)%nly
+            allocate (soil(ihru)%ly(ly)%bacsol(mbac))
+            allocate (soil(ihru)%ly(ly)%bacsor(mbac))
           end do
-        end if
-        
+          do ibac = 1, mbac
+            if (ly == 1) then
+              soil(ihru)%ly(1)%bacsol(ibac) = bact(ibac_db)%bac(ibac)%sol
+              soil(ihru)%ly(1)%bacsor(ibac) = bact(ibac_db)%bac(ibac)%sor
+            else
+              soil(ihru)%ly(1)%bacsol(ibac) = 0.
+              soil(ihru)%ly(1)%bacsor(ibac) = 0.
+            end if
+          end do   
+          !! allocate bacteria associated with plant
+          mbac = obcs(icmd)%num_paths
+          if (mbac > 0) then
+            do ipl = 1, pcom(j)%npl
+              allocate (pcom(ihru)%plg(ipl)%bac(mbac))
+            end do
+          end if
         end if
 
         !! allocate pesticides
         npmx = obcs(icmd)%num_pests
         if (npmx > 0) then
-        allocate (hru(ihru)%pst(mpst))
-        npmx = obcs(icmd)%num_pests
-        if (npmx > 0) then
+          allocate (hru(ihru)%pst(mpst))
           do ly = 1, soil(ihru)%nly
             allocate (soil(ihru)%ly(ly)%kp(npmx))
             allocate (soil(ihru)%ly(ly)%pst(npmx))
@@ -321,14 +319,9 @@
          soil(ihru)%ly(1)%pst(ipest) = pesti_db(ipest_db)%pesti(ipest)%soil
          hru(ihru)%pst(ipest)%enr = pesti_db(ipest_db)%pesti(ipest)%enr
         end do
-        end if
+        
         !!  topohyd defaults
         hru(ihru)%topo%lat_len = 50.
-        xm = .6 * (1. - Exp(-35.835 * hru(ihru)%topo%slope))
-        sin_sl = Sin(Atan(hru(ihru)%topo%slope))
-        hru(ihru)%lumv%usle_ls = (hru(ihru)%topo%slope_len / 22.128) ** xm *          & 
-                      (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
-      
         sol_cov(ihru) = soil(ihru)%ly(1)%rsd
         
       end do    !hru loop

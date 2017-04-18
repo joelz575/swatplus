@@ -9,6 +9,7 @@
         integer :: landuse = 0        !! none     |number of landuse types
         integer :: mgt_ops = 0        !! none     |number of records in management
         integer :: cn_lu = 0          !! none     |number of records in cntable.lum
+        integer :: cons_prac = 0      !! none     |number of records in conservation practice table
         integer :: pothole = 0        !! none     |number of potholes
         integer :: sdr = 0            !! none     |number of types of susbsurface drain systems
         integer :: str_ops = 0        !! none     |number of management ops
@@ -25,21 +26,12 @@
         integer :: sno = 0            !! none     |number of snow props
         integer :: field = 0          !! none     |number of field props
         integer :: atmodep = 0        !! none     |atmospheric deposition props
-        integer :: autofertop_db = 0  !! none     |auto fertilization operations
-        integer :: airrop_db = 0      !! none     |auto irrigation operations
-        integer :: contfertop_db = 0  !! none     |continuous fertilization operations
-        integer :: contpestop_db = 0  !! none     |continuous pesticide operations
-        integer :: fertop_db = 0      !! none     |fertlizer operations
-        integer :: pstop_db = 0
+        integer :: chemapp_db = 0     !! none     |chemical application (fert and pest) operations
         integer :: grazeop_db = 0     !! none     |grazing operations
-        integer :: hkop_db = 0        !! none     |harvest kill operations
         integer :: harvop_db = 0      !! none     |harvest only operations
         integer :: irrop_db = 0       !! none     |irrigation operations
         integer :: sweepop_db = 0     !! none     |sweep operations
-        integer :: terrop_db = 0      !! none     |terrace data
-        integer :: contop_db = 0      !! none     |contour data
         integer :: filtop_db = 0      !! none     |filter strip data
-        integer :: stripop_db = 0     !! none     |strip cropping data
         integer :: fireop_db = 0      !! none     |fire data
         integer :: grassop_db = 0     !! none     |grassed waterways data
         integer :: plparmop_db = 0    !! none     |plant parms update data
@@ -53,7 +45,6 @@
         integer :: rhfiles = 0        !! none     |max relative humidity files included in hmd.cli
         integer :: slrfiles = 0       !! none     |max solar radiation files included in slr.cli
         integer :: wndfiles = 0       !! none     |max wind files included in the wnd.cli
-        integer :: toposub = 0        !! none     |max in toposub.top file
         integer :: cal_parms = 0      !! none     |max number of calibration parameters in cal_parms_upd
         integer :: cal_upd = 0        !! none     |max number of calibration parameter updates
         integer :: sched_up = 0       !! none     |max number of scheduled updates (paramters, structures, land_use_mgt)
@@ -66,11 +57,11 @@
         integer :: hmetcom = 0
         integer :: saltcom = 0
         integer :: res = 0            !! none     |max number of reservoir data
-        integer :: lcu_elem = 0       !! none     |max number of landscape elements
-        integer :: lcu_out = 0        !! none     |max number of landscape regions for output
-        integer :: lcu_reg = 0        !! none     |max number of landscape regions for soft cal and output by lum
+        integer :: lsu_elem = 0
+        integer :: lsu_out = 0        !! none     |max number of landscape regions for output
+        integer :: lsu_reg = 0        !! none     |max number of landscape regions for soft cal and output by lum
         integer :: lscal_reg = 0      !! none     |max number of soft data for landscape calibration (for each cal region)
-        integer :: aqu_elem = 0       !! none     |max number of aquifer elements
+        integer :: aqu_elem = 0
         integer :: aqu_out = 0        !! none     |max number of aquifer regions for output
         integer :: aqu_reg = 0        !! none     |max number of aquifer regions for soft cal and output by aquifer type
         integer :: cha_out = 0        !! none     |max number of channel regions for output
@@ -89,6 +80,7 @@
         integer :: res_nut
         integer :: res_pst
         integer :: res_weir
+        integer :: ch_surf
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
 
@@ -118,7 +110,7 @@
       type (bacteria_db), dimension(:), allocatable  :: bac_db
            
       type fertilizer_db
-        character(len=8) :: fertnm = ' '
+        character(len=16) :: fertnm = ' '
         real :: fminn = 1.            !! kg minN/kg frt     |fract of fert which is mineral nit (NO3+NH3)
         real :: fminp = 0.            !! kg minN/kg frt     |frac of fert which is mineral phos
         real :: forgn = 0.            !! kg orgN/kg frt     |frac of fert which is org n
@@ -223,56 +215,15 @@
       
       type irrigation_operation
         character (len=13) :: name
-        real :: amt_mm = 0.      !! mm     |amount of water to be applied
-        real :: salt = 0.        !! mg/kg  |concentration of salt in irrigation
-        real :: no3 = 0.         !! mg/kg  |concentration of nitrate in irrigation
-        real :: po4 = 0.         !! mg/kg  |concentration of phosphate in irrigation
-        real :: eff = 0.         !!        |irrigation in-field efficiency
-        real :: surq = 0.        !! frac   |surface runoff ratio
+        real :: eff = 0.                !!        |irrigation in-field efficiency
+        real :: surq = 0.               !! frac   |surface runoff ratio
+        real :: dep_mm = 0.             !! mm     |depth of application for subsurface
+        real :: salt = 0.               !! mg/kg  |concentration of salt in irrigation
+        real :: no3 = 0.                !! mg/kg  |concentration of nitrate in irrigation
+        real :: po4 = 0.                !! mg/kg  |concentration of phosphate in irrigation
       end type irrigation_operation
       type (irrigation_operation), dimension(:), allocatable :: irrop_db
-      type (irrigation_operation) :: irrop
-      
-      type autoirrigation_operation
-        character (len=13) :: name
-        integer :: src = 0       !!        |irrigation source code: 
-!!                                         | 1 divert water from reach
-!!                                         | 2 divert water from reservoir
-!!                                         | 3 divert water from shallow aquifer
-!!                                         | 4 divert water from deep aquifer
-!!                                         | 5 divert water from source outside watershed
-        integer :: src_num = 0   !!        |irrigation source location: 
-!!                                         | if IRRSC=1, IRRNO is the number of the reach
-!!                                         | if IRRSC=2, IRRNO is the number of the reservoir
-!!                                         | if IRRSC=3, IRRNO is the number of the subbasin
-!!                                         | if IRRSC=4, IRRNO is the number of the subbasin
-!!                                         | if IRRSC=5, not used
-        integer :: wstr_id = 0   !!        |water stress identifier
-        real :: wstr_trig = 0.   !! mm     |water stress factor which triggers auto irrigation
-        real :: amt_mm = 0.      !! mm     |amount of water to be applied
-        real :: salt = 0.        !! mg/kg  |concentration of salt in irrigation
-        real :: eff = 0.         !!        |mixing efficiency
-        real :: surq = 0.        !! frac   |surface runoff ratio
-      end type autoirrigation_operation
-      type (autoirrigation_operation), dimension(:), allocatable :: airrop_db
-      type (autoirrigation_operation) :: airrop
-            
-      type terrace_operation
-        character (len=13) :: name
-        real :: p = 0.            !       |usle p factor
-        real :: cn2 = 0.          !       |condition II curve number
-        real :: sl_len            !m      !slope length
-      end type terrace_operation
-      type (terrace_operation),dimension(:), allocatable :: terrace_db
-      
-      type contour_operation
-        character (len=13) :: name
-        real :: cont_cn = 0.            !       |initial SCS curve number II value
-        real :: cont_p = 0.             !       |contouring USLE P factor
-      end type contour_operation
-      type (contour_operation),dimension(:), allocatable :: contour_db
-      type (contour_operation) :: contour
-      
+
       type filtstrip_operation
         character (len=13) :: name
         real :: vfsi = 0.               !       |initial SCS curve number II value
@@ -282,19 +233,11 @@
                                         !          which is fully channelized
       end type filtstrip_operation
       type (filtstrip_operation), dimension(:), allocatable :: filtstrip_db
-      
-      type stripcrop_operation
-        character (len=13) :: name
-        real :: strip_n = 0.               !       |initial SCS curve number II value
-        real :: strip_cn = 0.              !       |contouring USLE P factor
-        real :: strip_c = 0.               !       |fraction of the total runoff from the entire field
-        real :: strip_p = 0.               !       |fraction of flow entering the most concentrated 10% of the VFS.
-      end type stripcrop_operation
-      type (stripcrop_operation), dimension(:), allocatable :: stripcrop_db
-      
+
       type fire_operation
         character (len=13) :: name
-        real :: fire_cn = 0.            !       |initial SCS curve number II value
+        real :: cn2_upd = 0.            !       |change in SCS curve number II value
+        real :: fr_burn = 0.            !       |fraction burned
       end type fire_operation
       type (fire_operation),dimension(:), allocatable :: fire_db
       
@@ -310,93 +253,63 @@
       end type grwaterway_operation
       type (grwaterway_operation),dimension(:), allocatable :: grwaterway_db
 
-      type plparmup_operation
-        character (len=13) :: name
-        integer :: plant_no            !       |plant number from plants.plt
-        real :: hvsti = 0.             !       |harvest index crop yield/aboveground   
-        real :: blai = 0.              !       |max (potential) leaf area index   
-      end type plparmup_operation
-      type (plparmup_operation),dimension(:), allocatable :: plparmup_db
-      
-      type rsdmgt_operation
-        character (len=13) :: name
-        real :: min_res = 0.      !kg/ha      |min residue allowed due to implementation of residue mgt                                
-      end type rsdmgt_operation
-      type (rsdmgt_operation),dimension(:), allocatable :: rsdmgt_db
-      
       type bmpuser_operation  
-!!! never switched from array to data type in....needs to be cleaned up !!!!
         character (len=13) :: name
         integer :: bmp_flag = 0
-        real :: bmp_sed = 0.         !%             | Sediment removal by BMP       
-        real :: bmp_pp = 0.          !%             | Particulate P removal by BMP
-        real :: bmp_sp = 0.          !%             | Soluble P removal by BMP
-        real :: bmp_pn = 0.          !%             | Particulate N removal by BMP 
-        real :: bmp_sn = 0.          !%             | Soluble N removal by BMP  
-        real :: bmp_bac = 0.         !%             | Bacteria removal by BMP                 
-      end type bmpuser_operation
+        real :: bmp_sed = 0.       !%              | Sediment removal by BMP       
+        real :: bmp_pp = 0.        !%              | Particulate P removal by BMP
+        real :: bmp_sp = 0.        !%              | Soluble P removal by BMP
+        real :: bmp_pn = 0.        !%              | Particulate N removal by BMP 
+        real :: bmp_sn = 0.        !%              | Soluble N removal by BMP  
+        real :: bmp_bac = 0.       !%              | Bacteria removal by BMP
+      end type bmpuser_operation 
+      
+      type bmpuser_operation1  
+        character (len=13) :: name
+        integer :: bmp_flag = 0
+        real :: surf_flo = 0.       !%              | Surface Flow removal by BMP  
+        real :: surf_sed = 0.       !%              | Surface Sediment removal by BMP       
+        real :: surf_pp = 0.        !%              | Surface Particulate P removal by BMP
+        real :: surf_sp = 0.        !%              | Surface Soluble P removal by BMP
+        real :: surf_pn = 0.        !%              | Surface Particulate N removal by BMP 
+        real :: surf_sn = 0.        !%              | Surface Soluble N removal by BMP  
+        real :: surf_bac = 0.       !%              | Surface Bacteria removal by BMP
+        real :: sub_flo = 0.        !%              | Subsurface Flow removal by BMP  
+        real :: sub_sed = 0.        !%              | Subsurface Sediment removal by BMP       
+        real :: sub_pp = 0.         !%              | Subsurface Particulate P removal by BMP
+        real :: sub_sp = 0.         !%              | Subsurface Soluble P removal by BMP
+        real :: sub_pn = 0.         !%              | Subsurface Particulate N removal by BMP 
+        real :: sub_sn = 0.         !%              | Subsurface Soluble N removal by BMP  
+        real :: sub_bac = 0.        !%              | Subsurface Bacteria removal by BMP 
+        real :: tile_flo = 0.       !%              | Tile Flow removal by BMP 
+        real :: tile_sed = 0.       !%              | Tile Sediment removal by BMP       
+        real :: tile_pp = 0.        !%              | Tile Particulate P removal by BMP
+        real :: tile_sp = 0.        !%              | Tile Soluble P removal by BMP
+        real :: tile_pn = 0.        !%              | Tile Particulate N removal by BMP 
+        real :: tile_sn = 0.        !%              | Tile Soluble N removal by BMP  
+        real :: tile_bac = 0.       !%              | Tile Bacteria removal by BMP 
+      end type bmpuser_operation1
       type (bmpuser_operation),dimension(:), allocatable :: bmpuser_db
       
-      type fertilizer_operation
-        character (len=13) :: name
-        character (len=13) :: fertnm = ' '
-        real :: amt_kgh = 0.          !kg/ha        |amt of fert app to soil particles
-        real :: surface = 0.          !             |frac of fert applied to the top 10mm of soil
-      end type fertilizer_operation
-      type (fertilizer_operation),dimension(:), allocatable :: fertop_db
-      type (fertilizer_operation) :: fertop
-      
-      type autofertilizer_operation
-        character (len=13) :: name
-        character (len=13) :: fertnm = ' '
-        integer :: option = 1
-        real :: amt_kgh = 150.        !kg/ha          |amt of fert applied in auto-fert 
-        real :: surface = 0.2         !               |frac of fert applied to the top 10mm of soil
-        real :: str_trig = 0.95       !               |stress factor which triggers auto fert
-        integer :: plant_trig = 1     !               |plant in community to trigger fert
-        real :: ann_mx = 22.5         !kg NO3-N/ha    |maximum NO3-N content allowed to be
-                                      !               |applied in one year by auto-fertilization
-        real :: eff = 1.3             !               |fert application efficiency
-      end type autofertilizer_operation
-      type (autofertilizer_operation), dimension(:), allocatable :: autofertop_db
-      type (autofertilizer_operation) :: autofertop
-      
-      type continuousfertilizer_operation
-        character (len=13) :: name
-        character (len=13) :: fertnm = ' '
-        integer :: days = 0          !days        |number of days continuous fertilization
-        integer :: freq = 0          !days        |number of days between applications in contfert
-        real :: amt_kgh = 0.         !kg/ha       |amt of fert applied in auto-fert 
-      end type continuousfertilizer_operation
-      type (continuousfertilizer_operation),dimension(:), allocatable :: contfertop_db
-      type (continuousfertilizer_operation) :: contfertop
-      
-      type pesticide_operation
-        character (len=13) :: name
-        character (len=13) :: pestnm
-        real :: amt_kgh = 0.         !kg/ha        |amount of pesticide in layer
-        real :: eff = 0.             !             |mixing efficiency
-      end type pesticide_operation
-      type (pesticide_operation), dimension(:), allocatable ::pestop_db
-      type (pesticide_operation) :: pestop
-      
-      type continuous_pesticide_operation
-        character (len=13) :: name
-        character (len=13) :: pestnm = ' '
-        integer :: days = 0
-        integer :: freq = 0
-        real :: amt_kgh = 0.         !kg/ha        |amount of pesticide in layer
-      end type continuous_pesticide_operation
-      type (continuous_pesticide_operation),dimension(:), allocatable :: contpestop_db
-      type (continuous_pesticide_operation) :: contpestop
-  
+      type chemical_application_operation
+        character (len=16) :: name
+        character (len=16) :: form = ' '        !           |solid; liquid
+        character (len=16) :: op_typ = ' '      !           |operation type-spread; spray; inject; direct
+        real :: app_eff = 0.                    !           |application efficiency
+        real :: foliar_eff = 0.                 !           |foliar efficiency
+        real :: inject_dep = 0.                 !mm         |injection depth
+        real :: surf_frac = 0.                  !           |surface fraction-amount in upper 10 mm
+        real :: drift_pot = 0.                  !           |drift potential
+        real :: aerial_unif = 0.                !           |aerial uniformity
+      end type chemical_application_operation
+      type (chemical_application_operation),dimension(:), allocatable :: chemapp_db
+
       type harvest_operation
         character (len=13) :: name
         character (len=13) :: typ   !none              |grain;biomass;residue;tree;tuber
         real :: hi_ovr = 0.         !(kg/ha)/(kg/ha)   |harvest index target specified at harvest
-        real :: eff = 0.            !none              |harvest efficiency: fraction of harvested 
-!!                                                       yield that is removed from HRU; the remainder 
-!!                                                       becomes residue on the soil surface
+        real :: eff = 0.            !none              |harvest efficiency: fraction of harvested yield that is removed 
+                                                       !the remainder becomes residue on the soil surface
         real :: bm_min = 0          !kg/ha             |minimum biomass to allow harvest
       end type harvest_operation
       type (harvest_operation), dimension(:), allocatable :: harvop_db
@@ -406,7 +319,6 @@
       type grazing_operation
         character (len=13) :: name
         character (len=13) :: fertnm = ' '
-        integer :: days = 0
         real :: eat = 0.              !!(kg/ha)/day      |dry weight of biomass removed 
                                       !!                    by grazing daily
         real :: tramp = 0.            !!(kg/ha)/day      |dry weight of biomass removed
@@ -415,7 +327,6 @@
         real :: biomin = 0.           !!kg/ha            |minimum plant biomass for grazing
       end type grazing_operation
       type (grazing_operation), dimension(:), allocatable :: grazeop_db
-      type (grazing_operation) :: grazeop
       
       type streetsweep_operation
         character (len=13) :: name
@@ -485,18 +396,28 @@
         integer :: jday = 0
         integer :: year = 0
         real :: husc = 0.
-        character(len=16) :: cond
         character(len=10) :: op_char
         character (len=10) :: op_plant
         integer :: op1 = 0
         integer :: op2 = 0              !! |none          |plant number in community for hu scheduling
         real :: op3 = 0                 !! |none          |application amount (mm or kg/ha)
-        integer :: op4 = 0              !! |none          |
+        integer :: op4 = 0              !! |none          |fert and pest type-point to fert and pest db
       end type management_ops
       type (management_ops) :: mgt
       type (management_ops) :: mgt1
       type (management_ops), dimension(1) :: mgt2
-
+      
+      type management_schedule
+        character(len=16) :: name
+        integer :: num_ops = 0
+        integer :: num_autos = 0
+        type (management_ops), dimension (:), allocatable :: mgt_ops
+        character(len=16), dimension (:), allocatable :: auto_name
+        integer, dimension (:), allocatable :: num_db
+        integer :: irr
+      end type management_schedule
+      type (management_schedule), dimension (:), allocatable :: sched
+      
       type calibration_parameters
         character(len=16) :: name       !! cn2, esco, awc, etc.
         character(len=16) :: ob_typ     !! object type the parameter is associated with (hru, chan, res, basin, etc)
@@ -535,20 +456,6 @@
       type (update_parameters), dimension (:), allocatable :: cal_upd   !dimensioned to db_mx%cal_parms
       type (update_parameters) :: chg
 
-      type update_schedule
-        character(len=16) :: typ        !! type of update (structure, land_use_mgt)
-        character(len=16) :: name       !! name of structure, existing land use
-        integer :: day = 0
-        integer :: year = 0
-        character(len=16) :: lum        !! name of new land use
-        integer :: num_tot = 0          !! total number of integers read in
-        integer :: num_elem = 0         !! total number of elements (hrus or channels) modified (ie - 1 -5 18; num_tot=3 and num_elem=6)
-        integer, dimension(:), allocatable :: num
-        integer :: str_lu               !! integer pointer to structure or land use in appropriate data file
-        integer :: new_lu               !! integer pointer to new land use in data file
-      end type update_schedule
-      type (update_schedule), dimension (:), allocatable :: upd_sched
-    
       type update_conditional
         character(len=16) :: typ        !! type of update schedule (parameter, structure, land_use_mgt)
         character(len=16) :: name       !! name of update schedule
@@ -630,7 +537,7 @@
       end type ls_calib_regions
       
       type cataloging_units
-        character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lcu_reg)
+        character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lsu_reg)
         real :: area_ha                                         !area of landscape cataloging unit -hectares
         integer :: num_tot                                      !number of hru's in each region
         integer, dimension(:), allocatable :: num               !hru's that are included in the region
@@ -648,24 +555,24 @@
       type (cataloging_units), dimension(:), allocatable :: rcu_cal    !reservoir cataoging unit region
       type (cataloging_units), dimension(:), allocatable :: pcu_cal    !point source cataoging unit region
       
-      type land_cataloging_units
-        character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lcu_out)
+      type landscape_units
+        character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lsu_out)
         real :: area_ha                                         !area of landscape cataloging unit -hectares
         integer :: num_tot                                      !number of hru's in each region
         integer, dimension(:), allocatable :: num               !hru's that are included in the region
-      end type land_cataloging_units
-      type (land_cataloging_units), dimension(:), allocatable :: lcu_out     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: lcu_reg     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: acu_out     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: acu_reg     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: ccu_out     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: ccu_reg     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: rcu_out     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: rcu_reg     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: pcu_out     !dimension by region for hru's
-      type (land_cataloging_units), dimension(:), allocatable :: pcu_reg     !dimension by region for hru's
+      end type landscape_units
+      type (landscape_units), dimension(:), allocatable :: lsu_out     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: lsu_reg     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: acu_out     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: acu_reg     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: ccu_out     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: ccu_reg     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: rcu_out     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: rcu_reg     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: pcu_out     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: pcu_reg     !dimension by region for hru's
       
-      type land_cataloging_unit_elements
+      type landscape_elements
         character(len=16) :: name
         integer :: obj = 1              !object number
         character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
@@ -673,15 +580,15 @@
         real :: bsn_frac = 0            !fraction of element in basin (expansion factor)
         real :: sub_frac = 0            !fraction of element in sub (expansion factor)
         real :: reg_frac = 0            !fraction of element in calibration region (expansion factor)
-      end type land_cataloging_unit_elements
-      type (land_cataloging_unit_elements), dimension(:), allocatable :: lcu_elem       !landscape cataoging unit
-      type (land_cataloging_unit_elements), dimension(:), allocatable :: ccu_elem       !channel cataoging unit
-      type (land_cataloging_unit_elements), dimension(:), allocatable :: acu_elem       !aquifer cataoging unit
-      type (land_cataloging_unit_elements), dimension(:), allocatable :: rcu_elem       !reservoir cataoging unit
-      type (land_cataloging_unit_elements), dimension(:), allocatable :: pcu_elem       !point source cataoging unit
+      end type landscape_elements
+      type (landscape_elements), dimension(:), allocatable :: lsu_elem       !landscape cataoging unit
+      type (landscape_elements), dimension(:), allocatable :: ccu_elem       !channel cataoging unit
+      type (landscape_elements), dimension(:), allocatable :: acu_elem       !aquifer cataoging unit
+      type (landscape_elements), dimension(:), allocatable :: rcu_elem       !reservoir cataoging unit
+      type (landscape_elements), dimension(:), allocatable :: pcu_elem       !point source cataoging unit
       
       type soft_data_calib_landscape
-        character(len=16) :: name = 'default'                               !name of region - (number of regions = db_mx%lcu_reg)
+        character(len=16) :: name = 'default'                               !name of region - (number of regions = db_mx%lsu_reg)
         integer :: lum_num                                                  !number of land uses in each region
         integer :: num_tot                                                  !number of hru's in each region
         integer, dimension(:), allocatable :: num                           !hru's that are included in the region
@@ -727,7 +634,7 @@
       end type pl_calib_regions
       
       type soft_data_calib_plant
-        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lcu_reg)
+        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lsu_reg)
         integer :: lum_num                                                  !number of land uses in each region
         integer :: num_tot                                                  !number of hru's in each region
         integer, dimension(:), allocatable :: num                           !hru's that are included in the region
@@ -766,7 +673,7 @@
       end type chan_calib_regions
       
       type soft_data_calib_channel
-        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lcu_reg)
+        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lsu_reg)
         integer :: ord_num                                                  !number of stream orders in each region
         integer :: num_tot                                                  !number of channels in each region
         integer, dimension(:), allocatable :: num                           !channels that are included in the region
@@ -777,9 +684,9 @@
       type structural_practices
         character(len=13) :: name = 'default'
         integer :: num_pr                                 
-        character(len=16), dimension(:), allocatable :: prac       !! terrace, tile, contour, filter, stripcrop
-                                                           !! fire, grassww, plantup, resman, user_def, septic       
-        character(len=13), dimension(:), allocatable :: prac_typ   !! points to appropriate data file 
+        character(len=16), dimension(:), allocatable :: prac        !! terrace, tile, contour, filter, stripcrop
+                                                                    !! fire, grassww, plantup, resman, user_def, septic       
+        character(len=13), dimension(:), allocatable :: prac_typ    !! points to appropriate data file 
         integer, dimension(:), allocatable :: prac_num
       end type structural_practices
       type (structural_practices),dimension (:), allocatable :: str_init
@@ -795,19 +702,7 @@
         integer :: op1 = 0        !! |none          |database number (locator)
       end type structural_ops
       type (structural_ops) :: str
-      
-      type management_schedule
-        character(len=16) :: name
-        integer :: num_ops = 0
-        integer :: num_autos = 0
-        type (management_ops), dimension (:), allocatable :: mgt_ops
-        character(len=16), dimension (:), allocatable :: auto_typ
-        character(len=16), dimension (:), allocatable :: auto_name
-        integer, dimension (:), allocatable :: num_db
-        integer :: irr
-      end type management_schedule
-      type (management_schedule), dimension (:), allocatable :: sched
-      
+
       type soiltest_db
         character(len=13) :: name = 'default'
         real :: exp_co = .001         !	     |depth coefficient to adjust concentrations for depth
@@ -826,7 +721,6 @@
 
       type topography_db
         character(len=13) :: name = 'default'
-        real :: elev = 100.       !!               |m             |elevation of HRU
         real :: slope = .02       !!	hru_slp(:) |m/m           |average slope steepness in HRU
         real :: slope_len = 50.   !! slsubbsn(:)   |m             |average slope length for erosion
         real :: lat_len = 50.     !! slsoil(:)     |m             |slope length for lateral subsurface flow
@@ -834,18 +728,7 @@
         real :: dep_co = 1.       !!               |              |deposition coefficient
       end type topography_db
       type (topography_db), dimension (:), allocatable :: topo_db
-      
-      type topography_sub_db
-        character(len=13) :: name = 'default'
-        real :: elev = 100.       !!               |m             |elevation of HRU
-        real :: slope = .02       !!	hru_slp(:) |m/m           |average slope steepness in HRU
-        real :: slope_len = 50.   !! slsubbsn(:)   |m             |average slope length for erosion
-        real :: lat_len = 50.     !! slsoil(:)     |m             |slope length for lateral subsurface flow
-        real :: dis_stream = 100. !! dis_stream(:) |m             |average distance to stream
-        real :: dep_co = 1.       !!               |              |deposition coefficient
-      end type topography_sub_db
-      type (topography_sub_db), dimension (:), allocatable :: toposub_db
-              
+
       type fields_db
            character(len=13) :: name = 'default'
            real :: length = 500. !!               |m             |field length for wind erosion
@@ -880,39 +763,23 @@
                                  !!                              | for perc to occur (1.0 = fc)
        end type hydrology_db
         type (hydrology_db), dimension (:), allocatable :: hyd_db
-        
-      type landuse_db
-          character(len=15) :: name = " "
-          integer :: cn_lu = 1 
-          real :: usle_p = 1.           !! none           USLE equation support practice (P) factor daily
-          integer :: iurban = 0         !! none           urban simulation code:
-                                        !!                 |0  no urban sections in HRU
-                                        !!                 |1  urban sections in HRU, simulate using USGS regression eqs
-                                        !!                 |2  urban sections in HRU, simulate using build up/wash off alg
-          integer ::  urb_lu = 0        !! none           urban land type identification number
-          real :: ovn = 0.1             !! none           Manning's "n" value for overland flow
-      end type landuse_db
-      type (landuse_db), dimension (:), allocatable :: luse_db
-      
+
       type land_use_management
         character (len=16) :: name = " "
         character (len=16) :: plant_cov = ""
         character (len=16) :: mgt_ops = ""
-        character (len=16) :: cn_lu
-        integer :: usle_p
-        integer :: urb_lu = 0           !! none     urban land type identification number
-        integer :: iurban = 0           !! none     urban simulation code 
-                                        !!                 |0  no urban sections in HRU
-                                        !!                 |1  urban sections in HRU, simulate using USGS regression eqs
-                                        !!                 |2  urban sections in HRU, simulate using build up/wash off alg
-        real :: ovn = 0.1               !! none    Manning's "n" value for overland flow
+        character (len=16) :: cn_lu     !! none     | land use for curve number table
+        character (len=16) :: cons_prac !! none     | conservation practice from table
+        integer :: urb_lu = 0           !! none     | urban land type identification number
+        integer :: iurban = 0           !! none     | urban simulation code 
+                                        !!          | 0  no urban sections in HRU
+                                        !!          | 1  urban sections in HRU, simulate using USGS regression eqs
+                                        !!          | 2  urban sections in HRU, simulate using build up/wash off alg
+        real :: ovn = 0.1               !! none     | Manning's "n" value for overland flow
         character (len=25) :: tiledrain
         character (len=25) :: septic
         character (len=25) :: fstrip
         character (len=25) :: grassww
-        character (len=25) :: terrace
-        character (len=25) :: contour
-        character (len=25) :: stcrop
         character (len=25) :: bmpuser
       end type land_use_management
       type (land_use_management), dimension (:), allocatable :: lum
@@ -921,13 +788,11 @@
         integer :: plant_cov = 0
         integer :: mgt_ops = 0
         integer :: cn_lu = 0
+        integer :: cons_prac = 0
         integer :: tiledrain = 0
         integer :: septic = 0
         integer :: fstrip = 0
         integer :: grassww = 0
-        integer :: terrace = 0
-        integer :: contour = 0
-        integer :: stcrop = 0
         integer :: bmpuser = 0
       end type land_use_structures
       type (land_use_structures), dimension (:), allocatable :: lum_str
@@ -937,6 +802,13 @@
         real, dimension(4) :: cn = (/30.,55.,70.,77./) !curve number
       end type curvenumber_table
       type (curvenumber_table), dimension (:), allocatable :: cn
+                 
+      type conservation_practice_table
+        character(len=16) :: name                   !name of conservation practice
+        real :: pfac = 1.0                          !usle p factor
+        real :: sl_len_mx = 1.0             !m      !maximum slope length
+      end type conservation_practice_table
+      type (conservation_practice_table), dimension (:), allocatable :: cons_prac
       
       type subsurface_drainage
         character(len=13) :: name = "default"
@@ -1139,6 +1011,7 @@
     
       type routing_nut_data         ! used for 2-stage ditch in chandeg and overland flow
         character(len=16) :: name = 'Drainage_Ditch'
+        real :: len_inc = 250       ! m               |segment length for reduction
         real :: no3_slp = 0.86      ! (mgN/m2/h)/ppm  |slope of denitrification (y-axis) and inflow no3 (x-axis)
         real :: no3_int = 0.17      ! mgN/m2/h        |intercept of denitrification rate equation
         real :: no3_slp_ob = 0.48   ! (mgN/m2/h)/ppm  |slope of denitrification (y-axis) and inflow no3 (x-axis)
@@ -1155,6 +1028,9 @@
         real :: srp_int = 0.207     ! ppm             |intecept of soluble reactive P reduction equation
         real :: turb_tss_slp = .35  ! ppm             |slope of turbidity and total suspended solids (0.2-0.4)
         real :: no3_min_conc = .05  ! ppm             |minimum no3 concentration
+        real :: tp_min_conc = .06   ! ppm             |minimum tp concentration
+        real :: tss_min_conc = 5    ! ppm             |minimum tss concentration
+        real :: srp_min_conc = .015 ! ppm             |minimum srp concentration
       end type routing_nut_data
       type (routing_nut_data), dimension(:), allocatable :: rte_nut
       
@@ -1442,32 +1318,22 @@
       include 'septicparm_read.f90'
       include 'mgt_mgtops_read.f90'
       include 'mgt_irrops_read.f90'
-      include 'mgt_fertops_read.f90'
-      include 'mgt_autofertops_read.f90'
-      include 'mgt_contfertops_read.f90'
-      include 'mgt_pestops_read.f90'
-      include 'mgt_contpestops_read.f90'
+      include 'mgt_chemapp_read.f90'
       include 'mgt_harvops_read.f90'
       include 'mgt_grazeops_read.f90'
       include 'mgt_sweepops_read.f90'
-      include 'str_init_read.f90'
-      include 'scen_terrace_read.f90'
-      include 'scen_contour_read.f90'
       include 'scen_filtstrip_read.f90'
-      include 'scen_stripcrop_read.f90'
-      include 'scen_fire_read.f90'
+      include 'mgt_fireops_read.f90'
       include 'scen_grwway_read.f90'
-      include 'scen_plparmup_read.f90'
-      include 'scen_rsdmgt_read.f90'
       include 'scen_bmpuser_read.f90'
       include 'sep_read.f90'
       include 'solt_db_read.f90'
       include 'topo_read.f90'
-      include 'toposub_read.f90'
       include 'field_read.f90'
       include 'hydrol_read.f90'
       include 'landuse_read.f90'
       include 'cntbl_read.f90'
+      include 'cons_prac_read.f90'
       include 'sdr_read.f90'
 !      include 'potdb_read.f'
       include 'snowdb_read.f90'

@@ -134,6 +134,7 @@
 !           strsa(j) = 1.
 !         end if
 !         wuse = strsa(j) * wuse
+          
 !         if (iwatable(j) > 0) then
 !           yy = sol_sumfc(j) + .08 * (sol_sumul(j) - sol_sumfc(j))
 !           yy = sol_fc(k,j) + .01 * (sol_ul(k,j) - sol_fc(k,j))
@@ -143,9 +144,8 @@
 !         endif
 
           !! adjust uptake if sw is less than 25% of plant available water
-          if (soil(j)%phys(k)%st < soil(j)%phys(k)%fc/4.) then
-            reduc = Exp(5. * (4. * soil(j)%phys(k)%st /                  &
-                  soil(j)%phys(k)%fc - 1.))
+          if (soil(j)%phys(k)%st < soil(j)%phys(k)%fc / 4.) then
+            reduc = Exp(5. * (4. * soil(j)%phys(k)%st / soil(j)%phys(k)%fc - 1.))
           else
             reduc = 1.
           endif

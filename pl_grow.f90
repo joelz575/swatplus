@@ -105,7 +105,7 @@
 
       do ipl = 1, pcom(j)%npl
         !! plant will not undergo stress if dormant
-        if (pcom(j)%plcur(ipl)%idorm == 0.and.pcom(j)%plcur(ipl)%gro==1) then
+        if (pcom(j)%plcur(ipl)%idorm == 0 .and. pcom(j)%plcur(ipl)%gro==1) then
         idp = pcom(j)%plcur(ipl)%idplt
  
         !! if plant hasn't reached maturity
@@ -163,14 +163,14 @@
           call pl_pup
 
           !! new code to turn off nutrient stress
-          if (bsn_cc%rtpest == 1) then
+          if (bsn_cc%nostress == 1) then
             pcom(j)%plstr(ipl)%strsn = 1.
             pcom(j)%plstr(ipl)%strsp = 1.
             pcom(j)%plstr(ipl)%strsa = 1.
           end if
           
           !! reduce predicted biomass due to stress on plant
-          reg = Min(pcom(j)%plstr(ipl)%strsw, pcom(j)%plstr(ipl)%strst,   &
+          reg = Min(pcom(j)%plstr(ipl)%strsw, pcom(j)%plstr(ipl)%strst,                     &
             pcom(j)%plstr(ipl)%strsn, pcom(j)%plstr(ipl)%strsp, pcom(j)%plstr(ipl)%strsa)
           if (reg < 0.) reg = 0.
           if (reg > 1.) reg = 1.

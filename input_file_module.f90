@@ -65,17 +65,17 @@
       end type input_res
       type (input_res) :: in_res
 
-      type input_sub
-!! subbasin
-       character(len=25) :: def_sub = "define.sub"
-       character(len=25) :: ele_sub = "element.sub"
-       character(len=25) :: sub = "subbasin.sub"
-       character(len=25) :: sub_del = "subbasin.del"
-      end type input_sub
-      type (input_sub) :: in_sub
+!! routing unit
+      type input_ru
+       character(len=25) :: ru_def = "rout_unit.def"
+       character(len=25) :: ru_ele = "rout_unit.ele"
+       character(len=25) :: ru = "rout_unit.ru"
+       character(len=25) :: ru_dr = "rout_unit.dr"
+      end type input_ru
+      type (input_ru) :: in_ru
 
-      type input_hru
 !! HRU
+      type input_hru
        character(len=25) :: hru_data = "hru-data.hru"
        character(len=25) :: hru_ez   = "hru-lte.hru"
       end type input_hru
@@ -124,8 +124,7 @@
 
       type input_hydrology
        character(len=25) :: hydrol_hyd = "hydrology.hyd"
-       character(len=25) :: topogr_hyd = "topography.hru"
-       character(len=25) :: toposub_hyd = "topography.sub"
+       character(len=25) :: topogr_hyd = "topography.hyd"
        character(len=25) :: field_fld  = "field.fld"
       end type input_hydrology
       type (input_hydrology) :: in_hyd
@@ -142,18 +141,11 @@
       type (input_bacteria) :: in_bac
 
       type input_structural
-       character(len=25) :: septic_str = "septic.str"
-       character(len=25) :: bmpuser_str = "bmpuser.str"
-       character(len=25) :: contour_str = "contour.str"
-       character(len=25) :: fstrip_str = "filterstrip.str"
-       character(len=25) :: fire_str = "fire.str"
-       character(len=25) :: grassww_str = "grassedww.str"
-       character(len=25) :: plparms_str = "plantparms.str"
-       character(len=25) :: residue_str = "residue.str"
-       character(len=25) :: stcrop_str = "stripcrop.str"
-       character(len=25) :: terrace_str = "terrace.str"
        character(len=25) :: tiledrain_str = "tiledrain.str"
-       character(len=25) :: initial_str = "initial.str"
+       character(len=25) :: septic_str = "septic.str"
+       character(len=25) :: fstrip_str = "filterstrip.str"
+       character(len=25) :: grassww_str = "grassedww.str"
+       character(len=25) :: bmpuser_str = "bmpuser.str"
       end type input_structural
       type (input_structural) :: in_str
 
@@ -170,28 +162,20 @@
       type (input_parameter_databases) :: in_parmdb
 
       type input_ops
-       character(len=25) :: autofert_ops = "autofert.ops"
-       character(len=25) :: autoirr_ops = "autoirr.ops"
-       character(len=25) :: contfert_ops = "contfert.ops"
-       character(len=25) :: contpest_ops = "contpest.ops"
-       character(len=25) :: fert_ops = "fert.ops"
-       character(len=25) :: graze_ops = "graze.ops"
        character(len=25) :: harv_ops = "harv.ops"
+       character(len=25) :: graze_ops = "graze.ops"
        character(len=25) :: irr_ops = "irr.ops"
-       character(len=25) :: pest_ops = "pest.ops"
+       character(len=25) :: chem_ops = "chem_app.ops"
+       character(len=25) :: fire_ops = "fire.ops"
        character(len=25) :: sweep_ops = "sweep.ops"
       end type input_ops
       type (input_ops) :: in_ops
 
-      type input_sch
-       character(len=25) :: management_sch = "management.sch"
-       character(len=25) :: structural_sch = "structural.sch"
-      end type input_sch
-      type (input_sch) :: in_sch
-
       type input_lum
-       character(len=25) :: cntable_lum = "cntable.lum"
        character(len=25) :: landuse_lum = "landuse.lum"
+       character(len=25) :: management_sch = "management.sch"
+       character(len=25) :: cntable_lum = "cntable.lum"
+       character(len=25) :: cons_prac_lum = "cons_prac.lum"
       end type input_lum
       type (input_lum) :: in_lum
 
@@ -233,9 +217,9 @@
       type (input_constituents) :: in_const
       
      type input_regions
-        character(len=25) :: ele_lcu = "ls_catunit.ele"
-        character(len=25) :: def_lcu = "ls_catunit.def"
-        character(len=25) :: def_lcu_reg = "ls_reg.def"
+        character(len=25) :: ele_lsu = "ls_unit.ele"
+        character(len=25) :: def_lsu = "ls_unit.def"
+        character(len=25) :: def_lsu_reg = "ls_reg.def"
         character(len=25) :: cal_lcu = "ls_cal.reg"
         character(len=25) :: ele_cha = "ch_catunit.ele"
         character(len=25) :: def_cha = "ch_catunit.def"

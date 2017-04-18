@@ -28,7 +28,7 @@
        if (eof < 0) exit
        read (113,*,iostat=eof) header
        if (eof < 0) exit
-          do while (eof >= 0)
+          do while (eof == 0)
              read (113,*,iostat=eof) name, numb
              do ii = 1, numb
                 read (113,*,iostat=eof) name

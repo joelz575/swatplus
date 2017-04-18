@@ -33,13 +33,12 @@
         hwb_d(j)%surq_cont = surfq(j)
         hwb_d(j)%cn = cnday(j)
         hwb_d(j)%sw = soil(j)%sw
-        hwb_d(j)%snopack = sno_hru(j)      
         hwb_d(j)%pet = pet_day
         hwb_d(j)%qtile = qtile
         hwb_d(j)%irr = aird(j)
         hwb_d(j)%surq_runon = ls_overq
-        hwb_d(j)%latq_runon = latqrunon / (10. * hru(j)%area_ha) 
-        hwb_d(j)%overbank = 0.
+        hwb_d(j)%latq_runon = latqrunon !/ (10. * hru(j)%area_ha) 
+        hwb_d(j)%overbank = over_flow
 
 !    output_nutbal
         hnb_d(j)%cfertn = cfertn
@@ -67,19 +66,18 @@
         hpw_d(j)%residue = hru(j)%rsd%mass
         hpw_d(j)%yield = yield
         hpw_d(j)%sol_tmp =  soil(j)%phys(2)%tmp
-        hpw_d(j)%strsw = (1.-strsw_av(j))
-        hpw_d(j)%strsw = (1.-strsa_av)
-        hpw_d(j)%strsn = (1.-strsn_av)        
-        hpw_d(j)%strsp = (1.-strsp_av)
+        hpw_d(j)%strsw = (1. - strsw_av(j))
+        hpw_d(j)%strsa = (1. - strsa_av)
+        hpw_d(j)%strstmp = (1. - strstmp_av)
+        hpw_d(j)%strsn = (1. - strsn_av)        
+        hpw_d(j)%strsp = (1. - strsp_av)
         hpw_d(j)%nplnt = nplnt(j)
         hpw_d(j)%percn = percn(j)
         hpw_d(j)%pplnt = pplnt(j)
         hpw_d(j)%tmx = tmx(j)
         hpw_d(j)%tmn = tmn(j)
         hpw_d(j)%tmpav = tmpav(j)
-        hpw_d(j)%solrad = hru_ra(j) 
-        hpw_d(j)%wndspd = u10(j)
-        hpw_d(j)%rhum = rhd(j)
+        hpw_d(j)%solrad = hru_ra(j)
         hpw_d(j)%phubase0 = phubase(j)
 
 !    output_losses
@@ -113,28 +111,28 @@
 !!!!! daily print
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                  .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
-          if (pco%wb_hru == 'day') then
-            write (4000,100) time%day, time%yrc, j, hwb_d(j)  !! waterbal
-             if (pco%csvout == 'year' .and. pco%wb_hru == 'day') then
+          if (pco%wb_hru%d == 'y') then
+            write (2000,100) time%day, time%yrc, j, hwb_d(j)  !! waterbal
+             if (pco%csvout == 'y') then
                write (4015,'(*(G0.3,:","))') time%day, time%yrc, j, hwb_d(j)  !! waterbal
              end if
           end if
-          if (pco%nb_hru == 'day') then
-            write (4001,100) time%day, time%yrc, j, hnb_d(j)  !! nutrient bal
-              if (pco%csvout == 'yes' .and. pco%nb_hru == 'day') then
-                write (4017,'(*(G0.3,:","))') time%day, time%yrc, j, hnb_d(j)  !! nutrient bal
+          if (pco%nb_hru%d == 'y') then
+            write (2020,100) time%day, time%yrc, j, hnb_d(j)  !! nutrient bal
+              if (pco%csvout == 'y') then
+                write (2024,'(*(G0.3,:","))') time%day, time%yrc, j, hnb_d(j)  !! nutrient bal
               end if
           end if
-          if (pco%ls_hru == 'day') then
-            write (4002,102) time%day, time%yrc, j, hls_d(j)  !! losses
-              if (pco%csvout == 'yes' .and. pco%ls_hru == 'day') then
-                write (4019,'(*(G0.3,:","))') time%day, time%yrc, j, hls_d(j)  !! losses
+          if (pco%ls_hru%d == 'y') then
+            write (2030,102) time%day, time%yrc, j, hls_d(j)  !! losses
+              if (pco%csvout == 'y') then
+                write (2034,'(*(G0.3,:","))') time%day, time%yrc, j, hls_d(j)  !! losses
               end if
           end if
-          if (pco%pw_hru == 'day') then
-            write (4003,101) time%day, time%yrc, j, hpw_d(j)  !! plant weather 
-              if (pco%csvout == 'yes' .and. pco%pw_hru == 'day') then 
-                write (4021,'(*(G0.3,:","))') time%day, time%yrc, j, hpw_d(j)  !! plant weather
+          if (pco%pw_hru%d == 'y') then
+            write (2040,101) time%day, time%yrc, j, hpw_d(j)  !! plant weather 
+              if (pco%csvout == 'y') then 
+                write (2044,'(*(G0.3,:","))') time%day, time%yrc, j, hpw_d(j)  !! plant weather
               end if 
           end if
         end if
@@ -152,28 +150,28 @@
           hpw_y(j) = hpw_y(j) + hpw_m(j)
           
           !! monthly print
-           if (pco%wb_hru == 'mon') then
-             write (4000,100) time%mo, time%yrc, j, hwb_m(j)
-               if (pco%csvout == 'yes' .and. pco%wb_hru == 'mon') then
-                 write (4015,'(*(G0.3,:","))') time%mo, time%yrc, j, hwb_m(j)
+           if (pco%wb_hru%m == 'y') then
+             write (2001,100) time%mo, time%yrc, j, hwb_m(j)
+               if (pco%csvout == 'y') then
+                 write (2005,'(*(G0.3,:","))') time%mo, time%yrc, j, hwb_m(j)
                end if
            end if
-           if (pco%nb_hru == 'mon') then
-             write (4001,100) time%mo, time%yrc, j, hnb_m(j)
-               if (pco%csvout == 'yes' .and. pco%nb_hru == 'mon') then
-                 write (4017,'(*(G0.3,:","))') time%mo, time%yrc, j, hnb_m(j)
+           if (pco%nb_hru%m == 'y') then
+             write (2021,100) time%mo, time%yrc, j, hnb_m(j)
+               if (pco%csvout == 'y') then
+                 write (2025,'(*(G0.3,:","))') time%mo, time%yrc, j, hnb_m(j)
                end if
            end if
-           if (pco%ls_hru == 'mon') then
-             write (4002,102) time%mo, time%yrc, j, hls_m(j)
-               if (pco%csvout == 'yes' .and. pco%ls_hru == 'mon') then 
-                 write (4019,'(*(G0.3,:","))') time%mo, time%yrc, j, hls_m(j)
+           if (pco%ls_hru%m == 'y') then
+             write (2031,102) time%mo, time%yrc, j, hls_m(j)
+               if (pco%csvout == 'y') then 
+                 write (2035,'(*(G0.3,:","))') time%mo, time%yrc, j, hls_m(j)
                end if
            end if
-           if (pco%pw_hru == 'mon') then
-             write (4003,101) time%mo, time%yrc, j, hpw_m(j)
-               if (pco%csvout == 'yes' .and. pco%pw_hru == 'mon') then 
-                 write (4021,'(*(G0.3,:","))') time%mo, time%yrc, j, hpw_m(j)
+           if (pco%pw_hru%m == 'y') then
+             write (2041,101) time%mo, time%yrc, j, hpw_m(j)
+               if (pco%csvout == 'y') then 
+                 write (2045,'(*(G0.3,:","))') time%mo, time%yrc, j, hpw_m(j)
                end if 
            end if
           
@@ -195,66 +193,66 @@
           hpw_a(j) = hpw_a(j) + hpw_y(j)
           
           !! yearly print
-           if (pco%wb_hru == 'year') then
-             write (4000,100) time%end_yr, time%yrc, j, hwb_y(j)
-               if (pco%csvout == 'yes' .and. pco%wb_hru == 'year') then
-                 write (4015,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hwb_y(j)
+           if (time%end_yr == 1 .and. pco%wb_hru%y == 'y') then
+             write (2002,100) time%end_yr, time%yrc, j, hwb_y(j)
+               if (pco%csvout == 'y') then
+                 write (2006,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hwb_y(j)
                end if
            end if
-           if (pco%nb_hru == 'year') then
-             write (4001,100) time%end_yr, time%yrc, j, hnb_y(j)
-               if (pco%csvout == 'yes' .and. pco%nb_hru == 'year') then
-                 write (4017,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hnb_y(j)
+           if (time%end_yr == 1 .and. pco%nb_hru%y == 'y') then
+             write (2022,100) time%end_yr, time%yrc, j, hnb_y(j)
+               if (pco%csvout == 'y') then
+                 write (2026,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hnb_y(j)
                end if
            end if
-           if (pco%ls_hru == 'year') then
-             write (4002,102) time%end_yr, time%yrc, j, hls_y(j)
-               if (pco%csvout == 'yes' .and. pco%ls_hru == 'year') then
-                 write (4019,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hls_y(j)
+           if (time%end_yr == 1 .and. pco%ls_hru%y == 'y') then
+             write (2032,102) time%end_yr, time%yrc, j, hls_y(j)
+               if (pco%csvout == 'y') then
+                 write (2036,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hls_y(j)
                end if
            end if
-           if (pco%pw_hru == 'year') then
-             write (4003,101) time%end_yr, time%yrc, j, hpw_y(j)
-               if (pco%csvout == 'yes' .and. pco%pw_hru == 'year') then 
-                 write (4021,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hpw_y(j)
+           if (time_end_yr == 1 .and. pco%pw_hru%y == 'y') then
+             write (2042,101) time%end_yr, time%yrc, j, hpw_y(j)
+               if (pco%csvout == 'y') then 
+                 write (2046,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hpw_y(j)
                end if 
            end if
           
         end if
         
 !!!!! average annual print
-         if (time%end_sim == 1 .and. pco%wb_hru /= 'null') then
+         if (time%end_sim == 1 .and. pco%wb_hru%a == 'y') then
            hwb_a(j) = hwb_a(j) / time%yrs_prt
-           write (4004,100) time%end_yr, time%yrs, j, hwb_a(j)
-           if (pco%csvout == 'yes') then
-             write (4016,100) time%end_yr, time%yrs, j, hwb_a(j)
+           write (2003,100) time%end_yr, time%yrs, j, hwb_a(j)
+           if (pco%csvout == 'y') then
+             write (2007,100) time%end_yr, time%yrs, j, hwb_a(j)
            end if
            hwb_a(j) = hwbz
          end if
         
-         if (time%end_sim == 1 .and. pco%nb_hru /= 'null') then
+         if (time%end_sim == 1 .and. pco%nb_hru%a == 'y') then 
            hnb_a(j) = hnb_a(j) / time%yrs_prt
-           write (4005,100) time%end_yr, time%yrs, j, hnb_a(j)
-             if (pco%csvout == 'yes') then 
-               write (4018,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hnb_a(j)
+           write (2023,100) time%end_yr, time%yrs, j, hnb_a(j)
+             if (pco%csvout == 'y') then 
+               write (2027,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hnb_a(j)
              end if
              hnb_a(j) = hnbz
          end if
         
-         if (time%end_sim == 1 .and. pco%ls_hru /= 'null') then
+         if (time%end_sim == 1 .and. pco%ls_hru%a == 'y') then
            hls_a(j) = hls_a(j) / time%yrs_prt 
-           write (4006,101) time%end_yr, time%yrs, j, hls_a(j)
-             if (pco%csvout == 'yes') then 
-               write (4020,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hls_a(j)
+           write (2033,101) time%end_yr, time%yrs, j, hls_a(j)
+             if (pco%csvout == 'y') then 
+               write (2037,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hls_a(j)
              end if
              hls_a(j) = hlsz
          end if
         
-         if (time%end_sim == 1 .and. pco%pw_hru /= 'null') then
+         if (time%end_sim == 1 .and. pco%pw_hru%a == 'y') then     
            hpw_a(j) = hpw_a(j) / time%yrs_prt      
-           write (4007,102) time%end_yr, time%yrs, j, hpw_a(j)
-             if (pco%csvout == 'yes') then 
-               write (4022,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hpw_a(j)
+           write (2043,102) time%end_yr, time%yrs, j, hpw_a(j)
+             if (pco%csvout == 'y') then 
+               write (2047,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hpw_a(j)
              end if
              hpw_a(j) = hpwz
          end if
@@ -268,7 +266,7 @@
              endif
             write (4008,103) time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
                                                  pcom(j)%plg(ipl)%yield
-            if (pco%csvout == 'yes') then
+            if (pco%csvout == 'y') then
               write (4009,'(*(G0.3,:","))') time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
                                                  pcom(j)%plg(ipl)%yield 
             end if

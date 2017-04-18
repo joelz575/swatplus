@@ -23,7 +23,7 @@
         if (eof < 0) exit
         read (106,*,iostat=eof) header
         if (eof < 0) exit
-          do while (eof >= 0)
+          do while (eof == 0)
             read (106,*,iostat=eof) titldum
             if (eof < 0) exit
             imax = imax + 1
@@ -59,9 +59,9 @@
           endif
    
           !! set values for pesticide routed through main channel network
-          if (ip == bsn_cc%rtpest) then
-            pest_sol = pestdb(ip)%pst_wof * 1000.
-          end if
+          !if (ip == bsn_cc%rtpest) then
+          !  pest_sol = pestdb(ip)%pst_wof * 1000.
+          !end if
 
         end do
         exit

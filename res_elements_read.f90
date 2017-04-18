@@ -216,7 +216,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         imax = 0
-          do while (eof <= 0)
+          do while (eof == 0)
               read (107,*,iostat=eof) i
               if (eof < 0) exit
               imax = Max(i,imax)

@@ -30,15 +30,15 @@
       type (output_waterbal), dimension (:), allocatable :: hwb_a
       type (output_waterbal) :: hwbz
       
-      type (output_waterbal), dimension (:), allocatable :: sdwb_d
-      type (output_waterbal), dimension (:), allocatable :: sdwb_m
-      type (output_waterbal), dimension (:), allocatable :: sdwb_y
-      type (output_waterbal), dimension (:), allocatable :: sdwb_a
+      type (output_waterbal), dimension (:), allocatable :: hltwb_d
+      type (output_waterbal), dimension (:), allocatable :: hltwb_m
+      type (output_waterbal), dimension (:), allocatable :: hltwb_y
+      type (output_waterbal), dimension (:), allocatable :: hltwb_a
       
-      type (output_waterbal), dimension (:), allocatable :: swb_d
-      type (output_waterbal), dimension (:), allocatable :: swb_m
-      type (output_waterbal), dimension (:), allocatable :: swb_y
-      type (output_waterbal), dimension (:), allocatable :: swb_a
+      type (output_waterbal), dimension (:), allocatable :: ruwb_d
+      type (output_waterbal), dimension (:), allocatable :: ruwb_m
+      type (output_waterbal), dimension (:), allocatable :: ruwb_y
+      type (output_waterbal), dimension (:), allocatable :: ruwb_a
       
       type (output_waterbal) :: bwb_d
       type (output_waterbal) :: bwb_m
@@ -71,7 +71,7 @@
         character (len=12) :: surq_cont =   'sq_cont_mm  '
         character (len=12) :: cn =          '       cn   '
         character (len=12) :: sw =          '    sw_mm   '
-        character (len=12) :: snopack =     'snopack_mm  '
+        character (len=12) :: snopack =     'snopack_mm  '   
         character (len=12) :: pet =         '   pet_mm   '
         character (len=12) :: qtile =       ' qtile_mm   '
         character (len=12) :: irr =         '   irr_mm   '
@@ -119,15 +119,15 @@
       type (output_nutbal), dimension (:), allocatable :: hnb_a
       type (output_nutbal) :: hnbz
       
-      type (output_nutbal), dimension (:), allocatable :: sdnb_d
-      type (output_nutbal), dimension (:), allocatable :: sdnb_m
-      type (output_nutbal), dimension (:), allocatable :: sdnb_y
-      type (output_nutbal), dimension (:), allocatable :: sdnb_a
+      type (output_nutbal), dimension (:), allocatable :: hltnb_d
+      type (output_nutbal), dimension (:), allocatable :: hltnb_m
+      type (output_nutbal), dimension (:), allocatable :: hltnb_y
+      type (output_nutbal), dimension (:), allocatable :: hltnb_a
       
-      type (output_nutbal), dimension (:), allocatable :: snb_d
-      type (output_nutbal), dimension (:), allocatable :: snb_m
-      type (output_nutbal), dimension (:), allocatable :: snb_y
-      type (output_nutbal), dimension (:), allocatable :: snb_a
+      type (output_nutbal), dimension (:), allocatable :: runb_d
+      type (output_nutbal), dimension (:), allocatable :: runb_m
+      type (output_nutbal), dimension (:), allocatable :: runb_y
+      type (output_nutbal), dimension (:), allocatable :: runb_a
       
       type (output_nutbal) :: bnb_d
       type (output_nutbal) :: bnb_m
@@ -188,15 +188,15 @@
       type (output_losses), dimension (:), allocatable :: hls_a
       type (output_losses) :: hlsz
       
-      type (output_losses), dimension (:), allocatable :: sdls_d
-      type (output_losses), dimension (:), allocatable :: sdls_m
-      type (output_losses), dimension (:), allocatable :: sdls_y
-      type (output_losses), dimension (:), allocatable :: sdls_a
+      type (output_losses), dimension (:), allocatable :: hltls_d
+      type (output_losses), dimension (:), allocatable :: hltls_m
+      type (output_losses), dimension (:), allocatable :: hltls_y
+      type (output_losses), dimension (:), allocatable :: hltls_a
       
-      type (output_losses), dimension (:), allocatable :: sls_d
-      type (output_losses), dimension (:), allocatable :: sls_m
-      type (output_losses), dimension (:), allocatable :: sls_y
-      type (output_losses), dimension (:), allocatable :: sls_a
+      type (output_losses), dimension (:), allocatable :: ruls_d
+      type (output_losses), dimension (:), allocatable :: ruls_m
+      type (output_losses), dimension (:), allocatable :: ruls_y
+      type (output_losses), dimension (:), allocatable :: ruls_a
       
       type (output_losses) :: bls_d
       type (output_losses) :: bls_m
@@ -259,15 +259,15 @@
       type (output_plantweather), dimension (:), allocatable :: hpw_a
       type (output_plantweather) :: hpwz
       
-      type(output_plantweather), dimension (:), allocatable :: sdpw_d
-      type(output_plantweather), dimension (:), allocatable :: sdpw_m
-      type(output_plantweather), dimension (:), allocatable :: sdpw_y
-      type(output_plantweather), dimension (:), allocatable :: sdpw_a
+      type(output_plantweather), dimension (:), allocatable :: hltpw_d
+      type(output_plantweather), dimension (:), allocatable :: hltpw_m
+      type(output_plantweather), dimension (:), allocatable :: hltpw_y
+      type(output_plantweather), dimension (:), allocatable :: hltpw_a
       
-      type (output_plantweather), dimension (:), allocatable :: spw_d
-      type (output_plantweather), dimension (:), allocatable :: spw_m
-      type (output_plantweather), dimension (:), allocatable :: spw_y
-      type (output_plantweather), dimension (:), allocatable :: spw_a
+      type (output_plantweather), dimension (:), allocatable :: rupw_d
+      type (output_plantweather), dimension (:), allocatable :: rupw_m
+      type (output_plantweather), dimension (:), allocatable :: rupw_y
+      type (output_plantweather), dimension (:), allocatable :: rupw_a
       
       type (output_plantweather) :: bpw_d
       type (output_plantweather) :: bpw_m
@@ -432,6 +432,7 @@
         hru3%residue = hru1%residue + hru2%residue
         hru3%sol_tmp = hru1%sol_tmp + hru2%sol_tmp
         hru3%strsw = hru1%strsw + hru2%strsw
+        hru3%strsa = hru1%strsa + hru2%strsa
         hru3%strstmp = hru1%strstmp + hru2%strstmp
         hru3%strsn = hru1%strsn + hru2%strsn
         hru3%strsp = hru1%strsp + hru2%strsp
@@ -532,13 +533,13 @@
         hru2%residue = hru1%residue / const
         hru2%sol_tmp = hru1%sol_tmp / const
         hru2%strsw = hru1%strsw / const
+        hru2%strsa = hru1%strsa / const
         hru2%strstmp = hru1%strstmp / const
         hru2%strsn = hru1%strsn / const
         hru2%strsp = hru1%strsp / const
         hru2%nplnt = hru1%nplnt / const
         hru2%percn = hru1%percn / const
         hru2%pplnt = hru1%pplnt / const
-        hru2%percn = hru1%percn / const
         hru2%tmx = hru1%tmx / const
         hru2%tmn = hru1%tmn / const
         hru2%tmpav = hru1%tmpav / const
@@ -557,14 +558,14 @@
         hru2%yield = hru1%yield
         hru2%residue = hru1%residue / const
         hru2%sol_tmp = hru1%sol_tmp / const
-        hru2%strsw = hru1%strsw / const
-        hru2%strstmp = hru1%strstmp / const
-        hru2%strsn = hru1%strsn / const
-        hru2%strsp = hru1%strsp / const
+        hru2%strsw = hru1%strsw
+        hru2%strsa = hru1%strsa
+        hru2%strstmp = hru1%strstmp
+        hru2%strsn = hru1%strsn
+        hru2%strsp = hru1%strsp
         hru2%nplnt = hru1%nplnt / const
-        hru2%percn = hru1%percn / const
+        hru2%percn = hru1%percn
         hru2%pplnt = hru1%pplnt / const
-        hru2%percn = hru1%percn / const
         hru2%tmx = hru1%tmx / const
         hru2%tmn = hru1%tmn / const
         hru2%tmpav = hru1%tmpav / const

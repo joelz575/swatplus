@@ -107,8 +107,7 @@
 	bsn_prm%msk_co1 = msk1
 	bsn_prm%msk_co2 = msk2
       xkm = 0.
-      xkm = ch(jrch)%phi(10) * bsn_prm%msk_co1 + ch(jrch)%phi(13) *        &  
-            bsn_prm%msk_co1
+      xkm = ch(jrch)%phi(10) * bsn_prm%msk_co1 + ch(jrch)%phi(13) * bsn_prm%msk_co1
       
 !! Muskingum numerical stability -Jaehak Jeong, 2011
 !! Check numerical stability

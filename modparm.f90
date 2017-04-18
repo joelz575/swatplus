@@ -338,6 +338,7 @@
       type landuse
           character(len=15) :: name
           integer :: cn_lu = 0
+          integer :: cons_prac = 0
           real :: usle_p = 0.           !! none           USLE equation support practice (P) factor daily
           integer :: iurban = 0         !! none           urban simulation code:
                                         !!                 |0  no urban sections in HRU
@@ -385,6 +386,7 @@
       type (hydrologic_response_unit_db), dimension(:),allocatable :: hru_db
       
       type land_use_mgt_variables
+        real :: usle_p = 0.                 !! |none          |USLE equation comservation practice (P) factor
         real :: usle_ls = 0.                !! |none          |USLE equation length slope (LS) factor
         real :: usle_mult = 0.              !! |none          |product of USLE K,P,LS,exp(rock)
         real :: sdr_dep = 0.                !! |
@@ -430,9 +432,6 @@
         integer :: septic = 0
         integer :: fstrip = 0
         integer :: grassww = 0
-        integer :: terrace = 0
-        integer :: contour = 0
-        integer :: stcrop = 0
         integer :: bmpuser = 0
         !! impunded water - points to res()
         integer :: res
@@ -447,15 +446,15 @@
         type (plant_mass) :: rsd     !total flat residue of all plants
         type (plant_mass) :: std     !total standing dead biomass of all plants
         type (plant_mass) :: stl     !total standing live biomass of all plants
-        type (pesticide), dimension(:), allocatable :: pst
+        type (pesticide), dimension(:), allocatable :: pst  !pest names simulated in the hru
 
         !! other data
         type (topography) :: topo
         type (field) :: field
         type (hydrology) :: hyd
         type (landuse) :: luse
+        type (land_use_mgt_variables) :: lumv
         integer :: irrsrc
-      type (land_use_mgt_variables) :: lumv
       end type hydrologic_response_unit
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
@@ -728,7 +727,7 @@
       real, dimension (:), allocatable :: sub_km,sub_pet
       real, dimension (:), allocatable :: sub_orgn,sub_bd
       real, dimension (:), allocatable :: sub_etday
-      real, dimension (:), allocatable :: sub_wyld,sub_surfq
+      real, dimension (:), allocatable :: sub_surfq
       real, dimension (:), allocatable :: qird
       
 !!!!!! drains
@@ -770,7 +769,7 @@
       real, dimension (:), allocatable :: tconc,hru_rmx
       real, dimension (:), allocatable :: usle_cfac,usle_eifac
       real, dimension (:), allocatable :: anano3,aird,t_ov
-      real, dimension (:), allocatable :: aairr,u10,rhd
+      real, dimension (:), allocatable :: u10,rhd
       real, dimension (:), allocatable :: canstor,ovrlnd
       real, dimension (:), allocatable :: irr_mx, auto_wstr
       real, dimension (:), allocatable :: cfrt_id, cfrt_kg, cpst_id
@@ -798,7 +797,7 @@
       real, dimension (:), allocatable :: twash,doxq
       real, dimension (:), allocatable :: percn
       real, dimension (:), allocatable :: tauton,tautop,cbodu,chl_a,qdr
-      real, dimension (:), allocatable :: tfertn,tfertp,tgrazn,tgrazp
+      real, dimension (:), allocatable :: tgrazn,tgrazp
       real, dimension (:), allocatable :: latno3,latq,nplnt
       real, dimension (:), allocatable :: tileq, tileno3
       real, dimension (:), allocatable :: sedminpa,sedminps,sedorgn
@@ -819,7 +818,6 @@
       real, dimension (:,:), allocatable :: bss,surf_bs  
       real, dimension (:,:,:), allocatable :: pst_lag
       integer, dimension (:), allocatable :: swtrg,hrupest
-      integer, dimension (:), allocatable :: nfert
       integer, dimension (:), allocatable :: nirr
       integer, dimension (:), allocatable :: iafrttyp, nstress
       !! burn
@@ -908,7 +906,7 @@
         wtp_sdexp,wtp_sdc1,wtp_sdc2,wtp_sdc3,wtp_pdia,wtp_plen,            &
         wtp_pmann,wtp_ploss,wtp_k,wtp_dp,wtp_sedi,wtp_sede,wtp_qi 
      
-      real :: bio_init, lai_init, cnop,hi_ovr,harveff,frac_harvk
+      real :: bio_init, lai_init, cnop, harveff, frac_harvk
 
 	real, dimension(:), allocatable :: sedc_d, surfqc_d, latc_d,        &
        	percc_d, foc_d, NPPC_d, rsdc_d, grainc_d, stoverc_d,            & 

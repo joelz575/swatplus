@@ -75,7 +75,7 @@
        iwgn = wst(iwst)%wco%wgn
        
        hru(j)%lumv%usle_mult = soil(j)%phys(1)%rock * soil(j)%ly(1)%usle_k *       &
-                                 hru(j)%luse%usle_p * hru(j)%lumv%usle_ls * 11.8
+                                 hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
 
 !      if (rsdin(j) > 0.) soil(j)%ly(1)%rsd = rsdin(j)
 

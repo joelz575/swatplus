@@ -48,7 +48,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fradbsb(:)  |none          |hourly solar radiation fractions for subbasin
 !!    ib          |none          |counter
 !!    idap        |julain date   |day currently being simulated
 !!    ii          |none          |counter
@@ -57,17 +56,10 @@
 !!    k           |none          |counter
 !!    pdif        |mm H2O        |difference in precipitation for station and
 !!                               |precipitation for elevation band
-!!    rabsb       |MJ/m^2        |generated solar radiation for subbasin
 !!    ratio       |none          |fraction change in precipitation due to 
 !!                               |elevation changes
-!!    rbsb        |mm H2O        |generated precipitation for subbasin
-!!    rhdbsb      |none          |generated relative humidity for subbasin
-!!    rmxbsb      |MJ/m^2        |generated maximum solar radiation for subbasin
 !!    tdif        |deg C         |difference in temperature for station and
 !!                               |temperature for elevation band
-!!    tmnbsb      |deg C         |generated minimum temperature for subbasin
-!!    tmxbsb      |deg C         |generated maximum temperature for subbasin
-!!    u10bsb      |m/s           |generated wind speed for subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -82,8 +74,7 @@
       use time_module
 
       integer :: k, inum3sprev, npcpbsb, ii, iyp, idap, ib
-      real :: tmxbsb, tmnbsb, rbsb, rhdbsb, rabsb, u10bsb, rmxbsb
-      real :: daylbsb,  fradbsb(time%step),tdif, pdif, ratio
+      real :: daylbsb, tdif, pdif, ratio
       
       !! Precipitation:
       do ii = 1, mwst
@@ -133,7 +124,7 @@
           wst(iwst)%weat%tmax = tmp(ig)%ts(time%day,time%yrs)
           wst(iwst)%weat%tmin = tmp(ig)%ts2(time%day,time%yrs)
           if (wst(iwst)%weat%tmax <= -97. .or. wst(iwst)%weat%tmin <= -97.) then
-            !call cli_weatgn(iwgn)
+            call cli_weatgn(iwgn)
             call cli_tgen(iwgn)
           end if
         end if

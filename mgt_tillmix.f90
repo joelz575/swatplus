@@ -1,4 +1,4 @@
-      subroutine mgt_tillmix(jj,bmix)
+      subroutine mgt_tillmix (jj, bmix, idtill)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine mixes residue and nutrients during tillage and 
@@ -77,7 +77,7 @@
       use basin_module
       use organic_mineral_mass_module
 
-      integer, intent (in) :: jj
+      integer, intent (in) :: jj, idtill
       real, intent (in) :: bmix
       integer :: l, k, nl
       real :: emix, dtil, rrns 
@@ -96,7 +96,7 @@
         emix = tilldb(idtill)%effmix
         dtil = tilldb(idtill)%deptil
 !	Drainmod  07/2006
-      if(itill(jj) == 1) then
+      if (itill(jj) == 1) then
         cumei(jj) = 0.
         cumeira(jj) = 0.
         cumrt(jj) = 0.

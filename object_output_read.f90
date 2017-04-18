@@ -20,7 +20,7 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) header
         if (eof < 0) exit
-          do while (eof >= 0)
+          do while (eof == 0)
             read (107,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i)
@@ -44,6 +44,10 @@
               ob_out(i)%objno = sp_ob1%hru + ob_out(i)%obtypno - 1
             case ("hlt")   !hru_lte
               ob_out(i)%objno = sp_ob1%hru_lte + ob_out(i)%obtypno - 1
+            case ("sub")   !hru
+              ob_out(i)%objno = sp_ob1%sub + ob_out(i)%obtypno - 1
+            case ("res")   !hru_lte
+              ob_out(i)%objno = sp_ob1%res + ob_out(i)%obtypno - 1
             case ("cha")   !channel
               ob_out(i)%objno = sp_ob1%chan + ob_out(i)%obtypno - 1
             case ("exc")   !export coefficient

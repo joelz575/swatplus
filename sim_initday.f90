@@ -29,7 +29,6 @@
 !!    sub_orgn(:) |kg N/ha       |organic nitrogen in soil of subbasin
 !!    sub_pst(:,:)|kg/ha         |pesticide in soil of subbasin
 !!    sub_surfq(:)|mm H2O        |surface runoff generated on day in subbasin
-!!    sub_wyld(:) |mm H2O        |water yield on day in subbasinn
 !!    u10(:)      |m/s           |wind speed for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -78,9 +77,8 @@
       sub_orgn = 0.
       sub_pet = 0.
       sub_pst = 0.
-	sub_dgra = 0.
+      sub_dgra = 0.
       sub_surfq = 0.
-      sub_wyld = 0.
       surfq = 0.
       surqno3 = 0.
       surqsolp = 0.
@@ -113,9 +111,6 @@
         stoverc_d = 0.
         emitc_d = 0.
         rspc_d = 0.   
-	sub_NEPC_d=0.
-	sub_stover_c_d=0.
-	sub_emit_c_d=0.
       !!add by zhang
       !!==========================
 	

@@ -15,11 +15,10 @@
       j = ihru
 
 !!    compute infiltration from surface runon to next landscape unit
-      ls_overq = ob(iob)%hin%flo / (10. * hru(j)%area_ha) 
+      ls_overq = ob(iob)%hin%flo    !/ (10. * hru(j)%area_ha) 
       if (ls_overq > 1.e-6) then
         qs = ls_overq / 24.   !mm/hr
-        vs = (qs ** .4) * (hru(j)%topo%slope ** .3)                      &
-                                             / (hru(j)%luse%ovn ** .6)
+        vs = (qs ** .4) * (hru(j)%topo%slope ** .3) / (hru(j)%luse%ovn ** .6)
         if (vs > 1.e-6) then
           trt = hru(j)%topo%slope_len / (3600. * vs)
           inflrout = soil(j)%phys(1)%k * trt

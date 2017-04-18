@@ -39,7 +39,7 @@
         read (114,*,iostat=eof) header
         if (eof < 0) exit
         !! determine max number for array (imax) and total number in file
-        do while (eof >= 0)
+        do while (eof == 0)
           read (114,*,iostat=eof) i
           if (eof < 0) exit
           imax = imax + 1

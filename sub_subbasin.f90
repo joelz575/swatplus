@@ -35,8 +35,6 @@
 !!                                  |  watershed
 !!    latq(:)        |mm H2O        |total lateral flow in soil profile for the
 !!                                  |day in HRU
-!!    nfert(:)       |none          |sequence number of fertilizer application
-!!                                  |within the year
 !!    nirr(:)        |none          |sequence number of irrigation application
 !!                                  |within the year
 !!    peakr          |m^3/s         |peak runoff rate

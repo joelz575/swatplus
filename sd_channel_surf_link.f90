@@ -2,7 +2,7 @@
                  
       use hydrograph_module
       use sd_channel_module
-      use subbasin_module
+      use ru_module
       
       character (len=3) :: iobtyp
       integer :: isdc, ics, imp, mres
@@ -45,18 +45,18 @@
             !! set reservoir storage for flooding without surface storage
             if (hru(ihru)%dbs%surf_stor == 0) imp = imp + 1
 
-            ith = sub(isub)%dbs%toposub_db
-            ifld = sub(isub)%dbs%field_db
+            ith = ru(isub)%dbs%toposub_db
+            ifld = ru(isub)%dbs%field_db
             !set depth, width, flood volume max
-            ch_sur(ics)%dep(ii) = ch_sur(ics)%dep(ii-1) + field_db(ifld)%wid * toposub_db(ith)%slope
+            ch_sur(ics)%dep(ii) = ch_sur(ics)%dep(ii-1) + field_db(ifld)%wid * topo_db(ith)%slope
             ch_sur(ics)%wid(ii) = ch_sur(ics)%wid(ii-1) + 2. * field_db(ifld)%length
             ch_sur(ics)%flood_volmx(ii)= ch_sur(ics)%flood_volmx(ii-1) +        &
                     (ch_sur(ics)%wid(ii-1) * (ch_sur(ics)%dep(ii) -             & 
                     ch_sur(ics)%dep(ii-1)) + (2. * ch_sur(ics)%wid(ii) ** 2 *   &
-                    toposub_db(ith)%slope)) * sd_chd(ics)%chl * 1000.
+                    topo_db(ith)%slope)) * sd_chd(ics)%chl * 1000.
             
             !set flood plain link and landscape element (1==closest to river)
-            do ihru = 1, sub_d(isub)%num_tot
+            do ihru = 1, ru_def(isub)%num_tot
               iob = sp_ob1%hru + ob(i)%obtypno_out(ii) - 1
               ob(iob)%flood_ch_lnk = ics   !pointer back to channel-sub link
               ob(iob)%flood_ch_elem = ii   !pointer to landscape element - 1 nearest to channel

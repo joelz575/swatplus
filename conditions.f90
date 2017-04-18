@@ -1,4 +1,4 @@
-      subroutine conditions (id, ob_num)
+      subroutine conditions (id, ob_cur)
       !current conditions include: w_stress, n_stress, phu_plant, phu_base0, soil_water, jday, month, vol
       ! year_rot, year_cal, year_seq, prob, land_use   
       !target variables include: w_stress -> wp, fc, ul; vol -> pvol, evol
@@ -11,7 +11,8 @@
       use reservoir_module
       use sd_channel_module
       
-      integer :: id, ob_num
+      integer, intent (in)  :: id, ob_cur
+      integer :: ob_num
       integer :: nbz=748932582
       integer, dimension(1) :: seed = (/3/)
 
@@ -20,16 +21,17 @@
         select case (d_tbl(id)%cond(ic)%var)
         !water stress
         case ("w_stress")
-          ihru = ob_num
+          ob_num = d_tbl(id)%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
           ipl = Max (d_tbl(id)%cond(ic)%ob_num, 1)
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
-              if (pcom(ihru)%plstr(ipl)%strsw > d_tbl(id)%cond(ic)%lim_const) then
+              if (pcom(ob_num)%plstr(ipl)%strsw > d_tbl(id)%cond(ic)%lim_const) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == ">") then    !may use for grazing or fire
-              if (pcom(ihru)%plstr(ipl)%strsw < d_tbl(id)%cond(ic)%lim_const) then
+              if (pcom(ob_num)%plstr(ipl)%strsw < d_tbl(id)%cond(ic)%lim_const) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
@@ -37,16 +39,17 @@
             
         !nitrogen stress
         case ("n_stress")
-          ihru = ob_num
+          ob_num = d_tbl(id)%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
           ipl = Max (d_tbl(id)%cond(ic)%ob_num, 1)
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
-              if (pcom(ihru)%plstr(ipl)%strsn > d_tbl(id)%cond(ic)%lim_const) then
+              if (pcom(ob_num)%plstr(ipl)%strsn > d_tbl(id)%cond(ic)%lim_const) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == ">") then    !may use for grazing or fire
-              if (pcom(ihru)%plstr(ipl)%strsn < d_tbl(id)%cond(ic)%lim_const) then
+              if (pcom(ob_num)%plstr(ipl)%strsn < d_tbl(id)%cond(ic)%lim_const) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
@@ -54,26 +57,37 @@
           
         !potential heat units - plant based
         case ("phu_plant")
-          ihru = ob_num
+          ob_num = d_tbl(id)%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
           ipl = Max (d_tbl(id)%cond(ic)%ob_num, 1)
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
-              if (pcom(j)%plcur(ipl)%phuacc > d_tbl(id)%cond(ic)%lim_const *        &
-                                                      pcom(j)%plg(ipl)%phumat) then
+              if (pcom(ob_num)%plcur(ipl)%phuacc > d_tbl(id)%cond(ic)%lim_const *        &
+                                                      pcom(ob_num)%plg(ipl)%phumat) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == ">") then    !may use for grazing or fire
-              if (pcom(j)%plcur(ipl)%phuacc < d_tbl(id)%cond(ic)%lim_const *       &
-                                                      pcom(j)%plg(ipl)%phumat) then
+              if (pcom(ob_num)%plcur(ipl)%phuacc < d_tbl(id)%cond(ic)%lim_const *       &
+                                                      pcom(ob_num)%plg(ipl)%phumat) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
           end do
             
-        !potentail heat units - base zero
+        !potential heat units - base zero
         case ("phu_base0")
-          iwst = ob(ob_num)%wst
+          ob_num = d_tbl(id)%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
+          if (d_tbl(id)%cond(ic)%ob == 'hru') then
+            iob = sp_ob1%hru + ob_num - 1
+          end if
+          if (d_tbl(id)%cond(ic)%ob == 'hlt') then
+            iob = sp_ob1%hru_lte + ob_num - 1
+          end if
+          iwst = ob(iob)%wst
+          
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
               if (wst(iwst)%weat%phubase0 > d_tbl(id)%cond(ic)%lim_const) then
@@ -90,14 +104,16 @@
         !soil water
         case ("soil_water")
           !determine target variable
-          isol = ob_num   !same as hru number
+          ob_num = d_tbl(id)%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
           select case (d_tbl(id)%cond(ic)%lim_var)
           case ("wp")   !wilting point
             targ_val = 0.
           case ("fc")   !field capacity
-            targ_val = sol(isol)%s%sumfc
+            targ_val = soil(ob_num)%sumfc
           case ("ul")   !upper limit (porosity)
-            targ_val = sol(isol)%s%sumul
+            targ_val = soil(ob_num)%sumul
           end select
           
           !perform operation on target variable to get target
@@ -115,12 +131,12 @@
           !determine if condition is met
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
-              if (phubase(ihru) > targ) then
+              if (soil(ob_num)%sw > targ) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == ">") then    !may use for grazing or fire
-              if (phubase(ihru) < targ) then
+              if (soil(ob_num)%sw < targ) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
@@ -230,10 +246,12 @@
                     
         !land use and management
         case ("land_use")
+          ob_num = d_tbl(id)%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "=") then
-              ihru = ob_num
-              if (hru(ihru)%dbsc%land_use_mgt /= d_tbl(id)%cond(ic)%lim_var) then
+              if (hru(ob_num)%dbsc%land_use_mgt /= d_tbl(id)%cond(ic)%lim_var) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             !else
@@ -243,10 +261,12 @@
                                  
         !channel management
         case ("ch_use")
+          ob_num = d_tbl(id)%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "=") then
-              ich = ob_num
-              if (sd_ch(ich)%order /= d_tbl(id)%cond(ic)%lim_var) then
+              if (sd_ch(ob_num)%order /= d_tbl(id)%cond(ic)%lim_var) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             !else
@@ -257,7 +277,9 @@
         !reservoir volume
         case ("vol")
           !determine target variable
-          ires = ob_num   !reservoir number
+          ires = d_tbl(id)%cond(ic)%ob_num
+          if (ires == 0) ires = ob_cur
+          
           select case (d_tbl(id)%cond(ic)%lim_var)
           case ("pvol")   !prinicpal storage volume
             targ_val = res_ob(ires)%pvol

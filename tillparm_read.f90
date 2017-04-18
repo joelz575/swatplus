@@ -22,7 +22,7 @@
         if (eof < 0) exit
         read (105,*,iostat=eof) header
         if (eof < 0) exit
-          do while (eof >= 0)
+          do while (eof == 0)
             read (105,*,iostat=eof) titldum
             if (eof < 0) exit
             imax = imax + 1

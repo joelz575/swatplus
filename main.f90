@@ -32,13 +32,13 @@
 
       use parm
       use hydrograph_module
-      use subbasin_module
+      use ru_module
       use hru_module
 !      use wateruse_module
       use climate_module
       use aquifer_module
       use channel_module
-      use sd_hru_module
+      use hru_lte_module
       use sd_channel_module
       use basin_module
       use jrw_datalib_module
@@ -61,21 +61,17 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
 
-      prog = "SWAT+ Mar 6 2017    MODULAR Rev 2017.31"
+      prog = "SWAT+ Apr 17 2017    MODULAR Rev 2017.32"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 31             ",/,             &
+     &          "              Revision 32             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
 
 !! process input
-      
-      open (4444,file="diagnostics.out")
-      write (4444,4445) 
-4445  format (1x,'FILENAME',21x,'REC',3x,'MAX',9x,'FILE STATUS')
-		
+      		
       call hyd_read_objs
       call readtime_read
       if (time%step > 0) then
@@ -118,7 +114,6 @@
       call sep_read
       call solt_db_read
       call topo_read
-      call toposub_read
       call field_read
       call hydrol_read
       
@@ -140,25 +135,16 @@
       !! read management scheduling and data files
       
       call mgt_irrops_read
-      call mgt_fertops_read
-      call mgt_autofertops_read
-      call mgt_contfertops_read
-      call mgt_pestops_read
-      call mgt_contpestops_read
+      call mgt_chemapp_read
       call mgt_harvops_read
       call mgt_grazeops_read
       call mgt_sweepops_read
+      call mgt_fireops_read
       call mgt_mgtops_read
       
       !! read structural operations files
-      call scen_terrace_read
-      call scen_stripcrop_read
-      call scen_rsdmgt_read
-      call scen_plparmup_read
       call scen_grwway_read
-      call scen_fire_read
       call scen_filtstrip_read
-      call scen_contour_read
       call scen_bmpuser_read
       !call scen_septic_read
          
@@ -166,6 +152,7 @@
       call readpcom             !! read the plant community database
       
       call cntbl_read
+      call cons_prac_read
       call landuse_read
         
       call bac_lsinit_read
@@ -205,7 +192,7 @@
       !call update_sched_read
       call update_cond_read
 
-      call sd_hru_read
+      call hru_lte_read
       call sd_channel_read
       
       call ls_link
@@ -228,11 +215,11 @@
         call ch_initial (idat, irch)
       end do
 
-      !call sub_read
+      !call ru_read
       
       call time_conc_init
 
-      call sub_allo
+      call ru_allo
             
       !! allocate and initialize reservoir variables
       call res_allo (mres)
@@ -251,7 +238,7 @@
             
       !! read soft calibration parameters
       call codes_cal_read
-      call lcu_elements_read        !defining regions by hru
+      call lsu_elements_read        !defining regions by hru
       call lcu_softcal_read         !soft data for landscape calibration (needs to be renamed)***
       call ls_parms_cal_read
       call pl_regions_cal_read      !soft data for hru_lte calibration
@@ -295,7 +282,7 @@
         do ihru = 1, mhru
           hru_init(ihru) = hru(ihru)
           soil_init(ihru) = soil(ihru)
-          rsd_init(ihru) = rsd1(ihru)
+          rhlt_init(ihru) = rsd1(ihru)
           pcom_init(ihru) = pcom(ihru)
         end do
       end if
@@ -303,7 +290,7 @@
       !save hru_lte initial conditions if calibrating
       if (cal_codes%hyd_hrul == 'y') then
         do ihru = 1, sp_ob%hru_lte
-          sd_init(ihru) = sd(ihru)
+          hlt_init(ihru) = hlt(ihru)
         end do
       end if
       
@@ -317,7 +304,7 @@
       ! compute unit hydrograph parameters for subdaily runoff
       if (time%step > 0) call unit_hyd
       
-      call dr_sub
+      call dr_ru
         
       call hyd_connect_out
 
@@ -339,7 +326,7 @@
       if (cal_codes%hyd_hru == 'y') then
         call cal_hyd
         !print calibrated hydrology for hru_lte
-		do ireg = 1, db_mx%lcu_reg
+		do ireg = 1, db_mx%lsu_reg
 		  do ilum = 1, lscal(ireg)%lum_num
             lscal(ireg)%lum(ilum)%meas%srr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%srr
             lscal(ireg)%lum(ilum)%meas%lfr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%lfr
@@ -355,7 +342,7 @@
 
         !loop through to find the number of variable updates for calibration.upd from soft calibration
         icvmax = 0
-        do ireg = 1, db_mx%lcu_reg
+        do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             if (abs(lscalt(ireg)%lum(ilum)%prm%cn) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscalt(ireg)%lum(ilum)%prm%esco) > 1.e-6) icvmax = icvmax + 1
@@ -374,7 +361,7 @@
         write (5000,500) ' NAME   CHG_TYP   VAL    CONDS    LYR1   LYR2    YEAR1   YEAR2   DAY1   DAY2   OBJ_TOT'
         
         !write to calibration.upd and use region and land use as conditions
-	    do ireg = 1, db_mx%lcu_reg
+	    do ireg = 1, db_mx%lsu_reg
           do ilum = 1, lscalt(ireg)%lum_num
             if (abs(lscalt(ireg)%lum(ilum)%prm%cn) > 1.e-6) then
               write (5000,500) ls_prms(1)%name, ls_prms(1)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn, '   0    2    0    0    0    0    0    0    0'
@@ -434,7 +421,7 @@
       if (cal_codes%hyd_hrul == 'y') then
         call calt_hyd
         !print calibrated hydrology for hru_lte
-		do ireg = 1, db_mx%lcu_reg
+		do ireg = 1, db_mx%lsu_reg
 		  do ilum = 1, lscalt(ireg)%lum_num
             lscalt(ireg)%lum(ilum)%meas%srr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%srr
             lscalt(ireg)%lum(ilum)%meas%lfr = lscalt(ireg)%lum(ilum)%precip_aa_sav * lscalt(ireg)%lum(ilum)%meas%lfr
@@ -449,15 +436,15 @@
         end do  
 
 	    do isdh = 1, sp_ob%hru_lte
-	      idb = sd(isdh)%props
-		  write (4999,400) sd(isdh)%name, sd_db(idb)%dakm2, sd(isdh)%cn2, sd(isdh)%cn3_swf, sd_db(idb)%tc,      &
-		    sd_db(idb)%soildep, sd(isdh)%perco, sd_db(isdh)%slope, sd_db(idb)%slopelen,                         &
-		    sd(isdh)%etco, sd_db(idb)%sy, sd_db(idb)%abf, sd(idb)%revapc,                                       &
-		    sd_db(idb)%percc, sd_db(idb)%sw, sd_db(idb)%gw, sd_db(idb)%gwflow,                                  &
-		    sd_db(idb)%gwdeep, sd_db(idb)%snow, sd_db(idb)%xlat, sd_db(idb)%itext,                              &
-		    sd_db(idb)%tropical, sd_db(idb)%igrow1, sd_db(idb)%igrow2, sd_db(idb)%plant, sd(isdh)%stress,       &
-		    sd_db(idb)%ipet, sd_db(idb)%irr, sd_db(idb)%irrsrc, sd_db(idb)%tdrain,                              &
-            sd_db(idb)%uslek, sd_db(idb)%uslec, sd_db(idb)%uslep, sd_db(idb)%uslels
+	      idb = hlt(isdh)%props
+		  write (4999,400) hlt(isdh)%name, hlt_db(idb)%dakm2, hlt(isdh)%cn2, hlt(isdh)%cn3_swf, hlt_db(idb)%tc,      &
+		    hlt_db(idb)%soildep, hlt(isdh)%perco, hlt_db(isdh)%slope, hlt_db(idb)%slopelen,                         &
+		    hlt(isdh)%etco, hlt_db(idb)%sy, hlt_db(idb)%abf, hlt(idb)%revapc,                                       &
+		    hlt_db(idb)%percc, hlt_db(idb)%sw, hlt_db(idb)%gw, hlt_db(idb)%gwflow,                                  &
+		    hlt_db(idb)%gwdeep, hlt_db(idb)%snow, hlt_db(idb)%xlat, hlt_db(idb)%itext,                              &
+		    hlt_db(idb)%tropical, hlt_db(idb)%igrow1, hlt_db(idb)%igrow2, hlt_db(idb)%plant, hlt(isdh)%stress,       &
+		    hlt_db(idb)%ipet, hlt_db(idb)%irr, hlt_db(idb)%irrsrc, hlt_db(idb)%tdrain,                              &
+            hlt_db(idb)%uslek, hlt_db(idb)%uslec, hlt_db(idb)%uslep, hlt_db(idb)%uslels
 	    end do
       end if
         

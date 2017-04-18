@@ -13,17 +13,17 @@
         
       !!   read mgtops.dat file
       !! calculate number of records in management 
-      inquire (file=in_sch%management_sch, exist=i_exist)
-      if (i_exist == 0 .or. in_sch%management_sch == 'null') then
+      inquire (file=in_lum%management_sch, exist=i_exist)
+      if (i_exist == 0 .or. in_lum%management_sch == 'null') then
         allocate (sched(0:0))
       else
       do
-       open (107,file=in_sch%management_sch)
+       open (107,file=in_lum%management_sch)
        read (107,*,iostat=eof) titldum
        if (eof < 0) exit
        read (107,*,iostat=eof) header
        if (eof < 0) exit
-       do while (eof >= 0)
+       do while (eof == 0)
          read (107,*,iostat=eof) titldum, nops
          if (eof < 0) exit
          do iops = 1, nops
@@ -44,12 +44,11 @@
          if (eof < 0) exit
          !! allocate and read the auto operations
          if (m_autos > 0) then
-           allocate(sched(isched)%auto_typ(m_autos))
            allocate(sched(isched)%auto_name(m_autos))
            allocate(sched(isched)%num_db(m_autos))
            backspace (107)
            read (107,*,iostat=eof)  sched(isched)%name, sched(isched)%num_ops, sched(isched)%num_autos,     &
-                (sched(isched)%auto_typ(ii), sched(isched)%auto_name(ii), ii = 1, m_autos)
+                (sched(isched)%auto_name(ii), ii = 1, m_autos)
          end if
          !! allocate and read the scheduled operations
          allocate (sched(isched)%mgt_ops(sched(isched)%num_ops))

@@ -1,4 +1,4 @@
-      subroutine mgt_harvgrainop
+      subroutine mgt_harvgrainop (jj, iplant, iharvop)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the harvest grain only operation 
@@ -67,11 +67,14 @@
       use basin_module
  
       integer :: j, k
+      integer, intent (in) :: jj, iplant, iharvop 
       real :: wur, hiad1, resnew,  yieldn, yieldp, yldpst
       type (plant_mass) :: plant
 
-      j = ihru
+      j = jj
+      ipl = iplant
       idp = pcom(j)%plcur(ipl)%idplt
+      harveff = harvop_db(iharvop)%eff
 
       hiad1 = 0.
       if (hi_targ(j) > 0.) then

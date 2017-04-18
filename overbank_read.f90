@@ -2,6 +2,7 @@
     
       use hydrograph_module
       use input_file_module
+      use jrw_datalib_module
       
       character (len=80) :: titldum, header
       character (len=16) :: namedum
@@ -22,26 +23,27 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         imax = 0
-        do while (eof >= 0)
+        do while (eof == 0)
           read (107,*,iostat=eof) i
           if (eof < 0) exit
           imax = Max(imax,i)
         end do
           
-        allocate (ch_sur(0:imax))
+        allocate (ch_sur(imax))
         rewind (107)
         read (107,*) titldum
         read (107,*,iostat=eof) mcha_sp
         read (107,*) header
 
+        !db_mx%ch_surf
         do ise = 1, mcha_sp
           read (107,*,iostat=eof) i, namedum, nspu
-          allocate (ch_sur(i)%obtyp(0:nspu))
-          allocate (ch_sur(i)%obtypno(0:nspu))
-          allocate (ch_sur(i)%wid(0:nspu))
-          allocate (ch_sur(i)%dep(0:nspu))
-          allocate (ch_sur(i)%flood_volmx(0:nspu))
-          allocate (ch_sur(i)%hd(0:nspu))
+          allocate (ch_sur(i)%obtyp(nspu))
+          allocate (ch_sur(i)%obtypno(nspu))
+          allocate (ch_sur(i)%wid(nspu))
+          allocate (ch_sur(i)%dep(nspu))
+          allocate (ch_sur(i)%flood_volmx(nspu))
+          allocate (ch_sur(i)%hd(nspu))
         
           if (eof < 0) exit
           if (nspu > 0) then

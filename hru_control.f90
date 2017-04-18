@@ -6,8 +6,9 @@
 
       use parm
       use basin_module
+      use organic_mineral_mass_module
 
-      integer :: j,sb,kk
+      integer :: j, sb, kk, iwst
       real :: tmpk, d, gma, ho, pet_alpha, aphu, phuop
 
       j = ihru
@@ -34,9 +35,6 @@
       
       !plt => hru(j)%pl(1)
       
-!      call sub_subbasin
-
-
       !!by zhang DSSAT tillage
       !!======================
       !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
@@ -103,7 +101,7 @@
         !!Route incoming overland flow
         !if (ch_sur(ics)%hd()%flo > 1.e-6) then
         !  if (ch_sur(ics)%hd()%flo > 1.e-6) then
-            !!partition flow-back to strem and downstream
+            !!partition flow-back to stream and downstream
         !  else
             !!all flow back to stream
         !  end if
@@ -115,13 +113,16 @@
         if (sched(isched)%num_autos > 0) then
           do iauto = 1, sched(isched)%num_autos
             id = sched(isched)%num_db(iauto)
-            call conditions (id, j)
-            call actions (id, j)
+            jj = j
+            call conditions (id, jj)
+            call actions (id, jj)
           end do
         end if
         
         !! update base zero total heat units
-        phubase(j) = wst(iwst)%weat%phubase0
+        if (tmpav(j) > 0. .and. wgn_pms(iwgn)%phutot > 0.01) then
+           phubase(j) = phubase(j) + tmpav(j) / wgn_pms(iwgn)%phutot
+        end if
 
         !! compute total parms for all plants in the community
         sumlai = 0.
@@ -349,14 +350,14 @@
       !!  latq_ru(j) = 0.
         
         !! compute reduction in pollutants due to edge-of-field filter strip
-        if (hru(j)%lumv%vfsi >0.)then
+        if (hru(j)%lumv%vfsi > 0.)then
           call smp_filter
           if (filterw(j) > 0.) call smp_buffer
         end if
-              if (hru(j)%lumv%vfsi == 0. .and. filterw(j) > 0.) then 
-                call smp_filtw
-                call smp_buffer
-              end if
+        if (hru(j)%lumv%vfsi == 0. .and. filterw(j) > 0.) then 
+          call smp_filtw
+          call smp_buffer
+        end if
 
 	 !! compute reduction in pollutants due to in field grass waterway
          if (hru(j)%lumv%grwat_i == 1) then

@@ -20,7 +20,6 @@
           iseq = nf
           return
         end if
-        write (4444,100) "didnt find", cfind
       end if
         
       if (a(nn) == cfind) then

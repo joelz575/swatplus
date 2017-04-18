@@ -1,4 +1,4 @@
-      subroutine pl_apply
+      subroutine pl_apply (jj, ipest, pest_kg, pestop)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine applies pesticide
@@ -53,16 +53,17 @@
       use jrw_datalib_module
       use basin_module
       
-      integer :: j, kk, k, jj
+      integer :: j, kk, k
       real :: xx, gc
+      integer, intent (in) :: jj, ipest, pestop
+      real, intent (in) :: pest_kg
 
-      j = 0
-      j = ihru
+      j = jj
 
       !! initialize local variables
-      k = mgt%op1                !! sequential hru pesticide number
-      kk = hru(j)%pst(mgt%op1)%num_db  !! database number from pest.dat
-      xx = pst_kg * pestdb(kk)%ap_ef
+      k = ipest                                     !! sequential hru pesticide number
+      kk = pestop                                   !! database number from pest.dat
+      xx = pst_kg * chemapp_db(mgt%op4)%app_eff
 
 !! calculate amount of pesticide drifting onto main channel in subbasin
 !      if (k == bsn_cc%rtpest) then
@@ -70,7 +71,7 @@
 !     *                                                              1.e6
 !      end if
 !      xx = xx * ap_ef(kk) * (1. - driftco(j))
-      xx = xx * pestdb(kk)%ap_ef
+!      xx = xx * pestdb(kk)%ap_ef
 
       ! added for pesticide incorporation 3/31/08 gsm
       if (pst_dep > 1.e-6) then

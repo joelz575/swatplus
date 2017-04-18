@@ -2,13 +2,13 @@
 
       use parm
       use hydrograph_module
-      use subbasin_module
+      use ru_module
       use hru_module
 !      use wateruse_module
       use climate_module
       use aquifer_module
       use channel_module
-      use sd_hru_module
+      use hru_lte_module
       use sd_channel_module
       use basin_module
       use jrw_datalib_module
@@ -53,11 +53,11 @@
 
             do ihru_s = 1, plcal(ireg)%num_tot
               iihru = plcal(ireg)%num(ihru_s)
-              if (plcal(ireg)%lum(ilum)%meas%name == sd(ihru)%plant) then
+              if (plcal(ireg)%lum(ilum)%meas%name == hlt(ihru)%plant) then
                 !set parms for 1st surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%stress = sd(iihru)%stress + chg_val
-                sd_init(iihru) = sd(iihru)
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%stress = hlt(iihru)%stress + chg_val
+                hlt_init(iihru) = hlt(iihru)
               end if
             end do
             plcal(ireg)%lum(ilum)%nbyr = 0
@@ -109,13 +109,13 @@
             !check all hru's for proper lum
             do ihru_s = 1, plcal(ireg)%num_tot
               iihru = plcal(ireg)%num(ihru_s)
-              if (plcal(ireg)%lum(ilum)%meas%name == sd(ihru)%plant) then
+              if (plcal(ireg)%lum(ilum)%meas%name == hlt(ihru)%plant) then
                 !set parms for surface runoff calibration and rerun
-                sd(iihru) = sd_init(iihru)
-                sd(iihru)%stress = sd(iihru)%stress + chg_val
-                sd(iihru)%stress = amin1 (sd(iihru)%stress, pl_prms(1)%up)
-                sd(iihru)%stress = Max (sd(iihru)%stress, pl_prms(1)%lo)
-                sd_init(iihru) = sd(iihru)
+                hlt(iihru)= hlt_init(iihru)
+                hlt(iihru)%stress = hlt(iihru)%stress + chg_val
+                hlt(iihru)%stress = amin1 (hlt(iihru)%stress, pl_prms(1)%up)
+                hlt(iihru)%stress = Max (hlt(iihru)%stress, pl_prms(1)%lo)
+                hlt_init(iihru) = hlt(iihru)
               end if
             end do
             plcal(ireg)%lum(ilum)%nbyr = 0

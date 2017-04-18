@@ -11,7 +11,7 @@
       use organic_mineral_mass_module
       use constituent_mass_module
       use jrw_datalib_module
-      use subbasin_module
+      use ru_module
       
       character (len=80) :: titldum, header
       character (len=16) :: namedum
@@ -110,8 +110,8 @@
       !read connect file for subbasins
       if (sp_ob%sub > 0) then
         call connect_read(in_con%sub_con, "sub     ", sp_ob1%sub, sp_ob%sub, 5, 2)
-        call sub_read
-        call sub_elements_read
+        call ru_read
+        call ru_elements_read
       end if
         
       !read connect file for modflow
@@ -180,10 +180,10 @@
           !! determine subbasin the hrus are in and add subbasin area to basin area
           if (ob(i)%typ == "sub") then          !only need for subs-not aquifers
             isub = ob(i)%props
-            do ii = 1, sub_d(isub)%num_tot
+            do ii = 1, ru_def(isub)%num_tot
               !!only have hrus set up - need to add other objects
-              ielem = sub_d(isub)%num(ii)          !points to element in sub_element
-              k = sub_elem(ielem)%obj              !object type number of defining unit (ie hru)
+              ielem = ru_def(isub)%num(ii)          !points to element in sub_element
+              k = ru_elem(ielem)%obj              !object type number of defining unit (ie hru)
               dfn_sum(ielem) = dfn_sum(ielem) + 1  !sequential number for subbasin object
               kk = dfn_sum(ielem)
               ob(k)%obj_subs(kk) = i
@@ -225,9 +225,9 @@
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
               if (j /= ipsub) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              do kk = 1, sub_d(isub)%num_tot
-                ielem = sub_d(isub)%num(kk)
-                iob = sub_elem(ielem)%obj
+              do kk = 1, ru_def(isub)%num_tot
+                ielem = ru_def(isub)%num(kk)
+                iob = ru_elem(ielem)%obj
                 ob(iob)%rcv_tot = ob(iob)%rcv_tot + 1
                 if (j /= ipsub) ob(iob)%rcvob_tot = ob(iob)%rcvob_tot + 1
               end do
@@ -315,11 +315,11 @@
           allocate (ob(i)%obtyp_in(nspu))
           allocate (ob(i)%obtypno_in(nspu))
           allocate (ob(i)%htyp_in(nspu))
+          allocate (ob(i)%ihtyp_in(nspu))
           allocate (ob(i)%frac_in(nspu))
-          !!inflow hyd: 1==surf 2==lateral
-          allocate (ob(i)%hin_m(2))
-          allocate (ob(i)%hin_y(2))
-          allocate (ob(i)%hin_a(2))
+          allocate (ob(i)%hin_m(nspu))
+          allocate (ob(i)%hin_y(nspu))
+          allocate (ob(i)%hin_a(nspu))
         end if
       end do
 
@@ -336,7 +336,8 @@
               ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
               ob(kk)%obtyp_in(jj) = ob(i)%typ
               ob(kk)%obtypno_in(jj) = ob(i)%props
-              ob(kk)%htyp_in(jj) = ob(i)%ihtyp_out(ii)
+              ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
+              ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
               ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
             end do
           else
@@ -346,18 +347,20 @@
             ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
             ob(kk)%obtyp_in(jj) = ob(i)%typ
             ob(kk)%obtypno_in(jj) = ob(i)%props
-            ob(kk)%htyp_in(jj) = ob(i)%ihtyp_out(ii)
+            ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
+            ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
             ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
             !for subbasins, set receiving objects for each element (need for parallelization order)
             if (ob(kk)%typ == "sub") then
               isub = ob(kk)%num
-              do ielem = 1, sub_d(isub)%num_tot
-                ielem_db = sub_d(isub)%num(ielem)
-                kk = sub_elem(ielem_db)%obj
+              do ielem = 1, ru_def(isub)%num_tot
+                ielem_db = ru_def(isub)%num(ielem)
+                kk = ru_elem(ielem_db)%obj
                 ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
                 ob(kk)%obtyp_in(jj) = ob(i)%typ
                 ob(kk)%obtypno_in(jj) = ob(i)%props
-                ob(kk)%htyp_in(jj) = ob(i)%ihtyp_out(ii)
+                ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
+                ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
                 ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
               end do
             end if
@@ -401,9 +404,9 @@
                     !! add subbasin elements
                     if (ob(k)%typ == "sub") then
                       isub = ob(k)%props
-                      do jj = 1, sub_d(isub)%num_tot
-                        ielem = sub_d(isub)%num(jj)
-                        iob = sub_elem(ielem)%obj
+                      do jj = 1, ru_def(isub)%num_tot
+                        ielem = ru_def(isub)%num(jj)
+                        iob = ru_elem(ielem)%obj
                         rcv_sum(iob) = rcv_sum(iob) + 1
                       end do
                     end if

@@ -65,7 +65,7 @@
       use climate_module
       use basin_module
       use sd_channel_module
-      use sd_hru_module
+      use hru_lte_module
       use basin_module
       
       integer :: j, iix, iiz, ic, mon, ii
@@ -176,49 +176,16 @@
           if (time%yrs > pco%nyskip) ndmo(i_mo) = ndmo(i_mo) + 1
 
           call climate_control      !! read in/generate weather
-          
-          !! check to determine if scenarios need to be set
-          if (db_mx%sched_up > 0) then
-          do while (time%day == upd_sched(isce)%day .and. time%yrc == upd_sched(isce)%year)
-            if (upd_sched(isce)%typ == 'structure') then
-                do ispu = 1, upd_sched(isce)%num_tot
-                  ielem = upd_sched(isce)%num(ispu)
-                  call structure_set_parms (upd_sched(isce)%name, upd_sched(isce)%str_lu, ielem)
-                end do
-            else if (upd_sched(isce)%typ == 'land_use') then
-              !! change management or entire land use
-            end if
-          isce = isce + 1
-          if (isce > db_mx%sched_up) isce = 1
-          end do
-          end if
 
           !! conditional reset of land use and management
-          if (time%day == 1) then  !only on first day of year
-            do iupd = 1, db_mx%cond_up
-              if (upd_cond(iupd)%typ == 'land_use') then
-                do j = 1, sp_ob%hru
-                  id = upd_cond(iupd)%cond_num
-                  call conditions (id, j)
-                  call actions (id, j)
-                end do
-              end if
+          do iupd = 1, db_mx%cond_up
+            do j = 1, sp_ob%hru
+              id = upd_cond(iupd)%cond_num
+              call conditions (id, j)
+              call actions (id, j)
             end do
-          end if
-          
-          !! conditional reset of channel management
-          if (time%day == 1) then  !only on first day of year
-            do iupd = 1, db_mx%cond_up
-              if (upd_cond(iupd)%typ == 'chan_use') then
-                do j = 1, sp_ob%chandeg
-                  id = upd_cond(iupd)%cond_num
-                  call conditions (id, j)
-                  call actions (id, j)
-                end do
-              end if
-            end do
-          end if
-          
+          end do
+
           !! allocate water for water rights objects
           !call water_allocation
 
@@ -256,7 +223,7 @@
         !! sum landscape output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hru == 'y') then
           !calibrate hru's
-          do ireg = 1, db_mx%lcu_reg
+          do ireg = 1, db_mx%lsu_reg
             do ilu = 1, lscal(ireg)%lum_num
               lscal(ireg)%lum(ilu)%ha = 0.
               lscal(ireg)%lum(ilu)%precip = 0.
@@ -297,7 +264,7 @@
         
         if (cal_codes%hyd_hrul == 'y') then
           !calibrate hru_lte's
-          do ireg = 1, db_mx%lcu_reg
+          do ireg = 1, db_mx%lsu_reg
             do ilu = 1, lscalt(ireg)%lum_num
               lscalt(ireg)%lum(ilu)%ha = 0.
               lscalt(ireg)%lum(ilu)%precip = 0.
@@ -307,13 +274,13 @@
                 !if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%land_use_mgt) then
                   ha_hru = 10. * region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
                   lscalt(ireg)%lum(ilu)%ha = lscalt(ireg)%lum(ilu)%ha + ha_hru
-                  lscalt(ireg)%lum(ilu)%precip = lscalt(ireg)%lum(ilu)%precip + (10. * ha_hru * sdwb_y(ihru)%precip)
-                  lscalt(ireg)%lum(ilu)%sim%srr = lscalt(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * sdwb_y(ihru)%surq_gen)
-                  lscalt(ireg)%lum(ilu)%sim%lfr = lscalt(ireg)%lum(ilu)%sim%lfr + (10. * ha_hru * sdwb_y(ihru)%latq)
-                  lscalt(ireg)%lum(ilu)%sim%pcr = lscalt(ireg)%lum(ilu)%sim%pcr + (10. * ha_hru * sdwb_y(ihru)%perc)
-                  lscalt(ireg)%lum(ilu)%sim%etr = lscalt(ireg)%lum(ilu)%sim%etr + (10. * ha_hru * sdwb_y(ihru)%et)
-                  lscalt(ireg)%lum(ilu)%sim%tfr = lscalt(ireg)%lum(ilu)%sim%tfr + (10. * ha_hru * sdwb_y(ihru)%qtile)
-                  lscalt(ireg)%lum(ilu)%sim%sed = lscalt(ireg)%lum(ilu)%sim%sed + (ha_hru * sdls_y(ihru)%sedyld)
+                  lscalt(ireg)%lum(ilu)%precip = lscalt(ireg)%lum(ilu)%precip + (10. * ha_hru * hltwb_y(ihru)%precip)
+                  lscalt(ireg)%lum(ilu)%sim%srr = lscalt(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * hltwb_y(ihru)%surq_gen)
+                  lscalt(ireg)%lum(ilu)%sim%lfr = lscalt(ireg)%lum(ilu)%sim%lfr + (10. * ha_hru * hltwb_y(ihru)%latq)
+                  lscalt(ireg)%lum(ilu)%sim%pcr = lscalt(ireg)%lum(ilu)%sim%pcr + (10. * ha_hru * hltwb_y(ihru)%perc)
+                  lscalt(ireg)%lum(ilu)%sim%etr = lscalt(ireg)%lum(ilu)%sim%etr + (10. * ha_hru * hltwb_y(ihru)%et)
+                  lscalt(ireg)%lum(ilu)%sim%tfr = lscalt(ireg)%lum(ilu)%sim%tfr + (10. * ha_hru * hltwb_y(ihru)%qtile)
+                  lscalt(ireg)%lum(ilu)%sim%sed = lscalt(ireg)%lum(ilu)%sim%sed + (ha_hru * hltls_y(ihru)%sedyld)
                   !add nutrients
                 !end if
               end do
@@ -346,16 +313,16 @@
               plcal(ireg)%lum(ilu)%sim = plcal_z  !! zero all calibration parameters
               do ihru_s = 1, plcal(ireg)%num_tot
                 ihru = plcal(ireg)%num(ihru_s)
-                if (plcal(ireg)%lum(ilu)%meas%name == sd(ihru)%plant) then
+                if (plcal(ireg)%lum(ilu)%meas%name == hlt(ihru)%plant) then
                   ha_hru = 10. * region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
                   plcal(ireg)%lum(ilu)%ha = plcal(ireg)%lum(ilu)%ha + ha_hru
-                  plcal(ireg)%lum(ilu)%precip = plcal(ireg)%lum(ilu)%precip + (10. * ha_hru * sdwb_y(ihru)%precip)
-                  plcal(ireg)%lum(ilu)%sim%yield = plcal(ireg)%lum(ilu)%sim%yield + (10. * ha_hru * sd(ihru)%yield)
-                  plcal(ireg)%lum(ilu)%sim%npp = plcal(ireg)%lum(ilu)%sim%npp + (10. * ha_hru * sd(ihru)%npp)
-                  plcal(ireg)%lum(ilu)%sim%lai_mx = plcal(ireg)%lum(ilu)%sim%lai_mx + (10. * ha_hru * sd(ihru)%lai_mx)
-                  plcal(ireg)%lum(ilu)%sim%wstress = plcal(ireg)%lum(ilu)%sim%wstress + (10. * ha_hru * sdpw_y(ihru)%strsw)
-                  plcal(ireg)%lum(ilu)%sim%astress = plcal(ireg)%lum(ilu)%sim%astress + (10. * ha_hru * sdpw_y(ihru)%strsa)
-                  plcal(ireg)%lum(ilu)%sim%tstress = plcal(ireg)%lum(ilu)%sim%tstress + (ha_hru * sdpw_y(ihru)%strstmp)
+                  plcal(ireg)%lum(ilu)%precip = plcal(ireg)%lum(ilu)%precip + (10. * ha_hru * hltwb_y(ihru)%precip)
+                  plcal(ireg)%lum(ilu)%sim%yield = plcal(ireg)%lum(ilu)%sim%yield + (10. * ha_hru * hlt(ihru)%yield)
+                  plcal(ireg)%lum(ilu)%sim%npp = plcal(ireg)%lum(ilu)%sim%npp + (10. * ha_hru * hlt(ihru)%npp)
+                  plcal(ireg)%lum(ilu)%sim%lai_mx = plcal(ireg)%lum(ilu)%sim%lai_mx + (10. * ha_hru * hlt(ihru)%lai_mx)
+                  plcal(ireg)%lum(ilu)%sim%wstress = plcal(ireg)%lum(ilu)%sim%wstress + (10. * ha_hru * hltpw_y(ihru)%strsw)
+                  plcal(ireg)%lum(ilu)%sim%astress = plcal(ireg)%lum(ilu)%sim%astress + (10. * ha_hru * hltpw_y(ihru)%strsa)
+                  plcal(ireg)%lum(ilu)%sim%tstress = plcal(ireg)%lum(ilu)%sim%tstress + (ha_hru * hltpw_y(ihru)%strstmp)
                 end if
               end do
             end do  !lum_num
@@ -411,11 +378,11 @@
         end if
 
         do j = 1, sp_ob%hru_lte
-          !! zero yearly balances after using them in soft data calibration (was in sd_hru_output)
-          sdwb_y(j) = hwbz
-          sdnb_y(j) = hnbz
-          sdpw_y(j) = hpwz
-          sdls_y(j) = hlsz
+          !! zero yearly balances after using them in soft data calibration (was in hru_lte_output)
+          hltwb_y(j) = hwbz
+          hltnb_y(j) = hnbz
+          hltpw_y(j) = hpwz
+          hltls_y(j) = hlsz
         end do
         
         do ich = 1, sp_ob%chandeg
@@ -431,8 +398,8 @@
           hls_y(j) = hlsz
           
           !! compute biological mixing at the end of every year
-          !! if (biomix(j) > .001) call mgt_tillmix (j,biomix(j))
-          if (hru(j)%hyd%biomix > .001) call mgt_newtillmix (j,hru(j)%hyd%biomix)
+          !! if (biomix(j) > .001) call mgt_tillmix (j, biomix(j), 0)
+          if (hru(j)%hyd%biomix > 1.e-6) call mgt_newtillmix (j, hru(j)%hyd%biomix, 0)
 
           !! update sequence number for year in rotation to that of
           !! the next year and reset sequence numbers for operations
@@ -480,7 +447,7 @@
         !! average output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%sed == 'y') then
           !average annual for hru calibration
-          do ireg = 1, db_mx%lcu_reg
+          do ireg = 1, db_mx%lsu_reg
             do ilu = 1, lscal(ireg)%lum_num
               if (lscal(ireg)%lum(ilu)%nbyr > 0) then
                 !! convert back to mm, t/ha, kg/ha
@@ -500,7 +467,7 @@
         
         if (cal_codes%hyd_hrul == 'y') then
           !average annual for hru_lte calibration
-          do ireg = 1, db_mx%lcu_reg
+          do ireg = 1, db_mx%lsu_reg
             do ilu = 1, lscalt(ireg)%lum_num
               if (lscalt(ireg)%lum(ilu)%nbyr > 0) then
                 !! convert back to mm, t/ha, kg/ha

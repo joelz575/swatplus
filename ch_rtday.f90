@@ -69,67 +69,65 @@
 
       wtrin = ob(icmd)%hin%flo
 
-!! calculate volume of water in reach
+      !! calculate volume of water in reach
       vol = wtrin + ch(jrch)%rchstor
 
-!! Find average flowrate in a day
+      !! Find average flowrate in a day
       volrt = vol / 86400
 
-!! Find maximum flow capacity of the channel at bank full
+      !! Find maximum flow capacity of the channel at bank full
       c = ch_hyd(jhyd)%side
-	p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
-	rh = ch(jrch)%phi(1) / p
-	maxrt = Qman(ch(jrch)%phi(1), rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
-
-      sdti = 0.
-	rchdep = 0.
-	p = 0.
-	rh = 0.
-	vc = 0.
-
-!! If average flowrate is greater than than the channel capacity at bank full
-!! then simulate flood plain flow else simulate the regular channel flow
-      if (volrt > maxrt) then
-	  rcharea = ch(jrch)%phi(1)
-	  rchdep = ch_hyd(jhyd)%d
 	  p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
 	  rh = ch(jrch)%phi(1) / p
-	  sdti = maxrt
-	  adddep = 0
-	!! find the crossectional area and depth for volrt
-	!! by iteration method at 1cm interval depth
-	!! find the depth until the discharge rate is equal to volrt
-      itermx = 0
-	  Do While (sdti < volrt)
+	  maxrt = Qman(ch(jrch)%phi(1), rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
+
+      sdti = 0.
+	  rchdep = 0.
+	  p = 0.
+	  rh = 0.
+	  vc = 0.
+
+      !! If average flowrate is greater than than the channel capacity at bank full
+      !! then simulate flood plain flow else simulate the regular channel flow
+      if (volrt > maxrt) then
+	    rcharea = ch(jrch)%phi(1)
+	    rchdep = ch_hyd(jhyd)%d
+	    p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
+	    rh = ch(jrch)%phi(1) / p
+	    sdti = maxrt
+	    adddep = 0
+	    !! find the crossectional area and depth for volrt
+	    !! by iteration method at 1cm interval depth
+	    !! find the depth until the discharge rate is equal to volrt
+        itermx = 0
+	    Do While (sdti < volrt)
           adddep = adddep + 0.01
-          addarea = rcharea + ((ch_hyd(jhyd)%w * 5) + 4 * adddep) *      & 
-                                                         adddep
-          addp = p + (ch_hyd(jhyd)%w * 4) + 2. * adddep * Sqrt(1. + 4 *  & 
-                                                      4)
-	    rh = addarea / addp
+          addarea = rcharea + ((ch_hyd(jhyd)%w * 5) + 4 * adddep) * adddep
+          addp = p + (ch_hyd(jhyd)%w * 4) + 2. * adddep * Sqrt(1. + 4 * 4)
+	      rh = addarea / addp
           sdti = Qman(addarea, rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
           itermx = itermx + 1
           if (itermx > 100) exit
-	  end do
-	  rcharea = addarea
-	  rchdep = ch_hyd(jhyd)%d + adddep
-	  p = addp
-	  sdti = volrt
-	else
-	!! find the crossectional area and depth for volrt
-	!! by iteration method at 1cm interval depth
-	!! find the depth until the discharge rate is equal to volrt
-	  Do While (sdti < volrt)
-	    rchdep = rchdep + 0.01
-	    rcharea = (ch(jrch)%phi(6) + c * rchdep) * rchdep
-	    p = ch(jrch)%phi(6) + 2. * rchdep * Sqrt(1. + c * c)
-	    rh = rcharea / p
+	    end do
+	    rcharea = addarea
+	    rchdep = ch_hyd(jhyd)%d + adddep
+	    p = addp
+	    sdti = volrt
+	  else
+	  !! find the crossectional area and depth for volrt
+	  !! by iteration method at 1cm interval depth
+	  !! find the depth until the discharge rate is equal to volrt
+	    Do While (sdti < volrt)
+	      rchdep = rchdep + 0.01
+	      rcharea = (ch(jrch)%phi(6) + c * rchdep) * rchdep
+	      p = ch(jrch)%phi(6) + 2. * rchdep * Sqrt(1. + c * c)
+	      rh = rcharea / p
           sdti = Qman(rcharea, rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
-	  end do
-	  sdti = volrt
-	end if
+	    end do
+	    sdti = volrt
+	  end if
 
-!! calculate top width of channel at water level
+      !! calculate top width of channel at water level
       topw = 0.
       if (rchdep <= ch_hyd(jhyd)%d) then
         topw = ch(jrch)%phi(6) + 2. * rchdep * c
@@ -142,119 +140,116 @@
 
       if (sdti > 0.) then
         !! calculate velocity and travel time
-  	  vc = sdti / rcharea  
+  	    vc = sdti / rcharea  
         ch(jrch)%vel_chan = vc
-	  rttime = ch_hyd(jhyd)%l * 1000. / (3600. * vc)
+	    rttime = ch_hyd(jhyd)%l * 1000. / (3600. * vc)
 
         !! calculate volume of water leaving reach on day
         scoef = 0.
- 	  rtwtr = 0.
+ 	    rtwtr = 0.
         scoef = 2. * det / (2. * rttime + det)
         if (scoef > 1.) scoef = 1.
 
         rtwtr = scoef * (wtrin + ch(jrch)%rchstor)
 
-!! calculate amount of water in channel at end of day
-      ch(jrch)%rchstor = ch(jrch)%rchstor + wtrin - rtwtr
-!! Add if statement to keep rchstor from becoming negative
-      if (ch(jrch)%rchstor < 0.0) ch(jrch)%rchstor = 0.0
+        !! calculate amount of water in channel at end of day
+        ch(jrch)%rchstor = ch(jrch)%rchstor + wtrin - rtwtr
+        !! Add if statement to keep rchstor from becoming negative
+        if (ch(jrch)%rchstor < 0.0) ch(jrch)%rchstor = 0.0
 
-!! transmission and evaporation losses are proportionally taken from the 
-!! channel storage and from volume flowing out
+        !! transmission and evaporation losses are proportionally taken from the 
+        !! channel storage and from volume flowing out
 
        !! calculate transmission losses
-	  rttlc = 0.
+	    rttlc = 0.
 
-	  if (rtwtr > 0.) then
+	    if (rtwtr > 0.) then
 
-	!!  Total time in hours to clear the water
+	      !!  Total time in hours to clear the water
           det = min(det, rttime)
           rttlc = det * ch_hyd(jhyd)%k * ch_hyd(jhyd)%l * p
           rttlc2 = rttlc * ch(jrch)%rchstor / (rtwtr + ch(jrch)%rchstor)
 
-	    if (ch(jrch)%rchstor <= rttlc2) then
-	      rttlc2 = min(rttlc2, ch(jrch)%rchstor)
-	      ch(jrch)%rchstor = ch(jrch)%rchstor - rttlc2
-	      rttlc1 = rttlc - rttlc2
-	      if (rtwtr <= rttlc1) then
-	        rttlc1 = min(rttlc1, rtwtr)
-	        rtwtr = rtwtr - rttlc1
+	      if (ch(jrch)%rchstor <= rttlc2) then
+	        rttlc2 = min(rttlc2, ch(jrch)%rchstor)
+	        ch(jrch)%rchstor = ch(jrch)%rchstor - rttlc2
+	        rttlc1 = rttlc - rttlc2
+	        if (rtwtr <= rttlc1) then
+	          rttlc1 = min(rttlc1, rtwtr)
+	          rtwtr = rtwtr - rttlc1
+	        else
+	          rtwtr = rtwtr - rttlc1
+	        end if
 	      else
-	        rtwtr = rtwtr - rttlc1
+	        ch(jrch)%rchstor = ch(jrch)%rchstor - rttlc2
+	        rttlc1 = rttlc - rttlc2
+	        if (rtwtr <= rttlc1) then
+	          rttlc1 = min(rttlc1, rtwtr)
+	          rtwtr = rtwtr - rttlc1
+	        else
+	          rtwtr = rtwtr - rttlc1
+            end if
 	      end if
-	    else
-	      ch(jrch)%rchstor = ch(jrch)%rchstor - rttlc2
-	      rttlc1 = rttlc - rttlc2
-	      if (rtwtr <= rttlc1) then
-	        rttlc1 = min(rttlc1, rtwtr)
-	        rtwtr = rtwtr - rttlc1
-	      else
-	        rtwtr = rtwtr - rttlc1
-	      end if
-	    end if
-	  rttlc = rttlc1 + rttlc2
+	      rttlc = rttlc1 + rttlc2
         end if
 
 
         !! calculate evaporation
-	  rtevp = 0.
-       if (rtwtr > 0.) then
-
+	    rtevp = 0.
+        if (rtwtr > 0.) then
           aaa = bsn_prm%evrch * pet_day / 1000.
-
-	    if (rchdep <= ch_hyd(jhyd)%d) then
+	      if (rchdep <= ch_hyd(jhyd)%d) then
             rtevp = aaa * ch_hyd(jhyd)%l * 1000. * topw
-	    else
-		  if (aaa <=  (rchdep - ch_hyd(jhyd)%d)) then
+	      else
+		    if (aaa <=  (rchdep - ch_hyd(jhyd)%d)) then
               rtevp = aaa * ch_hyd(jhyd)%l * 1000. * topw
-	      else
-	        rtevp = (rchdep - ch_hyd(jhyd)%d) 
-	        rtevp = rtevp + (aaa - (rchdep - ch_hyd(jhyd)%d)) 
+	        else
+	          rtevp = (rchdep - ch_hyd(jhyd)%d) 
+	          rtevp = rtevp + (aaa - (rchdep - ch_hyd(jhyd)%d)) 
               topw = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * c           
-	        rtevp = rtevp * ch_hyd(jhyd)%l * 1000. * topw
+	          rtevp = rtevp * ch_hyd(jhyd)%l * 1000. * topw
+	        end if
 	      end if
-	    end if
 
-	    rtevp2 = rtevp * ch(jrch)%rchstor / (rtwtr + ch(jrch)%rchstor)
+	      rtevp2 = rtevp * ch(jrch)%rchstor / (rtwtr + ch(jrch)%rchstor)
 
-	    if (ch(jrch)%rchstor <= rtevp2) then
-	      rtevp2 = min(rtevp2, ch(jrch)%rchstor)
-	      ch(jrch)%rchstor = ch(jrch)%rchstor - rtevp2
-	      rtevp1 = rtevp - rtevp2
-	      if (rtwtr <= rtevp1) then
-	        rtevp1 = min(rtevp1, rtwtr)
-	        rtwtr = rtwtr - rtevp1
+	      if (ch(jrch)%rchstor <= rtevp2) then
+	        rtevp2 = min(rtevp2, ch(jrch)%rchstor)
+	        ch(jrch)%rchstor = ch(jrch)%rchstor - rtevp2
+	        rtevp1 = rtevp - rtevp2
+	        if (rtwtr <= rtevp1) then
+	          rtevp1 = min(rtevp1, rtwtr)
+	          rtwtr = rtwtr - rtevp1
+	        else
+	          rtwtr = rtwtr - rtevp1
+	        end if
 	      else
-	        rtwtr = rtwtr - rtevp1
+	        ch(jrch)%rchstor = ch(jrch)%rchstor - rtevp2
+	        rtevp1 = rtevp - rtevp2
+	        if (rtwtr <= rtevp1) then
+	          rtevp1 = min(rtevp1, rtwtr)
+	          rtwtr = rtwtr - rtevp1
+	        else
+	          rtwtr = rtwtr - rtevp1
+	        end if
 	      end if
-	    else
-	      ch(jrch)%rchstor = ch(jrch)%rchstor - rtevp2
-	      rtevp1 = rtevp - rtevp2
-	      if (rtwtr <= rtevp1) then
-	        rtevp1 = min(rtevp1, rtwtr)
-	        rtwtr = rtwtr - rtevp1
-	      else
-	        rtwtr = rtwtr - rtevp1
-	      end if
-	    end if
-	  rtevp = rtevp1 + rtevp2
+	      rtevp = rtevp1 + rtevp2
         end if
 
       else
         rtwtr = 0.
         sdti = 0.
-	  ch(jrch)%rchstor = 0.
-	  ch(jrch)%vel_chan = 0.
+	    ch(jrch)%rchstor = 0.
+	    ch(jrch)%vel_chan = 0.
         ch(jrch)%flwin = 0.
         ch(jrch)%flwout = 0.
       end if
 
-!! precipitation on reach is not calculated because area of HRUs 
-!! in subbasin sums up to entire subbasin area (including channel
-!! area) so precipitation is accounted for in subbasin loop
+      !! precipitation on reach is not calculated because area of HRUs 
+      !! in subbasin sums up to entire subbasin area (including channel
+      !! area) so precipitation is accounted for in subbasin loop
 
-!!      volinprev(jrch) = wtrin
-!!	qoutprev(jrch) = rtwtr
+      !! volinprev(jrch) = wtrin; qoutprev(jrch) = rtwtr
 
       if (rtwtr < 0.) rtwtr = 0.
       if (ch(jrch)%rchstor < 0.) ch(jrch)%rchstor = 0.

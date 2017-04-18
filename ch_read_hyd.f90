@@ -20,7 +20,7 @@
        if (eof < 0) exit
        read (105,*,iostat=eof) header
        if (eof < 0) exit
-        do while (eof >= 0)
+        do while (eof == 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
           imax = Max(imax,i)
@@ -56,7 +56,7 @@
        read (105,*,iostat=eof) header
        if (eof < 0) exit
        mch_i = 0
-        do while (eof >= 0)
+        do while (eof == 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
           imax = Max(imax,i)
@@ -91,7 +91,7 @@
        if (eof < 0) exit
        read (105,*,iostat=eof) header
        if (eof < 0) exit
-        do while (eof >= 0)
+        do while (eof == 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
           imax = Max(imax,i)

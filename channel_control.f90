@@ -71,10 +71,6 @@
         end do
       end if  
 
-!! route overland flow
-!!      iru_sub = inum4   !!routing unit number
-!!      call routels(iru_sub)
-
       ch(jrch)%vel_chan = 0.
       ch(jrch)%dep_chan = 0.
 

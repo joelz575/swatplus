@@ -1,4 +1,4 @@
-      subroutine mgt_harvestop
+      subroutine mgt_harvestop (jj, iplant, iharvop)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the harvest operation (no kill)
@@ -82,6 +82,7 @@
       use organic_mineral_mass_module
       
       integer :: j, k
+      integer, intent (in) :: jj, iplant, iharvop 
 
 !!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f
 !!    real :: hiad1, wur, yield, clip, yieldn, yieldp, clipn, clipp
@@ -115,10 +116,13 @@
       !!add by zhang
       !!===================
 
-      j = ihru
+      j = jj
+      ipl = iplant
             
       idp = pcom(j)%plcur(ipl)%idplt
-
+      hi_ovr = harvop_db(iharvop)%hi_ovr
+      harveff = harvop_db(iharvop)%eff
+      
       !pl_tot => hru(j)%pl_tot(ipl)
       !veg_ag => hru(j)%veg_ag(ipl)
       !grain => hru(j)%grain(ipl)
@@ -159,13 +163,12 @@
         end if
       end if
 
-
 !! check if yield is from above or below ground
       yield = 0.
       if (pldb(idp)%hvsti > 1.001) then
         yield = pcom(j)%plm(ipl)%mass * (1. - 1. / (1. + hiad1))
       else
-        yield = (1.-pcom(j)%plg(ipl)%rwt)*pcom(j)%plm(ipl)%mass * hiad1
+        yield = (1.-pcom(j)%plg(ipl)%rwt) * pcom(j)%plm(ipl)%mass * hiad1
       endif
       if (yield < 0.) yield = 0.
 

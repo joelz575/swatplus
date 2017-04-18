@@ -4,7 +4,7 @@
       use jrw_datalib_module
       use hydrograph_module
       use parm
-      use sd_hru_module
+      use hru_lte_module
 
       character (len=80) :: titldum, header
       integer :: eof
@@ -47,7 +47,7 @@
                
             !! xwalk regions with region()%name - save soft ls data for region
             do icalreg = 1, lscal(i)%num_reg
-              do ireg = 1, db_mx%lcu_reg
+              do ireg = 1, db_mx%lsu_reg
                 if (lscal(i)%reg(icalreg) == region(ireg)%name) then
                   region(ireg)%lscal = i
                   lscal(i)%ireg(icalreg) = i
@@ -59,7 +59,7 @@
             do iob = 1, region(i)%num_tot
               ihru = region(i)%num(iob)
               if (ihru <= sp_ob%hru) hru(ihru)%region = lscal(i)%name
-              if (ihru <= sp_ob%hru_lte) sd(ihru)%region = lscal(i)%name
+              if (ihru <= sp_ob%hru_lte) hlt(ihru)%region = lscal(i)%name
             end do
             
 !            do icalreg = 1, lscal(i)%num_reg

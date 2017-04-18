@@ -22,7 +22,7 @@
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_res
          if (eof < 0) exit
-         read (107,*,iostat=eof) name, in_sub
+         read (107,*,iostat=eof) name, in_ru
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_hru
          if (eof < 0) exit
@@ -49,8 +49,6 @@
          read (107,*,iostat=eof) name, in_parmdb
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_ops
-         if (eof < 0) exit
-         read (107,*,iostat=eof) name, in_sch
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_lum
          if (eof < 0) exit

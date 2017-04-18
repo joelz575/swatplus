@@ -1,4 +1,4 @@
-      module sd_hru_module
+      module hru_lte_module
       
       use hydrograph_module
       use time_module
@@ -59,7 +59,7 @@
         real :: uslep = 0.          !none          |USLE equation support practice (P) factor
         real :: uslels = 0.         !none          |USLE equation length slope (LS) factor
       end type swatdeg_hru_data
-      type (swatdeg_hru_data), dimension (:), allocatable :: sd_db
+      type (swatdeg_hru_data), dimension (:), allocatable :: hlt_db
       
       type swatdeg_hru_dynamic
         character(len=16) :: name
@@ -67,7 +67,7 @@
         integer :: obj_no
         character(len=16) :: region
         character(len=16) :: plant           !              |plant type (as listed in plants.plt)
-        integer :: iplant = 1                !              |plant number xwalked from sd_db()%plant and plants.plt
+        integer :: iplant = 1                !              |plant number xwalked from hlt_db()%plant and plants.plt
         real :: km2 = 0.                     !km^2          |drainage area
         real :: cn2 = 0.                     !              |condition II curve number (used in calibration)
         real :: cn3_swf = 0.                 !none          |soil water factor for cn3 (used in calibration)
@@ -105,13 +105,13 @@
         real :: aet = 0.                     !mm            |sum of actual et during growing season (for hi water stress)
         real :: pet = 0.                     !mm            |sum of potential et during growing season (for hi water stress)
       end type swatdeg_hru_dynamic
-      type (swatdeg_hru_dynamic), dimension (:), allocatable :: sd
-      type (swatdeg_hru_dynamic), dimension (:), allocatable :: sd_init
+      type (swatdeg_hru_dynamic), dimension (:), allocatable :: hlt
+      type (swatdeg_hru_dynamic), dimension (:), allocatable :: hlt_init
                
       contains
 !! routines for swatdeg_hru module
-      include 'sd_hru_read.f90'
-      include 'sd_hru_control.f90'
-      include 'sd_hru_output.f90'
+      include 'hru_lte_read.f90'
+      include 'hru_lte_control.f90'
+      include 'hru_lte_output.f90'
 
-      end module sd_hru_module
+      end module hru_lte_module

@@ -40,12 +40,10 @@
         
         npmx = obcs(icmd)%num_pests
         do ipest = 1, npmx
-         hru(ihru)%pst(ipest)%num_db =                                  &                               
-                                 pesti_db(ipest_db)%pesti(ipest)%num_db
-         hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt
-         soil(ihru)%ly(1)%pst(ipest) =                                   &                                
-                                   pesti_db(ipest_db)%pesti(ipest)%soil
-         hru(ihru)%pst(ipest)%enr = pesti_db(ipest_db)%pesti(ipest)%enr
+          hru(ihru)%pst(ipest)%num_db = pesti_db(ipest_db)%pesti(ipest)%num_db
+          hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt
+          soil(ihru)%ly(1)%pst(ipest) = pesti_db(ipest_db)%pesti(ipest)%soil
+          hru(ihru)%pst(ipest)%enr = pesti_db(ipest_db)%pesti(ipest)%enr
         end do
 
       end do   !hru loop

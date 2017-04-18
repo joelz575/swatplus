@@ -1,4 +1,4 @@
-      module sd_channel_module
+    module sd_channel_module
 
       use hydrograph_module
       use time_module

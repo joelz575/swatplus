@@ -13,6 +13,8 @@
         integer :: pothole = 0        !! none     |number of potholes
         integer :: sdr = 0            !! none     |number of types of susbsurface drain systems
         integer :: str_ops = 0        !! none     |number of management ops
+        integer :: urban = 0          !! none     |number of urban land use types in urban.urb
+        integer :: ovn = 0            !! none     |number of overland flow n types in ovn_table.lum
         integer :: septic = 0         !! none     |number of types of septic systems
         integer :: plantparm = 0      !! none     |number of total plants in plants.plt
         integer :: fertparm = 0       !! none     |number of total fertilizer in fertilizer.frt
@@ -81,6 +83,12 @@
         integer :: res_pst
         integer :: res_weir
         integer :: ch_surf
+        integer :: ch_dat
+        integer :: ch_init
+        integer :: ch_hyd
+        integer :: ch_sed
+        integer :: ch_nut
+        integer :: ch_pst
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
 
@@ -151,7 +159,7 @@
       type (tillage_db), dimension(:),allocatable, save :: tilldb  
       
       type urban_db
-        character(len=4) :: urbnm
+        character(len=16) :: urbnm
         real :: fimp = 0.05        !! fraction          |fraction of HRU area that is imp
         real :: fcimp = 0.05       !! fraction          |fraction of HRU that is classified as directly connected imp
         real :: curbden = 0.0      !! km/ha             |curb length density              
@@ -396,8 +404,8 @@
         integer :: jday = 0
         integer :: year = 0
         real :: husc = 0.
-        character(len=10) :: op_char
-        character (len=10) :: op_plant
+        character(len=16) :: op_char
+        character (len=16) :: op_plant
         integer :: op1 = 0
         integer :: op2 = 0              !! |none          |plant number in community for hu scheduling
         real :: op3 = 0                 !! |none          |application amount (mm or kg/ha)
@@ -768,14 +776,19 @@
         character (len=16) :: name = " "
         character (len=16) :: plant_cov = ""
         character (len=16) :: mgt_ops = ""
-        character (len=16) :: cn_lu     !! none     | land use for curve number table
-        character (len=16) :: cons_prac !! none     | conservation practice from table
-        integer :: urb_lu = 0           !! none     | urban land type identification number
-        integer :: iurban = 0           !! none     | urban simulation code 
-                                        !!          | 0  no urban sections in HRU
-                                        !!          | 1  urban sections in HRU, simulate using USGS regression eqs
-                                        !!          | 2  urban sections in HRU, simulate using build up/wash off alg
-        real :: ovn = 0.1               !! none     | Manning's "n" value for overland flow
+        character (len=16) :: cn_lu      !! none     | land use for curve number table (cntable.lum)
+        character (len=16) :: cons_prac  !! none     | conservation practice from table (c0ns_precatice.lum)
+        character (len=16) :: urb_lu     !! none     | type of urban land use- ie. residential, industrial, etc (urban.urb)
+        character (len=16) :: urb_ro     !! none     | urban runoff model
+                                         !!          | "usgs_reg", simulate using USGS regression eqs
+                                         !!          | "buildup_washoff", simulate using build up/wash off alg       
+        character (len=16) :: ovn        !! none     | Manning's "n" land use type for overland flow (ovn_table.lum)
+        !integer :: urb_lu = 0           !! none     | urban land type identification number
+        !integer :: iurban = 0           !! none     | urban simulation code 
+        !                                !!          | 0  no urban sections in HRU
+        !                                !!          | 1  urban sections in HRU, simulate using USGS regression eqs
+        !                                !!          | 2  urban sections in HRU, simulate using build up/wash off alg
+        !real :: ovn = 0.1               !! none     | Manning's "n" value for overland flow
         character (len=25) :: tiledrain
         character (len=25) :: septic
         character (len=25) :: fstrip
@@ -809,6 +822,14 @@
         real :: sl_len_mx = 1.0             !m      !maximum slope length
       end type conservation_practice_table
       type (conservation_practice_table), dimension (:), allocatable :: cons_prac
+                       
+      type overlandflow_n_table
+        character(len=16) :: name                   !name of conservation practice
+        real :: ovn = 0.5                           !overland flow mannings n - mean
+        real :: ovn_min = 0.5                       !overland flow mannings n - min
+        real :: ovn_max = 0.5                       !overland flow mannings n - max
+      end type overlandflow_n_table
+      type (overlandflow_n_table), dimension (:), allocatable :: overland_n
       
       type subsurface_drainage
         character(len=13) :: name = "default"
@@ -1007,7 +1028,6 @@
       type (pcom_crosswalk), dimension(:), allocatable :: pcom_xw
       
       character (len=20), dimension(:), allocatable :: plnt_xw                     
-      character (len=20), dimension(:), allocatable :: soil_xw
     
       type routing_nut_data         ! used for 2-stage ditch in chandeg and overland flow
         character(len=16) :: name = 'Drainage_Ditch'
@@ -1058,6 +1078,20 @@
         real :: bactp             !# cfu/100ml   |persistent bacteria stored in res
       end type channel_initial
       type (channel_initial), dimension(:),allocatable :: ch_init
+      
+      
+      type channel_data_char_input
+        character(len=13) :: name = "default"
+        character(len=16) :: init                       !initial data-points to initial.res
+        character(len=16) :: hyd                        !points to hydrology.res for hydrology inputs
+        character(len=16) :: sed                        !sediment inputs-points to sediment.res
+        character(len=16) :: nut                        !nutrient inputs-points to nutrient.res
+        character(len=16) :: pst                        !pesticide inputs-points to pesticide.res
+        character(len=16) :: ls_lnk                     !landscape linkage-points to ch_ls_link?
+        character(len=16) :: aqu_lnk                    !aquifer linkage-points to ch_aqu_link
+      end type channel_data_char_input
+      type (channel_data_char_input), dimension(:), allocatable :: ch_dat_c
+
 
       type channel_data
         character(len=13) :: name = "default"
@@ -1070,7 +1104,7 @@
         integer :: aqu_lnk = 0                !aquifer linkage-points to ch_aqu_link
       end type channel_data
       type (channel_data), dimension(:), allocatable :: ch_dat
-      
+            
       type channel_hyd_data
         !variables are conditional on res_dat()%hyd = 0 for reservoirs and 1 for hru impounding
         !surface areas are ha for 0 and frac of hru for 1; volumes are ha-m for 0 and mm for 1
@@ -1346,10 +1380,10 @@
       include 'res_nut_read.f90'
       include 'res_pst_read.f90'
       include 'res_weir_read.f90'
-      include 'ch_read_hyd.f90'
-      include 'ch_read_sed.f90'
-      include 'ch_read_nut.f90'
-      include 'ch_read_pst.f90'
+      include 'ch_hyd_read.f90'
+      include 'ch_sed_read.f90'
+      include 'ch_nut_read.f90'
+      include 'ch_pst_read.f90'
       include 'rte_read_nut.f90'
       
       end module jrw_datalib_module 

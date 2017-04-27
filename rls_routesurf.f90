@@ -15,20 +15,24 @@
       j = ihru
 
 !!    compute infiltration from surface runon to next landscape unit
-      ls_overq = ob(iob)%hin%flo    !/ (10. * hru(j)%area_ha) 
-      if (ls_overq > 1.e-6) then
-        qs = ls_overq / 24.   !mm/hr
-        vs = (qs ** .4) * (hru(j)%topo%slope ** .3) / (hru(j)%luse%ovn ** .6)
-        if (vs > 1.e-6) then
-          trt = hru(j)%topo%slope_len / (3600. * vs)
-          inflrout = soil(j)%phys(1)%k * trt
-          inflrout = Min (inflrout, ls_overq)
-        else
-          inflrout = ls_overq
-        end if
-        ht1%flo = inflrout
-        ht2%flo = ls_overq - inflrout
-      end if
+      ls_overq = ob(iob)%hin%flo        !/ (10. * hru(j)%area_ha)   ! m3/10*ha = mm
+      precipday = precipday + ls_overq
+      
+!!    compute infiltration from surface runon to next landscape unit
+      !ls_overq = ob(iob)%hin%flo    !/ (10. * hru(j)%area_ha) 
+      !if (ls_overq > 1.e-6) then
+      !  qs = ls_overq / 24.   !mm/hr
+      !  vs = (qs ** .4) * (hru(j)%topo%slope ** .3) / (hru(j)%luse%ovn ** .6)
+      !  if (vs > 1.e-6) then
+      !    trt = hru(j)%topo%slope_len / (3600. * vs)
+      !    inflrout = soil(j)%phys(1)%k * trt
+      !    inflrout = Min (inflrout, ls_overq)
+      !  else
+      !    inflrout = ls_overq
+      !  end if
+      !  ht1%flo = inflrout
+      !  ht2%flo = ls_overq - inflrout
+      !end if
       
 !!    sediment deposition across the landscape
       sed = ob(iob)%hin%sed / hru(j)%area_ha

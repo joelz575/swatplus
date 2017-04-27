@@ -1,21 +1,21 @@
-      subroutine urbanparm_read
+      subroutine overland_n_read
       
       use input_file_module
+      use jrw_datalib_module
       
       character (len=80) :: titldum
       character (len=80) :: header
-      character (len=13) :: urbandb
-      integer :: eof, imax
+      integer :: eof, i, imax
       
       eof = 0
       imax = 0
       
-      inquire (file=in_parmdb%urban_urb, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%urban_urb == 'null') then
-          allocate (urbdb(0:0))
+      inquire (file=in_lum%ovn_lum, exist=i_exist)
+      if (i_exist == 0 .or. in_lum%ovn_lum == 'null') then
+          allocate (overland_n(0:0))
       else
       do
-        open (108,file=in_parmdb%urban_urb)
+        open (108,file=in_lum%ovn_lum)
         read (108,*,iostat=eof) titldum
         if (eof < 0) exit
         read (108,*,iostat=eof) header
@@ -26,22 +26,22 @@
             imax = imax + 1
           end do
           
-        allocate (urbdb(0:imax)) 
+        allocate (overland_n(0:imax)) 
         
         rewind (108)
         read (108,*) titldum
         read (108,*) header
             
-        do iu = 1, imax
-           read (108,*,iostat=eof) urbdb(iu)
+         do il = 1, imax
+           read (108,*,iostat=eof) overland_n(il)
            if (eof < 0) exit
          end do
        exit
       enddo
       endif
 
-      db_mx%urban = imax
+      db_mx%ovn = imax
       
       close (108)
       return
-      end subroutine urbanparm_read
+      end subroutine overland_n_read

@@ -145,7 +145,7 @@
          end if  
 
 	   !! Urban Impervious cover 
-	   if (hru(j)%luse%iurban>0) then
+	   if (hru(j)%luse%urb_lu > 0) then
 	      !runoff from pervious area
 	      hhqday(j,k-1) = hhqday(j,k-1) * (1. - urbdb(ulu)%fcimp) 
            

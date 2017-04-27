@@ -45,8 +45,6 @@
         hru(j)%bmpuser = lum_str(ilu)%bmpuser
         hru(j)%luse%cn_lu = lum_str(ilu)%cn_lu
         hru(j)%luse%cons_prac = lum_str(ilu)%cons_prac
-        hru(j)%luse%urb_lu = lum(ilu)%urb_lu
-        hru(j)%luse%ovn = lum(ilu)%ovn
 
       !! allocate plants
         ipl_com(j) = icom
@@ -151,6 +149,25 @@
         hru(ihru)%lumv%usle_ls = (hru(ihru)%topo%slope_len / 22.128) ** xm *          & 
                       (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
         hru(ihru)%lumv%usle_p = cons_prac(icp)%pfac
+        
+        !! xwalk urban land use type with urban name in urban.urb
+        ilum = hru(ihru)%land_use_mgt
+        hru(ihru)%luse%urb_ro = lum(ilum)%urb_ro
+        do idb = 1, db_mx%urban
+          if (lum(ilum)%urb_lu == urbdb(idb)%urbnm) then
+            hru(ihru)%luse%urb_lu = idb
+            exit
+          endif
+        end do
+        
+        !! xwalk overland n with name in ovn_table.lum
+        ilum = hru(ihru)%land_use_mgt
+        do idb = 1, db_mx%ovn
+          if (lum(ilum)%ovn == overland_n(idb)%name) then
+            hru(ihru)%luse%ovn = overland_n(idb)%ovn
+            exit
+          endif
+        end do
         
         !! set parameters for structural land use/managment
         if (lum(ilu)%tiledrain /= 'null') then

@@ -138,6 +138,7 @@
       if (pco%jd_end == 0) pco%jd_end = 366
       if (pco%yr_start == 0) pco%yr_start = time%yrc
       if (pco%yr_end == 0) pco%yr_end = time%yrc + time%nbyr
+      if (pco%interval <= 0) pco%interval = 1
       int_print = pco%interval - 1  !incremented on first day of print period triggering print
             
       return

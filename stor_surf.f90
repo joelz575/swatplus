@@ -91,8 +91,13 @@
           ressolpc = res(jres)%solp / (res(jres)%flo+.1) * 1000.
           sedcon = res(jres)%sed * 1.e6
           
-          res_d(jres)%flowi = flwi / 86400. 
-          res_d(jres)%flowo = flwo / 86400.
+          res_d(jres)%vol = res(jres)%flo / 10000.      !m^3 -> ha-m
+          res_d(jres)%area_ha = res_ob(jres)%area_ha
+          res_d(jres)%flowi = flwi / 10000.             !m^3 -> ha-m
+          res_d(jres)%flowo = flwo / 10000.             !m^3 -> ha-m
+          res_d(jres)%ev = resev / 10000.               !m^3 -> ha-m
+          res_d(jres)%sep = ressep / 10000.             !m^3 -> ha-m
+          res_d(jres)%pcp = respcp / 10000.             !m^3 -> ha-m
           res_d(jres)%sedi = sedi 
           res_d(jres)%sedo = sedo
           res_d(jres)%sedcon = sedcon
@@ -106,11 +111,6 @@
           res_d(jres)%pesto = pesto
           res_d(jres)%pstcon = pstcon
           res_d(jres)%spstcon = spstcon
-          res_d(jres)%ev = resev
-          res_d(jres)%sep = ressep
-          res_d(jres)%pcp = respcp
-          res_d(jres)%flwim3 = flwim3
-          res_d(jres)%flwom3 = flwom3
           res_d(jres)%orgni = orgni
           res_d(jres)%orgno = orgno
           res_d(jres)%orgpi = orgpi

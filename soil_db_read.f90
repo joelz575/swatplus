@@ -15,7 +15,6 @@
       if (i_exist == 0 .or. in_sol%soils_sol == 'null') then
         allocate (soildb(0:0))
         allocate (soildb(0)%ly(0:0))
-        allocate (soil_xw(0:0))
       else
         do  
           open (107,file=in_sol%soils_sol)
@@ -30,7 +29,6 @@
             end do
           
           allocate (soildb(0:imax))
-          allocate (soil_xw(0:imax))
           
         rewind (107)
         read (107,*) titldum
@@ -56,9 +54,7 @@
         soildb(isol)%ly(j)%alb, soildb(isol)%ly(j)%usle_k,               &           
         soildb(isol)%ly(j)%ec, soildb(isol)%ly(j)%cal,                   &           
         soildb(isol)%ly(j)%ph, j = 1, mlyr) 
-       
-        !! soils.sol
-        soil_xw(isol) = soildb(isol)%s%snam
+
         if (eof < 0) exit
         end do
         exit

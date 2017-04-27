@@ -339,13 +339,12 @@
           character(len=15) :: name
           integer :: cn_lu = 0
           integer :: cons_prac = 0
-          real :: usle_p = 0.           !! none           USLE equation support practice (P) factor daily
-          integer :: iurban = 0         !! none           urban simulation code:
-                                        !!                 |0  no urban sections in HRU
-                                        !!                 |1  urban sections in HRU, simulate using USGS regression eqs
-                                        !!                 |2  urban sections in HRU, simulate using build up/wash off alg
-          integer ::  urb_lu = 0        !! none           urban land type identification number
-          real :: ovn = 0.              !! none           Manning's "n" value for overland flow
+          real :: usle_p = 0.           !! none     | USLE equation support practice (P) factor daily
+          character (len=16) :: urb_ro  !! none     | urban runoff model
+                                        !!          | "usgs_reg", simulate using USGS regression eqs
+                                        !!          | "buildup_washoff", simulate using build up/wash off alg 
+          integer ::  urb_lu = 0        !! none     | urban land type identification number
+          real :: ovn = 0.              !! none     | Manning's "n" value for overland flow
       end type landuse
       type (landuse), dimension (:), allocatable :: luse
 

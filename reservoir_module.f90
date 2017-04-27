@@ -33,8 +33,11 @@
       type res_output
           real :: vol = 0.       !ha-m                 |res volume
           real :: area_ha = 0.   !ha                   |res surface area
-          real :: flowi = 0.     !m^3/s                |flow into res
-          real :: flowo = 0.     !m^3/s                |flow out of res          
+          real :: flowi = 0.     !ha-m                 |flow into res
+          real :: flowo = 0.     !ha-m                 |flow out of res
+          real :: ev = 0.        !ha-m                 |evap from res 
+          real :: sep = 0.       !ha-m                 |seepage from res
+          real :: pcp = 0.       !ha-m                 |precipitation on res 
           real :: sedi = 0.      !metric tons          |sed entering res
           real :: sedo = 0.      !metric tons          |sed leaving res            
           real :: sedcon = 0.    !mg/L                 |sed conc in res
@@ -48,12 +51,7 @@
           real :: bury = 0.      !mg pst               |pest lost from res sed layer through burial
           real :: pesto = 0.     !mg pst               |pest transported out of res
           real :: pstcon = 0.    !mg pst/m^3           |pest conc in res water
-          real :: spstcon = 0.   !mg pst/m^3           |pest conc in res sed layer
-          real :: ev = 0.        !m^3 H2O              |evap from res 
-          real :: sep = 0.       !m^3 H2O              |seepage from res
-          real :: pcp = 0.       !m^3 H2O              |precipitation on res 
-          real :: flwim3 = 0.    !m^3 H2O              |water flowing into res 
-          real :: flwom3 = 0.    !m^3 H2O              |water flowing out of res 
+          real :: spstcon = 0.   !mg pst/m^3           |pest conc in res sed layer 
           real :: orgni = 0.     !kg N                 |org N entering res
           real :: orgno = 0.     !kg N                 |org N leaving res
           real :: orgpi = 0.     !kg P                 |org P entering res
@@ -95,9 +93,13 @@
           character (len=6) :: yrs =          ' time '
           character (len=6) :: yrc =          ' year '
           character (len=8) :: j =            ' resnum '
-          character (len=10) :: vol =      '      vol'        !m^3                  |flow volume res
-          character (len=10) :: flowi =    '    flowi'        !m^3/s                |flow into res
-          character (len=10) :: flowo =    '    flowo'        !m^3/s                |flow out of res          
+          character (len=10) :: vol =      '      vol'        !ha-m                 |flow volume res
+          character (len=10) :: area =     '     area'        !ha                   |surface area res
+          character (len=10) :: flowi =    '    flowi'        !ha-m                 |flow into res
+          character (len=10) :: flowo =    '    flowo'        !ha-m                 |flow out of res
+          character (len=10) :: ev =       '       ev'        !ha-m                 |evap from res 
+          character (len=10) :: sep =      '      sep'        !ha-m                 |seepage from res
+          character (len=10) :: pcp =      '      pcp'        !ha-m                 |precipitation on res 
           character (len=10) :: sedi =     '     sedi'        !metric tons          |sed entering res
           character (len=10) :: sedo =     '     sedo'        !metric tons          |sed leaving res            
           character (len=10) :: sedcon =   '   sedcon'        !mg/L                 |sed conc in res
@@ -111,12 +113,7 @@
           character (len=10) :: bury  =    '     bury'        !mg pst               |pest lost from res sed layer through burial
           character (len=10) :: pesto =    '    pesto'        !mg pst               |pest transported out of res
           character (len=10) :: pstcon =   '   pstcon'        !mg pst/m^3           |pest conc in res water
-          character (len=10) :: spstcon=   '  spstcon'        !mg pst/m^3           |pest conc in res sed layer
-          character (len=10) :: ev =       '       ev'        !m^3 H2O              |evap from res 
-          character (len=10) :: sep =      '      sep'        !m^3 H2O              |seepage from res
-          character (len=10) :: pcp =      '      pcp'        !m^3 H2O              |precipitation on res 
-          character (len=10) :: flwim3 =   '   flwim3'        !m^3 H2O              |water flowing into res 
-          character (len=10) :: flwom3 =   '   flwom3'        !m^3 H2O              |water flowing out of res 
+          character (len=10) :: spstcon=   '  spstcon'        !mg pst/m^3           |pest conc in res sed layer 
           character (len=10) :: orgni =    '    orgni'        !kg N                 |org N entering res
           character (len=10) :: orgno =    '    orgno'        !kg N                 |org N leaving res
           character (len=10) :: orgpi =    '    orgpi'        !kg P                 |org P entering res
@@ -144,9 +141,13 @@
           character (len=6) :: yrs =       '      '
           character (len=6) :: yrc =       '      '
           character (len=8) :: isd =       '         '
-          character (len=10) :: vol =       '      m^3'        !m^3                  |volume res
-          character (len=10) :: flowi =    '    m^3/s'        !m^3/s                |flow into res
-          character (len=10) :: flowo =    '    m^3/s'        !m^3/s                |flow out of res          
+          character (len=10) :: vol =      '     ha-m'        !ha-m                 |volume res
+          character (len=10) :: area =     '       ha'        !ha                   |surface area res
+          character (len=10) :: flowi =    '     ha-m'        !ha-m                 |flow into res
+          character (len=10) :: flowo =    '     ha-m'        !ha-m                 |flow out of res
+          character (len=10) :: ev =       '     ha-m'        !ha-m                 |evap from res  
+          character (len=10) :: sep =      '     ha-m'        !ha-m                 |seepage from res
+          character (len=10) :: pcp =      '     ha-m'        !ha-m                 |precipitation on res 
           character (len=10) :: sedi =     ' met tons'        !metric tons          |sed entering res
           character (len=10) :: sedo =     ' met tons'        !metric tons          |sed leaving res            
           character (len=10) :: sedcon =   '     mg/L'        !mg/L                 |sed conc in res
@@ -161,11 +162,6 @@
           character (len=10) :: pesto =    '   mg pst'        !mg pst               |pest transported out of res
           character (len=10) :: pstcon =   'mg pst/m3'        !mg pst/m^3           |pest conc in res water
           character (len=10) :: spstcon=   'mg pst/m3'        !mg pst/m^3           |pest conc in res sed layer
-          character (len=10) :: ev =       '  m^3 H2O'        !m^3 H2O              |evap from res 
-          character (len=10) :: sep =      '  m^3 H2O'        !m^3 H2O              |seepage from res
-          character (len=10) :: pcp =      '  m^3 H2O'        !m^3 H2O              |precipitation on res 
-          character (len=10) :: flwim3 =   '  m^3 H2O'        !m^3 H2O              |water flowing into res 
-          character (len=10) :: flwom3 =   '  m^3 H2O'        !m^3 H2O              |water flowing out of res 
           character (len=10) :: orgni =    '     kg N'        !kg N                 |org N entering res
           character (len=10) :: orgno =    '     kg N'        !kg N                 |org N leaving res
           character (len=10) :: orgpi =    '     kg P'        !kg P                 |org P entering res
@@ -211,8 +207,13 @@
           type (res_output),  intent (in) :: reso1
           type (res_output),  intent (in) :: reso2
           type (res_output) :: reso3
+          reso3%vol = reso2%vol + reso1%vol
+          reso3%area_ha = reso2%area_ha + reso1%area_ha
           reso3%flowi = reso2%flowi + reso1%flowi
           reso3%flowo = reso2%flowo + reso1%flowo
+          reso3%ev = reso2%ev + reso1%ev
+          reso3%sep = reso2%sep + reso1%sep          
+          reso3%pcp = reso2%pcp + reso1%pcp
           reso3%sedi = reso2%sedi + reso1%sedi
           reso3%sedo = reso2%sedo + reso1%sedo
           reso3%sedcon = reso2%sedcon + reso1%sedcon
@@ -226,12 +227,7 @@
           reso3%bury = reso2%bury + reso1%bury 
           reso3%pesto = reso2%pesto + reso1%pesto          
           reso3%pstcon = reso2%pstcon + reso1%pstcon
-          reso3%spstcon = reso2%spstcon + reso1%spstcon
-          reso3%ev = reso2%ev + reso1%ev
-          reso3%sep = reso2%sep + reso1%sep          
-          reso3%pcp = reso2%pcp + reso1%pcp        
-          reso3%flwim3 = reso2%flwim3 + reso1%flwim3          
-          reso3%flwom3 = reso2%flwom3 + reso1%flwom3
+          reso3%spstcon = reso2%spstcon + reso1%spstcon        
           reso3%orgni = reso2%orgni + reso1%orgni
           reso3%orgno = reso2%orgno + reso1%orgno  
           reso3%orgpi = reso2%orgpi + reso1%orgpi
@@ -258,8 +254,13 @@
         type (res_output), intent (in) :: hru1
         real, intent (in) :: const
         type (res_output) :: hru2
+        hru2%vol = hru1%vol / const
+        hru2%area_ha = hru1%area_ha / const
         hru2%flowi = hru1%flowi / const
         hru2%flowo = hru1%flowo / const
+        hru2%ev = hru1%ev / const
+        hru2%sep = hru1%sep / const
+        hru2%pcp = hru1%pcp / const
         hru2%sedi = hru1%sedi / const
         hru2%sedo = hru1%sedo / const
         hru2%sedcon = hru1%sedcon / const
@@ -273,11 +274,6 @@
         hru2%bury = hru1%bury / const
         hru2%pesto = hru1%pesto / const
         hru2%pstcon = hru1%pstcon / const
-        hru2%ev = hru1%ev / const
-        hru2%sep = hru1%sep / const
-        hru2%pcp = hru1%pcp / const
-        hru2%flwim3 = hru1%flwim3 / const
-        hru2%flwom3= hru1%flwom3 / const
         hru2%orgni = hru1%orgni / const
         hru2%orgno = hru1%orgno / const
         hru2%orgpi = hru1%orgpi / const

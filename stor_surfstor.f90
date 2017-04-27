@@ -206,7 +206,7 @@
       bactsedp = Max(0.,bactsedp)
       if (hrupest(j) == 1) then
         do k = 1, npmx
-         hru(j)%pst(k)%surq = pst_lag(k,1,j) * brt(j)
+          hru(j)%pst(k)%surq = pst_lag(k,1,j) * brt(j)
           hru(j)%pst(k)%sed = pst_lag(k,2,j) * brt(j)
         end do
       end if

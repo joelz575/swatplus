@@ -166,17 +166,17 @@
         case ("month")
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then
-              if (time%mo > d_tbl(id)%cond(ic)%lim_const) then
+              if (time%mo > int(d_tbl(id)%cond(ic)%lim_const)) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == ">") then
-              if (time%mo < d_tbl(id)%cond(ic)%lim_const) then
+              if (time%mo < int(d_tbl(id)%cond(ic)%lim_const)) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == "=") then
-              if (time%mo /= d_tbl(id)%cond(ic)%lim_const) then
+              if (time%mo /= int(d_tbl(id)%cond(ic)%lim_const)) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if

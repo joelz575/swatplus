@@ -1,17 +1,18 @@
       module input_file_module
 
-!! file.cio input file   
-      type input_sim
+!! file.cio input file 
+
 !! simulation
+      type input_sim
         character(len=25) :: time = "time.sim"
         character(len=25) :: prt = "print.prt"
         character(len=25) :: object_prt = "object.prt"
         character(len=25) :: object_cnt = "object.cnt"
       end type input_sim
       type (input_sim) :: in_sim
-	
-      type input_cli
+
 !! climate
+      type input_cli
        character(len=25) :: weat_sta = "weather-sta.cli"
        character(len=25) :: weat_wgn = "weather-wgn.cli"
        character(len=25) :: wind_dir = "wind-dir.cli"
@@ -23,11 +24,11 @@
       end type input_cli
       type (input_cli) :: in_cli
 
-      type input_con
 !! connect
+      type input_con
        character(len=25) :: hru_con = "hru.con"
        character(len=25) :: hruez_con = "hru-lte.con"
-       character(len=25) :: sub_con = "subbasin.con"
+       character(len=25) :: ru_con = "rout_unit.con"
        character(len=25) :: modflow_con = "modflow.con"
        character(len=25) :: aqu_con = "aquifer.con"
        character(len=25) :: aqu2d_con = "aquifer2d.con"
@@ -41,9 +42,9 @@
       end type input_con
       type (input_con) :: in_con
 
+!! channel
       type input_cha 
-!! channel  
-       character(len=25) :: init = "initial.cha"
+        character(len=25) :: init = "initial.cha"
        character(len=25) :: dat =  "channel.cha"
        character(len=25) :: hyd =  "hydrology.cha"
        character(len=25) :: sed =  "sediment.cha"
@@ -53,8 +54,8 @@
       end type input_cha
       type (input_cha) :: in_cha
 
-      type input_res
 !! reservoir
+      type input_res
        character(len=25) :: init_res = "initial.res"
        character(len=25) :: res =      "reservoir.res"
        character(len=25) :: hyd_res =  "hydrology.res"
@@ -81,8 +82,8 @@
       end type input_hru
       type (input_hru) :: in_hru
 
-      type input_delr
 !! delivery ratio
+      type input_delr
        character(len=25) :: del_ratio = "delratio.del"
       end type input_delr
       type (input_delr) :: in_delr
@@ -116,12 +117,14 @@
       end type input_link
       type (input_link) :: in_link
 
+!! basin
       type input_basin
        character(len=25) :: codes_bas = "codes.bsn"
        character(len=25) :: parms_bas = "parameters.bsn"
       end type input_basin
       type (input_basin) :: in_basin
-
+      
+!! hydrology
       type input_hydrology
        character(len=25) :: hydrol_hyd = "hydrology.hyd"
        character(len=25) :: topogr_hyd = "topography.hyd"
@@ -129,17 +132,20 @@
       end type input_hydrology
       type (input_hydrology) :: in_hyd
   
+!! exco
       type input_exco
        character(len=25) :: exco = "exco.exc"
       end type input_exco
       type (input_exco) :: in_exco
-
+      
+!! bacteria
       type input_bacteria
        character(len=25) :: init_bac = "initial.bac"
        character(len=25) :: bacteria = "bacteria.bac"
       end type input_bacteria
       type (input_bacteria) :: in_bac
-
+      
+!! structural
       type input_structural
        character(len=25) :: tiledrain_str = "tiledrain.str"
        character(len=25) :: septic_str = "septic.str"
@@ -148,7 +154,8 @@
        character(len=25) :: bmpuser_str = "bmpuser.str"
       end type input_structural
       type (input_structural) :: in_str
-
+      
+!! databases
       type input_parameter_databases
        character(len=25) :: plants_plt = "plants.plt"
        character(len=25) :: fert_frt = "fertilizer.frt"
@@ -161,6 +168,7 @@
       end type input_parameter_databases
       type (input_parameter_databases) :: in_parmdb
 
+!! operation scheduling
       type input_ops
        character(len=25) :: harv_ops = "harv.ops"
        character(len=25) :: graze_ops = "graze.ops"
@@ -171,14 +179,17 @@
       end type input_ops
       type (input_ops) :: in_ops
 
+!! land use management
       type input_lum
        character(len=25) :: landuse_lum = "landuse.lum"
        character(len=25) :: management_sch = "management.sch"
        character(len=25) :: cntable_lum = "cntable.lum"
-       character(len=25) :: cons_prac_lum = "cons_prac.lum"
+       character(len=25) :: cons_prac_lum = "cons_practice.lum"
+       character(len=25) :: ovn_lum = "ovn_table.lum"
       end type input_lum
       type (input_lum) :: in_lum
 
+!! calibration change
       type input_chg
        character(len=25) :: codes_cal = "codes.cal"
        character(len=25) :: cal_parms = "cal_parms.cal"
@@ -189,24 +200,28 @@
        character(len=25) :: ch_parms_cal = "ch_parms.cal"
       end type input_chg
       type (input_chg) :: in_chg
-
+      
+!! initial 
       type input_init
        character(len=25) :: initial_pst = "initial.pst"
        character(len=25) :: initial_plt = "initial.plt"
        end type input_init
       type (input_init) :: in_init
 
+!! soils
       type input_soils
        character(len=25) :: soils_sol = "soils.sol"
        character(len=25) :: nut_sol = "nutrients.sol"
       end type input_soils
       type (input_soils) :: in_sol
 
+!! conditional 
       type input_condition
        character(len=25) :: cond_ctl = "d_table.dtl"
       end type input_condition
       type (input_condition) :: in_cond
       
+!! constituents
       type input_constituents
         character(len=25) :: cs_db = "constituents.cs"
         character(len=25) :: pestcom_db = "pest.cs"
@@ -216,7 +231,8 @@
       end type input_constituents
       type (input_constituents) :: in_const
       
-     type input_regions
+!! regions
+      type input_regions
         character(len=25) :: ele_lsu = "ls_unit.ele"
         character(len=25) :: def_lsu = "ls_unit.def"
         character(len=25) :: def_lsu_reg = "ls_reg.def"

@@ -84,9 +84,7 @@
 
 	  do k = 1, time%step
 
-        select case (hru(j)%luse%iurban)
-
-          case (1,2)       !! build-up/wash-off algorithm
+          !! build-up/wash-off algorithm
 
           !! rainy day: no build-up, street cleaning allowed
 		  
@@ -142,7 +140,7 @@
             end if
           end if
         end if
-        end select
+
 	  sus_sol=0
 	  
 	  ! Compute evaporation of water (initial abstraction) from impervious cover

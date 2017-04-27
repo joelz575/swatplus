@@ -42,7 +42,7 @@
           
         case ("harv")
           do idb = 1, db_mx%harvop_db
-              if (sched(isched)%mgt_ops(iop)%op_plant == harvop_db(idb)%typ) then
+              if (sched(isched)%mgt_ops(iop)%op_plant == harvop_db(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif

@@ -1,4 +1,4 @@
-      subroutine ch_read_sed
+      subroutine ch_sed_read
       
       use input_file_module
 
@@ -31,15 +31,16 @@
             read (105,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i)
-            mch = mch + 1
-          end do        
+          end do   
+          
+        db_mx%ch_sed = imax
         
         allocate (ch_sed(0:imax))
         rewind (105)
         read (105,*) titldum
         read (105,*) header
              
-        do ich = 1, mch
+        do ich = 1, db_mx%ch_sed
           read (105,*,iostat=eof) i
           backspace (105)
           read (105,*) k, ch_sed(i)
@@ -134,4 +135,4 @@
 !     end do
       
       return
-      end subroutine ch_read_sed
+      end subroutine ch_sed_read

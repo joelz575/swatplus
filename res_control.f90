@@ -133,8 +133,11 @@
           
           res_d(jres)%vol = res(jres)%flo / 10000.  !m^3 -> ha-m 
           res_d(jres)%area_ha = res_ob(jres)%area_ha
-          res_d(jres)%flowi = resflwi / 86400. 
-          res_d(jres)%flowo = resflwo / 86400.
+          res_d(jres)%flowi = resflwi / 10000.      !m^3 -> ha-m
+          res_d(jres)%flowo = resflwo / 10000.      !m^3 -> ha-m
+          res_d(jres)%ev = resev / 10000.           !m^3 -> ha-m
+          res_d(jres)%sep = ressep / 10000.         !m^3 -> ha-m
+          res_d(jres)%pcp = respcp / 10000.         !m^3 -> ha-m
           res_d(jres)%sedi = ressedi 
           res_d(jres)%sedo = ressedo
           res_d(jres)%sedcon = sedcon
@@ -148,11 +151,6 @@
           res_d(jres)%pesto = pesto
           res_d(jres)%pstcon = pstcon
           res_d(jres)%spstcon = spstcon
-          res_d(jres)%ev = resev
-          res_d(jres)%sep = ressep
-          res_d(jres)%pcp = respcp
-          res_d(jres)%flwim3 = flwim3
-          res_d(jres)%flwom3 = flwom3
           res_d(jres)%orgni = orgni
           res_d(jres)%orgno = orgno
           res_d(jres)%orgpi = orgpi

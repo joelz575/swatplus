@@ -231,7 +231,7 @@
         if (sp_ob%chandeg > 0) call basin_sdchannel_output
         if (sp_ob%recall > 0) call basin_recall_output
         !call lsreg_output
-        !call region_aquifer_output
+        !print;prtcall region_aquifer_output
         !call region_reservoir_output
         !call region_channel_output
         !call region_recall_output

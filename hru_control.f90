@@ -82,9 +82,9 @@
           call rls_routesoil (icmd)
         end if
           
-        !!add overland flow to storage
+        !!add overland flow to precipday to compute runoff
         if (ob(icmd)%hin%flo > 1.e-6) then
-          res(jres) = res(jres) + ob(icmd)%hin
+          call rls_routesurf (icmd)
         end if
         
         !!add overbank flooding to storage

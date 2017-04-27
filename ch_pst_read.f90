@@ -1,4 +1,4 @@
-      subroutine ch_read_pst
+      subroutine ch_pst_read
       
       use input_file_module
 
@@ -15,7 +15,6 @@
 
       eof = 0
       imax = 0
-      mch = 0
 
       inquire (file=in_cha%pest,exist=i_exist)
       if (i_exist == 0 .or. in_cha%pest == 'null') then
@@ -31,15 +30,16 @@
             read (105,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i)
-            mch = mch + 1
-          end do        
+          end do  
+          
+        db_mx%ch_pst = imax
         
         allocate (ch_pst(0:imax))
         rewind (105)
         read (105,*) titldum
         read (105,*) header
           
-        do ich = 1, mch
+        do ich = 1, db_mx%ch_pst
           read (105,*,iostat=eof) i
           backspace (105)
           read (105,*) k, ch_pst(i)
@@ -62,4 +62,4 @@
       close(105)
 
       return
-      end subroutine ch_read_pst
+      end subroutine ch_pst_read

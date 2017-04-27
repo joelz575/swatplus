@@ -8,6 +8,7 @@
       use time_module
       
       real :: vol, vvr, targ, xx, flw, ndespill
+      character(len=1) :: action
       
       !! store initial values
       vol = res(jres)%flo
@@ -18,8 +19,16 @@
           
         !calc release from decision table
         do iac = 1, d_tbl(id)%acts
-            !condition is met - set the release rate
-          if (d_tbl(id)%act_hit(iac) == 'y') then
+          action = "n"
+          do ial = 1, d_tbl(id)%alts
+            if (d_tbl(id)%act_hit(ial) == "y" .and. d_tbl(id)%act_outcomes(iac,ial) == "y") then
+              action = "y"
+              exit
+            end if
+          end do
+          
+          !condition is met - set the release rate
+          if (action == 'y') then
             select case (d_tbl(id)%act(iac)%option)
             case ("rate")
               resflwo = d_tbl(id)%act(iac)%const * 86400.

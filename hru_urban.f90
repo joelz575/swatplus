@@ -82,9 +82,9 @@
       j = ihru
       ulu = hru(j)%luse%urb_lu
 
-      select case (hru(j)%luse%iurban)
+      select case (hru(j)%luse%urb_ro)
 
-        case (1)                         !! USGS regression equations
+        case ("usgs_reg")                         !! USGS regression equations
         if (precipday > .1 .and. surfq(j) > .1) then
           cod = 0.
           sus_sol = 0.
@@ -117,7 +117,7 @@
                               + surqsolp(j) * (1. - urbdb(ulu)%fimp)
         endif
 
-        case (2)                         !! build-up/wash-off algorithm
+        case ("buildup_washoff")                         !! build-up/wash-off algorithm
 
         if (surfq(j) > 0.1) then
           !! rainy day: no build-up, street cleaning allowed

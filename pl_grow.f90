@@ -105,7 +105,7 @@
 
       do ipl = 1, pcom(j)%npl
         !! plant will not undergo stress if dormant
-        if (pcom(j)%plcur(ipl)%idorm == 0 .and. pcom(j)%plcur(ipl)%gro==1) then
+        if (pcom(j)%plcur(ipl)%idorm == 0 .and. pcom(j)%plcur(ipl)%gro == 1) then
         idp = pcom(j)%plcur(ipl)%idplt
  
         !! if plant hasn't reached maturity
@@ -238,14 +238,12 @@
             
             !! calculate fraction of above ground tree biomass that is leaf
             if (pldb(idp)%idc == 7) then
-              pcom(j)%plg(ipl)%bio_leaf = .4 - (.3 *                     &
-                            float(pcom(j)%plcur(ipl)%curyr_mat) - 1.) /  &
-                           (float(pldb(idp)%mat_yrs) - 1.)
+              pcom(j)%plg(ipl)%bio_leaf = .4 - (.3 * float(pcom(j)%plcur(ipl)%curyr_mat) - 1.) /  &
+                    (float(pldb(idp)%mat_yrs) - 1.)
             end if
             
             if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
-            deltalai = ff * laimax * (1.0 - Exp(5.0 *                   &                   
-                (pcom(j)%plg(ipl)%lai - laimax))) * Sqrt(reg)
+            deltalai = ff * laimax * (1.0 - Exp(5.0 * (pcom(j)%plg(ipl)%lai - laimax))) * Sqrt(reg)
             !! adjust lai increment for plant competition
             sumlaiht = 0.
             do jpl = 1, pcom(j)%npl
@@ -266,23 +264,21 @@
             !! logistic decline rate - Michael Strauch
             rto = (1. - pcom(j)%plcur(ipl)%phuacc)/(1. - pldb(idp)%dlai)
             !pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%olai * rto
-            pcom(j)%plg(ipl)%lai = (pcom(j)%plg(ipl)%olai -              &
-                   pldb(idp)%alai_min) / (1. + Exp((rto - .5) * -12)) +  & 
-                                                      pldb(idp)%alai_min
+            pcom(j)%plg(ipl)%lai = (pcom(j)%plg(ipl)%olai - pldb(idp)%alai_min) /   &
+                (1. + Exp((rto - .5) * -12)) + pldb(idp)%alai_min
           end if
           if (pcom(j)%plg(ipl)%lai < pldb(idp)%alai_min) then   !Sue White dormancy
             pcom(j)%plg(ipl)%lai = pldb(idp)%alai_min
           end if
           
           !! calculate plant ET values
-          if (pcom(j)%plcur(ipl)%phuacc > 0.5 .and.                     & 
-                 pcom(j)%plcur(ipl)%phuacc < pldb(idp)%dlai) then 
+          if (pcom(j)%plcur(ipl)%phuacc > 0.5 .and. pcom(j)%plcur(ipl)%phuacc < pldb(idp)%dlai) then 
             pcom(j)%plg(ipl)%plet = pcom(j)%plg(ipl)%plet + ep_day + es_day
             pcom(j)%plg(ipl)%plpet = pcom(j)%plg(ipl)%plpet + pet_day
           end if
 
-          pcom(j)%plg(ipl)%hvstiadj = pldb(idp)%hvsti * 100. * pcom(j)%plcur(ipl)%phuacc                    &
-                     / (100. * pcom(j)%plcur(ipl)%phuacc + Exp(11.1 - 10. * pcom(j)%plcur(ipl)%phuacc))
+          pcom(j)%plg(ipl)%hvstiadj = pldb(idp)%hvsti * 100. * pcom(j)%plcur(ipl)%phuacc /          &
+                (100. * pcom(j)%plcur(ipl)%phuacc + Exp(11.1 - 10. * pcom(j)%plcur(ipl)%phuacc))
           
 
 !!  added per JGA for Srini by gsm 9/8/2011

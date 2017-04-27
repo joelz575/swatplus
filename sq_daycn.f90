@@ -38,7 +38,7 @@
 
       use jrw_datalib_module
       
-      integer :: j
+      integer :: j, ulu
       real :: r2, bb, pb, cnimp, surfqimp
 
       j = ihru
@@ -51,7 +51,7 @@
         surfq(j) = pb * pb / (precipday + .8 * r2)
       end if
 
-      if (hru(j)%luse%iurban > 0) then
+      if (hru(j)%luse%urb_lu > 0) then
         surfqimp = 0.
         cnimp = 98.
         r2 = 25400. / cnimp - 254.
@@ -60,6 +60,7 @@
         if (pb > 0.) then
           surfqimp = pb * pb / (precipday + .8 * r2)
         end if
+        ulu = hru(j)%luse%urb_lu
         surfq(j) = surfq(j) * (1. - urbdb(ulu)%fcimp) +                 &                 
                                           surfqimp * urbdb(ulu)%fcimp
       end if    

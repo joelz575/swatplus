@@ -109,7 +109,7 @@
       
       !read connect file for subbasins
       if (sp_ob%sub > 0) then
-        call connect_read(in_con%sub_con, "sub     ", sp_ob1%sub, sp_ob%sub, 5, 2)
+        call connect_read(in_con%ru_con, "sub     ", sp_ob1%sub, sp_ob%sub, 5, 2)
         call ru_read
         call ru_elements_read
       end if

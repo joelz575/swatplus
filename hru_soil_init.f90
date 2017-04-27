@@ -105,7 +105,11 @@
        allocate (sol1(0:msoils))       
       do isol = 1, msoils
         sol(isol)%s%snam = soildb(isol)%s%snam
-        sol(isol)%s%nly = soildb(isol)%s%nly + 1    !add 10 mm layer
+        if (soildb(isol)%ly(1)%z > 19.5) then
+          sol(isol)%s%nly = soildb(isol)%s%nly + 1    !add 10 mm layer
+        else
+          sol(isol)%s%nly = soildb(isol)%s%nly
+        end if
         sol(isol)%s%hydgrp = soildb(isol)%s%hydgrp
         sol(isol)%s%zmx = soildb(isol)%s%zmx                      
         sol(isol)%s%anion_excl = soildb(isol)%s%anion_excl
@@ -114,7 +118,6 @@
         mlyr = sol(isol)%s%nly
         allocate (sol(isol)%ly(mlyr))
         allocate (sol(isol)%phys(mlyr))
-        
         allocate (sol1(isol)%tot(mlyr))     !!  nbs 
         allocate (sol(isol)%cbn(mlyr))      !!  nbs
         allocate (sol1(isol)%hs(mlyr))      !!  nbs
@@ -149,22 +152,42 @@
         sol(isol)%ly(1)%cal = soildb(isol)%ly(1)%cal
         sol(isol)%ly(1)%ph = soildb(isol)%ly(1)%ph
         !!set remaining layers
-        do j = 2, mlyr
-          sol(isol)%phys(j)%d = soildb(isol)%ly(j-1)%z
-          sol(isol)%phys(j)%bd = soildb(isol)%ly(j-1)%bd
-          sol(isol)%phys(j)%awc = soildb(isol)%ly(j-1)%awc
-          sol(isol)%phys(j)%k = soildb(isol)%ly(j-1)%k
-          sol(isol)%cbn(j)%cbn = soildb(isol)%ly(j-1)%cbn
-          sol(isol)%phys(j)%clay = soildb(isol)%ly(j-1)%clay
-          sol(isol)%phys(j)%silt = soildb(isol)%ly(j-1)%silt
-          sol(isol)%phys(j)%sand = soildb(isol)%ly(j-1)%sand
-          sol(isol)%phys(j)%rock = soildb(isol)%ly(j-1)%rock
-          sol(isol)%ly(1)%alb = soildb(isol)%ly(j-1)%alb
-          sol(isol)%ly(1)%usle_k = soildb(isol)%ly(j-1)%usle_k
-          sol(isol)%ly(j)%ec = soildb(isol)%ly(j-1)%ec
-          sol(isol)%ly(j)%cal = soildb(isol)%ly(j-1)%cal
-          sol(isol)%ly(j)%ph = soildb(isol)%ly(j-1)%ph
-        end do 
+        if (soildb(isol)%ly(1)%z > 19.5) then
+          do j = 2, mlyr
+            sol(isol)%phys(j)%d = soildb(isol)%ly(j-1)%z
+            sol(isol)%phys(j)%bd = soildb(isol)%ly(j-1)%bd
+            sol(isol)%phys(j)%awc = soildb(isol)%ly(j-1)%awc
+            sol(isol)%phys(j)%k = soildb(isol)%ly(j-1)%k
+            sol(isol)%cbn(j)%cbn = soildb(isol)%ly(j-1)%cbn
+            sol(isol)%phys(j)%clay = soildb(isol)%ly(j-1)%clay
+            sol(isol)%phys(j)%silt = soildb(isol)%ly(j-1)%silt
+            sol(isol)%phys(j)%sand = soildb(isol)%ly(j-1)%sand
+            sol(isol)%phys(j)%rock = soildb(isol)%ly(j-1)%rock
+            sol(isol)%ly(1)%alb = soildb(isol)%ly(j-1)%alb
+            sol(isol)%ly(1)%usle_k = soildb(isol)%ly(j-1)%usle_k
+            sol(isol)%ly(j)%ec = soildb(isol)%ly(j-1)%ec
+            sol(isol)%ly(j)%cal = soildb(isol)%ly(j-1)%cal
+            sol(isol)%ly(j)%ph = soildb(isol)%ly(j-1)%ph
+          end do
+        else
+          !!1st layer < 20 mm so dont add 10 mm  layer
+          do j = 2, sol(isol)%s%nly
+            sol(isol)%phys(j)%d = soildb(isol)%ly(j)%z
+            sol(isol)%phys(j)%bd = soildb(isol)%ly(j)%bd
+            sol(isol)%phys(j)%awc = soildb(isol)%ly(j)%awc
+            sol(isol)%phys(j)%k = soildb(isol)%ly(j)%k
+            sol(isol)%cbn(j)%cbn = soildb(isol)%ly(j)%cbn
+            sol(isol)%phys(j)%clay = soildb(isol)%ly(j)%clay
+            sol(isol)%phys(j)%silt = soildb(isol)%ly(j)%silt
+            sol(isol)%phys(j)%sand = soildb(isol)%ly(j)%sand
+            sol(isol)%phys(j)%rock = soildb(isol)%ly(j)%rock
+            sol(isol)%ly(1)%alb = soildb(isol)%ly(j)%alb
+            sol(isol)%ly(1)%usle_k = soildb(isol)%ly(j)%usle_k
+            sol(isol)%ly(j)%ec = soildb(isol)%ly(j)%ec
+            sol(isol)%ly(j)%cal = soildb(isol)%ly(j)%cal
+            sol(isol)%ly(j)%ph = soildb(isol)%ly(j)%ph
+          end do
+        end if
       end do
 
       !if (bsn_cc%rtpest > 0) irtpest = pstcp(bsn_cc%rtpest)%nope

@@ -88,7 +88,7 @@
             end if
          end do
          do isol = 1, db_mx%soil
-            if (hru_db(i)%dbsc%soil == soil_xw(isol)) then
+            if (hru_db(i)%dbsc%soil == soildb(isol)%s%snam) then
                hru_db(i)%dbs%soil = isol
             exit
             end if

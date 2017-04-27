@@ -111,7 +111,7 @@
     inquire (file=in_regs%def_lsu_reg, exist=i_exist)
     if (i_exist /= 0 .or. in_regs%def_lsu_reg /= 'null') then
       do
-        open (107,file=in_regs%def_lsu)
+        open (107,file=in_regs%def_lsu_reg)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mreg

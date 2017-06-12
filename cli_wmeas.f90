@@ -23,7 +23,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
           do while (eof == 0)
-            read (107,*,iostat=eof) i
+            read (107,*,iostat=eof) titldum
             if (eof < 0) exit
             imax = imax + 1
           end do
@@ -36,6 +36,7 @@
       read (107,*) header
       do i = 1, imax
         read (107,*,iostat=eof) wnd_n(i)
+        if (eof < 0) exit
       end do
       
       rewind (107)
@@ -45,12 +46,20 @@
       do i = 1, imax
         read (107,*,iostat = eof) wnd(i)%filename
         if (eof < 0) exit
-        open (108,file = wnd(i)%filename)
+        
+!!!!!weather path code
+       if (in_path_wnd%wnd == 'null') then
+         open (108,file = wnd(i)%filename)
+       else
+        open (108,file = TRIM(ADJUSTL(in_path_wnd%wnd))//wnd(i)%filename)
+       endif
+!!!!!weather path code
+        
         read (108,*,iostat=eof) titldum
         if (eof < 0) exit
         read (108,*,iostat=eof) header
         if (eof < 0) exit
-        read (108,*,iostat=eof) wnd(i)%nbyr, wnd(i)%lat, wnd(i)%long,     &
+        read (108,*,iostat=eof) wnd(i)%nbyr, tmp(i)%tstep, wnd(i)%lat, wnd(i)%long,     &
                                wnd(i)%elev
         if (eof < 0) exit
        
@@ -59,9 +68,9 @@
 
         ! read and store entire year
        do 
-         read (108,*,iostat=eof) iyr, istep, wndspd
+         read (108,*,iostat=eof) iyr, istep
          if (eof < 0) exit
-         if (iyr == time%yrc) exit
+         if (iyr == time%yrc .and. istep == time%idaf) exit
        end do
        
        backspace (108)
@@ -82,14 +91,14 @@
          end if
        end do
        close (108)
-       
-       db_mx%wndfiles = imax
-       
+
       end do
       close (107)
       exit
       end do
       endif
-      
+             
+       db_mx%wndfiles = imax
+       
       return
       end subroutine cli_wmeas

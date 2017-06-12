@@ -106,14 +106,15 @@
       end type weather_codes_station
       
       type weather_codes_station_char
-        character (len=16) ::  wgn = ""       !!  weather generator station number
-        character (len=16) :: pgage = ""      !!  gage name for rainfall 
-        character (len=16) :: tgage = ""      !!  gage name for temperature
-        character (len=16) :: sgage = ""      !!  gage name for solar radiation
-        character (len=16) :: hgage = ""      !!  gage name for relative humidity
-        character (len=16) :: wgage = ""      !!  gage name for windspeed
-        character (len=16) :: wndir = ""      !!  name of wind direction gage (.dir) files used in sim
-        character (len=16) :: atmodep = ""    !!  atmospheric depostion data file locator
+        !character (len=16) ::  wgn = ""       !!  weather generator station number
+        character (len=50) ::  wgn = ""       !!  weather generator station number
+        character (len=50) :: pgage = ""      !!  gage name for rainfall 
+        character (len=50) :: tgage = ""      !!  gage name for temperature
+        character (len=50) :: sgage = ""      !!  gage name for solar radiation
+        character (len=50) :: hgage = ""      !!  gage name for relative humidity
+        character (len=50) :: wgage = ""      !!  gage name for windspeed
+        character (len=50) :: wndir = ""      !!  name of wind direction gage (.dir) files used in sim
+        character (len=50) :: atmodep = ""    !!  atmospheric depostion data file locator
       end type weather_codes_station_char
       
       type weather_station
@@ -130,7 +131,7 @@
       type (weather_station), dimension(:),allocatable :: wst
          
       type climate_measured_data
-        character (len=16) :: filename
+        character (len=50) :: filename
         real :: lat                   !! latitude of raingage         
         real :: long                  !! longitude of raingage
         real :: elev                  !! elevation of raingage
@@ -141,11 +142,11 @@
         real, dimension (:,:,:), allocatable :: tss
       end type climate_measured_data
       type (climate_measured_data), dimension(:), allocatable :: pcp
-      character(len=16), dimension(:), allocatable :: pcp_n
-      character(len=16), dimension(:), allocatable :: tmp_n 
-      character(len=16), dimension(:), allocatable :: slr_n
-      character(len=16), dimension(:), allocatable :: hmd_n
-      character(len=16), dimension(:), allocatable :: wnd_n     
+      character(len=50), dimension(:), allocatable :: pcp_n
+      character(len=50), dimension(:), allocatable :: tmp_n 
+      character(len=50), dimension(:), allocatable :: slr_n
+      character(len=50), dimension(:), allocatable :: hmd_n
+      character(len=50), dimension(:), allocatable :: wnd_n     
       type (climate_measured_data), dimension(:), allocatable :: tmp    
       type (climate_measured_data), dimension(:), allocatable :: slr
       type (climate_measured_data), dimension(:), allocatable :: hmd

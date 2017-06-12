@@ -21,6 +21,7 @@
        character(len=25) :: slr_cli = "slr.cli"
        character(len=25) :: hmd_cli = "hmd.cli"
        character(len=25) :: wnd_cli = "wnd.cli"
+       character(len=25) :: atmo_cli = "atmodep.cli"
       end type input_cli
       type (input_cli) :: in_cli
 
@@ -63,6 +64,8 @@
        character(len=25) :: pest_res = "pesticide.res"
        character(len=25) :: sed_res =  "sediment.res"
        character(len=25) :: weir_res = "weir.res"
+       character(len=25) :: wet =      "wetland.wet"
+       character(len=25) :: hyd_wet =  "hydrology.wet"
       end type input_res
       type (input_res) :: in_res
 
@@ -164,7 +167,6 @@
        character(len=25) :: urban_urb = "urban.urb"
        character(len=25) :: septic_sep = "septic.sep"
        character(len=25) :: snow = "snow.sno"
-       character(len=25) :: atmodb = "atmo.atm"
       end type input_parameter_databases
       type (input_parameter_databases) :: in_parmdb
 
@@ -251,6 +253,31 @@
         character(len=25) :: def_psc_reg = "rec_reg.def"
       end type input_regions
       type (input_regions) :: in_regs
+      
+      type input_path_pcp
+        character(len=50) :: pcp = " "  
+      end type input_path_pcp
+      type (input_path_pcp) :: in_path_pcp
+      
+     type input_path_tmp
+        character(len=50) :: tmp = " "  
+      end type input_path_tmp
+      type (input_path_tmp) :: in_path_tmp
+      
+     type input_path_slr
+        character(len=50) :: slr = " "  
+      end type input_path_slr
+      type (input_path_slr) :: in_path_slr
+           
+     type input_path_hmd
+        character(len=50) :: hmd = " "  
+      end type input_path_hmd
+      type (input_path_hmd) :: in_path_hmd
+      
+     type input_path_wnd
+        character(len=50) :: wnd = " "  
+      end type input_path_wnd
+      type (input_path_wnd) :: in_path_wnd
       
       contains
 

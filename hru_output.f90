@@ -5,19 +5,10 @@
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs HRU variables on daily, monthly and annual time steps
-!!    PRINT CODES: 0 = average annual (always print)
-!!                 1 = yearly
-!!                 2 = monthly
-!!                 3 = daily
 
       j = ihru
-        
-        !hwb_d(j) = hwbz
-        !hnb_d(j) = hnbz
-        !hpw_d(j) = hpwz
-        !hls_d(j) = hlsz
-        
-!   output_waterbal
+
+      ! output_waterbal
         hwb_d(j)%precip = wst(iwst)%weat%precip
         hwb_d(j)%snofall = snofall
         hwb_d(j)%snomlt = snomlt
@@ -40,7 +31,7 @@
         hwb_d(j)%latq_runon = latqrunon !/ (10. * hru(j)%area_ha) 
         hwb_d(j)%overbank = over_flow
 
-!    output_nutbal
+      ! output_nutbal
         hnb_d(j)%cfertn = cfertn
         hnb_d(j)%cfertp =  cfertp
         hnb_d(j)%grazn = grazn
@@ -60,7 +51,7 @@
         hnb_d(j)%rmptl = rmptl
         hnb_d(j)%no3pcp = no3pcp
 
-!    output_plantweather
+      ! output_plantweather
         hpw_d(j)%lai = sumlai
         hpw_d(j)%bioms = sumbm
         hpw_d(j)%residue = hru(j)%rsd%mass
@@ -80,7 +71,7 @@
         hpw_d(j)%solrad = hru_ra(j)
         hpw_d(j)%phubase0 = phubase(j)
 
-!    output_losses
+      ! output_losses
         hls_d(j)%sedyld = sedyld(j) / hru(j)%area_ha
         hls_d(j)%sedorgn = sedorgn(j)
         hls_d(j)%sedorgp = sedorgp(j)
@@ -98,17 +89,7 @@
         hls_m(j) = hls_m(j) + hls_d(j) 
         hpw_m(j) = hpw_m(j) + hpw_d(j)
 
-      ! summing hru output for the basin only if it is routed somewhere
-      ! or if it is not routed and not in a subbasin
-      if (ob(icmd)%src_tot > 0 .or. ob(icmd)%src_tot + ob(icmd)%subs_tot == 0) then
-        const = bsn%area_ha / ob(icmd)%area_ha       !only have / operator set up (could * frac_dfn directly)
-        bwb_d = bwb_d + hwb_d(j) / const
-        bnb_d = bnb_d + hnb_d(j) / const
-        bls_d = bls_d + hls_d(j) / const
-        bpw_d = bpw_d + hpw_d(j) / const
-      end if
-
-!!!!! daily print
+      !! daily print
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                  .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
           if (pco%wb_hru%d == 'y') then

@@ -51,7 +51,13 @@
         read (107,*,iostat = eof) pcp(i)%filename
         if (eof < 0) exit
         
+!!!!!weather path code
+      if (in_path_pcp%pcp == 'null') then 
         open (108,file = pcp(i)%filename)
+      else
+        open (108,file = TRIM(ADJUSTL(in_path_pcp%pcp))//pcp(i)%filename)
+      endif
+!!!!!weather path code       
         read (108,*,iostat=eof) titldum
         if (eof < 0) exit
         read (108,*,iostat=eof) header

@@ -1,4 +1,4 @@
-      subroutine hru_soil_init (mres)
+      subroutine hru_soil_init
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calls subroutines which read input data for the 
@@ -45,23 +45,16 @@
 
       !!Section i
       !!assign database pointers for the hru
-      imp = mres
+      imp = 0
       do ihru = 1, mhru
         iob = sp_ob1%hru + ihru - 1
         ihru_db = ob(iob)%props    !points to hru.dat
         hru(ihru)%dbs = hru_db(ihru_db)%dbs
         hru(ihru)%dbsc = hru_db(ihru_db)%dbsc
         hru(ihru)%parms = hru_db(ihru_db)%parms
-        if (hru(ihru)%dbs%surf_stor > 0) then
-          imp = imp + 1
-          hru(ihru)%surfstor = imp
-        else
-          hru(ihru)%surfstor = 0
-        end if
       end do
       !! use the same res object for resrvoirs and landscape storage
       !! allocate res and other types later in res_init
-      mres = imp
 
       !!assign topography and hyd paramters
       do ihru = 1, mhru

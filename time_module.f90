@@ -1,23 +1,18 @@
       module time_module
 
       integer :: int_print = 1       !! current interval between daily prints
-      integer, dimension (13) :: ndays =                                 &                                
-                     (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
-      integer, dimension (13) :: ndays_leap =                            &
-                     (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
-      integer, dimension (13) :: ndays_noleap =                          &
-                     (/0,31,59,90,120,151,181,212,243,273,304,334,365/)
-      integer, dimension (12) :: ndmo =                          &
-                     (/0,0,0,0,0,0,0,0,0,0,0,0/)
-      !!    ndmo(:)     |days          |cumulative number of days accrued in the
-      !!                               |month since the simulation began where the
-      !!                               |array location number is the number of the
-      !!                               |month
+      integer, dimension (13) :: ndays = (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
+      integer, dimension (13) :: ndays_leap = (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
+      integer, dimension (13) :: ndays_noleap = (/0,31,59,90,120,151,181,212,243,273,304,334,365/)
+      integer, dimension (12) :: ndmo = (/0,0,0,0,0,0,0,0,0,0,0,0/)     !! cumulative number of days accrued in the
+      !! month since the simulation began - the array location number is the number of the month
+      
       type time_current
         integer :: day = 0            !! current day of simulation
         integer :: mo = 0             !! current month of simulation
-        integer :: yrc = 2014         !! current calendar year
-        integer :: yrc_start = 2014   !! starting calendar year
+        integer :: yrc = 0            !! current calendar year
+        integer :: yrc_start = 0      !! starting calendar year
+        integer :: yrc_end = 0        !! ending calendar year
         integer :: yrs = 0            !! current sequential year
         integer :: day_mo = 0         !! day of month (1-31)  
         integer :: end_mo = 0         !! set to 1 if end of month

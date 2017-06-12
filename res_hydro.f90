@@ -66,7 +66,7 @@
       respcp = 10. * wst(iwst)%weat%precip * res_ob(jres)%area_ha
 
       !! new water volume for day
-      res(jres)%flo = res(jres)%flo + respcp + resflwi - resev - ressep  !resflwi ??
+      res(jres)%flo = res(jres)%flo + respcp + resflwi - resev - ressep
 
       !! if reservoir volume is less thanzero
       if (res(jres)%flo < 0.001) then
@@ -94,22 +94,8 @@
           res(jres)%flo = 0.
         end if
 
-        !! update surface area
-        if (res_ob(jres)%typ == 'res') then       
-          !! reservoir - old area volume relationship
-          res_ob(jres)%area_ha = res_ob(jres)%br1 * res(jres)%flo ** res_ob(jres)%br2
-        else
-          !! wetland on hru - solve quadratic to find new depth
-          !testing relationship res_vol(jres) = float(jj) * .1 * res_pvol(jres)
-          x1 = res_hyd(ihyd)%bcoef ** 2 + 4. * res_hyd(ihyd)%ccoef * (1. - res(jres)%flo / res_ob(ihyd)%pvol)
-          if (x1 < 1.e-6) then
-            res_h = 0.
-          else
-            res_h1 = (-res_hyd(ihyd)%bcoef - sqrt(x1)) / (2. * res_hyd(ihyd)%ccoef)
-            res_h = res_h1 + res_hyd(ihyd)%bcoef
-          end if
-          res_ob(jres)%area_ha = res_ob(ihyd)%psa * (1. + res_hyd(ihyd)%acoef * res_h)
-        end if
+      !! update surface area
+      res_ob(jres)%area_ha = res_ob(jres)%br1 * res(jres)%flo ** res_ob(jres)%br2
 
       end if    !res volume < > 0.
       end do    !tstep loop

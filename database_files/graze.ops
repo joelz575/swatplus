@@ -1,0 +1,14 @@
+graze.ops: Grazing operations - Water_LS2_Take2
+      GRZ_OP_NAME   	FERT_NAME      BIO_EAT  BIO_TRAMP    MAN_AMT GRZ_BIO_MIN
+    	dairy_high	dairy-fr       25.000     10.000      0.950   3000.000   	High_Prod_Dairy-Fresh_Manure
+    	dairy_low	dairy-fr      	2.500      2.000      0.950   1500.000      	Low_Prod_Dairy-Fresh_Manure
+    	beef_high	beef-fr        25.000     10.000      0.950   3000.000   	High_Prod_Beef-Fresh_Manure
+    	beef_low	beef-fr         2.500      2.000      0.950   1500.000      	Low_Prod_Beef-Fresh_Manure
+    	swine_high	swine-fr       25.000     10.000      0.950   3000.000   	High_Prod_Swine-Fresh_Manure
+    	swine_low	swine-fr        2.500      2.000      0.950   1500.000      	Low_Prod_Swine-Fresh_Manure
+    	sheep_high	sheep-fr       25.000     10.000      0.950   3000.000   	High_Prod_Sheep-Fresh_Manure
+    	sheep_low	sheep-fr        2.500      2.000      0.950   1500.000      	Low_Prod_Sheep-Fresh_Manure
+    	goats_high	goats-fr       25.000     10.000      0.950   3000.000   	High_Prod_Goats-Fresh_Manure
+    	goats_low	goats-fr        2.500      2.000      0.950   1500.000      	Low_Prod_Goats-Fresh_Manure
+    	horses_high	horses-fr      25.000     10.000      0.950   3000.000   	High_Prod_Horses-Fresh_Manure
+    	horses_low	horses-fr        2.500     2.000      0.950   1500.000      	Low_Prod_Horsed-Fresh_Manure

@@ -61,11 +61,11 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
 
-      prog = "SWAT+ Apr 27 2017    MODULAR Rev 2017.33"
+      prog = "SWAT+ Jun 9 2017    MODULAR Rev 2017.34"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 33             ",/,             &
+     &          "              Revision 34             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -130,7 +130,7 @@
       call urbanparm_read                             !! read the urban land types database
       call bac_lsparms_read                           !! read the bacteria data parameters
       call septicparm_read 
-      call atmoparm_read
+      call cli_atmodep_read
       
       !! read management scheduling and data files
       
@@ -180,7 +180,7 @@
       !! set the object number for each hru-to point to weather station
       if (sp_ob%hru > 0) then
         call hru_read     
-        call hru_soil_init (mres)
+        call hru_soil_init
       end if
 
       !read calibration data (if included)
@@ -229,7 +229,7 @@
       !! allocate and initialize reservoir variables
       call res_allo (mres)
       call res_objects
-      call res_initial (mres)
+      call res_initial
       
       !! set reservoir object numbers for hru's in flood plain without surface storage
 
@@ -255,8 +255,17 @@
       call ch_regions_cal_read
       call ch_parms_cal_read
 
-      !! set
+      !! write headers in output files
       call output_landscape_init
+      call header_channel
+      call header_aquifer
+      call header_sd_channel
+      call header_soils
+      call header_mgt
+      call header_yield
+      call header_hyd
+      call header_reservoir
+      call header_wetland
 
       call header_write
             

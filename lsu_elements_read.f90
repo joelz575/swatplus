@@ -105,9 +105,10 @@
       
       exit
       end do 
-      end if	  
+    end if	  
         
     !! setting up regions for landscape soft cal and/or output by landuse
+    mreg = 0
     inquire (file=in_regs%def_lsu_reg, exist=i_exist)
     if (i_exist /= 0 .or. in_regs%def_lsu_reg /= 'null') then
       do

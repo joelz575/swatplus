@@ -1,0 +1,4 @@
+filterstrip.str - Filter strip properties
+ NAME         		VFSRATIO   VFSCON    VFSCH
+ field_border     	 0.10      0.003     0.20	Field_border
+ high_engineered  	 0.10      0.001     0.05	Highly_engineered_low_channelized

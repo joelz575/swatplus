@@ -7,236 +7,7 @@
      use hydrograph_module
      use sd_channel_module
      use parm
-    
-!!   open soils.out file       
-      if (pco%solout == 'y') then
-        open (2610,file="soilsurf_out.sol")
-        write (2610,1002)       
-        write (9000,*)   'SOILS               soilsurf_out.sol'
-        if (pco%csvout == 'y') then
-          open (2611,file="soilsurf_out.csv")
-          write (2611,1002)
-          write (9000,*) 'SOILS               soilsurf_out.csv'
-        end if
-      end if
-      
-!!   open mgt.out file 
-      if (pco%mgtout == 'y') then
-        open (2612,file="mgt_out.mgt",recl=800)
-        write (2612,*) mgt_hdr
-        write (2612,*) mgt_hdr_unt1
-        write (2612,*) mgt_hdr_unt2
-        write (9000,*) 'MGT                 mgt_out.mgt'
-      end if
-      
-!!  yield biomass file
-      if (pco%mgtout == 'y') then
-        open (4700,file="yield.out", recl=800)
-        write (9000,*) 'YLD                 yield.out'
-        if (pco%csvout == 'y') then
-          open (4701,file="yield.csv", recl=800)
-          write (9000,*) 'YLD                 yield.csv'
-        end if
-      end if  
-      
-      if (pco%hydcon == 'y') then
-        open (7000,file="hydcon.out")
-        write (9000,*) 'HYDCON              hydcon.out'
-          if (pco%csvout == 'y') then
-            open (7001,file="hydcon.csv")
-            write (9000,*) 'HYDCON              hydcon.csv'
-          end if
-      end if
-
-      !! HYDOUT  
-      if (pco%hyd%d == 'y') then
-        open (2580,file="hydout_day_hyd.txt",recl=800)
-        write (2580,*) hyd_hdr
-        write (9000,*) 'HYDOUT              hydout_day_hyd.txt'
-          if (pco%csvout == 'y') then
-            open (2584,file="hydout_day_hyd.csv",recl=800)
-            write (2584,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*)   'HYDOUT              hydout_day_hyd.csv'
-          end if
-      end if
-      
-     if (pco%hyd%m == 'y') then
-        open (2581,file="hydout_mon_hyd.txt",recl=800)
-        write (2581,*) hyd_hdr
-        write (9000,*) 'HYDOUT              hydout_mon_hyd.txt'
-          if (pco%csvout == 'y') then
-            open (2585,file="hydout_mon_hyd.csv",recl=800)
-            write (2585,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*)   'HYDOUT              hydout_mon_hyd.csv'
-          end if
-     end if
      
-     if (pco%hyd%y == 'y') then
-        open (2582,file="hydout_yr_hyd.txt",recl=800)
-        write (2582,*) hyd_hdr
-        write (9000,*) 'HYDOUT              hydout_yr_hyd.txt'
-          if (pco%csvout == 'y') then
-            open (2586,file="hydout_yr_hyd.csv",recl=800)
-            write (2586,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*)   'HYDOUT              hydout_yr_hyd.csv'
-          end if
-     end if
-     
-     if (pco%hyd%a == 'y') then
-        open (2583,file="hydout_aa_hyd.txt",recl=800)
-        write (2583,*) hyd_hdr
-        write (9000,*) 'HYDOUT              hydout_aa_hyd.txt'
-          if (pco%csvout == 'y') then
-            open (2587,file="hydout_aa_hyd.csv",recl=800)
-            write (2587,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*)   'HYDOUT              hydout_aa_hyd.csv'
-          end if
-       end if
-        
-
-     !! HYDIN 
-       if (pco%hyd%d == 'y') then
-        open (2560,file="hydin_day_hyd.txt",recl=800)
-        write (2560,*) hyd_hdr
-        write (9000,*)     'HYDIN               hydin_day_hyd.txt'
-          if (pco%csvout == 'y') then
-            open (2564,file="hydin_day_hyd.csv",recl=800)
-            write (2564,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*) 'HYDIN               hydin_day_hyd.csv'
-          end if
-       endif
-       
-      if (pco%hyd%m == 'y') then
-        open (2561,file="hydin_mon_hyd.txt",recl=800)
-        write (2561,*) hyd_hdr
-        write (9000,*)     'HYDIN               hydin_mon_hyd.txt'
-          if (pco%csvout == 'y') then
-            open (2565,file="hydin_mon_hyd.csv",recl=800)
-            write (2565,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*) 'HYDIN               hydin_mon_hyd.csv'
-          end if
-      endif
-      
-      if (pco%hyd%y == 'y') then
-        open (2562,file="hydin_yr_hyd.txt",recl=800)
-        write (2562,*) hyd_hdr
-        write (9000,*)     'HYDIN               hydin_yr_hyd.txt'
-          if (pco%csvout == 'y') then
-            open (2566,file="hydin_yr_hyd.csv",recl=800)
-            write (2566,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*) 'HYDIN               hydin_yr_hyd.csv'
-          end if
-      endif
-      
-      if (pco%hyd%a == 'y') then
-        open (2563,file="hydin_aa_hyd.txt",recl=800)
-        write (2563,*) hyd_hdr
-        write (9000,*)     'HYDIN               hydin_aa_hyd.txt'
-          if (pco%csvout == 'y') then
-            open (2567,file="hydin_aa_hyd.csv",recl=800)
-            write (2567,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*) 'HYDIN               hydin_aa_hyd.csv'
-          end if
-      endif
-       
-       if (pco%hyd%d == 'y') then
-        open (2700,file="deposition_day.txt",recl=800)
-        write (2700,*) hyd_hdr
-        write (9000,*) 'DEPO                deposition_day.txt'
-          if (pco%csvout == 'y') then
-            open (2704,file="deposition_day.csv",recl=800)
-            write (2704,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*) 'DEPO                deposition_day.csv'
-          end if
-       end if
-       
-       if (pco%hyd%m == 'y') then
-        open (2701,file="deposition_mon.txt",recl=800)
-        write (2701,*) hyd_hdr
-        write (9000,*) 'DEPO                deposition_mon.txt'
-          if (pco%csvout == 'y') then
-            open (2705,file="deposition_mon.csv",recl=800)
-            write (2705,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*) 'DEPO                deposition_mon.csv'
-          end if
-       end if
-       
-       if (pco%hyd%d == 'y') then
-        open (2702,file="deposition_yr.txt",recl=800)
-        write (2702,*) hyd_hdr
-        write (9000,*) 'DEPO                deposition_yr.txt'
-          if (pco%csvout == 'y') then
-            open (2706,file="deposition_yr.csv",recl=800)
-            write (2706,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*) 'DEPO                deposition_yr.csv'
-          end if
-       end if
-       
-       if (pco%hyd%a == 'y') then
-        open (2703,file="deposition_aa.txt",recl=800)
-        write (2703,*) hyd_hdr
-        write (9000,*) 'DEPO                deposition_aa.txt'
-          if (pco%csvout == 'y') then
-            open (2707,file="deposition_aa.csv",recl=800)
-            write (2707,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*) 'DEPO                deposition_aa.csv'
-          end if
-       end if
-
-    !! RESERVOIR
-      if (pco%res%d == 'y' .and. sp_ob%res > 0 ) then
-        open (2540,file="reservoir_day_res.txt",recl=800)
-        write (9000,*) 'RES                 reservoir_day_res.txt'
-        write (2540,*) res_hdr
-        write (2540,*) res_hdr_unt
-          if (pco%csvout == 'y') then
-            open (2544,file="reservoir_day_res.csv",recl=800)
-            write (2544,'(*(G0.3,:","))') res_hdr
-            write (2544,'(*(G0.3,:","))') res_hdr_unt
-            write (9000,*) 'RES                 reservoir_day_res.csv'
-          end if
-      end if
-      
-     if (pco%res%m == 'y' .and. sp_ob%res > 0 ) then
-        open (2541,file="reservoir_mon_res.txt",recl=800)
-        write (9000,*) 'RES                 reservoir_mon_res.txt'
-        write (2541,*) res_hdr
-        write (2541,*) res_hdr_unt
-          if (pco%csvout == 'y') then
-            open (2545,file="reservoir_mon_res.csv",recl=800)
-            write (2545,'(*(G0.3,:","))') res_hdr
-            write (2545,'(*(G0.3,:","))') res_hdr_unt
-            write (2545,*) 'RES                 reservoir+mon_res.csv'
-          end if
-     end if
-     
-     if (pco%res%y == 'y' .and. sp_ob%res > 0 ) then
-        open (2542,file="reservoir_yr_res.txt",recl=800)
-        write (9000,*) 'RES                 reservoir_yr_res.txt'
-        write (2542,*) res_hdr
-        write (2542,*) res_hdr_unt
-          if (pco%csvout == 'y') then
-            open (2546,file="reservoir_yr_res.csv",recl=800)
-            write (2546,'(*(G0.3,:","))') res_hdr
-            write (2546,'(*(G0.3,:","))') res_hdr_unt
-            write (9000,*) 'RES                 reservoir_yr_res.csv'
-          end if
-      end if
-      
-      if (pco%res%a == 'y' .and. sp_ob%res > 0) then
-        open (2543,file="reservoir_aa_res.txt",recl = 800)
-        write (2543,*) res_hdr
-        write (2543,*) res_hdr_unt
-        write (9000,*) 'RES                 reservoir_aa_res.txt'
-          if (pco%csvout == 'y') then
-            open (2547,file="reservoir_aa_res.csv",recl=800)
-            write (2547,'(*(G0.3,:","))') res_hdr
-            write (2547,'(*(G0.3,:","))') res_hdr_unt
-            write (9000,*) 'RES                 reservoir_aa_res.csv'
-          end if
-      end if
-          
-      
       if (pco%fdcout == 'y') then
         open (6000,file="flow_duration_curve.out", recl=800)
         write (9000,*) 'FDC                 flow_duration_curve.out'
@@ -245,28 +16,32 @@
 
 !!!!!! hru-out.cal - hru soft calibration output including soft and predicted budgets and 
 !!!!!! calibration parameter adjustments
-	  open (4999,file="hru-out.cal", recl = 800)
-	  write (9000,*)   'HRU SOFT CALIB OUT      hru-out.cal'
-	  write (4999,*) calb_hdr
+      if (sp_ob%chandeg > 0) then
+	    open (4999,file="hru-out.cal", recl = 800)
+	    write (9000,*)   'HRU SOFT CALIB OUT      hru-out.cal'
+	    write (4999,*) calb_hdr
+      end if
       
 !!!!!! hru-new.cal - hru soft calibration output file.  The same format as calibration.upd and
 !!!!!! can be used as input (calibration.upd) in subsequent simulations
-      open (5000,file="hru-new.cal", recl = 800)
-      write (5000,*) ' calibration.upd_developed_from_soft_data_calibration'
-	  write (9000,*)   'HRU SOFT OUT CALIB      hru-new.cal'
-      write (5000,*) calb3_hdr
+      if (db_mx%lsu_reg > 0) then
+        open (5000,file="hru-new.cal", recl = 800)
+        write (5000,*) ' calibration.upd_developed_from_soft_data_calibration'
+	    write (9000,*)   'HRU SOFT OUT CALIB      hru-new.cal'
+        write (5000,*) calb3_hdr
+      end if
       
 !!!!!! hru-lte-out.cal - hru lte soft calibration output including soft and predicted budgets and 
 !!!!!! calibration parameter adjustments
-      open (5003,file="hru-lte-out.cal", recl = 800)
-	  write (9000,*)   'LTE SOFT OUT CALIB      hru-lte-out.cal'
-	  write (5003,*) calb_hdr
+      !open (5003,file="hru-lte-out.cal", recl = 800)
+	  !write (9000,*)   'LTE SOFT OUT CALIB      hru-lte-out.cal'
+	  !write (5003,*) calb_hdr
 	  
 !!!!!! hru-lte-new.cal - hru lte soft calibration output file.  The same format as hru-lte.hru and
 !!!!!! can be used as input (hru-lte.hru) in subsequent simulations 
-      open (5002,file="hru-lte-new.cal", recl = 800)
-	  write (9000,*)   'LTE SOFT CALIB INPUT    hru-lte-new.cal'
-	  write (5002,*) calb2_hdr
+      !open (5002,file="hru-lte-new.cal", recl = 800)
+	  !write (9000,*)   'LTE SOFT CALIB INPUT    hru-lte-new.cal'
+	  !write (5002,*) calb2_hdr
       
 !! BASIN AQUIFER OUTPUT
         if (pco%aqu_bsn%d == 'y') then
@@ -498,13 +273,5 @@
          end if
         end if
 !! BASIN RECALL OUTPUT
-
-
- 1002 format (t15,'SURFACE',t29,'-------  SOIL PROFILE  -------',/,   &
-        t2,'DAY',t8,'HRU',t15,'SOL_RSD',t27,'SOL_P',t38,              &
-        'NO3',t47,'ORG_N',t57,'ORG_P',t70,'CN'/,t15,                  &                   
-        '(t/ha)',t25,'(kg/ha)',t35,                                   &                                   
-        '(kg/ha)',t45,'(kg/ha)',t56,'(kg/ha)')
-      
       return
       end subroutine header_write  

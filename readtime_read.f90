@@ -18,8 +18,9 @@
          if (eof < 0) exit
          read (107,*,iostat=eof) header
          if (eof < 0) exit
-         read (107,*,iostat=eof) time%nbyr, time%yrc_start, time%idaf, time%idal_in, time%step
+         read (107,*,iostat=eof) time%idaf, time%yrc_start, time%idal_in, time%yrc_end, time%step
          if (time%idaf <= 0) time%idaf = 1
+         time%nbyr = time%yrc_end - time%yrc_start + 1
          if (eof < 0) exit
          exit
          close (107) 

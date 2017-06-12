@@ -50,8 +50,7 @@
             do iwst = 1, mwst
                 read (107,*) i
                 backspace (107)
-                read (107,*,iostat=eof) wst_pointer(iwst), wst(i)%name,       & 
-                wst(i)%wco_c
+                read (107,*,iostat=eof) wst_pointer(iwst), wst(i)%name, wst(i)%wco_c
                 
                if (db_mx%wgnsta > 0) call search (wgn_n, db_mx%wgnsta, wst(i)%wco_c%wgn, wst(i)%wco%wgn)
                if (db_mx%pcpfiles > 0) call search (pcp_n, db_mx%pcpfiles, wst(i)%wco_c%pgage, wst(i)%wco%pgage)

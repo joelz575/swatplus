@@ -26,7 +26,7 @@
           res_m(j)%area_ha = res_m(j)%area_ha / const
           res_y(j) = res_y(j) + res_m(j)
           if (pco%res%m == 'y') then
-            write (2541,100) time%day, time%yrs, j, res(j)%flo, res_m(j)
+            write (2541,100) time%day, time%yrs, j,  res_m(j)
               if (pco%csvout == 'y') then
                 write (2545,'(*(G0.3,:","))') time%day, time%yrs, j, res_m(j) 
               end if 
@@ -40,7 +40,7 @@
           res_y(j)%area_ha = res_y(j)%area_ha / 12.
           res_a(j) = res_a(j) + res_y(j)
           if (pco%res%y == 'y') then
-            write (2542,100) time%day, time%yrs, j, res(j)%flo, res_y(j)
+            write (2542,100) time%day, time%yrs, j, res_y(j)
               if (pco%csvout == 'y') then
                 write (2546,'(*(G0.3,:","))') time%day, time%yrs, j, res_y(j)
               end if
@@ -51,7 +51,7 @@
 !!!!! average annual print
         if (time%end_sim == 1 .and. pco%res%a == 'y') then
           res_a(j) = res_y(j) / time%yrs_prt
-          write (2543,100) time%day, time%yrs, j, res(j)%flo, res_a(j)
+          write (2543,100) time%day, time%yrs, j,  res_a(j)
           if (pco%csvout == 'y') then
             write (2547,'(*(G0.3,:","))') time%day, time%yrs, j, res_a(j)
           end if 

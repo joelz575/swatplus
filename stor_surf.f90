@@ -1,14 +1,16 @@
-      subroutine stor_surf (jres)
+      subroutine stor_surf
+    
       use jrw_datalib_module
       use reservoir_module
       use parm
+      use conditional_module
 
       integer :: k, ii
 
       !! initialize variables for reservoir daily simulation
       call res_dayinit
       
-      bypass = 1. - res_hyd(ihyd)%frac
+      bypass = 1. - wet_hyd(ihyd)%frac
       frac_in = 1. - bypass - res_ob(jres)%area_ha / hru(ihru)%area_ha
       resflwi = qday * frac_in
       pet_day = wst(iwst)%weat%pet
@@ -26,27 +28,70 @@
 
       !! add incoming nutrients to those in reservoir
       !! equation 29.1.1 in SWAT manual
-      res(jres)%orgn = res(jres)%orgn + sedorgn(ihru) * frac_in
-      res(jres)%sedp = res(jres)%sedp + sedorgp(ihru) * frac_in
-      res(jres)%no3 = res(jres)%no3 + surqno3(ihru) * frac_in
-      res(jres)%nh3 = res(jres)%nh3 + 0.  !add ammonium 
-      res(jres)%no2 = res(jres)%no2 + 0.  !add no2
-      res(jres)%solp = res(jres)%solp + (sedminps(ihru) + sedminpa(ihru)) * frac_in
+      wet(j)%orgn = wet(j)%orgn + sedorgn(ihru) * frac_in
+      wet(j)%sedp = wet(j)%sedp + sedorgp(ihru) * frac_in
+      wet(j)%no3 = wet(j)%no3 + surqno3(ihru) * frac_in
+      wet(j)%nh3 = wet(j)%nh3 + 0.  !add ammonium 
+      wet(j)%no2 = wet(j)%no2 + 0.  !add no2
+      wet(j)%solp = wet(j)%solp + (sedminps(ihru) + sedminpa(ihru)) * frac_in
 
-      idat = res_ob(jres)%props
-      ihyd = res_dat(idat)%hyd
-      ised = res_dat(idat)%sed
-      if(time%step == 0) then		!! urban modeling by J.Jeong
-        !call from actions --> call res_hydro (jres, ihyd, ised)
-        !! determine reservoir outflow
-        irel = res_dat(idat)%release
-        call conditions (irel, ihyd)
-        call actions (irel, jres)
+      iprop = hru(ihru)%dbs%surf_stor
+      ihyd = wet_dat(iprop)%hyd
+      ihyd = wet_dat(idat)%hyd
+      ised = wet_dat(idat)%sed
+      id = wet_dat(idat)%release
+        !calc release from decision table
+        do iac = 1, d_tbl(id)%acts
+          action = "n"
+          do ial = 1, d_tbl(id)%alts
+            if (d_tbl(id)%act_hit(ial) == "y" .and. d_tbl(id)%act_outcomes(iac,ial) == "y") then
+              action = "y"
+              exit
+            end if
+          end do
+          
+          !condition is met - set the release rate
+          if (action == 'y') then
+            select case (d_tbl(id)%act(iac)%option)
+            case ("rate")
+              resflwo = d_tbl(id)%act(iac)%const * 86400.
+            case ("days")
+              select case (d_tbl(id)%act(iac)%file_pointer)
+                case ("null")
+                  b_lo = 0.
+                case ("pvol")
+                  b_lo = res_ob(ihyd)%pvol
+                case ("evol")
+                  b_lo = res_ob(ihyd)%evol
+              end select
+              resflwo = (res(jres)%flo - b_lo) / d_tbl(id)%act(iac)%const
+            case ("weir")
+              resflwo = res_weir(ihyd)%c * res_weir(ihyd)%k * res_weir(ihyd)%w * (res_h ** 1.5)
+            case ("meas")
+              irel = int(d_tbl(id)%act(iac)%const)
+              select case (recall(irel)%typ)
+              case (1)    !daily
+                resflwo = recall(irel)%hd(time%day,time%yrs)%flo
+              case (2)    !monthly
+                resflwo = recall(irel)%hd(time%mo,time%yrs)%flo
+              case (3)    !annual
+                resflwo = recall(irel)%hd(1,time%yrs)%flo
+              end select
+            end select
+          end if
+        end do    ! iac
+
+      !! update surface area
+      !! wetland on hru - solve quadratic to find new depth
+      x1 = wet_hyd(ihyd)%bcoef ** 2 + 4. * wet_hyd(ihyd)%ccoef * (1. - wet(jres)%flo / wet_ob(ihyd)%pvol)
+      if (x1 < 1.e-6) then
+        wet_h = 0.
       else
-        !call res_hourly
-      endif
-
-
+        wet_h1 = (-wet_hyd(ihyd)%bcoef - sqrt(x1)) / (2. * wet_hyd(ihyd)%ccoef)
+        wet_h = wet_h1 + wet_hyd(ihyd)%bcoef
+      end if
+      wet_ob(jres)%area_ha = wet_ob(ihyd)%psa * (1. + wet_hyd(ihyd)%acoef * wet_h)
+        
       !! perform reservoir nutrient balance
       inut = res_dat(idat)%nut
       call res_nutrient (jres, inut)
@@ -76,65 +121,64 @@
       surqno3(ihru) = resno3o/ hru(ihru)%area_ha  + surqno3(ihru) * bypass
       !nh3 = resnh3o + 0.  !add ammonium 
       !no2  = resno2o + 0.  !add no2
-      sedminps(ihru) = ressolpo / hru(ihru)%area_ha / 2. + sedminps(ihru) *   &
-                                                                  bypass
-      sedminpa(ihru) = ressolpo / hru(ihru)%area_ha / 2. + sedminpa(ihru) *   &
-                                                                  bypass
+      sedminps(ihru) = ressolpo / hru(ihru)%area_ha / 2. + sedminps(ihru) * bypass
+      sedminpa(ihru) = ressolpo / hru(ihru)%area_ha / 2. + sedminpa(ihru) * bypass
+      
         !! summary calculations
         if (time%yrs > pco%nyskip) then
           !!calculate concentrations
-          resorgnc = res(jres)%orgn / (res(jres)%flo+.1) * 1000.
-          resno3c = res(jres)%no3 / (res(jres)%flo+.1) * 1000.
-          resno2c = res(jres)%no2 / (res(jres)%flo+.1) * 1000.
-          resnh3c = res(jres)%nh3 / (res(jres)%flo+.1) * 1000.
-          resorgpc = res(jres)%sedp / (res(jres)%flo+.1) * 1000.
-          ressolpc = res(jres)%solp / (res(jres)%flo+.1) * 1000.
-          sedcon = res(jres)%sed * 1.e6
+          resorgnc = wet(j)%orgn / (wet(j)%flo+.1) * 1000.
+          resno3c = wet(j)%no3 / (wet(j)%flo+.1) * 1000.
+          resno2c = wet(j)%no2 / (wet(j)%flo+.1) * 1000.
+          resnh3c = wet(j)%nh3 / (wet(j)%flo+.1) * 1000.
+          resorgpc = wet(j)%sedp / (wet(j)%flo+.1) * 1000.
+          ressolpc = wet(j)%solp / (wet(j)%flo+.1) * 1000.
+          sedcon = wet(j)%sed * 1.e6
           
-          res_d(jres)%vol = res(jres)%flo / 10000.      !m^3 -> ha-m
-          res_d(jres)%area_ha = res_ob(jres)%area_ha
-          res_d(jres)%flowi = flwi / 10000.             !m^3 -> ha-m
-          res_d(jres)%flowo = flwo / 10000.             !m^3 -> ha-m
-          res_d(jres)%ev = resev / 10000.               !m^3 -> ha-m
-          res_d(jres)%sep = ressep / 10000.             !m^3 -> ha-m
-          res_d(jres)%pcp = respcp / 10000.             !m^3 -> ha-m
-          res_d(jres)%sedi = sedi 
-          res_d(jres)%sedo = sedo
-          res_d(jres)%sedcon = sedcon
-          res_d(jres)%pesti = pesti
-          res_d(jres)%reactw = reactw
-          res_d(jres)%volatpst = volatpst
-          res_d(jres)%setlpst = setlpst
-          res_d(jres)%resuspst = resuspst
-          res_d(jres)%difus = difus
-          res_d(jres)%reactb = reactb
-          res_d(jres)%pesto = pesto
-          res_d(jres)%pstcon = pstcon
-          res_d(jres)%spstcon = spstcon
-          res_d(jres)%orgni = orgni
-          res_d(jres)%orgno = orgno
-          res_d(jres)%orgpi = orgpi
-          res_d(jres)%orgpo = orgpo
-          res_d(jres)%no3i = no3i
-          res_d(jres)%no3o = no3o
-          res_d(jres)%no2i = no2i
-          res_d(jres)%no2o = no2o
-          res_d(jres)%nh3i = nh3i
-          res_d(jres)%nh3o = nh3o
-          res_d(jres)%solpi = solpi
-          res_d(jres)%solpo = solpo
-          res_d(jres)%chlai = chlai
-          res_d(jres)%chlao = chlao
-          res_d(jres)%orgpc = orgpc
-          res_d(jres)%solpc = solpc
-          res_d(jres)%orgnc = orgnc
-          res_d(jres)%no3c = no3c
-          res_d(jres)%no2c = no2c
-          res_d(jres)%nh3c = nh3c
+          wet_d(j)%vol = wet(j)%flo / 10000.      !m^3 -> ha-m
+          wet_d(j)%area_ha = res_ob(jres)%area_ha
+          wet_d(j)%flowi = flwi / 10000.             !m^3 -> ha-m
+          wet_d(j)%flowo = flwo / 10000.             !m^3 -> ha-m
+          wet_d(j)%ev = resev / 10000.               !m^3 -> ha-m
+          wet_d(j)%sep = ressep / 10000.             !m^3 -> ha-m
+          wet_d(j)%pcp = respcp / 10000.             !m^3 -> ha-m
+          wet_d(j)%sedi = sedi 
+          wet_d(j)%sedo = sedo
+          wet_d(j)%sedcon = sedcon
+          wet_d(j)%pesti = pesti
+          wet_d(j)%reactw = reactw
+          wet_d(j)%volatpst = volatpst
+          wet_d(j)%setlpst = setlpst
+          wet_d(j)%resuspst = resuspst
+          wet_d(j)%difus = difus
+          wet_d(j)%reactb = reactb
+          wet_d(j)%pesto = pesto
+          wet_d(j)%pstcon = pstcon
+          wet_d(j)%spstcon = spstcon
+          wet_d(j)%orgni = orgni
+          wet_d(j)%orgno = orgno
+          wet_d(j)%orgpi = orgpi
+          wet_d(j)%orgpo = orgpo
+          wet_d(j)%no3i = no3i
+          wet_d(j)%no3o = no3o
+          wet_d(j)%no2i = no2i
+          wet_d(j)%no2o = no2o
+          wet_d(j)%nh3i = nh3i
+          wet_d(j)%nh3o = nh3o
+          wet_d(j)%solpi = solpi
+          wet_d(j)%solpo = solpo
+          wet_d(j)%chlai = chlai
+          wet_d(j)%chlao = chlao
+          wet_d(j)%orgpc = orgpc
+          wet_d(j)%solpc = solpc
+          wet_d(j)%orgnc = orgnc
+          wet_d(j)%no3c = no3c
+          wet_d(j)%no2c = no2c
+          wet_d(j)%nh3c = nh3c
         end if             
 
         if (time%yrs > pco%nyskip) then
-          call reservoir_output(jres)
+          call wetland_output (j)
         endif
         
       return

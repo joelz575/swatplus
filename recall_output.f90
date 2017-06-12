@@ -63,7 +63,7 @@
         
       return
       
-100   format (2i6,i8,17f15.3)
-102   format (a6,i6,i8,17f15.3)
+100   format (2i6,i8,25f15.3)
+102   format (a6,i6,i8,25f15.3)
        
       end subroutine recall_output

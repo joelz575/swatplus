@@ -19,14 +19,14 @@
           ihru = lsu_out(isub)%num(ielem)
           if (lsu_elem(ihru)%sub_frac > 1.e-9) then
             const = 1. / lsu_elem(ihru)%sub_frac   !only have / operator set up
-            if (sp_ob%hru > 0) then
+            if (lsu_elem(ihru)%obtyp == 'hru') then
               ruwb_d(isub) = ruwb_d(isub) + hwb_d(ihru) / const
               runb_d(isub) = runb_d(isub) + hnb_d(ihru) / const
               ruls_d(isub) = ruls_d(isub) + hls_d(ihru) / const
               rupw_d(isub) = rupw_d(isub) + hpw_d(ihru) / const
             end if
             ! summing HRU_LTE output
-            if (sp_ob%hru_lte > 0) then
+            if (lsu_elem(ihru)%obtyp == 'hlt') then
               ruwb_d(isub) = ruwb_d(isub) + hltwb_d(ihru) / const
               runb_d(isub) = runb_d(isub) + hltnb_d(ihru) / const
               ruls_d(isub) = ruls_d(isub) + hltls_d(ihru) / const

@@ -12,11 +12,9 @@
       if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                                     .and. time%day <= pco%jd_end) then
         if (pco%sd_chan%d == 'y') then
-          write (2500,100) time%day, time%yrc, ich, chsd_d(ich),            &
-            sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
+          write (2500,100) time%day, time%yrc, ich, chsd_d(ich)
            if (pco%csvout == 'y') then
-             write (2504,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_d(ich),  &
-             sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
+             write (2504,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_d(ich)
            end if
         end if
       end if
@@ -25,11 +23,9 @@
         if (time%end_mo == 1) then
           chsd_y(ich) = chsd_y(ich) + chsd_m(ich)
           if (pco%sd_chan%m == 'y') then
-          write (2501,100) time%day, time%yrc, ich, chsd_m(ich),                &
-           sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
+          write (2501,100) time%day, time%yrc, ich, chsd_m(ich)
           if (pco%csvout == 'y') then
-            write (2505,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_m(ich), &
-            sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len 
+            write (2505,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_m(ich)
           end if
         end if
         chsd_m(ich) = chsdz
@@ -39,11 +35,9 @@
       if (time%end_yr == 1) then
         chsd_a(ich) = chsd_a(ich) + chsd_y(ich)
         if (pco%sd_chan%y == 'y') then 
-          write (2502,100) time%day, time%yrc, ich, chsd_y(ich),          &
-          sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
+          write (2502,100) time%day, time%yrc, ich, chsd_y(ich)
           if (csvout == 1) then
-           write (2506,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_y(ich),  &
-            sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
+           write (2506,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_y(ich)
           end if
         end if
       end if
@@ -53,11 +47,9 @@
         yrs = float(time%nbyr)
         chsd_a(ich) = chsd_a(ich) / yrs
         if (pco%sd_chan%a == 'y') then
-        write (2503,100) time%day, time%yrc, ich, chsd_a(ich),           &
-          sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
+        write (2503,100) time%day, time%yrc, ich, chsd_a(ich)
         if (csvout == 1) then
-          write (2507,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_a(ich),   &
-           sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chs,sd_ch(ich)%hc_len
+          write (2507,'(*(g0.3,:","))') time%day, time%yrc, ich, chsd_a(ich)
         end if
        end if
      end if 

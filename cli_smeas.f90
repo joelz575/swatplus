@@ -46,7 +46,15 @@
       do i = 1, imax
         read (107,*,iostat = eof) slr(i)%filename
         if (eof < 0) exit
-        open (108,file = slr(i)%filename)
+        
+!!!!!weather path code
+       if (in_path_slr%slr == 'null') then
+         open (108,file = slr(i)%filename)
+       else
+        open (108,file = TRIM(ADJUSTL(in_path_slr%slr))//slr(i)%filename)
+       endif
+!!!!!weather path code
+        
         read (108,*,iostat=eof) titldum
         if (eof < 0) exit
         read (108,*,iostat=eof) header

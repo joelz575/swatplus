@@ -1,17 +1,5 @@
       module hru_lte_module
-      
-      use hydrograph_module
-      use time_module
-      use climate_module
-      use output_landscape_module
-      use input_file_module
-    
-      real :: a1, a2
-      real :: precip, snowfall, snowmelt, runoff, flowlat, chflow, perc, flow_tile
-      real :: tmax, tmin, tave, raobs, tstress, ws, strsair, biomass, phubase0
-      real :: wndspd, rhum, air
-      real :: cn_sd, aet, pet, sedin
-      real, dimension(:), allocatable :: sd_qday, sd_qfdc, pr, be
+
       real, dimension(12) :: awct = 0.
       real, dimension(12) :: port = 0.
       real, dimension(12) :: scon = 0.
@@ -65,7 +53,8 @@
         character(len=16) :: name
         integer :: props
         integer :: obj_no
-        character(len=16) :: region
+        character(len=16) :: lsu             !              |landscape unit - character
+        character(len=16) :: region          !              |region - character
         character(len=16) :: plant           !              |plant type (as listed in plants.plt)
         integer :: iplant = 1                !              |plant number xwalked from hlt_db()%plant and plants.plt
         real :: km2 = 0.                     !km^2          |drainage area
@@ -109,9 +98,5 @@
       type (swatdeg_hru_dynamic), dimension (:), allocatable :: hlt_init
                
       contains
-!! routines for swatdeg_hru module
-      include 'hru_lte_read.f90'
-      include 'hru_lte_control.f90'
-      include 'hru_lte_output.f90'
 
       end module hru_lte_module

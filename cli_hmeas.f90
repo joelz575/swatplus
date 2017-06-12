@@ -23,7 +23,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
           do while (eof == 0)
-            read (107,*,iostat=eof) i
+            read (107,*,iostat=eof) titldum
             if (eof < 0) exit
             imax = imax + 1
           end do
@@ -35,7 +35,8 @@
       read (107,*) titldum
       read (107,*) header
       do i = 1, imax
-          read (107,*,iostat = eof) hmd_n(i)
+        read (107,*,iostat = eof) hmd_n(i)
+        if (eof < 0) exit
       end do
       
       rewind (107)
@@ -45,24 +46,31 @@
       do i = 1, imax
         read (107,*,iostat = eof) hmd(i)%filename
         if (eof < 0) exit
-        open (108,file = hmd(i)%filename)
+        
+!!!!!weather path code
+       if (in_path_hmd%hmd == 'null') then
+         open (108,file = hmd(i)%filename)
+       else
+        open (108,file = TRIM(ADJUSTL(in_path_hmd%hmd))//hmd(i)%filename)
+       endif
+!!!!!weather path code
+
         read (108,*,iostat=eof) titldum
         if (eof < 0) exit
         read (108,*,iostat=eof) header
         if (eof < 0) exit
-        read (108,*,iostat=eof) hmd(i)%nbyr, hmd(i)%lat, hmd(i)%long,     &
-                                hmd(i)%elev
+        read (108,*,iostat=eof) hmd(i)%nbyr, hmd(i)%tstep, hmd(i)%lat,            &
+                hmd(i)%long, hmd(i)%elev
         if (eof < 0) exit
         
-
        ! the precip time step has to be the same as time%step
        allocate (hmd(i)%ts(366,hmd(i)%nbyr))
     
         ! read and store entire year
        do 
-         read (108,*,iostat=eof) iyr, istep, relhum
+         read (108,*,iostat=eof) iyr, istep
          if (eof < 0) exit
-         if (iyr == time%yrc) exit
+         if (iyr == time%yrc .and. istep == time%idaf) exit
        end do
        
        backspace (108)

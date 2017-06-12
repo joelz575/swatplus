@@ -81,7 +81,7 @@
         !! initialize annual variables for hru's
         if (sp_ob%hru > 0) call sim_inityr
 
-        !!determine beginning and ending dates of simulation in current year
+        !! determine beginning and ending dates of simulation in current year
         if (Mod(time%yrc,4) == 0) then 
           ndays = ndays_leap
         else 
@@ -97,6 +97,7 @@
         time%idal = ndays(13)
         if (time%yrs == time%nbyr .and. time%idal_in > 0) then
           time%idal = time%idal_in
+          time%idal =  amin0 (time%idal, ndays(13))  ! if user inputs 366 on non-leap year
         end if
         
         !! sum years of printing for average annual writes
@@ -190,6 +191,20 @@
           !call water_allocation
 
           call command              !! command loop
+          
+    !$OMP PARALLEL DEFAULT(SHARED) PRIVATE(I,J)      !!start parallelization Jaehak 2016
+    !$OMP DO SCHEDULE(STATIC,1)          
+          !do isd = 1, sp_ob%hru_lte
+          !  call hru_lte_control (isd)
+          !end do
+    !$OMP END DO 
+    !$OMP END PARALLEL
+          
+          !if (db_mx%lsu_elem > 0) call basin_output
+          !if (db_mx%lsu_out > 0) call lsu_output
+          !do isd = 1, sp_ob%hru_lte
+          !  call hru_lte_output (isd)
+          !end do
           
           call soil_write  
 

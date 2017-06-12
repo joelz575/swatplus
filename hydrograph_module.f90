@@ -59,6 +59,7 @@
       type (hyd_output) :: ht1, ht2, ht3, ht4, ht5, delrto
       
       type (hyd_output), dimension(:),allocatable :: res
+      type (hyd_output), dimension(:),allocatable :: wet
   
       type hyd_header
         !H !character (len=16) :: name  =     'obj_name        ' 

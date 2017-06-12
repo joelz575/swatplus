@@ -1,5 +1,5 @@
        subroutine readcio_read 
-       
+           
        character (len=80) :: titldum
        character (len=15) :: name
        integer :: eof
@@ -11,7 +11,7 @@
        if (i_exist /= 0) then
          open (107,file="file.cio")
          read (107,*,iostat=eof) titldum
-      do i = 1, 23
+      do i = 1, 31
          read (107,*,iostat=eof) name, in_sim  
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_cli
@@ -64,6 +64,18 @@
 		 if (eof < 0) exit
          read (107,*,iostat=eof) name, in_regs
          if (eof < 0) exit
+!!!!!weather path code
+         read (107,*,iostat=eof) name, in_path_pcp
+         if (eof < 0) exit
+         read (107,*,iostat=eof) name, in_path_tmp
+         if (eof < 0) exit
+         read (107,*,iostat=eof) name, in_path_slr
+         if (eof < 0) exit
+         read (107,*,iostat=eof) name, in_path_hmd
+         if (eof < 0) exit
+         read (107,*,iostat=eof) name, in_path_wnd
+         if (eof < 0) exit
+!!!!!weather path code
          exit
       enddo
       endif

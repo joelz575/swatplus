@@ -1,0 +1,5 @@
+grassedww.str - Grass waterway properties
+  NAME        MAN_N     SPCON     DEPTH      WIDTH      LENGTH     SLOPE		DESCRIPTION
+ grwway_high   0.05     0.02       1.00       4.00       0.50       0.100		Slope_>8
+ grwway_med    0.05     0.02       0.75       3.00       0.75       0.035		Slope_2-5
+ grwway_low    0.05     0.02       0.50       2.00       1.00       0.010		Slope_0-2

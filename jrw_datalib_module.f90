@@ -82,6 +82,8 @@
         integer :: res_nut
         integer :: res_pst
         integer :: res_weir
+        integer :: wet_dat       
+        integer :: wet_hyd
         integer :: ch_surf
         integer :: ch_dat
         integer :: ch_init
@@ -416,7 +418,7 @@
       type (management_ops), dimension(1) :: mgt2
       
       type management_schedule
-        character(len=16) :: name
+        character(len=32) :: name
         integer :: num_ops = 0
         integer :: num_autos = 0
         type (management_ops), dimension (:), allocatable :: mgt_ops
@@ -775,7 +777,7 @@
       type land_use_management
         character (len=16) :: name = " "
         character (len=16) :: plant_cov = ""
-        character (len=16) :: mgt_ops = ""
+        character (len=32) :: mgt_ops = ""
         character (len=16) :: cn_lu      !! none     | land use for curve number table (cntable.lum)
         character (len=16) :: cons_prac  !! none     | conservation practice from table (c0ns_precatice.lum)
         character (len=16) :: urb_lu     !! none     | type of urban land use- ie. residential, industrial, etc (urban.urb)
@@ -915,6 +917,7 @@
                                   !                   |7 trees
                                   !                   |8 tropical trees
                                   !                   |9 tropical grasses
+        real :: phu = 2500.        !heat units   |total number of heat units to bring crop to maturity
         real :: bio_e = 15.0             !(kg/ha/(MJ/m**2)  |biomass-energy ratio
         real :: hvsti = 0.76             !(kg/ha)/(kg/ha)   |harvest index: crop yield/aboveground biomass
         real :: blai = 5.0               !none              |max (potential) leaf area index
@@ -1004,8 +1007,6 @@
         integer :: igro = 1        !             |land cover status
                                    !               0 = no land cover growing
                                    !               1 = land cover growing
-        real :: phu = 2500.        !heat units   |total number of heat units to
-                                   !                bring plant to maturity
         real :: lai = 0.           !m**2/m**2    |leaf area index
         real :: bioms = 0.         !kg/ha        |land cover/crop biomass
         real :: phuacc = 0.        !             |frac of plant heat unit acc.
@@ -1056,7 +1057,7 @@
       
       type channel_initial
         character(len=13) :: name
-        real :: vol               !m**3          |res vol (read in as frac principle and converted to m^3)
+        real :: vol               !m**3          |res vol (read in as frac principal and converted to m^3)
         real :: sed               !kg/L          |amt of sed in res (read in as mg/L and converted to kg/L)
         real :: orgn              !kg N          |amt of org N in res (read in as mg/L and converted to kg/L)
         real :: no3               !kg N          |amt of nitrate in res (read in as mg/L and converted to kg/L)
@@ -1212,7 +1213,7 @@
        
       type reservoir_initial
         character(len=16) :: name
-        real :: vol = 0.          !m**3          |res vol (read in as frac principle and converted to m^3)
+        real :: vol = 0.          !m**3          |res vol (read in as frac principal and converted to m^3)
         real :: sed = 0.          !kg/L          |amt of sed in res (read in as mg/L and converted to kg/L)
         real :: orgn = 0.         !kg N          |amt of org N in res (read in as mg/L and converted to kg/L)
         real :: no3 = 0.          !kg N          |amt of nitrate in res (read in as mg/L and converted to kg/L)
@@ -1246,6 +1247,7 @@
         character (len=16) :: pst                   !pesticide inputs-points to pesticide.res      
       end type reservoir_data_char_input
       type (reservoir_data_char_input), dimension(:), allocatable :: res_dat_c
+      type (reservoir_data_char_input), dimension(:), allocatable :: wet_dat_c
 
       type reservoir_data
         character(len=16) :: name = "default"
@@ -1257,35 +1259,40 @@
         integer :: pst = 0                    !pesticide inputs-points to pesticide.res
       end type reservoir_data
       type (reservoir_data), dimension(:), allocatable :: res_dat
+      type (reservoir_data), dimension(:), allocatable :: wet_dat
       type (reservoir_data) :: res_datz
       
       type reservoir_hyd_data
-        !variables are conditional on res_dat()%hyd = 0 for reservoirs and 1 for hru impounding
-        !surface areas are ha for 0 and frac of hru for 1; volumes are ha-m for 0 and mm for 1
-        !br1 and br2 are used for 0 and acoef for 0 -- for surface area - volume relationship
         character(len=16) :: name = "default"
-        integer :: in_unit = 0    !none          |0=input ha/ha-m; 1=input frac/mm
         integer :: iyres = 0      !none          |year of the sim that the res becomes operational
         integer :: mores = 0      !none          |month the res becomes operational
-        real :: psa = 0.          !ha or frac    |res surface area when res is filled to princ spillway
-        real :: pvol = 0.         !ha-m or mm    |vol of water needed to fill the res to the princ spillway (read in as ha-m
+        real :: psa = 0.          !ha            |res surface area when res is filled to princ spillway
+        real :: pvol = 0.         !ha-m          |vol of water needed to fill the res to the princ spillway (read in as ha-m
                                   !                and converted to m^3)
-        real :: esa = 0.          !ha or frac    |res surface area when res is filled to emerg spillway 
-        real :: evol = 0.         !ha-m or mm    |vol of water needed to fill the res to the emerg spillway (read in as ha-m
+        real :: esa = 0.          !ha            |res surface area when res is filled to emerg spillway 
+        real :: evol = 0.         !ha-m          |vol of water needed to fill the res to the emerg spillway (read in as ha-m
                                   !                and converted to m^3)
         real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom
         real :: evrsv = .7        !none          |lake evap coeff
         real :: br1 = 0.          !none          |vol-surface area coefficient for reservoirs (model estimates if zero)
-                                  !              |vol-depth coefficient for hru impoundment
         real :: br2 = 0.          !none          |vol-surface area coefficient for reservoirs (model estimates if zero)
-                                  !              |vol-depth coefficient for hru impoundment
+      end type reservoir_hyd_data
+      type (reservoir_hyd_data), dimension(:), allocatable :: res_hyd
+      
+      type wetland_hyd_data
+        character(len=16) :: name = "default"
+        real :: psa = 0.          !frac          |fraction of hru area at principal spillway (ie: when surface inlet riser flow starts)
+        real :: pvol = 0.         !mm            |average depth of water at principal spillway
+        real :: esa = 0.          !frac          |fraction of hru area at emergency spillway (ie: when starts to spill into ditch)
+        real :: evol = 0.         !mm            |average depth of water at emergency spillway
+        real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom
+        real :: evrsv = .7        !none          |lake evap coeff
         real :: acoef = 1.        !none          |vol-surface area coefficient for hru impoundment
         real :: bcoef = 1         !none          |vol-depth coefficient for hru impoundment
         real :: ccoef = 1         !none          |vol-depth coefficient for hru impoundment
         real :: frac = .5         !none          |fraction of hru that drains into impoundment
-      end type reservoir_hyd_data
-      type (reservoir_hyd_data), dimension(:), allocatable :: res_hyd
-      type (reservoir_hyd_data) :: res_hydz
+      end type wetland_hyd_data
+      type (wetland_hyd_data), dimension(:), allocatable :: wet_hyd
       
       type reservoir_sed_data
         character(len=16) :: name
@@ -1372,7 +1379,7 @@
 !      include 'potdb_read.f'
       include 'snowdb_read.f90'
       include 'soil_db_read.f90'
-      include 'atmoparm_read.f90'
+      include 'cli_atmodep_read.f90'
       include 'res_init_read.f90'
      ! include 'res_read.f90'
       include 'res_hyd_read.f90'

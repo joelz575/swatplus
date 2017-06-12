@@ -42,6 +42,7 @@
         allocate (soil(0:imax))
         allocate (soil1(0:imax))
         allocate (pcom(0:imax))
+        allocate (wet(0:imax))
         allocate (rsd1(0:imax))
         
         rewind (113)
@@ -93,8 +94,8 @@
             exit
             end if
          end do
-         do isstor = 1, db_mx%res
-            if (hru_db(i)%dbsc%surf_stor == res_dat_c(isstor)%name) then
+         do isstor = 1, db_mx%wet_dat
+            if (hru_db(i)%dbsc%surf_stor == wet_dat_c(isstor)%name) then
                hru_db(i)%dbs%surf_stor = isstor
             exit
             end if

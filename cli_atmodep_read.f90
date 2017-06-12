@@ -1,11 +1,10 @@
-      subroutine atmoparm_read
+      subroutine cli_atmodep_read
       
       use parm
       use basin_module
       use input_file_module
       
       character (len=80) :: titldum
-      character (len=13) :: atmodb
       character (len=80) :: file
       integer :: eof 
   
@@ -13,14 +12,14 @@
       eof = 0
 
 
-      inquire (file=in_parmdb%atmodb,exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%atmodb == 'null') then
+      inquire (file=in_cli%atmo_cli,exist=i_exist)
+      if (i_exist == 0 .or. in_cli%atmo_cli == 'null') then
         !!no filename 
         allocate (atmodep(0:0))
         db_mx%atmodep = 0
       else
         do
-          open (127,file = in_parmdb%atmodb)
+          open (127,file = in_cli%atmo_cli)
             do iii = 1, 5
               read (127,*,iostat=eof) titldum
               if (eof < 0) exit
@@ -57,4 +56,4 @@
       endif
 
       return
-      end subroutine atmoparm_read
+      end subroutine cli_atmodep_read

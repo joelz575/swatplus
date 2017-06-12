@@ -161,6 +161,5 @@
         end if
 
       return
- 1234 format (1x,' Executing year/day ', 2i4)
       
       end subroutine cal_sum_output

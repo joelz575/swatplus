@@ -70,6 +70,9 @@
         real :: deg_btm = 0.          ! (tons)       !bottom erosion
         real :: deg_bank = 0.         ! (tons)       !bank erosion
         real :: hc_sed = 0.           ! (tons)       !headcut erosion
+        real :: width = 0.            ! 
+        real :: depth = 0.            !
+        real :: slope = 0.            !
         real :: deg_btm_m = 0.        ! (m)          !downcutting
         real :: deg_bank_m = 0.       ! (m)          !widening
         real :: hc_m = 0.             ! (m)          !headcut retreat
@@ -107,6 +110,8 @@
           character(len=15) :: width =     '        width_m'        ! (m)
           character(len=15) :: depth =     '        depth_m'        ! (m)
           character(len=15) :: slope =     '      slope_m/m'        ! (m/m)
+          character(len=15) :: deg_btm_m = '      deg_btm_m'        ! (m)
+          character(len=15) :: deg_bank_m ='     deg_bank_m'        ! (m)
           character(len=15) :: hc_len =    '        hclen_m'        ! (m)
       end type sdch_header
       type (sdch_header) :: sdch_hdr
@@ -144,6 +149,9 @@
        cho3%deg_btm = cho1%deg_btm + cho2%deg_btm
        cho3%deg_bank = cho1%deg_bank + cho2%deg_bank
        cho3%hc_sed = cho1%hc_sed + cho2%hc_sed
+       cho3%width = cho1%width + cho2%width
+       cho3%depth = cho1%depth + cho2%depth
+       cho3%slope = cho1%slope + cho2%slope
        cho3%deg_btm_m = cho1%deg_btm_m + cho2%deg_btm_m
        cho3%deg_bank_m = cho1%deg_bank_m + cho2%deg_bank_m
        cho3%hc_m = cho1%hc_m + cho2%hc_m
@@ -163,6 +171,9 @@
         ch2%deg_btm = ch1%deg_btm / const
         ch2%deg_bank = ch1%deg_bank / const
         ch2%hc_sed = ch1%hc_sed / const
+        ch2%width = ch1%width / const
+        ch2%depth = ch1%depth / const
+        ch2%slope = ch1%slope / const
         ch2%deg_btm_m = ch1%deg_btm_m / const
         ch2%deg_bank_m = ch1%deg_bank_m / const
         ch2%hc_m = ch1%hc_m / const
@@ -181,7 +192,10 @@
         chn2%dep = const * chn1%dep
         chn2%deg_btm = const * chn1%deg_btm
         chn2%deg_bank = const * chn1%deg_bank
-        chn2%hc_sed = const * chn1%hc_sed  
+        chn2%hc_sed = const * chn1%hc_sed 
+        chn2%width = const * chn1%width
+        chn2%depth = const * chn1%depth
+        chn2%slope = const * chn1%slope
         chn2%deg_btm_m = const * chn1%deg_btm_m
         chn2%deg_bank_m = const * chn1%deg_bank_m
         chn2%hc_m = const * chn1%hc_m

@@ -1,4 +1,4 @@
-      subroutine sd_channel_surf_link (isdc, ics, mres)
+      subroutine sd_channel_surf_link (isdc, ics)
                  
       use hydrograph_module
       use sd_channel_module
@@ -23,9 +23,7 @@
             ob(iob)%flood_ch_elem = ii   !pointer to landscape element - 1 nearest to channel
             
             ihru = ch_sur(ics)%obtypno(ii)
-            !! set reservoir storage for flooding without surface storage
-            if (hru(ihru)%dbs%surf_stor == 0) imp = imp + 1
-            
+
             !set depth, width, flood volume max
             ch_sur(ics)%dep(ii) = ch_sur(ics)%dep(ii-1) +                 &
                               hru(ihru)%field%wid * hru(ihru)%topo%slope
@@ -42,8 +40,6 @@
             iob = ob(i)%obj_out(ii)
             
             isub = ch_sur(ics)%obtypno(ii)
-            !! set reservoir storage for flooding without surface storage
-            if (hru(ihru)%dbs%surf_stor == 0) imp = imp + 1
 
             ith = ru(isub)%dbs%toposub_db
             ifld = ru(isub)%dbs%field_db

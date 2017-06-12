@@ -1,0 +1,4 @@
+septic.str: Septic system properties - General
+    NAME     TYP    YR  OPT  CAP   AREA  TFAIL  DEPTH  THK     STRM_DIST  DENSITY   BD     BOD_DC  BOD_CONV   FC1   FC2  FECAL   PLQ   MRT    RSP   SLG1   SLG2   NITR   DENITR   PDISTRB   PSORBMAX  SOLPSLP  SOLPINTC		DESCRIPTION
+ standard       1     0    0  2.5  100.0   70    500.0  50.0       0.50     1.50  1000.0    0.50      0.32  30.0  0.80   1.30  0.10  0.50  0.160   0.30   0.50   1.50    0.320     128.0      850.0    0.040     3.100		Standard_system
+ failing        1     0    0  2.5  100.0    1    500.0  50.0       0.50     1.50  1000.0    0.50      0.32  30.0  0.80   1.30  0.10  0.50  0.160   0.30   0.50   1.50    0.320     128.0      850.0    0.040     3.100		Failing_system

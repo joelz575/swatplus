@@ -1,26 +1,19 @@
-      subroutine res_initial (mres)
+      subroutine res_initial
       
       use reservoir_module
       use jrw_datalib_module
       use hydrograph_module
       use parm
   
-      do ires = 1, mres
+      do ires = 1, db_mx%res
         !! set initial volumes for res and hru types
         !! convert units
         iprop = res_ob(ires)%props
         ihyd = res_dat(iprop)%hyd
-        if (res_hyd(ires)%in_unit == 0) then
-          res_ob(ires)%evol = res_hyd(ihyd)%evol * 10000.       !! ha-m => m**3
-          res_ob(ires)%pvol = res_hyd(ihyd)%pvol * 10000.       !! ha-m => m**3
-          res_ob(ires)%esa = res_hyd(ihyd)%esa
-          res_ob(ires)%psa = res_hyd(ihyd)%psa
-        end if
-        if (res_hyd(ires)%in_unit == 1) then
-          ihru = res_ob(ires)%ob
-          res_hyd(ires)%evol = res_hyd(ires)%evol * 10.          !! ha-m => m**3
-          res_hyd(ires)%pvol = res_hyd(ires)%pvol * 10.          !! ha-m => m**3
-        end if
+        res_ob(ires)%evol = res_hyd(ihyd)%evol * 10000.       !! ha-m => m**3
+        res_ob(ires)%pvol = res_hyd(ihyd)%pvol * 10000.       !! ha-m => m**3
+        res_ob(ires)%esa = res_hyd(ihyd)%esa
+        res_ob(ires)%psa = res_hyd(ihyd)%psa
         
         !! calculate shape parameters for surface area equation
         resdif = res_hyd(ihyd)%evol - res_hyd(ihyd)%pvol
@@ -45,49 +38,36 @@
       end do
       
       do ires = 1, mres
-      !!set initial n and p concentrations --> (ppm) * (m^3) / 1000 = kg
-      !!                                       ppm = t/m^3 * 10^6
-      i = res_ob(ires)%props
-      ihyd = res_dat(i)%hyd
-      init = res_dat(i)%init
+        !!set initial n and p concentrations --> (ppm) * (m^3) / 1000 = kg
+        !!                                       ppm = t/m^3 * 10^6
+        i = res_ob(ires)%props
+        ihyd = res_dat(i)%hyd
+        init = res_dat(i)%init
       
-      res(ires)%flo = res_init(init)%vol * res_ob(ires)%pvol
-      res(ires)%sed = res_init(init)%sed * res(ires)%flo / 1000.
-      res(ires)%orgn= res_init(init)%orgn * res(ires)%flo / 1000.
-      res(ires)%no3 = res_init(init)%no3 * res(ires)%flo / 1000.
-      res(ires)%no2 = res_init(init)%no2 * res(ires)%flo / 1000.
-      res(ires)%nh3 = res_init(init)%nh3 * res(ires)%flo / 1000.
-      res(ires)%sedp = res_init(init)%orgp * res(ires)%flo / 1000.
-      res(ires)%solp = res_init(init)%solp * res(ires)%flo / 1000.
-      res_ob(ires)%seci = res_init(init)%seci * res(ires)%flo / 1000.
-      res(ires)%san = res_init(init)%san * res(ires)%flo / 1000.
-      res(ires)%sil = res_init(init)%sil * res(ires)%flo / 1000.
-      res(ires)%cla = res_init(init)%cla * res(ires)%flo / 1000.
-      res(ires)%sag = res_init(init)%sag * res(ires)%flo / 1000.
-      res(ires)%lag = res_init(init)%lag * res(ires)%flo / 1000.
-      res(ires)%grv = res_init(init)%gra * res(ires)%flo / 1000.
-      res(ires)%chla = res_init(init)%chla * res(ires)%flo / 1000.
-      res(ires)%psor = res_init(init)%psor * res(ires)%flo / 1000.
-      res(ires)%psor = res_init(init)%psor * res(ires)%flo /1000.
-      res(ires)%baclp = res_init(init)%bactlp * res(ires)%flo / 1000.
-      res(ires)%bacp = res_init(init)%bactp * res(ires)%flo / 1000.      
-
-      !! calculate initial surface area
-      if (res_ob(ires)%typ == 'res') then       
-        !! reservoir - old area volume relationship
+        cnv = res(ires)%flo / 1000.
+        res(ires)%flo = res_init(init)%vol * res_ob(ires)%pvol
+        res(ires)%sed = res_init(init)%sed * cnv
+        res(ires)%orgn= res_init(init)%orgn * cnv
+        res(ires)%no3 = res_init(init)%no3 * cnv
+        res(ires)%no2 = res_init(init)%no2 * cnv
+        res(ires)%nh3 = res_init(init)%nh3 * cnv
+        res(ires)%sedp = res_init(init)%orgp * cnv
+        res(ires)%solp = res_init(init)%solp * cnv
+        res_ob(ires)%seci = res_init(init)%seci * cnv
+        res(ires)%san = res_init(init)%san * cnv
+        res(ires)%sil = res_init(init)%sil * cnv
+        res(ires)%cla = res_init(init)%cla * cnv
+        res(ires)%sag = res_init(init)%sag * cnv
+        res(ires)%lag = res_init(init)%lag * cnv
+        res(ires)%grv = res_init(init)%gra * cnv
+        res(ires)%chla = res_init(init)%chla * cnv
+        res(ires)%psor = res_init(init)%psor * cnv
+        res(ires)%psor = res_init(init)%psor * cnv
+        res(ires)%baclp = res_init(init)%bactlp * cnv
+        res(ires)%bacp = res_init(init)%bactp * cnv
+        
+        !! calculate initial surface area       
         res_ob(ires)%area_ha = res_hyd(ihyd)%br1 * res(ires)%flo ** res_hyd(ihyd)%br2
-      else
-        !! wetland on hru - solve quadratic to find new depth
-        !testing relationship res_vol(jres) = float(jj) * .1 * res_pvol(jres)
-        x1 = res_hyd(ihyd)%bcoef ** 2 + 4. * res_hyd(ihyd)%ccoef * (1. - res(ires)%flo / res_hyd(ihyd)%pvol)
-        if (x1 < 1.e-6) then
-          res_h = 0.
-        else
-          res_h1 = (-res_hyd(ihyd)%bcoef - sqrt(x1)) / (2. * res_hyd(ihyd)%ccoef)
-          res_h = res_h1 + res_hyd(ihyd)%bcoef
-        end if
-        res_ob(ires)%area_ha = res_hyd(ihyd)%psa * (1. + res_hyd(ihyd)%acoef * res_h)
-      end if
 
       end do
       close(105)

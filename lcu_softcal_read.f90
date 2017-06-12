@@ -56,11 +56,13 @@
             end do
 
             !! set landscape region for hru and hru-lte
-            do iob = 1, region(i)%num_tot
-              ihru = region(i)%num(iob)
-              if (ihru <= sp_ob%hru) hru(ihru)%region = lscal(i)%name
-              if (ihru <= sp_ob%hru_lte) hlt(ihru)%region = lscal(i)%name
-            end do
+            if (db_mx%lsu_reg > 0) then
+              do iob = 1, region(i)%num_tot
+                ihru = region(i)%num(iob)
+                if (ihru <= sp_ob%hru) hru(ihru)%region = lscal(i)%name
+                if (ihru <= sp_ob%hru_lte) hlt(ihru)%region = lscal(i)%name
+              end do
+            end if
             
 !            do icalreg = 1, lscal(i)%num_reg
 !              !! allocate land uses within the region for print out

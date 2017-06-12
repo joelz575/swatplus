@@ -49,7 +49,14 @@
         read (107,*,iostat = eof) tmp(i)%filename
         if (eof < 0) exit
         
-        open (108,file = tmp(i)%filename)
+!!!!!weather path code
+       if (in_path_tmp%tmp == 'null') then
+         open (108,file = tmp(i)%filename)
+       else
+         open (108,file = TRIM(ADJUSTL(in_path_tmp%tmp))//tmp(i)%filename)
+       endif
+!!!!!weather path code  
+        
         read (108,*,iostat=eof) titldum
         if (eof < 0) exit
         read (108,*,iostat=eof) header

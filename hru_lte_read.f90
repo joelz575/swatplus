@@ -1,6 +1,9 @@
       subroutine hru_lte_read
       
-      use jrw_datalib_module
+      use jrw_datalib_module, only: pldb
+      use hru_lte_module
+      use climate_module
+      use input_file_module
       
       character (len=80) :: titldum
       character (len=80) :: header
@@ -56,7 +59,6 @@
       inquire (file=in_hru%hru_ez, exist=i_exist)
       if (i_exist == 0 .or. in_hru%hru_ez == 'null') then
         allocate (hlt_db(0:0))
-!        allocate (hlt(sp_ob%hru_lte))
       else
       do
         open (1,file=in_hru%hru_ez)

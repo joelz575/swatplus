@@ -41,9 +41,8 @@
         do isp = 1, imax
           read (107,*,iostat=eof) i
           backspace (107)
-          read (107,*,iostat=eof) k, ru_elem(i)%name,               &
-           ru_elem(i)%obtyp, ru_elem(i)%obtypno,                   &
-           ru_elem(i)%htyp, ru_elem(i)%frac, ru_elem(i)%idr
+          read (107,*,iostat=eof) k, ru_elem(i)%name, ru_elem(i)%obtyp, ru_elem(i)%obtypno,     &
+                                ru_elem(i)%htyp, ru_elem(i)%frac, ru_elem(i)%idr
           if (eof < 0) exit
         end do
         exit

@@ -143,7 +143,7 @@
           case ("hru_lte")   ! hru_lte
             isd = ob(icmd)%num
             call hru_lte_control (isd)
-            if (ob(icmd)%rcv_tot > 0) call hyddep_output
+            !if (ob(icmd)%rcv_tot > 0) call hyddep_output
             
           case ("sub")   ! subbasin
             isub = ob(icmd)%num
@@ -207,7 +207,8 @@
         !print all outflow hydrographs
         if (ob(icmd)%src_tot > 0) then
           do iout = 1, ob(icmd)%src_tot
-            ht1 = ob(icmd)%frac_out(iout) * ob(icmd)%hd(iout)
+            ihtyp = ob(icmd)%ihtyp_out(iout)
+            ht1 = ob(icmd)%frac_out(iout) * ob(icmd)%hd(ihtyp)
             call hydout_output (iout)
           end do
         end if
@@ -222,16 +223,20 @@
           call obj_output
       end if
       
-      if (time%yrs > pco%nyskip .and. time%step == 0) then 
+      if (time%yrs > pco%nyskip .and. time%step == 0) then
+        do isd = 1, sp_ob%hru_lte
+          call hru_lte_output (isd)
+        end do
+           
         if (db_mx%lsu_elem > 0) call basin_output
-        !if (db_mx%lsu_out > 0) call lsu_output
+        if (db_mx%lsu_out > 0) call lsu_output
         if (db_mx%aqu_elem > 0) call basin_aquifer_output
         if (sp_ob%res > 0) call basin_reservoir_output
         if (sp_ob%chan > 0) call basin_channel_output
         if (sp_ob%chandeg > 0) call basin_sdchannel_output
         if (sp_ob%recall > 0) call basin_recall_output
         !call lsreg_output
-        !print;prtcall region_aquifer_output
+        !call region_aquifer_output
         !call region_reservoir_output
         !call region_channel_output
         !call region_recall_output

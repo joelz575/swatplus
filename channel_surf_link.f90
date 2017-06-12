@@ -1,4 +1,4 @@
-      subroutine channel_surf_link (isdc, ics, mres)
+      subroutine channel_surf_link (isdc, ics)
                  
       use hydrograph_module
       use channel_module
@@ -22,9 +22,7 @@
             ob(iob)%flood_ch_elem = ii   !pointer to landscape element - 1 nearest to channel
             
             ihru = ch_sur(ics)%obtypno(ii)
-            !! set reservoir storage for flooding without surface storage
-            if (hru(ihru)%dbs%surf_stor == 0) imp = imp + 1
-            tot_ha= tot_ha + ob(iob)%area_ha
+            tot_ha = tot_ha + ob(iob)%area_ha
             
           case ("hlt")   !hru_lte
             ob(i)%obj_out(ii) = sp_ob1%hru_lte + ob(i)%obtypno_out(ii) - 1
@@ -33,7 +31,7 @@
             ob(iob)%flood_ch_elem = ii   !pointer to landscape element - 1 nearest to channel
             
             ihru = ch_sur(ics)%obtypno(ii)
-            tot_ha= tot_ha + ob(iob)%area_ha
+            tot_ha = tot_ha + ob(iob)%area_ha
             
           case ("sub")   !subbasin
             ob(i)%obj_out(ii) = sp_ob1%sub + ob(i)%obtypno_out(ii) - 1
@@ -43,8 +41,6 @@
             !set flood plain link and landscape element (1==closest to river)
             do ihru = 1, ru_def(isub)%num_tot
               iob = sp_ob1%hru + ob(i)%obtypno_out(ii) - 1
-              !! set reservoir storage for flooding without surface storage
-              if (hru(ihru)%dbs%surf_stor == 0) imp = imp + 1
               ob(iob)%flood_ch_lnk = ics   !pointer back to channel-sub link
               ob(iob)%flood_ch_elem = ii   !pointer to landscape element - 1 nearest to channel
             end do

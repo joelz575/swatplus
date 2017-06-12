@@ -1,106 +1,11 @@
-      subroutine hru_lte_output (isd, ihlt_db)
+      subroutine hru_lte_output (isd)
 
       use time_module
       use basin_module
-      
-      integer :: isd, ihlt_db
-      
-!!    PRINT CODES: 0 = average annual (always print)
-!!                 1 = yearly
-!!                 2 = monthly
-!!                 3 = daily
-               
-!   output_waterbal - SWAT-DEG0140
-        hltwb_d(isd)%precip = precip             
-        hltwb_d(isd)%snofall = snowfall     
-        hltwb_d(isd)%snomlt = snowmelt           
-        hltwb_d(isd)%surq_gen = runoff   
-        hltwb_d(isd)%latq = flowlat + hlt(isd)%gwflow
-        hltwb_d(isd)%wateryld = chflow
-        hltwb_d(isd)%perc = perc                
-        hltwb_d(isd)%et = aet                   
-        hltwb_d(isd)%tloss = 0.                  
-        hltwb_d(isd)%eplant = 0.                
-        hltwb_d(isd)%esoil = 0.                
-        hltwb_d(isd)%surq_cont = 0.
-        hltwb_d(isd)%cn = cn_sd
-        hltwb_d(isd)%sw = hlt(isd)%sw
-        hltwb_d(isd)%snopack = hlt(isd)%snow       
-        hltwb_d(isd)%pet = pet             
-        hltwb_d(isd)%qtile = flow_tile
-        hltwb_d(isd)%irr = air
-        
-!    output_nutbal - no nutrients currently in SWAT-DEG
-!        hltnb_d(isd)%cfertn = 0.   !! cfertn
-!        hltnb_d(isd)%cfertp = 0.   !! cfertp
-!        hltnb_d(isd)%grazn =  0.   !! grazn
-!        hltnb_d(isd)%grazp =  0.   !! grazp
-!        hltnb_d(isd)%auton =  0.   !! auton
-!        hltnb_d(isd)%autop =  0.   !! autop
-!        hltnb_d(isd)%rmp1tl = 0.   !! rmp1tl
-!        hltnb_d(isd)%roctl =  0.   !! roctl
-!        hltnb_d(isd)%fertn =  0.   !! fertn
-!        hltnb_d(isd)%fertp =  0.   !! fertp
-!        hltnb_d(isd)%fixn =  0.    !! fixn
-!        hltnb_d(isd)%wdntl = 0.    !! wdntl
-!        hltnb_d(isd)%hmntl = 0.    !! hmntl
-!        hltnb_d(isd)%rwntl = 0.    !! rwntl
-!        hltnb_d(isd)%hmptl = 0.    !! hmptl
-!        hltnb_d(isd)%rmn2tl = 0.   !! rmn2tl
-!        hltnb_d(isd)%rmptl = 0.    !! rmptl
-!        hltnb_d(isd)%no3pcp = 0.   !! no3pcp
+      use output_landscape_module
 
-!    output_losses - SWAT-DEG
-        hltls_d(isd)%sedyld = sedin / (100. * hlt_db(ihlt_db)%dakm2) !! sedyld(isd) / hru_ha(isd)
-        hltls_d(isd)%sedorgn = 0.   !! sedorgn(isd)
-        hltls_d(isd)%sedorgp = 0.   !! sedorgp(isd)
-        hltls_d(isd)%surqno3 = 0.   !! surqno3(isd)
-        hltls_d(isd)%latno3 = 0.    !! latno3(isd)
-        hltls_d(isd)%surqsolp = 0.  !! surqsolp(isd)
-        hltls_d(isd)%usle = 0.      !! usle
-        hltls_d(isd)%bactp = 0.     !! bactrop + bactsedp
-        hltls_d(isd)%bactlp = 0.    !! bactrolp + bactsedlp
-        hltls_d(isd)%sedmin = 0.    !! sedminpa(isd) + sedminps(isd)
-        hltls_d(isd)%tileno3 = 0.   !! tileno3(isd)
-        
-!    output_plantweather - SWAT-DEG
-        hltpw_d(isd)%lai =  hlt(isd)%alai     !! lai
-        hltpw_d(isd)%bioms =  hlt(isd)%dm     !! total biomass
-        hltpw_d(isd)%yield =  yield          !! crop yield
-        hltpw_d(isd)%residue =  0.           !! residue
-        hltpw_d(isd)%sol_tmp =  0.           !! soil(isd)%phys(2))%tmp
-        hltpw_d(isd)%strsw = 1. - ws         !! (1.-strsw_av(isd))
-        hltpw_d(isd)%strsa = 1. - strsair    !! (1.-strsw_av(isd))
-        hltpw_d(isd)%strstmp = 1. - tstress  !! (1.-strstmp_av)
-        hltpw_d(isd)%strsn = 0.              !! (1.-strsn_av)        
-        hltpw_d(isd)%strsp = 0.              !! (1.-strsp_av)
-        hltpw_d(isd)%nplnt = 0.              !! nplnt(isd)
-        hltpw_d(isd)%percn = 0.              !! percn(isd)
-        hltpw_d(isd)%pplnt = 0.              !! pplnt(isd)
-        hltpw_d(isd)%tmx = tmax              !! tmx(isd)
-        hltpw_d(isd)%tmn = tmin              !! tmn(isd)
-        hltpw_d(isd)%tmpav = tave            !! tmpav(isd)
-        hltpw_d(isd)%solrad = raobs          !! hru_ra(isd)
-        hltpw_d(isd)%wndspd = wndspd         !! windspeed(isd)
-        hltpw_d(isd)%rhum = rhum             !! relative humidity(isd)
-        hltpw_d(isd)%phubase0 = wst(iwst)%weat%phubase0     !! base zero potential heat units
-        
-        hltwb_m(isd) = hltwb_m(isd) + hltwb_d(isd)
-        hltnb_m(isd) = hltnb_m(isd) + hltnb_d(isd)
-        hltls_m(isd) = hltls_m(isd) + hltls_d(isd) 
-        hltpw_m(isd) = hltpw_m(isd) + hltpw_d(isd)
-
-      ! summing hru output for the basin only if it is routed somewhere
-      ! or if it is not routed and not in a subbasin
-      if (ob(icmd)%src_tot > 0 .or. ob(icmd)%src_tot + ob(icmd)%subs_tot == 0) then
-        const = bsn%area_ha / ob(icmd)%area_ha       !only have / operator set up (could * frac_dfn directly)
-        bwb_d = bwb_d + hltwb_d(isd) / const
-        bnb_d = bnb_d + hltnb_d(isd) / const
-        bls_d = bls_d + hltls_d(isd) / const
-        bpw_d = bpw_d + hltpw_d(isd) / const
-      end if
-
-!!!!! daily print
+      integer, intent (in) :: isd
+        !! daily print
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                                         .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
           if (pco%wb_sd%d == 'y') then
@@ -246,7 +151,7 @@
            end if
            hltpw_a(isd) = hpwz
          end if
-         
+
       return
      
 100   format (2i6,i8,21f12.3)

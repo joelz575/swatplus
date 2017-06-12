@@ -1,9 +1,9 @@
-    subroutine search(a, max, cfind, iseq)
+    subroutine search(sch, max, cfind, iseq)
     
-    character(len=16)  :: cfind
+    character(len=50)  :: cfind
     integer :: iseq, max
     
-    character(len=16), dimension(max) ::  a 
+    character(len=50), dimension(max) ::  sch 
     
     nf = 1
     nl = max
@@ -12,26 +12,26 @@
       nn = (nl - nf) / 2 + nf
       
       if (nl - nf == 1) then
-        if (a(nl) == cfind) then
+        if (sch(nl) == cfind) then
           iseq = nl
           return
         end if
-        if (a(nf) == cfind) then
+        if (sch(nf) == cfind) then
           iseq = nf
           return
         end if
       end if
         
-      if (a(nn) == cfind) then
+      if (sch(nn) == cfind) then
         iseq = nn
         return
       end if
       
-      if (a(nn) > cfind) then
+      if (sch(nn) > cfind) then
         nl = nn
       end if
       
-      if (a(nn) < cfind) then 
+      if (sch(nn) < cfind) then 
         nf = nn
       end if
     end do

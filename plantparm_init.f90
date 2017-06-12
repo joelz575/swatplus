@@ -14,8 +14,8 @@
         if (pldb(ic)%usle_c >= 1.0) pldb(ic)%usle_c = 1.0
         if (pldb(ic)%blai <= 0.0) pldb(ic)%blai = 0.0
         if (pldb(ic)%blai >= 10.0) pldb(ic)%blai = 10.0
-	  if (pldb(ic)%rsr1 <= 0.0) pldb(ic)%rsr1 = 0.4
-	  if (pldb(ic)%rsr2 <= 0.0) pldb(ic)%rsr2 = 0.2
+	    if (pldb(ic)%rsr1 <= 0.0) pldb(ic)%rsr1 = 0.4
+	    if (pldb(ic)%rsr2 <= 0.0) pldb(ic)%rsr2 = 0.2
 
         if (pldb(ic)%bio_e > 0. .and. pldb(ic)%plantnm /= 'WATR') then
 
@@ -38,14 +38,12 @@
           b1 = pldb(ic)%bio_e * .01        !! "ambient" bio-e ratio/100
           b2 = pldb(ic)%bioehi * .01                !! "elevated" bio-e ratio/100
 
-
 !!        determine shape parameters for the radiation use efficiency equation
           call ascrv(b1, b2, c1, pldb(ic)%co2hi, plcp(ic)%ruc1,             &    
               plcp(ic)%ruc2)
 
           if (pldb(ic)%usle_c < 1.e-4) pldb(ic)%usle_c = 0.001
           plcp(ic)%cvm = Log(pldb(ic)%usle_c)
-
 
 !!        nitrogen uptake parameters
 !!        fix bad input for pltnfr(3,ic)
@@ -57,9 +55,7 @@
           b2 = 1. - (pldb(ic)%pltnfr2 - pldb(ic)%pltnfr3) / b1
           b3 = 1. - .00001 / b1
 !!        determine shape parameters for plant nitrogen uptake equation
-          call ascrv(b2, b3, 0.5, 1.0, plcp(ic)%nup1,                       &               
-                                                  plcp(ic)%nup2)
-
+          call ascrv(b2, b3, 0.5, 1.0, plcp(ic)%nup1, plcp(ic)%nup2)
 
 !!        phosphorus uptake parameters
 !!        fix bad input for pltpfr(3,ic)
@@ -71,8 +67,7 @@
           b2 = 1. - (pldb(ic)%pltpfr2 - pldb(ic)%pltpfr3) / b1
           b3 = 1. - .00001 / b1
 !!        determine shape parameters for plant phosphorus uptake equation
-          call ascrv(b2, b3, .5, 1., plcp(ic)%pup1,                         &                   
-                                                 plcp(ic)%pup2)
+          call ascrv(b2, b3, .5, 1., plcp(ic)%pup1, plcp(ic)%pup2)
 
 !!        calculate slope in stomatal conductance equation
           plcp(ic)%vpd2 = (1. - pldb(ic)%gmaxfr) / (pldb(ic)%vpdfr - 1.)

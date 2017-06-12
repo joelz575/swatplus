@@ -1,4 +1,4 @@
-      subroutine readatmodep
+      subroutine cli_atmodep
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine reads the atmospheric deposition values
@@ -63,4 +63,4 @@
       endif
 
       return
-      end
+      end subroutine cli_atmodep

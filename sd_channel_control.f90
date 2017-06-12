@@ -294,6 +294,9 @@
       chsd_d(ich)%deg_btm = deg_btm
       chsd_d(ich)%deg_bank = deg_bank
       chsd_d(ich)%hc_sed = hc_sed
+      chsd_d(ich)%width = sd_ch(ich)%chw
+      chsd_d(ich)%depth = sd_ch(ich)%chd
+      chsd_d(ich)%slope = sd_ch(ich)%chs
       chsd_d(ich)%deg_btm_m = erode_btm
       chsd_d(ich)%deg_bank_m = erode_bank
       chsd_d(ich)%hc_m = hc

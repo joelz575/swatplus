@@ -25,6 +25,7 @@
 
       use parm
       use hru_module
+      use hru_lte_module
       use jrw_datalib_module
       use conditional_module
       use organic_mineral_mass_module
@@ -37,6 +38,9 @@
         hru(j)%land_use_mgt = ilu
         hru(j)%plant_cov = lum_str(ilu)%plant_cov
         icom = hru(j)%plant_cov
+        iob = hru(j)%obj_no
+        iwst = ob(iob)%wst
+        iwgn = wst(iwst)%wco%wgn
         hru(j)%mgt_ops = lum_str(ilu)%mgt_ops
         hru(j)%tiledrain = lum_str(ilu)%tiledrain
         hru(j)%septic = lum_str(ilu)%septic
@@ -92,10 +96,38 @@
           !set fresh organic pools--assume cn ratio = 57 and cp ratio = 300
           rsd1(j)%tot(ipl)%n = 0.43 * rsd1(j)%tot(ipl)%m / 57.
           rsd1(j)%tot(ipl)%p = 0.43 * rsd1(j)%tot(ipl)%m / 300.
-          pcom(j)%plg(ipl)%phumat = pcomdb(icom)%pl(ipl)%phu
+          
+          ! set hu to maturity
+          if (pldb(idp)%phu > 1.e-6) then
+            pcom(j)%plg(ipl)%phumat = pldb(idp)%phu
+          else
+            mo = 1
+            imo = 2
+            phutot = 0.
+            do iday = 1, 365
+              if (iday > ndays(imo)) then
+                imo = imo + 1
+                mo = mo + 1
+              end if
+              if (iday > grow_start .and. iday < grow_end) then
+                tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+                iplt = hlt(i)%iplant
+                phuday = tave - pldb(iplt)%t_base
+                if (phuday > 0.) then
+                  phutot = phutot + phuday
+                end if
+              end if
+            end do
+            ! change from growing season to time to maturity
+            pcom(j)%plcur(ipl)%phuacc = .9 * phutot
+            pcom(j)%plcur(ipl)%phuacc = Max(500., pcom(j)%plcur(ipl)%phuacc)
+            if (pldb(iplt)%idc <= 2 .or. pldb(iplt)%idc == 4 .or. pldb(iplt)%idc == 5) then
+              pcom(j)%plcur(ipl)%phuacc = Min(2000., pcom(j)%plcur(ipl)%phuacc)
+            end if
+          end if
+          
           pcom(j)%plg(ipl)%lai = pcomdb(icom)%pl(ipl)%lai
           pcom(j)%plm(ipl)%mass = pcomdb(icom)%pl(ipl)%bioms
-          pcom(j)%plcur(ipl)%phuacc = pcomdb(icom)%pl(ipl)%phuacc
           pcom(j)%plcur(ipl)%curyr_mat = pcomdb(icom)%pl(ipl)%yrmat
           cvm_com(j) = plcp(idp)%cvm + cvm_com(j)
           rsdco_plcom(j) = rsdco_plcom(j) + pldb(idp)%rsdco_pl

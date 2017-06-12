@@ -44,18 +44,16 @@
        
        do icom = 1, imax
        ! loop through all plant communities
-         read (113,*,iostat=eof)  pcomdb(icom)%name,                   & 
-                                          pcomdb(icom)%plants_com
-         !! pcom
+         read (113,*,iostat=eof)  pcomdb(icom)%name, pcomdb(icom)%plants_com
+
          pcom_xw(icom)%name = pcomdb(icom)%name
          mpcom = pcomdb(icom)%plants_com
          allocate (pcom_xw(icom)%pl_name(mpcom))
          allocate (pcomdb(icom)%pl(mpcom))
          do iplt = 1, mpcom
-           read (113,*,iostat=eof) pcomdb(icom)%pl(iplt)%cpnm, pcomdb(icom)%pl(iplt)%igro,            &
-             pcomdb(icom)%pl(iplt)%phu, pcomdb(icom)%pl(iplt)%lai, pcomdb(icom)%pl(iplt)%bioms ,      &
-             pcomdb(icom)%pl(iplt)%phuacc, pcomdb(icom)%pl(iplt)%pop, pcomdb(icom)%pl(iplt)%yrmat,    &
-             pcomdb(icom)%pl(iplt)%rsdin
+           read (113,*,iostat=eof) pcomdb(icom)%pl(iplt)%cpnm, pcomdb(icom)%pl(iplt)%igro,          &
+             pcomdb(icom)%pl(iplt)%lai, pcomdb(icom)%pl(iplt)%bioms, pcomdb(icom)%pl(iplt)%phuacc,  &
+             pcomdb(icom)%pl(iplt)%pop, pcomdb(icom)%pl(iplt)%yrmat, pcomdb(icom)%pl(iplt)%rsdin
            
           pcom_xw(icom)%pl_name(iplt) = pcomdb(icom)%pl(iplt)%cpnm
           

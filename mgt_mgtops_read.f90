@@ -40,15 +40,17 @@
        read (107,*) header
        
        do isched = 1, imax
-         read (107,*,iostat=eof)  sched(isched)%name, sched(isched)%num_ops, m_autos
+         read (107,*,iostat=eof)  sched(isched)%name, sched(isched)%num_ops, sched(isched)%num_autos
          if (eof < 0) exit
          !! allocate and read the auto operations
+         m_autos = sched(isched)%num_autos
          if (m_autos > 0) then
            allocate(sched(isched)%auto_name(m_autos))
            allocate(sched(isched)%num_db(m_autos))
-           backspace (107)
-           read (107,*,iostat=eof)  sched(isched)%name, sched(isched)%num_ops, sched(isched)%num_autos,     &
-                (sched(isched)%auto_name(ii), ii = 1, m_autos)
+           do iauto = 1, m_autos
+             read (107,*,iostat=eof)  sched(isched)%auto_name(iauto)
+             if (eof < 0) exit
+           end do
          end if
          !! allocate and read the scheduled operations
          allocate (sched(isched)%mgt_ops(sched(isched)%num_ops))

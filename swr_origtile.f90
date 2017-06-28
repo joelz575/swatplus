@@ -35,7 +35,7 @@
       integer :: j
 
       j = ihru
-      isdr = isdr_no(j)
+      isdr = hru(j)%tiledrain
 
 !!    compute tile flow using the original tile equations
 

@@ -365,18 +365,6 @@
         hltls_m(isd) = hltls_m(isd) + hltls_d(isd) 
         hltpw_m(isd) = hltpw_m(isd) + hltpw_d(isd)
 
-      ! summing hru output for the basin only if it is routed somewhere
-      ! or if it is not routed and not in a subbasin
-      if (db_mx%lsu_elem > 0) then
-        if (lsu_elem(isd)%bsn_frac > 1.e-9) then
-          const = 1. / lsu_elem(isd)%bsn_frac
-          bwb_d = bwb_d + hltwb_d(isd) / const
-          bnb_d = bnb_d + hltnb_d(isd) / const
-          bls_d = bls_d + hltls_d(isd) / const
-          bpw_d = bpw_d + hltpw_d(isd) / const
-        end if
-      end if
-          
          !! set values for outflow hydrograph
          !! storage locations set to zero are not currently used
          ob(icmd)%peakrate = peakr

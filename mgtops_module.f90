@@ -10,7 +10,6 @@
 !! routines for management operations module
       include 'mgt_plantop.f90' 
       include 'mgt_dormant.f90' 
-      include 'mgt_harvkillop.f90' 
       include 'mgt_harvestop.f90' 
       include 'mgt_harvgrainop.f90' 
       include 'mgt_killop.f90' 

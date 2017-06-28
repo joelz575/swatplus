@@ -84,6 +84,7 @@
         !! determine beginning and ending dates of simulation in current year
         if (Mod(time%yrc,4) == 0) then 
           ndays = ndays_leap
+          time%num_leap = time%num_leap + 1
         else 
           ndays = ndays_noleap
         end if
@@ -153,11 +154,11 @@
             time%end_yr = 1
             if (time%yrs == time%nbyr) then
               time%end_sim = 1
-              time%yrs_prt = time%yrs_prt / 365.
+              time%yrs_prt = time%yrs_prt / (365. + (time%num_leap / time%nbyr))
             end if
             if (time%yrc == pco%aa_yrs(time%prt_int_cur)) then
               time%end_aa_prt = 1
-              time%yrs_prt_int = time%yrs_prt_int / 365.
+              time%yrs_prt_int = time%yrs_prt_int / (365. + (time%num_leap / time%nbyr))
               time%prt_int_cur = time%prt_int_cur + 1 
             end if
           end if

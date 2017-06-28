@@ -37,7 +37,7 @@
         
       end do
       
-      do ires = 1, mres
+      do ires = 1, db_mx%res
         !!set initial n and p concentrations --> (ppm) * (m^3) / 1000 = kg
         !!                                       ppm = t/m^3 * 10^6
         i = res_ob(ires)%props
@@ -67,7 +67,7 @@
         res(ires)%bacp = res_init(init)%bactp * cnv
         
         !! calculate initial surface area       
-        res_ob(ires)%area_ha = res_hyd(ihyd)%br1 * res(ires)%flo ** res_hyd(ihyd)%br2
+        res_ob(ires)%area_ha = res_ob(ires)%br1 * res(ires)%flo ** res_ob(ires)%br2
 
       end do
       close(105)

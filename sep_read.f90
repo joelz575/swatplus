@@ -41,6 +41,8 @@
         end if
  
       close(172)
+      
       db_mx%septic = imax
+      
       return  
       end subroutine sep_read

@@ -85,8 +85,14 @@
              res_dat(ires)%pst = ipst
              exit
            end if
-         end do  
-
+         end do 
+         
+       !if (res_dat(ires)%init == 0) write (9001,*) res_dat(ires)%init, ' not found (res-init)'
+       !if (res_dat(ires)%hyd == 0) write (9001,*) res_dat(ires)%hyd, ' not found (res-hyd)'
+       !if (res_dat(ires)%release == 0) write (9001,*) res_dat(ires)%release, ' not found (res-release)'         
+       !if (res_dat(ires)%sed == 0) write (9001,*) res_dat(ires)%sed, ' not found (res-sed)'
+       !if (res_dat(ires)%nut == 0) write (9001,*) res_dat(ires)%nut, ' not found (res-nut)'
+       !if (res_dat(ires)%pst == 0) write (9001,*) res_dat(ires)%pst, ' not found (res-pst)'
        end do
        
       db_mx%res = imax

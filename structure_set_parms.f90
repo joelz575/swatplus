@@ -37,7 +37,6 @@
       select case(str_name)
 
       case ("tiledrain")
-        isdr_no(j) = istr
         hru(j)%lumv%sdr_dep = sdr(istr)%depth
         !! define soil layer that the drainage tile is in
         if (sdr(istr)%depth > 0) then

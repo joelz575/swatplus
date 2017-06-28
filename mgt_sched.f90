@@ -36,7 +36,7 @@
       if (icom > 0) then
         if (pcom(j)%npl > 1) then
           do ipl = 1, pcom(j)%npl
-            if (mgt%op_char == pcom_xw(icom)%pl_name(ipl)) then
+            if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 mgt%op2 = ipl
                 exit
             end if
@@ -107,9 +107,9 @@
                   call mgt_harvgrainop (j, ipl, iharvop)
                 end select
 
-                !! sum yield and num. of harvest to calc ave yields
+                !! sum yield and number of harvest to calc ave yields
                 pcom(j)%plg(ipl)%yield = pcom(j)%plg(ipl)%yield + yield
-                pcom(j)%plcur(ipl)%harv_num=pcom(j)%plcur(ipl)%harv_num+1
+                pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == 'y') then

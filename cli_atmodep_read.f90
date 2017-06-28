@@ -11,7 +11,6 @@
       matmodep = 0
       eof = 0
 
-
       inquire (file=in_cli%atmo_cli,exist=i_exist)
       if (i_exist == 0 .or. in_cli%atmo_cli == 'null') then
         !!no filename 
@@ -25,11 +24,11 @@
               if (eof < 0) exit
             end do
               read (127,*,iostat=eof) matmodep, momax
-              if (eof < 0) exit
               allocate (atmodep(0:matmodep))
               db_mx%atmodep = matmodep
+              if (eof < 0) exit
           
-       if (bsn_cc%atmo == 1) then
+       if (bsn_cc%atmo == 0) then
           do iadep = 1, matmodep
             read (127,*,iostat=eof)   atmodep(iadep)%no3_rf,                 & 
                                       atmodep(iadep)%nh4_rf,                 &
@@ -38,8 +37,7 @@
             if (eof < 0) exit
           end do
        else if (bsn_cc%atmo == 2) then
-            read (127,1001,iostat=eof) mo_atmo1, iyr_atmo1
-1001        format (2i6)
+            read (127,*,iostat=eof) mo_atmo1, iyr_atmo1
             do iadep = 1, matmodep
               allocate (atmodep(iadep)%no3_rfmo(momax))
               allocate (atmodep(iadep)%nh4_rfmo(momax))

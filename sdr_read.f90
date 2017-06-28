@@ -43,6 +43,7 @@
       endif
       
       db_mx%sdr = imax
+      
       close(107)
       
       return

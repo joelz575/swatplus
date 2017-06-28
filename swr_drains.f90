@@ -77,7 +77,7 @@
       !! initialize variables
 
       j = ihru
-      isdr = isdr_no(j)
+      isdr = hru(j)%tiledrain
       wnan = 0
       y1 = hru(j)%hyd%dep_imp - wt_shall 
       if (y1 > hru(j)%hyd%dep_imp) y1 = hru(j)%hyd%dep_imp

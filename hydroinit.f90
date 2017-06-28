@@ -196,10 +196,11 @@
                      Exp(-1./hru(j)%hyd%lat_ttime)
         end if
 
-        if (hru(j)%lumv%ldrain > 0 .and. sdr(isdr_no(j))%lag > 0.01) then
-            hru(j)%lumv%tile_ttime = 1. - Exp(-24. / sdr(isdr_no(j))%lag)
+        isdr = hru(j)%tiledrain
+        if (hru(j)%lumv%ldrain > 0 .and. sdr(isdr)%lag > 0.01) then
+          hru(j)%lumv%tile_ttime = 1. - Exp(-24. / sdr(isdr)%lag)
         else
-            hru(j)%lumv%tile_ttime = 0.
+          hru(j)%lumv%tile_ttime = 0.
         end if
       end do
 

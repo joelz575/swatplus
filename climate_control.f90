@@ -77,8 +77,7 @@
       real :: daylbsb, tdif, pdif, ratio
       
       !! Precipitation:
-      do ii = 1, mwst
-        iwst = wst_pointer(ii)
+      do iwst = 1, mwst
         iwgn = wst(iwst)%wco%wgn
         ipg = wst(iwst)%wco%pgage
         if (wst(iwst)%wco_c%pgage == "sim") then
@@ -112,9 +111,7 @@
       end do
       
 !! Temperature: 
-      do ii = 1, mwst
-        iwst = wst_pointer(ii)
-      
+      do iwst = 1, mwst
         iwgn = wst(iwst)%wco%wgn
         call cli_weatgn(iwgn)
         if (wst(iwst)%wco_c%tgage == "sim") then
@@ -132,8 +129,7 @@
       end do
 
 !! Solar Radiation: 
-      do ii = 1, mwst
-        iwst = wst_pointer(ii)
+      do iwst = 1, mwst
         iwgn = wst(iwst)%wco%wgn
         call cli_clgen(iwgn)
         if (wst(iwst)%wco_c%sgage== "sim") then
@@ -148,8 +144,7 @@
       end do
         
 !! Relative Humidity: 
-      do ii = 1, mwst
-        iwst = wst_pointer(ii)
+      do iwst = 1, mwst
         iwgn = wst(iwst)%wco%wgn
         if (wst(iwst)%wco_c%hgage == "sim") then
           call cli_rhgen(iwgn)
@@ -163,8 +158,7 @@
       end do 
 
 !! Wind Speed: 
-      do ii = 1, mwst
-        iwst = wst_pointer(ii)
+      do iwst = 1, mwst
         iwgn = wst(iwst)%wco%wgn
         if (wst(iwst)%wco_c%wgage == "sim") then
           call cli_wndgen(iwgn)
@@ -190,8 +184,7 @@
             if (iyp == time%yrc .and. idap == time%idaf) exit
           end do
         end if
-        do ii = 1, mwst
-          iwst = wst_pointer(ii)
+        do iwst = 1, mwst
           wst(iwst)%weat%pet = petmeas
         end do
       else
@@ -199,8 +192,7 @@
         !! extraterrestrial radiation
         !! 37.59 is coefficient in equation 2.2.6 !!extraterrestrial
         !! 30.00 is coefficient in equation 2.2.7 !!max at surface
-        do ii = 1, mwst
-          iwst = wst_pointer(ii)
+        do iwst = 1, mwst
           ramm = wst(iwst)%weat%solradmx * 37.59 / 30. 
           if (wst(iwst)%weat%tmax > wst(iwst)%weat%tmin) then
             xl = 2.501 - 2.361e-3 * wst(iwst)%weat%tave
@@ -214,8 +206,7 @@
       end if
 
 !! Base Zero Heat Units
-      do ii = 1, mwst
-        iwst = wst_pointer(ii)
+      do iwst = 1, mwst
         iwgn = wst(iwst)%wco%wgn
         if (wst(iwst)%weat%tave > 0.) wst(iwst)%weat%phubase0 = wst(iwst)%weat%phubase0         &
                                                 + wst(iwst)%weat%tave / wgn_pms(iwgn)%phutot
@@ -224,8 +215,7 @@
       
       
 !! Climate Change Adjustments !!
-      do iip = 1, mwst
-        iwst = wst_pointer(iip)
+      do iwst = 1, mwst
         wst(iwst)%weat%precip = wst(iwst)%weat%precip * (1. + wst(iwst)%rfinc(i_mo) / 100.)
         if (wst(iwst)%weat%precip < 0.) wst(iwst)%weat%precip = 0.
         if (time%step > 0) then

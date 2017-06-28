@@ -315,18 +315,16 @@
       end if
       
 	!! reset variables
+      pcom(j)%plg(ipl) = plgz
+      pcom(j)%plm(ipl) = plmz
+      pcom(j)%plstr(ipl) = plstrz
+      !! can't reset entire plcur - harv_num can't be zero'd
       pcom(j)%plcur(ipl)%gro = 0
       pcom(j)%plcur(ipl)%idorm = 0
-      pcom(j)%plm(ipl)%mass = 0.
-      pcom(j)%plg(ipl)%rwt = 0.
-	pcom(j)%plm(ipl)%nmass = 0.
-      pcom(ihru)%plm(ipl)%pmass = 0.
-      pcom(j)%plstr(ipl)%strsw = 1.
-      pcom(j)%plg(ipl)%lai = 0.
-      pcom(j)%plg(ipl)%hvstiadj = 0.
       pcom(j)%plcur(ipl)%phuacc = 0.
-!      phubase(j) = 0.
-	rtfr = 0. ! Resetting roots fraction per layer array
+      pcom(j)%plcur(ipl)%curyr_mat = 1
+
+	  rtfr = 0. ! Resetting roots fraction per layer array
 	 
       return
       end subroutine mgt_killop

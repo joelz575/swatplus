@@ -61,11 +61,11 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
 
-      prog = "SWAT+ Jun 9 2017    MODULAR Rev 2017.34"
+      prog = "SWAT+ Jun 28 2017    MODULAR Rev 2017.35"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 34             ",/,             &
+     &          "              Revision 35             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -82,6 +82,10 @@
       open (9000,file='files_out.out')
       write (9000,*) 'FILES_OUT - OUTPUT FILES WRITTEN'
       
+!!!  open diagnostics.out file to print problems with various files
+     open (9001,file='diagnostics.out')
+     write (9001,*) 'DIAGNOSTICS.OUT FILE'
+          
       call basin_cc_read
       call basin_prm_read
       call basin_prm_default

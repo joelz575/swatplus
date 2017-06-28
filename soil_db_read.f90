@@ -63,6 +63,7 @@
       
         close (107)
         
-        db_mx%soil = imax           
+        db_mx%soil = imax 
+        
       return
       end subroutine soil_db_read

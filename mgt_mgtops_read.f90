@@ -24,8 +24,12 @@
        read (107,*,iostat=eof) header
        if (eof < 0) exit
        do while (eof == 0)
-         read (107,*,iostat=eof) titldum, nops
+         read (107,*,iostat=eof) titldum, nops, nauto
          if (eof < 0) exit
+         do iauto = 1, nauto
+           read (107,*,iostat=eof) titldum
+           if (eof < 0) exit
+         end do
          do iops = 1, nops
            read (107,*,iostat=eof) titldum
            if (eof < 0) exit

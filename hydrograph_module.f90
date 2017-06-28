@@ -12,8 +12,6 @@
       integer, dimension (8) :: fdc_p = (/18,36,91,182,274,328,347,366/)
       
       type hyd_output
-        !character (len=13) :: name
-        real :: temp = 0.              !! deg c        |temperature
         real :: flo = 0.               !! m^3          |volume of water
         real :: sed = 0.               !! metric tons  |sediment
         real :: orgn = 0.              !! kg N         |organic N
@@ -38,6 +36,7 @@
         real :: sag = 0.               !! tons         |detached small ag
         real :: lag = 0.               !! tons         |detached large ag
         real :: grv = 0.               !! tons         |gravel
+        real :: temp = 0.              !! deg c        |temperature
       end type hyd_output
       
       type (hyd_output), dimension(:),allocatable :: hd
@@ -49,10 +48,8 @@
       type (hyd_output), dimension(:), allocatable :: srec_m
       type (hyd_output), dimension(:), allocatable :: srec_y
       type (hyd_output), dimension(:), allocatable :: srec_a
-      type (hyd_output) :: brec_d
-      type (hyd_output) :: brec_m
-      type (hyd_output) :: brec_y
-      type (hyd_output) :: brec_a
+      type (hyd_output) :: brec_d, brec_m, brec_y, brec_a
+      type (hyd_output) :: binhyd_d
       type (hyd_output) :: hz
       type (hyd_output), dimension(:),allocatable :: hcnst
       type (hyd_output), dimension(:),allocatable :: hhr
@@ -74,7 +71,6 @@
         !H !character (len=8) :: hydio =      ' hyd_typ'
         !H !character (len=8) :: objno =      ' obj_no'
         !H !character (len=13) :: name2 =  '   hyd_name'
-        character (len=18) :: temp =   '         temp_degc'        !! deg c        |temperature
         character (len=18) :: flo =    '           flo_m^3'        !! m^3          |volume of water
         character (len=18) :: sed =    '         sed_mtons'        !! metric tons  |sediment
         character (len=18) :: orgn =   '          orgn_kgN'        !! kg N         |organic N
@@ -99,8 +95,10 @@
         character (len=18) :: sag =    '          sag_tons'        !! tons         |detached small ag
         character (len=18) :: lag =    '          lag_tons'        !! tons         |detached large ag
         character (len=18) :: grv =    '          grv_tons'        !! tons         |gravel
+        character (len=18) :: temp =   '         temp_degc'        !! deg c        |temperature
       end type hyd_header
       type (hyd_header) :: hyd_hdr
+      
       type object_output
         character (len=3) :: name
         character (len=3) :: obtyp     !! object type: hru,hlt,hs,rxc,dr,out,sdc
@@ -304,6 +302,7 @@
         integer :: day_max                                                  !maximum number of days to store the hydrograph
         real :: peakrate                                                    !peak flow rate during time step - m3/s
         
+        type (hyd_output), dimension(:),allocatable :: hin_d
         type (hyd_output), dimension(:),allocatable :: hin_m
         type (hyd_output), dimension(:),allocatable :: hin_y
         type (hyd_output), dimension(:),allocatable :: hin_a

@@ -57,6 +57,7 @@
                   exit
                 endif
               end do
+              !if (pesti_db(i)%pesti(ipest)%num_db == 0) write (9001,*) pesti_db(i)%pesti(ipest)%num_db, ' not found (pstinit)'
             end do
             
             !read export coefficients for pesticides

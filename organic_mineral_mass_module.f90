@@ -199,6 +199,7 @@
         type (organic_mineral_hydrograph), dimension(:,:),allocatable :: tss      !subdaily hydrographs
         type (organic_mineral_hydrograph), dimension(:),allocatable :: tsins      !inflow subdaily hydrograph
         !hydrograph output variables
+        type (organic_mineral_hydrograph), dimension(:),allocatable :: hin_d
         type (organic_mineral_hydrograph), dimension(:),allocatable :: hin_m
         type (organic_mineral_hydrograph), dimension(:),allocatable :: hin_y
         type (organic_mineral_hydrograph), dimension(:),allocatable :: hin_a

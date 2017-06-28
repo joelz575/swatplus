@@ -15,7 +15,6 @@
       if (i_exist == 0 .or. in_parmdb%plants_plt == ' null') then
         allocate (pldb(0:0))
         allocate (plcp(0:0))
-        allocate (plnt_xw(0:0))
       else
       do
         open (104,file=in_parmdb%plants_plt)
@@ -30,21 +29,16 @@
           end do
         allocate (pldb(0:imax))
         allocate (plcp(0:imax))
-        allocate (plnt_xw(0:imax))
         
         rewind (104)
         read (104,*) titldum
         read (104,*) header
         
         do ic = 1, imax
-
           read (104,*,iostat=eof) pldb(ic)
-
-          !! plant
-          plnt_xw(ic) = pldb(ic)%plantnm
-         
           if (eof < 0) exit
         end do
+        
         exit
       enddo
       endif

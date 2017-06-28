@@ -68,12 +68,13 @@
             if (ob(icmd)%subs_tot > 0) then
               if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "hru_lte") then
                 ielem = ob(icmd)%elem
-                isub = ob(icmd)%sub(1)          !can only be in one subbasin if routing over
-                isub = sp_ob1%sub + isub - 1    !object number of the subbasin
+                isub = ob(icmd)%sub(1)                          !can only be in one subbasin if routing over
+                isub = sp_ob1%sub + isub - 1                    !object number of the subbasin
                 iob = ob(isub)%obj_in(in)
                 ihyd = ob(isub)%ihtyp_in(in)
-                ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)  !fraction of hydrograph
-                ht1 = ru_elem(ielem)%frac * ht1               !fraction of hru in subbasin
+                ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)   !fraction of hydrograph
+                ht1 = ru_elem(ielem)%frac * ht1                 !fraction of hru in subbasin
+                ob(isub)%hin_d(in) = ob(isub)%hin_d(in) + ht1
               else
                 iob = ob(icmd)%obj_in(in)
                 ihyd = ob(icmd)%ihtyp_in(in)
@@ -86,6 +87,7 @@
               ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
               ob(icmd)%peakrate = ob(iob)%peakrate
             end if
+            ob(icmd)%hin_d(in) = ht1
 
             if (ihyd == 4) then  !route lat flow through soil
               ob(icmd)%hin_s = ob(icmd)%hin_s + ht1
@@ -94,9 +96,7 @@
               ob(icmd)%hin = ob(icmd)%hin + ht1
               isur_in = 1
             end if
-            !print individual inflow hyds
-            !call hydin_output (in)      !deal with later
-            
+
             !sum subdaily hydrographs
             if (time%step > 0) then
               do kk = 1, time%step
@@ -105,14 +105,14 @@
               end do
             end if
                         
-            if (isur_in == 1) then
-              ht1 = ob(icmd)%hin
-              call hydin_output (in)
-            end if
-            if (isub_in == 1) then
-              ht1 = ob(icmd)%hin_s
-              call hydin_output (in)
-            end if
+            !if (isur_in == 1) then
+            !  ht1 = ob(icmd)%hin
+            !  call hydin_output (in)
+            !end if
+            !if (isub_in == 1) then
+            !  ht1 = ob(icmd)%hin_s
+            !  call hydin_output (in)
+            !end if
             
           end do    ! in = 1, ob(icmd)%rcv_tot
 
@@ -228,6 +228,7 @@
           call hru_lte_output (isd)
         end do
            
+        call hydin_output   !if all output is no, then don't call
         if (db_mx%lsu_elem > 0) call basin_output
         if (db_mx%lsu_out > 0) call lsu_output
         if (db_mx%aqu_elem > 0) call basin_aquifer_output

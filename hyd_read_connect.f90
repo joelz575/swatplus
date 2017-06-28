@@ -317,6 +317,7 @@
           allocate (ob(i)%htyp_in(nspu))
           allocate (ob(i)%ihtyp_in(nspu))
           allocate (ob(i)%frac_in(nspu))
+          allocate (ob(i)%hin_d(nspu))
           allocate (ob(i)%hin_m(nspu))
           allocate (ob(i)%hin_y(nspu))
           allocate (ob(i)%hin_a(nspu))

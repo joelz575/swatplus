@@ -4,8 +4,7 @@
 !!    this subroutine initializes the values for some of the arrays 
 
       use parm
-      isdr_no = 0
-      
+
        ifirstatmo = 1
        mo_atmo = 0
       

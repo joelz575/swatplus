@@ -118,11 +118,12 @@
                 end if
               end if
             end do
-            ! change from growing season to time to maturity
-            pcom(j)%plcur(ipl)%phuacc = .9 * phutot
-            pcom(j)%plcur(ipl)%phuacc = Max(500., pcom(j)%plcur(ipl)%phuacc)
+            ! set initial heat units and heat units to maturity
+            pcom(j)%plcur(ipl)%phuacc = pcomdb(icom)%pl(ipl)%phuacc * phutot
+            pcom(j)%plg(ipl)%phumat = .9 * phutot
+            pcom(j)%plg(ipl)%phumat = Max(500., pcom(j)%plg(ipl)%phumat)
             if (pldb(iplt)%idc <= 2 .or. pldb(iplt)%idc == 4 .or. pldb(iplt)%idc == 5) then
-              pcom(j)%plcur(ipl)%phuacc = Min(2000., pcom(j)%plcur(ipl)%phuacc)
+              pcom(j)%plg(ipl)%phumat = Min(2000., pcom(j)%plg(ipl)%phumat)
             end if
           end if
           
@@ -158,8 +159,9 @@
         end do
         end if
 
+        ilum = hru(ihru)%land_use_mgt
         !! set initial curve number parameters
-        icn = lum_str(ilu)%cn_lu
+        icn = lum_str(ilum)%cn_lu
         select case (sol(isol)%s%hydgrp)
         case ('A')
           cn2(j) = cn(icn)%cn(1)
@@ -174,7 +176,7 @@
         call curno(cn2(j),j)
         
         !! set p factor and slope length (ls factor)
-        icp = lum_str(ilu)%cons_prac
+        icp = lum_str(ilum)%cons_prac
         xm = .6 * (1. - Exp(-35.835 * hru(ihru)%topo%slope))
         sin_sl = Sin(Atan(hru(ihru)%topo%slope))
         sl_len = amin1 (hru(ihru)%topo%slope_len, cons_prac(icp)%sl_len_mx)
@@ -183,7 +185,6 @@
         hru(ihru)%lumv%usle_p = cons_prac(icp)%pfac
         
         !! xwalk urban land use type with urban name in urban.urb
-        ilum = hru(ihru)%land_use_mgt
         hru(ihru)%luse%urb_ro = lum(ilum)%urb_ro
         do idb = 1, db_mx%urban
           if (lum(ilum)%urb_lu == urbdb(idb)%urbnm) then
@@ -193,7 +194,6 @@
         end do
         
         !! xwalk overland n with name in ovn_table.lum
-        ilum = hru(ihru)%land_use_mgt
         do idb = 1, db_mx%ovn
           if (lum(ilum)%ovn == overland_n(idb)%name) then
             hru(ihru)%luse%ovn = overland_n(idb)%ovn
@@ -202,24 +202,24 @@
         end do
         
         !! set parameters for structural land use/managment
-        if (lum(ilu)%tiledrain /= 'null') then
-          call structure_set_parms('tiledrain       ', lum_str(ilu)%tiledrain, j)
+        if (lum(ilum)%tiledrain /= 'null') then
+          call structure_set_parms('tiledrain       ', lum_str(ilum)%tiledrain, j)
         end if
       
-        if (lum(ilu)%septic /= 'null') then
-          call structure_set_parms('septic          ', lum_str(ilu)%septic, j)
+        if (lum(ilum)%septic /= 'null') then
+          call structure_set_parms('septic          ', lum_str(ilum)%septic, j)
         end if
         
-        if (lum(ilu)%fstrip /= 'null') then
-          call structure_set_parms('fstrip          ', lum_str(ilu)%fstrip, j)
+        if (lum(ilum)%fstrip /= 'null') then
+          call structure_set_parms('fstrip          ', lum_str(ilum)%fstrip, j)
         end if
         
-        if (lum(ilu)%grassww /= 'null') then
-          call structure_set_parms('grassww         ', lum_str(ilu)%grassww, j)
+        if (lum(ilum)%grassww /= 'null') then
+          call structure_set_parms('grassww         ', lum_str(ilum)%grassww, j)
         end if
 
-        if (lum(ilu)%bmpuser /= 'null') then
-          call structure_set_parms('bmpuser         ', lum_str(ilu)%bmpuser, j)
+        if (lum(ilum)%bmpuser /= 'null') then
+          call structure_set_parms('bmpuser         ', lum_str(ilum)%bmpuser, j)
         end if
 
         !! set linked-list array for all hru's with unlimited source irrigation (hru_irr_nosrc)

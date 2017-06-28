@@ -42,6 +42,7 @@
         integer :: cond = 0           !! none     |conditional data
         integer :: initop_db = 0      !! none     |initial.str
         integer :: wgnsta = 0         !! none     |max wgn stations included in weather-wgn.cli
+        integer :: wst = 0            !! none     |max weather stations include in weather-sta.cli
         integer :: pcpfiles = 0       !! none     |max pcp files included in pcp.cli
         integer :: tmpfiles = 0       !! none     |max tmp files included in tmp.cli
         integer :: rhfiles = 0        !! none     |max relative humidity files included in hmd.cli
@@ -376,8 +377,8 @@
         integer :: jday = 0
         integer :: year = 0
         real :: husc = 0.
-        character(len=10) :: op_char
-        character (len=10) :: op_plant
+        character(len=16) :: op_char
+        character (len=16) :: op_plant
         integer :: op1 = 0
         integer :: op2 = 0              !! |none          |plant number in community for hu scheduling
         real :: op3 = 0                 !! |none          |application amount (mm or kg/ha)
@@ -418,7 +419,7 @@
       type (management_ops), dimension(1) :: mgt2
       
       type management_schedule
-        character(len=32) :: name
+        character(len=35) :: name
         integer :: num_ops = 0
         integer :: num_autos = 0
         type (management_ops), dimension (:), allocatable :: mgt_ops
@@ -777,9 +778,9 @@
       type land_use_management
         character (len=16) :: name = " "
         character (len=16) :: plant_cov = ""
-        character (len=32) :: mgt_ops = ""
+        character (len=35) :: mgt_ops = ""
         character (len=16) :: cn_lu      !! none     | land use for curve number table (cntable.lum)
-        character (len=16) :: cons_prac  !! none     | conservation practice from table (c0ns_precatice.lum)
+        character (len=16) :: cons_prac  !! none     | conservation practice from table (cons_practice.lum)
         character (len=16) :: urb_lu     !! none     | type of urban land use- ie. residential, industrial, etc (urban.urb)
         character (len=16) :: urb_ro     !! none     | urban runoff model
                                          !!          | "usgs_reg", simulate using USGS regression eqs
@@ -906,7 +907,7 @@
       type (soil_database), dimension(:), allocatable :: soildb
       
       type plant_db
-        character(len=4) :: plantnm = 'frsd ' !N/A    |4 letter char code represents crop name
+        character(len=16) :: plantnm = 'frsd ' !N/A    |4 letter char code represents crop name
         integer :: idc = 7        !none               |crop/landcoover category
                                   !                   |1 warm annual legume
                                   !                   |2 cold season annual legume
@@ -1002,7 +1003,7 @@
       type (plant_cp), pointer :: pl_cp
             
       type plant_init_db
-        character(len=4) :: cpnm = "frsd"
+        character(len=16) :: cpnm = "frsd"
         integer :: db_num = 1      !             |plant object
         integer :: igro = 1        !             |land cover status
                                    !               0 = no land cover growing
@@ -1021,15 +1022,7 @@
         type (plant_init_db), dimension(:), allocatable :: pl
       end type plant_community_db
       type (plant_community_db), dimension(:), allocatable :: pcomdb
-      
-      type pcom_crosswalk
-        character (len=20) name    !! name of the community
-        character (len=4), dimension(:), allocatable :: pl_name  !! name of plants in the community
-      end type pcom_crosswalk
-      type (pcom_crosswalk), dimension(:), allocatable :: pcom_xw
-      
-      character (len=20), dimension(:), allocatable :: plnt_xw                     
-    
+
       type routing_nut_data         ! used for 2-stage ditch in chandeg and overland flow
         character(len=16) :: name = 'Drainage_Ditch'
         real :: len_inc = 250       ! m               |segment length for reduction

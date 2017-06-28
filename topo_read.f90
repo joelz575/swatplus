@@ -42,6 +42,8 @@
         enddo
       endif
       close (107)
-         db_mx%topo = imax      
+      
+      db_mx%topo = imax 
+         
       return  
       end subroutine topo_read

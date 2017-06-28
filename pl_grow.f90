@@ -180,6 +180,7 @@
             reg = 1.
           end if
  
+          reg = 1.
           pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass + bioday * reg
 
           !!maximum lai and bioimass for perrenials
@@ -210,7 +211,7 @@
           !! calculate fraction of total biomass that is in the roots
           pcom(j)%plg(ipl)%rwt = .4 - .2 * pcom(j)%plcur(ipl)%phuacc
 
-          f = pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +     &
+          f = pcom(j)%plcur(ipl)%phuacc / (pcom(j)%plcur(ipl)%phuacc +     &
               Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc))
           ff = f - pcom(j)%plg(ipl)%laimxfr
           pcom(j)%plg(ipl)%laimxfr = f
@@ -222,8 +223,8 @@
             pcom(j)%plg(ipl)%cht = pldb(idp)%chtmx * Sqrt(f)
           end if
 
-          !! calculate new leaf area index
-          if (pcom(j)%plcur(ipl)%phuacc <= pldb(idp)%dlai) then
+          !! calculate new leaf area index when phuacc < dlai
+          if (pcom(j)%plcur(ipl)%phuacc < pldb(idp)%dlai) then
             laimax = 0.
             deltalai = 0.
             if (pldb(idp)%idc == 7) then
@@ -247,7 +248,7 @@
             !! adjust lai increment for plant competition
             sumlaiht = 0.
             do jpl = 1, pcom(j)%npl
-              sumlaiht=sumlaiht+pcom(j)%plg(ipl)%lai * pcom(j)%plg(jpl)%cht
+              sumlaiht = sumlaiht + pcom(j)%plg(ipl)%lai * pcom(j)%plg(jpl)%cht
             end do
             if (sumlaiht > 1.e-6) then
               rto = (pcom(j)%plg(ipl)%lai * pcom(j)%plg(ipl)%cht) / sumlaiht
@@ -260,13 +261,17 @@
             if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
             pcom(j)%plg(ipl)%olai = pcom(j)%plg(ipl)%lai
             if (sumlai > lai_yrmx(j)) lai_yrmx(j) = sumlai
-          else
+          end if
+          
+          !! if phuacc > 1. then start lai decline. if 0.7 < phuacc < 1 then don't change lai.
+          if (pcom(j)%plcur(ipl)%phuacc > 1.) then
             !! logistic decline rate - Michael Strauch
             rto = (1. - pcom(j)%plcur(ipl)%phuacc)/(1. - pldb(idp)%dlai)
             !pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%olai * rto
             pcom(j)%plg(ipl)%lai = (pcom(j)%plg(ipl)%olai - pldb(idp)%alai_min) /   &
                 (1. + Exp((rto - .5) * -12)) + pldb(idp)%alai_min
           end if
+          
           if (pcom(j)%plg(ipl)%lai < pldb(idp)%alai_min) then   !Sue White dormancy
             pcom(j)%plg(ipl)%lai = pldb(idp)%alai_min
           end if

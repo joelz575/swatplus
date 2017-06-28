@@ -36,8 +36,6 @@
       mstdo = 113
       mhyd = 1  !!added for jaehak vars
 
-      allocate (isdr_no(mhru))
-            
       allocate (pot(mhru))
       
 !!    drains

@@ -78,9 +78,16 @@
              ch_dat(ich)%pst = ipst
              exit
            end if
-         end do  
-
+         end do
+         
+       !if (ch_dat(ich)%init == 0) write (9001,*) ch_dat(ich)%init, ' not found (chan)'
+       !if (ch_dat(ich)%hyd == 0) write (9001,*) ch_dat(ich)%hyd, ' not found (chan)'
+       !if (ch_dat(ich)%sed == 0) write (9001,*) ch_dat(ich)%sed, ' not found (chan)'
+       !if (ch_dat(ich)%nut == 0) write (9001,*) ch_dat(ich)%nut, ' not found (chan)'
+       !if (ch_dat(ich)%pst == 0) write (9001,*) ch_dat(ich)%pst, ' not found (chan)'         
+       
        end do
+              
        close (105)
       exit
       enddo

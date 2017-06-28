@@ -65,7 +65,6 @@
       integer :: j, j1, nn, k
 
       j = ihru
-      isdr = isdr_no(j)
 
       !! initialize water entering first soil layer
 
@@ -179,7 +178,7 @@
         end if
         !! drainmod wt_shall equations   10/23/2006
         
-        if (isdr > 0) then
+        if (hru(j)%tiledrain > 0) then
         if (hru(j)%lumv%sdr_dep > 0.) then
           if (wt_shall <= d) then
             qtile = 0.
@@ -190,7 +189,7 @@
               !! drainmod tile equations   01/2006
             else !! compute tile flow using existing tile equations
               call swr_origtile(d)! existing tile equations 
-	        if(qtile < 0.) qtile=0.
+	          if(qtile < 0.) qtile = 0.
             end if 
           end if
         end if

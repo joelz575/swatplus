@@ -62,14 +62,13 @@
       real :: sum, smp, smfac, smleb
       real :: xx, snocov 
 
-      j = 0
       j = ihru
       sum = 0.
       smp = 0.
       isub = hru_sub(j)
       isno = hru(j)%dbs%snow
       
-	ib = 1
+	  ib = 1
 
         !! estimate snow pack temperature
         snotmp(j)=snotmp(j) * (1. - snodb(isno)%timp) + tmpav(j) *      &     
@@ -80,7 +79,7 @@
           sno_hru(j) = sno_hru(j) + precipday
           snofall = precipday
           precipday = 0.
-          wst(iwst)%weat%ts = 0.
+          if (time%step > 0) wst(iwst)%weat%ts = 0.
         endif
  
         if (tmx(j) > snodb(isno)%melttmp .and. sno_hru(j) > 0.) then

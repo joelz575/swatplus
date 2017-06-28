@@ -9,12 +9,38 @@
  !     real, dimension (:), allocatable :: wndmeas
       real, dimension (:,:), allocatable :: frad
       integer, dimension (:), allocatable :: elevp,elevt
-      integer, dimension (:), allocatable :: idg, wst_pointer
+      integer, dimension (:), allocatable :: idg
       integer, dimension (:,:), allocatable :: rndseed
       real, dimension (:), allocatable :: rnd2,rnd3,rnd8,rnd9
       integer, dimension (:), allocatable :: ifirstt,ifirstpcp
       !! this should go in the weather module
            
+      type weather_generator_mo
+        real :: tmpmx       !! deg C  |avg monthly maximum air temperature
+        real :: tmpmn       !! deg C  |avg monthly minimum air temperature
+        real :: tmpstdmx    !! deg C  |standard deviation for avg monthly maximum air temperature 
+        real :: tmpstdmn    !! deg C  |standard deviation for avg monthly minimum air temperature
+        real :: pcpmm       !! mm     |amount of precipitation in month
+        real :: pcpstd      !! mm/day |standard deviation for the average daily
+        real :: pcpskw      !! none   |skew coefficient for the average daily precipitation
+        real :: pr_wd       !! none   |probability of wet day after dry day in month 
+        real :: pr_ww       !! none   |probability of wet day after wet day in month
+        real :: pcpd        !! days   |average number of days of precipitation in the month
+        real :: rainhmx     !! mm     |maximum 0.5 hour rainfall in month
+        real :: solarav     !! MJ/m^2/day    |average daily solar radiation for the month
+        real :: dewpt       !! deg C  |average dew point temperature for the month
+        real :: windav      !! m/s    |average wind speed for the month
+      end type weather_generator_mo
+      
+      type weather_generator_db1      
+        real :: lat =  0.0                        !! degrees       |latitude of weather station used to compile data
+        real :: long = 0.0                        !! degrees       |longitude of weather station 
+        real :: elev = 0.0                        !!               |elevation of weather station used to compile weather generator data
+        real :: rain_yrs = 10.0                   !! none          |number of years of recorded maximum 0.5h rainfall used to calculate values for rainhhmx(:)
+        type (weather_generator_mo), dimension (12) :: mo
+      end type weather_generator_db1
+      type (weather_generator_db1), dimension(:),allocatable :: wgn1
+      
       type weather_generator_db      
         real :: lat =  0.0                        !! degrees       |latitude of weather station used to compile data
         real :: long = 0.0                        !! degrees       |longitude of weather station 

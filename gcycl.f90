@@ -60,8 +60,6 @@
 !!    initialize random number seeds
        
       do iwgn = 1, db_mx%wgnsta
-        !iwst = wst_pointer(ii)
-        !iwgn = wst(iwst)%wco%wgn
         rndseed(1,iwgn) = 748932582
         rndseed(2,iwgn) = 1985072130
         rndseed(3,iwgn) = 1631331038
@@ -102,14 +100,10 @@
       !! assign half-hour maximum rainfall seed to second array location for use
       !! in sub-daily pcp generator
       do iwgn = 1, db_mx%wgnsta
-        !iwst = wst_pointer(ii)
-        !iwgn = wst(iwst)%wco%wgn
         rndseed(10,iwgn) = rndseed(idg(6),iwgn)
       end do
 
       do iwgn = 1, db_mx%wgnsta
-        !iwst = wst_pointer(ii)
-        !iwgn = wst(iwst)%wco%wgn
         rnd2(iwgn) = Aunif(rndseed(idg(2),iwgn))
         rnd3(iwgn) = Aunif(rndseed(idg(3),iwgn))
         rnd8(iwgn) = Aunif(rndseed(idg(8),iwgn))

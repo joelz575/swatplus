@@ -26,7 +26,7 @@
           
         case ("pcom")
           do idb = 1, db_mx%plantcom
-              if (sched(isched)%mgt_ops(iop)%op_char == pcom_xw(idb)%name) then
+              if (sched(isched)%mgt_ops(iop)%op_char == pcomdb(idb)%name) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
@@ -34,7 +34,7 @@
           
         case ("plnt")
           do idb = 1, db_mx%plantparm
-              if (sched(isched)%mgt_ops(iop)%op_char == plnt_xw(idb)) then
+              if (sched(isched)%mgt_ops(iop)%op_char == pldb(idb)%plantnm) then
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif

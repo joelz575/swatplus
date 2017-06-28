@@ -112,6 +112,16 @@
             exit
             end if
          end do
+         
+      !if (hru_db(i)%dbs%land_use_mgt == 0) write (9001,*) hru_db(i)%dbs%land_use_mgt, ' not found (hru-landuse)'
+      !if (hru_db(i)%dbs%soil_nutr_init == 0) write (9001,*) hru_db(i)%dbs%soil_nutr_init, ' not found (hru-soilnutr)'
+      !if (hru_db(i)%dbs%topo == 0) write (9001,*) hru_db(i)%dbs%topo, ' not found (hru-topo)'
+      !if (hru_db(i)%dbs%hyd == 0) write (9001,*) hru_db(i)%dbs%hyd, ' not found (hru-hyd)'
+      !if (hru_db(i)%dbs%soil == 0) write (9001,*) hru_db(i)%dbs%soil, ' not found (hru-soil)'
+      !if (hru_db(i)%dbs%surf_stor == 0) write (9001,*) hru_db(i)%dbs%surf_stor, ' not found (hru-surfstor)'
+      !if (hru_db(i)%dbs%snow == 0) write (9001,*) hru_db(i)%dbs%snow, ' not found (hru-snow)'
+      !if (hru_db(i)%dbs%field == 0) write (9001,*) hru_db(i)%dbs%field, ' not found (hru-field)'
+      
       end do
       exit
       enddo

@@ -52,8 +52,8 @@
                 exit
               endif
             end do
+            !if (pestcom_db(i)%num_db(ipcom) == 0) write (9001,*) pestcom_db(i)%num_db(ipcom), ' not found (pestcom)'
           end do
-
         end do
         exit
       enddo

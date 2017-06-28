@@ -124,6 +124,10 @@
       end type plant_community
       type (plant_community), dimension (:), allocatable :: pcom
       type (plant_community), dimension (:), allocatable :: pcom_init
+      type (plant_growth) :: plgz
+      type (plant_mass) :: plmz
+      type (plant_stress) :: plstrz
+      type (plant_status) :: plcurz
                  
       type pesticide
         character(len=10) :: name
@@ -389,7 +393,7 @@
         real :: usle_ls = 0.                !! |none          |USLE equation length slope (LS) factor
         real :: usle_mult = 0.              !! |none          |product of USLE K,P,LS,exp(rock)
         real :: sdr_dep = 0.                !! |
-        real :: ldrain= 0.                  !! |none          |soil layer where drainage tile is located
+        integer :: ldrain= 0.               !! |none          |soil layer where drainage tile is located
         real :: tile_ttime = 0.             !! |none          |Exponential of the tile flow travel time
         real :: vfsi = 0.                   !! |none          |initial SCS curve number II value
         real :: vfsratio = 0.               !! |none          |contouring USLE P factor
@@ -622,7 +626,7 @@
       
 !!    new/modified arrays for plant competition
       integer :: idp,ipl,icom,isol
-      integer, dimension (:), allocatable :: npl,ipl_com,isdr_no
+      integer, dimension (:), allocatable :: npl,ipl_com
 
       real :: sumlai,sumbm,sumrwt,strsa_av,strsn_av,strsp_av,strstmp_av
       real :: rto_no3,rto_solp,uno3d_tot,uapd_tot,sum_no3
@@ -824,7 +828,7 @@
       integer, dimension (:), allocatable :: icr
       integer, dimension (:), allocatable :: irrno,npcp
       integer, dimension (:), allocatable :: igrz,ndeat,ngr,ncf
-      integer, dimension (:), allocatable :: hru_sub,ldrain
+      integer, dimension (:), allocatable :: hru_sub
       integer, dimension (:), allocatable :: iday_fert,icfrt
       integer, dimension (:), allocatable :: ndcfrt
       integer, dimension (:), allocatable :: ntil,irrsc

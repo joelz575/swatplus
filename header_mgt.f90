@@ -5,11 +5,11 @@
     
 !!   open mgt.out file 
       if (pco%mgtout == 'y') then
-        open (2612,file="mgt_out.mgt",recl=800)
+        open (2612,file="mgt_out.txt",recl=800)
         write (2612,*) mgt_hdr
         write (2612,*) mgt_hdr_unt1
         write (2612,*) mgt_hdr_unt2
-        write (9000,*) 'MGT                 mgt_out.mgt'
+        write (9000,*) 'MGT                 mgt_out.txt'
       end if
           
       return

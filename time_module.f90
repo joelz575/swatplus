@@ -28,6 +28,7 @@
         real :: dtm = 0.              !! time step in minutes for rainfall, runoff and routing
         real :: yrs_prt = 0.          !! number of years for average annual printing for entire time period
         real :: yrs_prt_int = 0.      !! number of years for average annual printing for printing interval- pco%aa_yrs()
+        integer :: num_leap = 0       !! number of leap years in sumulation for average annual printing
         integer :: prt_int_cur = 1    !! current average annual print interval
       end type time_current
       type (time_current) :: time

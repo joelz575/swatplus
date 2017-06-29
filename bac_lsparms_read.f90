@@ -3,14 +3,12 @@
       use input_file_module
 
       character (len=80) :: titldum, header
-      integer :: mbac, ibac
+      integer :: ibac
       character (len=13) :: file
       integer :: eof, i, imax
       
-      mbac = 0
       eof = 0
-      imax = 0
-      
+      imax = 0    
       
       !! read bacteria properties
       inquire (file=in_bac%bacteria,exist=i_exist)
@@ -24,21 +22,22 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
           do while (eof == 0)
-            read (107,*,iostat=eof) i
+            read (107,*,iostat=eof) titldum
             if (eof < 0) exit
-            imax = Max(imax,i)
-            mbac = mbac + 1
+            imax = imax + 1
           end do
+
+        db_mx%bac = imax
           
         allocate (bac_db(0:imax))
         rewind (107)
         read (107,*) titldum
         read (107,*) header
 
-        do ibac = 1, mbac
-          read (107,*,iostat=eof) i
+        do ibac = 1, db_mx%bac
+          read (107,*,iostat=eof) titldum
           backspace (107)
-          read (107,*,iostat=eof) k, bac_db(i)
+          read (107,*,iostat=eof) bac_db(ibac)
           if (eof < 0) exit
         end do
         exit

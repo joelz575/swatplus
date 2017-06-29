@@ -7,7 +7,6 @@
       integer :: isol, j
       integer :: eof
       
-      msoils = 0
       eof = 0
       imax = 0
 

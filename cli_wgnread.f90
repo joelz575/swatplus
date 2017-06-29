@@ -36,8 +36,8 @@
         open (114,file=in_cli%weat_wgn)
         read (114,*,iostat=eof) titldum
         if (eof < 0) exit
-        read (114,*,iostat=eof) header
-        if (eof < 0) exit
+        !read (114,*,iostat=eof) header
+        !if (eof < 0) exit
         !! determine max number for array (imax) and total number in file
         do while (eof == 0)
           read (114,*,iostat=eof) titldum

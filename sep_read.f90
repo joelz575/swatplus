@@ -7,7 +7,6 @@
       character (len=13) :: file
       integer :: eof, i, imax
       
-      msep = 0
       eof = 0
       imax = 0
       

@@ -34,9 +34,9 @@
       read (105,*) header
       
        do ires = 1, imax
-         read (105,*,iostat=eof) i
+         read (105,*,iostat=eof) titldum
          backspace (105)
-         read (105,*,iostat=eof) k, res_hyd(ires)
+         read (105,*,iostat=eof) res_hyd(ires)
          if (eof < 0) exit
 
         if (res_hyd(ires)%pvol + res_hyd(ires)%evol > 0.) then

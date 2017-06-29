@@ -22,9 +22,9 @@
        read (105,*,iostat=eof) header
        if (eof < 0) exit
         do while (eof == 0)
-          read (105,*,iostat=eof) i
+          read (105,*,iostat=eof) titldum
           if (eof < 0) exit
-          imax = Max(imax,i)
+          imax = imax + 1
         end do
         
       db_mx%res_init = imax
@@ -35,9 +35,9 @@
       read (105,*) header
            
        do ires = 1, imax
-         read (105,*,iostat=eof) i
+         read (105,*,iostat=eof) titldum
          backspace (105)
-         read (105,*,iostat=eof) k, res_init(ires)
+         read (105,*,iostat=eof) res_init(ires)
          if (eof < 0) exit
        end do
        close (105)

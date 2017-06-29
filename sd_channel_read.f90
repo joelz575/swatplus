@@ -7,10 +7,11 @@
       integer :: eof, i, imax, iisd
       real :: kh
       
-      mlte = 0
+
       eof = 0
       imax = 0
       maxint = 10
+      
       allocate (timeint(maxint))
       allocate (hyd_rad(maxint))
       allocate (sd_ch(0:sp_ob%chandeg))
@@ -30,21 +31,23 @@
         read (1,*,iostat=eof) header
         if (eof < 0) exit
           do while (eof == 0)
-            read (1,*,iostat=eof) i
+            read (1,*,iostat=eof) titldum
             if (eof < 0) exit
-            imax = Max(imax,i)
-            mlte = mlte + 1
-          end do       
+            imax = imax + 1
+          end do  
+          
+        db_mx%ch_lte = imax
            
         allocate (sd_chd(0:imax))
         
         rewind (1)
         read (1,*) titldum
         read (1,*) header
-        do idb = 1, mlte
-        read (1,*,iostat = eof) i
+        
+        do idb = 1, db_mx%ch_lte
+        read (1,*,iostat = eof) titldum
           backspace (1)
-          read (1,*,iostat=eof) k, sd_chd(idb)
+          read (1,*,iostat=eof) sd_chd(idb)
           if (eof < 0) exit
         end do
             

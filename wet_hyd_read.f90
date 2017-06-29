@@ -22,7 +22,7 @@
        read (105,*,iostat=eof) header
        if (eof < 0) exit
         do while (eof == 0)
-          read (105,*,iostat=eof) i
+          read (105,*,iostat=eof) titldum
           if (eof < 0) exit
           imax = Max(imax,i)
         end do
@@ -35,9 +35,9 @@
       read (105,*) header
       
        do ires = 1, imax
-         read (105,*,iostat=eof) i
+         read (105,*,iostat=eof) titldum
          backspace (105)
-         read (105,*,iostat=eof) k, wet_hyd(ires)
+         read (105,*,iostat=eof) wet_hyd(ires)
          if (eof < 0) exit
 
         if (wet_hyd(ires)%pvol + wet_hyd(ires)%evol > 0.) then

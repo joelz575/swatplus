@@ -28,9 +28,9 @@
         read (105,*,iostat=eof) header
         if (eof < 0) exit
           do while (eof == 0)
-            read (105,*,iostat=eof) i
+            read (105,*,iostat=eof) titldum
             if (eof < 0) exit
-            imax = Max(imax,i)
+            imax = imax + 1
           end do
           
         db_mx%ch_nut = imax  
@@ -41,9 +41,9 @@
         read (105,*) header
          
         do ich = 1, db_mx%ch_nut
-          read (105,*,iostat=eof) i
+          read (105,*,iostat=eof) titldum
           backspace (105)
-          read (105,*) k, ch_nut(i)
+          read (105,*) ch_nut(ich)
           if (eof < 0) exit
           
 !!    set default values for undefined parameters

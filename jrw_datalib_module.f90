@@ -92,6 +92,10 @@
         integer :: ch_sed
         integer :: ch_nut
         integer :: ch_pst
+        integer :: bac
+        integer :: exco
+        integer :: sep
+        integer :: ch_lte
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
 
@@ -1385,5 +1389,6 @@
       include 'ch_nut_read.f90'
       include 'ch_pst_read.f90'
       include 'rte_read_nut.f90'
+      include 'exco_read.f90'
       
       end module jrw_datalib_module 

@@ -22,22 +22,23 @@
           if (eof < 0) exit
           imax = 0
           do while (eof == 0)
-            read (107,*,iostat=eof) i
+            read (107,*,iostat=eof) titldum
             if (eof < 0) exit
-            imax = Max(imax,i)
-            mexco_sp = mexco_sp + 1 
+            imax = imax + 1
           end do
+          
+          db_mx%exco = imax
           
           allocate (exco(0:imax))
           rewind (107)
           read (107,*) titldum
-           read (107,*) header
+          read (107,*) header
       
           !read all export coefficient data
-          do ii = 1, mexco_sp
-            read (107,*,iostat=eof) i
+          do ii = 1, db_mx%exco
+            read (107,*,iostat=eof) titldum
             backspace (107)
-            read (107,*,iostat=eof) k, namedum, exco(ii)   
+            read (107,*,iostat=eof) namedum, exco(ii)   
             if (eof < 0) exit
           end do
           close (107)

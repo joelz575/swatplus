@@ -22,7 +22,6 @@
       
       eof = 0
       imax = 0
-      mexco_sp = 0
       cmd_prev = 0
   
       !! read hru spatial data

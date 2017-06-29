@@ -20,9 +20,9 @@
        read (105,*,iostat=eof) header
        if (eof < 0) exit
         do while (eof == 0)
-          read (105,*,iostat=eof) i
+          read (105,*,iostat=eof) titldum
           if (eof < 0) exit
-          imax = Max(imax,i)
+          imax = imax + 1
         end do
         
       db_mx%ch_hyd = imax
@@ -33,9 +33,9 @@
       read (105,*) header
     
        do ich = 1, db_mx%ch_hyd
-         read (105,*,iostat=eof) i
+         read (105,*,iostat=eof) titldum
          backspace (105)
-         read (105,*,iostat=eof) k, ch_hyd(ich)
+         read (105,*,iostat=eof) ch_hyd(ich)
          if (eof < 0) exit
          
         ch_hyd(ich)%alpha_bnk = Exp(-ch_hyd(ich)%alpha_bnk)

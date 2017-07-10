@@ -318,10 +318,10 @@
       
      type water_right_elements
         character(len=16) :: name
+        character (len=3) :: obtyp      !object type- hru, hru_lte, channel, etc
+        integer :: obtypno = 0          !number of hru, hru_lte, channel, etc
         integer :: obj = 1              !object number
-        character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
         integer :: right                !0-100
-        integer :: obtypno = 0          !2-number of hru_lte's or 1st hru_lte command
         integer,  dimension(:), allocatable :: wro   !water rights object the element is in
       end type water_right_elements
       
@@ -356,7 +356,7 @@
       !water allocation
       type water_allocation
         integer :: typ = 0                                                  !water rights object = 1; hru unlimited source = 0
-        real, dimension (:), allocatable :: demand                        !m^3    |water demand for each element
+        real, dimension (:), allocatable :: demand                          !m^3    |water demand for each element
         !hyd_output units are in mm and mg/L
         type (hyd_output), dimension (:), allocatable :: hd                 !irrigation water
       end type water_allocation

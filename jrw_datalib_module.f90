@@ -719,7 +719,7 @@
       type (structural_ops) :: str
 
       type soiltest_db
-        character(len=13) :: name = 'default'
+        character(len=16) :: name = 'default'
         real :: exp_co = .001         !	     |depth coefficient to adjust concentrations for depth
         real :: totaln = 13.          !ppm     |total N in soil
         real :: inorgn = 6.           !ppm     |inorganic N in soil surface
@@ -735,7 +735,7 @@
       type (soiltest_db), dimension (:), allocatable :: solt_db
 
       type topography_db
-        character(len=13) :: name = 'default'
+        character(len=16) :: name = 'default'
         real :: slope = .02       !!	hru_slp(:) |m/m           |average slope steepness in HRU
         real :: slope_len = 50.   !! slsubbsn(:)   |m             |average slope length for erosion
         real :: lat_len = 50.     !! slsoil(:)     |m             |slope length for lateral subsurface flow
@@ -745,7 +745,7 @@
       type (topography_db), dimension (:), allocatable :: topo_db
 
       type fields_db
-           character(len=13) :: name = 'default'
+           character(len=16) :: name = 'default'
            real :: length = 500. !!               |m             |field length for wind erosion
            real :: wid = 100.    !!               |m             |field width for wind erosion
            real :: ang = 30.     !!               |deg           |field angle for wind erosion
@@ -753,7 +753,7 @@
       type (fields_db), dimension (:), allocatable :: field_db
       
       type hydrology_db
-         character(len=13) :: name
+         character(len=16) :: name
          real :: lat_ttime = 0.  !! lat_ttime(:)  |none          |Exponential of the lateral flow travel time
          real :: lat_sed = 0.    !! lat_sed(:)    |g/L           |sediment concentration in lateral flow
          real :: canmx = 0.      !! canmx(:)      |mm H2O        |maximum canopy storage
@@ -866,7 +866,7 @@
       type (pothole_db), dimension (:), allocatable :: potdb  
       
       type snow_database
-         character (len=13) :: name
+         character (len=16) :: name
          real :: falltmp = 0.     !deg C         |snowfall temp
          real :: melttmp = 0.     !deg C         |snow melt base temp 
          real :: meltmx = 0.      !mm/deg C/day  |Max melt rate for snow during year (June 21)

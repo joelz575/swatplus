@@ -61,11 +61,11 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
 
-      prog = "SWAT+ Jun 29 2017    MODULAR Rev 2017.36"
+      prog = "SWAT+ Jul 10 2017    MODULAR Rev 2017.37"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 36             ",/,             &
+     &          "              Revision 37             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)

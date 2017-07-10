@@ -4,11 +4,10 @@
       use constituent_mass_module
 
       character (len=80) :: titldum, header
-      integer :: mpesti_db, ipestdb, eof
+      integer :: ipestdb, eof
       integer :: i, imax
       
       eof = 0
-      mpesti_db = 0
       imax = 0
                              
       !! real all pesticide initialization data from pest_initial.dat
@@ -23,22 +22,22 @@
           read (107,*,iostat=eof) header
           if (eof < 0) exit
            do while (eof == 0)
-            read (107,*,iostat=eof) i
+            read (107,*,iostat=eof) titldum
             if (eof < 0) exit
-            imax = Max(imax,i)
-            mpesti_db = mpesti_db + 1
+            imax = imax + 1
            end do
            
-!          allocate (pesti_db(mpesti_db+1))
+          db_mx%pestdb = imax
+           
            allocate (pesti_db(0:imax))
            rewind (107)
            read (107,*) titldum
            read (107,*) header
            
-          do ipestdb = 1, imax
-            read (107,*,iostat=eof) i
+          do ipestdb = 1, db_mx%pestdb
+            read (107,*,iostat=eof) titldum
             backspace (107)
-            read (107,*,iostat=eof) k, pesti_db(i)%name, pesti_db(i)%num, pesti_db(i)%exco_df, pesti_db(i)%dr_df
+            read (107,*,iostat=eof) pesti_db(i)%name, pesti_db(i)%num, pesti_db(i)%exco_df, pesti_db(i)%dr_df
             if (eof < 0) exit
             !allocate initial pest and exco and dr for pesticides
             allocate (pesti_db(ipestdb)%pesti(pesti_db(i)%num))
@@ -87,7 +86,7 @@
             end if
             
           end do
-          db_mx%pestdb = mpesti_db
+          !db_mx%pestdb = mpesti_db
           exit
         end do
       end if

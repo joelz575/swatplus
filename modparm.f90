@@ -1,11 +1,7 @@
       module parm
    
-      integer :: mscheds, isep, mcom, mpesti_db, isolt
-      integer :: mwus
+      integer :: mscheds, isep, mcom, isolt
       integer :: ith, ilu, ulu, iadep, ipot, iwgen
-      integer, dimension(:), allocatable :: bsn_pst, bsn_pstdb
-      
-      real, dimension (:), allocatable :: irr_nosrc         !hru's with unlimited irrigation source
       
       type bacteria_initial
         character(len=13) :: name
@@ -186,11 +182,11 @@
         real :: silt = 0.         !! %             percent silt content in soil material
         real :: sand = 0.         !! none          fraction of sand in soil material
         real :: rock = 0.         !! %             percent of rock fragments in soil layer 
-        real ::conv_wt = 0.       !! none          factor which converts kg/kg to kg/ha
-        real ::crdep = 0.         !! mm            maximum or potential crack volume
-        real ::awc = 0.           !! mm H20/mm     soil available water capacity of soil layer
-        real ::fc = 0.           !! mm H2O         amount of water available to plants in soil layer at field capacity (fc - wp),Index:(layer,HRU)
-        real ::hk = 0.           !! none           beta coefficent to calculate hydraulic conductivity
+        real :: conv_wt = 0.       !! none          factor which converts kg/kg to kg/ha
+        real :: crdep = 0.         !! mm            maximum or potential crack volume
+        real :: awc = 0.           !! mm H20/mm     soil available water capacity of soil layer
+        real :: fc = 0.           !! mm H2O         amount of water available to plants in soil layer at field capacity (fc - wp),Index:(layer,HRU)
+        real :: hk = 0.           !! none           beta coefficent to calculate hydraulic conductivity
         real :: por = 0.         !! none           total porosity of soil layer expressed as a fraction of the total volume, Index:(layer,HRU)
         real :: st = 0.          !! mm H2O         amount of water stored in the soil layer on any given day (less wp water)
         real :: tmp = 0.         !! deg C          daily average temperature of second soil layer
@@ -201,11 +197,11 @@
       end type soil_physical_properties
       
       type soil_nutrients
-        real ::actp = 0.         !! kg P/ha        amount of phosphorus stored in the active mineral phosphorus pool 
-        real ::aorgn = 0.        !! kg N/ha        amount of nitrogen stored in the active organic (humic) nitrogen pool in soil layer
-        real ::fon = 0.          !! kg N/ha        amount of nitrogen stored in the fresh organic (residue) pool in soil layer
-        real ::fop = 0.          !! kg P/ha        amount of phosphorus stored in the fresh organic (residue) pool in soil layer
-        real ::nh3 = 0.          !! kg N/ha        amount of nitrogen stored in the ammonium pool in soil layer
+        real :: actp = 0.         !! kg P/ha        amount of phosphorus stored in the active mineral phosphorus pool 
+        real :: aorgn = 0.        !! kg N/ha        amount of nitrogen stored in the active organic (humic) nitrogen pool in soil layer
+        real :: fon = 0.          !! kg N/ha        amount of nitrogen stored in the fresh organic (residue) pool in soil layer
+        real :: fop = 0.          !! kg P/ha        amount of phosphorus stored in the fresh organic (residue) pool in soil layer
+        real :: nh3 = 0.          !! kg N/ha        amount of nitrogen stored in the ammonium pool in soil layer
         real :: no3 = 0.         !! kg N/ha        amount of nitrogen stored in the nitrate pool in soil layer
         real :: orgn = 0.        !! kg N/ha        amount of nitrogen stored in the stable organic N pool
         real :: orgp = 0.        !! kg P/ha        amount of phosphorus stored in the organic P pool in soil layer
@@ -510,7 +506,7 @@
       end type pestinit
       
       type pestinit_db
-        character(len=13) :: name        !!      |name of pesticide community
+        character(len=16) :: name        !!      |name of pesticide community
         integer :: num                   !!      |number of pesticides in community
         character (len=16) :: exco_df    !!      |name of export coefficient file for pesticide community
         character (len=16) :: dr_df      !!      |name of delivery ratio file for pesticide community
@@ -622,11 +618,11 @@
           
 
 !!    change per JGA 8/31/2011 gsm for output.mgt 
-      real :: yield, burn_frlb, pst_kg
+      real :: yield,  pst_kg
       
 !!    new/modified arrays for plant competition
-      integer :: idp,ipl,icom,isol
-      integer, dimension (:), allocatable :: npl,ipl_com
+      integer :: idp, ipl, icom, isol
+      integer, dimension (:), allocatable :: npl, ipl_com
 
       real :: sumlai,sumbm,sumrwt,strsa_av,strsn_av,strsp_av,strstmp_av
       real :: rto_no3,rto_solp,uno3d_tot,uapd_tot,sum_no3
@@ -676,14 +672,12 @@
       integer :: nhru,  mo, nrch, i_mo
       integer :: inum1, ihru
       integer :: npmx, curyr
-      integer :: mvaro, mrecm
       integer :: iopera
-      integer :: mstdo
       integer :: i, scenario
       integer :: nd_30
       integer :: iscen
       integer :: msub, mpst, mlyr, iida
-      integer ::idtill
+      integer :: idtill
       integer, dimension(100) :: ida_lup, iyr_lup
       integer :: no_up
 !  routing 5/3/2010 gsm per jga    
@@ -871,7 +865,7 @@
         sp_qfg,sf_ptp,ft_fc 
       
       !detention pond
-	integer, dimension(:), allocatable :: dtp_subnum,dtp_imo,             &
+	integer, dimension(:), allocatable :: dtp_subnum,dtp_imo,               &
         dtp_iyr,dtp_numweir,dtp_numstage,dtp_stagdis,                       &
         dtp_reltype,dtp_onoff                                         
 !! sj & armen changes for SWAT-C
@@ -880,7 +874,7 @@
 
 	integer, dimension(:,:), allocatable :: dtp_weirtype,dtp_weirdim
 	
-	real, dimension(:), allocatable ::dtp_evrsv,                       &
+	real, dimension(:), allocatable ::dtp_evrsv,                         &
        dtp_inflvol,dtp_totwrwid,dtp_parm,dtp_wdep,dtp_totdep,            &
        dtp_watdepact,dtp_outflow,dtp_totrel,dtp_backoff,dtp_seep_sa,     &
        dtp_evap_sa,dtp_pet_day,dtp_pcpvol,dtp_seepvol,dtp_evapvol,       &

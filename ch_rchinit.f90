@@ -11,8 +11,6 @@
 !!    ihout       |none          |outflow hydrograph storage location number
 !!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
-!!    mvaro       |none          |max number of variables routed through the
-!!                               |reach
 !!    rchstor(:)  |m^3 H2O       |water stored in reach
 !!    sub_pet(:)  |mm H2O        |potential evapotranspiration for day in
 !!                               |subbasin

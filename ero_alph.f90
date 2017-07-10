@@ -75,7 +75,7 @@
           ajp = 0.
           ajp = 1. - expo(-125. / (preceff + 5.))
           if (bsn_cc%sed_det == 0) then
-            !iwst = ob(icmd)%wst           !!!!!!LREW_TXTINOUT_LANDSCAPE and COON Creek wouldn't run unless uncommented OR SED_DET == 1
+            iwst = ob(icmd)%wst          
           iwgn = wst(iwst)%wco%wgn
           al5 = Atri(ab, wgn_pms(iwgen)%amp_r(i_mo),                     &
                    ajp,rndseed(idg(6),iwgn))

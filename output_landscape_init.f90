@@ -347,185 +347,185 @@
 !!! ROUTING UNIT - Water Balance
       if (sp_ob%sub > 0 .and. time%step == 0) then   
         if (pco%wb_sub%d == 'y') then
-          open (2140,file="waterbal_day_ru.txt",recl = 1500)
+          open (2140,file="waterbal_day_lsu.txt",recl = 1500)
           write (2140,*) wb_hdr  !! subbasin
-          write (9000,*) 'ROUTING UNIT            waterbal_day_ru.txt'
+          write (9000,*) 'ROUTING UNIT            waterbal_day_lsu.txt'
           if (pco%csvout == 'y') then 
             open (2144,file="waterbal_day_ru.csv",recl = 1500)
             write (2144,'(*(G0.3,:,","))') wb_hdr  !! subbasin
-            write (9000,*) 'ROUTING UNIT            waterbal_day_ru.csv'
+            write (9000,*) 'ROUTING UNIT            waterbal_day_lsu.csv'
           end if 
         endif
     
         
        if (pco%wb_sub%m == 'y') then
-        open (2141,file="waterbal_mon_ru.txt",recl = 1500)
+        open (2141,file="waterbal_mon_lsu.txt",recl = 1500)
         write (2141,*) wb_hdr   !! subbasin
-        write (9000,*) 'ROUTING UNIT            waterbal_mon_ru.txt'
+        write (9000,*) 'ROUTING UNIT            waterbal_mon_lsu.txt'
           if (pco%csvout == 'y') then
-            open (2145,file="waterbal_mon_ru.csv",recl = 1500) 
+            open (2145,file="waterbal_mon_lsu.csv",recl = 1500) 
             write (2145,'(*(G0.3,:,","))') wb_hdr   !! subbasin
-            write (9000,*) 'ROUTING UNIT            waterbal_mon_ru.csv'
+            write (9000,*) 'ROUTING UNIT            waterbal_mon_lsu.csv'
           end if
         end if 
 
      if (sp_ob%sub > 0 .and. time%step == 0) then   
         if (pco%wb_sub%y == 'y') then
-          open (2142,file="waterbal_yr_ru.txt",recl = 1500)
+          open (2142,file="waterbal_yr_lsu.txt",recl = 1500)
           write (2142,*) wb_hdr  !! subbasin
-          write (9000,*) 'ROUTING UNIT            waterbal_yr_ru.txt'
+          write (9000,*) 'ROUTING UNIT            waterbal_yr_lsu.txt'
           if (pco%csvout == 'y') then 
-            open (2146,file="waterbal_yr_ru.csv",recl = 1500)
+            open (2146,file="waterbal_yr_lsu.csv",recl = 1500)
             write (2146,'(*(G0.3,:,","))') wb_hdr  !! subbasin
-            write (9000,*) 'ROUTING UNIT            waterbal_yr_ru.csv'
+            write (9000,*) 'ROUTING UNIT            waterbal_yr_lsu.csv'
           end if 
         endif
      end if
         
        if (pco%wb_sub%a == 'y') then
-         open (2143,file="waterbal_aa_ru.txt",recl = 1500)
+         open (2143,file="waterbal_aa_lsu.txt",recl = 1500)
          write (2143,*) wb_hdr   !! subbasin
-         write (9000,*) 'ROUTING UNIT            waterbal_aa_ru.txt'
+         write (9000,*) 'ROUTING UNIT            waterbal_aa_lsu.txt'
           if (pco%csvout == 'y') then
-           open (2147,file="waterbal_aa_ru.csv",recl = 1500) 
+           open (2147,file="waterbal_aa_lsu.csv",recl = 1500) 
            write (2147,'(*(G0.3,:,","))') wb_hdr   !! subbasin
-           write (9000,*) 'ROUTING UNIT            waterbal_aa_ru.csv'
+           write (9000,*) 'ROUTING UNIT            waterbal_aa_lsu.csv'
           end if
        end if
         
 !!! ROUTING UNIT - Nutrient Balance
         if (pco%nb_sub%d == 'y') then
-          open (2150,file="nutbal_day_ru.txt",recl = 1500)
+          open (2150,file="nutbal_day_lsu.txt",recl = 1500)
           write (2150,*) nb_hdr
-          write (9000,*) 'ROUTING UNIT            nutbal_day_ru.txt'
+          write (9000,*) 'ROUTING UNIT            nutbal_day_lsu.txt'
           if (pco%csvout == 'y') then 
-            open (2154,file="nutbal_day_ru.csv",recl = 1500)
+            open (2154,file="nutbal_day_lsu.csv",recl = 1500)
             write (2154,'(*(G0.3,:,","))') nb_hdr
-            write (9000,*) 'ROUTING UNIT            nutbal_day_ub.csv'
+            write (9000,*) 'ROUTING UNIT            nutbal_day_lsu.csv'
           end if 
         endif
         
         if (pco%nb_sub%m == 'y') then
-        open (2151,file="nutbal_mon_ru.txt", recl = 1500)
+        open (2151,file="nutbal_mon_lsu.txt", recl = 1500)
         write (2151,*) nb_hdr
-        write (9000,*) 'ROUTING UNIT            nutbal_mon_ru.txt'
+        write (9000,*) 'ROUTING UNIT            nutbal_mon_lsu.txt'
           if (pco%csvout == 'y') then
-            open (2155,file="nutbal_mon_ru.csv", recl = 1500)
+            open (2155,file="nutbal_mon_lsu.csv", recl = 1500)
             write (2155,'(*(G0.3,:,","))') nb_hdr
-            write (9000,*) 'ROUTING UNIT            nutbal_mon_ru.csv'
+            write (9000,*) 'ROUTING UNIT            nutbal_mon_lsu.csv'
           end if
         end if
         
         if (pco%nb_sub%y == 'y') then
-          open (2152,file="nutbal_yr_ru.txt",recl = 1500)
+          open (2152,file="nutbal_yr_lsu.txt",recl = 1500)
           write (2152,*) nb_hdr
-          write (9000,*) 'ROUTING UNIT            nutbal_yr_ru.txt'
+          write (9000,*) 'ROUTING UNIT            nutbal_yr_lsu.txt'
           if (pco%csvout == 'y') then 
-            open (2156,file="nutbal_yr_ru.csv",recl = 1500)
+            open (2156,file="nutbal_yr_lsu.csv",recl = 1500)
             write (2156,'(*(G0.3,:,","))') nb_hdr
-            write (9000,*) 'ROUTING UNIT            nutbal_yr_ru.csv'
+            write (9000,*) 'ROUTING UNIT            nutbal_yr_lsu.csv'
           end if 
         endif
         
         if (pco%nb_sub%a == 'y') then
-        open (2153,file="nutbal_aa_ru.txt", recl = 1500)
+        open (2153,file="nutbal_aa_lsu.txt", recl = 1500)
         write (2153,*) nb_hdr
-        write (9000,*) 'ROUTING UNIT            nutbal_aa_ru.txt'
+        write (9000,*) 'ROUTING UNIT            nutbal_aa_lsu.txt'
           if (pco%csvout == 'y') then
-            open (2157,file="nutbal_aa_ru.csv", recl = 1500)
+            open (2157,file="nutbal_aa_lsu.csv", recl = 1500)
             write (2157,'(*(G0.3,:,","))') nb_hdr
-          write (9000,*) 'ROUTING UNIT            nutbal_aa_ru.csv'
+          write (9000,*) 'ROUTING UNIT            nutbal_aa_lsu.csv'
           end if 
         end if 
 
 !!! ROUTING UNIT - Losses
         if (pco%ls_sub%d == 'y') then
-          open (2160,file="losses_day_ru.txt",recl = 1500)
+          open (2160,file="losses_day_lsu.txt",recl = 1500)
           write (2160,*) ls_hdr    
-          write (9000,*) 'ROUTING UNIT            losses_day_ru.txt'
+          write (9000,*) 'ROUTING UNIT            losses_day_lsu.txt'
           if (pco%csvout == 'y') then 
-            open (2164,file="losses_day_ru.csv",recl = 1500)
+            open (2164,file="losses_day_lsu.csv",recl = 1500)
             write (2164,'(*(G0.3,:,","))') ls_hdr    !! subbasin
-            write (9000,*) 'ROUTING UNIT            losses_day_ru.csv'
+            write (9000,*) 'ROUTING UNIT            losses_day_lsu.csv'
           end if 
         endif
         
       if (pco%ls_sub%m == 'y') then
-        open (2161,file="losses_mon_ru.txt",recl = 1500)
+        open (2161,file="losses_mon_lsu.txt",recl = 1500)
         write (2161,*) ls_hdr  
-        write (9000,*) 'ROUTING UNIT            losses_mon_ru.txt'
+        write (9000,*) 'ROUTING UNIT            losses_mon_lsu.txt'
         if (pco%csvout == 'y') then 
-          open (2165,file="losses_mon_ru.csv",recl = 1500)
+          open (2165,file="losses_mon_lsu.csv",recl = 1500)
           write (2165,'(*(G0.3,:,","))') ls_hdr  !! subbasin 
-          write (9000,*) 'ROUTING UNIT            losses_mon_ru.csv'
+          write (9000,*) 'ROUTING UNIT            losses_mon_lsu.csv'
         end if 
       end if 
         
        if (pco%ls_sub%y == 'y') then
-          open (2162,file="losses_yr_ru.txt",recl = 1500)
+          open (2162,file="losses_yr_lsu.txt",recl = 1500)
           write (2162,*) ls_hdr    
-          write (9000,*) 'ROUTING UNIT            losses_yr_ru.txt'
+          write (9000,*) 'ROUTING UNIT            losses_yr_lsu.txt'
           if (pco%csvout == 'y') then 
-            open (2166,file="losses_yr_ru.csv",recl = 1500)
+            open (2166,file="losses_yr_lsu.csv",recl = 1500)
             write (2166,*) ls_hdr
-            write (9000,*) 'ROUTING UNIT            losses_yr_ru.csv'
+            write (9000,*) 'ROUTING UNIT            losses_yr_lsu.csv'
           end if 
        endif
         
        if (pco%ls_sub%a == 'y') then
-       open (2163,file="losses_aa_ru.txt",recl = 1500)
+       open (2163,file="losses_aa_lsu.txt",recl = 1500)
         write (2163,*) ls_hdr  
-        write (9000,*) 'ROUTING UNIT            losses_aa_ru.txt'
+        write (9000,*) 'ROUTING UNIT            losses_aa_lsu.txt'
         if (pco%csvout == 'y') then 
-          open (2167,file="losses_aa_ru.csv",recl = 1500)
+          open (2167,file="losses_aa_lsu.csv",recl = 1500)
           write (2167,'(*(G0.3,:,","))') ls_hdr 
-          write (9000,*) 'ROUTING UNIT            losses_aa_ru.csv'
+          write (9000,*) 'ROUTING UNIT            losses_aa_lsu.csv'
         end if 
        end if
 
 !!! ROUTING UNIT - Plant/Weather
         if (pco%pw_sub%d == 'y') then
-          open (2170,file="plantwx_day_ru.txt",recl = 1500)
+          open (2170,file="plantwx_day_lsu.txt",recl = 1500)
           write (2170,*) pw_hdr  
-          write (9000,*) 'ROUTING UNIT            plantwx_day_ru.txt'
+          write (9000,*) 'ROUTING UNIT            plantwx_day_lsu.txt'
           if (pco%csvout == 'y') then 
-            open (2174,file="plantwx_day_ru.csv",recl = 1500)
+            open (2174,file="plantwx_day_lsu.csv",recl = 1500)
             write (2174,'(*(G0.3,:,","))') pw_hdr  
-            write (9000,*) 'ROUTING UNIT            plantwx_day_ru.csv'
+            write (9000,*) 'ROUTING UNIT            plantwx_day_lsu.csv'
           end if 
         end if 
     
       
       if (pco%pw_sub%m == 'y') then
-       open (2171,file="plantwx_mon_ru.txt",recl = 1500)
+       open (2171,file="plantwx_mon_lsu.txt",recl = 1500)
         write (2171,*) pw_hdr
-        write (9000,*) 'ROUTING UNIT            plantwx_mon_ru.txt'
+        write (9000,*) 'ROUTING UNIT            plantwx_mon_lsu.txt'
         if (pco%csvout == 'y') then 
-          open (2175,file="plantwx_mon_ru.csv",recl = 1500)
+          open (2175,file="plantwx_mon_lsu.csv",recl = 1500)
           write (2175,'(*(G0.3,:,","))') pw_hdr 
-          write (9000,*) 'ROUTING UNIT            plantwx_mon_ru.csv'
+          write (9000,*) 'ROUTING UNIT            plantwx_mon_lsu.csv'
         end if
        end if
         
         if (pco%pw_sub%y == 'y') then
-          open (2172,file="plantwx_yr_ru.txt",recl = 1500)
+          open (2172,file="plantwx_yr_lsu.txt",recl = 1500)
           write (2172,*) pw_hdr
-          write (9000,*) 'ROUTING UNIT            plantwx_yr_ru.txt'
+          write (9000,*) 'ROUTING UNIT            plantwx_yr_lsu.txt'
           if (pco%csvout == 'y') then 
-            open (2176,file="plantwx_yr_ru.csv",recl = 1500)
+            open (2176,file="plantwx_yr_lsu.csv",recl = 1500)
             write (2176,*) pw_hdr
-            write (9000,*) 'ROUTING UNIT           plantwx_yr_ru.csv'
+            write (9000,*) 'ROUTING UNIT           plantwx_yr_lsu.csv'
           end if 
         end if 
       
      if (pco%pw_sub%a == 'y') then
-       open (2173,file="plantwx_aa_ru.txt",recl = 1500)
+       open (2173,file="plantwx_aa_lsu.txt",recl = 1500)
         write (2173,*) pw_hdr
-        write (9000,*) 'ROUTING UNIT            plantwx_aa_ru.txt'
+        write (9000,*) 'ROUTING UNIT            plantwx_aa_lsu.txt'
         if (pco%csvout == 'y') then 
-          open (2177,file="plantwx_aa_ru.csv",recl = 1500)
+          open (2177,file="plantwx_aa_lsu.csv",recl = 1500)
           write (2177,'(*(G0.3,:,","))') pw_hdr 
-          write (9000,*) 'ROUTING UNIT           plantwx_aa_ru.csv'
+          write (9000,*) 'ROUTING UNIT           plantwx_aa_lsu.csv'
         end if
      end if
       end if

@@ -268,14 +268,16 @@
 
         end if
         
-        !! compute nutrient losses using 2-stage ditch model
-        !! calculate nutrient concentrations
-        ht1 = hz
-        ht1 = ob(icmd)%hin
-        ht2 = ht1
-        !convert mass to concentration
-        call hyd_convert_conc (ht1)
-        call sd_channel_nutrients (ht1, ht2)
+        if (bsn_cc%wq == 1) then 
+         !! compute nutrient losses using 2-stage ditch model
+         !! calculate nutrient concentrations
+         ht1 = hz
+         ht1 = ob(icmd)%hin
+         ht2 = ht1
+         !convert mass to concentration
+         call hyd_convert_conc (ht1)
+         call sd_channel_nutrients (ht1, ht2)
+        end if
       END IF
           
       !! compute sediment leaving the channel

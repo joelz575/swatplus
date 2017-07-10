@@ -11,7 +11,6 @@
 !!    mhyd        |none          |max number of hydrographs
 !!    mlyr        |none          |max number of soil layers
 !!    mpst        |none          |max number of pesticides used in wshed
-!!    mrecm       |none          |max number of recmon files
 !!    mres        |none          |max number of reservoirs
 !!    nstep       |none          |max number of time steps per day
 !!    msub        |none          |max number of subbasins
@@ -21,8 +20,7 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    mvaro       |none          |max number of variables routed through the
-!!                               |reach
+
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -32,8 +30,6 @@
       use time_module
       
 !! initialize variables    
-      mvaro = 33
-      mstdo = 113
       mhyd = 1  !!added for jaehak vars
 
       allocate (pot(mhru))

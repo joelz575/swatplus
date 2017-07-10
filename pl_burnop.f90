@@ -7,9 +7,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ibrn        |none          |counter in readmgt 
-!!    iburn(:     |julian date   |date of burning  
-!!    burn_frlb   |none          |fraction of biomass and residue that burn(input in
-!!                               |management file) range (0 - 1.0)                         
+!!    iburn(:     |julian date   |date of burning                       
 !!    phub        |              |heat units to schedule burning
 !!    pburn       |              |amount of phosphorus that burns - removed from plant
 !!                               |phosphorus and added to soil organic phosphorus 

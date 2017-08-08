@@ -290,9 +290,8 @@
 
 		  if (bsn_cc%cswat == 0) then
 			call nut_orgn(0)
-	    end if
-	    if (bsn_cc%cswat == 1) then
-	    
+	      end if
+	      if (bsn_cc%cswat == 1) then	    
 		    call nut_orgnc(0)
 		  end if
 		  
@@ -391,10 +390,81 @@
         end if
       endif
 
-      !! perform output summarization
-      if (time%yrs > pco%nyskip) then
-        call hru_output
-      end if
+      ! output_waterbal
+        hwb_d(j)%precip = wst(iwst)%weat%precip
+        hwb_d(j)%snofall = snofall
+        hwb_d(j)%snomlt = snomlt
+        hwb_d(j)%surq_gen = qday
+        hwb_d(j)%latq = latq(j)
+        !hwb_d(j)%rchrg =  rchrg(j)
+        hwb_d(j)%wateryld = qdr(j)
+        hwb_d(j)%perc = sepbtm(j)
+        hwb_d(j)%et = etday
+        hwb_d(j)%tloss = tloss
+        hwb_d(j)%eplant = ep_day
+        hwb_d(j)%esoil = es_day
+        hwb_d(j)%surq_cont = surfq(j)
+        hwb_d(j)%cn = cnday(j)
+        hwb_d(j)%sw = soil(j)%sw
+        hwb_d(j)%pet = pet_day
+        hwb_d(j)%qtile = qtile
+        hwb_d(j)%irr = aird(j)
+        hwb_d(j)%surq_runon = ls_overq
+        hwb_d(j)%latq_runon = latqrunon !/ (10. * hru(j)%area_ha) 
+        hwb_d(j)%overbank = over_flow
+
+      ! output_nutbal
+        hnb_d(j)%cfertn = cfertn
+        hnb_d(j)%cfertp =  cfertp
+        hnb_d(j)%grazn = grazn
+        hnb_d(j)%grazp = grazp
+        hnb_d(j)%auton = auton
+        hnb_d(j)%autop = autop
+        hnb_d(j)%rmp1tl = rmp1tl
+        hnb_d(j)%roctl = roctl
+        hnb_d(j)%fertn = fertn
+        hnb_d(j)%fertp = fertp
+        hnb_d(j)%fixn = fixn
+        hnb_d(j)%wdntl = wdntl
+        hnb_d(j)%hmntl = hmntl
+        hnb_d(j)%rwntl = rwntl
+        hnb_d(j)%hmptl = hmptl
+        hnb_d(j)%rmn2tl = rmn2tl
+        hnb_d(j)%rmptl = rmptl
+        hnb_d(j)%no3pcp = no3pcp
+
+      ! output_plantweather
+        hpw_d(j)%lai = sumlai
+        hpw_d(j)%bioms = sumbm
+        hpw_d(j)%residue = hru(j)%rsd%mass
+        hpw_d(j)%yield = yield
+        hpw_d(j)%sol_tmp =  soil(j)%phys(2)%tmp
+        hpw_d(j)%strsw = (1. - strsw_av(j))
+        hpw_d(j)%strsa = (1. - strsa_av)
+        hpw_d(j)%strstmp = (1. - strstmp_av)
+        hpw_d(j)%strsn = (1. - strsn_av)        
+        hpw_d(j)%strsp = (1. - strsp_av)
+        hpw_d(j)%nplnt = nplnt(j)
+        hpw_d(j)%percn = percn(j)
+        hpw_d(j)%pplnt = pplnt(j)
+        hpw_d(j)%tmx = tmx(j)
+        hpw_d(j)%tmn = tmn(j)
+        hpw_d(j)%tmpav = tmpav(j)
+        hpw_d(j)%solrad = hru_ra(j)
+        hpw_d(j)%phubase0 = phubase(j)
+
+      ! output_losses
+        hls_d(j)%sedyld = sedyld(j) / hru(j)%area_ha
+        hls_d(j)%sedorgn = sedorgn(j)
+        hls_d(j)%sedorgp = sedorgp(j)
+        hls_d(j)%surqno3 = surqno3(j)
+        hls_d(j)%latno3 = latno3(j)
+        hls_d(j)%surqsolp = surqsolp(j)
+        hls_d(j)%usle = usle
+        hls_d(j)%bactp = bactrop + bactsedp
+        hls_d(j)%bactlp = bactrolp + bactsedlp
+        hls_d(j)%sedmin = sedminpa(j) + sedminps(j)
+        hls_d(j)%tileno3 = tileno3(j)
 
       !! summarize output for multiple HRUs per subbasin
       !! store reach loadings for new fig method

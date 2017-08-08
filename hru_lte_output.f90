@@ -33,7 +33,7 @@
               end if 
           end if
         end if
-                                                    
+
         !! check end of month
         if (time%end_mo == 1) then
           const = float (ndays(time%mo + 1) - ndays(time%mo))
@@ -86,7 +86,7 @@
           hltnb_a(isd) = hltnb_a(isd) + hltnb_y(isd)
           hltls_a(isd) = hltls_a(isd) + hltls_y(isd)
           hltpw_a(isd) = hltpw_a(isd) + hltpw_y(isd)
-          
+
           !! yearly print
            if (time%end_yr == 1 .and. pco%wb_sd%y == 'y') then
              write (2302,100) time%end_yr, time%yrc, isd, hltwb_y(isd)

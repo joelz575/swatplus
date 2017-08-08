@@ -62,6 +62,7 @@
         integer :: res = 0            !! none     |max number of reservoir data
         integer :: lsu_elem = 0
         integer :: lsu_out = 0        !! none     |max number of landscape regions for output
+        integer :: reg_elem = 0
         integer :: lsu_reg = 0        !! none     |max number of landscape regions for soft cal and output by lum
         integer :: lscal_reg = 0      !! none     |max number of soft data for landscape calibration (for each cal region)
         integer :: aqu_elem = 0
@@ -557,9 +558,10 @@
         integer :: num_tot                                      !number of hru's in each region
         integer, dimension(:), allocatable :: num               !hru's that are included in the region
         integer :: nlum                                         !number of land use and mgt in the region
+        character(len=16), dimension(:), allocatable :: lumc    !land use groups
         integer :: lscal                                        !points to soft calibration data
-        integer, dimension(:), allocatable :: lum_num           !db nunmber of land use in the region - dimensioned by lum in the region
-        integer, dimension(:), allocatable :: lum_num_tot       !db nunmber of land use in the region each year- dimensioned by lum in database
+        integer, dimension(:), allocatable :: lum_num           !db number of land use in the region - dimensioned by lum in the region
+        integer, dimension(:), allocatable :: lum_num_tot       !db number of land use in the region each year- dimensioned by lum in database
         real, dimension(:), allocatable :: lum_ha               !area (ha) of land use in the region - dimensioned by lum in the region
         real, dimension(:), allocatable :: lum_ha_tot           !sum of area (ha) of land use in the region each year- dimensioned by lum in database
         real, dimension(:), allocatable :: hru_ha               !area (ha) of hrus in the region 
@@ -570,6 +572,12 @@
       type (cataloging_units), dimension(:), allocatable :: rcu_cal    !reservoir cataoging unit region
       type (cataloging_units), dimension(:), allocatable :: pcu_cal    !point source cataoging unit region
       
+      type land_use_mgt_groups
+        integer :: num
+        character(len=16), dimension(:), allocatable :: name    !land use groups
+      end type
+      type (land_use_mgt_groups) :: lum_grp
+      
       type landscape_units
         character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lsu_out)
         real :: area_ha                                         !area of landscape cataloging unit -hectares
@@ -577,7 +585,7 @@
         integer, dimension(:), allocatable :: num               !hru's that are included in the region
       end type landscape_units
       type (landscape_units), dimension(:), allocatable :: lsu_out     !dimension by region for hru's
-      type (landscape_units), dimension(:), allocatable :: lsu_reg     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: lsu_reg     !dimension by region for elements (lsu or hru)
       type (landscape_units), dimension(:), allocatable :: acu_out     !dimension by region for hru's
       type (landscape_units), dimension(:), allocatable :: acu_reg     !dimension by region for hru's
       type (landscape_units), dimension(:), allocatable :: ccu_out     !dimension by region for hru's
@@ -586,6 +594,15 @@
       type (landscape_units), dimension(:), allocatable :: rcu_reg     !dimension by region for hru's
       type (landscape_units), dimension(:), allocatable :: pcu_out     !dimension by region for hru's
       type (landscape_units), dimension(:), allocatable :: pcu_reg     !dimension by region for hru's
+      
+      type landscape_region_elements
+        character(len=16) :: name
+        real :: ha                      !area of reegion element -hectares
+        integer :: obj = 1              !object number
+        character (len=3) :: obtyp      !object type- hru, hru_lte, lsu, etc
+        integer :: obtypno = 0          !2-number of hru_lte's or 1st hru_lte command
+      end type landscape_region_elements
+      type (landscape_region_elements), dimension(:), allocatable :: reg_elem       !landscape region elements
       
       type landscape_elements
         character(len=16) :: name
@@ -774,13 +791,14 @@
          real :: harg_pet  = .0023  !!            |              |coefficient related to radiation used in 
                                  !!                              | Hargreaves equation
          real :: cncoef = 0.3    !!               |              |plant ET curve number coefficient
-         real :: perco = 1.      !!               |              |percolation coefficient-adjusts soil mositure
+         real :: perco = 1.      !!               |              |percolation coefficient-adjusts soil moisture
                                  !!                              | for perc to occur (1.0 = fc)
        end type hydrology_db
         type (hydrology_db), dimension (:), allocatable :: hyd_db
 
       type land_use_management
         character (len=16) :: name = " "
+        character (len=16) :: cal_group = " "
         character (len=16) :: plant_cov = ""
         character (len=35) :: mgt_ops = ""
         character (len=16) :: cn_lu      !! none     | land use for curve number table (cntable.lum)

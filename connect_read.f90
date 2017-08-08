@@ -73,13 +73,15 @@
               end if
               !set the constituents
               ics = ob(i)%constit
-              if (cs_db(ics)%pest_com /= "null") then
-                ipestmx = pestcom_db(ics)%num
-                allocate (obcs(i)%pests(ipestmx))
-                allocate (obcs(i)%pest_num(ipestmx))
-                obcs(i)%num_pests = pestcom_db(ics)%num     !set number of pesticides of object
-                obcs(i)%pests = pestcom_db(ics)%pests       !set pesticide name array of object
-                obcs(i)%pest_num = pestcom_db(ics)%num_db   !set pesticide database number array of object
+              if (ics > 0) then
+                if (cs_db(ics)%pest_com /= "null") then
+                  ipestmx = pestcom_db(ics)%num
+                  allocate (obcs(i)%pests(ipestmx))
+                  allocate (obcs(i)%pest_num(ipestmx))
+                  obcs(i)%num_pests = pestcom_db(ics)%num     !set number of pesticides of object
+                  obcs(i)%pests = pestcom_db(ics)%pests       !set pesticide name array of object
+                  obcs(i)%pest_num = pestcom_db(ics)%num_db   !set pesticide database number array of object
+                end if
               end if
               
               !set arrays for flow duration curves

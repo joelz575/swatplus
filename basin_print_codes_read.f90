@@ -11,7 +11,7 @@
 
       !! read time codes
       inquire (file=in_sim%prt, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_sim%prt /= 'null') then
       do
         open (107,file=in_sim%prt)
         read (107,*,iostat=eof) titldum

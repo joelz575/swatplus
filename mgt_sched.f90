@@ -58,7 +58,7 @@
                   write (2612, *) j, time%yrc, time%mo, time%day, pldb(idp)%plantnm, pcomdb(icom)%name,     &
                       phubase(ihru), pcom(ihru)%plcur(ipl)%phuacc,  soil(ihru)%sw,                          &
                       pcom(ihru)%plm(ipl)%mass, soil(ihru)%ly(1)%rsd, sol_sumno3(ihru),                     &
-                      sol_sumsolp(ihru),pcom(ihru)%plg(ipl)%lai, pcom(ihru)%plg(ipl)%laimx_pop
+                      sol_sumsolp(ihru),pcom(ihru)%plg(ipl)%lai, pcom(ihru)%plcur(ipl)%laimx_pop
                 end if
               end if
             end do
@@ -292,7 +292,7 @@
               write (2612, *) j, time%yrc, time%mo, time%day, "        ", "STREET SWEEP", phubase(j),        &
                   pldb(idp)%plantnm, pcomdb(icom)%name, phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,  &
                   pcom(j)%plm(ipl)%mass, soil(j)%ly(1)%rsd, sol_sumno3(j), sol_sumsolp(j),                  &
-                  pcom(j)%plg(ipl)%lai, pcom(j)%plg(ipl)%laimx_pop
+                  pcom(j)%plg(ipl)%lai, pcom(j)%plcur(ipl)%laimx_pop
             end do
             
           case ("dwm")    !! set drain depth for drainage water management

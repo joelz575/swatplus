@@ -29,7 +29,7 @@
             isim = 1
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
                 !set parms for 1st sediment yield calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
@@ -76,7 +76,7 @@
           do ilum = 1, lscal(ireg)%lum_num
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
                 !set parms for 1st sediment tconc calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
@@ -113,7 +113,7 @@
               !check all hru's for proper lum
               do iihru = 1, mhru
                 !set parms for 1st slope calibration and rerun
-                if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+                if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
                   hru(iihru) = hru_init(iihru)
                   soil(iihru) = soil_init(iihru)
                   rsd1(iihru) = rhlt_init(iihru)
@@ -156,7 +156,7 @@
               !check all hru's for proper lum
               do iihru = 1, mhru
                 !set parms for 1st slope calibration and rerun
-                if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+                if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
                   hru(iihru) = hru_init(iihru)
                   soil(iihru) = soil_init(iihru)
                   rsd1(iihru) = rhlt_init(iihru)

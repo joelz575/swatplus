@@ -208,8 +208,12 @@
 !! Base Zero Heat Units
       do iwst = 1, mwst
         iwgn = wst(iwst)%wco%wgn
-        if (wst(iwst)%weat%tave > 0.) wst(iwst)%weat%phubase0 = wst(iwst)%weat%phubase0         &
-                                                + wst(iwst)%weat%tave / wgn_pms(iwgn)%phutot
+        if (wgn_pms(iwgn)%phutot > 0.) then
+          if (wst(iwst)%weat%tave > 0.) wst(iwst)%weat%phubase0 = wst(iwst)%weat%phubase0   &
+                                            + wst(iwst)%weat%tave / wgn_pms(iwgn)%phutot
+        else
+          wst(iwst)%weat%phubase0 = 0.
+        end if
         if (time%end_yr == 1) wst(iwst)%weat%phubase0 = 0.
       end do
       

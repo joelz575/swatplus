@@ -78,7 +78,7 @@
       type (weather_generator_db), dimension(:),allocatable :: wgn
       type (weather_generator_db), dimension(:),allocatable :: wgn_orig
       type (weather_generator_db), dimension(:),allocatable :: fwgn
-      character(len=16), dimension(:),allocatable :: wgn_n                 !! station name
+      character(len=50), dimension(:),allocatable :: wgn_n                 !! station name
       
       type wgn_parms
         real, dimension (12) :: pr_wdays = 0.   !! none   |proportion of wet days in a month

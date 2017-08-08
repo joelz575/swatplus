@@ -13,7 +13,7 @@
       
       !!read data for each element in all subbasins
       inquire (file=in_ru%ru_ele, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_ru%ru_ele /= 'null') then
       do
         open (107,file=in_ru%ru_ele)
         read (107,*,iostat=eof) titldum
@@ -26,9 +26,7 @@
               if (eof < 0) exit
               imax = Max(i,imax)
           end do
-       
-        msub_elems = imax
-        
+
         allocate (ru_elem(imax))
         allocate (ielem_sub(imax))
         
@@ -51,7 +49,7 @@
               
       !read all delivery ratio data for subbasin deliveries
       inquire (file=in_ru%ru_dr, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_ru%ru_dr /= 'null') then
       do
         open (107,file=in_ru%ru_dr)
         read (107,*,iostat=eof) titldum
@@ -81,7 +79,7 @@
       
       !!read subbasin definition data -ie. hru's in the subbasin
       inquire (file=in_ru%ru_def, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_ru%ru_def /= 'null') then
       do
         open (107,file=in_ru%ru_def)
         read (107,*,iostat=eof) titldum
@@ -162,8 +160,7 @@
               ii = ii + 2
             end if
           end do
- !       end if
-     
+
           ! determine how many subbasins the object is in
           do ii = ie1, ie2
             iobtyp = ru_elem(ii)%obtyp       !object type in sub
@@ -210,12 +207,14 @@
       endif
       
         ! set all subbasins that each element is in
-        do ielem = 1, msub_elems
-          iob = ru_elem(ielem)%obj
-          isub_tot = ob(iob)%subs_tot
-          allocate (ob(iob)%sub(isub_tot))
-        end do
         do isub = 1, sp_ob%sub
+          do ielem = 1, ru_def(isub)%num_tot
+            ie = ru_def(isub)%num(ielem)
+            iob = ru_elem(ie)%obj
+            isub_tot = ob(iob)%subs_tot
+            allocate (ob(iob)%sub(isub_tot))
+          end do
+
           do ielem = 1, ru_def(isub)%num_tot
             ie = ru_def(isub)%num(ielem)
             ielem_sub(ie) = ielem_sub(ie) + 1

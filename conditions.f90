@@ -63,13 +63,13 @@
           do ialt = 1, d_tbl(id)%alts
             if (d_tbl(id)%alt(ic,ialt) == "<") then    !to trigger irrigation
               if (pcom(ob_num)%plcur(ipl)%phuacc > d_tbl(id)%cond(ic)%lim_const *        &
-                                                      pcom(ob_num)%plg(ipl)%phumat) then
+                                                      pcom(ob_num)%plcur(ipl)%phumat) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl(id)%alt(ic,ialt) == ">") then    !may use for grazing or fire
               if (pcom(ob_num)%plcur(ipl)%phuacc < d_tbl(id)%cond(ic)%lim_const *       &
-                                                      pcom(ob_num)%plg(ipl)%phumat) then
+                                                      pcom(ob_num)%plcur(ipl)%phumat) then
                 d_tbl(id)%act_hit(ialt) = "n"
               end if
             end if

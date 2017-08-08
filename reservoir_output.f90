@@ -2,6 +2,8 @@
       
       use time_module
       use basin_module
+      
+      integer, intent (in) :: j
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs reservoir output variables    

@@ -32,7 +32,11 @@
           end if  
         else
           res_ob(ires)%br2 = 0.9
-          res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+          if (res_ob(ires)%pvol > 1.e-6) then
+            res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+          else
+            res_ob(ires)%br1 = .1
+          end if
         end if
         
       end do

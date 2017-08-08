@@ -37,6 +37,12 @@
       !!assign land use pointers for the hru
         hru(j)%land_use_mgt = ilu
         hru(j)%plant_cov = lum_str(ilu)%plant_cov
+        hru(j)%lum_group_c = lum(ilu)%cal_group
+        do ilug = 1, lum_grp%num
+          if (hru(j)%lum_group_c == lum_grp%name(ilum)) then
+            hru(j)%lum_group =  ilug
+          end if
+        end do
         icom = hru(j)%plant_cov
         iob = hru(j)%obj_no
         iwst = ob(iob)%wst
@@ -99,7 +105,7 @@
           
           ! set hu to maturity
           if (pldb(idp)%phu > 1.e-6) then
-            pcom(j)%plg(ipl)%phumat = pldb(idp)%phu
+            pcom(j)%plcur(ipl)%phumat = pldb(idp)%phu
           else
             mo = 1
             imo = 2
@@ -120,10 +126,10 @@
             end do
             ! set initial heat units and heat units to maturity
             pcom(j)%plcur(ipl)%phuacc = pcomdb(icom)%pl(ipl)%phuacc * phutot
-            pcom(j)%plg(ipl)%phumat = .9 * phutot
-            pcom(j)%plg(ipl)%phumat = Max(500., pcom(j)%plg(ipl)%phumat)
+            pcom(j)%plcur(ipl)%phumat = .9 * phutot
+            pcom(j)%plcur(ipl)%phumat = Max(500., pcom(j)%plcur(ipl)%phumat)
             if (pldb(iplt)%idc <= 2 .or. pldb(iplt)%idc == 4 .or. pldb(iplt)%idc == 5) then
-              pcom(j)%plg(ipl)%phumat = Min(2000., pcom(j)%plg(ipl)%phumat)
+              pcom(j)%plcur(ipl)%phumat = Min(2000., pcom(j)%plcur(ipl)%phumat)
             end if
           end if
           
@@ -150,10 +156,10 @@
           tnylda(j) = tnylda(j) + 350. * pldb(idp)%cnyld *                 &
                 pldb(idp)%bio_e / pcom(j)%npl
           if (pcom(j)%plcur(ipl)%pop_com < 1.e-6) then
-            pcom(j)%plg(ipl)%laimx_pop = pldb(idp)%blai
+            pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai
           else
             xx = pcom(j)%plcur(ipl)%pop_com / 1001.
-            pcom(j)%plg(ipl)%laimx_pop = pldb(idp)%blai * xx / (xx +     &
+            pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai * xx / (xx +     &
                     exp(pldb(idp)%pop1 - pldb(idp)%pop2 * xx))
           end if
         end do

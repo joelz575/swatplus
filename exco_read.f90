@@ -13,7 +13,7 @@
       
       !read all export coefficient data
       inquire (file=in_exco%exco, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_exco%exco /= 'null') then
         do
           open (107,file=in_exco%exco)
           read (107,*,iostat=eof) titldum

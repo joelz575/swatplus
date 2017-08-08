@@ -13,7 +13,7 @@
       
     !!read data for surface elements in the floodplain-for overbank flooding
       inquire (file=in_link%chan_surf, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_link%chan_surf /= 'null') then
       do
         open (107,file=in_link%chan_surf)
         read (107,*,iostat=eof) titldum

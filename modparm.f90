@@ -45,8 +45,6 @@
       type plant_growth
          character(len=4) :: cpnm       !! N/A          4 letter char code represents crop name 
          real :: cht = 0.               !! m            canopy height 
-         real :: laimx_pop = 0.         !!
-         real :: phumat = 0.            !! C            heat units to maturity
          real :: lai = 0.               !! m**2/m**2    leaf area index
          real :: yield = 0.             !! kg/ha        land cover/crop yield (dry weight)
          real :: plet = 0.              !! mm H2O       actual ET simulated during life of plant
@@ -86,7 +84,9 @@
                                        !!                0 = no land cover currently growing 
                                        !!                1 = land cover growing
         integer :: idorm = 0           !! none         dormancy status code; 0=land cover growing 1=land cover dormant
+        real :: phumat = 0.            !! C            heat units to maturity
         real :: phuacc = 0.            !! fraction     fraction of plant heatunit accumulated
+        real :: laimx_pop = 0.         !!
         integer :: harv_num = 0        !!              number of harvest operations
         integer :: curyr_mat = 1       !! 
         real :: pop_com = 0.           !! none 
@@ -344,7 +344,7 @@
                                         !!          | "usgs_reg", simulate using USGS regression eqs
                                         !!          | "buildup_washoff", simulate using build up/wash off alg 
           integer ::  urb_lu = 0        !! none     | urban land type identification number
-          real :: ovn = 0.              !! none     | Manning's "n" value for overland flow
+          real :: ovn = 0.05            !! none     | Manning's "n" value for overland flow
       end type landuse
       type (landuse), dimension (:), allocatable :: luse
 
@@ -424,6 +424,8 @@
         type (hru_parms_db) :: parms      !!calibration parameters
         integer :: land_use_mgt
         character(len=16) :: land_use_mgt_c
+        integer :: lum_group
+        character(len=16) :: lum_group_c        !!land use group for soft cal and output
         character(len=16) :: region
         integer :: plant_cov
         integer :: mgt_ops

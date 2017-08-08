@@ -13,8 +13,8 @@
               lscal(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
               do ihru_s = 1, region(ireg)%num_tot
                 ihru = region(ireg)%num(ihru_s)
-                if (lscal(ireg)%lum(ilu)%meas%name == hru(ihru)%land_use_mgt_c) then
-                  ha_hru = 10. * region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
+                if (lscal(ireg)%lum(ilu)%meas%name == hru(ihru)%lum_group_c) then
+                  ha_hru = region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
                   lscal(ireg)%lum(ilu)%ha = lscal(ireg)%lum(ilu)%ha + ha_hru
                   lscal(ireg)%lum(ilu)%precip = lscal(ireg)%lum(ilu)%precip + (10. * ha_hru * hwb_y(ihru)%precip)
                   lscal(ireg)%lum(ilu)%sim%srr = lscal(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * hwb_y(ihru)%surq_gen)
@@ -54,7 +54,7 @@
               lscalt(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
               do ihru_s = 1, region(ireg)%num_tot
                 ihru = region(ireg)%num(ihru_s)
-                !if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%land_use_mgt) then
+                !if (lscal(ireg)%lum(ilu)%lum_no == hru(ihru)%lum_group_c) then
                   ha_hru = 10. * region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
                   lscalt(ireg)%lum(ilu)%ha = lscalt(ireg)%lum(ilu)%ha + ha_hru
                   lscalt(ireg)%lum(ilu)%precip = lscalt(ireg)%lum(ilu)%precip + (10. * ha_hru * hltwb_y(ihru)%precip)

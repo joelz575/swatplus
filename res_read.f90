@@ -28,7 +28,7 @@
         do while (eof == 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
-          imax = Max(imax,i)
+          imax = imax + 1
         end do
         
       db_mx%res_dat = imax

@@ -63,6 +63,9 @@
         ihyd_db = hru(ihru)%dbs%hyd
         itopohd_db = hru(ihru)%dbs%topo
         ihyd_db = hru(ihru)%dbs%hyd
+        isol = hru(ihru)%dbs%soil
+        ifield_db = hru(ihru)%dbs%field
+       ! isol_db = hru(ihru)%dbs%soil
         hru(ihru)%topo%name = topo_db(itopo_db)%name
         hru(ihru)%topo%elev = ob(iob)%elev
         hru(ihru)%topo%slope = topo_db(itopohd_db)%slope
@@ -80,7 +83,8 @@
         hru(ihru)%hyd%perco = hyd_db(ihyd_db)%perco
         hru(ihru)%topo%dis_stream = topo_db(itopohd_db)%dis_stream
         hru(ihru)%hyd%biomix = hyd_db(ihyd_db)%biomix
-        hru(ihru)%hyd%dep_imp = hyd_db(ihyd_db)%dep_imp
+        nly = soildb(isol)%s%nly
+        hru(ihru)%hyd%dep_imp = hyd_db(ihyd_db)%dep_imp + soildb(isol)%ly(nly)%z
         if (hru(ihru)%hyd%dep_imp < 1.e-6) hru(ihru)%hyd%dep_imp = 6000.
         hru(ihru)%hyd%lat_orgn = hyd_db(ihyd_db)%lat_orgn
         hru(ihru)%hyd%lat_orgp = hyd_db(ihyd_db)%lat_orgp

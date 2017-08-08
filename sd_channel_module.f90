@@ -12,27 +12,27 @@
       type swatdeg_channel_data
         character(len=16) :: name
         character(len=16) :: order
-        integer :: route_db = 0 !         |pointer to routing_nut_data
-        real :: chw             !m        |channel width
-        real :: chd             !m        |channel depth
-        real :: chs             !m/m      |channel slope
-        real :: chl             !km       |channel length
-        real :: chn             !         |channel Manning's n
-        real :: chk             !mm/h     |channel bottom conductivity
-        real :: cherod          !         |channel erodibility
-        real :: cov             !0-1      |channel cover factor
-        real :: hc_cov          !0-1      |head cut cover factor
-        real :: chseq           !m/m      |equilibrium channel slope
-        real :: d50             !mm       |channel median sediment size
-        real :: clay            !%        |clay percent of bank and bed
-        real :: bd              !t/m3     |dry bulk density
-        real :: chss            !         |channel side slope
-        real :: bedldcoef       !         |percent of sediment entering the channel that is bed material
-        real :: tc              !         |time of concentration
-        real :: shear_bnk       !0-1      |bank shear coefficient - fraction of bottom shear
-        real :: hc_kh           !         |headcut erodibility
-        real :: hc_hgt          !m        |headcut height
-        real :: hc_ini          !km       |initial channel length for gullies
+        character(len=16) :: route_db = "" ! pointer to routing_nut_data from nutrients.cha
+        real :: chw             !m         |channel width
+        real :: chd             !m         |channel depth
+        real :: chs             !m/m       |channel slope
+        real :: chl             !km        |channel length
+        real :: chn             !          |channel Manning's n
+        real :: chk             !mm/h      |channel bottom conductivity
+        real :: cherod          !          |channel erodibility
+        real :: cov             !0-1       |channel cover factor
+        real :: hc_cov          !0-1       |head cut cover factor
+        real :: chseq           !m/m       |equilibrium channel slope
+        real :: d50             !mm        |channel median sediment size
+        real :: clay            !%         |clay percent of bank and bed
+        real :: bd              !t/m3      |dry bulk density
+        real :: chss            !          |channel side slope
+        real :: bedldcoef       !          |percent of sediment entering the channel that is bed material
+        real :: tc              !          |time of concentration
+        real :: shear_bnk       !0-1       |bank shear coefficient - fraction of bottom shear
+        real :: hc_kh           !          |headcut erodibility
+        real :: hc_hgt          !m         |headcut height
+        real :: hc_ini          !km        |initial channel length for gullies
       end type swatdeg_channel_data
       type (swatdeg_channel_data), dimension (:), allocatable :: sd_chd
       

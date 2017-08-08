@@ -15,7 +15,7 @@
 !!                 3 = daily
 
         ! summing subbasin output for the basin
-        do iihru = 1, sp_ob%hru
+        do iihru = 1, db_mx%lsu_out
           if (lsu_elem(iihru)%bsn_frac > 1.e-12) then
             if (lsu_elem(iihru)%obtyp == 'hru') then
               const = 1. / lsu_elem(iihru)%bsn_frac    !only have / operator set up
@@ -27,11 +27,11 @@
 
             ! or if it is not routed and not in a subbasin
             if (lsu_elem(iihru)%obtyp == 'hlt') then
-              const = 1. / lsu_elem(isd)%bsn_frac
-              bwb_d = bwb_d + hltwb_d(isd) / const
-              bnb_d = bnb_d + hltnb_d(isd) / const
-              bls_d = bls_d + hltls_d(isd) / const
-              bpw_d = bpw_d + hltpw_d(isd) / const
+              const = 1. / lsu_elem(iihru)%bsn_frac
+              bwb_d = bwb_d + hltwb_d(iihru) / const
+              bnb_d = bnb_d + hltnb_d(iihru) / const
+              bls_d = bls_d + hltls_d(iihru) / const
+              bpw_d = bpw_d + hltpw_d(iihru) / const
             end if 
           end if
         end do

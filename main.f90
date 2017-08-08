@@ -61,11 +61,11 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
 
-      prog = "SWAT+ Jul 10 2017    MODULAR Rev 2017.37"
+      prog = "SWAT+ Aug 7 2017    MODULAR Rev 2017.38"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 37             ",/,             &
+     &          "              Revision 38             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -153,7 +153,7 @@
       !call scen_septic_read
          
       !! call readseptwq         !! read the septic database (read from HRU_READ)
-      call readpcom             !! read the plant community database
+      call readpcom              !! read the plant community database
       
       call cntbl_read
       call cons_prac_read
@@ -186,16 +186,6 @@
         call hru_read     
         call hru_soil_init
       end if
-
-      !read calibration data (if included)
-      call cal_parms_read
-      call update_parm_read
-
-      call update_init
-            
-      !! read update data
-      !call update_sched_read
-      call update_cond_read
 
       call hru_lte_read
       call sd_channel_read
@@ -231,7 +221,7 @@
       call ru_allo
             
       !! allocate and initialize reservoir variables
-      call res_allo (mres)
+      call res_allo (db_mx%res)
       call res_objects
       call res_initial
       
@@ -244,10 +234,20 @@
       call aqu_read
       call aqu_initial
 
+      !read calibration data (if included)
+      call cal_parms_read
+      call update_parm_read
+
+      call update_init
+            
+      !! read update data
+      !call update_sched_read
+      call update_cond_read
             
       !! read soft calibration parameters
       call codes_cal_read
-      call lsu_elements_read        !defining regions by hru
+      call lsu_elements_read        !defining landscape units by hru
+      call reg_elements_read        !defining regions by lsu and/or hru
       call lcu_softcal_read         !soft data for landscape calibration (needs to be renamed)***
       call ls_parms_cal_read
       call pl_regions_cal_read      !soft data for hru_lte calibration

@@ -156,9 +156,6 @@
           case ("aqu")   ! aquifer
             if (ob(icmd)%dfn_tot == 0) then   !1-D use old bf recession
               call aqu_1d_control
-              if (time%yrs > pco%nyskip) then
-                call aquifer_output
-              endif
             end if
           
           case ("chan")   ! channel
@@ -172,7 +169,7 @@
             jres = ob(icmd)%num
             if (ob(icmd)%rcv_tot > 0) then
               call res_control (jres)
-            end if
+            end if 
               
           case ("recall")   ! recall hydrograph
             irec = ob(icmd)%num
@@ -227,7 +224,23 @@
         do isd = 1, sp_ob%hru_lte
           call hru_lte_output (isd)
         end do
-           
+        
+        do ihru = 1, sp_ob%hru
+          call hru_output (ihru)
+        end do        
+        
+        do iaq = 1, sp_ob%aqu
+          call aquifer_output(iaq)
+        end do
+        
+        do jrch = 1, sp_ob%chan
+          call channel_output(jrch)
+        end do
+        
+        do j = 1, sp_ob%res
+          call reservoir_output(j)
+        end do 
+        
         call hydin_output   !if all output is no, then don't call
         if (db_mx%lsu_elem > 0) call basin_output
         if (db_mx%lsu_out > 0) call lsu_output

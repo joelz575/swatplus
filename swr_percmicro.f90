@@ -105,11 +105,14 @@
       
       !! restrict seepage if next layer is saturated
       if (ly1 == soil(j)%nly) then
-        xx = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 1000.
+        !! switched to linear relationship for dep_imp and seepage
+        xx = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 6000.
+        !xx = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 1000.
         if (xx < 1.e-4) then
           sepday = 0.
         else
-          sepday = sepday * xx / (xx + Exp(8.833 - 2.598 * xx))
+          sepday = sepday * xx
+          !sepday = sepday * xx / (xx + Exp(8.833 - 2.598 * xx))
         end if
       end if
 

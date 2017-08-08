@@ -274,10 +274,6 @@
         ch_d(jrch)%tot_ssed = rch_sil + rch_cla
       endif
       
-      if (time%yrs > pco%nyskip) then
-        call channel_output
-      end if
-
       return
 
       end subroutine channel_control

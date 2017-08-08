@@ -10,7 +10,7 @@
       
        !! read basin
        inquire (file=in_basin%codes_bas, exist=i_exist)
-       if (i_exist /= 0) then      
+       if (i_exist /= 0 .or. in_basin%codes_bas /= 'null') then      
        do 
          open (107,file=in_basin%codes_bas)
          read (107,*,iostat=eof) titldum

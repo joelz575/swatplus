@@ -180,9 +180,9 @@
       end if     
       
       inquire (file=in_const%pestcom_db, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_const%pestcom_db /= 'null') then
       do
-        open (107,file="pest.com")
+        open (107,file=in_const%pestcom_db)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header

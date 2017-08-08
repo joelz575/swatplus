@@ -55,7 +55,7 @@
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st surface runoff calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
@@ -126,7 +126,7 @@
             !check all hru's for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st surface runoff calibration and rerun
                 hru(iihru) = hru_init(iihru)
                 soil(iihru) = soil_init(iihru)
@@ -195,7 +195,7 @@
                            
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st et calibration
                 hru(iihru)%hyd%esco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%esco = amin1 (hru(iihru)%hyd%esco, ls_prms(2)%up)
@@ -272,7 +272,7 @@
                 
             do ihru_s = 1, region(ireg)%num_tot
                 iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for et calibration
                 hru(iihru)%hyd%esco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%esco = amin1 (hru(iihru)%hyd%esco, ls_prms(2)%up)
@@ -336,9 +336,9 @@
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
 
-                chg_val = - (soft - lscal(ireg)%lum(ilum)%aa%pcr) / 500.      ! .2 increase for every 100 mm difference
+                chg_val = soft / lscal(ireg)%lum(ilum)%aa%pcr      ! linear relationship
                 lscal(ireg)%lum(ilum)%prm_prev%perco = lscal(ireg)%lum(ilum)%prm%perco 
-                lscal(ireg)%lum(ilum)%prm%perco = lscal(ireg)%lum(ilum)%prm%perco + chg_val
+                lscal(ireg)%lum(ilum)%prm%perco = lscal(ireg)%lum(ilum)%prm%perco * chg_val
                 lscal(ireg)%lum(ilum)%prev%pcr = lscal(ireg)%lum(ilum)%aa%pcr
                            
                 if (lscal(ireg)%lum(ilum)%prm%perco >= ls_prms(8)%pos) then
@@ -354,12 +354,12 @@
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
                 !set parms for 1st perco calibration
-                hru(iihru)%hyd%perco = hru(iihru)%hyd%perco + chg_val
-                hru(iihru)%hyd%perco = amin1 (hru(iihru)%hyd%perco, ls_prms(8)%up)
-                hru(iihru)%hyd%perco = Max (hru(iihru)%hyd%perco, ls_prms(8)%lo)
-                hru_init(iihru)%hyd%perco = hru(iihru)%hyd%perco
+                hru(iihru)%hyd%dep_imp = hru(iihru)%hyd%dep_imp + chg_val
+                hru(iihru)%hyd%dep_imp = amin1 (hru(iihru)%hyd%dep_imp, ls_prms(8)%up)
+                hru(iihru)%hyd%perco = Max (hru(iihru)%hyd%dep_imp, ls_prms(8)%lo)
+                hru_init(iihru)%hyd%dep_imp = hru(iihru)%hyd%dep_imp
               end if
             end do
             lscal(ireg)%lum(ilum)%nbyr = 0
@@ -430,12 +430,12 @@
             !check all hru's for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st perco calibration
-                hru(iihru)%hyd%perco = hru(iihru)%hyd%esco + chg_val
-                hru(iihru)%hyd%perco = amin1 (hru(iihru)%hyd%perco, ls_prms(8)%up)
-                hru(iihru)%hyd%perco = Max (hru(iihru)%hyd%perco, ls_prms(8)%lo)
-                hru_init(iihru)%hyd%perco = hru(iihru)%hyd%perco
+                hru(iihru)%hyd%dep_imp = hru(iihru)%hyd%dep_imp + chg_val
+                hru(iihru)%hyd%dep_imp = amin1 (hru(iihru)%hyd%dep_imp, ls_prms(8)%up)
+                hru(iihru)%hyd%dep_imp = Max (hru(iihru)%hyd%dep_imp, ls_prms(8)%lo)
+                hru_init(iihru)%hyd%dep_imp = hru(iihru)%hyd%dep_imp
               end if
             end do
             lscal(ireg)%lum(ilum)%nbyr = 0
@@ -504,7 +504,7 @@
                 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val
                 hru(iihru)%topo%lat_len = amin1 (hru(iihru)%topo%lat_len, ls_prms(3)%up)
@@ -578,7 +578,7 @@
             !check all hru's for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val
                 hru(iihru)%topo%lat_len = amin1 (hru(iihru)%topo%lat_len, ls_prms(3)%up)
@@ -648,7 +648,7 @@
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%cn3_swf = hru(iihru)%hyd%cn3_swf + chg_val
                 hru(iihru)%hyd%cn3_swf = amin1 (hru(iihru)%hyd%cn3_swf, ls_prms(10)%up)
@@ -679,6 +679,7 @@
             rsd1(iihru) = rhlt_init(iihru)
             pcom(iihru) = pcom_init(iihru)
           end do
+          
         ! 1st cn3_swf adjustment 
         if (isim > 0) then
           write (4304,*) " first cn3_swf adj "
@@ -723,7 +724,7 @@
             !check all hru's for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%land_use_mgt_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%cn3_swf = hru(iihru)%hyd%cn3_swf + chg_val
                 hru(iihru)%hyd%cn3_swf = amin1 (hru(iihru)%hyd%cn3_swf, ls_prms(10)%up)

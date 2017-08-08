@@ -13,7 +13,7 @@
     inquire (file=in_regs%def_psc, exist=i_exist)
     if (i_exist /= 0 .or. in_regs%def_psc /= 'null') then
       do
-        open (107,file=in_regs%def_res)
+        open (107,file=in_regs%def_psc)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mreg
@@ -105,7 +105,7 @@
     inquire (file=in_regs%def_psc_reg, exist=i_exist)
     if (i_exist /= 0 .or. in_regs%def_psc_reg /= 'null') then
       do
-        open (107,file=in_regs%def_res)
+        open (107,file=in_regs%def_psc_reg)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mreg
@@ -206,10 +206,10 @@
       end if    ! mreg > 0
       
       !!read data for each element in all landscape cataloging units
-      inquire (file='in_regs%ele_psc', exist=i_exist)
-      if (i_exist /= 0) then
+      inquire (file=in_regs%ele_psc, exist=i_exist)
+      if (i_exist /= 0 .or. in_regs%ele_psc /= 'null') then
       do
-        open (107,file='in_regs%ele_psc')
+        open (107,file=in_regs%ele_psc)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header

@@ -73,7 +73,7 @@
       type input_ru
        character(len=25) :: ru_def = "rout_unit.def"
        character(len=25) :: ru_ele = "rout_unit.ele"
-       character(len=25) :: ru = "rout_unit.ru"
+       character(len=25) :: ru = "rout_unit.rtu"
        character(len=25) :: ru_dr = "rout_unit.dr"
       end type input_ru
       type (input_ru) :: in_ru
@@ -237,7 +237,8 @@
       type input_regions
         character(len=25) :: ele_lsu = "ls_unit.ele"
         character(len=25) :: def_lsu = "ls_unit.def"
-        character(len=25) :: def_lsu_reg = "ls_reg.def"
+        character(len=25) :: ele_reg = "ls_reg.ele"
+        character(len=25) :: def_reg = "ls_reg.def"
         character(len=25) :: cal_lcu = "ls_cal.reg"
         character(len=25) :: ele_cha = "ch_catunit.ele"
         character(len=25) :: def_cha = "ch_catunit.def"

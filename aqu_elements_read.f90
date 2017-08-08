@@ -210,7 +210,7 @@
       
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_aqu, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_regs%ele_aqu /= 'null') then
       do
         open (107,file=in_regs%ele_aqu)
         read (107,*,iostat=eof) titldum

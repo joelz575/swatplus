@@ -103,6 +103,7 @@
          hlt(i)%revapc = hlt_db(idb)%revapc
          hlt(i)%plant = hlt_db(idb)%plant
          hlt(i)%stress = hlt_db(idb)%stress
+         hlt(i)%soildep = hlt_db(idb)%soildep
          hlt(i)%sw = hlt_db(idb)%sw * awct(hlt_db(idb)%itext) *               &
                                        hlt_db(idb)%soildep !* 1000.
          hlt(i)%awc = awct(hlt_db(idb)%itext) * hlt_db(idb)%soildep !* 1000.
@@ -144,6 +145,7 @@
          !compute heat units from growing season and weather generator
          iwst = ob(icmd)%wst
          iwgn = wst(iwst)%wco%wgn
+         iplt = hlt(i)%iplant
          if (hlt_db(idb)%igrow2 > hlt_db(idb)%igrow1) then
            grow_start = hlt_db(idb)%igrow1
            grow_end = hlt_db(idb)%igrow2
@@ -161,12 +163,21 @@
              imo = imo + 1
              mo = mo + 1
            end if
-           if (iday > grow_start .and. iday < grow_end) then
-             tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
-             iplt = hlt(i)%iplant
-             phuday = tave - pldb(iplt)%t_base
-             if (phuday > 0.) then
-               phutot = phutot + phuday
+           if (grow_end > grow_start) then
+             if (iday > grow_start .and. iday < grow_end) then
+               tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+               phuday = tave - pldb(iplt)%t_base
+               if (phuday > 0.) then
+                 phutot = phutot + phuday
+               end if
+             end if
+           else 
+             if (iday > grow_start .or. iday < grow_end) then
+               tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+               phuday = tave - pldb(iplt)%t_base
+               if (phuday > 0.) then
+                 phutot = phutot + phuday
+               end if
              end if
            end if
          end do

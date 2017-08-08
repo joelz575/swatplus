@@ -12,7 +12,7 @@
           iunit = ob_out(itot)%unitno          
                 
           if (iob <= sp_ob%objs) then
-            write (iunit+itot,100) time%day, time%yrc, ob_out(itot)%obtyp, ob_out(itot)%obtypno, ob(iob)%hd(ihd)
+            write (iunit+itot,100) time%day, time%yrc, ob_out(itot)%obtyp, ob_out(itot)%obtypno, ob(iob)%hd(ihd)         
           end if
 
         end do

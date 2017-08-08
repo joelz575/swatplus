@@ -7,7 +7,7 @@
       eof = 0
 
       inquire (file=in_basin%parms_bas, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_basin%parms_bas /= 'null') then
         !! read basin parameters
       do
         open (107,file=in_basin%parms_bas)

@@ -18,7 +18,7 @@
 !!!!!! calibration parameter adjustments
       if (sp_ob%chandeg > 0) then
 	    open (4999,file="hru-out.cal", recl = 800)
-	    write (9000,*)   'HRU SOFT CALIB OUT      hru-out.cal'
+	    write (9000,*) 'HRU SOFT CALIB OUT  hru-out.cal'
 	    write (4999,*) calb_hdr
       end if
       
@@ -228,50 +228,51 @@
 !! BASIN SWAT DEG CHANNEL OUTPUT
 
 
-!! BASIN RECALL OUTPUT
+!! BASIN RECALL OUTPUT (PTS - Point Souce)
         if (pco%recall_bsn%d == 'y') then
-          open (2130,file="pts_day_bsn.txt", recl = 1500)
-          write (2130,*) hyd_hdr
+          open (4500,file="pts_day_bsn.txt", recl = 1500)
+          write (4500,*) hyd_hdr            !!!!!!! needs to addressed
           write (9000,*) 'BASIN RECALL        pts_day_bsn.txt'
           if (pco%csvout == 'y') then 
-            open (2134,file="pts_day_bsn.csv", recl = 1500)
-            write (2134,'(*(G0.3,:","))') hyd_hdr
+            open (4504,file="pts_day_bsn.csv", recl = 1500)
+            write (4504,'(*(G0.3,:","))') hyd_hdr
             write (9000,*) 'BASIN RECALL        pts_day_bsn.csv'
           end if
         endif
         
         if (pco%recall_bsn%m == 'y') then
-        open (2131,file="pts_mon_bsn.txt",recl = 1500)      
-        write (2131,*) hyd_hdr
+        open (4501,file="pts_mon_bsn.txt",recl = 1500)      
+        write (4501,*) hyd_hdr              !!!!!!! needs to addressed
         write (9000,*) 'BASIN RECALL        pts_mon_bsn.txt'
          if (pco%csvout == 'y') then 
-            open (2135,file="pts_mon_bsn.csv",recl = 1500)
-            write (2135,'(*(G0.3,:","))') hyd_hdr 
+            open (4505,file="pts_mon_bsn.csv",recl = 1500)
+            write (4505,'(*(G0.3,:","))') hyd_hdr 
             write (9000,*) 'BASIN RECALL        pts_mon_bsn.csv'
          end if
        end if
        
         if (pco%recall_bsn%y == 'y') then
-          open (2132,file="pts_yr_bsn.txt", recl = 1500)
-          write (2132,*) hyd_hdr 
+          open (4502,file="pts_yr_bsn.txt", recl = 1500)
+          write (4502,*) hyd_hdr            !!!!!!! needs to addressed
           write (9000,*) 'BASIN RECALL        pts_yr_bsn.txt'
           if (pco%csvout == 'y') then 
-            open (2136,file="pts_yr_bsn.csv", recl = 1500)
-            write (2136,'(*(G0.3,:","))') hyd_hdr
+            open (4506,file="pts_yr_bsn.csv", recl = 1500)
+            write (4506,'(*(G0.3,:","))') hyd_hdr
             write (9000,*) 'BASIN RECALL        pts_yr_bsn.csv'
           end if
         endif
         
         if (pco%recall_bsn%a == 'y') then 
-        open (2133,file="pts_aa_bsn.txt",recl = 1500)      
-        write (2133,*) hyd_hdr
+        open (4503,file="pts_aa_bsn.txt",recl = 1500)      
+        write (4503,*) hyd_hdr              !!!!!!! needs to addressed
         write (9000,*) 'BASIN RECALL AA     pts_aa_bsn.txt'
          if (pco%csvout == 'y') then 
-            open (2137,file="pts_aa_bsn.csv",recl = 1500)
-            write (2137,'(*(G0.3,:","))') hyd_hdr
+            open (4507,file="pts_aa_bsn.csv",recl = 1500)
+            write (4507,'(*(G0.3,:","))') hyd_hdr
             write (9000,*) 'BASIN RECALL        pts_aa_bsn.csv'
          end if
         end if
+        
 !! BASIN RECALL OUTPUT
       return
       end subroutine header_write  

@@ -7,7 +7,7 @@
       type swatdeg_hru_data
         character(len=16) :: name
         real :: dakm2 = 0.          !km^2          |drainage area
-        real :: cn2 = 0.            !none          |condition II curve number
+        real :: cn2 = 0.            !none          |condition II curve number             
         real :: cn3_swf = 0.        !none          |soil water factor for cn3 (used in calibration)
                                     !              |0 = fc; 1 = saturation (porosity)
         real :: tc = 0.             !min           |time of concentration
@@ -61,6 +61,7 @@
         real :: cn2 = 0.                     !              |condition II curve number (used in calibration)
         real :: cn3_swf = 0.                 !none          |soil water factor for cn3 (used in calibration)
                                              !              |0 = fc; 1 = saturation (porosity)
+        real :: soildep = 0.                 !mm            |soil profile depth
         real :: etco = 0.                    !              |et coefficient - use with pet and aet (used in calibration)
         real :: revapc = 0.                  !m/m           |revap from aquifer (used in calibration)
         real :: perco = 0.                   !              |soil percolation coefficient (used in calibration)

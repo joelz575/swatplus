@@ -53,7 +53,7 @@
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for 1st surface runoff calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%cn2 = hlt(iihru)%cn2 + chg_val
@@ -132,7 +132,7 @@
             !check all hru's for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for surface runoff calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%cn2 = hlt(iihru)%cn2 + chg_val
@@ -208,7 +208,7 @@
                            
             do ihru_s = 1, region(ireg)%num_tot
                 iihru = region(ireg)%num(ihru_s)
-                !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+                !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for 1st et calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%etco = hlt(iihru)%etco + chg_val
@@ -275,7 +275,7 @@
                 
             do ihru_s = 1, region(ireg)%num_tot
                 iihru = region(ireg)%num(ihru_s)
-                !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+                !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for et calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%etco = hlt(iihru)%etco + chg_val
@@ -339,7 +339,7 @@
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for 1st surface runoff calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%perco = hlt(iihru)%perco - chg_val
@@ -411,7 +411,7 @@
             !check all hru's for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for surface runoff calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%perco = hlt(iihru)%perco - chg_val
@@ -481,7 +481,7 @@
                 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for 1st surface runoff calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%revapc = hlt(iihru)%revapc + chg_val
@@ -549,7 +549,7 @@
             !check all hru's for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for surface runoff calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%revapc = hlt(iihru)%revapc + chg_val
@@ -613,7 +613,7 @@
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for 1st surface runoff calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%cn3_swf = hlt(iihru)%cn3_swf - chg_val
@@ -693,7 +693,7 @@
             !check all hru's for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%land_use_mgt) then
+              !if (lscalt(ireg)%lum(ilum)%lum_no == hru(iihru)%lum_group_c) then
                 !set parms for surface runoff calibration and rerun
                 hlt(iihru)= hlt_init(iihru)
                 hlt(iihru)%cn3_swf = hlt(iihru)%cn3_swf - chg_val

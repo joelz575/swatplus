@@ -166,8 +166,8 @@
                                                                    then
         !! update accumulated heat units for the plant
         delg = 0.
-        if (pcom(j)%plg(ipl)%phumat > 0.1) then
-          delg = (tmpav(j) - pldb(idp)%t_base) / pcom(j)%plg(ipl)%phumat
+        if (pcom(j)%plcur(ipl)%phumat > 0.1) then
+          delg = (tmpav(j) - pldb(idp)%t_base) / pcom(j)%plcur(ipl)%phumat
         end if
         if (delg < 0.) delg = 0.
         pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc + delg  

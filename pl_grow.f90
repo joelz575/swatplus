@@ -164,6 +164,8 @@
 
           !! new code to turn off nutrient stress
           if (bsn_cc%nostress == 1) then
+            pcom(j)%plstr(ipl)%strsw = 1.
+            pcom(j)%plstr(ipl)%strst = 1.
             pcom(j)%plstr(ipl)%strsn = 1.
             pcom(j)%plstr(ipl)%strsp = 1.
             pcom(j)%plstr(ipl)%strsa = 1.
@@ -179,8 +181,7 @@
             bioday = bioday * (bio_targ(j) - pcom(j)%plm(ipl)%mass) / bio_targ(j)
             reg = 1.
           end if
- 
-          reg = 1.
+
           pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass + bioday * reg
 
           !!maximum lai and bioimass for perrenials
@@ -232,9 +233,9 @@
               rto = float(pcom(j)%plcur(ipl)%curyr_mat) / float(pldb(idp)%mat_yrs)
               rto = alog10 (rto)
               lai_exp = rto * pldb(idp)%laixco_tree
-              laimax = pcom(j)%plg(ipl)%laimx_pop * 10. ** lai_exp
+              laimax = pcom(j)%plcur(ipl)%laimx_pop * 10. ** lai_exp
             else
-              laimax = pcom(j)%plg(ipl)%laimx_pop
+              laimax = pcom(j)%plcur(ipl)%laimx_pop
             end if
             
             !! calculate fraction of above ground tree biomass that is leaf

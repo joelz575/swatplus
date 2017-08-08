@@ -58,19 +58,16 @@
       type (hyd_output), dimension(:),allocatable :: res
       type (hyd_output), dimension(:),allocatable :: wet
   
-      type hyd_header
-        !H !character (len=16) :: name  =     'obj_name        ' 
+      type hyd_header                                       
         character (len=8) :: yrs =        '    time'
         character (len=8) :: yrc =        '    year'
-        !H !character (len=8) :: icmd =       '   icmd'
+        character (len=8) :: icmd =       '    icmd'
         character (len=8) :: otype =      '    type'
-        !H !character (len=8) :: oprops =     '  props' 
-        !H !character (len=8) :: io =         ' in/out' 
-        !H !character (len=8) :: iotyp =      ' obj_typ'
+        character (len=8) :: oprops =     '   props' 
+        character (len=8) :: iotyp =      ' objtyp_out'
         character (len=8) :: iotypno =    '  typ_no'
-        !H !character (len=8) :: hydio =      ' hyd_typ'
-        !H !character (len=8) :: objno =      ' obj_no'
-        !H !character (len=13) :: name2 =  '   hyd_name'
+        character (len=8) :: hydio =      ' hyd_typ'
+        character (len=8) :: objno =      '  obj_no'
         character (len=18) :: flo =    '           flo_m^3'        !! m^3          |volume of water
         character (len=18) :: sed =    '         sed_mtons'        !! metric tons  |sediment
         character (len=18) :: orgn =   '          orgn_kgN'        !! kg N         |organic N

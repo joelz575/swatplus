@@ -3,8 +3,6 @@
       type plant_growth
          character(len=4) :: cpnm       !! N/A          4 letter char code represents crop name 
          real :: cht = 0.               !! m            canopy height 
-         real :: laimx_pop = 0.         !!
-         real :: phumat = 0.            !! C            heat units to maturity
          real :: lai = 0.               !! m**2/m**2    leaf area index
          real :: yield = 0.             !! kg/ha        land cover/crop yield (dry weight)
          real :: plet = 0.              !! mm H2O       actual ET simulated during life of plant
@@ -44,7 +42,9 @@
                                        !!                0 = no land cover currently growing 
                                        !!                1 = land cover growing
         integer :: idorm = 0           !! none         dormancy status code; 0=land cover growing 1=land cover dormant
+        real :: phumat = 0.            !! C            heat units to maturity
         real :: phuacc = 0.            !! fraction     fraction of plant heatunit accumulated
+        real :: laimx_pop = 0.         !!
         integer :: harv_num = 0        !!              number of harvest operations
         integer :: curyr_mat = 0.      !! 
         real :: pop_com = 0.           !! none 

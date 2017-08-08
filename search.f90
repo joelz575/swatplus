@@ -1,6 +1,6 @@
     subroutine search(sch, max, cfind, iseq)
     
-    character(len=50)  :: cfind
+    character(len=50) :: cfind
     integer :: iseq, max
     
     character(len=50), dimension(max) ::  sch 

@@ -13,7 +13,7 @@
       
       !read all delivery ratio data here - don't need a module
       inquire (file=in_delr%del_ratio, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist /= 0 .or. in_delr%del_ratio /= 'null') then
       do
         open (107,file=in_delr%del_ratio)
         read (107,*,iostat=eof) titldum

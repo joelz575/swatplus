@@ -100,8 +100,11 @@
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("dep_imp")
-        hru(ielem)%hyd%dep_imp = chg_par (hru(ielem)%hyd%dep_imp,       &
+        nly = sol(ielem)%s%zmx
+        dep_below_soil = hru(ielem)%hyd%dep_imp + sol(ielem)%phys(nly)%d
+        dep_below_soil = chg_par (dep_below_soil,                       &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        hru(ielem)%hyd%dep_imp = dep_below_soil + sol(ielem)%phys(nly)%d
         
       case ("lat_orgn")
         hru(ielem)%hyd%lat_orgn = chg_par (hru(ielem)%hyd%lat_orgn,     &
@@ -681,6 +684,14 @@
          case ("cn2_lte")
             hlt_db(ielem)%cn2 = chg_par (hlt_db(ielem)%cn2, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
+         case ("awc_lte")
+            c_val = chg_val * hlt(ielem)%soildep
+            abmax = absmax * hlt(ielem)%soildep
+            hlt(ielem)%awc = chg_par (hlt(ielem)%awc, ielem, chg_typ, c_val, absmin, abmax, num_db)
+            
+         case ("etco_lte")
+            hlt_db(ielem)%etco = chg_par (hlt_db(ielem)%etco, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                       
          case ("tc_lte")
             hlt_db(ielem)%tc = chg_par (hlt_db(ielem)%tc, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
@@ -719,21 +730,6 @@
             
         case ("snow_lte")
             hlt_db(ielem)%snow = chg_par (hlt_db(ielem)%snow, ielem, chg_typ, chg_val, absmin, absmax, num_db)
-            
-!        case ("itext_lte")
-!            hlt_db(ielem)%itext = chg_par (hlt_db(ielem)%itext, ielem, chg_typ, chg_val, absmin, absmax, num_db)
-            
-!        case ("tropical_lte")
-!            hlt_db(ielem)%tropical = chg_par (hlt_db(ielem)%tropical, ielem, chg_typ, chg_val, absmin, absmax, num_db)
-
-!        case ("igrow1_lte")
-!            hlt_db(ielem)%igrow1 = chg_par (hlt_db(ielem)%igrow1, ielem, chg_typ, chg_val, absmin, absmax, num_db)
-            
-!        case ("igrow2_lte")
-!            hlt_db(ielem)%igrow2 = chg_par (hlt_db(ielem)%igrow2, ielem, chg_typ, chg_val, absmin, absmax, num_db)
-            
-!        case ("ipet_lte")
-!            hlt_db(ielem)%ipet = chg_par (hlt_db(ielem)%ipet, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
         case ("uslek_lte")
             hlt_db(ielem)%uslek = chg_par (hlt_db(ielem)%uslek, ielem, chg_typ, chg_val, absmin, absmax, num_db)

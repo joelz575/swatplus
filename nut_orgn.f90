@@ -50,7 +50,7 @@
       j = ihru
 
       xx = 0.
-	wt1 = 0.    !! conversion factor
+	  wt1 = 0.    !! conversion factor
       er = 0.		!! enrichment ratio
       if (iwave <= 0) then
         !! HRU calculations

@@ -97,7 +97,7 @@
                 write (2612, *) ob_num, time%yrc, time%mo, time%day, pldb(idp)%plantnm, pcomdb(icom)%name,   &
                     phubase(ob_num), pcom(ob_num)%plcur(ipl)%phuacc,  soil(ihru)%sw,                        &
                     pcom(ob_num)%plm(ipl)%mass, soil(ob_num)%ly(1)%rsd, sol_sumno3(ob_num),                 &
-                    sol_sumsolp(ob_num), pcom(ob_num)%plg(ipl)%lai, pcom(ob_num)%plg(ipl)%laimx_pop
+                    sol_sumsolp(ob_num), pcom(ob_num)%plg(ipl)%lai, pcom(ob_num)%plcur(ipl)%laimx_pop
               end if
             end do
             

@@ -1,7 +1,9 @@
-      subroutine aquifer_output
+      subroutine aquifer_output(iaq)
       
       use time_module
       use basin_module
+      
+      integer, intent (in) :: iaq
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs SUBBASIN variables on daily, monthly and annual time steps
@@ -12,7 +14,7 @@
 !!                 3 = daily
      
         !! sum monthly variables
-        iaq = ob(icmd)%num
+        !iaq = ob(icmd)%num 
         aqu_m(iaq) = aqu_m(iaq) + aqu(iaq)
         
         !! daily print - AQUIFER

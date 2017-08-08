@@ -51,7 +51,7 @@
 !!!!! yearly print
         if (time%end_yr == 1) then
           if (pco%hyd%y == 'y') then
-            write (2582,*) time%day, time%yrs, icmd, ob(icmd)%typ,      &
+            write (2582,*) time%day, time%yrs, icmd, ob(icmd)%typ,        &
            ob(icmd)%props, ob(icmd)%obtyp_out(iout),                      &
            ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),           &
            ob(icmd)%obj_out(iout), ob(icmd)%hout_y(iout)

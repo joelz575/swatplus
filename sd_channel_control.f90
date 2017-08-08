@@ -278,6 +278,7 @@
          call hyd_convert_conc (ht1)
          call sd_channel_nutrients (ht1, ht2)
         end if
+
       END IF
           
       !! compute sediment leaving the channel
@@ -304,7 +305,9 @@
       chsd_d(ich)%hc_m = hc
       
       !! set values for outflow hydrograph
-      !! storage locations set to zero are not currently used
+      !! set flow and sediment out for routing to next unit
+      ht2%flo = ob(icmd)%hin%flo      !no water losses
+      ht2%sed = sedout
       ob(icmd)%hd(1) = ht2
       ob(icmd)%hd(1)%temp = 5. + .75 * tave        !!wtmp
       !ob(icmd)%hd(1)%flo = chflow_m3               !!qdr m3/d

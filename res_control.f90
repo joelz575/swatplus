@@ -172,10 +172,6 @@
           res_d(jres)%no2c = no2c
           res_d(jres)%nh3c = nh3c
         end if             
-
-        if (time%yrs > pco%nyskip) then
-          call reservoir_output(jres)
-        end if
         
       else
         !! reservoir has not been constructed yet

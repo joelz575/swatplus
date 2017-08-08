@@ -74,7 +74,7 @@
             end select
          iunit = ob_out(i)%unitno
          
-         open (iunit+i,file = ob_out(i)%filename,recl=800)
+         open (iunit+i,file = ob_out(i)%filename,recl=1500)
          write (9000,*)   'OBJECT.PRT          ', ob_out(i)%filename
          
          write (iunit+i,100) hyd_hdr  !! write header !H
@@ -86,5 +86,6 @@
       close (107)
       
       return
-100   format (2a8,a8,a8, 25(a18)) !H
+      
+100   format (2a8,a8,a8, 30(a18)) !H
       end subroutine object_output_read

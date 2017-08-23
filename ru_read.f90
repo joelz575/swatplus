@@ -29,7 +29,12 @@
             msub_db = msub_db + 1
           end do
           
-        allocate (ru(0:imax))
+        allocate (ru(0:sp_ob%sub))
+        allocate (ru_d(sp_ob%sub))
+        allocate (ru_m(sp_ob%sub))
+        allocate (ru_y(sp_ob%sub))
+        allocate (ru_a(sp_ob%sub))
+        
         rewind (107)
         read (107,*) titldum
         read (107,*) header
@@ -43,25 +48,16 @@
         end do
      
       !! read spatial input to each subbasin (ie hru fractions)
-      allocate (ru_def(0:imax))
 
-      allocate (ru_tc(0:imax))
-      allocate (ru_n(0:imax))
-      allocate (uhs(0:imax,time%step+1))
+      allocate (ru_tc(0:sp_ob%sub))
+      allocate (ru_n(0:sp_ob%sub))
+      allocate (uhs(0:sp_ob%sub,time%step+1))
       allocate (hyd_flo(time%step+1))
       allocate (itsb(sp_ob%sub))
 
       hyd_flo = 0.
       uhs = 0
-            
-      do ith = 1, sp_ob%sub
-        if (ru(i)%dbsc%elem_def == ru_def(i)%name) then
-             ru(i)%dbs%elem_def = ith
-        exit
-        end if
-      !if (ru(i)%dbs%elem_def == 0) write (9001,*) ru(i)%dbs%elem_def, ' not found (ru-elemdef)'        
-      end do
-         
+
       !! need a hyd_output name for sub_dr to xwalk
 !      do ith = 1, db_mx%topo
 !        if (ru(i)%dbsc%elem_dr == topo_db(ith)%name) then

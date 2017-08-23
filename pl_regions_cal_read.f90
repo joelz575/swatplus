@@ -10,12 +10,12 @@
       imax = 0
       mcal = 0
  
-    inquire (file="pl_regions.cal", exist=i_exist)
-    if (i_exist == 0) then
+    inquire (file=in_chg%pl_regions_cal, exist=i_exist)
+    if (i_exist == 0 .or. in_chg%pl_regions_cal /= 'null' ) then
       allocate (plcal(0:0))	
     else
       do
-        open (107,file = "pl_regions.cal")
+        open (107,file=in_chg%pl_regions_cal)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mreg

@@ -14,10 +14,10 @@
       imax = 0
 
       !read all recall files
-      inquire (file="recall.rec", exist=i_exist)
-      if (i_exist /= 0) then
+      inquire (file=in_exco%recall_rec, exist=i_exist)
+      if (i_exist /= 0 .or. in_exco%recall_rec /= 'null') then
       do
-        open (107,file="recall.rec")
+        open (107,file=in_exco%recall_rec)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header

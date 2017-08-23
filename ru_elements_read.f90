@@ -27,6 +27,7 @@
               imax = Max(i,imax)
           end do
 
+        allocate (ru_def(imax))
         allocate (ru_elem(imax))
         allocate (ielem_sub(imax))
         
@@ -99,10 +100,9 @@
 
       iob1 = sp_ob1%sub
       iob2 = sp_ob1%sub + sp_ob%sub - 1
-      do i = iob1, iob2
-        isub = ob(i)%props
-        !ob(i)%typ = "sub"
-        ob(i)%subs_tot = 0
+      do isub = 1, sp_ob%sub
+        iob = sp_ob1%sub + isub - 1
+        ob(iob)%subs_tot = 0
         read (107,*,iostat=eof) numb, namedum, nspu
         allocate (elem_cnt(nspu))
         
@@ -129,11 +129,13 @@
                 ielem = ielem + 1
               end if
             end if
+            if (nspu == 1) ie2 = ie1
             if (ii == nspu .and. elem_cnt(ii) < 0) exit
           end do
           allocate (ru_def(isub)%num(ielem))
           ru_def(isub)%num_tot = ielem
-          ob(i)%dfn_tot = ru_def(isub)%num_tot
+          iob = sp_ob1%sub + isub - 1
+          ob(iob)%dfn_tot = ru_def(isub)%num_tot
           
           ielem = 0
           ii = 1
@@ -169,6 +171,8 @@
               ru_elem(ii)%obj = sp_ob1%hru + ru_elem(ii)%obtypno - 1
             case ("hlt")   !hru_lte
               ru_elem(ii)%obj = sp_ob1%hru_lte + ru_elem(ii)%obtypno - 1
+            case ("sub")   !ru
+              ru_elem(ii)%obj = sp_ob1%sub + ru_elem(ii)%obtypno - 1
             case ("cha")   !channel
               ru_elem(ii)%obj = sp_ob1%chan + ru_elem(ii)%obtypno - 1
             case ("exc")   !export coefficient

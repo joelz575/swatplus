@@ -9,12 +9,12 @@
        
        eof = 0
 
-      inquire (file="pl_parms.cal", exist=i_exist)
-      if (i_exist == 0) then
+      inquire (file=in_chg%pl_parms_cal, exist=i_exist)
+      if (i_exist == 0 .or. in_chg%pl_parms_cal /= 'null') then
         allocate (pl_prms(0:0))	   	   
       else   
        do 
-         open (107,file = "pl_parms.cal")
+         open (107,file=in_chg%pl_parms_cal)
          read (107,*,iostat=eof) titldum
          if (eof < 0) exit
          read (107,*,iostat=eof) mlsp

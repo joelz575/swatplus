@@ -52,11 +52,12 @@
 
 !!!!! average annual print
         if (time%end_sim == 1 .and. pco%res%a == 'y') then
-          res_a(j) = res_y(j) / time%yrs_prt
+          res_a(j) = res_a(j) / time%yrs_prt
           write (2543,100) time%day, time%yrs, j,  res_a(j)
           if (pco%csvout == 'y') then
             write (2547,'(*(G0.3,:","))') time%day, time%yrs, j, res_a(j)
           end if 
+          res_a(j) = resmz
         end if
         
       return

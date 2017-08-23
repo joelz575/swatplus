@@ -50,7 +50,7 @@
         if (idr > 0) then
           !input dr from sub_dr.dat
           delrto = ru_dr(idr)
-          else
+        else
           !calculated dr = f(tconc element/ tconc sub)
           delrto = ru_elem(ielem)%dr(0)
         end if
@@ -69,19 +69,15 @@
           
         else
 
-        select case (ru_elem(ielem)%obtyp)
-        case ("hru")
         !define expansion factor to surface/soil and recharge
-        ef = ru_elem(ise)%frac * ru(isub)%da_km2 / (hru(ihru)%area_ha / 100.)
-        case ("hlt")
-        ef = ru_elem(ise)%frac * ru(isub)%da_km2 / hlt_db(ihru)%dakm2
-        end select
+        ef = ru_elem(ise)%frac * ru(isub)%da_km2 / (ob(iob)%area_ha / 100.)
         
         !compute all hyd's needed for routing
         select case (ihtypno)
         case (1)   !total hyd
           ht1 = ob(iob)%hd(1) ** delrto
           ht1 = ef * ht1
+          ru_d(isub) = ru_d(isub) + ht1
           if (ob(iob)%typ == "hru") then
             ht3 = ob(iob)%hd(3) ** delrto
             ht3 = ef * ht3
@@ -94,20 +90,26 @@
           ht1 = ef * ht1
           ht3 = ob(iob)%hd(ihtypno) ** delrto
           ht3 = ef * ht3
+          ru_d(isub) = ru_d(isub) + ht3
         case (4)   !soil lateral flow hyd
           ht1 = ob(iob)%hd(ihtypno) ** delrto
           ht1 = ef * ht1
           ht4 = ob(iob)%hd(ihtypno) ** delrto
           ht4 = ef * ht4
+          ru_d(isub) = ru_d(isub) + ht4
         case (5)   !tile flow hyd
           ht1 = ef * ob(iob)%hd(ihtypno)
           ht5 = ef * ob(iob)%hd(ihtypno)  !no dr on tile
+          ru_d(isub) = ru_d(isub) + ht5
         end select
         end if      !ru_elem(ielem)%obtyp == "exc"
         
         !recharge hyd - hru_lte computes gw flow and doesnt need recharge hyd
-        if (ru_elem(ielem)%obtyp /= "hlt") ht2 = ef * ob(iob)%hd(2)
-        
+        if (ru_elem(ielem)%obtyp /= "hlt") then
+          ht2 = ef * ob(iob)%hd(2)
+          ru_d(isub) = ru_d(isub) + ht2
+        end if
+                
         ! sum subdaily hydrographs for each object
         if (time%step > 0) then
           select case (ru_elem(ielem)%obtyp)

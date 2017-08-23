@@ -138,6 +138,7 @@
 !! exco
       type input_exco
        character(len=25) :: exco = "exco.exc"
+       character(len=25) :: recall_rec = "recall.rec"
       end type input_exco
       type (input_exco) :: in_exco
       
@@ -200,6 +201,8 @@
        character(len=25) :: ls_regions_cal = "ls_regions.cal"
        character(len=25) :: ch_orders_cal = "ch_orders.cal"
        character(len=25) :: ch_parms_cal = "ch_parms.cal"
+       character(len=25) :: pl_parms_cal = "pl_parms.cal"
+       character(len=25) :: pl_regions_cal = "pl_regions.cal"
       end type input_chg
       type (input_chg) :: in_chg
       

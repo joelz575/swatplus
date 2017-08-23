@@ -75,7 +75,7 @@
          iunit = ob_out(i)%unitno
          
          open (iunit+i,file = ob_out(i)%filename,recl=1500)
-         write (9000,*)   'OBJECT.PRT          ', ob_out(i)%filename
+         write (9000,*) 'OBJECT.PRT          ', ob_out(i)%filename
          
          write (iunit+i,100) hyd_hdr  !! write header !H
         enddo    

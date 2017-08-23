@@ -100,8 +100,8 @@
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("dep_imp")
-        nly = sol(ielem)%s%zmx
-        dep_below_soil = hru(ielem)%hyd%dep_imp + sol(ielem)%phys(nly)%d
+        nly = soil(ielem)%nly
+        dep_below_soil = hru(ielem)%hyd%dep_imp + soil(ielem)%phys(nly)%d
         dep_below_soil = chg_par (dep_below_soil,                       &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         hru(ielem)%hyd%dep_imp = dep_below_soil + sol(ielem)%phys(nly)%d

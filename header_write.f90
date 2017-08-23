@@ -27,26 +27,26 @@
       if (db_mx%lsu_reg > 0) then
         open (5000,file="hru-new.cal", recl = 800)
         write (5000,*) ' calibration.upd_developed_from_soft_data_calibration'
-	    write (9000,*)   'HRU SOFT OUT CALIB      hru-new.cal'
+	    write (9000,*) 'HRU SOFT OUT CALIB  hru-new.cal'
         write (5000,*) calb3_hdr
       end if
       
 !!!!!! hru-lte-out.cal - hru lte soft calibration output including soft and predicted budgets and 
 !!!!!! calibration parameter adjustments
       !open (5003,file="hru-lte-out.cal", recl = 800)
-	  !write (9000,*)   'LTE SOFT OUT CALIB      hru-lte-out.cal'
+	  !write (9000,*) 'LTE SOFT OUT CALIB  hru-lte-out.cal'
 	  !write (5003,*) calb_hdr
 	  
 !!!!!! hru-lte-new.cal - hru lte soft calibration output file.  The same format as hru-lte.hru and
 !!!!!! can be used as input (hru-lte.hru) in subsequent simulations 
       !open (5002,file="hru-lte-new.cal", recl = 800)
-	  !write (9000,*)   'LTE SOFT CALIB INPUT    hru-lte-new.cal'
+	  !write (9000,*) 'LTE SOFT CAL INPUT  hru-lte-new.cal'
 	  !write (5002,*) calb2_hdr
       
 !! BASIN AQUIFER OUTPUT
         if (pco%aqu_bsn%d == 'y') then
           open (2090,file="aquifer_day_bsn.txt", recl = 1500)
-          write (2090,*) aqu_hdr  
+          write (2090,*) aqu_hdr 
           write (9000,*) 'BASIN AQUIFER       aquifer_day_bsn.txt'
           if (pco%csvout == 'y') then 
             open (2094,file="aquifer_day_bsn.csv", recl = 1500)
@@ -92,7 +92,7 @@
 !! BASIN RESERVOIR OUTPUT
         if (pco%res_bsn%d == 'y') then
           open (2100,file="reservoir_day_bsn.txt", recl = 1500)
-          write (2100,*) res_hdr  
+          write (2100,*) res_hdr
           write (9000,*) 'BASIN RESERVOIR     reservoir_day_bsn.txt'
           if (pco%csvout == 'y') then 
             open (2104,file="reservoir_day_bsn.csv", recl = 1500)
@@ -125,7 +125,7 @@
         
       if (pco%res_bsn%a == 'y') then
        open (2103,file="reservoir_aa_bsn.txt",recl = 1500)      
-        write (2103,*) res_hdr 
+        write (2103,*) res_hdr
         write (9000,*) 'BASIN RESERVOIR AA  reservoir_aa_bsn.txt'
        if (pco%csvout == 'y') then 
           open (2107,file="reservoir_aa_bsn.csv",recl = 1500)
@@ -138,7 +138,7 @@
 !! BASIN CHANNEL OUTPUT
         if (pco%chan_bsn%d == 'y') then
           open (2110,file="channel_day_bsn.txt", recl = 1500)
-          write (2110,*) ch_hdr  
+          write (2110,*) ch_hdr
           write (9000,*) 'BASIN CHANNEL       channel_day_bsn.txt'
           if (pco%csvout == 'y') then 
             open (2114,file="channel_day_bsn.csv", recl = 1500)
@@ -184,7 +184,7 @@
 !! BASIN SWAT DEG CHANNEL OUTPUT
         if (pco%sd_chan_bsn%d == 'y') then
           open (2120,file="channel_sd_day_bsn.txt", recl = 1500)
-          write (2120,*) sdch_hdr 
+          write (2120,*) sdch_hdr
           write (9000,*) 'BASIN SWAT DEGCHAN  channel_sd_day_bsn.txt'
           if (pco%csvout == 'y') then 
             open (2124,file="channel_sd_day_bsn.csv", recl = 1500)
@@ -195,7 +195,7 @@
         
        if (pco%sd_chan_bsn%m == 'y') then
         open (2121,file="channel_sd_mon_bsn.txt",recl = 1500)      
-        write (2121,*) sdch_hdr 
+        write (2121,*) sdch_hdr
         write (9000,*) 'BASIN SWAT DEG CHAN channel_sd_mon_bsn.txt'
          if (pco%csvout == 'y') then 
            open (2125,file="channel_sd_mon_bsn.csv",recl = 1500)
@@ -274,5 +274,53 @@
         end if
         
 !! BASIN RECALL OUTPUT
+
+!! BASIN ROUTING UNIT OUTPUT
+        if (pco%ru%d == 'y') then
+          open (2600,file="routing_units_day.txt", recl = 1500)
+          write (2600,*) hyd_hdr            
+          write (9000,*) 'ROUTING UNITS       routing_units_day.txt'
+          if (pco%csvout == 'y') then 
+            open (2604,file="routing_units_day.csv", recl = 1500)
+            write (2604,'(*(G0.3,:","))') hyd_hdr
+            write (9000,*) 'ROUTING UNITS       routing_units_day.csv'
+          end if
+        endif
+        
+        if (pco%ru%m == 'y') then
+        open (2601,file="routing_units_mon.txt",recl = 1500)      
+        write (2601,*) hyd_hdr              
+        write (9000,*) 'ROUTING UNITS       routing_units_mon.txt'
+         if (pco%csvout == 'y') then 
+            open (2605,file="routing_units_mon.csv",recl = 1500)
+            write (2605,'(*(G0.3,:","))') hyd_hdr 
+            write (9000,*) 'ROUTING UNITS       routing_units_mon.csv'
+         end if
+       end if
+       
+        if (pco%ru%y == 'y') then
+          open (2602,file="routing_units_yr.txt", recl = 1500)
+          write (2602,*) hyd_hdr            
+          write (9000,*) 'ROUTING UNITS       routing_units_yr.txt'
+          if (pco%csvout == 'y') then 
+            open (2606,file="routing_units_yr.csv", recl = 1500)
+            write (2606,'(*(G0.3,:","))') hyd_hdr
+            write (9000,*) 'ROUTING UNITS       routing_units_yr.csv'
+          end if
+        endif
+        
+        if (pco%ru%a == 'y') then 
+        open (2603,file="routing_units_aa.txt",recl = 1500)      
+        write (2603,*) hyd_hdr              
+        write (9000,*) 'ROUTING UNITS AA    routing_units_aa.txt'
+         if (pco%csvout == 'y') then 
+            open (2607,file="routing_units_aa.csv",recl = 1500)
+            write (2607,'(*(G0.3,:","))') hyd_hdr
+            write (9000,*) 'ROUTING UNITS AA    routing_units_aa.csv'
+         end if
+        end if
+        
+!! BASIN ROUTING UNIT OUTPUT
+
       return
       end subroutine header_write  

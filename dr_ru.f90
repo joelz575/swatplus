@@ -24,7 +24,7 @@
               rto = 1.
             end select
             
-            rto = amin1(.95,rto ** .5)
+            rto = amin1(1.0, rto ** .5)
             ru_elem(ielem)%dr(0) = rto .add. hz
           end if
         end do

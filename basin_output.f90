@@ -4,7 +4,7 @@
       use hydrograph_module
       use jrw_datalib_module
       
-      integer :: iz=0
+      integer :: iz=1
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs BASIN variables on daily, monthly and annual time steps
@@ -15,7 +15,8 @@
 !!                 3 = daily
 
         ! summing subbasin output for the basin
-        do iihru = 1, db_mx%lsu_out
+        do ihru = 1, sp_ob%hru
+          iihru = lsu_elem(ihru)%obtypno
           if (lsu_elem(iihru)%bsn_frac > 1.e-12) then
             if (lsu_elem(iihru)%obtyp == 'hru') then
               const = 1. / lsu_elem(iihru)%bsn_frac    !only have / operator set up
@@ -24,8 +25,12 @@
               bls_d = bls_d + hls_d(iihru) / const
               bpw_d = bpw_d + hpw_d(iihru) / const
             end if
-
+           end if
+          end do
+          
             ! or if it is not routed and not in a subbasin
+        do ihru = 1, sp_ob%hru
+          if (lsu_elem(iihru)%bsn_frac > 1.e-12) then
             if (lsu_elem(iihru)%obtyp == 'hlt') then
               const = 1. / lsu_elem(iihru)%bsn_frac
               bwb_d = bwb_d + hltwb_d(iihru) / const

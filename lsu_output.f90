@@ -85,6 +85,7 @@
           runb_y(isub) = runb_y(isub) + runb_m(isub)
           ruls_y(isub) = ruls_y(isub) + ruls_m(isub)
           rupw_y(isub) = rupw_y(isub) + rupw_m(isub)
+          
           if (pco%wb_sub%m == 'y') then
             write (2141,100) time%mo, time%yrc, isub, ruwb_m(isub)
             if (pco%csvout == 'y') then 
@@ -125,6 +126,7 @@
            runb_a(isub) = runb_a(isub) + runb_y(isub)
            ruls_a(isub) = ruls_a(isub) + ruls_y(isub)
            rupw_a(isub) = rupw_a(isub) + rupw_y(isub)
+           
            if (pco%wb_sub%y == 'y') then
              write (2142,102) '     0', time%yrc, isub, ruwb_y(isub)
              if (pco%csvout == 'y') then 
@@ -182,10 +184,10 @@
       if (time%end_sim == 1 .and. pco%pw_sub%a == 'y') then    
         rupw_a(isub) = rupw_a(isub) / time%yrs_prt
         write (2173,102) '     0', time%yrs, isub, rupw_a(isub) 
+        if (pco%csvout == 'y') then 
+          write (2177,'(*(G0.3,:","))') '     0', time%yrs, isub, rupw_a(isub)
+        end if
       end if
-      if (pco%csvout == 'y') then 
-        write (2177,'(*(G0.3,:","))') '     0', time%yrc, isub, rupw_y(isub)
-      end if      
       end do    !isub
       
       return

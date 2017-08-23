@@ -230,15 +230,23 @@
         end do        
         
         do iaq = 1, sp_ob%aqu
-          call aquifer_output(iaq)
+          call aquifer_output (iaq)
         end do
         
         do jrch = 1, sp_ob%chan
-          call channel_output(jrch)
+          call channel_output (jrch)
         end do
-        
+                
+        do jrch = 1, sp_ob%chandeg
+          call sd_channel_output (jrch)
+        end do
+
         do j = 1, sp_ob%res
           call reservoir_output(j)
+        end do 
+        
+        do j = 1, sp_ob%sub
+          call ru_output(j)
         end do 
         
         call hydin_output   !if all output is no, then don't call

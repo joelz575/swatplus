@@ -11,8 +11,8 @@
 !!   open soils.out file       
       if (pco%solout == 'y') then
         open (2610,file="soilsurf_out.sol")
-        write (2610,1002)       
-        write (9000,*)   'SOILS               soilsurf_out.sol'
+        write (2610,1002) 
+        write (9000,*) 'SOILS               soilsurf_out.sol'
         if (pco%csvout == 'y') then
           open (2611,file="soilsurf_out.csv")
           write (2611,1002)

@@ -341,22 +341,24 @@
                 lscal(ireg)%lum(ilum)%prm%perco = lscal(ireg)%lum(ilum)%prm%perco * chg_val
                 lscal(ireg)%lum(ilum)%prev%pcr = lscal(ireg)%lum(ilum)%aa%pcr
                            
-                if (lscal(ireg)%lum(ilum)%prm%perco >= ls_prms(8)%pos) then
-                  lscal(ireg)%lum(ilum)%prm%perco = ls_prms(8)%pos
-                  chg_val = ls_prms(8)%pos
-                  lscal(ireg)%lum(ilum)%prm_lim%perco = 1.
-                end if
-                if (lscal(ireg)%lum(ilum)%prm%perco <= ls_prms(8)%neg) then
-                  lscal(ireg)%lum(ilum)%prm%perco = ls_prms(8)%neg
-                  chg_val = ls_prms(8)%neg
-                  lscal(ireg)%lum(ilum)%prm_lim%perco = 1.
-                end if
+                !if (lscal(ireg)%lum(ilum)%prm%perco >= ls_prms(8)%pos) then
+                !  lscal(ireg)%lum(ilum)%prm%perco = ls_prms(8)%pos
+                !  chg_val = ls_prms(8)%pos
+                !  lscal(ireg)%lum(ilum)%prm_lim%perco = 1.
+                !end if
+                !if (lscal(ireg)%lum(ilum)%prm%perco <= ls_prms(8)%neg) then
+                !  lscal(ireg)%lum(ilum)%prm%perco = ls_prms(8)%neg
+                !  chg_val = ls_prms(8)%neg
+                !  lscal(ireg)%lum(ilum)%prm_lim%perco = 1.
+                !end if
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st perco calibration
-                hru(iihru)%hyd%dep_imp = hru(iihru)%hyd%dep_imp + chg_val
+                nly = soil(iihru)%nly
+                dep_below_soil = (hru(iihru)%hyd%dep_imp - soil(iihru)%phys(nly)%d) * chg_val
+                hru(iihru)%hyd%dep_imp = soil(iihru)%phys(nly)%d + dep_below_soil
                 hru(iihru)%hyd%dep_imp = amin1 (hru(iihru)%hyd%dep_imp, ls_prms(8)%up)
                 hru(iihru)%hyd%perco = Max (hru(iihru)%hyd%dep_imp, ls_prms(8)%lo)
                 hru_init(iihru)%hyd%dep_imp = hru(iihru)%hyd%dep_imp
@@ -432,7 +434,9 @@
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st perco calibration
-                hru(iihru)%hyd%dep_imp = hru(iihru)%hyd%dep_imp + chg_val
+                nly = soil(iihru)%nly
+                dep_below_soil = (hru(iihru)%hyd%dep_imp - soil(iihru)%phys(nly)%d) * chg_val
+                hru(iihru)%hyd%dep_imp = soil(iihru)%phys(nly)%d + dep_below_soil
                 hru(iihru)%hyd%dep_imp = amin1 (hru(iihru)%hyd%dep_imp, ls_prms(8)%up)
                 hru(iihru)%hyd%dep_imp = Max (hru(iihru)%hyd%dep_imp, ls_prms(8)%lo)
                 hru_init(iihru)%hyd%dep_imp = hru(iihru)%hyd%dep_imp

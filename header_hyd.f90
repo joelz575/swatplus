@@ -6,7 +6,7 @@
       !! HYDCON (no headers)    
       if (pco%hydcon == 'y') then
         open (7000,file="hydcon.out")
-        write (9000,*) 'HYDCON              hydcon.out'
+          write (9000,*) 'HYDCON              hydcon.out'
           if (pco%csvout == 'y') then
             open (7001,file="hydcon.csv")
             write (9000,*) 'HYDCON              hydcon.csv'
@@ -21,7 +21,7 @@
           if (pco%csvout == 'y') then
             open (2584,file="hydout_day.csv",recl=800)
             write (2584,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*)   'HYDOUT              hydout_day.csv'
+            write (9000,*) 'HYDOUT              hydout_day.csv'
           end if
       end if
       
@@ -32,7 +32,7 @@
           if (pco%csvout == 'y') then
             open (2585,file="hydout_mon.csv",recl=800)
             write (2585,'(*(G0.3,:","))') hyd_hdr
-            write (9000,*)   'HYDOUT              hydout_mon.csv'
+            write (9000,*) 'HYDOUT              hydout_mon.csv'
           end if
      end if
      
@@ -63,7 +63,7 @@
        if (pco%hyd%d == 'y') then
         open (2560,file="hydin_day.txt",recl=800)
         write (2560,*) hyd_hdr
-        write (9000,*)     'HYDIN               hydin_day.txt'
+        write (9000,*) 'HYDIN               hydin_day.txt'
           if (pco%csvout == 'y') then
             open (2564,file="hydin_day.csv",recl=800)
             write (2564,'(*(G0.3,:","))') hyd_hdr
@@ -74,7 +74,7 @@
       if (pco%hyd%m == 'y') then
         open (2561,file="hydin_mon.txt",recl=800)
         write (2561,*) hyd_hdr
-        write (9000,*)     'HYDIN               hydin_mon.txt'
+        write (9000,*) 'HYDIN               hydin_mon.txt'
           if (pco%csvout == 'y') then
             open (2565,file="hydin_mon.csv",recl=800)
             write (2565,'(*(G0.3,:","))') hyd_hdr
@@ -85,7 +85,7 @@
       if (pco%hyd%y == 'y') then
         open (2562,file="hydin_yr.txt",recl=800)
         write (2562,*) hyd_hdr
-        write (9000,*)     'HYDIN               hydin_yr.txt'
+        write (9000,*) 'HYDIN               hydin_yr.txt'
           if (pco%csvout == 'y') then
             open (2566,file="hydin_yr.csv",recl=800)
             write (2566,'(*(G0.3,:","))') hyd_hdr
@@ -96,7 +96,7 @@
       if (pco%hyd%a == 'y') then
         open (2563,file="hydin_aa.txt",recl=800)
         write (2563,*) hyd_hdr
-        write (9000,*)     'HYDIN               hydin_aa.txt'
+        write (9000,*) 'HYDIN               hydin_aa.txt'
           if (pco%csvout == 'y') then
             open (2567,file="hydin_aa.csv",recl=800)
             write (2567,'(*(G0.3,:","))') hyd_hdr

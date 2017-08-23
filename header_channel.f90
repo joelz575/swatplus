@@ -50,7 +50,7 @@
           write (9000,*) 'CHANNEL             channel_aa.txt'
           if (pco%csvout == 'y') then
             open (2487,file="channel_aa.csv",recl = 1500)
-            write (2487,'(*(G0.3,:,","))') ch_hdr   !! channel aa header csv format
+            write (2487,'(*(G0.3,:,","))') ch_hdr   !! channel aa header csv formatt'
             write (9000,*) 'CHANNEL             channel_aa.csv'
           end if
           end if

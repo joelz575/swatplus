@@ -5,7 +5,7 @@
       
       integer :: mhyd, mcmd,inum2,jrch,jrchq,mrte,ihout,iwst,isdch
       integer :: icmd, ich, mobj_out, isd_chsur
-      integer, dimension (:), allocatable :: rcv_sum, dfn_sum, elem_cnt
+      integer, dimension (:), allocatable :: rcv_sum, dfn_sum, elem_cnt, ru_seq
       real, dimension (:), allocatable :: hyd_km2
       integer, dimension (:), allocatable :: ob_order
       real, dimension(:,:,:), allocatable:: rchhr
@@ -48,7 +48,12 @@
       type (hyd_output), dimension(:), allocatable :: srec_m
       type (hyd_output), dimension(:), allocatable :: srec_y
       type (hyd_output), dimension(:), allocatable :: srec_a
+      type (hyd_output), dimension(:), allocatable :: ru_d
+      type (hyd_output), dimension(:), allocatable :: ru_m
+      type (hyd_output), dimension(:), allocatable :: ru_y
+      type (hyd_output), dimension(:), allocatable :: ru_a
       type (hyd_output) :: brec_d, brec_m, brec_y, brec_a
+      type (hyd_output) :: bru_d, bru_m, bru_y, bru_a
       type (hyd_output) :: binhyd_d
       type (hyd_output) :: hz
       type (hyd_output), dimension(:),allocatable :: hcnst
@@ -254,6 +259,7 @@
         real :: elev = 100.             !elevation (m)
         real :: area_ha = 80.           !area - ha
         integer :: props = 1            !properties number from data base (ie hru.dat, sub.dat) - change props to data
+        character (len=50) ::  wst_c    !weather station name
         integer :: wst = 1              !weather station number
         integer :: constit              !constituent data pointer to pesticides, pathogens, metals, salts
         integer :: props2               !overbank connectivity pointer to landscape units - change props2 to overbank

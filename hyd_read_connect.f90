@@ -27,8 +27,10 @@
 
       allocate (rcv_sum(sp_ob%objs))
       allocate (dfn_sum(sp_ob%objs))
+      allocate (ru_seq(sp_ob%objs))
       rcv_sum = 0
       dfn_sum = 0
+      ru_seq = 0
       
       !! set first object number of each type
       nspu = 1
@@ -165,7 +167,6 @@
         call overbank_read
         call aqu2d_read
       end if
-
     
       !! for each hru or defining unit, set all subbasins that contain it 
         do i = 1, sp_ob%objs
@@ -174,21 +175,19 @@
             allocate (ob(i)%obj_subs(nspu))
           end if
         end do
-      
-        dfn_sum = 0
-        do i = 1, sp_ob%objs
+
+        do isub = 1, sp_ob%sub
           !! determine subbasin the hrus are in and add subbasin area to basin area
-          if (ob(i)%typ == "sub") then          !only need for subs-not aquifers
-            isub = ob(i)%props
-            do ii = 1, ru_def(isub)%num_tot
-              !!only have hrus set up - need to add other objects
-              ielem = ru_def(isub)%num(ii)          !points to element in sub_element
-              k = ru_elem(ielem)%obj              !object type number of defining unit (ie hru)
-              dfn_sum(ielem) = dfn_sum(ielem) + 1  !sequential number for subbasin object
-              kk = dfn_sum(ielem)
-              ob(k)%obj_subs(kk) = i
-            end do
-          end if
+          do ii = 1, ru_def(isub)%num_tot
+            !!only have hrus set up - need to add other objects
+            ielem = ru_def(isub)%num(ii)        !points to element in sub_element
+            k = ru_elem(ielem)%obj              !object type number of element (ie hru)
+            iob = sp_ob1%sub + isub - 1         !object number of the routing unit
+            ru_seq(k) = ru_seq(k) + 1           !sequential number of routing unit the element is in
+            kk = ru_seq(k)
+            ob(k)%obj_subs(kk) = iob            !routing unit the element is in
+            dfn_sum(iob) = dfn_sum(iob) + 1     !sum of elements in the routing unit object
+          end do
         end do
       
       !! determine number of recieving units and set object numbers for outflow hyds
@@ -389,8 +388,9 @@
             if (iobj_tot == sp_ob%objs) idone = 1
             !sum defining units for each subbasin
             do k = 1, ob(i)%subs_tot
-              kk = ob(i)%obj_subs(k)       !ob number of subbasin
-              dfn_sum(kk) = dfn_sum(kk) + 1
+              dfn_sum(ob(i)%obj_subs(k)) = dfn_sum(ob(i)%obj_subs(k)) + 1
+              !kk = ob(i)%obj_subs(k)       !ob number of subbasin
+              !dfn_sum(kk) = dfn_sum(kk) + 1
             end do
           
             isrc_tot = Max(ob(i)%src_tot, 1)  !force to go through once

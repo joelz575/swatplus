@@ -9,6 +9,8 @@
       use hydrograph_module
       use constituent_mass_module
       use time_module
+      use climate_parms
+      use jrw_datalib_module
       
       integer, intent(in) :: nhyds, ndsave, nspu, nspu1
 
@@ -46,9 +48,10 @@
                 allocate (ob(i)%tsin(time%step))
               end if
               read (107,*,iostat=eof) k, ob(i)%name, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,      &
-                ob(i)%props, ob(i)%wst, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+                ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
               ob(i)%num = k
               if (eof < 0) exit
+
               if (ob(i)%src_tot > 0) then
                 nout = ob(i)%src_tot
                 allocate (ob(i)%obj_out(nout))
@@ -62,7 +65,7 @@
                 allocate (ob(i)%hout_a(nout))
                 backspace (107)
                 read (107,*,iostat=eof) k, ob(i)%name, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &
-                  ob(i)%props, ob(i)%wst, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot,        &
+                  ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot,      &
                   (ob(i)%obtyp_out(isp), ob(i)%obtypno_out(isp), ob(i)%htyp_out(isp),                       &
                   ob(i)%frac_out(isp), isp = 1, nout)
                 if (eof < 0) exit
@@ -96,6 +99,11 @@
           exit
         enddo
       endif
+      
+      !crosswalk weather station 
+      do i = ob1, ob2
+        call search (wst_n, db_mx%wst, ob(i)%wst_c, ob(i)%wst)
+      end do
       
       close (107)
       

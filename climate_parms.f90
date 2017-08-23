@@ -78,7 +78,6 @@
       type (weather_generator_db), dimension(:),allocatable :: wgn
       type (weather_generator_db), dimension(:),allocatable :: wgn_orig
       type (weather_generator_db), dimension(:),allocatable :: fwgn
-      character(len=50), dimension(:),allocatable :: wgn_n                 !! station name
       
       type wgn_parms
         real, dimension (12) :: pr_wdays = 0.   !! none   |proportion of wet days in a month
@@ -132,8 +131,8 @@
       end type weather_codes_station
       
       type weather_codes_station_char
-        !character (len=16) ::  wgn = ""       !!  weather generator station number
-        character (len=50) ::  wgn = ""       !!  weather generator station number
+        !character (len=50) ::  wst = ""      !!  weather station name
+        character (len=50) ::  wgn = ""       !!  weather generator name
         character (len=50) :: pgage = ""      !!  gage name for rainfall 
         character (len=50) :: tgage = ""      !!  gage name for temperature
         character (len=50) :: sgage = ""      !!  gage name for solar radiation
@@ -144,7 +143,7 @@
       end type weather_codes_station_char
       
       type weather_station
-        character(len=16) :: name = "Farmer Branch IL"
+        character(len=50) :: name = "Farmer Branch IL"
         real :: lat                          ! degrees    |latitude
         type (weather_codes_station_char) :: wco_c
         type (weather_codes_station) :: wco 
@@ -168,6 +167,9 @@
         real, dimension (:,:,:), allocatable :: tss
       end type climate_measured_data
       type (climate_measured_data), dimension(:), allocatable :: pcp
+      
+      character(len=50), dimension(:), allocatable :: wst_n
+      character(len=50), dimension(:), allocatable :: wgn_n
       character(len=50), dimension(:), allocatable :: pcp_n
       character(len=50), dimension(:), allocatable :: tmp_n 
       character(len=50), dimension(:), allocatable :: slr_n

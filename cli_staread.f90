@@ -13,6 +13,7 @@
     if (i_exist == 0 .or. in_cli%weat_sta == 'null') then
         mwst = 1
         allocate (wst(0:1))
+        allocate (wst_n(0:0))
         allocate (npcp(0:1))
         npcp = 1
     else
@@ -34,6 +35,7 @@
             db_mx%wst = imax
             
             allocate (wst(imax))
+            allocate (wst_n(imax))
             do iwst = 1, db_mx%wst
                 allocate (wst(iwst)%weat%ts(time%step+1))
             end do
@@ -51,7 +53,7 @@
                 read (107,*) titldum
                 backspace (107)
                 read (107,*,iostat=eof) ii, wst(i)%name, wst(i)%wco_c
-                
+               wst_n(i) = wst(i)%name
                if (db_mx%wgnsta > 0) call search (wgn_n, db_mx%wgnsta, wst(i)%wco_c%wgn, wst(i)%wco%wgn)
                if (wst(i)%wco%wgn == 0 .and. wst(i)%wco_c%wgn /= 'sim') write (9001,*) wst(i)%wco_c%wgn, 'file not found (wgn)'
                if (db_mx%pcpfiles > 0) call search (pcp_n, db_mx%pcpfiles, wst(i)%wco_c%pgage, wst(i)%wco%pgage)

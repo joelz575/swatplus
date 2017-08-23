@@ -128,7 +128,10 @@
         if (eof < 0) exit        
      !! hydin and hydout
         read (107,*,iostat=eof) name, pco%hyd
-        if (eof < 0) exit               
+        if (eof < 0) exit
+     !! routing units
+        read (107,*,iostat=eof) name, pco%ru
+        if (eof < 0) exit    
         exit
       end do
       end if

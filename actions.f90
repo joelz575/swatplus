@@ -244,7 +244,19 @@
             hlt(ihru)%pet = 0.
               
           !drainage water management
-          case ("drainage")
+          case ("drainage") !! set drain depth for drainage water management
+            ob_num = d_tbl(id)%act(iac)%ob_num
+            if (ob_num == 0) ob_num = ob_cur
+            iihru = ob_num
+            hru(iihru)%lumv%sdr_dep = d_tbl(id)%act(iac)%const
+            if (hru(iihru)%lumv%sdr_dep > 0) then
+              do jj = 1, soil(iihru)%nly
+                if (hru(iihru)%lumv%sdr_dep < soil(iihru)%phys(jj)%d) hru(iihru)%lumv%ldrain = jj
+                if (hru(iihru)%lumv%sdr_dep < soil(iihru)%phys(jj)%d) exit
+              end do
+            else
+                hru(iihru)%lumv%ldrain = 0
+            endif 
               
           !land use change
           case ("lu_change")

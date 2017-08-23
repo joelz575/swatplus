@@ -65,7 +65,6 @@
         ihyd_db = hru(ihru)%dbs%hyd
         isol = hru(ihru)%dbs%soil
         ifield_db = hru(ihru)%dbs%field
-       ! isol_db = hru(ihru)%dbs%soil
         hru(ihru)%topo%name = topo_db(itopo_db)%name
         hru(ihru)%topo%elev = ob(iob)%elev
         hru(ihru)%topo%slope = topo_db(itopohd_db)%slope

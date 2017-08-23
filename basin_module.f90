@@ -230,6 +230,7 @@
         type(print_interval) :: recall          !!  recall output
         ! HYDIN AND HYDOUT
         type(print_interval) :: hyd             !!  hydin_output and hydout_output
+        type(print_interval) :: ru
       end type basin_print_codes
       type (basin_print_codes) :: pco
       

@@ -11,17 +11,10 @@
 !!                                   |day
 !!    auto_wstr(:)    |none or mm    |water stress factor which triggers auto
 !!                                   |irrigation
-!!    iida            |julian date   |day being simulated (current julian date)
 !!    wstrs_id(:)     |none          |water stress identifier:
 !!                                   |1 plant water demand
 !!                                   |2 soil water deficit
 !!    flag                           |1 = manual 2 = auto
-!!    inum1           |none          |reservoir number
-!!    ipot(:)         |none          |number of HRU (in subbasin) that is ponding
-!!                                   |water--the HRU that the surface runoff from
-!!                                   |current HRU drains into. This variable is
-!!                                   |used only for rice paddys or closed
-!!                                   |depressional areas
 !!    irramt(:)       |mm H2O        |depth of irrigation water applied to
 !!                                   |HRU
 !!    irrno(:)        |none          |irrigation source location
@@ -78,10 +71,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
-      use jrw_datalib_module
+      use parm, only : soil, hru, irrsc, irrno, nirr, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
+         irr_sc, irr_no, irr_asq, irr_noa, irr_sca, irramt, irr_mx, aird, irr_eff, nhru, sq_rto
+      use jrw_datalib_module, only : potdb
       use reservoir_module
-      use plant_module
 
       integer :: k, flag
       real :: cnv, vmm, vol, vmxi

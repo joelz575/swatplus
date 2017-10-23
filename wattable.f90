@@ -6,11 +6,7 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
-!!                               |into soil (enters soil)
 !!    ihru        |none          |HRU number
-!!    voltot      |mm            |total volume of cracks expressed as depth
-!!                               |per unit area
 !!    watab       |mm            |water table based on 30 day antecedent
 !!                               | climate (precip,et)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -18,16 +14,7 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    latlyr      |mm H2O        |lateral flow in soil layer for the day
-!!    latq(:)     |mm H2O        |total lateral flow in soil profile for the 
-!!                               |day in HRU
-!!    lyrtile     |mm H2O        |drainage tile flow in soil layer for day
-!!    qtile       |mm H2O        |drainage tile flow in soil profile for the day
-!!    sepday      |mm H2O        |micropore percolation from soil layer
-!!    sepbtm(:)   |mm H2O        |percolation from bottom of soil profile for
-!!                               |the day in HRU
-!!    sw_excess   |mm H2O        |amount of water in excess of field capacity
-!!                               |stored in soil layer on the current day
+
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -42,6 +29,9 @@
 !!    SWAT: percmacro, percmicro
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
+      use parm, only : rfqeo_30d,eo_30d, wtab, wtab_mx, wtab_mn, nd_30, ihru, pet_day, precipday,  &
+        qday 
 
       integer :: j, j1
 

@@ -6,7 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i_mo        |none          |current month being simulated
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -24,18 +23,20 @@
 !!                               |day in HRU
 !!    rhd(:)      |none          |relative humidity for the day in HRU
 !!    hrupstd(:,:,:)|varies      |HRU daily pesticide output array
-!!    sub_bd(:)   |Mg/m^3        |average bulk density for subbasin
 !!    sub_etday(:)|mm H2O        |actual evapotranspiration on day in subbasin
-!!    sub_orgn(:) |kg N/ha       |organic nitrogen in soil of subbasin
-!!    sub_pst(:,:)|kg/ha         |pesticide in soil of subbasin
-!!    sub_surfq(:)|mm H2O        |surface runoff generated on day in subbasin
 !!    u10(:)      |m/s           |wind speed for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
-      use parm
+     
+      use parm, only : cbodu,chl_a,clayld,cnday,dayl,doxq,emitc_d,etday,foc_d,grainc_d,grayld,hhsedy,   &
+         hhsurfq,hru,hru_ra,hru_rmx,i_mo,irr_flag,lagyld,latc_d,latno3,latq,mhru,npl,nplnt,nppc_d,      &
+         par,percc_d,percn,petmeas,pot,pplnt,qdr,rcn,rhd,rsdc_d,rspc_d,sagyld,sanyld,sedc_d,sedminpa,   &
+         sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,soil,sol,sol_sumno3,sol_sumsolp,stoverc_d,       &
+         sub_etday,sub_hhsedy,sub_hhwtmp,sub_pet,sub_subp_dt,surfq,                                     &
+         surfqc_d,surqno3,surqsolp,tileno3,tmn,tmpav,tmx,u10,ubnrunoff,ubntss
+            
       use organic_mineral_mass_module
 
       !!initialize variables at beginning of day
@@ -71,14 +72,10 @@
       grayld = 0.
 
       sepbtm = 0.
-      sub_bd = 0.
       sub_etday = 0.
       sub_hhwtmp = 0.
-      sub_orgn = 0.
       sub_pet = 0.
-      sub_pst = 0.
       sub_dgra = 0.
-      sub_surfq = 0.
       surfq = 0.
       surqno3 = 0.
       surqsolp = 0.

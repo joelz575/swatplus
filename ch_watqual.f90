@@ -32,8 +32,6 @@
 !!    dayl(:)      |hours         |day length for current day
 !!    disolvp(:)   |mg P/L        |dissolved phosphorus concentration in reach
 !!    hru_ra(:)    |MJ/m^2        |solar radiation for the day in HRU
-!!    inum1        |none          |reach number
-!!    inum2        |none          |inflow hydrograph storage location number
 !!    k_l          |MJ/(m2*hr)    |half saturation coefficient for light
 !!    k_n          |mg N/L        |michaelis-menton half-saturation constant
 !!                                |for nitrogen
@@ -76,7 +74,6 @@
 !!    rs5(:)       |1/day         |organic phosphorus settling rate in reach at
 !!                                |20 deg C
 !!    rttime       |hr            |reach travel time
-!!    rtwtr        |m^3 H2O       |flow out of reach
 !!    tfact        |none          |fraction of solar radiation computed in the
 !!                                |temperature heat balance that is
 !!                                |photosynthetically active
@@ -199,6 +196,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
+      use parm, only : soxy
 
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
       real :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra

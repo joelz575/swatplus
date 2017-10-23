@@ -12,6 +12,10 @@
 !!    ht1== deposition: write to deposition.out
 !!    ht2== outflow from inflow: added to hru generated flows
 
+      use parm, only : hru, ihru, usle_cfac, ls_overq, precipday
+      use hydrograph_module, only : ob, ht1, ht2
+      use jrw_datalib_module, only : field_db
+
       j = ihru
 
 !!    compute infiltration from surface runon to next landscape unit

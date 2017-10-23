@@ -80,6 +80,10 @@
 
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : pcom, hru, soil, rsdc_d, tnyld, grainc_d, auto_eff, hrupest, harveff, idp, ihru,  &
+        ipl, npmx
+      use jrw_datalib_module, only: harvop_db, pldb
+      use constituent_mass_module
       
       integer :: j, k
       integer, intent (in) :: jj, iplant, iharvop 

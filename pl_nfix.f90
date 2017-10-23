@@ -6,8 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr       |none          |current year of simulation
-!!    hru_dafr(:) |km**2/km**2   |fraction of watershed area in HRU
 !!    ihru        |none          |HRU number
 !!    uno3d       |kg N/ha       |plant nitrogen deficiency for day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -35,6 +33,7 @@
 
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : soil, pcom, uno3d, nplnt, ihru, fixn, ipl 
 
       integer :: j, l
       real :: uno3l, fxw, sumn, fxn, fxg, fxr

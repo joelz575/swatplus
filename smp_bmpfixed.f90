@@ -48,9 +48,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : hru, sedyld, ihru, sedminpa, sedminps, sedorgp, sedorgn, surqsolp, surqno3,   &
+         latno3, bactrolp, bactrop, bactsedlp, bactsedp 
+        
 !!	set variables
       j = ihru
-
 
 !! Subtract reductions from sediment, nutrients, bacteria, NOT SURFACE RUNOFF to protect water balance
 !! Sediment

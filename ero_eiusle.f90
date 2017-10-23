@@ -47,6 +47,8 @@
 
       use climate_parms
       use hydrograph_module
+      use parm, only : hru, usle_ei, usle_eifac, ovrlnd, ihru, i_mo, iwgen, peakr, precipday, snomlt,  &
+        usle_ei, usle_eifac
 
       integer :: j
       real :: ab, xa, preceff, ajp, xb, pkrf, pkrf30

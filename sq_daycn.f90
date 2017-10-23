@@ -36,9 +36,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : urbdb
+      use parm, only : hru, cnday, surfq, ihru, precipday
       
-      integer :: j, ulu
+      integer :: j
       real :: r2, bb, pb, cnimp, surfqimp
 
       j = ihru

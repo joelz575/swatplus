@@ -31,7 +31,6 @@
 
       use time_module
       use hydrograph_module
-      use hru_module
       use ru_module
       use channel_module
       use hru_lte_module
@@ -39,6 +38,7 @@
       use sd_channel_module
       use reservoir_module
       use organic_mineral_mass_module
+      use parm, only : ihru
       
       real, dimension(7) :: val = 0.
 
@@ -183,7 +183,6 @@
               end select
               
               rec_d(irec) = ob(icmd)%hd(1)
-              call recall_output
 
           !case ("exco")   ! export coefficient hyds are set at start
 
@@ -214,13 +213,10 @@
         icmd = ob(icmd)%cmd_next
         
       end do
-          
-      if (time%yrs > pco%nyskip) then
-          call recall_output
-          call obj_output
-      end if
-      
+
       if (time%yrs > pco%nyskip .and. time%step == 0) then
+        call obj_output
+        
         do isd = 1, sp_ob%hru_lte
           call hru_lte_output (isd)
         end do
@@ -247,7 +243,11 @@
         
         do j = 1, sp_ob%sub
           call ru_output(j)
-        end do 
+        end do
+        
+        do j = 1, sp_ob%recall
+          call recall_output (j)
+        end do
         
         call hydin_output   !if all output is no, then don't call
         if (db_mx%lsu_elem > 0) call basin_output

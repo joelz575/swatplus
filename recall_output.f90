@@ -1,8 +1,10 @@
-      subroutine recall_output
+      subroutine recall_output (irec)
       
       use time_module
       use basin_module
       use hydrograph_module
+      
+      integer, intent (in) :: irec
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs SUBBASIN variables on daily, monthly and annual time steps
@@ -13,7 +15,6 @@
 !!                 'day'   = daily
      
         !! sum monthly variables
-        do irec = 1, sp_ob%recall
         rec_m(irec) = rec_m(irec) + rec_d(irec)
         
         !! daily print - RECALL
@@ -29,6 +30,7 @@
 
         !! monthly print - RECALL
         if (time%end_mo == 1) then
+          rec_y(irec) = rec_y(irec) + rec_m(irec)
           if (pco%recall%m == 'y') then
             write (4501,100) time%mo, time%yrc, irec, rec_m(irec)
             if (pco%csvout == 'y') then
@@ -40,6 +42,7 @@
 
         !! yearly print - RECALL
         if (time%end_yr == 1) then
+          rec_a(irec) = rec_a(irec) + rec_y(irec)
           if (pco%recall%y == 'y') then
             write (4502,102) '     0', time%yrc, irec, rec_y(irec)
             if (pco%csvout == 'y') then
@@ -58,9 +61,7 @@
               write (4507,'(*(G0.3,:","))') '     0', time%yrs, irec, rec_a(irec)  
             end if 
           end if
-      
-      end do        ! sp_ob%recall
-        
+
       return
       
 100   format (2i6,i8,25f15.3)

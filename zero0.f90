@@ -3,7 +3,15 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine initializes the values for some of the arrays 
 
-      use parm
+      use parm, only : afrt_surface,aird,auto_eff,auto_napp,auto_nstrs,auto_nyr,auto_wstr,bact,bio_eat, bio_init,    &
+       bio_min,bio_targ,bio_trmp,brt,bss,canstor,cf,cfdec,cfh,cfrt_id,cfrt_kg,ch_k,cn1,cn2,cn3,cnop,cpst_id,cumei,   &
+       cumeira,cumrai,cumrt,divmax,dormhr,driftco,fert_days,filterw,flowmin,frac_harvk,frt_kg,frt_surface,grz_days,  &
+       hi_targ,hru,hru_dafr,hrupest,iafrttyp,icfrt,icpst,icr,idapa,iday_fert,ifirsta,ifirstatmo,ifrt_freq,igrz,      &
+       iopera,irr_asq,irr_mx,irr_no,irr_noa,irr_sc,irr_sca,irramt,irrno,irrsc,irrsq,isep,isep_ly,iseptic,itb,        &
+       lai_init,latno3,manure_id,mcr,mo_atmo,ndcfrt,nop,npno,ntil,orgn_con,orgp_con,par,phubase,qird,ranrns_hru,     &
+       sed_con,sepcrk,sol_rd,sol_sumsolp,soln_con,solp_con,soxy,sq_rto,sstmaxd,stmaxd,strsa_sum,strsn_sum,           &
+       strsp_sum,strsw_sum,stsol_rd,tileq,tmx,uh,wstrs_id,wt_shall,wtab,yr_skip
+
 
        ifirstatmo = 1
        mo_atmo = 0

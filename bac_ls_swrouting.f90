@@ -27,7 +27,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use bacteria_module
             
       integer :: ibtyp
       real :: sol_bacsol, sol_prk, sol_wt, baclch_out

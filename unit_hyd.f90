@@ -15,16 +15,10 @@
 !!                               |between the transfer of water from the soil
 !!                               |to the drain tile and the release of the
 !!                               |water from the drain tile to the reach.
-!!    hru_dafr(:) |km2/km2       |fraction of total watershed area contained
-!!                               |in HRU
 !!    hru_km(:)   |km2           |area of HRU in square kilometers
-!!    hru_sub(:)  |none          |subbasin in which HRU is located
 !!    lat_ttime(:)|days          |lateral flow travel time
-!!    nhru        |none          |number of HRUs in watershed
 !!    slsoil(:)   |m             |slope length for lateral subsurface flow
 !!    slsubbsn(:) |m             |average slope length for subbasin
-!!    sub_fr(:)   |none          |fraction of total watershed area contained in
-!!                               |subbasin
 !!    tconc(:)     |hr           |time of concentration
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
@@ -32,14 +26,7 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    brt(:)      |none          |fraction of surface runoff within the subbasin
-!!                               |which takes 1 day or less to reach the 
-!!                               |subbasin outlet
 !!    lat_ttime(:)|none          |Exponential of the lateral flow travel time
-!!    tconc(:)   |hr             |time of concentration for hru
-!!    t_ov(:)     |hr            |time for flow from farthest point in subbasin
-!!                               |to enter a channel
-!!    tconc(:)    |hr            |time of concentration for HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -58,7 +45,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use parm, only : itb, mhru, tconc, uh
+    
       use climate_parms
       use jrw_datalib_module
       use basin_module

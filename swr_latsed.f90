@@ -26,6 +26,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
+      use parm, only : hru, soil, ihru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, sedorgn,  &
+         sedorgp, latq 
 
       integer :: j
 

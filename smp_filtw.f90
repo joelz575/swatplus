@@ -93,7 +93,11 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-
+      use parm, only : hru, fsred, sedorgn, surqno3, sedorgp, sedminpa, sedminps, surqsolp, sedyld, sanyld, &
+        silyld, clayld, sagyld, lagyld, trapeff, hrupest, hru_dafr, ihru, bactrolp, bactrop, bactsedlp,     &
+        bactsedp, npmx, sbactrolp, sbactrop, sbactsedlp, sbactsedp 
+      use constituent_mass_module
+      
       integer :: j, k
 
       j = 0

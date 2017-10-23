@@ -19,7 +19,6 @@
 !!                               |1 first day of potential ET data not located
 !!                               |  in file
 !!    i_mo        |none          |current month of simulation
-!!    nhru        |none          |number of HRUs in watershed
 !!    nstep       |none          |number of lines of rainfall data for each
 !!                               |day
 !!    welev(:)    |m             |elevation of weather station used to compile
@@ -41,8 +40,6 @@
 !!    petmeas     |mm H2O        |potential ET value read in for day
 !!    wst(:)%weat%ts(:) |mm H2O        |precipitation for the time step during the
 !!                               |day in HRU
-!!    rhd(:)      |none          |relative humidity for the day in HRU
-!!    u10(:)      |m/s           |wind speed for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -72,12 +69,13 @@
       use climate_parms
       use basin_module
       use time_module
-
+      use parm, only : i_mo, petmeas
+      
       integer :: k, inum3sprev, npcpbsb, ii, iyp, idap, ib
       real :: daylbsb, tdif, pdif, ratio
       
       !! Precipitation:
-      do iwst = 1, mwst
+      do iwst = 1, db_mx%wst
         iwgn = wst(iwst)%wco%wgn
         ipg = wst(iwst)%wco%pgage
         if (wst(iwst)%wco_c%pgage == "sim") then
@@ -111,7 +109,7 @@
       end do
       
 !! Temperature: 
-      do iwst = 1, mwst
+      do iwst = 1, db_mx%wst
         iwgn = wst(iwst)%wco%wgn
         call cli_weatgn(iwgn)
         if (wst(iwst)%wco_c%tgage == "sim") then
@@ -129,7 +127,7 @@
       end do
 
 !! Solar Radiation: 
-      do iwst = 1, mwst
+      do iwst = 1, db_mx%wst
         iwgn = wst(iwst)%wco%wgn
         call cli_clgen(iwgn)
         if (wst(iwst)%wco_c%sgage== "sim") then
@@ -144,7 +142,7 @@
       end do
         
 !! Relative Humidity: 
-      do iwst = 1, mwst
+      do iwst = 1, db_mx%wst
         iwgn = wst(iwst)%wco%wgn
         if (wst(iwst)%wco_c%hgage == "sim") then
           call cli_rhgen(iwgn)
@@ -158,7 +156,7 @@
       end do 
 
 !! Wind Speed: 
-      do iwst = 1, mwst
+      do iwst = 1, db_mx%wst
         iwgn = wst(iwst)%wco%wgn
         if (wst(iwst)%wco_c%wgage == "sim") then
           call cli_wndgen(iwgn)
@@ -184,7 +182,7 @@
             if (iyp == time%yrc .and. idap == time%idaf) exit
           end do
         end if
-        do iwst = 1, mwst
+        do iwst = 1, db_mx%wst
           wst(iwst)%weat%pet = petmeas
         end do
       else
@@ -192,7 +190,7 @@
         !! extraterrestrial radiation
         !! 37.59 is coefficient in equation 2.2.6 !!extraterrestrial
         !! 30.00 is coefficient in equation 2.2.7 !!max at surface
-        do iwst = 1, mwst
+        do iwst = 1, db_mx%wst
           ramm = wst(iwst)%weat%solradmx * 37.59 / 30. 
           if (wst(iwst)%weat%tmax > wst(iwst)%weat%tmin) then
             xl = 2.501 - 2.361e-3 * wst(iwst)%weat%tave
@@ -206,7 +204,7 @@
       end if
 
 !! Base Zero Heat Units
-      do iwst = 1, mwst
+      do iwst = 1, db_mx%wst
         iwgn = wst(iwst)%wco%wgn
         if (wgn_pms(iwgn)%phutot > 0.) then
           if (wst(iwst)%weat%tave > 0.) wst(iwst)%weat%phubase0 = wst(iwst)%weat%phubase0   &
@@ -219,7 +217,7 @@
       
       
 !! Climate Change Adjustments !!
-      do iwst = 1, mwst
+      do iwst = 1, db_mx%wst
         wst(iwst)%weat%precip = wst(iwst)%weat%precip * (1. + wst(iwst)%rfinc(i_mo) / 100.)
         if (wst(iwst)%weat%precip < 0.) wst(iwst)%weat%precip = 0.
         if (time%step > 0) then

@@ -4,7 +4,20 @@
 
 !!    this subroutine zeros all array values used in urban modeling
 
-      use parm
+      use parm, only : cn2,dratio,dtp_addon,dtp_cdis,dtp_coef1,dtp_coef2,dtp_coef3,dtp_depweir,dtp_diaweir,     &
+         dtp_evrsv,dtp_expont,dtp_flowrate,dtp_imo,dtp_intcept,dtp_ised,dtp_ivol,dtp_iyr,dtp_numstage,         &
+         dtp_numweir,dtp_onoff,dtp_parm,dtp_pcpret,dtp_reltype,dtp_subnum,dtp_totwrwid,dtp_wdratio,dtp_weirdim,&
+         dtp_weirtype,dtp_wrwid,ft_alp,ft_bpw,ft_dc,ft_dep,ft_dp,ft_fc,ft_fsa,ft_h,ft_k,ft_pd,ft_por,ft_qfg,   &
+         ft_qin,ft_qout,ft_qpnd,ft_qsw,ft_sa,ft_sed_cumul,ft_sedpnd,hhsedy,hhsurf_bs,hrnopcp,init_abstrc,irmmdt, &
+         nop,num_ri,num_sf,ovrlnd,ovrlnd_dt,par,ri_dd,ri_dep,ri_dim,ri_evrsv,ri_fr,ri_im,ri_iy,ri_k,ri_luflg,  &
+         ri_ndt,ri_pumpv,ri_qi,ri_qloss,ri_sa,ri_sed,ri_sed_cumul,ri_sedi,ri_subkm,ri_vol,sci,sf_dim,          &
+         sf_fr,sf_im,sf_iy,sf_ptp,sf_typ,sp_bpw,sp_dp,sp_k,sp_pd,sp_pvol,sp_qfg,sp_qi,sp_sa,                   &               
+         sp_sed_cumul,sp_sede,sp_sedi,sub_cn2,sub_ha_imp,sub_ha_urb,subdr_ickm,surf_bs,tss_den,ubnrunoff,      &
+         ubntss,wtp_dim,wtp_dp,wtp_evrsv,wtp_extdepth,wtp_hydeff,wtp_imo,wtp_iyr,wtp_lenwdth,wtp_onoff,        &
+         wtp_pdepth,wtp_pdia,wtp_plen,wtp_ploss,wtp_pmann,wtp_pvol,wtp_qi,wtp_sdc1,wtp_sdc2,                   &
+         wtp_sdc3,wtp_sdexp,wtp_sdintc,wtp_sdslope,wtp_sdtype,wtp_sede,wtp_sedi,wtp_stagdis
+     
+      
 	sci = 0.
 
 	hhsurf_bs = 0. 
@@ -70,23 +83,8 @@
 	dtp_reltype = 0
 	dtp_onoff = 0
 	dtp_evrsv = 0.
-	dtp_inflvol = 0.
 	dtp_totwrwid = 0.
 	dtp_parm = 0.
-	dtp_wdep = 0.
-	dtp_totdep = 0.
-	dtp_watdepact = 0.
-	dtp_outflow = 0.
-	dtp_totrel = 0.
-	dtp_backoff = 0.
-	dtp_seep_sa = 0.
-	dtp_evap_sa = 0.
-	dtp_pet_day = 0.
-	dtp_pcpvol = 0.
-	dtp_seepvol = 0.
-	dtp_evapvol = 0.
-	dtp_flowin = 0.
-	dtp_backup_length = 0.
 	dtp_intcept = 0.
 	dtp_expont = 0.
 	dtp_coef1 = 0.
@@ -95,7 +93,6 @@
 	dtp_wdratio = 0.
 	dtp_depweir = 0.
 	dtp_diaweir = 0.
-	dtp_retperd = 0.
 	dtp_pcpret = 0.
 	dtp_cdis = 1.
 	dtp_wrwid = 0.
@@ -133,7 +130,6 @@
       ri_pumpv = 0
       
       !! wet pond
-      wtp_subnum = 0
       wtp_onoff = 0
       wtp_imo = 0
       wtp_iyr = 0

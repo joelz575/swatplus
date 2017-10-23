@@ -18,9 +18,7 @@
 !!    surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
 !!                               |day
 !!    surfq(:)    |mm H2O        |surface runoff generated in HRU on the
-!!                               |current day
-!!    hhqday(:)   |mm H2O        |surface runoff generated in HRU on the
-!!                               |current hour at current day  
+!!                               |current day 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -30,9 +28,7 @@
 !!    qday        |mm H2O        |surface runoff loading to main channel
 !!                               |from HRU on current day
 !!    surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
-!!                               |day
-!!    hhqday(:)   |mm H2O        |surface runoff generated in HRU on the
-!!                               |current hour at current day  
+!!                               |day 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -48,6 +44,7 @@
 
       use basin_module
       use time_module
+      use parm, only : surf_bs, surfq, brt, hhsurf_bs, hhsurfq, ihru, bsprev, qday 
 
       integer :: j
 

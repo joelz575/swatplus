@@ -44,6 +44,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : i_mo, wgncur
+
       real :: tmxg, tmng, tamp, txxm
 
       tamp = .5 * (wgn(iwgn)%tmpmx(i_mo) - wgn(iwgn)%tmpmn(i_mo))

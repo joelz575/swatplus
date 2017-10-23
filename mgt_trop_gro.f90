@@ -34,6 +34,8 @@
 
       use climate_parms
       use basin_module
+      use parm, only : pcom, soil, ihru, idp, ipl
+      use jrw_datalib_module, only:  pldb
 
       real :: resnew
       integer :: j

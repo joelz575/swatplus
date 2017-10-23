@@ -38,8 +38,6 @@
 !!                              |on day
 !!    hrtwtr(:)     |m^3 H2O    |water leaving reach during hour
 !!    ihout         |none       |outflow hydrograph location
-!!    inum1         |none       |reach number
-!!    inum2         |none       |inflow hydrograph location
 !!    nitraten(:)   |mg N/L     |nitrate concentration in reach
 !!    nitriten(:)   |mg N/L     |nitrite concentration in reach
 !!    organicn(:)   |mg N/L     |organic nitrogen concentration in reach
@@ -95,7 +93,8 @@
       use basin_module
       use jrw_datalib_module
       use time_module
-      
+      use parm, only : rch_gra, rch_lag, rch_sag, rtwtr 
+           
       real :: sedcon, bedvol, sedpest, wtmp
 
       wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave

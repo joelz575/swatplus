@@ -100,30 +100,6 @@
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
 
-      type bacteria_db
-        character(len=15) :: bactnm         
-        real :: do_soln = 0.       !! 1/day         |Die-off factor for pers bac in soil solution
-        real :: gr_soln = 0.       !! 1/day         |Growth factor for pers bac in soil solution
-        real :: do_sorb = 0.       !! 1/day         |Die-off factor for pers bac adsorbed to soil part
-        real :: gr_sorb = 0.       !! 1/day         |Growth factor for pers bac adsorbed to soil part
-        real :: kd = 0.            !! none          |Bact part coeff bet sol and sorbed phase in surf runoff
-        real :: t_adj = 0.         !! none          |temp adj factor for bac die-off/growth
-        real :: washoff = 0.       !! none          |frac of pers bac on foliage washed off by a rainfall event
-        real :: do_plnt = 0.       !! 1/day         |Die-off factor for pers bac on foliage
-        real :: gr_plnt = 0.       !! 1/day         |Growth factor for persistent bacteria on foliage
-        real :: fr_manure = 0.     !! none          |frac of manure containing active colony forming units (cfu)
-        real :: perco = 0.         !! none          |bacteria perc coeff ratio of solution bacteria in surf layer
-        real :: det_thrshd         !! # cfu/m^2     |Threshold detection level for less pers bac when bact levels
-                                                    !drop to this amt the model considers bac in the soil to be 
-                                                    !insignificant and sets the levels to zero
-        real :: do_stream = 0.     !! 1/day         |Die-off factor for persistent bacteria in streams
-        real :: gr_stream = 0.     !! 1/day         |growth factor for persistent bacteria in streams
-        real :: do_res = 0.        !! 1/day         |Die-off factor for less persistent bacteria in reservoirs
-        real :: gr_res = 0.        !! 1/day         |growth factor for less persistent bacteria in reservoirs
-        real :: swf = 0.           !! cfu           |fraction of manure containing active colony forming units
-        real :: conc_min
-      end type bacteria_db
-      type (bacteria_db), dimension(:), allocatable  :: bac_db
            
       type fertilizer_db
         character(len=16) :: fertnm = ' '
@@ -154,7 +130,7 @@
         real :: decay_s = 0.          !! none                |exp of the rate const for degradation of the pest in soil
         integer :: nope  = 0          !! none                |seq number of pest       
       end type pesticide_cp
-      type (pesticide_cp), dimension(:),allocatable, save::pstcp
+      type (pesticide_cp), dimension(:),allocatable, save:: pstcp
       
       type tillage_db
         character(len=8) :: tillnm = ' '
@@ -929,7 +905,7 @@
       type (soil_database), dimension(:), allocatable :: soildb
       
       type plant_db
-        character(len=16) :: plantnm = 'frsd ' !N/A    |4 letter char code represents crop name
+        character(len=16) :: plantnm = 'frsd ' !N/A  |4 letter char code represents crop name
         integer :: idc = 7        !none               |crop/landcoover category
                                   !                   |1 warm annual legume
                                   !                   |2 cold season annual legume
@@ -1361,10 +1337,20 @@
         real :: ccoef = 1.            !              |depth exponent coefficient for bedding material
       end type reservoir_weir_outflow
       type (reservoir_weir_outflow),dimension(:),allocatable :: res_weir
+      
+      type wind_erosion_factors
+        real :: bare             !!t/d      |erosion from bare soil
+        real :: veg              !!         |vegetation factor
+        real :: rough            !!         |roughness factor
+        real :: unshelt          !!         |unsheltered distance factor
+        real :: erod             !!         |wind erodibility factor
+      end type wind_erosion_factors
+      type (wind_erosion_factors) :: wind_factors
+         
 
     contains
 
-      include 'bac_lsparms_read.f90'
+      !include 'bac_lsparms_read.f90'
       include 'fertparm_read.f90'
       include 'pestparm_read.f90'
       include 'plantparm_read.f90'

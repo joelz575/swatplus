@@ -7,13 +7,8 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hru_sub(:)  |none          |subbasin in whic HRU/reach is located
 !!    ihout       |none          |outflow hydrograph storage location number
-!!    inum1       |none          |reach number
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    rchstor(:)  |m^3 H2O       |water stored in reach
-!!    sub_pet(:)  |mm H2O        |potential evapotranspiration for day in
-!!                               |subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -28,8 +23,6 @@
 !!    hrchwtr(:)  |m^3 H2O       |water stored in reach at beginning of hour
 !!    hrtwtr(:)   |m^3           |water leaving reach in hour
 !!    hsdti(:)    |m^3/s         |flow rate in reach for hour
-!!    peakr       |m^3/s         |peak rate of flow in channel
-!!    pet_day     |mm H2O        |potential evapotranspiration on day
 !!    qdbank      |m^3 H2O       |streamflow contribution from bank storage
 !!    rcharea     |m^2           |cross-sectional area of flow
 !!    rchdep      |m             |depth of flow on day

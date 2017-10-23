@@ -33,7 +33,6 @@
 !!    dtp_addon(:,:)  |m            |The distance between spillway levels
 !!    dtp_flowrate(:,:)|m3/sec      |Maximum discharge from each stage of the weir/hole
 !!    dtp_cdis(:,:)  |none          |Discharge coeffieicne for weir/orifice flow
-!!    dtp_retperd(:,:)|years        |Return period at different stages
 !!    dtp_pcpret(:,:)|mm            |precipitation for different return periods (not used)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 

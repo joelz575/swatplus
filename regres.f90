@@ -48,7 +48,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use parm, only : hru, ihru, iwgen, precipday 
       use climate_parms
       use jrw_datalib_module
 

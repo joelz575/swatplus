@@ -30,7 +30,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 !!      integer, intent (in) :: j
- 
+
+      use parm, only : i_mo, wgncur
+
       real :: rx, rav
 
       rav = wgn(iwgn)%solarav(i_mo) / (1. - 0.5 * wgn_pms(iwgn)%pr_wdays(i_mo))

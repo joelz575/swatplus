@@ -46,7 +46,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : sched, mgt 
+      use parm, only : pcom, hru, nop, yr_skip, phubase, ihru, iida, ipl
 
       integer :: j
       real :: aphu, tillphu

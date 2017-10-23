@@ -51,6 +51,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : wgncur, wgnold
+
       integer, dimension (2) :: zshape
       integer :: n, l
       real, dimension (3,3) :: a, b

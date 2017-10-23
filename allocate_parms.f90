@@ -26,7 +26,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 
-      use parm
+      use parm      
       use time_module
       
 !! initialize variables    
@@ -90,13 +90,9 @@
       if (time%step > 0) allocate (hhqday(mhru,time%step))
       allocate (hru1(msub))
       allocate (hrutot(msub))
-      allocate (sub_bd(msub))
       allocate (sub_etday(msub))
       allocate (sub_fr(msub))
       allocate (sub_km(msub))
-      allocate (sub_orgn(msub))
-      allocate (sub_surfq(msub))
-      allocate (sub_pst(mpst,msub))
       allocate (sub_hhwtmp(msub,time%step))   ! 24 changed to nstep 4 urban modeling  Oct. 19,2007
       allocate (uh(mhru,time%step+1))         !! was 49 changed to nstep  OCt22, 2007
 
@@ -352,17 +348,12 @@
         dtp_stagdis(mhyd),dtp_reltype(mhyd),dtp_onoff(mhyd))
 	
 	allocate(dtp_evrsv(msub),                                               &
-        dtp_inflvol(msub),dtp_totwrwid(msub),dtp_parm(msub),                &
-        dtp_wdep(msub),dtp_totdep(msub),dtp_watdepact(msub),                &
-        dtp_outflow(msub),dtp_totrel(msub),dtp_backoff(msub),               &
-        dtp_seep_sa(msub),dtp_evap_sa(msub),dtp_pet_day(msub),              &
-        dtp_pcpvol(msub),dtp_seepvol(msub),dtp_evapvol(msub),               &
-        dtp_flowin(msub),dtp_backup_length(msub),dtp_intcept(msub),         &
+        dtp_totwrwid(msub),dtp_parm(msub), dtp_intcept(msub),               &
         dtp_expont(msub),dtp_coef1(msub),dtp_coef2(msub),                   &
         dtp_coef3(msub),dtp_ivol(msub),dtp_ised(msub))
  
   	allocate(dtp_wdratio(msub,10),dtp_depweir(msub,10),                     &
-        dtp_diaweir(msub,10),dtp_retperd(msub,10),dtp_pcpret(msub,10),      &
+        dtp_diaweir(msub,10),dtp_pcpret(msub,10),      &
         dtp_cdis(msub,10),dtp_flowrate(msub,10),                            &
         dtp_wrwid(msub,10),dtp_weirtype(msub,10),dtp_weirdim(msub,10),      &
         dtp_addon(msub,10)) 
@@ -382,7 +373,7 @@
       allocate(num_ri(msub), ri_pmpvol(10,time%step),hrnopcp(mhru,0:time%step), &
          ri_qloss(10,time%step))
 
-      allocate(wtp_subnum(mhyd),wtp_onoff(mhyd),wtp_imo(mhyd),           &
+      allocate(wtp_onoff(mhyd),wtp_imo(mhyd),           &
         wtp_iyr(mhyd),wtp_dim(mhyd),wtp_stagdis(mhyd),wtp_sdtype(mhyd),  &
         wtp_pvol(mhyd),wtp_pdepth(mhyd),wtp_sdslope(mhyd),               &
         wtp_lenwdth(mhyd),wtp_extdepth(mhyd),wtp_hydeff(mhyd),           &

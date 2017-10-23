@@ -11,7 +11,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!
 
-      use parm
+      use parm, only : hhsurfq, ihru, qday 
       
       character (len=3) :: ihtyp
       
@@ -20,6 +20,7 @@
       cnv_m3 = 1000. * ru(isub)%da_km2
       
       hyd_flo = 0.
+      ru_d(isub) = hz
       ob(icmd)%hd(1) = hz
       ob(icmd)%hd(2) = hz
       ob(icmd)%hd(3) = hz

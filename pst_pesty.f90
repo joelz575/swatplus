@@ -1,4 +1,4 @@
-      subroutine pst_pesty(iwave)
+      subroutine pst_pesty
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates pesticide transported with suspended sediment 
@@ -11,16 +11,11 @@
 !!                                | 0: no pesticides used in HRU
 !!                                | 1: pesticides used in HRU
 !!    ihru          |none         |HRU number
-!!    iwave         |none         |flag to differentiate calculation of HRU and
-!!                                |subbasin sediment calculation
-!!                                |iwave = 0 for HRU
-!!                                |iwave = subbasin # for subbasin
 !!    npmx          |none         |number of different pesticides used in
 !!                                |the simulation
 !!    npno(:)       |none         |array of unique pesticides used in watershed
 !!    pst_enr(:,:)  |none         |pesticide enrichment ratio
 !!    sol_pst(:,:,:)|kg/ha        |amount of pesticide in layer in HRU
-!!    sub_pst(:,:)  |kg/ha        |amount of pesticide in layer in subbasin
 !!    zdb(:,:)      |mm           |division term from net pesticide equation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -45,7 +40,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      integer, intent (in) :: iwave
+      use parm, only : hru, soil, hrupest, sedyld, ihru, enratio, npmx
+      use constituent_mass_module
+
       integer :: j, k, kk
       real :: xx, conc, er
 
@@ -59,12 +56,7 @@
         kk = hru(j)%pst(k)%num_db
         if (kk > 0) then
           xx = 0.
-          if (iwave <= 0) then
-            xx = soil(j)%ly(1)%pst(k)
-          else
-            xx = sub_pst(kk,iwave)
-          end if
-
+          
           if (xx >= .0001) then
             conc = 0.
             er = 0.

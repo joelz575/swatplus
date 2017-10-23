@@ -14,7 +14,8 @@
 	! XX = 0.5 is the initial value that works OK for the range of values observed
 	! If a layer is only partially tilled then emix is corrected accordingly
 
-	
+	use parm, only : soil
+    
 	integer, intent (in) :: jj
       real, intent (in) :: bmix
       integer :: l, m1, m2

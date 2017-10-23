@@ -29,13 +29,19 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : bact, pcom, soil, ipl, manure_kg, sumlai
+      use bacteria_module, only : bac_db
+      use jrw_process_module
+      
+      real :: frt_t
+      
       if (bioms_tot > bioms_min) then
         gc = (1.99532 - erfc(1.333 * sumlai - 2.)) / 2.1
         if (gc < 0.) gc = 0.
         gc1 = 1. - gc
         do ibac = 1, bact(ibacdb)%num
           ibtyp = bact(ibacdb)%bac(ibac)%num_db
-          frt_t = bac_db(ibtyp)%swf * manure_kgh / 1000.
+          !frt_t = bac_db(ibtyp)%swf * manure_kg / 1000.
           do ipl = 1, pcom(j)%npl
             call bac_apply_plant (ibacdb, ibac, gc,frt_t,            &
                 bac_db(ibtyp)%kd, pcom(j)%plg(ipl)%bac(ibac),        &

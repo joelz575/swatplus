@@ -64,9 +64,9 @@
 !!    SWAT: Qman
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-      use parm
+      use parm, only : hru, ihru, wat_phi
+      
  
-
       integer :: jj, k
       real :: fps, d, b, p, a, qq1, rh, tt1, tt2, aa
       

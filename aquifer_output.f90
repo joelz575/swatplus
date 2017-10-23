@@ -2,6 +2,8 @@
       
       use time_module
       use basin_module
+      use aquifer_module
+      !use aquifer_module, only : aqu, aqu_m, aqu_y
       
       integer, intent (in) :: iaq
              

@@ -37,6 +37,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : soil, sepbtm, voltot, inflpcp, ihru, sepcrk, sepcrktot, volcrmin
+
+
       integer :: j, ly
       real :: crklch = 0.5, xx
 

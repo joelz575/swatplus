@@ -13,8 +13,6 @@
 !!    ch_s(2,:)   |m/m           |average slope of main channel
 !!    ch_si(:)    |m/m           |initial slope of main channel
 !!    ch_wdr(:)   |m/m           |channel width to depth ratio
-!!    inum1       |none          |reach number
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
 !!    rchdep      |m             |depth of flow on day
 !!    sdti        |m^3/s         |average flow on day in reach
@@ -59,6 +57,7 @@
 
       use basin_module
       use jrw_datalib_module
+      use parm, only : peakr, rch_gra, rch_lag, rch_sag, rcharea, rtwtr, sdti
       
       integer :: ch_d50type
       real :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase

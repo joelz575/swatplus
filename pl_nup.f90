@@ -10,7 +10,6 @@
 !!                                |equation
 !!    nup2(:)   |none           |2nd shape parameter for plant N uptake
 !!                                |equation
-!!    bioday      |kg             |biomass generated on current day in HRU
 !!    icr(:)      |none           |sequence number of crop grown within the
 !!                                |current year
 !!    idc(:)      |none           |crop/landcover category:
@@ -60,9 +59,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pldb
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : pcom, soil, uno3d, un2, nplnt, fixn, idp, ihru, ipl, rto_no3, sol_rd  
 
       integer :: j, icrop, l, ir
       real :: unmx, uno3l, gx

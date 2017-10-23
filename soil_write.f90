@@ -19,7 +19,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use parm, only : cnday, mhru, soil
       use basin_module
       use organic_mineral_mass_module
 

@@ -201,6 +201,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
+      use parm, only : soxy
 
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
       real :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra

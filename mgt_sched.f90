@@ -23,9 +23,16 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : mgt, pcomdb, pldb, harvop_db, tilldb, chemapp_db, grazeop_db,  &
+         sweepop_db, sweepop, sched
       use basin_module
       use hydrograph_module
+      use parm, only : pcom, soil, hru, ihru, imp_trig, phubase, ndeat, igrz, manure_id, grz_days, bio_trmp,       &
+        manure_kg, yr_skip, nop, bio_eat, sol_sumno3, sol_sumsolp, strsn_sum, strsp_sum, strstmp_sum, strsw_sum,   &
+        strsa_sum, irramt, irr_sc, irr_no, fertnh3, fertno3, fertorgn, fertorgp, fertsolp, idp, ipl, sweepeff,     &
+        yr_skip
+      
+      use constituent_mass_module
       
       j = ihru
       
@@ -203,8 +210,8 @@
             ipl = Max(1, mgt%op2)
           
             if (pco%mgtout ==  'y') then
-              write (2612, *) j, time%yrc, i_mo,iida, "         ","RELEASE/IMPOUND", phubase(j),    &
-                pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,                        &
+              write (2612, *) j, time%yrc, time%mo, time%day, "         ","RELEASE/IMPOUND", phubase(j),    &
+                pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,                                &
                 soil(j)%ly(1)%rsd, sol_sumno3(j), sol_sumsolp(j)
             end if
           

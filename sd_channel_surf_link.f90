@@ -3,6 +3,7 @@
       use hydrograph_module
       use sd_channel_module
       use ru_module
+      use parm, only : hru, ihru 
       
       character (len=3) :: iobtyp
       integer :: isdc, ics, imp, mres

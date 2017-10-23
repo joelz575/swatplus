@@ -1,4 +1,4 @@
-      subroutine nut_psed(iwave)
+      subroutine nut_psed
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the amount of organic and mineral phosphorus
@@ -7,20 +7,12 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    da_ha         |ha           |area of watershed in hectares
 !!    enratio       |none         |enrichment ratio calculated for day in HRU
 !!    erorgp(:)     |none         |organic P enrichment ratio, if left blank
 !!                                |the model will calculate for every event
-!!    hru_dafr(:)   |none         |fraction of watershed area in HRU
 !!    ihru          |none         |HRU number
-!!    inum1         |none         |subbasin number
-!!    iwave         |none         |flag to differentiate calculation of HRU and
-!!                                |subbasin sediment calculation
-!!                                |iwave = 0 for HRU
-!!                                |iwave = subbasin # for subbasin
 !!    sedyld(:)     |metric tons  |daily soil loss caused by water erosion in
 !!                                |HRU
-!!    sub_fr(:)     |none         |fraction of watershed area in subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -56,11 +48,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      !use parm
-      !use jrw_datalib_module
+      use jrw_datalib_module
+      use parm
+      !use parm, only : hru, soil, pcom, sedyld, sedorgp, sedminpa, sedminps, plt_mass_z, ihru, enratio,  &
+      !  ihru, ipl 
+ 
       use organic_mineral_mass_module
 
-      integer, intent (in) :: iwave
       integer :: j, sb
       real :: xx, wt1, er, conc, xxo, sedp, psedd, porgg, xxa, xxs
 
@@ -72,12 +66,9 @@
       end do
       
         !! HRU sediment calculations
-        xx = soil1(j)%hp(1)%p + rsd1(j)%tot(1)%p + rsd1(j)%man%p   &
-              + rsd1(j)%tot_com%p + rsd1(j)%mp%act + rsd1(j)%mp%sta
+        xx = soil1(j)%hp(1)%p
         if (xx > 1.e-3) then
-          xxo = (soil1(j)%hp(1)%p + rsd1(j)%tot(1)%p + rsd1(j)%man%p) / xx
-           xxa = rsd1(j)%mp%act / xx
-           xxs = rsd1(j)%mp%sta / xx
+          xxo = (soil1(j)%hp(1)%p + rsd1(j)%man%p) / xx
         end if
 
         wt1 = soil(j)%phys(1)%bd * soil(j)%phys(1)%d / 100.
@@ -96,45 +87,16 @@
         sedminps(j) = sedp * xxs
 
         psedd = rsd1(j)%mp%act + rsd1(j)%mp%sta
-        porgg = soil1(j)%hp(1)%p + rsd1(j)%tot(1)%p + rsd1(j)%tot_com%p
+        porgg = soil1(j)%hp(1)%p
         if (porgg > 1.e-3) then
-        rsd1(j)%tot_com%p = rsd1(j)%tot_com%p - sedorgp(j) *                &
-               (rsd1(j)%tot_com%p / porgg)
-        soil1(j)%hp(1)%p = soil1(j)%hp(1)%p - sedorgp(j) *                &
-               (soil1(j)%hp(1)%p / porgg)
-        rsd1(j)%tot(1)%p = rsd1(j)%tot(1)%p - sedorgp(j) *            &
-               (rsd1(j)%tot(1)%p / porgg)
-        rsd1(j)%man%p = rsd1(j)%man%p - sedorgp(j) *              &
-            (rsd1(j)%man%p / porgg)
+          soil1(j)%hp(1)%p = soil1(j)%hp(1)%p - sedorgp(j) * (soil1(j)%hp(1)%p / porgg)
         end if
-        rsd1(j)%mp%act = rsd1(j)%mp%act - sedminpa(j)
-        rsd1(j)%mp%sta = rsd1(j)%mp%sta - sedminps(j)
 
         !! Not sure how can this happen but I repeated 
         !! the check for sol_mp(1,j) - Armen March 2009
         if (soil1(j)%hp(1)%p < 0.) then
           sedorgp(j) = sedorgp(j) + soil1(j)%hp(1)%p
           soil1(j)%hp(1)%p = 0.
-        end if
-
-        if (rsd1(j)%tot(1)%p < 0.) then
-          sedorgp(j) = sedorgp(j) + rsd1(j)%tot(1)%p
-          rsd1(j)%tot(1)%p = 0.
-        end if
-
-        if (rsd1(j)%man%p < 0.) then
-          sedorgp(j) = sedorgp(j) + rsd1(j)%man%p
-          rsd1(j)%man%p = 0.
-        end if
-
-        if (rsd1(j)%mp%act < 0.) then
-          sedminpa(j) = sedminpa(j) + rsd1(j)%mp%act
-          rsd1(j)%mp%act = 0.
-        end if
-
-        if (rsd1(j)%mp%sta < 0.) then
-          sedminps(j) = sedminps(j) + rsd1(j)%mp%sta
-          rsd1(j)%mp%sta = 0.
         end if
 
       return

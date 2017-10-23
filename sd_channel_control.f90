@@ -1,4 +1,6 @@
     subroutine sd_channel_control
+    
+    use parm, only : rcharea, sdti
       
       ich = isdch
       isd_db = ob(icmd)%props

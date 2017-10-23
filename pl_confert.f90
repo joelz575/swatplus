@@ -6,23 +6,10 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactkddb(:)  |none          |bacteria partition coefficient:
-!!                                |1: all bacteria in solution
-!!                                |0: all bacteria sorbed to soil particles
-!!    bactlpdb(:)  |# bact/kg man |concentration of less persistent
-!!                                |bacteria in manure(fertilizer)
-!!    bactlpq(:)   |# colonies/ha |less persistent bacteria in soil solution
-!!    bactlps(:)   |# colonies/ha |less persistent bacteria attached to soil
-!!                                |particles
-!!    bactpdb(:)   |# bact/kg man |concentration of persistent bacteria
-!!                                |in manure(fertilizer)
-!!    bactpq(:)    |# colonies/ha |persistent bacteria in soil solution
-!!    bactps(:)    |# colonies/ha |persistent bacteria attached to soil particles
 !!    cfrt_id(:)   |none          |manure (fertilizer) identification
 !!                                |number from fert.dat
 !!    cfrt_kg(:)   |(kg/ha)/day   |dry weight of fertilizer/manure deposited
 !!                                |on HRU daily
-!!    curyr        |none          |current year of simulation
 !!    fminn(:)     |kg minN/kg frt|fraction of mineral N (NO3 + NH3) in 
 !!                                |fertilizer/manure
 !!    fminp(:)     |kg minP/kg frt|fraction of mineral P in fertilizer/manure
@@ -36,11 +23,9 @@
 !!    cfertp       |kg P/ha       |total amount of phosphorus applied to soil
 !!                                |during continuous fertilizer operation in 
 !!                                |HRU on day
-!!    hru_dafr(:)  |km**2/km**2   |fraction of watershed area in HRU
 !!    icfrt(:)     |none          |continuous fert flag for HRU:
 !!                                |0 HRU currently not continuously fertilized
 !!                                |1 HRU currently continuously fertilized
-!!    iida         |julian date   |day being simulated (current julian day
 !!    ihru         |none          |HRU number
 !!    ncf(:)       |none          |sequence number of continuous fertilizer
 !!                                |operation within the year
@@ -52,11 +37,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactlpq(:)  |# colonies/ha |less persistent bacteria in soil solution
-!!    bactlps(:)  |# colonies/ha |less persistent bacteria attached to soil
-!!                               |particles
-!!    bactpq(:)   |# colonies/ha |persistent bacteria in soil solution
-!!    bactps(:)   |# colonies/ha |persistent bacteria attached to soil particles
 !!    cfertn      |kg N/ha       |total amount of nitrogen applied to soil
 !!                               |during continuous fertilizer operation in 
 !!                               |HRU on day
@@ -91,9 +71,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : fertdb 
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : soil, pcom, iday_fert, tcfrtn, tcfrtp, icfrt, ndcfrt, ncf, ifrt_freq, cfrt_id, cfrt_kg,  &
+         phubase, sol_sumno3, sol_sumsolp, fert_days, ihru, cfertn, cfertp, ipl  
 
       integer :: j, l, it
       real :: gc, gc1, swf, frt_t, xx
@@ -181,7 +163,7 @@
         tcfrtp(j) = tcfrtp(j) + cfertp
           
         if (pco%mgtout == 'y') then
-         write (2612, 1000) j, time%yrc, i_mo, iida,                   &
+         write (2612, 1000) j, time%yrc, time%mo, time%day,           &
             "         ",                                              &
           "CONT FERT", phubase(j), pcom(j)%plcur(ipl)%phuacc,         &
             soil(j)%sw, pcom(j)%plm(ipl)%mass,                        &
@@ -200,6 +182,6 @@
         ncf(j) = ncf(j) + 1
       end if
 
-1000  format (4i6,2a15,7f10.2,20x,f10.2)
+1000  format (4i6,5x,2a15,7f10.2,20x,f10.2)
       return
       end subroutine pl_confert

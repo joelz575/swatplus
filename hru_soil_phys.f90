@@ -6,15 +6,11 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cn2(:)        |none          |SCS runoff curve number for moisture
-!!                                 |condition II
 !!    ddrain(:)     |mm            |depth to the sub-surface drain
 !!    hru_dafr(:)   |km2/km2       |fraction of total watershed area contained
 !!                                 |in HRU
 !!    i             |none          |HRU number
 !!    rock(:)       |%             |percent of rock fragments in soil layer
-!!    sno_hru(:)    |mm H2O        |amount of water stored as snow
-!!    usle_ls(:)    |none          |USLE equation length slope (LS) factor
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -24,7 +20,6 @@
 !!                                 |percent rock
 !!    sol_st(:,:)   |mm H2O        |amount of water stored in the soil layer
 !!                                 |on any given day (less wp water)
-!!    wfsh(:)       |mm            |wetting front matric potential
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -44,6 +39,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : sol
       use basin_module
 
       integer :: nly, j

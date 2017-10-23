@@ -1,6 +1,8 @@
       subroutine bac_lsinit_read
       
       use input_file_module
+      use parm, only : bact
+      use jrw_datalib_module, only : db_mx
 
       character (len=80) :: titldum
       integer :: mbac_db, ibac, eof

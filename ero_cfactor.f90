@@ -12,10 +12,6 @@
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
 !!    icr(:)      |none          |sequence number of crop grown within a year
 !!    ihru        |none          |HRU number
-!!    iwave       |none          |flag to differentiate calculation of HRU and
-!!                               |subbasin sediment calculation
-!!                               |iwave = 0 for HRU
-!!                               |iwave = subbasin # for subbasin
 !!    peakr       |m^3/s         |peak runoff rate
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
@@ -47,6 +43,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use parm, only : pcom, usle_cfac, sol_cov, cvm_com, sumlai, cht_mx, ihru, npl 
 
       integer :: j
       real :: c

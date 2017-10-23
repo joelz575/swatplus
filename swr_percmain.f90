@@ -12,8 +12,6 @@
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
 !!    ihru        |none          |HRU number
-!!    voltot      |mm            |total volume of cracks expressed as depth
-!!                               |per unit area
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -59,9 +57,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use parm, only : aird, hru, ihru, i_sep, inflpcp, isep, latlyr, latq, lyrtile, qstemm, sepbtm, sepcrktot, sepday,   &
+         soil, sw_excess, wt_shall, pot
+      use jrw_datalib_module, only : sep
+      use hydrograph_module, only : ht1 
       use basin_module
-
+      
       integer :: j, j1, nn, k
 
       j = ihru

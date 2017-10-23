@@ -8,10 +8,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr         |none          |current year of simulation
-!!    hru_dafr(:)   |km**2/km**2   |fraction of watershed area in HRU
-!!    icr(:)        |none          |sequence number of crop grown within the
-!!                                 |current year
 !!    ihru          |none          |HRU number
 !!    nactfr        |none          |nitrogen active pool fraction. The fraction
 !!                                 |of organic nitrogen in the active pool.
@@ -65,9 +61,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pldb, sep
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : soil, pcom, rsdco_plcom, i_sep, nactfr, ihru, idp, ipl, isep  
 
       integer :: j, k, kk
       real :: rmn1, rmp, xx, csf, rwn, hmn, hmp, r4, cnr, cnrf, cpr

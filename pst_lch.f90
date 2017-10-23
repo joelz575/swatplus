@@ -52,8 +52,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pestdb
       use basin_module
+      use parm, only : soil, hru, hrupest, surfq, ihru, npmx
+      use constituent_mass_module
       
       integer :: j, ly, k, kk
       real :: dg, yy, qsurf, vf, zdb1, xx, co, csurf, cocalc

@@ -12,7 +12,6 @@
 !!    sol_bacsol   |# cfu/m^2     |soluble bacteria in soil layer
 !!    sol_bacsor   |# cfu/m^2     |sorbed bacteria in soil layer
 !!    precip       |mm            |precipitation
-!!    tmpav        |deg C         |average temperature
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -36,8 +35,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
-            
+      use bacteria_module
+      
       integer :: ibtyp
       real :: sol_bacsol, sol_bacsor, surf_ro, sol_bd, sol_dep, wt1
       real :: cbact, enratio, sed_yld, da_ha

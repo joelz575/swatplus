@@ -13,7 +13,6 @@
 !!    chlora(:)        |mg chl-a/L    |chlorophyll-a concentration in reach
 !!    disolvp(:)       |mg P/L        |dissolved P concentration in reach
 !!    hrchwtr(ii)      |m^3 H2O       |water stored in reach at beginning of day
-!!    inum1            |none          |reach number
 !!    inum2            |none          |inflow hydrograph storage location number
 !!    nitraten(:)      |mg N/L        |nitrate concentration in reach
 !!    nitriten(:)      |mg N/L        |nitrite concentration in reach

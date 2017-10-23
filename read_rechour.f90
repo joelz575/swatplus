@@ -2,6 +2,7 @@
       
       use hydrograph_module
       use time_module
+      use parm, only : idapa, ifirsta, inum1, iypa
       
       contains
       

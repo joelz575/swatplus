@@ -1,8 +1,9 @@
-      subroutine hru_read 
-      
-      use jrw_datalib_module
+      subroutine hru_read
+
+      use jrw_datalib_module, only : db_mx, lum, solt_db, topo_db, hyd_db, soildb, wet_dat_c, snodb, field_db
       use input_file_module
-      use parm 
+      use parm, only : hru, hru_db, soil, pcom, ihru, isolt, mhru 
+      use hydrograph_module, only : wet, ob, sp_ob, sp_ob1
       use organic_mineral_mass_module
       
       character (len=500) :: header

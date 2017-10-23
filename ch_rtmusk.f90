@@ -8,19 +8,14 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
-!!                               |main channel alluvium
 !!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
 !!    ch_s(2,:)   |m/m           |average slope of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
-!!    curyr       |none          |current year of simulation (consecutive)
 !!    flwin(:)    |m^3 H2O       |flow into reach on previous day
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
 !!    i           |none          |current day of simulation
-!!    inum1       |none          |reach number
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    pet_day     |mm H2O        |potential evapotranspiration
 !!    phi(1,:)    |m^2           |cross-sectional area of flow in channel at
 !!                               |bankfull depth
@@ -87,7 +82,8 @@
 
       use basin_module
       use jrw_datalib_module
-
+      use parm, only : pet_day, rcharea, rtwtr, sdti
+      
       integer :: nn,ii
       real :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c, rh
       real :: topw,msk1,msk2,detmax,detmin,qinday,qoutday

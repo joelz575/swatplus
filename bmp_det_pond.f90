@@ -14,7 +14,6 @@
 !!    dtp_wdratio(:,:)|none         |Width depth ratio (rectangular wier) at different stages
 !!    dtp_depweir(:,:)|m            |Depth of rectangular wier at different stages
 !!    dtp_diaweir(:,:)|m            |Diameter of circular wier at different stages
-!!    dtp_retperd(:,:)|years        |Return period at different stages
 !!    dtp_pcpret(:,:)|mm            |precipitation for different return periods (not used)
 !!    dtp_cdis(:,:)  |none          |coeffieicne of discharge at different stages
 !!    i_mo           |none          |current month of simulation

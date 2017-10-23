@@ -1,4 +1,4 @@
-      subroutine orgncswat2(iwave)
+      subroutine orgncswat2
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the amount of organic nitrogen removed in
@@ -8,18 +8,10 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    da_ha         |ha           |area of watershed in hectares
 !!    enratio       |none         |enrichment ratio calculated for day in HRU
 !!    erorgn(:)     |none         |organic N enrichment ratio, if left blank
 !!                                |the model will calculate for every event
 !!    ihru          |none         |HRU number
-!!    iwave         |none         |flag to differentiate calculation of HRU and
-!!                                |subbasin sediment calculation
-!!                                |iwave = 0 for HRU
-!!                                |iwave = subbasin # for subbasin
-!!    sub_bd(:)     |Mg/m^3       |bulk density in subbasin first soil layer
-!!    sub_fr(:)     |none         |fraction of watershed area in subbasin
-!!    sub_orgn(:)   |kg N/ha      |amount of nitrogen stored in all organic
 !!    sedc_d(:)     |kg C/ha      |amount of C lost with sediment
 !!
 !!
@@ -44,11 +36,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use parm, only : enratio, hru, ihru, latc_d, percc_d, sedc_d, sedorgn, soil, surfqc_d,   &
+         sedyld, surfq
       use jrw_datalib_module
       use organic_mineral_mass_module
 
-      integer, intent (in) :: iwave
       integer :: j
       real :: xx, wt1, er, conc
       real :: sol_mass, QBC, VBC, YBC, YOC, YW, TOT, YEW, X1, PRMT_21, PRMT_44
@@ -77,16 +69,11 @@
 
       conc = xx * er / wt1
 
-      if (iwave <= 0) then
         !! HRU calculations
         sedorgn(j) = .001 * conc * sedyld(j) / hru(j)%area_ha
-      else
-        !! subbasin calculations
-        sedorgn(j) = .001 * conc * sedyld(j) / (da_ha * sub_fr(iwave))
-      end if
 
 	!! update soil nitrogen pools only for HRU calculations
-      if (iwave <= 0 .and. xx > 1.e-6) then
+      if (xx > 1.e-6) then
         xx1 = (1. - sedorgn(j) / xx)
         
         !!add by zhang to update soil nitrogen pools

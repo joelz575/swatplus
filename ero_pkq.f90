@@ -35,6 +35,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only: hru, tconc, ihru, al5, peakr, qday 
+
       integer :: j
       real :: altc
 

@@ -29,7 +29,6 @@
 !!    bc4(:)           |1/hr          |rate constant for the decay of organic P
 !!                                    |to dissolved P in reach at 20 deg C
 !!    chlora(:)        |mg chl-a/L    |chlorophyll-a concentration in reach
-!!    dayl(:)          |hours         |day length for current day
 !!    disolvp(:)       |mg P/L        |dissolved P concentration in reach
 !!    frad(:,:)        |none          |fraction of solar radiation occuring 
 !!                                    |during hour in day in HRU
@@ -38,7 +37,6 @@
 !!    hrchwtr(ii)      |m^3 H2O       |water stored in reach at beginning of day
 !!    hrtwtr(:)        |m^3 H2O       |flow out of reach
 !!    hru_ra(:)        |MJ/m^2        |solar radiation for the day in HRU
-!!    inum1            |none          |reach number
 !!    inum2            |none          |inflow hydrograph storage location number
 !!    k_l              |MJ/(m2*hr)    |half saturation coefficient for light
 !!    k_n              |mg N/L        |michaelis-menton half-saturation constant
@@ -200,6 +198,7 @@
       
       use jrw_datalib_module
       use time_module
+      use parm, only : soxy
 
       integer :: ii
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin

@@ -23,11 +23,9 @@
 !!                                   |diversions when IRR=1, irrigation water
 !!                                   |will be diverted only when streamflow is
 !!                                   |at or above FLOWMIN.
-!!    iida            |julian date   |day being simulated (current julian date)
 !!    wstrs_id(:)     |none          |water stress identifier:
 !!                                   |1 plant water demand
 !!                                   |2 soil water deficit
-!!    inum1           |none          |reach number
 !!    ipot(:)         |none          |number of HRU (in subbasin) that is ponding
 !!                                   |water--the HRU that the surface runoff from
 !!                                   |current HRU drains into. This variable is
@@ -95,10 +93,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
-      use plant_module
+      use jrw_datalib_module, only : potdb
+      use parm, only : soil, hru, irrsc, irrno, aird, nirr, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
+        irr_sc, irr_no, irr_asq, irr_sca, irr_noa, flowmin, divmax, flowfr, irramt, irr_mx, irr_eff, ipot,   &
+        nhru, rch_gra, rch_lag, rch_sag, sq_rto
       use basin_module
       use time_module
+      use channel_module
 
       real :: cnv, vmm, vminmm, vol, wtrin
 

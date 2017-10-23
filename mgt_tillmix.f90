@@ -73,9 +73,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : tilldb
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : soil, cumei, cumeira, cumrt, cumrai, ranrns_hru, bactpq, bactps, bactlpq, bactlps, ntil,  &
+        mlyr, npmx, itill, hrupest, cnop
 
       integer, intent (in) :: jj, idtill
       real, intent (in) :: bmix

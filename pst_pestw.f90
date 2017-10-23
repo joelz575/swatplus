@@ -10,7 +10,6 @@
 !!    nhru        |none          |number of HRUs in watershed
 !!    npmx        |none          |number of different pesticides used in
 !!                               |the simulation
-!!    npno(:)     |none          |array of unique pesticides used in watershed
 !!    plt_pst(:,:)|kg/ha         |pesticide on plant foliage
 !!    sol_pst(:,:,:)|kg/ha       |pesticide in soil layer
 !!    wpstaao(:,1)|mg pst/ha     |amount of pesticide type in surface runoff
@@ -48,7 +47,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use parm, only : hru, hru_dafr, hrupest, ihru, iscen, nhru, npmx, soil, wpstaao
       use jrw_datalib_module
       use constituent_mass_module
 

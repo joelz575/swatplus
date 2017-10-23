@@ -9,7 +9,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    albday      |none          |albedo of ground for day
 !!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
-!!    hru_sub(:)  |none          |subbasin in which HRU is located
 !!    ihru        |none          |HRU number
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
@@ -51,7 +50,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use climate_parms
-      use jrw_datalib_module
+      use jrw_datalib_module, only : sep
+      use parm, only : soil, sno_hru, hru_ra, iseptic, ihru, sol_cov, tmpav, tmx, tmn, i_sep, iwgen,  &
+         albday, isep 
+      use time_module
 
       integer :: j, k
       real :: f, dp, ww, b, wc, dd, xx, st0

@@ -34,7 +34,7 @@
       type (plant_mass), pointer :: veg_ag
       type (plant_mass), pointer :: grain
       type (plant_mass), pointer :: root
-      type (plant_mass), pointer :: rsd_flt
+      !type (plant_mass), pointer :: rsd_flt
       
       type plant_status
         integer :: idplt = 0           !! none         land cover code from plants.plt

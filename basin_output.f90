@@ -29,7 +29,8 @@
           end do
           
             ! or if it is not routed and not in a subbasin
-        do ihru = 1, sp_ob%hru
+        do ihru = 1, sp_ob%hru_lte
+          iihru = lsu_elem(ihru)%obtypno
           if (lsu_elem(iihru)%bsn_frac > 1.e-12) then
             if (lsu_elem(iihru)%obtyp == 'hlt') then
               const = 1. / lsu_elem(iihru)%bsn_frac

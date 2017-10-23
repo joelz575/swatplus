@@ -24,12 +24,8 @@
 !!                                  |on day in HRU
 !!    es_day      |mm H2O           |actual amount of evaporation (soil et) that
 !!                                  |occurs on day in HRU
-!!    hru_dafr(:) |km**2/km**2      |fraction of watershed area in HRU
-!!    hru_ra(:)   |MJ/m^2           |solar radiation for the day in HRU
 !!    hvsti(:)    |(kg/ha)/(kg/ha)  |harvest index: crop yield/aboveground
 !!                                  |biomass
-!!    icr(:)      |none             |sequence number of crop grown within the
-!!                                  |current year
 !!    idc(:)      |none             |crop/landcover category:
 !!                                  |1 warm season annual legume
 !!                                  |2 cold season annual legume
@@ -93,8 +89,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : plcp, pldb 
       use basin_module
+      use parm, only : pcom, hru, uapd, uno3d, nppc_d, lai_yrmx, strsw_sum, strstmp_sum, strsn_sum, strsp_sum,     &
+         strsa_sum, par, auto_nstrs, bio_targ, bioday, ep_day, es_day, idp, ihru, ipl, pet_day, rto_no3, rto_solp, &
+         sum_no3, sum_solp, sumlai, uapd_tot, uno3d_tot, vpd
       
       integer :: j
       real :: delg, ruedecl, beadj, reg, f, ff, deltalai

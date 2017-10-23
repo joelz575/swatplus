@@ -88,6 +88,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : latno3, filterw, ihru
+      
       integer :: j, k
 
       j = 0

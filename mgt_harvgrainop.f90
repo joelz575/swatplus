@@ -65,6 +65,9 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use parm, only : pcom, plant_mass, grainc_d, tnyld, hi_targ, auto_eff, ihru, cnop, harveff, idp,  &
+        ipl
+      use jrw_datalib_module, only: pldb, harvop_db
  
       integer :: j, k
       integer, intent (in) :: jj, iplant, iharvop 

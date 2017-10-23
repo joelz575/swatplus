@@ -8,11 +8,7 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ep_max      |mm H2O        |maximum amount of transpiration (plant et)
-!!                               |that can occur on current day in HRU
 !!    epco(:)     |none          |plant water uptake compensation factor (0-1)
-!!    icr(:)      |none          |sequence number of crop grown within the
-!!                               |current year
 !!    idc(:)      |none          |crop/landcover category:
 !!                               |1 warm season annual legume
 !!                               |2 cold season annual legume
@@ -58,8 +54,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pldb
       use basin_module
+      use parm, only : soil, pcom, hru, ihru, stsol_rd, epmax, ipl, ep_day, idp, sol_rd  
       
       integer :: j, k, ir
       real :: sum, xx, gx, reduc, sump

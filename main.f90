@@ -30,11 +30,10 @@
 !!    i           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
-      use parm
+      use parm, only : hru, ihru, mhru, prog, scenario 
       use hydrograph_module
       use ru_module
       use hru_module
-!      use wateruse_module
       use climate_module
       use aquifer_module
       use channel_module
@@ -61,11 +60,11 @@
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
 
-      prog = "SWAT+ Aug 23 2017    MODULAR Rev 2017.39"
+      prog = "SWAT+ Oct 23 2017    MODULAR Rev 2017.40"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 39             ",/,             &
+     &          "              Revision 40             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -184,7 +183,7 @@
       
       !! set the object number for each hru-to point to weather station
       if (sp_ob%hru > 0) then
-        call hru_read     
+        call hru_read    
         call hru_soil_init
       end if
 

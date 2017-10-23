@@ -40,8 +40,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
-
+      use jrw_datalib_module, only : sep
+      use parm, only : soil, hru, ihru, bz_perc, i_sep, isep, latlyr, lyrtile, sepday, sw_excess
+      
       integer, intent (in) :: ly1
       integer :: j
       real :: adjf, yy, dg, ho, ratio, sol_k_sep
@@ -103,17 +104,12 @@
 	    bz_perc(j) = sepday
 	  end if
       
-      !! restrict seepage if next layer is saturated
+      !! switched to linear relationship for dep_imp and seepage
       if (ly1 == soil(j)%nly) then
-        !! switched to linear relationship for dep_imp and seepage
-        xx = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 6000.
-        !xx = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 1000.
-        if (xx < 1.e-4) then
-          sepday = 0.
-        else
-          sepday = sepday * xx
-          !sepday = sepday * xx / (xx + Exp(8.833 - 2.598 * xx))
-        end if
+        adj_lin = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 4000.
+        adj_lin = amax1 (0., adj_lin)
+        adj_lin = amin1 (1.0, adj_lin)
+        sepday = sepday * adj_lin
       end if
 
       !! check mass balance

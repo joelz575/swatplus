@@ -1,6 +1,7 @@
       subroutine mgt_sweepops_read
       
       use input_file_module
+      use parm, only : isweep
       
       character (len=80) :: titldum
       character (len=80) :: header

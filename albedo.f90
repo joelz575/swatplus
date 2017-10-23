@@ -1,17 +1,4 @@
-!------------------------------------------------------------------------------
-!> Subroutine albedo
-!!------------------------------------------------------------------------------
-!!
-!! @author Nancy Sammons
-!! @version 0.0.1
-!! @date 06 27 2016
-!!
-!! @brief 
-!! this subroutine calculates albedo in the HRU for the day
-!!
-!! @details
-!! REVISION HISTORY:
-!! 03 07 2015 - Initial Version 0.0.1
+      subroutine albedo
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates albedo in the HRU for the day
 !!
@@ -41,9 +28,7 @@
 !!    Intrinsic: Exp
 !!
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-!------------------------------------------------------------------------------
-    subroutine albedo
-      
+!------------------------------------------------------------------------------      
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates albedo in the HRU for the day
 
@@ -73,6 +58,8 @@
 !!    Intrinsic: Exp
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
+      use parm, only : soil, sol_cov, sno_hru, ihru, albday, sumlai
 
       integer :: j
       real :: cej, eaj

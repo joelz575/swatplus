@@ -1,6 +1,7 @@
        subroutine aqu_read 
       
        use input_file_module
+       use aquifer_module, only : aqudb, aqu_prm
       
        character (len=500) :: header
        character (len=80) :: titldum

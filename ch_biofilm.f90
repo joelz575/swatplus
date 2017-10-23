@@ -116,7 +116,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
-
+      use parm, only : rtwtr, soxy
+      
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
       real :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra
       real :: lambda, fnn, fpp, algi, fl_1, xx, yy, zz, ww, cinn

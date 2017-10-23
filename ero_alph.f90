@@ -50,6 +50,7 @@
       use basin_module
       use hydrograph_module
       use time_module
+      use parm, only : ovrlnd, ihru, al5, hru, i_mo, iwgen, precipday, snomlt  
 
       integer :: j, k, kk, jj
       real :: ab, ajp, preceff, rainsum

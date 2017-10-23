@@ -74,10 +74,11 @@
 !!    SWAT: Expo
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
-      use jrw_datalib_module
+ 
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : hru, soil, tmpav, canstor, sno_hru, sol_cov, hru_dafr, ihru, canev, ep_max,  &
+         es_day, pet_day, snoev, sumlai
 
       integer :: j, ib, ly
 !!    real, parameter :: esd = 500., etco = 0.80, effnup = 0.1

@@ -6,62 +6,16 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    aird(:)       |mm H2O        |amount of water applied to HRU on current
-!!                                 |day
-!!    bactrolp      |# colonies/ha |less persistent bacteria transported to main
-!!                                 |channel with surface runoff
-!!    bactrop       |# colonies/ha |persistent bacteria transported to main
-!!                                 |channel with surface runoff
-!!    bactsedlp     |# colonies/ha |less persistent bacteria transported with
-!!                                 |sediment in surface runoff
-!!    bactsedp      |# colonies/ha |persistent bacteria transported with
-!!                                 |sediment in surface runoff
-!!    cfertn        |kg N/ha       |amount of nitrogen added to soil in
-!!                                 |continuous fertilizer operation on day
-!!    cfertp        |kg P/ha       |amount of phosphorus added to soil in
-!!                                 |continuous fertilizer operation on day
-!!    cnday(:)      |none          |curve number for current day, HRU and at
-!!                                 |current soil moisture
 !!    etday         |mm H2O        |actual amount of evapotranspiration that
 !!                                 |occurs on day in HRU
 !!    gw_q(:)       |mm H2O        |groundwater contribution to streamflow from
 !!                                 |HRU on current day
-!!    gwseep        |mm H2O        |amount of water recharging deep aquifer on
-!!                                 |current day
 !!    hru_ha(:)     |ha            |area of HRU in hectares
 !!    hru_km(:)     |km^2          |area of HRU in square kilometers
-!!    hru_ra(:)     |MJ/m^2        |solar radiation for the day in HRU
-!!    icr(:)        |none          |sequence number of crop grown within the
-!!                                 |current year
-!!    iida          |julian date   |current day of simulation
 !!    ihru          |none          |HRU number
-!!    latno3(:)     |kg N/ha       |amount of NO3-N in lateral flow in HRU for
-!!                                 |the day
-!!    latq(:)       |mm H2O        |amount of water in lateral flow in HRU for
-!!                                 |the day
-!!    pet_day       |mm H2O        |potential evapotranspiration for day in HRU
-!!    qday          |mm H2O        |surface runoff loading to main channel for
-!!                                 |day in HRU
-!!    qdr(:)        |mm H2O        |total amount of water entering main channel
-!!                                 |for day from HRU
 !!    rchrg(:)      |mm H2O        |amount of water recharging both aquifers on
 !!                                 |current day in HRU
-!!    revapday      |mm H2O        |amount of water moving from the shallow
-!!                                 |aquifer into the soil profile or being taken
-!!                                 |up by plant roots in the shallow aquifer
-!!    sedminpa(:)   |kg P/ha       |amount of active mineral phosphorus sorbed
-!!                                 |to sediment in surface runoff in HRU for day
-!!    sedminps(:)   |kg P/ha       |amount of stable mineral phosphorus sorbed
-!!                                 |to sediment in surface runoff in HRU for day
-!!    sepbtm(:)     |mm H2O        |seepage leaving the bottom of the soil
-!!                                 |profile on day in HRU
-!!    snofall       |mm H2O        |amount of precipitation falling as freezing
-!!                                 |rain/snow on day in HRU
-!!    snomlt        |mm H2O        |amount of water in snow melt for the day in
-!!                                 |HRU
 !!    surfq(:)      |mm H2O        |surface runoff generated on day in HRU
-!!    tloss         |mm H2O        |amount of water removed from surface runoff
-!!                                 |via transmission losses on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -74,7 +28,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use parm, only : emitc_d, etday, foc_d, grainc_d, ihru, latc_d, nppc_d, percc_d, rsdc_d, rspc_d, sedc_d,  &
+        soil, stoverc_d, sumbm, sumrwt, surfqc_d, tillage_factor, wdntl 
       use time_module
       use basin_module
       use organic_mineral_mass_module

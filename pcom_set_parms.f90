@@ -23,10 +23,14 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
-      use hru_module
+      use parm, only : blai_com, cn2, cvm_com, hru, icom, idp, ihru, ipl, ipl_com, isol, nop, pcom,  &
+         rsdco_plcom, sol, tnyld, tnylda, ilu 
+      use hydrograph_module, only : ob 
+      use climate_parms, only : wst, wgn
+      use time_module, only : ndays
       use hru_lte_module
-      use jrw_datalib_module
+      use jrw_datalib_module, only : lum_str, lum, lum_grp, pcomdb, pldb, plcp, cn, cons_prac, db_mx,  &
+         urbdb, overland_n, sched
       use conditional_module
       use organic_mineral_mass_module
       

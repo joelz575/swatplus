@@ -4,6 +4,7 @@
       use jrw_datalib_module
       use hydrograph_module
       use sd_channel_module
+      use parm, only : ihru
 
       character (len=80) :: titldum, header
       integer :: eof

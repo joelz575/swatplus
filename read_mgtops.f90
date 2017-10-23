@@ -35,11 +35,12 @@
         case ("plnt")
           do idb = 1, db_mx%plantparm
               if (sched(isched)%mgt_ops(iop)%op_char == pldb(idb)%plantnm) then
-                  sched(isched)%mgt_ops(iop)%op1 = idb
+                  sched(isched)%mgt_ops(iop)%op1 = idb 
                   exit
               endif
           end do
-          
+            
+         
         case ("harv")
           do idb = 1, db_mx%harvop_db
               if (sched(isched)%mgt_ops(iop)%op_plant == harvop_db(idb)%name) then

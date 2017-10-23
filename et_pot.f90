@@ -78,9 +78,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pldb, plcp
       use basin_module
-
+      use parm, only : hru, pcom, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, cht_mx, tmx, tmn,  &
+        albday, epmax, idp, ipl, pet_day, petmeas, sumlai, vpd
+      
       integer :: j
       real :: tk, pb, gma, xl, ea, ed, dlt, ramm, ralb1, ralb, xx
       real :: rbo, rto, rn, uzz, zz, zom, zov, rv, rn_pet, fvpd

@@ -1,17 +1,17 @@
     subroutine cli_staread 
 
     use input_file_module
+    use parm, only : npcp
 
     character (len=500) :: header
     character (len=80) :: titldum
     integer :: eof, imax
     eof = 0
     imax = 0
-    mwst = 0
 
     inquire (file=in_cli%weat_sta, exist=i_exist)
     if (i_exist == 0 .or. in_cli%weat_sta == 'null') then
-        mwst = 1
+        !mwst = 1
         allocate (wst(0:1))
         allocate (wst_n(0:0))
         allocate (npcp(0:1))
@@ -24,12 +24,11 @@
             if (eof < 0) exit
             read (107,*,iostat=eof) header
             if (eof < 0) exit
-            !! determine max number for array (imax) and total number in file (mwst)
+            !! determine max number for array (imax) and total number in file
             do while (eof == 0)
-                read (107,*,iostat=eof) i
+                read (107,*,iostat=eof) titldum
                 if (eof < 0) exit
-                imax = Max(imax,i)
-                mwst = mwst + 1
+                imax = imax + 1
             end do
 
             db_mx%wst = imax
@@ -44,7 +43,7 @@
 
             rewind (107)
             read (107,*) titldum
-            !          allocate (raindst(imax,2))
+            !allocate (raindst(imax,2))
 
             rewind (107)
             read (107,*) titldum
@@ -52,7 +51,7 @@
             do i = 1, db_mx%wst
                 read (107,*) titldum
                 backspace (107)
-                read (107,*,iostat=eof) ii, wst(i)%name, wst(i)%wco_c
+                read (107,*,iostat=eof) wst(i)%name, wst(i)%wco_c
                wst_n(i) = wst(i)%name
                if (db_mx%wgnsta > 0) call search (wgn_n, db_mx%wgnsta, wst(i)%wco_c%wgn, wst(i)%wco%wgn)
                if (wst(i)%wco%wgn == 0 .and. wst(i)%wco_c%wgn /= 'sim') write (9001,*) wst(i)%wco_c%wgn, 'file not found (wgn)'

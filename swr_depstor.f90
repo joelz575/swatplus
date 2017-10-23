@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!	iida		|julian date   |day being simulated (current julian day)
 !!    iop(:,:,:)  |julian date   |date of tillage operation
 !!    mgt_op      |none          |operation code number
 !!    precipday   |mm H2O        |precipitation for the day in HRU
@@ -44,13 +43,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use parm, only : soil, hru, cumeira, cumei, cumrt, cumrai, ranrns_hru, stmaxd, itill, ihru,  &
+         itill, precipday, usle_ei
 
       integer ::j
-	real:: df, hru_slpp, sol_orgm, sol_orr, sol_rrr, ei 
+	  real:: df, hru_slpp, sol_orgm, sol_orr, sol_rrr, ei 
       j = 0
       j = ihru
-
 
 !! Calculate current cummulative erosivity and rainfall
 	ei = usle_ei*18.7633

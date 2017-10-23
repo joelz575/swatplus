@@ -3,7 +3,7 @@
       use input_file_module
       use jrw_datalib_module
       use hydrograph_module
-      use parm
+      use parm, only : hru, ihru  
       use hru_lte_module
 
       character (len=80) :: titldum, header

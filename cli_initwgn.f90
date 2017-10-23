@@ -21,11 +21,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    daylmn(:)   |hr            |shortest daylength occurring during the year
 !!    dewpt(:,:)  |deg C         |average dew point temperature for the month
-!!    dormhr(:)   |hour          |time threshold used to define dormant
-!!                               |period for plant (when daylength is within
-!!                               |the time specified by dl from the minimum
-!!                               |daylength for the area, the plant will go
-!!                               |dormant)
 !!    iregion(:)     |none          |precipitation category:
 !!                               |  1 precipitation <= 508 mm/yr
 !!                               |  2 precipitation > 508 and <= 1016 mm/yr
@@ -112,6 +107,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use parm, only : irelh
 
       real :: xx, lattan, x1, x2, x3, tav, tmin, tmax
       real :: summx_t, summn_t, summm_p, sum, rnm2, r6, xlv, pcp

@@ -1,4 +1,4 @@
-      subroutine ero_ysed(iwave)
+      subroutine ero_ysed
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine predicts daily soil loss caused by water erosion
@@ -12,10 +12,6 @@
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
 !!    icr(:)      |none          |sequence number of crop grown within a year
 !!    ihru        |none          |HRU number
-!!    iwave       |none          |flag to differentiate calculation of HRU and
-!!                               |subbasin sediment calculation
-!!                               |iwave = 0 for HRU
-!!                               |iwave = subbasin # for subbasin
 !!    peakr       |m^3/s         |peak runoff rate
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
@@ -46,7 +42,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      integer, intent (in) :: iwave
+      use parm, only : hru, soil, usle_cfac, cklsp, surfq, sedyld, sanyld, silyld, clayld, lagyld, sagyld,  &
+         sno_hru, ihru, peakr
+
       integer :: j
       real :: c
 

@@ -3,7 +3,9 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine zeros all array values
 
-      use parm
+      use parm, only : bact,bactlpq,bactlps,bactpq,bactps,bio_init,clayld,flowfr,fsred,harveff,   &
+       hru,hru_sub,hru1,hrutot,imp_trig,lagyld,lai_init,ndeat,ovrlnd,par,phi,sagyld,sanyld,sci,   &
+       sedyld,silyld,smx,snotmp,surf_bs,tmp_hi,tmp_lo,twash,wpstaao,wrt
 
       fr_curb = 0.
       bactlpcnst = 0.

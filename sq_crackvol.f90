@@ -32,7 +32,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
- 
+      use parm, only : soil, ihru, volcrmin, voltot
+
       integer :: l, j
       real :: volcrnew, crlag, crlagdry = .99, crlagwet = 0.
 

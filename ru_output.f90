@@ -1,14 +1,15 @@
-      subroutine ru_output
+      subroutine ru_output (iru)
       
       use time_module
       use basin_module
       use hydrograph_module
+      
+      integer, intent (in) :: iru
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs ROUTING UNIT variables on daily, monthly and annual time steps
     
         !! sum monthly variables
-        do iru = 1, sp_ob%sub
         ru_m(iru) = ru_m(iru) + ru_d(iru)
         
         !! daily print - ROUTING UNIT
@@ -24,6 +25,7 @@
 
         !! monthly print - ROUTING UNIT
         if (time%end_mo == 1) then
+          ru_y(iru) = ru_y(iru) + ru_m(iru)
           if (pco%ru%m == 'y') then
             write (2601,100) time%mo, time%yrc, iru, ru_m(iru)
             if (pco%csvout == 'y') then
@@ -35,6 +37,7 @@
 
         !! yearly print - ROUTING UNIT
         if (time%end_yr == 1) then
+          ru_a(iru) = ru_a(iru) + ru_y(iru)
           if (pco%ru%y == 'y') then
             write (2602,102) '     0', time%yrc, iru, ru_y(iru)
             if (pco%csvout == 'y') then
@@ -53,9 +56,7 @@
               write (2607,'(*(G0.3,:","))') '     0', time%yrs, iru, ru_a(iru)  
             end if 
           end if
-      
-      end do        ! sp_ob%sub 
-        
+
       return
       
 100   format (2i6,i8,25f15.3)

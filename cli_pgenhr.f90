@@ -13,7 +13,6 @@
 !!    jj           |none          |HRU number
 !!    i_mo         |none          |month being simulated
 !!    rndseed(:,:) |none          |random number generator seed
-!!    tconc(:)     |hr            |time of concentration for HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -67,6 +66,7 @@
 
       use climate_parms
       use time_module
+      use parm, only : al5, i_mo
 
       integer, intent (in) :: iwgn
       integer :: itime, pt, ihour, nhour, k

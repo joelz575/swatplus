@@ -3,6 +3,7 @@
       use sd_channel_module
       use hru_lte_module
       use organic_mineral_mass_module
+      use parm, only : hru, hru_init, ihru, mhru, pcom, pcom_init, soil, soil_init
       
       !save initial conditions if calibrating
       ical = 0

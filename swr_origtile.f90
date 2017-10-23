@@ -30,7 +30,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : sdr
+      use parm, only : hru, soil, ihru, qtile, sw_excess, wt_shall
 
       integer :: j
 

@@ -1,16 +1,15 @@
       subroutine actions (id, ob_cur)
       !actions include: irrigate, fertilize, release, till, plant, drainage, herd, water_rights
     
-      use jrw_datalib_module
       use conditional_module
       use climate_parms
       use time_module
-      use parm
+      use parm, only : soil, pcom, bio_eat, bio_trmp, fertno3, fertnh3, fertorgn, fertorgp, fertsolp, frt_kg,  &
+        grz_days, ihru, icom, idp, igrz, ipl, irr_no, irr_sc, irramt, isol, manure_id, manure_kg, ndeat,       &
+        phubase, sol_sumno3, sol_sumsolp, strsa_sum, strsn_sum, strsp_sum, strstmp_sum, strsw_sum
       use reservoir_module
       use sd_channel_module
       use hru_lte_module
-      use plant_module
-      use mgtops_module
       
       integer, intent (in)  :: id, ob_cur
       integer :: ob_num

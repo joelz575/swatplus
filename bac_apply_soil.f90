@@ -27,7 +27,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use bacteria_module
+      
+      real :: frt_t
 
       gc1 = 1. - gc
       sol_bacsol = gc1 * sol_bacsol * frt_t * 100. + sol_bacsol

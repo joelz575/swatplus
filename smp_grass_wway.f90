@@ -12,7 +12,6 @@
 !!	grwat_s(:)      |m/m           |Slope of grass waterway
 !!	grwat_spcon(:)  |none          |sediment transport coefficant defined by user
 !!	tc_gwat(:)      |none          |Time of concentration for Grassed waterway and its drainage area
-!!	mhru
 !!    wat_phi(1,:)        |m^2           |cross-sectional area of flow at bankfull
 !!                                   |depth
 !!    wat_phi(2,:)        |none          |
@@ -63,6 +62,11 @@
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
+      use parm, only : hru, surfq, sedyld, ihru, wat_phi, clayld, sanyld, silyld, sagyld, lagyld,  &
+        sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, hrupest, bactrolp,       &
+        bactrop, bactsedlp, bactsedp, npmx, peakr, rcharea, sdti
+      use constituent_mass_module
 
       real :: chflow_m3, sf_area, surq_remove, sf_sed, sed_remove, vc,      &
             chflow_day

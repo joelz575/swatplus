@@ -44,7 +44,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pstcp
+      use parm, only : soil, hru, hrupest, ihru, npmx
+      use constituent_mass_module
       
       integer :: j, k, kk, l
       real :: x1, xx

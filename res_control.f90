@@ -3,6 +3,8 @@
       use basin_module
       use jrw_datalib_module
       use time_module
+      use parm, only : i_mo, pet_day, resclai, resgrai, reslagi, ressagi, ressani, ressili
+      
 
       integer :: k, ii, jres
       real :: sepmm, resorgpc, ressolpc, sedcon, resorgnc, resno3c

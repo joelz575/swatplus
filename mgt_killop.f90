@@ -41,6 +41,8 @@
 
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : pcom, soil, hru, plgz, plmz, plstrz, hrupest, ihru, ipl, npmx
+      use constituent_mass_module
   
       integer :: j, k
       integer, intent (in) :: jj, iplant

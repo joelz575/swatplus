@@ -36,11 +36,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
-      use surfrunoff_module
-      use erosion_module
       use basin_module
       use time_module
       use hydrograph_module, only: iwst
+      use climate_parms, only:  wst
+      use parm, only : soil, hru, irmmdt, surfq, qird, hru_sub, ovrlnd_dt, ri_luflg, ri_subkm, ri_totpvol, ihru, &
+        peakr, precipday, qday, ri_luflg, ri_subkm, surfqout
+      use jrw_datalib_module, only:  urbdb
 
       integer :: j,sb,kk
       real :: precip_fr
@@ -127,7 +129,7 @@
       end if
 
       call ero_cfactor
-      if (surfq(j) > 1.e-6 .and. peakr > 1.e-6) call ero_ysed(0)
+      if (surfq(j) > 1.e-6 .and. peakr > 1.e-6) call ero_ysed
 
       if (qday < 0.) qday = 0.
 

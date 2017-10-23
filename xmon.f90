@@ -29,7 +29,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use parm, only : i_mo, iida
 
       integer :: m1, nda
 

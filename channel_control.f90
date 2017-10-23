@@ -8,10 +8,8 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    bankst(:)   |m^3 H2O       |bank storage
 !!    da_ha       |ha            |area of watershed in hectares
-!!    hru_sub(:)  |none          |subbasin number for HRU
 !!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
-!!    nhru        |none          |number of HRUs in watershed
 !!    pet_day     |mm H2O        |potential evapotranspiration on day
 !!    rchdep      |m             |depth of flow on day
 !!    rttlc       |m^3 H2O       |transmission losses from reach on day
@@ -48,6 +46,7 @@
       use basin_module
       use jrw_datalib_module
       use time_module
+      use parm, only : inum1, pet_day, qdbank, rch_gra, rch_lag, rch_sag, revapday, rtwtr, sub_fr
 
       integer :: ii
       real :: subwtr

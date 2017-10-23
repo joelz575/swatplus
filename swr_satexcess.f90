@@ -6,27 +6,15 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
-!!                               |into soil (enters soil)
 !!    ihru        |none          |HRU number
 !!    nn          |none          |number of soil layers
-!!    voltot      |mm            |total volume of cracks expressed as depth
-!!                               |per unit area
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    latlyr      |mm H2O        |lateral flow in soil layer for the day
-!!    latq        |mm H2O        |total lateral flow in soil profile for the 
-!!                               |day in HRU
-!!    lyrtile     |mm H2O        |drainage tile flow in soil layer for day
-!!    qtile       |mm H2O        |drainage tile flow in soil profile for the day
 !!    sep         |mm H2O        |micropore percolation from soil layer
-!!    sepbtm      |mm H2O        |percolation from bottom of soil profile for
-!!                               |the day in HRU
-!!    sw_excess   |mm H2O        |amount of water in excess of field capacity
-!!                               |stored in soil layer on the current day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -42,7 +30,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : sep, sepdb
+      use parm, only : soil, hru, ihru, cbodu, surfq, surqno3, surqsolp, sep_tsincefail, pot, i_sep,  &
+        isep, qday, sepday 
+      
       use basin_module
       use organic_mineral_mass_module
 

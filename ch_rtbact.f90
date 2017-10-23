@@ -7,8 +7,6 @@
 !!    name             |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hrchwtr(:)       |m^3 H2O     |water stored in reach at beginning of hour
-!!    inum1            |none        |reach number
-!!    inum2            |none        |inflow hydrograph storage location number
 !!    rch_bactlp(:)    |# cfu/100ml |less persistent bacteria stored in reach
 !!    rch_bactp(:)     |# cfu/100ml |persistent bacteria stored in reach
 !!    rchwtr           |m^3 H2O     |water stored in reach at beginning of day
@@ -57,6 +55,7 @@
 
       use basin_module
       use time_module
+      use parm, only : rtwtr, thbact, wdlprch
 
       real, external :: Theta
 

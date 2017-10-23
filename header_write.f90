@@ -185,7 +185,7 @@
         if (pco%sd_chan_bsn%d == 'y') then
           open (2120,file="channel_sd_day_bsn.txt", recl = 1500)
           write (2120,*) sdch_hdr
-          write (9000,*) 'BASIN SWAT DEGCHAN  channel_sd_day_bsn.txt'
+          write (9000,*) 'BASIN SWAT DEGCHAN channel_sd_day_bsn.txt'
           if (pco%csvout == 'y') then 
             open (2124,file="channel_sd_day_bsn.csv", recl = 1500)
             write (2124,'(*(G0.3,:","))') sdch_hdr

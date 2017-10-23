@@ -51,8 +51,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
       use time_module
+      use parm, only : cn1, cn2, cn3, hru, sci, smx, soil, wrt
 
       integer, intent (in) :: h
       real, intent (in) :: cnn

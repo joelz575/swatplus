@@ -32,7 +32,6 @@
 !!    plqm             |kg/ha         |plaque in biozone
 !!    rbiom(:)         |kg/ha         |daily change in biomass of live bacteria
 !!    rplqm            |kg/ha         |daily change in plaque
-!!    sepday           |mm H2O        |percolation from soil layer 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -69,9 +68,11 @@
 !!    Coded by J.Jeong and C.Santhi. BRC, Temple TX
 !!    Septic algorithm adapted from Siegrist et al., 2005
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : sep, sepdb
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : soil, hru, ihru, i_sep, iseptic, qstemm, thbact, bz_perc, isep, sep_tsincefail,  &
+         biom, plqm, bio_bod, fcoli, rbiom, percp, iida, precipday, iida, isep 
       
 	implicit none
 	      

@@ -7,17 +7,14 @@
 !!    name         |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ap_ef(:)     |none             |application efficiency (0-1)
-!!    curyr        |none             |current year of simulation
 !!    drift(:)     |kg               |amount of pesticide drifting onto main 
 !!                                   |channel in subbasin
 !!    driftco(:)   |none             |coefficient for pesticide drift directly
 !!                                   |onto stream
-!!    hru_dafr(:)  |km**2/km**2      |fraction of watershed area in HRU
 !!    hru_km(:)    |km**2            |area of HRU in square kilometers
 !!    ihru         |none             |HRU number
 !!    ipest(:,:,:) |none             |pesticide identification number from
 !!                                   |pest.dat
-!!    nope(:)      |none             |sequence number of pesticide in NPNO(:)
 !!    plt_pst(:,:) |kg/ha            |pesticide on plant foliage
 !!    pst_kg       |kg/ha            |amount of pesticide applied to HRU
 !!    sol_pst(:,:,1)|kg/ha           |pesticide in first layer of soil
@@ -49,8 +46,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pestdb
       use basin_module
+      use parm, only : hru, soil, pcom, iday_pest, icpst, ndcpst, ipst_freq, cpst_id, cpst_kg, phubase,  &
+        sol_sumno3, sol_sumsolp, pest_days, ihru, driftco, ipl, sumlai
       
       integer :: j, kk, k, jj
       real :: xx, gc
@@ -95,9 +94,9 @@
         
  
         if (pco%mgtout ==  'year') then
-         write (2612, 1000) j, time%yrc, i_mo, iida,                       & 
+         write (2612, 1000) j, time%yrc, time%mo, time%day,               & 
          "         ", "CONT PEST", phubase(j),pcom(j)%plcur(ipl)%phuacc,  &
-            soil(j)%sw,pcom(j)%plm(ipl)%mass,                          &
+            soil(j)%sw,pcom(j)%plm(ipl)%mass,                             &
             soil(j)%ly(1)%rsd,sol_sumno3(j),sol_sumsolp(j), cpst_kg(j)
         end if
            
@@ -114,6 +113,6 @@
 !        ncpest(j) = ncpest(j) + 1
       end if
 
-1000  format (4i6,2a15,7f10.2,20x,f10.2) 
+1000  format (4i6,5x,2a15,57f10.2,20x,f10.2) 
       return
       end subroutine pl_conapply

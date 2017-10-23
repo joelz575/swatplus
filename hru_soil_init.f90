@@ -8,7 +8,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    nhru          |none          |total number of HRUs in the watershed
 !!    npmx          |none          |total number of pesticides modeled in
 !!                                 |in watershed plus 1
 !!    nope(:)       |none          |sequence number of pesticide in NPNO(:)
@@ -32,7 +31,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use parm, only : bact, hru, hru_db, ihru, ipl, isol, isolt, mhru, mlyr, mpst, npmx, pcom, pesti_db,  &
+         soil, sol, sol_cov, wfsh
       use channel_module
       use hru_module
       use basin_module

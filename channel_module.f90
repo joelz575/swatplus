@@ -320,7 +320,7 @@
       include 'ch_rtpest.f90'                    
       include 'ch_rthpest.f90'                   
       include 'ch_rtbact.f90'                    
-      include 'ch_irr_rch.f90'                   
+      !include 'ch_irr_rch.f90'                   
       include 'ch_rchuse.f90'                    
       include 'ch_biofilm.f90'    !!!!! call is commented             
  !     include 'ch_ttcoef.f'

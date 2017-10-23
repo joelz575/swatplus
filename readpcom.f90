@@ -2,7 +2,7 @@
       
       use input_file_module
 
-      use parm
+      use parm, only : icom
       use jrw_datalib_module
       
       character (len=80) :: titldum

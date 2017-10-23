@@ -5,11 +5,8 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr       |none          |current year of simulation
-!!    hru_dafr(:) |none          |fraction of watershed in HRU
 !!    ihru        |none          |HRU number
 !!    precipday   |mm H2O        |precipitation for the day in HRU
-!!    rcn         |mg/L          |Concentration of nitrogen in the rainfall
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -28,6 +25,7 @@
       use basin_module
       use organic_mineral_mass_module
       use hydrograph_module
+      use parm, only : hru, atmodep, ihru, iadep, mo_atmo, no3pcp, precipday 
 
       real :: nh3pcp
 

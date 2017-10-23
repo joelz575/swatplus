@@ -7,17 +7,13 @@
 !!    name         |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ap_ef(:)     |none             |application efficiency (0-1)
-!!    curyr        |none             |current year of simulation
 !!    drift(:)     |kg               |amount of pesticide drifting onto main 
 !!                                   |channel in subbasin
 !!    driftco(:)   |none             |coefficient for pesticide drift directly
 !!                                   |onto stream
-!!    hru_dafr(:)  |km**2/km**2      |fraction of watershed area in HRU
 !!    hru_km(:)    |km**2            |area of HRU in square kilometers
-!!    ihru         |none             |HRU number
 !!    ipest        |none             |pesticide identification number from
 !!                                   |pest.dat
-!!    nope(:)      |none             |sequence number of pesticide in NPNO(:)
 !!    plt_pst(:,:) |kg/ha            |pesticide on plant foliage
 !!    pst_dep      |kg/ha          |depth of pesticide in soil
 !!    pst_kg       |kg/ha            |amount of pesticide applied to HRU
@@ -50,8 +46,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : mgt, chemapp_db
       use basin_module
+      use parm, only : soil, hru, driftco, pst_dep, sumlai
       
       integer :: j, kk, k
       real :: xx, gc

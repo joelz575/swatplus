@@ -1,5 +1,7 @@
       subroutine wind_ero_erod
 
+      use parm, only : sol
+      use jrw_datalib_module, only : wind_factors
       
       sand = sol(j)%phys(1)%sand
       silt = sol(J)%phys(1)%silt

@@ -6,15 +6,9 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hrupest(:)    |none          |pesticide use flag:
-!!                                 | 0: no pesticides used in HRU
-!!                                 | 1: pesticides used in HRU
 !!    i             |none          |HRU number
 !!    nactfr        |none          |nitrogen active pool fraction. The fraction
 !!                                 |of organic nitrogen in the active pool.
-!!    npmx          |none          |number of different pesticides used in
-!!                                 |the simulation
-!!    npno(:)       |none          |array of unique pesticides used in watershed
 !!    skoc(:)       |(mg/kg)/(mg/L)|soil adsorption coefficient normalized
 !!                                 |for soil organic carbon content
 !!    sol_pst(:,:,1)|kg/ha         |initial amount of pesticide in first layer
@@ -24,7 +18,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    sol_cov(:)    |kg/ha         |amount of residue on soil surface
 !!    sol_pst(:,:,:)|kg/ha         |amount of pesticide in layer NOTE UNIT
 !!                                 |CHANGE!
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -58,6 +51,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : sol, rsdin, nactfr
       use basin_module
       use organic_mineral_mass_module
 

@@ -17,8 +17,6 @@
 !!                                  |the time specified by dormhr from the minimum
 !!                                  |daylength for the area, the plant will go
 !!                                  |dormant)
-!!    icr(:)         |none          |sequence number of crop grown within the
-!!                                  |current year
 !!    idc(:)         |none          |crop/landcover category:
 !!                                  |1 warm season annual legume
 !!                                  |2 cold season annual legume
@@ -50,8 +48,10 @@
       use climate_parms
       use basin_module
       use hydrograph_module
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pldb 
       use organic_mineral_mass_module
+      use parm, only : soil, pcom, hru, rsdc_d, dayl, dormhr, phubase, sol_sumno3, sol_sumsolp, ipl, ihru,  &
+        idp, sol_sumno3, sol_sumsolp
 
       real :: resnew
       integer :: j
@@ -89,7 +89,7 @@
 
 !! check for beginning of dormant season
       if (pldb(idp)%idc == 1 .or. pldb(idp)%idc == 4) return
-      if (pcom(j)%plcur(ipl)%idorm == 0 .and. dayl(iwgn)-dormhr(j)<wgn_pms(iwgn)%daylmn) then
+      if (pcom(j)%plcur(ipl)%idorm == 0 .and. dayl(iwgn)-dormhr(j) < wgn_pms(iwgn)%daylmn) then
           
         select case (pldb(idp)%idc)
         
@@ -371,7 +371,7 @@
             end if 
           end select
            if (pco%mgtout ==  'y') then
-            write (2612, 1000) j, time%yrc, i_mo, iida,                   &
+            write (2612, 1000) j, time%yrc, time%mo, time%day,           &
               pldb(idp)%plantnm, "START-DORM", phubase(j),               & 
               pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,                     &
               pcom(j)%plm(ipl)%mass,soil(j)%ly(1)%rsd,                   &
@@ -398,15 +398,15 @@
             end select
             
           if (pco%mgtout == 'y') then
-            write (2612,1000) j, time%yrc, i_mo, iida,                   & 
+            write (2612,1000) j, time%yrc, time%mo, time%day,           & 
               pldb(idp)%plantnm, "END-DORM", phubase(j),                &               
-              pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,                 &
+              pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,                    &
               pcom(j)%plm(ipl)%mass,soil(j)%ly(1)%rsd,                  &
               sol_sumno3(j), sol_sumsolp(j)
           end if
 
         end if
 
-1000  format (4i6,2a15,7f10.2)
+1000  format (4i6,5x,2a15,7f10.2)
       return
       end subroutine mgt_dormant

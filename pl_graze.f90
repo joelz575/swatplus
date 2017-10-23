@@ -6,24 +6,11 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactkddb(:)  |none          |bacteria partition coefficient:
-!!                                |1: all bacteria in solution
-!!                                |0: all bacteria sorbed to soil particles
-!!    bactlpdb(:)  |# cfu/g       |concentration of less persistent
-!!                                |bacteria in manure(fertilizer)
-!!    bactlpq(:)   |# cfu/m^2     |less persistent bacteria in soil solution
-!!    bactlps(:)   |# cfu/m^2     |less persistent bacteria attached to soil
-!!                                |particles
-!!    bactpdb(:)   |# cfu/g       |concentration of persistent bacteria
-!!                                |in manure(fertilizer)
-!!    bactpq(:)    |# cfu/m^2     |persistent bacteria in soil solution
-!!    bactps(:)    |# cfu/m^2     |persistent bacteria attached to soil particles
 !!    bio_min(:)   |kg/ha         |minimum plant biomass for grazing
 !!    bio_eat(:)   |(kg/ha)/day   |dry weight of biomass removed by grazing
 !!                                |daily
 !!    bio_trmp(:)  |(kg/ha)/day   |dry weight of biomass removed by
 !!                                |trampling daily
-!!    curyr        |none          |current year of simulation
 !!    fminn(:)     |kg minN/kg frt|fraction of mineral N (NO3 + NH3) in 
 !!                                |fertilizer/manure
 !!    fminp(:)     |kg minP/kg frt|fraction of mineral P in fertilizer/manure
@@ -31,10 +18,6 @@
 !!                                |fertilizer/manure
 !!    forgn(:)     |kg orgN/kg frt|fraction of organic N in fertilizer/manure
 !!    forgp(:)     |kg orgP/kg frt|fraction of organic P in fertilizer/manure
-!!    hru_dafr(:)  |km**2/km**2   |fraction of watershed area in HRU
-!!    icr(:)       |none          |sequence number of crop grown within the
-!!                                |current year
-!!    iida         |julian date   |day being simulated (current julian day
 !!    manure_id(:) |none          |manure (fertilizer) identification
 !!                                |number from fert.dat
 !!    igrz(:)      |none          |grazing flag for HRU:
@@ -50,11 +33,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactlpq(:)  |# cfu/m^2     |less persistent bacteria in soil solution
-!!    bactlps(:)  |# cfu/m^2     |less persistent bacteria attached to soil
-!!                               |particles
-!!    bactpq(:)   |# cfu/m^2     |persistent bacteria in soil solution
-!!    bactps(:)   |# cfu/m^2     |persistent bacteria attached to soil particles
 !!    igrz(:)     |none          |grazing flag for HRU:
 !!                               |0 HRU currently not grazed
 !!                               |1 HRU currently grazed
@@ -82,9 +60,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : mgt, fertdb
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : pcom, soil, emitc_d, rsdc_d, tgrazn, tgrazp, igrz, ndeat, ngr, bio_min, bio_eat,  &
+        bio_trmp, manure_id, manure_kg, grz_days, ihru, grazn, grazp  
 
       integer :: j, l, it
       real :: dmi, dmii, gc, gc1, swf, frt_t, xx

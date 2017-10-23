@@ -39,10 +39,6 @@
 !!                               |fertilizer
 !!    bactpq(:)   |# colonies/ha |persistent bacteria in soil solution
 !!    bactps(:)   |# colonies/ha |persistent bacteria attached to soil particles
-!!    curyr       |none          |current year of simulation
-!!    hru_dafr(:) |km**2/km**2   |fraction of watershed area in HRU
-!!    icr(:)      |none          |sequence number of crop grown within the
-!!                               |current year
 !!    ihru        |none          |HRU number
 !!    tnylda(:)   |kg N/kg yield |estimated/target nitrogen content of
 !!                               |yield used in autofertilization
@@ -88,9 +84,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : fertdb, mgt
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : pcom, soil, anano3, bactpq, bactlpq, bactps, bactlps, tauton, tautop, iafrttyp, iplt_afert, &
+         auto_nstrs, nstress, tnylda, auto_napp, auto_nyr, afrt_surface, phubase, sol_sumno3, sol_sumsolp, ihru,   &
+         fertnh3, fertno3, fertorgn, fertorgp, fertsolp, ipl 
 
       real, parameter :: rtoaf = 0.50
       integer :: j, ly, ifrt
@@ -260,7 +259,7 @@
           tautop(j) = tautop(j) + autop
         
         if (pco%mgtout ==  'year') then
-              write (2612, 1000) j, time%yrc,i_mo,iida,                   & 
+              write (2612, 1000) j, time%yrc, time%mo, time%day,         & 
               fertdb(mgt%op1)%fertnm,                                    &
             "AUTOFERT", phubase(j),pcom(j)%plcur(ipl)%phuacc,            &
               soil(j)%sw, pcom(j)%plm(ipl)%mass,                         &
@@ -270,7 +269,7 @@
       
       endif
       
-1000  format (4i6,2a15,7f10.2,20x,f10.2,10x,5f10.2) 
+1000  format (4i6,5x,2a15,7f10.2,20x,f10.2,10x,5f10.2) 
       
       return
       end subroutine pl_anfert

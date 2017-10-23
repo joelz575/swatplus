@@ -2,6 +2,7 @@
       
       use input_file_module
       use time_module
+      use parm, only : dayl, irelh, wgncur, wgnold
       
       character (len=80) :: titldum, header
       integer :: iwgn, mwnd_dir, iwndir, imo, idr

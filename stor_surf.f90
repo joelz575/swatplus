@@ -1,8 +1,10 @@
       subroutine stor_surf
     
-      use jrw_datalib_module
+      use jrw_datalib_module, only : wet_hyd, wet_dat, res_weir, res_dat 
       use reservoir_module
-      use parm
+      use parm, only : hru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, grayld, sedminps, sedminpa,   &
+        surqno3, sedorgn, sedorgp, qdr, ihru, pet_day, qday, resclai, resclao, resgrai, resgrao, reslagi, &
+        reslago, ressagi, ressago, ressani, ressano, ressili, ressilo
       use conditional_module
 
       integer :: k, ii

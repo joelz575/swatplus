@@ -10,7 +10,6 @@
 !!                                |equation
 !!    bio_n2(:)   |none           |2nd shape parameter for plant N uptake
 !!                                |equation
-!!    bioday      |kg             |biomass generated on current day in HRU
 !!    icr(:)      |none           |sequence number of crop grown within the
 !!                                |current year
 !!    idc(:)      |none           |crop/landcover category:
@@ -60,7 +59,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pldb, plcp
+      use parm, only : pcom, un2, uno3d, ihru, ipl, idp 
       
       integer :: j, icrop, l, ir
       real :: unmx, uno3l, gx

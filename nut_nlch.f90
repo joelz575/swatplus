@@ -41,9 +41,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : soil, hru, latno3, percn, surqno3, tileno3, surfq, ihru, qtile  
 
       integer :: j, jj
       real :: sro, ssfnlyr, percnlyr, vv, vno3, co

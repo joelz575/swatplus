@@ -516,109 +516,6 @@
       end type pestinit_db
       type (pestinit_db), dimension (:), allocatable :: pesti_db
      
-      type mgt_header         
-          character (len=6) :: hru =          '  hru '
-          character (len=6) :: year =         ' year '
-          character (len=6) :: mon =          '  mon '
-          character (len=6) :: day =          '  day '
-          character (len=15) :: crop = ' crop/fert/pest'
-          character (len=15) :: oper = '     operation '
-          character (len=10) :: phub = '  phubase '  
-          character (len=10) :: phua = '   phuacc '  
-          character (len=10) :: sw =   '   sol_sw ' 
-          character (len=10) :: bio =  '   bio_ms '
-          character (len=10) :: rsd =  '  sol_rsd '
-          character (len=10) :: solno3 =  '      sol '
-          character (len=10) :: solp = '      sol '
-          character (len=10) :: yld =  '    yield '
-          character (len=10) :: irr =  '  irr amt '
-          character (len=10) :: amt =  '      amt '
-          character (len=10) :: mix =  '  mix eff '
-          character (len=10) :: strn = '    strsn '
-          character (len=10) :: strp = '    strsp '
-          character (len=10) :: strmp ='  strstmp '
-          character (len=10) :: strsw ='    strsw '
-          character (len=10) :: strsa ='    strsa '
-          character (len=10) :: irrsc ='    irrsc '
-          character (len=10) :: irrno ='    irrno ' 
-          character (len=10) :: biom = '  biomass '
-          character (len=10) :: tuber ='    tuber '
-          character (len=10) :: resis ='  residue '
-          character (len=10) :: nit =  '      nit '
-          character (len=10) :: phos = '     phos '        
-      end type mgt_header
-      type (mgt_header) :: mgt_hdr
-
-      type mgt_header_unit1
-          character (len=6) :: hru =   '      '
-          character (len=6) :: year =  '      '
-          character (len=6) :: mon =   '      '
-          character (len=6) :: day =   '      '
-          character (len=15) :: crop = '               '
-          character (len=15) :: oper = '               '
-          character (len=10) :: phub = '          '  
-          character (len=10) :: phua = '          '  
-          character (len=10) :: sw =   '          '
-          character (len=10) :: bio =  '          '
-          character (len=10) :: rsd =  '          '
-          character (len=10) :: solno3 =  '   sumno3 '
-          character (len=10) :: solp =    '  sumsolp '
-          character (len=10) :: yld =     '          '
-          character (len=10) :: irr =     '          '
-          character (len=10) :: amt =     '    frt-kg'
-          character (len=10) :: mix =     '          '
-          character (len=10) :: strn =    '      sum '
-          character (len=10) :: strp =    '      sum '
-          character (len=10) :: strmp =   '      sum '
-          character (len=10) :: strsw =   '      sum '
-          character (len=10) :: strsa =   '      sum '
-          character (len=10) :: irrsc =   '          '
-          character (len=10) :: irrno =   '          '  
-          character (len=10) :: grain =   '      yld '
-          character (len=10) :: biom =    '      yld '
-          character (len=10) :: tuber =   '      yld '
-          character (len=10) :: resis =   '      yld '
-          character (len=10) :: nit =     '      yld '
-          character (len=10) :: phos =    '      yld ' 
-      end type mgt_header_unit1
-      type(mgt_header_unit1) :: mgt_hdr_unt1
-
-      type mgt_header_unit2
-          character (len=6) :: hru =     '      '
-          character (len=6) :: year =    '      '
-          character (len=6) :: mon =     '      '
-          character (len=6) :: day =     '      '
-          character (len=15) :: crop =   '               '
-          character (len=15) :: oper =   '               '
-          character (len=10) :: phub =   '          '  
-          character (len=10) :: phua =   '          '
-          character (len=10) :: sw =     '       mm '
-          character (len=10) :: bio =    '    kg/ha '
-          character (len=10) :: rsd =    '    kg/ha '
-          character (len=10) :: solno3 = '    kg/ha '
-          character (len=10) :: solp =   '    kg/ha '
-          character (len=10) :: yld =    '    kg/ha '
-          character (len=10) :: irr =    '    mm    '
-          character (len=10) :: amt =    ' or dwfert'
-          character (len=10) :: mix =    '  frac    '
-          character (len=10) :: strn =   '  fertno3 '
-          character (len=10) :: strp =   '      nh3 '
-          character (len=10) :: strmp =  '     orgn '
-          character (len=10) :: strsw =  '     solp '
-          character (len=10) :: strsa =  '     orgp '
-          character (len=10) :: irrsc =  '          '
-          character (len=10) :: irrno =  '          '  
-          character (len=10) :: grain =  '    kg/ha '
-          character (len=10) :: biom =   '    kg/ha '
-          character (len=10) :: tuber =  '    kg/ha '
-          character (len=10) :: resis =  '    kg/ha '
-          character (len=10) :: nit =    '    kg/ha '
-          character (len=10) :: phos =   '    kg/ha ' 
-      end type mgt_header_unit2
-      type(mgt_header_unit2) :: mgt_hdr_unt2
-
-          
-
 !!    change per JGA 8/31/2011 gsm for output.mgt 
       real :: yield,  pst_kg
       
@@ -657,7 +554,7 @@
       real :: sbactlchlp
       real :: bsprev
       real :: qday, usle_ei, al5, no3pcp, rcharea
-      real :: uobw, uobn, uobp, respesti
+      real :: respesti
       real :: snocov1, snocov2, rcor, lyrtile
 
       real :: autop, auton, etday, hmntl, rwntl, hmptl, rmn2tl
@@ -679,7 +576,6 @@
       integer :: nd_30
       integer :: iscen
       integer :: msub, mpst, mlyr, iida
-      integer :: idtill
       integer, dimension(100) :: ida_lup, iyr_lup
       integer :: no_up
 !  routing 5/3/2010 gsm per jga    
@@ -724,14 +620,12 @@
 ! msub = max number of subbasins
       real, dimension (:), allocatable :: sub_fr
       real, dimension (:), allocatable :: sub_km,sub_pet
-      real, dimension (:), allocatable :: sub_orgn,sub_bd
       real, dimension (:), allocatable :: sub_etday
-      real, dimension (:), allocatable :: sub_surfq
       real, dimension (:), allocatable :: qird
       
 !!!!!! drains
       real, dimension (:), allocatable :: wnan
-      real, dimension (:,:), allocatable :: sub_pst,sub_hhwtmp
+      real, dimension (:,:), allocatable :: sub_hhwtmp
       real, dimension (:,:), allocatable :: ch_k
       real, dimension (:,:), allocatable :: uh
       integer, dimension (:), allocatable :: hrutot,hru1
@@ -877,15 +771,13 @@
 	integer, dimension(:,:), allocatable :: dtp_weirtype,dtp_weirdim
 	
 	real, dimension(:), allocatable ::dtp_evrsv,                         &
-       dtp_inflvol,dtp_totwrwid,dtp_parm,dtp_wdep,dtp_totdep,            &
-       dtp_watdepact,dtp_outflow,dtp_totrel,dtp_backoff,dtp_seep_sa,     &
-       dtp_evap_sa,dtp_pet_day,dtp_pcpvol,dtp_seepvol,dtp_evapvol,       &
-       dtp_flowin,dtp_backup_length,dtp_intcept,dtp_expont,dtp_coef1,    &
+       dtp_totwrwid,dtp_parm,                                 &
+       dtp_intcept,dtp_expont,dtp_coef1,    &
        dtp_coef2,dtp_coef3,dtp_ivol,dtp_ised
  
       real, dimension (:), allocatable :: min_res             
       real, dimension(:,:), allocatable:: dtp_wdratio,dtp_depweir,       &
-        dtp_diaweir,dtp_retperd,dtp_pcpret,dtp_cdis,dtp_flowrate,        &
+        dtp_diaweir,dtp_pcpret,dtp_cdis,dtp_flowrate,        &
         dtp_wrwid,dtp_addon
 
       !retention irrigation
@@ -898,7 +790,7 @@
       integer, dimension(:), allocatable:: num_ri,ri_luflg
       
       !wet pond
-      integer, dimension(:), allocatable:: wtp_subnum,wtp_onoff,wtp_imo,  &
+      integer, dimension(:), allocatable:: wtp_onoff,wtp_imo,  &
        wtp_iyr,wtp_dim,wtp_stagdis,wtp_sdtype      
       real, dimension(:), allocatable:: wtp_pvol,wtp_pdepth,wtp_sdslope,   &
         wtp_lenwdth,wtp_extdepth,wtp_hydeff,wtp_evrsv,wtp_sdintc,          &

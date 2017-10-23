@@ -1,6 +1,7 @@
       subroutine sep_read
       
       use input_file_module
+      use parm, only : isep
       
       character (len=80) :: titldum
       character (len=80) :: header

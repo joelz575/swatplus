@@ -6,8 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    icr(:)      |none          |sequence number of crop grown within the
-!!                               |current year
 !!    ihru        |none          |HRU number
 !!    t_base(:)   |deg C         |minimum temperature for plant growth
 !!    t_opt(:)    |deg C         |optimal temperature for plant growth
@@ -33,7 +31,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use climate_parms
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pldb
+      use parm, only : pcom, tmpav, tmn, ihru, idp, ipl, iwgen, tmn, tmpav
       
       integer :: j
       real :: tgx, rto

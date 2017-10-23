@@ -34,6 +34,8 @@
 !!    subroutine developed by A. Van Griensven
 !!    Hydrology-Vrije Universiteit Brussel, Belgium
 !!    subroutine modified by SLN
+
+      use parm, only : tmx, tmn, tmp_hi, tmp_lo 
        
       integer, intent (in) ::  jj
       real, intent(in) :: hr

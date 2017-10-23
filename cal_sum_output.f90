@@ -2,6 +2,7 @@
     
       use sd_channel_module
       use hru_lte_module
+      use parm, only : hru, ihru
        
         !! sum landscape output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hru == 'y') then

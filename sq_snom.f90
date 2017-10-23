@@ -57,6 +57,11 @@
 
       use time_module
       use hydrograph_module, only: iwst
+      use parm, only : hru, hru_sub, snotmp, sno_hru, tmpav, tmx, ihru, iida, precipday, snocov1, snocov2,  &
+         snofall, snomlt 
+      use jrw_datalib_module, only : snodb
+      use climate_parms, only: wst
+      
 
       integer :: j, ib
       real :: sum, smp, smfac, smleb

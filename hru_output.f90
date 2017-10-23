@@ -1,5 +1,7 @@
       subroutine hru_output(ihru)
-      
+    
+      use parm, only : pcom, idp, ipl
+      use jrw_datalib_module, only : pldb
       use time_module
       use basin_module
       
@@ -118,7 +120,7 @@
                  write (2036,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hls_y(j)
                end if
            end if
-           if (time_end_yr == 1 .and. pco%pw_hru%y == 'y') then
+           if (time%end_yr == 1 .and. pco%pw_hru%y == 'y') then
              write (2042,101) time%end_yr, time%yrc, j, hpw_y(j)
                if (pco%csvout == 'y') then 
                  write (2046,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hpw_y(j)

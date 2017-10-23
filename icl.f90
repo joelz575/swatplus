@@ -5,7 +5,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    iida        |julian date   |day being simulated (current julian day)
 !!    ndays(:)    |julian date   |julian date for last day of preceding
 !!                               |month (where the array location is the
 !!                               |number of the month). The dates are for
@@ -26,7 +25,8 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-      use parm
+      use parm, only : i_mo
+      
       integer :: icl
       if (i_mo.le.2) then
            icl = id - ndays(i_mo)

@@ -1,6 +1,8 @@
       subroutine bac_lsparms_read
       
       use input_file_module
+      use bacteria_module, only : bac_db
+      use jrw_datalib_module, only : db_mx
 
       character (len=80) :: titldum, header
       integer :: ibac

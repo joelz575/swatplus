@@ -40,7 +40,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-
+      use parm, only : soil, cnday, wrt, smx, sci, ihru
+      
       integer :: j   
 
       real :: xx, r2

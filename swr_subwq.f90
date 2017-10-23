@@ -10,13 +10,8 @@
 !!    enratio     |none          |enrichment ratio calculated for day in HRU
 !!    hru_km(:)   |km^2          |area of HRU in square kilometers
 !!    ihru        |none          |HRU number
-!!    qtile       |mm H2O        |drainage tile flow in soil layer for the
-!!                               |day
 !!    sedorgn(:)  |kg N/ha       |amount of organic nitrogen in surface runoff
 !!                               |in HRU for the day
-!!    surfq(:)    |mm H2O        |surface runoff generated on day in HRU
-!!    t_ov(:)     |hr            |time for flow from farthest point in subbasin
-!!                               |to enter a channel
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -63,6 +58,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use parm, only : soil, hru, ihru, tmpav, qdr, sedorgn, surqno3, cbodu, doxq, chl_a, sedyld, sedc_d,  &
+         chla_subco, enratio, soxy
 
       integer :: j
       real :: tn, tp, qtot, org_c, tn_tp, wtmp, ww, xx, yy, zz, flow_cms

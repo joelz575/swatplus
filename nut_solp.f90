@@ -8,8 +8,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr         |none         |current year of simulation
-!!    hru_dafr(:)   |none         |fraction of watershed area located in HRU
 !!    ihru          |none         |HRU number
 !!    surfq(:)      |mm H2O       |surface runoff generated on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -35,6 +33,7 @@
 
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : soil, hru, surqsolp, percp, surfq, i_sep, ihru, qtile 
 
       integer :: j
       real :: xx, vap

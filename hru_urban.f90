@@ -16,7 +16,6 @@
 !!                                 |impervious (both directly and
 !!                                 |indirectly connected)
 !!    hru_km(:)    |km^2           |area of HRU in square kilometers
-!!    iida         |julian date    |day being simulated (current julian date)
 !!    ihru         |none           |HRU number
 !!    nsweep(:)    |none           |sequence number of street sweeping operation
 !!                                 |within the year
@@ -75,6 +74,10 @@
 !!    SWAT: Regres, sweep
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
+      use parm, only : hru, ihru, sedyld, surfq, ulu, sanyld, silyld, clayld, sagyld, lagyld, sedorgn, sedorgp,  &
+        surqno3, surqsolp, twash, tconc, al5, peakr, precipday 
+      use jrw_datalib_module, only : urbdb
 
       real :: cod, sus_sol, tn, tp, urbk, turo, dirto, durf, rp1, dirt
       integer :: j

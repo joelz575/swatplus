@@ -1,4 +1,4 @@
-      subroutine pst_enrsb(iwave)
+      subroutine pst_enrsb
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the enrichment ratio for nutrient and
@@ -9,12 +9,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    da_ha       |ha            |area of watershed in hectares
 !!    ihru        |none          |HRU number
-!!    iwave       |none          |flag to differentiate calculation of HRU and
-!!                               |subbasin sediment calculation
-!!                               |iwave = 0 for HRU
-!!                               |iwave = subbasin # for subbasin
 !!    sub_fr(:)   |none          |fraction of watershed area in subbasin
-!!    sub_surfq(:)|nn H2O        |surface runoff generated on day in subbasin
 !!    surfq(:)    |mm H2O        |surface runoff generated on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -33,7 +28,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      integer, intent (in) :: iwave
+      use parm, only : sedyld, sanyld, silyld, clayld, sagyld, lagyld, ihru, enratio
+      
       integer :: j
       real :: cy
  
@@ -51,14 +47,6 @@
 
 !! CREAMS method for calculating enrichment ratio
       cy = 0.
-      if (iwave > 0) then
-        !! subbasin sediment calculations
-        cy = .1 * sedyld(j) / (da_ha * sub_fr(iwave) * sub_surfq(iwave)   & 
-                                                                + 1.e-6)
-      else
-        !! HRU sediment calculations
-        cy = .1 * sedyld(j) / (hru(j)%area_ha * surfq(j) + 1.e-6)
-      end if
 
       if (cy > 1.e-6) then
         enratio = .78 * cy ** (-.2468)

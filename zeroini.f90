@@ -3,7 +3,11 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine zeros values for single array variables
 
-      use parm
+      use parm, only : bactrolp,bactrop,bactsedlp,bactsedp,chla_subco,da_ha,eo_30d,hru,nd_30,   &
+        nhru,npmx,nrch,par,pest_sol,rcor,sbactrolp,sbactrop,sbactsedlp,sbactsedp,sno3up,snocov1,sol, &
+        thbact,volcrmin
+
+      
       use time_module
       
       bactrolp = 0.

@@ -41,7 +41,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use bacteria_module
       
       integer :: ibtyp
       real :: bpq, bps, bpl

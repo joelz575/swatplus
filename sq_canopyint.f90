@@ -10,7 +10,6 @@
 !!    blai(:)     |none          |maximum (potential) leaf area index
 !!    canmx(:)    |mm H2O        |maximum canopy storage
 !!    canstor(:)  |mm H2O        |amount of water held in canopy storage
-!!    icr(:)      |none          |sequence number of crop grown within a year
 !!    ihru        |none          |HRU number
 !!    precipday   |mm H2O        |precipitation for the day in HRU
 !!    wst(:)%weat%ts(:) |mm H2O        |precipitation in time step for HRU
@@ -40,6 +39,8 @@
 
       use basin_module
       use time_module
+      use climate_parms, only : wst
+      use parm, only : hru, canstor, blai_com, ihru, precipday, sumlai
 
       integer :: j, ii
       real :: xx, canmxl, canstori

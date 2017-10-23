@@ -1,6 +1,6 @@
       module climate_parms
       
-      integer :: mwst, ifirsts, ifirsth, ifirstw, ifirstpet
+      integer :: ifirsts, ifirsth, ifirstw, ifirstpet
  !     real, dimension (:), allocatable :: rmeas
  !    real, dimension (:), allocatable :: txmeas
  !     real, dimension (:), allocatable :: tnmeas

@@ -3,7 +3,7 @@
       use reservoir_module
       use jrw_datalib_module
       use hydrograph_module
-      use parm
+      use parm, only : hru, ihru
   
       do ihru = 1, sp_ob%hru
         !! set initial volumes and convert units

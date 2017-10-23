@@ -52,6 +52,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use parm, only : i_mo, npcp, rcor
 
       real :: vv, pcpgen, v8, r6, xlv
 

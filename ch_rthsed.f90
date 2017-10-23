@@ -18,11 +18,8 @@
 !!    hhstor(:)   |m^3 H2O       |water stored in reach at end of time step
 !!    hrtwtr(:)   |m^3 H2O       |water leaving reach during time step
 !!    hsdti(:)    |m^3/s         |average flow rate during time step
-!!    inum1       |none          |reach number
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
 !!    rhy(:)      |m H2O         |main channel hydraulic radius
-!!    sdti        |m^3/s         |average flow on day in reach
 !!    sedst(:)    |metric tons   |amount of sediment stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -66,6 +63,7 @@
       use basin_module
       use jrw_datalib_module
       use time_module
+      use parm, only : peakr, rch_gra, rch_lag, rch_sag, rtwtr
 
 	integer :: ii
 	real :: qin, qdin, sedin, vc, cyin, cych, depnet, deg, dep

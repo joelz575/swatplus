@@ -10,7 +10,6 @@
       
       eof = 0
       imax = 0
-      mpst = 0
       
       inquire (file=in_parmdb%pest_pst, exist=i_exist)
       if (i_exist == 0 .or. in_parmdb%pest_pst == 'null') then

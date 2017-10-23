@@ -11,8 +11,6 @@
 !!    algae(:)     |mg alg/L      |algal biomass concentration in reach
 !!    ammonian(:)  |mg N/L        |ammonia concentration in reach
 !!    disolvp(:)   |mg P/L        |dissolved phosphorus concentration in reach
-!!    inum1        |none          |reach number
-!!    inum2        |none          |inflow hydrograph storage location number
 !!    nitraten(:)  |mg N/L        |nitrate concentration in reach
 !!    nitriten(:)  |mg N/L        |nitrite concentration in reach
 !!    organicn(:)  |mg N/L        |organic nitrogen concentration in reach
@@ -72,6 +70,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
+      use parm, only : rtwtr
 
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
       real :: orgpin, dispin, cbodin, disoxin

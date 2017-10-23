@@ -6,7 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    inum1       |none          |reach number
 !!    i_mo        |none          |month of simulation
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
 !!    sedrch      |metric tons   |sediment transported out of reach on day
@@ -33,6 +32,8 @@
 
          use basin_module
          use time_module
+         use parm, only : rch_gra, rch_lag, rch_sag, rtwtr
+         
 
       real :: wtrin
 

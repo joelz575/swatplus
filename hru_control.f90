@@ -4,11 +4,25 @@
 !!    this subroutine controls the simulation of the land phase of the 
 !!    hydrologic cycle
 
-      use parm
+      use parm, only : pcom, hru, soil, ihru, tmx, tmn, tmpav, hru_ra, hru_rmx, rhd, u10, tillage_switch,      &
+         tillage_days, icr, ndeat, qdr, phubase, cht_mx, strsw_av, sedyld, sci, ndcfrt, aird, ndcpst, surfq,   &
+         yr_skip, latq, tconc, smx, sepbtm, icfrt, igrz, iseptic, i_sep, filterw, sed_con, soln_con, solp_con, & 
+         orgn_con, orgp_con, cnday, nplnt, percn, tileno3, icpst, pplnt, sedorgn, sedorgp, surqno3, latno3,    &
+         surqsolp, sedminpa, sedminps, auton, autop, bactrop, bactsedlp, bactsedp, bactrolp, cfertn, cfertp,   &
+         fertn, fertp, fixn, grazn, grazp, hmntl, hmptl, ipl, no3pcp, peakr, qtile, rmn2tl, rmp1tl, rmptl,     &
+         roctl, rwntl, snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, wdntl, canev,   &
+         ep_day, es_day, etday, iadep, idp, inflpcp, inflrout, ipot, isep, iwgen, ls_overq, nd_30, pet_day,    &
+         pot, precipday, qday, sumbm, sumbm, sumlai, sumrwt, surfqout
+      
       use basin_module
       use organic_mineral_mass_module
+      use hydrograph_module, only : ob, ht1, ht2, hz
+      use climate_parms, only : wst, wgn_pms
+      use jrw_datalib_module, only : pldb, sched, sep, res_dat
+      use reservoir_module, only :  res_ob
+      use hru_module
 
-      integer :: j, sb, kk, iwst
+      integer :: j, sb, kk
       real :: tmpk, d, gma, ho, pet_alpha, aphu, phuop
 
       j = ihru
@@ -243,7 +257,8 @@
 
       if (bsn_cc%cswat == 0) then
         call nut_nminrl
-	end if
+      end if
+
 	if (bsn_cc%cswat == 1) then
 		call cbn_new
 	end if
@@ -285,25 +300,25 @@
 
         if (surfq(j) > 0. .and. peakr > 1.e-6) then
           if (precipday > 0.) then
-            call pst_enrsb(0)
-            if (sedyld(j) > 0.) call pst_pesty(0)
+            call pst_enrsb
+            if (sedyld(j) > 0.) call pst_pesty
 
 		  if (bsn_cc%cswat == 0) then
-			call nut_orgn(0)
+			call nut_orgn
 	      end if
 	      if (bsn_cc%cswat == 1) then	    
-		    call nut_orgnc(0)
+		    call nut_orgnc
 		  end if
 		  
 		  !! Add by zhang
 		  !! ====================
 		  if (bsn_cc%cswat == 2) then
-		    call orgncswat2(0)
+		    call orgncswat2
 		  end if
 		  !! Add by zhang
 		  !! ====================
 
-            call nut_psed(0)
+            call nut_psed
           end if
         end if
 

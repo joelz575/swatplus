@@ -2,7 +2,7 @@
       
        use jrw_datalib_module
        use input_file_module
-       use parm
+       use parm, only : hru, hru_init, pcom_init, soil, soil_init 
        use hydrograph_module
        use hru_lte_module
        use sd_channel_module

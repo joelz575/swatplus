@@ -22,8 +22,8 @@
       !! resc_hum = humified carbon residue
       !! manc_hum = humified carbon manure
 
-      use parm
-      use nutrient_module
+      use parm, only : soil, cf, cfdec, cfh, ihru, wdntl
+      use time_module
       use organic_mineral_mass_module
     
     !! private variables
@@ -54,7 +54,6 @@
 
     !! functions
       real ::fwf, fof, fcdg, ftilf,fcx, fCNnew, fhc, fnetmin
-
 
       j = 0; wdn = 0
       j = ihru

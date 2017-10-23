@@ -13,8 +13,6 @@
 !!                               |the end of every calendar year.
 !!    hi_targ(:,:,:)|(kg/ha)/(kg/ha)|harvest index target of cover defined at
 !!                               |planting
-!!    icr(:)      |none          |sequence number of crop grown within the
-!!                               |current year
 !!    mcr         |none          |max number of crops grown per year
 !!    nhru        |none          |number of HRUs in watershed
 !!    tnyld(:)    |kg N/kg yield |modifier for autofertilization target
@@ -30,12 +28,7 @@
 !!    hi_targ(:,:,:)|(kg/ha)/(kg/ha)|harvest index target of cover defined at
 !!                               |planting
 !!    i           |julian date   |current day in simulation--loop counter
-!!    icr(:)      |none          |sequence number of crop grown within the
-!!                               |current year
 !!    iida        |julian date   |day being simulated (current julian day)
-
-!!    ntil(:)     |none          |sequence number of tillage operation within
-!!                               |current year
 !!    tnylda(:)   |kg N/kg yield |estimated/target nitrogen content of
 !!                               |yield used in autofertilization
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -59,9 +52,9 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
-      use parm
+      use parm, only : curyr, hru, i_mo, idp, ifirstatmo, ihru, iida, ipl, iyr_atmo1, mcr, mhru, mo_atmo1,   &
+         nhru, nop, pcom, phubase, tnyld, tnylda, yr_skip 
       use time_module
-      use mgtops_module
       use climate_module
       use basin_module
       use sd_channel_module
@@ -156,10 +149,12 @@
               time%end_sim = 1
               time%yrs_prt = time%yrs_prt / (365. + (time%num_leap / time%nbyr))
             end if
-            if (time%yrc == pco%aa_yrs(time%prt_int_cur)) then
-              time%end_aa_prt = 1
-              time%yrs_prt_int = time%yrs_prt_int / (365. + (time%num_leap / time%nbyr))
-              time%prt_int_cur = time%prt_int_cur + 1 
+            if (pco%aa_numint > 0) then
+              if (time%yrc == pco%aa_yrs(time%prt_int_cur)) then
+                time%end_aa_prt = 1
+                time%yrs_prt_int = time%yrs_prt_int / (365. + (time%num_leap / time%nbyr))
+                time%prt_int_cur = time%prt_int_cur + 1 
+              end if
             end if
           end if
 

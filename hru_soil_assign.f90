@@ -1,6 +1,8 @@
       subroutine hru_soil_assign
     
       use constituent_mass_module
+      use parm, only : sol, soil, bact, pcom, hru, pesti_db, ihru, ipl, isol, mhru, mpst, npmx
+      
 
       !! set hru soils to appropriate database soils
       do ihru = 1, mhru

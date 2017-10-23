@@ -7,39 +7,14 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    bactlpq(:)  |# cfu/m^2     |less persistent bacteria in soil solution
-!!    bactlps(:)  |# cfu/m^2     |less persistent bacteria attached to soil
-!!                               |particles
-
-!!    bactpq(:)   |# cfu/m^2     |persistent bacteria in soil solution
-!!    bactps(:)   |# cfu/m^2     |persistent bacteria attached to soil particles
-!!    curyr       |none          |current year of simulation
-!!    enratio     |none          |enrichment ratio calculated for current day 
-!!                               |in HRU
-!!    filterw(:)  |m             |filter strip width for bacteria transport
-!!    hru_dafr(:) |none          |fraction of watershed area in HRU
 !!    ihru        |none          |HRU number
 !!    precipday   |mm H2O        |precipitation for the day in HRU
-!!    surfq(:)    |mm H2O        |surface runoff generated on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactlpq(:)  |# cfu/m^2     |less persistent bacteria in soil solution
-!!    bactlps(:)  |# cfu/m^2     |less persistent bacteria attached to soil
-!!                               |particles
-!!    bactpq(:)   |# cfu/m^2     |persistent bacteria in soil solution
-!!    bactps(:)   |# cfu/m^2     |persistent bacteria attached to soil particles
-!!    bactrolp    |# cfu/m^2     |less persistent bacteria transported to main
-!!                               |channel with surface runoff
-!!    bactrop     |# cfu/m^2     |persistent bacteria transported to main
-!!                               |channel with surface runoff
-!!    bactsedlp   |# cfu/m^2     |less persistent bacteria transported with 
-!!                               |sediment in surface runoff
-!!    bactsedp    |# cfu/m^2     |persistent bacteria transported with 
-!!                               |sediment in surface runoff
+
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -64,7 +39,9 @@
 !!    SWAT: Theta
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-      use parm
+      use parm, only : soil, hru, pcom, ihru, bact, tmpav, sedyld, precipday, qday
+      use constituent_mass_module, only : obcs
+      use hydrograph_module, only : icmd
 
       integer :: j
       real :: bacsol_out, bacsor_out

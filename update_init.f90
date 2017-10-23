@@ -1,8 +1,10 @@
       subroutine update_init
 
-      use jrw_datalib_module
-      use hru_module
+      use jrw_datalib_module, only : db_mx, cal_upd, cal_parms 
       use hru_lte_module
+      use parm, only : soil, hru
+      use time_module, only : time
+      use climate_parms, only : pcp, tmp
       
       character(len=16) :: chg_parm, chg_typ
       character(len=1) :: cond_met

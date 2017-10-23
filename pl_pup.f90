@@ -6,15 +6,10 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr       |none           |current year of simulation
 !!    pup1(:)   |none           |1st shape parameter for plant P uptake
 !!                                |equation
 !!    pup2(:)   |none           |2st shape parameter for plant P uptake
 !!                                |equation
-!!    bioday      |kg             |biomass generated on current day in HRU
-!!    hru_dafr(:) |km**2/km**2    |fraction of watershed area in HRU
-!!    icr(:)      |none           |sequence number of crop grown within the
-!!                                |current year
 !!    ihru        |none           |HRU number
 !!    pltpfr(1,:) |kg P/kg biomass|phosphorus uptake parameter #1: normal
 !!                                |fraction of P in crop biomass at emergence
@@ -52,6 +47,7 @@
 
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : pcom, soil, uapd, up2, pplnt, ihru, ipl, rto_solp, sol_rd
 
       integer :: j, icrop, l, ir
       real :: uapl, gx

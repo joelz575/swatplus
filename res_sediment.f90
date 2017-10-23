@@ -6,6 +6,7 @@
       !use hydrograph_module
       use climate_parms
       use time_module
+      use parm, only : resclai, resclao, resgrai, resgrao, ressagi, ressago, ressani, ressano, ressili, ressilo
 
 	real :: sed,san,sil,cla,sag,lag,gra
 	real :: inised, finsed, setsed, remsetsed

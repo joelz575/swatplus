@@ -2,6 +2,7 @@
     
       use hydrograph_module
       use ru_module
+      use parm, only : brt, hru, hru_db, ihru, mhru, t_ov, tconc
           
      ! compute weighted Mannings n for each subbasin
       do isub = 1, sp_ob%sub

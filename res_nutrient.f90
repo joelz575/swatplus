@@ -1,6 +1,7 @@
       subroutine res_nutrient (jres, inut)
 
       use jrw_datalib_module
+      use parm, only : i_mo
       
       integer :: iseas
       real :: nitrok, phosk, tpco, chlaco

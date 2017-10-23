@@ -9,15 +9,11 @@
 !!    name            |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)         |m             |average depth of main channel
-!!    ch_k(2,:)       |mm/hr         |effective hydraulic conductivity of
-!!                                   |main channel alluvium
 !!    ch_n(2,:)       |none          |Manning's "n" value for the main channel
 !!    ch_s(2,:)       |m/m           |average slope of main channel
 !!    chside(:)       |none          |change in horizontal distance per unit
 !!                                   |change in vertical distance on channel
 !!                                   |side slopes; always set to 2 (slope=1/2)
-!!    inum1           |none          |reach number
-!!    inum2           |none          |inflow hydrograph storage location number
 !!    pet_day         |mm H2O        |potential evapotranspiration
 !!    phi(1,:)        |m^2           |cross-sectional area of flow in channel at
 !!                                   |bankfull depth
@@ -76,6 +72,7 @@
       use climate_parms
       use jrw_datalib_module
       use time_module
+      use parm, only : pet_day, rcharea, rtwtr, sdti
 
       integer :: ii, inhyd
       real :: wtrin, c, p, scoef

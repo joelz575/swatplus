@@ -25,7 +25,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    lyrtile     |mm H2O        |drainage tile flow in soil layer for day
 !!    qtile       |mm H2O        |drainage tile flow in soil profile for the day
 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -66,8 +65,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : sdr
       use basin_module
+      use hydrograph_module, only : ob
+      use climate_parms, only : wst
+      use parm, only : hru, soil, ihru, wnan, stmaxd, sstmaxd, pot, surfq, etday, iida, inflpcp, &  
+          mlyr, precipday, qtile, wt_shall
 
       integer :: j1, j, m
       real:: cone, depth, dg, ad, ap 
@@ -211,7 +214,7 @@
         if(em < 0.) dflux=0.
         end if
 	end if
- 	qtile=dflux
+ 	qtile = dflux
 	
 !     write(222,222) curyr, iida, hdrain, gee1, gee  !Daniel 3/1/09
 !222   format(1x,4x,i4,4x,i3,4x,3f12.3)

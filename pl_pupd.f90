@@ -6,13 +6,10 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr       |none           |current year of simulation
 !!    bio_p1(:)   |none           |1st shape parameter for plant P uptake
 !!                                |equation
 !!    bio_p2(:)   |none           |2st shape parameter for plant P uptake
 !!                                |equation
-!!    bioday      |kg             |biomass generated on current day in HRU
-!!    hru_dafr(:) |km**2/km**2    |fraction of watershed area in HRU
 !!    icr(:)      |none           |sequence number of crop grown within the
 !!                                |current year
 !!    ihru        |none           |HRU number
@@ -51,7 +48,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pldb, plcp
+      use parm, only : pcom, up2, uapd, ihru, ipl, idp 
 
       integer :: j, icrop, l, ir
       real :: uapl, gx

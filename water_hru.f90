@@ -1,8 +1,6 @@
       subroutine water_hru    
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    
-
-
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
@@ -15,8 +13,10 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+  
+        use parm, only : tmpav, ihru, hru_ra, albday, etday, pet_day 
 
-	j = ihru
+	    j = ihru
 !! if the HRU is water compute only pet and et
 !! using Priestly-Taylor and a coefficient
         tmpk = 0.

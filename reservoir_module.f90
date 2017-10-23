@@ -3,6 +3,7 @@
       use hydrograph_module
       use climate_parms
       use time_module
+      use parm, only : hru1    !! not sure
       
       !integer :: mres
       real :: resflwi, resflwo, ressedi, ressedo, sedcon, respesti

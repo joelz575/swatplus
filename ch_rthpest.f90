@@ -23,8 +23,6 @@
 !!                                 |channel in subbasin
 !!    hdepth(:)     |m             |depth of flow in hour
 !!    hru_sub(:)    |none          |subbasin number where reach is located
-!!    inum1         |none          |reach number
-!!    inum2         |none          |inflow hydrograph storage location number
 !!    rchwtr        |m^3 H2O       |water stored in reach at beginning of day
 !!    rtwtr         |m^3 H2O       |water leaving reach on day
 !!    sedpst_act(:) |m             |depth of active sediment layer in reach for
@@ -89,6 +87,7 @@
       
       use jrw_datalib_module
       use time_module
+      use parm, only : pest_sol
 
       integer :: ii
       real :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb

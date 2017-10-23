@@ -7,8 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr         |none          |current year of simulation
-!!    hru_dafr(:)   |km**2/km**2   |fraction of watershed area in HRU
 !!    ihru          |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -44,9 +42,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : sep
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : soil, ihru, i_sep, isep 
       
       integer :: j, k
       real :: sw25, swwp, swf, xx, dmidl, dpf, akn, akv, rnv, rnit, rvol

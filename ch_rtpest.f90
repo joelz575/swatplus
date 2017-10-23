@@ -21,9 +21,6 @@
 !!                                 |reach
 !!    drift(:)      |kg            |amount of pesticide drifting onto main
 !!                                 |channel in subbasin
-!!    hru_sub(:)    |none          |subbasin number where reach is located
-!!    inum1         |none          |reach number
-!!    inum2         |none          |inflow hydrograph storage location number
 !!    rchdep        |m             |depth of flow on day
 !!    rchwtr        |m^3 H2O       |water stored in reach at beginning of day
 !!    rtwtr         |m^3 H2O       |water leaving reach on day
@@ -87,6 +84,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
+      use parm, only : pest_sol, rtwtr
+      
 
       real :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
       real :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday

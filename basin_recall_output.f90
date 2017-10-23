@@ -19,6 +19,7 @@
         end do
         
         brec_d = brec_d / bsn%area_ha
+        brec_m = brec_m + brec_d
         
         !! daily print - BASIN RECALL
         if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
@@ -33,6 +34,7 @@
 
         !! monthly print - BASIN RECALL
         if (time%end_mo == 1) then
+          brec_y = brec_y + brec_m
           if (pco%recall_bsn%m == 'y') then
             write (8000,100) time%mo, time%yrc, iaq, brec_m
             if (pco%csvout == 'y') then
@@ -44,6 +46,7 @@
 
         !! yearly print - BASIN RECALL
         if (time%end_yr == 1) then
+          brec_a = brec_a + brec_y
           if (pco%recall_bsn%y == 'y') then
             write (8000,102) '     0', time%yrc, iaq, brec_y
             if (pco%csvout == 'y') then

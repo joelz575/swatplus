@@ -4,6 +4,7 @@
       use hru_lte_module
       use climate_module
       use input_file_module
+      use parm, only : ipl
       
       character (len=80) :: titldum
       character (len=80) :: header

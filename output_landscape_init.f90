@@ -3,7 +3,6 @@
       use parm
       use channel_module
       use sd_channel_module
-      use hru_module
       use basin_module
       use jrw_datalib_module
       use aquifer_module

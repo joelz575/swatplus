@@ -7,7 +7,7 @@
       use conditional_module
       use climate_parms
       use time_module
-      use parm
+      use parm, only : hru, ipl, pcom, soil 
       use reservoir_module
       use sd_channel_module
       

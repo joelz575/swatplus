@@ -1,31 +1,52 @@
       subroutine mgt_plantop
-
+    
+      use parm, only: pcom, soil, bio_init, cnop, ihru, ipl, lai_init, strsa_sum, strsn_sum, strsp_sum, strsw_sum
+      use jrw_datalib_module, only: pldb
+  
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the plant operation
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    lai_init       |none          |initial leaf area index of transplants
 !!    bio_init       |kg/ha         |initial biomass of transplants
 !!    cnop           |none          |SCS runoff curve number for moisture 
 !!                                  |condition II
-!!    icr(:)         |none          |sequence number of crop grown within the
-!!                                  |current year
 !!    ihru           |none          |HRU number
+!!    lai_init       |none          |initial leaf area index of transplants
+!!    pcom%plcur     
+!!         gro       |none          |land cover status code 
+!!                                      0 = no land cover currently growing 
+!!                                      1 = land cover growing
+!!         idorm     |none          |dormancy status code; 0=land cover growing 1=land cover dormant
+!!         phuacc    |fraction      |fraction of plant heat unit accumulated
+!!    pcom%plm 
+!!         nmass     |kg/ha         |nitrogen mass
+!!         pmass     |kg/ha         |phosphorus mass
+!!    pcom%plg
+!!         plet      |mm H2O        |actual ET simulated during life of plant
+!!         plpet     |mm H2O        |potential ET simulated during life of plant
+!!         laimxfr   | 
+!!         hvstiadj  |(kg/ha)/(kg/ha)  |optimal harvest index for current time during growing season
+!!         olai      |
+!!         rwt       |none          |fraction of total plant biomass that is in roots
+!!    soil()%zmx     |mm            |maximum rooting depth of soil 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    icr(:)      |none          |sequence number of crop grown within the
-!!                               |current year
+
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
+!!    idp         |none          |plant number from plants.plt file
+!!    nly         |none          |number of soil layer
+!!    plt_zmx     |mm            |rooting depth of plant
+!!    cnop        |none          |SCS runoff curve number for moisture condII
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -34,8 +55,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       integer :: j
-      
-      j = 0
+
       j = ihru
       idp = pcom(j)%plcur(1)%idplt
 
@@ -60,8 +80,8 @@
 
       !! initialize transplant variables
       if (lai_init > 0.) then
-          pcom(j)%plg(ipl)%lai = lai_init
-          pcom(j)%plm(ipl)%mass = bio_init
+        pcom(j)%plg(ipl)%lai = lai_init
+        pcom(j)%plm(ipl)%mass = bio_init
       endif
       
       !! compare maximum rooting depth in soil to maximum rooting depth of plant

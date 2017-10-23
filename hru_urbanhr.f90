@@ -7,8 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    al5          |none           |fraction of daily rainfall that occurs
-!!                                 |during 0.5h highest intensity
 !!    curbden(:)   |km/ha          |curb length density in HRU
 !!    dirtmx(:)    |kg/curb km     |maximum amount of solids allowed to
 !!                                 |build up on impervious surfaces
@@ -19,10 +17,7 @@
 !!    iida         |julian date    |day being simulated (current julian date)
 !!    ihru         |none           |HRU number
 !!    isweep(:,:,:)|julian date    |date of street sweeping operation
-!!    peakr        |m^3/s          |peak runoff rate
-!!    precipday    |mm H2O         |precipitation for the day in HRU
 !!    surfq(:)     |mm H2O         |surface runoff for the day in HRU
-!!    tconc(:)     |hr             |time of concentration
 !!    thalf(:)     |days           |time for the amount of solids on
 !!                                 |impervious areas to build up to 1/2
 !!                                 |the maximum level
@@ -72,6 +67,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use parm, only : hru, ihru, ulu, twash, surfq, ubntss, surqno3, sedorgn, sedorgp, pcom, init_abstrc,  &
+         surqsolp, ubnrunoff, isweep, phusw, phubase, etday, iida, ipl  
+      use jrw_datalib_module, only : urbdb
       use climate_parms
       use time_module
 

@@ -54,10 +54,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : urbdb
       use climate_parms
       use basin_module
       use hydrograph_module, only: iwst
+      use parm, only : hru, soil, hru_sub, swtrg, hhqday, ubnrunoff, hhsurfq, surfq, cnday, wfsh, ihru
 
       integer :: j, k, kk,sb
       real :: adj_hc, dthet, soilw, psidt, tst, f1

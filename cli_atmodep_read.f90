@@ -1,6 +1,6 @@
       subroutine cli_atmodep_read
       
-      use parm
+      use parm, only : atmodep, iadep, iyr_atmo1, mo_atmo1
       use basin_module
       use input_file_module
       

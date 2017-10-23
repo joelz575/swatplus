@@ -52,6 +52,7 @@
       use basin_module
       use climate_parms
       use time_module
+      use parm, only : dayl, iida, npcp
 
       integer :: ii
       real :: sd, sdlat, h, ys, yc, dd, w, cosrho(time%step), totrho

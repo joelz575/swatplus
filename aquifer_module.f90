@@ -1,62 +1,29 @@
-!------------------------------------------------------------------------------
-!> aquifer components module
-!!------------------------------------------------------------------------------
-!!
-!! @author Jeff Arnold
-!! @version 0.0.0
-!! @date 06 28 2016
-!!
-!! @brief
-!! This module includes the aquifer database parameters
-!!
-!! @details
-!! REVISION HISTORY:
-!! 2016.24 test
-!!
       module aquifer_module
 
       use hydrograph_module
       use climate_parms
 
-      integer :: iaq, iaqdb
+      !integer :: iaq, iaqdb
       real :: sumrchrg, sumflo, sumseep, sumrevap
        
-      !>@brief type for reading aquifer input files rows
       type aquifer_database
         character(len=16) :: aqunm = ""
-        !>@brief [FLO]      groundwater flow [mm H2O]
         real :: flo = 0.05
-        !>@brief [STOR]     depth of water in shallow aq [mm H2O]
         real :: stor = 0.
-        !>@brief [HGT]      groundwater height [m]
         real :: hgt
-        !>@brief [NO3]      nitrate conc in shallow aq converted to kg/ha [ppm NO3-N]
         real :: no3 = 0.           
-        !>@brief [MINP]     mineral P concentration [mg P/L]
         real :: minp = 0.   
-        !>@brief [ORGN]     organic N in the base flow [mg/L]
         real :: orgn = 0.         
-        !>@brief [ORGP]     organic P in the base flow [mg/L]
         real :: orgp = 0.         
-        !>@brief [DELAY]    gw delay: time req for water leaving the bottom of the root zone to reach the shallow aq [days]
         real :: delay = 0.
-        !>@brief [ALPHA]    alpha factor for gw recession curve [1/days]
         real :: alpha = 0.        
-        !>@brief [HGT]      fraction of pet to calculate revap [0-1 frac]
         real :: revap = 0.      
-        !>@brief [SEEP]     recharge to deep aq: the fraction of root zone perc that reaches the deep aq [none]
         real :: seep = 0.
-        !>@brief [SPYLD]    specific yield for shallow aq [m**3/m**3]
         real :: spyld = 0. 
-        !>@brief [HLIFE_N]  half-life of nitrate in the shallow aquifer [days]
         real :: hlife_n = 0.
-        !>@brief [FLO_MIN]  minimum aquifer storage to allow return flow [m]  
         real :: flo_min = 0. 
-        !>@brief [REVAP_MIN]    threshold depth of water in shallow aquifer required to allow revap to occur [mm H2O]
         real :: revap_min = 0.      
       end type aquifer_database
-      !> @brief read from the aquifer database file named aquifer.aqu
-      !! @see aqu_read
       type (aquifer_database), dimension(:), allocatable :: aqudb 
       
       type aquifer_data_parameters
@@ -145,10 +112,10 @@
       contains
         
       !! routines for shallow aquifer module
-      include 'aqu_initial.f90'
-      include 'aqu_1d_control.f90'
-      include 'aquifer_output.f90'
-      include 'aqu_read.f90'
+      !include 'aqu_initial.f90'
+      !include 'aqu_1d_control.f90'
+      !include 'aquifer_output.f90'
+      !include 'aqu_read.f90'
 
      
       function aqu_add(aqo1,aqo2) result (aqo3)

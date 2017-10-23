@@ -31,6 +31,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
+      use parm, only : surfq, hhqday, ihru, voltot 
 
       integer :: j, ii
       real :: voli

@@ -1,4 +1,9 @@
       subroutine aqu_1d_control 
+    
+      use aquifer_module, only : aqu, aqu_st, aqu_prm, aqudb
+      use time_module, only : time
+      use hydrograph_module
+      use climate_parms, only : wst
 
       !! set pointers to aquifer database and weather station
       iaq = ob(icmd)%num

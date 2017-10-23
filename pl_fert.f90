@@ -25,19 +25,26 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : chemapp_db, fertdb
       use basin_module
       use organic_mineral_mass_module
+      use parm, only : ihru, cfertn, cfertp, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
+        fertsolp  
+      
       
       real, parameter :: rtof=0.5
       integer :: j, l
       integer, intent (in) :: jj, ifrt, fertop
       real, intent (in) :: frt_kg
       real :: xx, gc, gc1, swf, frt_t
+      
 
       !!added by zhang
       !!======================
       real :: X1, X8, X10, XXX, YY, ZZ, XZ, YZ, RLN, orgc_f
+      
+      j = ihru
+      
       X1 = 0.
       X8 = 0.
       X10 = 0.
@@ -51,7 +58,7 @@
       !!added by zhang
       !!======================  
 
-      j = jj
+      !j = jj
 
       do l = 1, 2
         xx = 0.

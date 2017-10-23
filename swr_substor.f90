@@ -47,7 +47,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use jrw_datalib_module, only : pstcp
+      use parm, only : hru, ihru, latq, latno3, qtile, bss, pst_lag, tileno3, hrupest, npno, npmx
+      use constituent_mass_module, only : obcs
       
       integer :: j, k
 

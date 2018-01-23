@@ -1,7 +1,7 @@
       subroutine object_output_read
       
       use input_file_module
-      !use hydrograph_module
+      use hydrograph_module
       
       character (len=80) :: titldum, header
       integer :: i, iobj, eof

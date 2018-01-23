@@ -1,6 +1,8 @@
       subroutine basin_print_codes_read
       
       use input_file_module
+      use basin_module
+      use time_module
        
       character (len=500) :: header
       character (len=80) :: titldum

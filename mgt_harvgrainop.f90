@@ -65,9 +65,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use parm, only : pcom, plant_mass, grainc_d, tnyld, hi_targ, auto_eff, ihru, cnop, harveff, idp,  &
-        ipl
+      use parm, only : pcom, plant_mass, tnyld, hi_targ, auto_eff, ihru, cnop, harveff, idp,  &
+        ipl, yield
       use jrw_datalib_module, only: pldb, harvop_db
+      use carbon_module
  
       integer :: j, k
       integer, intent (in) :: jj, iplant, iharvop 
@@ -111,7 +112,7 @@
       !!====================
       
       if (bsn_cc%cswat == 2) then
-        grainc_d(j) = grainc_d(j)+ yield * 0.42
+        cbn_loss(j)%grainc_d = cbn_loss(j)%grainc_d + yield * 0.42
       end if
       !!add by zhang
       !!====================      

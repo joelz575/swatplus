@@ -1,7 +1,7 @@
     module sd_channel_module
 
-      use hydrograph_module
-      use time_module
+      !use hydrograph_module
+      !use time_module
       use climate_module
     
       integer :: maxint                           !number of intervals in hydrograph for degredation
@@ -130,8 +130,8 @@
              
       contains
 !! routines for swatdeg_hru module
-      include 'sd_channel_read.f90'
-      include 'sd_channel_control.f90'
+      !include 'sd_channel_read.f90'
+      !include 'sd_channel_control.f90'
       include 'sd_channel_output.f90'
       include 'sd_channel_nutrients.f90'
 

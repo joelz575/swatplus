@@ -50,6 +50,7 @@
       use basin_module
       use parm, only : hru, soil, pcom, iday_pest, icpst, ndcpst, ipst_freq, cpst_id, cpst_kg, phubase,  &
         sol_sumno3, sol_sumsolp, pest_days, ihru, driftco, ipl, sumlai
+      use time_module
       
       integer :: j, kk, k, jj
       real :: xx, gc

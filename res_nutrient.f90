@@ -2,6 +2,8 @@
 
       use jrw_datalib_module
       use parm, only : i_mo
+      use reservoir_module
+      use hydrograph_module, only : res
       
       integer :: iseas
       real :: nitrok, phosk, tpco, chlaco

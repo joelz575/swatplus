@@ -535,7 +535,6 @@
         integer, dimension(:), allocatable :: num               !hru's that are included in the region
         integer :: nlum                                         !number of land use and mgt in the region
         character(len=16), dimension(:), allocatable :: lumc    !land use groups
-        integer :: lscal                                        !points to soft calibration data
         integer, dimension(:), allocatable :: lum_num           !db number of land use in the region - dimensioned by lum in the region
         integer, dimension(:), allocatable :: lum_num_tot       !db number of land use in the region each year- dimensioned by lum in database
         real, dimension(:), allocatable :: lum_ha               !area (ha) of land use in the region - dimensioned by lum in the region
@@ -775,7 +774,7 @@
       type land_use_management
         character (len=16) :: name = " "
         character (len=16) :: cal_group = " "
-        character (len=16) :: plant_cov = ""
+        character (len=35) :: plant_cov = ""
         character (len=35) :: mgt_ops = ""
         character (len=16) :: cn_lu      !! none     | land use for curve number table (cntable.lum)
         character (len=16) :: cons_prac  !! none     | conservation practice from table (cons_practice.lum)
@@ -868,6 +867,7 @@
          real :: timp             !none          |snow pack temp lag factor (0-1)
          real :: covmx = 0.       !mm H20        |Min snow water content
          real :: cov50 = 0.       !none          |frac of COVMX
+         real :: init_mm = 0.     !mm H20        |initial snow water content at start of simulation
       end type snow_database
       type (snow_database), dimension (:), allocatable :: snodb
        
@@ -1015,7 +1015,7 @@
       end type plant_init_db
       
       type plant_community_db   
-        character(len=20) :: name = "frsd_frsd"
+        character(len=35) :: name = "frsd_frsd"
         integer :: plants_com = 1
         type (plant_init_db), dimension(:), allocatable :: pl
       end type plant_community_db

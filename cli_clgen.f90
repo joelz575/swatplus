@@ -53,6 +53,7 @@
       use climate_parms
       use time_module
       use parm, only : dayl, iida, npcp
+      use hydrograph_module
 
       integer :: ii
       real :: sd, sdlat, h, ys, yc, dd, w, cosrho(time%step), totrho

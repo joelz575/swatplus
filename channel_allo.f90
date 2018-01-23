@@ -1,11 +1,12 @@
-      subroutine channel_allo (mch)
+      subroutine channel_allo
       
-      !use jrw_datalib_module
       use time_module
+      use channel_module
+      use hydrograph_module, only : sp_ob
       
-      integer :: mch
+      mch = sp_ob%chan
+      
       allocate (ch(mch))
-      !allocate (ch_dat(0:mch))
       allocate (ch_d(mch))
       allocate (ch_m(mch))
       allocate (ch_y(mch))

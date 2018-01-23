@@ -3,9 +3,9 @@
       use jrw_datalib_module
       use reservoir_module
       use conditional_module
-      !use hydrograph_module
       use climate_parms
       use time_module
+      use hydrograph_module, only : res, recall, ob
       
       real :: vol, vvr, targ, xx, flw, ndespill
       character(len=1) :: action

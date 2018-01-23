@@ -56,7 +56,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use time_module
-      use hydrograph_module, only: iwst
+      use hydrograph_module
       use parm, only : hru, hru_sub, snotmp, sno_hru, tmpav, tmx, ihru, iida, precipday, snocov1, snocov2,  &
          snofall, snomlt 
       use jrw_datalib_module, only : snodb

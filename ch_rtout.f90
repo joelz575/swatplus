@@ -93,7 +93,10 @@
       use basin_module
       use jrw_datalib_module
       use time_module
-      use parm, only : rch_gra, rch_lag, rch_sag, rtwtr 
+      use parm, only : rch_gra, rch_lag, rch_sag
+      use channel_module
+      use hydrograph_module, only : ob, iwst, icmd, jrch
+      use climate_parms
            
       real :: sedcon, bedvol, sedpest, wtmp
 

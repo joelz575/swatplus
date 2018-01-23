@@ -43,6 +43,7 @@
       use basin_module
       use organic_mineral_mass_module
       use parm, only : soil, ihru, iida
+      use time_module
 
       integer :: j, l
       real :: rto, rmn1, roc, wetness, base, vara, varb, varc, as_p_coeff
@@ -68,7 +69,7 @@
 	    !!PSP = -0.045*log (% clay) + 0.001*(Solution P, mg kg-1) - 0.035*(% Organic C) + 0.43
 	    if (soil(j)%phys(l)%clay > 0.) then
 	      bsn_prm%psp = -0.045 * log(soil(j)%phys(l)%clay)+ (0.001 * solp) 
-	      bsn_prm%psp = bsn_prm%psp - (0.035  * soil(j)%cbn(l)%cbn) + 0.43
+	      bsn_prm%psp = bsn_prm%psp - (0.035  * soil1(j)%tot(l)%c) + 0.43
 	    else
 	      bsn_prm%psp = 0.4
 	    end if    		

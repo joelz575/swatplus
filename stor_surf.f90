@@ -6,6 +6,10 @@
         surqno3, sedorgn, sedorgp, qdr, ihru, pet_day, qday, resclai, resclao, resgrai, resgrao, reslagi, &
         reslago, ressagi, ressago, ressani, ressano, ressili, ressilo
       use conditional_module
+      use climate_parms
+      use hydrograph_module, only : wet, res, recall, ob
+      use time_module
+      use basin_module
 
       integer :: k, ii
 

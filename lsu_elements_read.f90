@@ -4,6 +4,7 @@
       use jrw_datalib_module
       use hydrograph_module
       use parm, only : ihru
+      use output_landscape_module
 
       character (len=80) :: titldum, header
       integer :: eof

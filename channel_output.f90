@@ -1,8 +1,11 @@
-      subroutine channel_output(jrch)
+      subroutine channel_output (jrch)
       
       use time_module
       use basin_module
       use jrw_datalib_module
+      use hydrograph_module, only : ob
+      use channel_module
+      use climate_parms
       
       integer, intent (in) :: jrch
              
@@ -11,6 +14,15 @@
 
       ch_m(jrch) = ch_m(jrch) + ch_d(jrch)
       
+!!!! subdaily print      
+      if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
+                            .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+        if (pco%chan%t == 'y'.and.time%step > 0) then
+           do ii = 1, time%step 
+              write (4400,'(4i6,10(1x,e15.4))') jrch, time%yrc,time%day, ii,wst(iwst)%weat%ts(ii),ob(icmd)%ts(1,ii)%flo/Real(time%dtm)/60., ob(icmd)%ts(1,ii)%sed
+	       end do
+        end if 
+      end if
 !!!!! daily print
       if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
                             .and. time%day <= pco%jd_end .and. int_print == pco%interval) then

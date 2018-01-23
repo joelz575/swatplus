@@ -45,6 +45,7 @@
 
       use parm, only : soil, hru, cumeira, cumei, cumrt, cumrai, ranrns_hru, stmaxd, itill, ihru,  &
          itill, precipday, usle_ei
+      use organic_mineral_mass_module
 
       integer ::j
 	  real:: df, hru_slpp, sol_orgm, sol_orr, sol_rrr, ei 
@@ -60,7 +61,7 @@
 	  cumrt(j) = cumrai(j) - precipday
       end if
 !! Calculate the decay factor df based on %clay and %organic matter or %organic carbon
-	sol_orgm = soil(j)%cbn(1)%cbn/0.58
+	sol_orgm = soil1(j)%tot(1)%c / 0.58
 	xx = (0.943 - 0.07 * soil(j)%phys(1)%clay + 0.0011 *                 &
          soil(j)%phys(1)%clay**2 - 0.67 * sol_orgm + 0.12 * sol_orgm**2)
       if (xx > 1.) then

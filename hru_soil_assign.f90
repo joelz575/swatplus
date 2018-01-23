@@ -1,11 +1,12 @@
       subroutine hru_soil_assign
     
       use constituent_mass_module
-      use parm, only : sol, soil, bact, pcom, hru, pesti_db, ihru, ipl, isol, mhru, mpst, npmx
-      
+      use parm, only : sol, soil, pcom, hru, pesti_db, ihru, ipl, isol, mpst, npmx
+      use bacteria_module
+      use hydrograph_module
 
       !! set hru soils to appropriate database soils
-      do ihru = 1, mhru
+      do ihru = 1, sp_ob%hru
 
         !! allocate bacteria
         mbac = obcs(icmd)%num_paths

@@ -1,7 +1,7 @@
       subroutine aqu_initial 
     
-      use aquifer_module, only : aqudb, aqu, aqu_prm, aqu_st, aqu_m, aqu_y, aqu_a  
-      use hydrograph_module, only : sp_ob, sp_ob1, ob
+      use aquifer_module  
+      use hydrograph_module
       
       character (len=500) :: header
       character (len=80) :: titldum

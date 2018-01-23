@@ -82,7 +82,10 @@
 
       use basin_module
       use jrw_datalib_module
-      use parm, only : pet_day, rcharea, rtwtr, sdti
+      use parm, only : pet_day, rcharea, sdti
+      use channel_module
+      use hydrograph_module, only : ob, icmd, jrch
+      use time_module
       
       integer :: nn,ii
       real :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c, rh

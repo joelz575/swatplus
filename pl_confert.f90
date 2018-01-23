@@ -27,8 +27,6 @@
 !!                                |0 HRU currently not continuously fertilized
 !!                                |1 HRU currently continuously fertilized
 !!    ihru         |none          |HRU number
-!!    ncf(:)       |none          |sequence number of continuous fertilizer
-!!                                |operation within the year
 !!    ndcfrt(:)    |days          |number of days HRU has been continuously
 !!                                |fertilized
 !!    fert_days(:) |none          |number of days continuous fertilization
@@ -48,8 +46,6 @@
 !!                               |1 HRU currently continuously fertilized
 !!    ifrt_freq(:)|days          |number of days between applications in 
 !!                               |continuous fertlizer operation
-!!    ncf(:)      |none          |sequence number of continuous fertilizer
-!!                               |operation within the year
 !!    ndcfrt(:)   |days          |number of days HRU has been continuously
 !!                               |fertilized
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -74,8 +70,9 @@
       use jrw_datalib_module, only : fertdb 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil, pcom, iday_fert, tcfrtn, tcfrtp, icfrt, ndcfrt, ncf, ifrt_freq, cfrt_id, cfrt_kg,  &
+      use parm, only : soil, pcom, iday_fert, icfrt, ndcfrt, ifrt_freq, cfrt_id, cfrt_kg,  &
          phubase, sol_sumno3, sol_sumsolp, fert_days, ihru, cfertn, cfertp, ipl  
+      use time_module
 
       integer :: j, l, it
       real :: gc, gc1, swf, frt_t, xx
@@ -159,9 +156,7 @@
                      (fertdb(it)%fminn + fertdb(it)%forgn)
         cfertp = cfertp + cfrt_kg(j) *                                &
                      (fertdb(it)%fminp + fertdb(it)%forgp)
-        tcfrtn(j) = tcfrtn(j) + cfertn
-        tcfrtp(j) = tcfrtp(j) + cfertp
-          
+
         if (pco%mgtout == 'y') then
          write (2612, 1000) j, time%yrc, time%mo, time%day,           &
             "         ",                                              &
@@ -179,7 +174,6 @@
         icfrt(j) = 0
         ndcfrt(j) = 0
         iday_fert(j) = 0
-        ncf(j) = ncf(j) + 1
       end if
 
 1000  format (4i6,5x,2a15,7f10.2,20x,f10.2)

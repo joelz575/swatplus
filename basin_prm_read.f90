@@ -1,6 +1,7 @@
       subroutine basin_prm_read
       
       use input_file_module
+      use basin_module
       
       integer :: eof
       

@@ -3,10 +3,10 @@
       use jrw_datalib_module
       use reservoir_module
       use conditional_module
-      !use hydrograph_module
       use climate_parms
       use time_module
       use parm, only : resclai, resclao, resgrai, resgrao, ressagi, ressago, ressani, ressano, ressili, ressilo
+      use hydrograph_module, only : res
 
 	real :: sed,san,sil,cla,sag,lag,gra
 	real :: inised, finsed, setsed, remsetsed
@@ -39,7 +39,7 @@
 !!	  velsetl = 1.35      !! for clay particle m/d
 	  if (velofl > 1.e-6) then
 	    trapres = res_sed(ised)%velsetlr / velofl
-	    if (trapres > 1.) trapres = 1.  !! set to mres
+	    if (trapres > 1.) trapres = 1.
 	    susp = 1. - trapres
 	  else
 	    susp = 0.

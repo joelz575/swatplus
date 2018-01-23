@@ -5,13 +5,10 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    mch         |none          |max number of channels
 !!    mcr         |none          |max number of crops grown per year
-!!    mhru        |none          |max number of HRUs
 !!    mhyd        |none          |max number of hydrographs
 !!    mlyr        |none          |max number of soil layers
 !!    mpst        |none          |max number of pesticides used in wshed
-!!    mres        |none          |max number of reservoirs
 !!    nstep       |none          |max number of time steps per day
 !!    msub        |none          |max number of subbasins
 !!    myr         |none          |max number of years of simulation
@@ -25,12 +22,14 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-
       use parm      
       use time_module
+      use hydrograph_module
       
 !! initialize variables    
       mhyd = 1  !!added for jaehak vars
+      mhru = sp_ob%hru
+      mch = sp_ob%chan
 
       allocate (pot(mhru))
       
@@ -215,12 +214,9 @@
       allocate (lai_yrmx(mhru))
       allocate (latno3(mhru))
       allocate (latq(mhru))
-      allocate (ncf(mhru))
       allocate (ndeat(mhru))
       allocate (ndcfrt(mhru))
       allocate (ndcpst(mhru))
-      allocate (ngr(mhru))
-      allocate (nirr(mhru))
       allocate (nop(mhru))
       allocate (nplnt(mhru))
       allocate (ntil(mhru))
@@ -254,6 +250,7 @@
       allocate (sepbtm(mhru))
       allocate (smx(mhru))
       allocate (sno_hru(mhru))
+      allocate (sno_init(mhru))
       allocate (snotmp(mhru))
       allocate (soln_con(mhru))
       allocate (solp_con(mhru))
@@ -267,14 +264,8 @@
       allocate (surqsolp(mhru))
       allocate (swtrg(mhru))
       allocate (t_ov(mhru))
-      allocate (tauton(mhru))
-      allocate (tautop(mhru))
-      allocate (tcfrtn(mhru))
-      allocate (tcfrtp(mhru))
       allocate (tconc(mhru))
       allocate (tc_gwat(mhru))
-      allocate (tgrazn(mhru))
-      allocate (tgrazp(mhru))
       allocate (tileno3(mhru))
       allocate (tmn(mhru))
       allocate (tmpav(itempa))
@@ -382,20 +373,6 @@
         wtp_pmann(mhyd),wtp_ploss(mhyd),wtp_k(mhyd),                     &
         wtp_dp(mhyd),wtp_sedi(mhyd),wtp_sede(mhyd),wtp_qi(mhyd))
                  	      
-	!!for print out at daily, monthly, and annual scale
-	allocate(sedc_d(mhru))
-	allocate(surfqc_d(mhru))
-	allocate(latc_d(mhru))
-	allocate(percc_d(mhru))
-	allocate(foc_d(mhru))
-	allocate(NPPC_d(mhru))
-	allocate(rsdc_d(mhru)) 
-	allocate(grainc_d(mhru))
-	allocate(stoverc_d(mhru))
-	allocate(emitc_d(mhru))
-	allocate(rspc_d(mhru))	   
-
-
        !Tillage factor on SOM decomposition
        allocate(tillage_switch(mhru))
        allocate(tillage_depth(mhru))

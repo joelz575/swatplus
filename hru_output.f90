@@ -4,6 +4,7 @@
       use jrw_datalib_module, only : pldb
       use time_module
       use basin_module
+      use output_landscape_module
       
       integer, intent (in) :: ihru
              
@@ -51,7 +52,8 @@
           const = float (ndays(time%mo + 1) - ndays(time%mo))
           hpw_m(j) = hpw_m(j) // const
           !hwb_m(j) = hwb_m(j) // const
-          hwb_m(j)%cn = hwb_m(j)%cn / const 
+          hwb_m(j)%cn = hwb_m(j)%cn / const
+          hwb_m(j)%snopack = hwb_m(j)%snopack / const
           hwb_m(j)%sw = hwb_m(j)%sw / const
           hwb_y(j) = hwb_y(j) + hwb_m(j)
           hnb_y(j) = hnb_y(j) + hnb_m(j)
@@ -94,7 +96,8 @@
         if (time%end_yr == 1) then
           hpw_y(j) = hpw_y(j) // 12.
           !hwb_y(j) = hwb_y(j) // 12.
-          hwb_y(j)%cn = hwb_y(j)%cn / 12. 
+          hwb_y(j)%cn = hwb_y(j)%cn / 12.
+          hwb_y(j)%snopack = hwb_y(j)%snopack / 12.
           hwb_y(j)%sw = hwb_y(j)%sw / 12.
           hwb_a(j) = hwb_a(j) + hwb_y(j)
           hnb_a(j) = hnb_a(j) + hnb_y(j)
@@ -170,20 +173,20 @@
            do ipl = 1, pcom(j)%npl
              idp = pcom(j)%plcur(ipl)%idplt
              if (pcom(j)%plcur(ipl)%harv_num > 0) then 
-               pcom(j)%plg(ipl)%yield = pcom(j)%plg(ipl)%yield /           &
+               pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield /           &
                                          pcom(j)%plcur(ipl)%harv_num
              endif
             write (4008,103) time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
-                                                 pcom(j)%plg(ipl)%yield
+                                                 pcom(j)%plcur(ipl)%yield
             if (pco%csvout == 'y') then
               write (4009,'(*(G0.3,:","))') time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
-                                                 pcom(j)%plg(ipl)%yield 
+                                                 pcom(j)%plcur(ipl)%yield 
             end if
            end do
          end if
       return
       
-100   format (2i6,i8,21f12.3)
+100   format (2i6,i8,27f12.3)
 101   format (2i6,i8,20f12.3)
 102   format (2i6,i8,20f12.3)
 103   format (2i6,i8,4x,a,5x,f12.3)

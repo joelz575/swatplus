@@ -3,6 +3,8 @@
       use time_module
       use hydrograph_module
       use jrw_datalib_module
+      use output_landscape_module
+      use basin_module
       
       integer :: iz=1
              
@@ -170,9 +172,9 @@
 !!!!! average annual print - BASIN
       if (time%end_sim == 1 .and. pco%wb_bsn%a == 'y') then
         bwb_a = bwb_a / time%yrs_prt
-        write (2053,102) '     0', time%yrs, iz, bwb_a
+        write (2053,103) '     0', time%yrs, iz, bwb_a, cal_sim
         if (pco%csvout == 'y') then 
-          write (2057,'(*(G0.3,:","))') '     0', time%yrs, iz, bwb_a
+          write (2057,'(*(G0.3,:","))') '     0', time%yrs, iz, bwb_a, cal_sim
         end if
         bwb_a = hwbz
       end if
@@ -202,7 +204,8 @@
       end if
       
       return
-100   format (2i6,i8,21f12.3)
-102   format (a,i6,i8,21f12.3)
+100   format (2i6,i8,27f12.3)
+102   format (a,i6,i8,27f12.3)
+103   format (a,i6,i8,27f12.3,a)
        
       end subroutine basin_output

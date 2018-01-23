@@ -38,7 +38,7 @@
       
       use basin_module
       use time_module
-      use hydrograph_module, only: iwst
+      use hydrograph_module
       use climate_parms, only:  wst
       use parm, only : soil, hru, irmmdt, surfq, qird, hru_sub, ovrlnd_dt, ri_luflg, ri_subkm, ri_totpvol, ihru, &
         peakr, precipday, qday, ri_luflg, ri_subkm, surfqout

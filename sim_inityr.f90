@@ -14,32 +14,15 @@
 !!                               |in auto-fertilization
 !!    lai_yrmx(:) |none          |maximum leaf area index for the year in the 
 !!                               |HRU
-!!    ncf(:)      |none          |sequence number of continuous fertilization 
-!!                               |operation within the year
-!!    ngr(:)      |none          |sequence number of grazing operation 
-!!                               |within the year
-!!    nirr(:)     |none          |sequence number of irrigation application 
-!!                               |within the year
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
-      use time_module
-      use basin_module
+      use parm, only : lai_yrmx, anano3
 
       !! initialize variables/arrays at beginning of every year
-      nirr = 1
-      ngr = 1
-      ncf = 1
       lai_yrmx = 0.
       anano3 = 0.
-      tauton = 0.
-      tautop = 0.
-      tcfrtn = 0.
-      tcfrtp = 0.
-      tgrazn = 0.
-      tgrazp = 0.
 
       return
       end

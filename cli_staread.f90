@@ -2,6 +2,9 @@
 
     use input_file_module
     use parm, only : npcp
+    use jrw_datalib_module, only : db_mx 
+    use climate_parms
+    use time_module
 
     character (len=500) :: header
     character (len=80) :: titldum
@@ -40,10 +43,6 @@
             end do
             allocate (npcp(imax))
             npcp = 1
-
-            rewind (107)
-            read (107,*) titldum
-            !allocate (raindst(imax,2))
 
             rewind (107)
             read (107,*) titldum

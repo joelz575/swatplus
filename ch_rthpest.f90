@@ -88,6 +88,8 @@
       use jrw_datalib_module
       use time_module
       use parm, only : pest_sol
+      use channel_module
+      use hydrograph_module, only : ob
 
       integer :: ii
       real :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb

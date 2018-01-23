@@ -2,6 +2,8 @@
 
       use input_file_module
       use climate_parms
+      use jrw_datalib_module, only : db_mx
+      use time_module
       
       character (len=80) :: header
       character (len=80) :: titldum

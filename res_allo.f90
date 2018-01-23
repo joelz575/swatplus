@@ -1,7 +1,9 @@
-      subroutine res_allo (mres)
+      subroutine res_allo
       
       use reservoir_module
+      use hydrograph_module
 
+      mres = sp_ob%res
       allocate (res(0:mres))
       allocate (res_ob(0:mres))
       allocate (res_d(mres))

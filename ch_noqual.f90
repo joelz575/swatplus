@@ -70,7 +70,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
-      use parm, only : rtwtr
+      use channel_module
+      use hydrograph_module, only : ob, icmd, jrch
 
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
       real :: orgpin, dispin, cbodin, disoxin

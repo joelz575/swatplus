@@ -39,9 +39,10 @@
 !!    SWAT: Theta
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-      use parm, only : soil, hru, pcom, ihru, bact, tmpav, sedyld, precipday, qday
-      use constituent_mass_module, only : obcs
-      use hydrograph_module, only : icmd
+      use parm, only : soil, hru, pcom, ihru, tmpav, sedyld, precipday, qday
+      use bacteria_module
+      use constituent_mass_module
+      use hydrograph_module
 
       integer :: j
       real :: bacsol_out, bacsor_out

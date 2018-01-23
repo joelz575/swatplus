@@ -58,17 +58,10 @@
       end if
 
         !! COMPUTE LATERAL FLOW USING HILLSLOPE STORAGE METHOD
-        if (ly1 == 1) then
-          yy = 0.
-        else
-          yy = soil(j)%phys(ly1-1)%d
-        end if
-
-        dg = soil(j)%phys(ly1)%d - yy
         if (soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc == 0.) then
           ho = 0.
         else
-          ho = 2. * sw_excess / ((soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc) / dg)
+          ho = 2. * sw_excess / ((soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc) / soil(j)%phys(ly1)%thick)
         end if
         latlyr = adjf * ho * soil(j)%phys(ly1)%k * hru(j)%topo%slope / hru(j)%topo%lat_len * .024
 
@@ -106,7 +99,7 @@
       
       !! switched to linear relationship for dep_imp and seepage
       if (ly1 == soil(j)%nly) then
-        adj_lin = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 4000.
+        adj_lin = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 2000.
         adj_lin = amax1 (0., adj_lin)
         adj_lin = amin1 (1.0, adj_lin)
         sepday = sepday * adj_lin

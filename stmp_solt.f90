@@ -99,8 +99,7 @@
       if (sno_hru(j) /= 0.) then
         if (sno_hru(j) <= 120.) then
           xx = 0.
-          xx = sno_hru(j) /                                             &                                             
-                          (sno_hru(j) + Exp(6.055 - .3002 * sno_hru(j)))
+          xx = sno_hru(j) / (sno_hru(j) + Exp(6.055 - .3002 * sno_hru(j)))
         else
           xx = 1.
         end if

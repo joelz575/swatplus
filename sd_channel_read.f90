@@ -1,10 +1,12 @@
       subroutine sd_channel_read
       
       use input_file_module
+      use sd_channel_module
+      use jrw_datalib_module, only : db_mx
       
       character (len=80) :: titldum
       character (len=80) :: header
-      integer :: eof, i, imax, iisd
+      integer :: eof, imax, iisd
       real :: kh
       
 

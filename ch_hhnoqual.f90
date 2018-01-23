@@ -78,6 +78,9 @@
       
       use jrw_datalib_module
       use time_module
+      use channel_module
+      use hydrograph_module, only : ob
+      use climate_parms
 
       integer :: ii
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin

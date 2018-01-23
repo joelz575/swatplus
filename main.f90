@@ -30,10 +30,9 @@
 !!    i           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
-      use parm, only : hru, ihru, mhru, prog, scenario 
+      use parm, only : hru, ihru, prog, soil
       use hydrograph_module
       use ru_module
-      use hru_module
       use climate_module
       use aquifer_module
       use channel_module
@@ -45,33 +44,35 @@
       use reservoir_module
       use input_file_module
       use organic_mineral_mass_module
-      !use output_landscape_module
+      use time_module
+      use climate_parms
       
       implicit none
       integer :: date_time(8)
       character*10 b(3)
-      integer :: mres, ob1, ob2, ires, imp, mrch, irch, isdc, imax, iup
+      integer :: ob1, ob2, ires, imp, mrch, irch, isdc, imax, iup
       integer :: ibac, mbac, mbac_db, ii, iob, idfn, isb, ielem, ifld
-      integer :: istr_db, mstr_prac, istr, iscenario, j, ichan, idat
+      integer :: istr_db, mstr_prac, istr, j, ichan, idat
       integer :: isched, iauto, ictl
       integer :: isdh, idb, ihru_s, ical, icvmax
       real :: rto, sumn, t_ch, ch_slope, ch_n, ch_l, tov
       character(len=16):: chg_typ
       real :: chg_val, absmin, absmax, diff, meas
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
+      integer :: i
 
-      prog = "SWAT+ Oct 23 2017    MODULAR Rev 2017.40"
+      prog = "SWAT+ Jan 23 2018    MODULAR Rev 2018.41"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 40             ",/,             &
+     &          "              Revision 41             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
 
 !! process input
       		
-      call hyd_read_objs
+      call basin_objs_read
       call readtime_read
       if (time%step > 0) then
         time%dtm = 1440. / time%step
@@ -159,15 +160,13 @@
       call cons_prac_read
       call overland_n_read
       call landuse_read
-        
+
       call bac_lsinit_read
       call pst_lsinit_read
       
       call hyd_read_connect
       
       call object_output_read
-      mhru = sp_ob%hru
-      mres = sp_ob%res
 
       !! read decision table data for conditional management
       call condition_read     
@@ -184,9 +183,24 @@
       !! set the object number for each hru-to point to weather station
       if (sp_ob%hru > 0) then
         call hru_read    
-        call hru_soil_init
+        call hrudb_init
+        call topohyd_init
+        call soils_init
+        call soiltest_all_init
+        call hru_output_allo
+        call bacteria_init
+        call pesticide_init
+        call plant_all_init
+        call hydro_init
       end if
-
+            
+      !if tile drains, set dep_imp to zero
+      do ihru = 1, sp_ob%hru
+        if (hru(ihru)%tiledrain > 0) then
+          hru(ihru)%hyd%dep_imp = soil(ihru)%phys(soil(ihru)%nly)%d
+        end if
+      end do
+        
       call hru_lte_read
       call sd_channel_read
       
@@ -201,7 +215,7 @@
       call ch_pst_read
       call ch_read
       
-      call channel_allo (sp_ob%chan)
+      call channel_allo
       
       do ich = 1, sp_ob%chan
         !! initialize flow routing variables
@@ -221,16 +235,10 @@
       call ru_allo
             
       !! allocate and initialize reservoir variables
-      call res_allo (db_mx%res)
+      call res_allo
       call res_objects
       call res_initial
-      
-      !! set reservoir object numbers for hru's in flood plain without surface storage
 
-      call drainage_area
-
-      !! read modflow inputs  **Ryan**
-      
       call aqu_read
       call aqu_initial
 
@@ -247,7 +255,7 @@
       !! read soft calibration parameters
       call codes_cal_read
       call lsu_elements_read        !defining landscape units by hru
-      call reg_elements_read        !defining regions by lsu and/or hru
+      !call reg_elements_read        !defining regions by lsu and/or hru
       call lcu_softcal_read         !soft data for landscape calibration (needs to be renamed)***
       call ls_parms_cal_read
       call pl_regions_cal_read      !soft data for hru_lte calibration
@@ -274,7 +282,7 @@
       call header_write
             
       !! set cross walk for auto management operations
-      do ihru = 1, mhru
+      do ihru = 1, sp_ob%hru
         isched = hru(ihru)%mgt_ops
         if (sched(isched)%num_autos > 0) then
            sched(isched)%irr = 1
@@ -297,21 +305,19 @@
       call dr_ru
         
       call hyd_connect_out
-
-!! save initial values
-      scenario = 1
-
-      do iscen = 1, scenario
-        !! simulate watershed processes
-        if (time%step < 0) then
-          !! export coefficient - average annual
-          time%end_sim = 1
-          call command
-        else
-          call time_control
-        end if
-      end do
       
+      ! save initial time settings for soft calibration runs
+      time_init = time
+
+      !! simulate watershed processes
+      if (time%step < 0) then
+        !! export coefficient - average annual
+        time%end_sim = 1
+        call command
+      else
+        call time_control
+      end if
+
       call cal_control
       
       do i = 101, 109       !Claire 12/2/09: change 1, 9  to 101, 109.

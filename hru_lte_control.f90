@@ -4,7 +4,10 @@
       use hydrograph_module
       use climate_module
       use output_landscape_module
-      !use time_module
+      use basin_module
+      use climate_parms
+      use time_module
+      use jrw_datalib_module, only : pldb, plcp
       
       integer :: isd
       real :: timeint(1000)

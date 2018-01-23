@@ -2,6 +2,7 @@
     
       use time_module
       use basin_module
+      use hydrograph_module
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs hyd variables on daily, monthly and annual time steps

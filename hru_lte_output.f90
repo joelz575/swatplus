@@ -154,7 +154,7 @@
 
       return
      
-100   format (2i6,i8,21f12.3)
+100   format (2i6,i8,27f12.3)
 101   format (2i6,i8,21f12.3)
 102   format (2i6,i8,21f12.3)
 103   format (2i6,i8,4x,a,5x,f12.3)

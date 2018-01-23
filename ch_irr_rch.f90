@@ -51,8 +51,6 @@
 !!                                   |5 divert water from source outside
 !!                                   |  watershed
 !!    nhru            |none          |number of HRUs in watershed
-!!    nirr(:)         |none          |sequence number of irrigation application
-!!                                   |within the year
 !!    rtwtr           |m^3 H2O       |water leaving reach on day
 !!    sedrch          |metric tons   |sediment transported out of reach on day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -60,8 +58,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    nirr(:)     |none          |sequence number of irrigation application
-!!                               |within the year
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
 !!    sedrch      |metric tons   |sediment transported out of reach on day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -94,12 +90,13 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : potdb
-      use parm, only : soil, hru, irrsc, irrno, aird, nirr, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
+      use parm, only : soil, hru, irrsc, irrno, aird, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
         irr_sc, irr_no, irr_asq, irr_sca, irr_noa, flowmin, divmax, flowfr, irramt, irr_mx, irr_eff, ipot,   &
         nhru, rch_gra, rch_lag, rch_sag, sq_rto
       use basin_module
       use time_module
       use channel_module
+      use hydrograph_module, only : jrch
 
       real :: cnv, vmm, vminmm, vol, wtrin
 
@@ -202,11 +199,6 @@
                   rtwtr = max(0., rtwtr)
                 end if
 
-                !! advance irrigation operation number
-                if (flag == 1) then
-                  nirr(k) = nirr(k) + 1
-                end if
-            
               end if
             end if
           end if

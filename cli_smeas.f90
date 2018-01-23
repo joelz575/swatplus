@@ -2,13 +2,15 @@
       
       use climate_parms
       use input_file_module
+      use time_module
+      use jrw_datalib_module, only : db_mx
       
       character (len=80) :: header
       character (len=80) :: titldum
       integer :: eof, i, imax
        
-       eof = 0
-       imax = 0
+      eof = 0
+      imax = 0
 
       !! read all measured daily solar radiation data
       inquire (file=in_cli%slr_cli, exist=i_exist)

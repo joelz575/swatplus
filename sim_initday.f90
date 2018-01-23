@@ -30,14 +30,16 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
      
-      use parm, only : cbodu,chl_a,clayld,cnday,dayl,doxq,emitc_d,etday,foc_d,grainc_d,grayld,hhsedy,   &
-         hhsurfq,hru,hru_ra,hru_rmx,i_mo,irr_flag,lagyld,latc_d,latno3,latq,mhru,npl,nplnt,nppc_d,      &
-         par,percc_d,percn,petmeas,pot,pplnt,qdr,rcn,rhd,rsdc_d,rspc_d,sagyld,sanyld,sedc_d,sedminpa,   &
-         sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,soil,sol,sol_sumno3,sol_sumsolp,stoverc_d,       &
-         sub_etday,sub_hhsedy,sub_hhwtmp,sub_pet,sub_subp_dt,surfq,                                     &
-         surfqc_d,surqno3,surqsolp,tileno3,tmn,tmpav,tmx,u10,ubnrunoff,ubntss
+      use parm, only : cbodu,chl_a,clayld,cnday,dayl,doxq,etday,grayld,hhsedy,                     &
+         hhsurfq,hru,hru_ra,hru_rmx,i_mo,irr_flag,lagyld,latno3,latq,npl,nplnt,                    &
+         par,percn,petmeas,pot,pplnt,qdr,rcn,rhd,sagyld,sanyld,sedminpa,                           &
+         sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,soil,sol,sol_sumno3,sol_sumsolp,            &
+         sub_etday,sub_hhsedy,sub_hhwtmp,sub_pet,sub_subp_dt,surfq,                                &
+         surqno3,surqsolp,tileno3,tmn,tmpav,tmx,u10,ubnrunoff,ubntss
             
       use organic_mineral_mass_module
+      use carbon_module
+      use hydrograph_module, only : sp_ob
 
       !!initialize variables at beginning of day
       cbodu = 0.
@@ -95,27 +97,16 @@
       hhsurfq = 0.
 !-----------------------------------------------------        
 
-      !!add by zhang
-      !!==========================
-        sedc_d = 0.
-        surfqc_d =0.
-        latc_d = 0.
-        percc_d = 0.
-        foc_d = 0.
-        NPPC_d = 0.
-        rsdc_d = 0. 
-        grainc_d = 0.
-        stoverc_d = 0.
-        emitc_d = 0.
-        rspc_d = 0.   
-      !!add by zhang
-      !!==========================
+      ! zero carbon losses for the day
+      do j = 1, sp_ob%hru
+        cbn_loss(j) = cbn_lossz
+      end do
 	
         !! added for Srini in output.mgt nitrogen and phosphorus nutrients per JGA by gsm 9/8/2011
                   
           sol_sumno3 = 0.
           sol_sumsolp = 0.
-          do j = 1, mhru
+          do j = 1, sp_ob%hru
             do ly = 1, soil(j)%nly
               sol_sumno3(j) = sol_sumno3(j) + soil1(j)%mn(ly)%no3 +          &
                 soil1(j)%mn(ly)%nh4

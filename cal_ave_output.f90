@@ -2,12 +2,13 @@
     
       use sd_channel_module
       use hru_lte_module
+      use jrw_datalib_module, only : cal_codes, db_mx, lscal, lscalt, plcal, chcal, region      
 
         !! average output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%sed == 'y') then
           !average annual for hru calibration
           do ireg = 1, db_mx%lsu_reg
-            do ilu = 1, lscal(ireg)%lum_num
+            do ilu = 1, region(ireg)%nlum
               if (lscal(ireg)%lum(ilu)%nbyr > 0) then
                 !! convert back to mm, t/ha, kg/ha
                 lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa / lscal(ireg)%lum(ilu)%nbyr

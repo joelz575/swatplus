@@ -1,10 +1,11 @@
       subroutine sd_channel_output (ich)
-      
-      !use time_module
+    
       use basin_module
+      use time_module
+      !use hydrograph_module
       
       integer, intent (in) :: ich
-             
+            
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs channel output variables 
 

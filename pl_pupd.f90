@@ -13,7 +13,6 @@
 !!    icr(:)      |none           |sequence number of crop grown within the
 !!                                |current year
 !!    ihru        |none           |HRU number
-!!    nro(:)      |none           |sequence number of year in rotation
 !!    pltpfr(1,:) |kg P/kg biomass|phosphorus uptake parameter #1: normal
 !!                                |fraction of P in crop biomass at emergence
 !!    pltpfr(3,:) |kg P/kg biomass|phosphorus uptake parameter #3: normal

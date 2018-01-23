@@ -121,19 +121,37 @@
              end if
            end do
          
-           !if (lum_str(ilu)%plant_cov == 0) write (9001,*) lum_str(ilu)%bmpuser, ' not found (landuse-plantcov)'         
-           !if (lum_str(ilu)%mgt_ops == 0) write (9001,*) lum_str(ilu)%mgt_ops, ' not found (landuse-mgtops)'
-           !if (lum_str(ilu)%cn_lu == 0) write (9001,*) lum_str(ilu)%cn_lu, ' not found (landuse-cnlu)'
-           !if (lum_str(ilu)%cons_prac == 0) write (9001,*) lum_str(ilu)%cons_prac, ' not found (landuse-consprac)'
-           !if (lum_str(ilu)%tiledrain == 0) write (9001,*) lum_str(ilu)%tiledrain, ' not found (landuse-tiledr)'
-           !if (lum_str(ilu)%septic == 0) write (9001,*) lum_str(ilu)%septic, ' not found (landuse-septic)'
-           !if (lum_str(ilu)%fstrip == 0) write (9001,*) lum_str(ilu)%fstrip, ' not found (landuse-fstrip)'
-           !if (lum_str(ilu)%grassww == 0) write (9001,*) lum_str(ilu)%grassww, ' not found (landuse-grassww)'
-           !if (lum_str(ilu)%bmpuser == 0) write (9001,*) lum_str(ilu)%bmpuser, ' not found (landuse-bmpuser)'
-           
          end if
         
          if (eof < 0) exit
+         
+           if (lum_str(ilu)%plant_cov == 0 .and. lum(ilu)%plant_cov /= 'null') then 
+               write (9001,*) lum(ilu)%name, lum(ilu)%plant_cov, ' not found in initial.plt' 
+           end if
+           if (lum_str(ilu)%mgt_ops == 0 .and. lum(ilu)%mgt_ops /= 'null') then
+              write (9001,*) lum(ilu)%name, lum(ilu)%mgt_ops, ' not found in management.sch'
+           end if
+           if (lum_str(ilu)%cn_lu == 0 .and. lum(ilu)%cn_lu /= 'null') then 
+              write (9001,*) lum(ilu)%name, lum(ilu)%cn_lu, ' not found in cntable.lum'
+           end if
+           if (lum_str(ilu)%cons_prac == 0 .and. lum(ilu)%cons_prac /= 'null') then 
+              write (9001,*) lum(ilu)%name, lum(ilu)%cons_prac, ' not found (landuse-consprac)'
+           end if
+           if (lum_str(ilu)%tiledrain == 0 .and. lum(ilu)%tiledrain /= 'null') then
+              write (9001,*) lum(ilu)%name, lum(ilu)%tiledrain, ' not found (landuse-tiledr)'
+           end if
+           if (lum_str(ilu)%septic == 0 .and. lum(ilu)%septic /= 'null') then 
+              write (9001,*) lum(ilu)%name, lum(ilu)%septic, ' not found (landuse-septic)'
+           end if
+           if (lum_str(ilu)%fstrip == 0 .and. lum(ilu)%fstrip /= 'null') then
+              write (9001,*) lum(ilu)%name, lum(ilu)%fstrip, ' not found (landuse-fstrip)'
+           end if
+           if (lum_str(ilu)%grassww == 0 .and. lum(ilu)%grassww /= 'null') then
+              write (9001,*) lum(ilu)%name, lum(ilu)%grassww, ' not found (landuse-grassww)'
+           end if
+           if (lum_str(ilu)%bmpuser == 0 .and. lum(ilu)%bmpuser /= 'null') then 
+              write (9001,*) lum(ilu)%name, lum(ilu)%bmpuser, ' not found (landuse-bmpuser)'
+           end if           
        end do
        exit
       end do

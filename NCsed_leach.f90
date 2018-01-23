@@ -36,10 +36,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : enratio, hru, ihru, latc_d, percc_d, sedc_d, sedorgn, soil, surfqc_d,   &
-         sedyld, surfq
+      use parm, only : enratio, hru, ihru, sedorgn, soil, sedyld, surfq
       use jrw_datalib_module
       use organic_mineral_mass_module
+      use carbon_module
 
       integer :: j
       real :: xx, wt1, er, conc
@@ -55,8 +55,7 @@
 	  wt1 = 0.  !! conversion factor
       er = 0.	!! enrichment ratio
         !! HRU calculations
-        !xx = sol_n(1,j) + sol_fon(1,j) + sol_mn(1,j)
-        xx = rsd1(j)%str%n + rsd1(j)%meta%n + soil(j)%cbn(1)%hpn + soil(j)%cbn(1)%hsn
+        xx = rsd1(j)%str%n + rsd1(j)%meta%n + soil1(j)%hp(1)%n + soil1(j)%hs(1)%n
         !wt = sol_bd(1,j) * sol_z(1,j) * 10. (tons/ha)
         !wt1 = wt/1000
         wt1 = soil(j)%phys(1)%bd * soil(j)%phys(1)%d / 100.
@@ -80,8 +79,8 @@
         
 		rsd1(j)%str%n = rsd1(j)%str%n * xx1
 		rsd1(j)%meta%n = rsd1(j)%meta%n * xx1
-		soil(j)%cbn(1)%hpn = soil(j)%cbn(1)%hpn * xx1
-		soil(j)%cbn(1)%hsn = soil(j)%cbn(1)%hsn * xx1
+		soil1(j)%hp(1)%n = soil1(j)%hp(1)%n * xx1
+		soil1(j)%hs(1)%n = soil1(j)%hs(1)%n * xx1
 		!sol_BMN(1,j) = sol_BMN(1,j) * xx1
       end if
       
@@ -121,11 +120,11 @@
       if (surfq(j) > 0) then
         !write(*,*) 'stop'
       end if
-      IF(soil(j)%cbn(1)%bmc > .01) THEN
+      IF(soil1(j)%microb(1)%c > .01) THEN
           PRMT_21 = 0.  !KOC FOR CARBON LOSS IN WATER AND SEDIMENT(500._1500.) KD = KOC * C
           PRMT_21 = 1000.
-          soil(j)%cbn(1)%woc = rsd1(j)%str%c + rsd1(j)%meta%c + soil1(j)%hp(1)%c + soil1(j)%hs(1)%c + soil(j)%cbn(1)%bmc 
-          DK=.0001*PRMT_21*soil(j)%cbn(1)%woc
+          soil1(j)%water(1)%c = rsd1(j)%str%c + rsd1(j)%meta%c + soil1(j)%hp(1)%c + soil1(j)%hs(1)%c + soil1(j)%microb(1)%c 
+          DK = .0001 * PRMT_21 * soil1(j)%water(1)%c
           !X1=PO(LD1)-S15(LD1)
           X1 = soil(j)%phys(1)%por*soil(j)%phys(1)%d-soil(j)%phys(1)%wpmm !mm
           IF (X1 <= 0.) THEN
@@ -137,28 +136,28 @@
 	      !QD surface runoff
           X3=0.
           IF(V>1.E-10)THEN
-              X3 = soil(j)%cbn(1)%bmc * (1.-EXP(-V/XX)) !loss of biomass C
+              X3 = soil1(j)%microb(1)%c * (1.-EXP(-V/XX)) !loss of biomass C
               PRMT_44 = 0. !RATIO OF SOLUBLE C CONCENTRATION IN RUNOFF TO PERCOLATE(0.1_1.)
               PRMT_44 = .5
               CO=X3/(soil(j)%ly(k)%prk + PRMT_44*(surfq(j)+soil(j)%ly(1)%flat)) !CS is the horizontal concentration
               CS=PRMT_44*CO                                     !CO is the vertical concentration
               VBC=CO*(soil(j)%ly(k)%prk) 
-              soil(j)%cbn(1)%bmc = soil(j)%cbn(1)%bmc - X3
+              soil1(j)%microb(1)%c = soil1(j)%microb(1)%c - X3
               QBC=CS*(surfq(j)+soil(j)%ly(1)%flat)
         !     COMPUTE WBMC LOSS WITH SEDIMENT
               IF(YEW>0.)THEN
-                  CS=DK*soil(j)%cbn(1)%bmc/XX
+                  CS = DK * soil1(j)%microb(1)%c / XX
                   YBC=YEW*CS
               END IF
           END IF
       END IF
 
-      soil(j)%cbn(1)%bmc=soil(j)%cbn(1)%bmc-YBC 
-      surfqc_d(j) = QBC*(surfq(j)/(surfq(j)+soil(j)%ly(1)%flat+1.e-6))
+      soil1(j)%microb(1)%c = soil1(j)%microb(1)%c - YBC 
+      cbn_loss(j)%surfqc_d = QBC * (surfq(j) / (surfq(j) + soil(j)%ly(1)%flat + 1.e-6))
        
       soil(j)%ly(1)%latc = QBC*(soil(j)%ly(1)%flat/(surfq(j)+soil(j)%ly(1)%flat+1.e-6))
       soil(j)%ly(1)%percc = VBC 
-      sedc_d(j) = YOC + YBC
+      cbn_loss(j)%sedc_d = YOC + YBC
       
       latc_clyr = latc_clyr + soil(j)%ly(1)%latc   
       DO k = 2, soil(j)%nly
@@ -167,12 +166,12 @@
           end if
           sol_thick = 0.
           sol_thick = soil(j)%phys(k)%d-soil(j)%phys(k-1)%d
-          soil(j)%cbn(1)%woc = soil1(j)%str(k)%c + soil1(j)%meta(k)%c + soil1(j)%hp(k)%c + soil1(j)%hs(k)%c 
+          soil1(j)%water(1)%c = soil1(j)%str(k)%c + soil1(j)%meta(k)%c + soil1(j)%hp(k)%c + soil1(j)%hs(k)%c 
           Y1 = soil1(j)%microb(k)%c + VBC
           VBC=0.
           IF(Y1>=.01)THEN
               V=soil(j)%ly(k)%prk + soil(j)%ly(k)%flat
-              IF(V>0.)VBC=Y1*(1.-EXP(-V/(soil(j)%phys(k)%por*sol_thick-soil(j)%phys(k)%wpmm+.0001*PRMT_21*soil(j)%cbn(1)%woc)))              
+              IF(V>0.)VBC=Y1*(1.-EXP(-V/(soil(j)%phys(k)%por*sol_thick-soil(j)%phys(k)%wpmm+.0001*PRMT_21*soil1(j)%water(1)%c)))              
           END IF
           soil(j)%ly(k)%latc = VBC*(soil(j)%ly(k)%flat/(soil(j)%ly(k)%prk + soil(j)%ly(k)%flat+1.e-6))
           soil(j)%ly(k)%percc = VBC-soil(j)%ly(k)%latc
@@ -185,8 +184,8 @@
         latc_clyr = latc_clyr + soil(j)%ly(k)%latc
       END DO
      
-        latc_d(j) = latc_clyr
-        percc_d(j) = perc_clyr
+        cbn_loss(j)%latc_d = latc_clyr
+        cbn_loss(j)%percc_d = perc_clyr
 
       return
       end

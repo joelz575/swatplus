@@ -158,59 +158,51 @@
         end do
 
         do l = 1, nl
-
-          dg = 0.
-          if (l == 1) then
-            dg = soil(jj)%phys(1)%d
-          else
-            dg = soil(jj)%phys(l)%d - soil(jj)%phys(l-1)%d
-          endif
-
           !! calculate new amount of each substance in each layer
           !! undergoing mixing
           soil1(jj)%mn(l)%no3 = soil1(jj)%mn(l)%no3 * (1. - thtill(l)) +    &
                           soil1(jj)%mn(l)%no3 * thtill(l) * (1. - emix)+    &
-                          smix(1) * thtill(l) * dg / dtil
+                          smix(1) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(jj)%hp(l)%n = soil1(jj)%hp(l)%n * (1. - thtill(l)) +        &
                           soil1(j)%hp(l)%n * thtill(l) * (1. - emix) +      &
-                          smix(2) * thtill(l) * dg / dtil
+                          smix(2) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(jj)%mn(l)%nh4 = soil1(jj)%mn(l)%nh4 * (1. - thtill(l)) +    &
                           soil1(jj)%mn(l)%nh4 * thtill(l) * (1. - emix)+    &
-                          smix(3) * thtill(l) * dg / dtil
+                          smix(3) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(jj)%mp(l)%lab = soil1(jj)%mp(l)%lab * (1.-thtill(l)) +      &
                           soil1(jj)%mp(l)%lab * thtill(l) * (1.-emix) +     &
-                          smix(4) * thtill(l) * dg / dtil
+                          smix(4) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(jj)%hp(l)%p = soil1(jj)%hp(l)%p * (1. - thtill(l))+         &
                       soil1(jj)%hp(l)%p * thtill(l) * (1. - emix) +         &
-                      smix(5) * thtill(l) * dg / dtil
+                      smix(5) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(jj)%hs(l)%n=soil1(jj)%hs(l)%n*(1. - thtill(l)) +            &
                       soil1(jj)%hs(l)%n * thtill(l) * (1. - emix) +         &
-                      smix(6) * thtill(l) * dg / dtil
+                      smix(6) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(j)%mp(l)%act = soil1(j)%mp(l)%act * (1. - thtill(l)) +      &
-                      soil(j)%nut(l)%actp * thtill(l) * (1. - emix) +       &
-                      smix(7) * thtill(l) * dg / dtil
+                      soil1(j)%mp(l)%act * thtill(l) * (1. - emix) +       &
+                      smix(7) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(jj)%tot(l)%n = soil1(jj)%tot(l)%n * (1. - thtill(l)) +    &
                           soil1(jj)%tot(l)%n * thtill(l) * (1. - emix)+    &
-                          smix(8) * thtill(l) * dg / dtil
+                          smix(8) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(jj)%tot(l)%p = soil1(jj)%tot(l)%p * (1. - thtill(l)) +    &
                           soil1(jj)%tot(l)%p * thtill(l) * (1. - emix)+    &
-                          smix(9) * thtill(l) * dg / dtil
+                          smix(9) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil1(jj)%mp(l)%sta = soil1(jj)%mp(l)%sta * (1.-thtill(l))+       &
                           soil1(jj)%mp(l)%sta * thtill(l) * (1.-emix) +     &
-                          smix(10) * thtill(l) * dg / dtil
+                          smix(10) * thtill(l) * soil(jj)%phys(l)%thick / dtil
 
           soil(jj)%ly(l)%rsd = soil(jj)%ly(l)%rsd * (1. - thtill(l)) +      &
                           soil(jj)%ly(l)%rsd * thtill(l) * (1. - emix) +    &
-                          smix(11) * thtill(l) * dg / dtil
+                          smix(11) * thtill(l) * soil(jj)%phys(l)%thick / dtil
           soil(jj)%ly(l)%rsd = Max(soil(jj)%ly(l)%rsd,0.)
 
           if (hrupest(jj) > 0) then
@@ -218,7 +210,7 @@
             soil(jj)%ly(l)%pst(k) =  soil(jj)%ly(l)%pst(k) *             &
                      (1. - thtill(l)) + soil(jj)%ly(l)%pst(k)  *         &
                      thtill(l) * (1. - emix) + smix(11+k) * thtill(l) *  & 
-                     dg / dtil
+                     soil(jj)%phys(l)%thick / dtil
           
           end do
           end if

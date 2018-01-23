@@ -52,6 +52,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm, only : wgncur, wgnold
+      use climate_parms
 
       integer, dimension (2) :: zshape
       integer :: n, l

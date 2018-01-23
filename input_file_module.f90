@@ -285,6 +285,6 @@
       
       contains
 
-      include 'readcio_read.f90'
+      !include 'readcio_read.f90'
 
       end module input_file_module 

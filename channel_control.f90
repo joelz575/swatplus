@@ -46,7 +46,8 @@
       use basin_module
       use jrw_datalib_module
       use time_module
-      use parm, only : inum1, pet_day, qdbank, rch_gra, rch_lag, rch_sag, revapday, rtwtr, sub_fr
+      use parm, only : inum1, pet_day, qdbank, rch_gra, rch_lag, rch_sag, revapday, sub_fr
+      use channel_module
 
       integer :: ii
       real :: subwtr
@@ -198,10 +199,10 @@
       call ch_rtout
       
 !   output_channel
-      ch_d(jrch)%flo_in = ob(icmd)%hin%flo  / 86400. 
-      ch_d(jrch)%flo_out = rtwtr / 86400. 
-      ch_d(jrch)%evap = rtevp / 86400.   
-      ch_d(jrch)%tloss = rttlc / 86400.  
+      ch_d(jrch)%flo_in = ob(icmd)%hin%flo / 10000.     !m^3 -> ha-m
+      ch_d(jrch)%flo_out = rtwtr / 10000.               !m^3 -> ha-m
+      ch_d(jrch)%evap = rtevp / 10000.                  !m^3 -> ha-m
+      ch_d(jrch)%tloss = rttlc / 10000.                 !m^3 -> ha-m
       ch_d(jrch)%sed_in = ob(icmd)%hin%sed   
       ch_d(jrch)%sed_out = sedrch              
       ch_d(jrch)%sed_conc = sedcon             

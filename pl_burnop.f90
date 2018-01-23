@@ -17,7 +17,8 @@
       use basin_module
       use jrw_datalib_module, only : fire_db
       use organic_mineral_mass_module
-      use parm, only : pcom, soil, emitc_d, cn2, ihru, cnop, ipl 
+      use parm, only : pcom, soil, cn2, ihru, cnop, ipl 
+      use carbon_module
    
       integer :: j
       integer, intent (in) :: jj, iplant, iburn
@@ -52,8 +53,8 @@
           rsd1(j)%meta%n = rsd1(j)%meta%n * fr_burn
           rsd1(j)%lig%m = rsd1(j)%lig%m * fr_burn  
 
-          emitc_d(j) = emitc_d(j) + pcom(j)%plm(ipl)%mass * (1. - fr_burn)
-          emitc_d(j) = emitc_d(j) + soil(j)%ly(1)%rsd * (1. - fr_burn)  
+          cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + pcom(j)%plm(ipl)%mass * (1. - fr_burn)
+          cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + soil(j)%ly(1)%rsd * (1. - fr_burn)  
       end if 
       !!insert new biomss by zhang
       !!=================================

@@ -45,6 +45,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm, only : i_mo, wgncur
+      use climate_parms
+      use hydrograph_module
 
       real :: tmxg, tmng, tamp, txxm
 

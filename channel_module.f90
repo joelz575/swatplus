@@ -1,8 +1,4 @@
       module channel_module
-       
-      use hydrograph_module
-      use climate_parms
-      use time_module
 
       integer :: jhyd, jsed, jnut, jpst      
       real :: rttime, rchdep, rtevp, rttlc 
@@ -223,10 +219,10 @@
           character (len=6) :: yrs =          ' time '
           character (len=6) :: yrc =          ' year '
           character (len=8) :: isd =        '   unit '
-          character(len=15) :: flo_in =    '    floin_m^3/s'        ! (m^3/s)
-          character(len=15) :: flo_out =   '   floout_m^3/s'        ! (m^3/s)
-          character(len=15) :: evap =      '     evap_m^3/s'        ! (m^3/s)
-          character(len=15) :: tloss =     '    tloss_m^3/s'        ! (m^3/s)
+          character(len=15) :: flo_in =    '    floin_ha-m'         ! (ha-m)
+          character(len=15) :: flo_out =   '   floout_ha-m'         ! (ha-m)
+          character(len=15) :: evap =      '     evap_ha-m'         ! (ha-m)
+          character(len=15) :: tloss =     '    tloss_ha-m'         ! (ha-m)
           character(len=15) :: sed_in =    '     sedin_tons'        ! (tons)
           character(len=15) :: sed_out=    '    sedout_tons'        ! (tons)
           character(len=15) :: sed_conc =  '   sedconc_mg/L'        ! (mg/L)
@@ -298,34 +294,34 @@
              
       contains
 !! routines for channel module
-      include 'channel_control.f90'
-      include 'channel_output.f90'
-      include 'channel_allo.f90'
-      include 'ch_rchinit.f90'                  
-      include 'ch_rtday.f90'                    
-      include 'ch_rtmusk.f90'                   
-      include 'ch_rthr.f90'                     
-      include 'ch_rthmusk.f90'                  
-      include 'ch_rtsed.f90'                    
-      include 'ch_rtsed_bagnold.f90'            
-      include 'ch_rtsed_kodatie.f90'            
-      include 'ch_rtsed_yangsand.f90'          
-      include 'ch_rtsed_Molinas_Wu.f90'        
-      include 'ch_hhnoqual.f90'                  
-      include 'ch_hhwatqual.f90'                 
-      include 'ch_rthsed.f90'                    
-      include 'ch_noqual.f90'                    
-      include 'ch_watqual2.f90'                  
-      include 'ch_watqual.f90'                   
-      include 'ch_rtpest.f90'                    
-      include 'ch_rthpest.f90'                   
-      include 'ch_rtbact.f90'                    
+      !include 'channel_control.f90'
+      !include 'channel_output.f90'
+      !include 'channel_allo.f90'
+      !include 'ch_rchinit.f90'                  
+      !include 'ch_rtday.f90'                    
+      !include 'ch_rtmusk.f90'                   
+      !include 'ch_rthr.f90'                     
+      !include 'ch_rthmusk.f90'                  
+      !include 'ch_rtsed.f90'                    
+      !include 'ch_rtsed_bagnold.f90'            
+      !include 'ch_rtsed_kodatie.f90'            
+      !include 'ch_rtsed_yangsand.f90'          
+      !include 'ch_rtsed_Molinas_Wu.f90'        
+      !include 'ch_hhnoqual.f90'                  
+      !include 'ch_hhwatqual.f90'                 
+      !include 'ch_rthsed.f90'                    
+      !include 'ch_noqual.f90'                    
+      !include 'ch_watqual2.f90'                  
+      !include 'ch_watqual.f90'                   
+      !include 'ch_rtpest.f90'                    
+      !include 'ch_rthpest.f90'                   
+      !include 'ch_rtbact.f90'                    
       !include 'ch_irr_rch.f90'                   
-      include 'ch_rchuse.f90'                    
-      include 'ch_biofilm.f90'    !!!!! call is commented             
- !     include 'ch_ttcoef.f'
-      include 'ch_rtout.f90' 
-      include 'ch_initial.f90'
+      !include 'ch_rchuse.f90'                    
+      !include 'ch_biofilm.f90'    !!!!! call is commented             
+      !include 'ch_ttcoef.f'
+      !include 'ch_rtout.f90' 
+      !include 'ch_initial.f90'
 
       function ch_add(cho1,cho2) result (cho3)
       type (ch_output),  intent (in) :: cho1
@@ -395,124 +391,123 @@
         type (ch_output), intent (in) :: ch1
         real, intent (in) :: const
         type (ch_output) :: ch2
-        consta = time%nbyr
-        ch2%flo_in = ch1%flo_in / consta
-        ch2%flo_out = ch1%flo_out / consta
-        ch2%evap = ch1%evap / consta  
-        ch2%tloss = ch1%tloss / consta  
-        ch2%sed_in = ch1%sed_in / consta 
-        ch2%sed_out = ch1%sed_out / consta           
-        ch2%sed_conc = ch1%sed_conc / consta            
-        ch2%orgn_in = ch1%orgn_in / consta  
-        ch2%orgn_out = ch1%orgn_out / consta              
-        ch2%orgp_in = ch1%orgp_in / consta  
-        ch2%orgp_out = ch1%orgp_out / consta            
-        ch2%no3_in = ch1%no3_in / consta
-        ch2%no3_out = ch1%no3_out / consta                    
-        ch2%nh4_in = ch1%nh4_in / consta  
-        ch2%nh4_out = ch1%nh4_out / consta               
-        ch2%no2_in = ch1%no2_in / consta 
-        ch2%no2_out = ch1%no2_out / consta                      
-        ch2%solp_in = ch1%solp_in / consta        
-        ch2%solp_out = ch1%solp_out / consta                   
-        ch2%chla_in = ch1%chla_in / consta   
-        ch2%chla_out = ch1%chla_out / consta                  
-        ch2%cbod_in = ch1%cbod_in / consta    
-        ch2%cbod_out = ch1%cbod_out / consta                   
-        ch2%dis_in = ch1%dis_in / consta      
-        ch2%dis_out = ch1%dis_out / consta                    
-        ch2%solpst_in = ch1%solpst_in / consta    
-        ch2%solpst_out = ch1%solpst_out / consta                
-        ch2%sorbpst_in = ch1%sorbpst_in / consta   
-        ch2%sorbpst_out = ch1%sorbpst_out / consta                  
-        ch2%react = ch1%react / consta                                
-        ch2%volat = ch1%volat / consta                         
-        ch2%setlpst = ch1%setlpst / consta                            
-        ch2%resuspst = ch1%resuspst / consta                          
-        ch2%difus = ch1%difus / consta                               
-        ch2%reactb = ch1%reactb / consta                               
-        ch2%bury = ch1%bury / consta                                   
-        ch2%sedpest = ch1%sedpest / consta
-        ch2%bacp = ch1%bacp / consta                        
-        ch2%baclp = ch1%baclp / consta                       
-        ch2%met1 = ch1%met1 / consta                         
-        ch2%met2 = ch1%met2 / consta                         
-        ch2%met3 = ch1%met3 / consta                         
-        ch2%sand_in = ch1%sand_in / consta          
-        ch2%sand_out = ch1%sand_out / consta                         
-        ch2%silt_in = ch1%silt_in / consta          
-        ch2%silt_out = ch1%silt_out / consta                       
-        ch2%clay_in = ch1%clay_in / consta             
-        ch2%clay_out = ch1%clay_out / consta                        
-        ch2%smag_in = ch1%smag_in / consta            
-        ch2%smag_out = ch1%smag_out / consta                       
-        ch2%lag_in = ch1%lag_in / consta          
-        ch2%lag_out = ch1%lag_out / consta                      
-        ch2%grvl_in = ch1%grvl_in / consta        
-        ch2%grvl_out = ch1%grvl_out / consta                      
-        ch2%bnk_ero = ch1%bnk_ero / consta
-        ch2%ch_deg = ch1%ch_deg / consta
-        ch2%fp_dep = ch1%fp_dep / consta
-        ch2%tot_ssed = ch1%tot_ssed / consta
+        ch2%flo_in = ch1%flo_in / const
+        ch2%flo_out = ch1%flo_out / const
+        ch2%evap = ch1%evap / const  
+        ch2%tloss = ch1%tloss / const  
+        ch2%sed_in = ch1%sed_in / const 
+        ch2%sed_out = ch1%sed_out / const           
+        ch2%sed_conc = ch1%sed_conc / const            
+        ch2%orgn_in = ch1%orgn_in / const  
+        ch2%orgn_out = ch1%orgn_out / const              
+        ch2%orgp_in = ch1%orgp_in / const  
+        ch2%orgp_out = ch1%orgp_out / const            
+        ch2%no3_in = ch1%no3_in / const
+        ch2%no3_out = ch1%no3_out / const                    
+        ch2%nh4_in = ch1%nh4_in / const  
+        ch2%nh4_out = ch1%nh4_out / const               
+        ch2%no2_in = ch1%no2_in / const 
+        ch2%no2_out = ch1%no2_out / const                      
+        ch2%solp_in = ch1%solp_in / const        
+        ch2%solp_out = ch1%solp_out / const                   
+        ch2%chla_in = ch1%chla_in / const   
+        ch2%chla_out = ch1%chla_out / const                  
+        ch2%cbod_in = ch1%cbod_in / const    
+        ch2%cbod_out = ch1%cbod_out / const                   
+        ch2%dis_in = ch1%dis_in / const      
+        ch2%dis_out = ch1%dis_out / const                    
+        ch2%solpst_in = ch1%solpst_in / const    
+        ch2%solpst_out = ch1%solpst_out / const                
+        ch2%sorbpst_in = ch1%sorbpst_in / const   
+        ch2%sorbpst_out = ch1%sorbpst_out / const                  
+        ch2%react = ch1%react / const                                
+        ch2%volat = ch1%volat / const                         
+        ch2%setlpst = ch1%setlpst / const                            
+        ch2%resuspst = ch1%resuspst / const                          
+        ch2%difus = ch1%difus / const                               
+        ch2%reactb = ch1%reactb / const                               
+        ch2%bury = ch1%bury / const                                   
+        ch2%sedpest = ch1%sedpest / const
+        ch2%bacp = ch1%bacp / const                        
+        ch2%baclp = ch1%baclp / const                       
+        ch2%met1 = ch1%met1 / const                         
+        ch2%met2 = ch1%met2 / const                         
+        ch2%met3 = ch1%met3 / const                         
+        ch2%sand_in = ch1%sand_in / const          
+        ch2%sand_out = ch1%sand_out / const                         
+        ch2%silt_in = ch1%silt_in / const          
+        ch2%silt_out = ch1%silt_out / const                       
+        ch2%clay_in = ch1%clay_in / const             
+        ch2%clay_out = ch1%clay_out / const                        
+        ch2%smag_in = ch1%smag_in / const            
+        ch2%smag_out = ch1%smag_out / const                       
+        ch2%lag_in = ch1%lag_in / const          
+        ch2%lag_out = ch1%lag_out / const                      
+        ch2%grvl_in = ch1%grvl_in / const        
+        ch2%grvl_out = ch1%grvl_out / const                      
+        ch2%bnk_ero = ch1%bnk_ero / const
+        ch2%ch_deg = ch1%ch_deg / const
+        ch2%fp_dep = ch1%fp_dep / const
+        ch2%tot_ssed = ch1%tot_ssed / const
       end function ch_div
       
       function ch_mult (const, chn1) result (chn2)
         type (ch_output), intent (in) :: chn1
         real, intent (in) :: const
         type (ch_output) :: chn2
-        chn2%flo_in = consta * chn1%flo_in      
-        chn2%flo_out = consta * chn1%flo_out
-        chn2%evap = consta * chn1%evap
-        chn2%tloss = consta * chn1%tloss
-        chn2%sed_in = consta * chn1%sed_in
-        chn2%sed_out = consta * chn1%sed_out
-        chn2%sed_conc = consta * chn1%sed_conc      
-        chn2%orgn_in = consta * chn1%orgn_in
-        chn2%orgn_out = consta * chn1%orgn_out
-        chn2%orgp_in = consta * chn1%orgp_in
-        chn2%orgp_out = consta * chn1%orgp_out
-        chn2%no3_in = consta * chn1%no3_in
-        chn2%no3_out = consta * chn1%no3_out    
-        chn2%nh4_in = consta * chn1%nh4_in
-        chn2%nh4_out = consta * chn1%nh4_out
-        chn2%no2_in = consta * chn1%no2_in
-        chn2%no2_out = consta * chn1%no2_out
-        chn2%solp_in = consta * chn1%solp_in
-        chn2%solp_out = consta * chn1%solp_out      
-        chn2%chla_in = consta * chn1%chla_in
-        chn2%chla_out = consta * chn1%chla_out
-        chn2%cbod_in = consta * chn1%cbod_in
-        chn2%cbod_out = consta * chn1%cbod_out
-        chn2%dis_in = consta * chn1%dis_in
-        chn2%dis_out = consta * chn1%dis_out     
-        chn2%solpst_in = consta * chn1%solpst_in
-        chn2%solpst_out = consta * chn1%solpst_out
-        chn2%sorbpst_in = consta * chn1%sorbpst_in
-        chn2%sorbpst_out = consta * chn1%sorbpst_out
-        chn2%react = consta * chn1%react
-        chn2%bury = consta * chn1%bury      
-        chn2%sedpest = consta * chn1%sedpest
-        chn2%bacp = consta * chn1%bacp
-        chn2%baclp = consta * chn1%baclp
-        chn2%met1 = consta * chn1%met1
-        chn2%met2 = consta * chn1%met2
-        chn2%met3 = consta * chn1%met3     
-        chn2%sand_in = consta * chn1%sand_in
-        chn2%sand_out = consta * chn1%sand_out
-        chn2%silt_in = consta * chn1%silt_in
-        chn2%silt_out = consta * chn1%silt_out
-        chn2%clay_in = consta * chn1%clay_in
-        chn2%clay_out = consta * chn1%clay_out      
-        chn2%smag_in = consta * chn1%smag_in
-        chn2%smag_out = consta * chn1%smag_out
-        chn2%lag_in = consta * chn1%lag_in
-        chn2%lag_out = consta * chn1%lag_out
-        chn2%grvl_in = consta * chn1%grvl_in
-        chn2%grvl_out = consta * chn1%grvl_out   
-        chn2%bnk_ero = consta * chn1%bnk_ero
-        chn2%ch_deg = consta * chn1%ch_deg
-        chn2%fp_dep = consta * chn1%fp_dep
-        chn2%tot_ssed = consta * chn1%tot_ssed     
+        chn2%flo_in = const * chn1%flo_in      
+        chn2%flo_out = const * chn1%flo_out
+        chn2%evap = const * chn1%evap
+        chn2%tloss = const * chn1%tloss
+        chn2%sed_in = const * chn1%sed_in
+        chn2%sed_out = const * chn1%sed_out
+        chn2%sed_conc = const * chn1%sed_conc      
+        chn2%orgn_in = const * chn1%orgn_in
+        chn2%orgn_out = const * chn1%orgn_out
+        chn2%orgp_in = const * chn1%orgp_in
+        chn2%orgp_out = const * chn1%orgp_out
+        chn2%no3_in = const * chn1%no3_in
+        chn2%no3_out = const * chn1%no3_out    
+        chn2%nh4_in = const * chn1%nh4_in
+        chn2%nh4_out = const * chn1%nh4_out
+        chn2%no2_in = const * chn1%no2_in
+        chn2%no2_out = const * chn1%no2_out
+        chn2%solp_in = const * chn1%solp_in
+        chn2%solp_out = const * chn1%solp_out      
+        chn2%chla_in = const * chn1%chla_in
+        chn2%chla_out = const * chn1%chla_out
+        chn2%cbod_in = const * chn1%cbod_in
+        chn2%cbod_out = const * chn1%cbod_out
+        chn2%dis_in = const * chn1%dis_in
+        chn2%dis_out = const * chn1%dis_out     
+        chn2%solpst_in = const * chn1%solpst_in
+        chn2%solpst_out = const * chn1%solpst_out
+        chn2%sorbpst_in = const * chn1%sorbpst_in
+        chn2%sorbpst_out = const * chn1%sorbpst_out
+        chn2%react = const * chn1%react
+        chn2%bury = const * chn1%bury      
+        chn2%sedpest = const * chn1%sedpest
+        chn2%bacp = const * chn1%bacp
+        chn2%baclp = const * chn1%baclp
+        chn2%met1 = const * chn1%met1
+        chn2%met2 = const * chn1%met2
+        chn2%met3 = const * chn1%met3     
+        chn2%sand_in = const * chn1%sand_in
+        chn2%sand_out = const * chn1%sand_out
+        chn2%silt_in = const * chn1%silt_in
+        chn2%silt_out = const * chn1%silt_out
+        chn2%clay_in = const * chn1%clay_in
+        chn2%clay_out = const * chn1%clay_out      
+        chn2%smag_in = const * chn1%smag_in
+        chn2%smag_out = const * chn1%smag_out
+        chn2%lag_in = const * chn1%lag_in
+        chn2%lag_out = const * chn1%lag_out
+        chn2%grvl_in = const * chn1%grvl_in
+        chn2%grvl_out = const * chn1%grvl_out   
+        chn2%bnk_ero = const * chn1%bnk_ero
+        chn2%ch_deg = const * chn1%ch_deg
+        chn2%fp_dep = const * chn1%fp_dep
+        chn2%tot_ssed = const * chn1%tot_ssed     
       end function ch_mult
                
       end module channel_module

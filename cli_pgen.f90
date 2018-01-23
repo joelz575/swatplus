@@ -53,6 +53,8 @@
 
       use basin_module
       use parm, only : i_mo, npcp, rcor
+      use climate_parms
+      use hydrograph_module
 
       real :: vv, pcpgen, v8, r6, xlv
 

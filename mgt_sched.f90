@@ -27,11 +27,11 @@
          sweepop_db, sweepop, sched
       use basin_module
       use hydrograph_module
-      use parm, only : pcom, soil, hru, ihru, imp_trig, phubase, ndeat, igrz, manure_id, grz_days, bio_trmp,       &
-        manure_kg, yr_skip, nop, bio_eat, sol_sumno3, sol_sumsolp, strsn_sum, strsp_sum, strstmp_sum, strsw_sum,   &
-        strsa_sum, irramt, irr_sc, irr_no, fertnh3, fertno3, fertorgn, fertorgp, fertsolp, idp, ipl, sweepeff,     &
-        yr_skip
-      
+      use parm, only : pcom, soil, hru, ihru, imp_trig, phubase, ndeat, igrz, manure_id, grz_days, bio_trmp, bio_min,   &
+        manure_kg, yr_skip, nop, bio_eat, sol_sumno3, sol_sumsolp, strsn_sum, strsp_sum, strstmp_sum, strsw_sum,        &
+        strsa_sum, irramt, irr_sc, irr_no, fertnh3, fertno3, fertorgn, fertorgp, fertsolp, idp, ipl, sweepeff,          &
+        yr_skip, yield
+      use time_module
       use constituent_mass_module
       
       j = ihru
@@ -115,7 +115,7 @@
                 end select
 
                 !! sum yield and number of harvest to calc ave yields
-                pcom(j)%plg(ipl)%yield = pcom(j)%plg(ipl)%yield + yield
+                pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield + yield
                 pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
             
                 idp = pcom(j)%plcur(ipl)%idplt
@@ -167,8 +167,8 @@
                 call mgt_killop (j, ipl)
 
                 !! sum yield and num. of harvest to calc ave yields
-                pcom(j)%plg(ipl)%yield = pcom(j)%plg(ipl)%yield + yield
-                pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num+1
+                pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield + yield
+                pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == 'y') then
@@ -257,10 +257,11 @@
             manure_id(j) = mgt%op1
             grz_days(j) = mgt%op3
             bio_eat(j) = grazeop_db(mgt%op1)%eat
-            bio_trmp(j) = grazeop_db(mgt%op1)%tramp           
-            if (grazeop_db(mgt%op1)%manure <= 0.) then 
-              grazeop_db(mgt%op1)%manure = 0.95 * grazeop_db(mgt%op1)%eat
-            end if
+            bio_trmp(j) = grazeop_db(mgt%op1)%tramp
+            bio_min(j) = grazeop_db(mgt%op1)%biomin
+            !if (grazeop_db(mgt%op1)%manure <= 0.) then 
+            !  grazeop_db(mgt%op1)%manure = 0.95 * grazeop_db(mgt%op1)%eat
+            !end if
             manure_kg(j) = grazeop_db(mgt%op1)%manure
             
             if (pco%mgtout == 'y') then

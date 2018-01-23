@@ -7,6 +7,7 @@
      use hydrograph_module
      use sd_channel_module
      use parm
+     use jrw_datalib_module, only : db_mx
      
       if (pco%fdcout == 'y') then
         open (6000,file="flow_duration_curve.out", recl=800)
@@ -26,9 +27,9 @@
 !!!!!! can be used as input (calibration.upd) in subsequent simulations
       if (db_mx%lsu_reg > 0) then
         open (5000,file="hru-new.cal", recl = 800)
-        write (5000,*) ' calibration.upd_developed_from_soft_data_calibration'
-	    write (9000,*) 'HRU SOFT OUT CALIB  hru-new.cal'
-        write (5000,*) calb3_hdr
+      !  write (5000,*) ' calibration.upd_developed_from_soft_data_calibration'
+	  !  write (9000,*) 'HRU SOFT OUT CALIB  hru-new.cal'
+      !  write (5000,*) calb3_hdr
       end if
       
 !!!!!! hru-lte-out.cal - hru lte soft calibration output including soft and predicted budgets and 

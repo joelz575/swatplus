@@ -3,7 +3,6 @@
       use time_module
       use basin_module
       use aquifer_module
-      !use aquifer_module, only : aqu, aqu_m, aqu_y
       
       integer, intent (in) :: iaq
              
@@ -73,7 +72,7 @@
       
       return
       
-100   format (2i6,i8,17f15.3)
-102   format (a6,i6,i8,17f15.3)
+100   format (2i6,i8,20f15.3)
+102   format (a6,i6,i8,20f15.3)
        
       end subroutine aquifer_output

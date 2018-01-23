@@ -120,6 +120,7 @@
         sedminps, sedorgp, surqsolp, sedyld, sanyld, hrupest, hru_dafr, bactrolp, bactrop, bactsedlp,       &
         bactsedp, npmx, sbactrolp, sbactrop, sbactsedlp, sbactsedp
       use constituent_mass_module
+      use time_module
 
       integer :: j, k
       real :: sdrain_vfs1, drain_vfs2, area_vfs1, area_vfs2, vfs_depth1,     &

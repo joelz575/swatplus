@@ -52,14 +52,17 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
-      use parm, only : curyr, hru, i_mo, idp, ifirstatmo, ihru, iida, ipl, iyr_atmo1, mcr, mhru, mo_atmo1,   &
+      use parm, only : curyr, hru, i_mo, idp, ifirstatmo, ihru, iida, ipl, iyr_atmo1, mcr, mo_atmo1,   &
          nhru, nop, pcom, phubase, tnyld, tnylda, yr_skip 
       use time_module
       use climate_module
+      use climate_parms
       use basin_module
       use sd_channel_module
       use hru_lte_module
       use basin_module
+      use hydrograph_module, only : sp_ob
+      use output_landscape_module
       
       integer :: j, iix, iiz, ic, mon, ii
       integer :: isce = 1
@@ -130,7 +133,7 @@
           iida = i
           call xmon
           time%day = i
-          write (*,1234) time%yrs, time%day
+          write (*,1234) cal_sim, time%yrs, time%day
           time%mo = i_mo
           !! check for end of month, year and simulation
           time%end_mo = 0
@@ -202,7 +205,7 @@
           !  call hru_lte_output (isd)
           !end do
           
-          call soil_write  
+          !call soil_write  
 
         do ihru = 1, nhru  
           isched = hru(j)%mgt_ops
@@ -246,7 +249,7 @@
           chsd_y(ich) = chsdz
         end do
         
-        do j = 1, mhru
+        do j = 1, sp_ob%hru
           !! zero yearly balances after using them in soft data calibration (was in hru_output)
           hwb_y(j) = hwbz
           hnb_y(j) = hnbz
@@ -254,7 +257,6 @@
           hls_y(j) = hlsz
           
           !! compute biological mixing at the end of every year
-          !! if (biomix(j) > .001) call mgt_tillmix (j, biomix(j), 0)
           if (hru(j)%hyd%biomix > 1.e-6) call mgt_newtillmix (j, hru(j)%hyd%biomix, 0)
 
           !! update sequence number for year in rotation to that of
@@ -279,19 +281,19 @@
           if (time%idaf < 181) then
             isched = hru(j)%mgt_ops
             if (sched(isched)%num_ops > 0) then
-            if (sched(isched)%mgt_ops(nop(j))%op /= "skip") then
-              dorm_flag = 1
-              ihru = j
-              call mgt_operatn
-              dorm_flag = 0
-            end if
-            nop(j) = nop(j) + 1
-            if (nop(j) > sched(isched)%num_ops) then
-              nop(j) = 1
-            end if
+              if (sched(isched)%mgt_ops(nop(j))%op /= "skip") then
+                dorm_flag = 1
+                ihru = j
+                call mgt_operatn
+                dorm_flag = 0
+              end if
+              nop(j) = nop(j) + 1
+              if (nop(j) > sched(isched)%num_ops) then
+                nop(j) = 1
+              end if
             
-            phubase(j) = 0.
-            yr_skip(j) = 0
+              phubase(j) = 0.
+              yr_skip(j) = 0
             end if
           end if
         end do
@@ -300,8 +302,10 @@
       time%yrc = time%yrc + 1
       end do            !!     end annual loop
       
+      !! ave annual calibration output and reset time for next simulation
       call cal_ave_output
+      time = time_init
 
       return
- 1234 format (1x,' Executing year/day ', 2i4)
+ 1234 format (1x,a, ' Executing year/day ', 2i4)
       end subroutine time_control

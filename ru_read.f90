@@ -3,10 +3,13 @@
       use basin_module
       use input_file_module
       use time_module
+      use ru_module
+      use hydrograph_module, only : ru_d, ru_m, ru_y, ru_a, sp_ob
+      use jrw_datalib_module, only : db_mx, topo_db, field_db
       
       ! read subbasin parameters (ie drainage area and topographic inputs)
       character (len=80) :: titldum, header
-      integer :: eof, i, imax
+      integer :: eof, imax
       
       msub_db = 0
       eof = 0

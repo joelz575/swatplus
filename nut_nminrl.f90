@@ -258,7 +258,7 @@
         wdn = 0.   
 	  if (i_sep(j) /= k .or. sep(isep)%opt  /= 1) then
 	    if (sut >= bsn_prm%sdnco) then
-	      wdn = soil1(j)%mn(k)%no3 * (1.-Exp(-bsn_prm%cdn * cdg * soil(j)%cbn(k)%cbn))
+	      wdn = soil1(j)%mn(k)%no3 * (1.-Exp(-bsn_prm%cdn * cdg * soil1(j)%tot(k)%c))
 	    else
 	      wdn = 0.
 	    endif

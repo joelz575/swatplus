@@ -4,6 +4,7 @@
       use basin_module
       use jrw_datalib_module
       use channel_module
+      use hydrograph_module, only : sp_ob
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs channel output variables

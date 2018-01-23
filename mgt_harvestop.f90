@@ -80,10 +80,11 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : pcom, hru, soil, rsdc_d, tnyld, grainc_d, auto_eff, hrupest, harveff, idp, ihru,  &
+      use parm, only : pcom, hru, soil, tnyld, auto_eff, hrupest, harveff, idp, ihru,  &
         ipl, npmx
       use jrw_datalib_module, only: harvop_db, pldb
       use constituent_mass_module
+      use carbon_module
       
       integer :: j, k
       integer, intent (in) :: jj, iplant, iharvop 
@@ -126,13 +127,7 @@
       idp = pcom(j)%plcur(ipl)%idplt
       hi_ovr = harvop_db(iharvop)%hi_ovr
       harveff = harvop_db(iharvop)%eff
-      
-      !pl_tot => hru(j)%pl_tot(ipl)
-      !veg_ag => hru(j)%veg_ag(ipl)
-      !grain => hru(j)%grain(ipl)
-      !root => hru(j)%root(ipl)
-      !rsd_flt => hru(j)%rsd_flt(ipl)
-      
+
       ssb = 0.
       ssabg = 0.
       ssr = 0.
@@ -224,8 +219,8 @@
       !!=====================
 
       if (bsn_cc%cswat == 2) then
-        grainc_d(j) = grainc_d(j)+ yield * 0.42
-        rsdc_d(j) = rsdc_d(j)+(clip+yield) * 0.42
+        cbn_loss(j)%grainc_d = cbn_loss(j)%grainc_d + yield * 0.42
+        cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + (clip + yield) * 0.42
       end if
       !!add by zhang
       !!=====================
@@ -423,7 +418,7 @@
                 !END 
                 !HUI(JJK)=HU(JJK)/XPHU   
                 
-                rsdc_d(j) = rsdc_d(j)+soil(j)%ly(l)%rtfr*rtresnew * 0.42
+                cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + soil(j)%ly(l)%rtfr * rtresnew * 0.42
                 
                 BLG3 = 0.10
                 BLG1 = 0.01/0.10

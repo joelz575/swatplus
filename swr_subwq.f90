@@ -58,8 +58,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use parm, only : soil, hru, ihru, tmpav, qdr, sedorgn, surqno3, cbodu, doxq, chl_a, sedyld, sedc_d,  &
+      use parm, only : soil, hru, ihru, tmpav, qdr, sedorgn, surqno3, cbodu, doxq, chl_a, sedyld,   &
          chla_subco, enratio, soxy
+      use organic_mineral_mass_module
+      use carbon_module
 
       integer :: j
       real :: tn, tp, qtot, org_c, tn_tp, wtmp, ww, xx, yy, zz, flow_cms
@@ -82,12 +84,12 @@
  
           !! calculate organic carbon loading to main channel
           org_c = 0.
-          org_c = (soil(j)%cbn(1)%cbn / 100.) * enratio*sedyld(j)*1000.
+          org_c = (soil1(j)%tot(1)%c / 100.) * enratio*sedyld(j) * 1000.
           
           !!add by zhang
           !!========================
           if (bsn_cc%cswat == 2) then
-            org_c = sedc_d(j)*hru(j)%area_ha
+            org_c = cbn_loss(j)%sedc_d * hru(j)%area_ha
           end if
           !!add by zhang
           !!========================

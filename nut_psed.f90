@@ -49,10 +49,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
-      use parm
-      !use parm, only : hru, soil, pcom, sedyld, sedorgp, sedminpa, sedminps, plt_mass_z, ihru, enratio,  &
-      !  ihru, ipl 
- 
+      use parm, only : hru, soil, pcom, sedyld, sedorgp, sedminpa, sedminps, ihru, enratio,  &
+        ihru, ipl  
       use organic_mineral_mass_module
 
       integer :: j, sb
@@ -60,11 +58,6 @@
 
       j = ihru
 
-      hru(j)%rsd = plt_mass_z
-      do ipl = 1, pcom(j)%npl
-        hru(j)%rsd = hru(j)%rsd + hru(j)%rsd_flt(ipl)
-      end do
-      
         !! HRU sediment calculations
         xx = soil1(j)%hp(1)%p
         if (xx > 1.e-3) then

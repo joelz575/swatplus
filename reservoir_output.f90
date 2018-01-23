@@ -2,6 +2,7 @@
       
       use time_module
       use basin_module
+      use reservoir_module
       
       integer, intent (in) :: j
              

@@ -35,16 +35,12 @@
 !!                                   |5 divert water from source outside
 !!                                   |  watershed
 !!    nhru            |none          |number of HRUs in watershed
-!!    nirr(:)         |none          |sequence number of irrigation application
-!!                                   |within the year
 !!    res_vol(:)      |m**3          |reservoir volume
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    nirr(:)     |none          |sequence number of irrigation application
-!!                               |within the year
 !!    res_vol(:)  |m**3          |reservoir volume
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -71,10 +67,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : soil, hru, irrsc, irrno, nirr, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
+      use parm, only : soil, hru, irrsc, irrno, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
          irr_sc, irr_no, irr_asq, irr_noa, irr_sca, irramt, irr_mx, aird, irr_eff, nhru, sq_rto
       use jrw_datalib_module, only : potdb
       use reservoir_module
+      use hydrograph_module, only : res
 
       integer :: k, flag
       real :: cnv, vmm, vol, vmxi
@@ -142,11 +139,6 @@
               res(jres)%flo = res(jres)%flo - vol
               if (res(jres)%flo < 0.) res(jres)%flo = 0.
 
-              !! advance irrigation operation number
-              if (flag == 1) then
-                nirr(k) = nirr(k) + 1
-              end if
-          
             end if
           end if
 !        end if

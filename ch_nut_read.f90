@@ -3,6 +3,7 @@
       use input_file_module
       use basin_module
       use parm, only : chla_subco
+      use time_module
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine reads data from the lake water quality input file (.lwq).

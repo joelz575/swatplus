@@ -29,10 +29,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : bact, pcom, soil, ipl, manure_kg, sumlai
-      use bacteria_module, only : bac_db
-      use jrw_process_module
-      
+      use parm, only : pcom, soil, ipl, manure_kg, sumlai
+      use bacteria_module
+
       real :: frt_t
       
       if (bioms_tot > bioms_min) then

@@ -25,14 +25,12 @@
         !! set a soil layer at dep_new and adjust all lower layers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         (ihru)%ly)
         deallocate (soil(ihru)%phys)
         !!!deallocate (soil(ihru)%nut)    !! nbs
-        deallocate (soil(ihru)%cbn)    !! nbs
         deallocate (soil(ihru)%ly)     !! nbs
         nly1 = soil(ihru)%nly + 1                                                                                                         
         allocate (soil(ihru)%ly(nly1))
         allocate (soil(ihru)%phys(nly1))
         allocate (soil1(ihru)%tot(nly1))   !! nbs ?
-        !!!allocate (soil(ihru)%nut(nly1))    !! remove after nuts are gone
-        allocate (soil(ihru)%cbn(nly1))    !! nbs
+        allocate (soil1_init(ihru)%tot(nly1))   !! nbs ?
         if (soil(ihru)%phys(ly)%d > dep_new) then                                                                                                     
           isep_ly = ly
           soil(ihru)%phys(ly)%d = dep_new

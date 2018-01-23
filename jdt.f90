@@ -23,6 +23,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use time_module
+
       integer, intent (in), dimension (13) :: numdays
       integer, intent (in) :: m, i
       integer :: jdt

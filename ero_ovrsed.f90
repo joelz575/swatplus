@@ -62,7 +62,7 @@
       use basin_module
       use climate_parms
       use time_module
-      use hydrograph_module, only: iwst
+      use hydrograph_module
       use parm, only : hru, soil, hhsedy, cht_mx, hhqday, cvm_com, sol_cov, ihru, sumlai 
       
 	integer :: k, j

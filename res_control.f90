@@ -3,12 +3,13 @@
       use basin_module
       use jrw_datalib_module
       use time_module
-      use parm, only : i_mo, pet_day, resclai, resgrai, reslagi, ressagi, ressani, ressili
+      use parm, only : i_mo, pet_day, resclai, resgrai, reslagi, ressagi, ressani, ressili, hru
+      use reservoir_module
+      use climate_parms
+      use hydrograph_module, only : ob, res, hd, icmd, iwst
       
-
       integer :: k, ii, jres
-      real :: sepmm, resorgpc, ressolpc, sedcon, resorgnc, resno3c
-      real :: resno2c, resnh3c
+      real :: sepmm, resorgnc
 
       !! initialize variables for reservoir daily simulation
       call res_dayinit

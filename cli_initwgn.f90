@@ -108,12 +108,15 @@
 
       use basin_module
       use parm, only : irelh
+      use climate_parms, only : wgn, wgn_pms, idg, rndseed
+      use time_module
 
       real :: xx, lattan, x1, x2, x3, tav, tmin, tmax
-      real :: summx_t, summn_t, summm_p, sum, rnm2, r6, xlv, pcp
+      real :: summx_t, summn_t, summm_p, sum, rnm2, r6, xlv
       real, dimension (12) :: rain_hhsm
       real :: tmpsoil, sffc, rndm1, dl
       integer :: mon, mdays, j, m1, nda, xrnd
+      
 
       !! determine if input for dewpt is relative humidity
       i = iwgn

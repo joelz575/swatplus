@@ -63,32 +63,14 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+      use channel_module
+      use hydrograph_module
+
 !! initialize daily variables
       rchwtr = ch(jrch)%rchstor
       
       bury = 0.
       difus = 0.
-!      halgae = 0.
-!      hbod = 0.
-!      hchla = 0.
-!      hdepth = 0.
-!      hdisox = 0.
-!      hharea = 0.
-!      hhstor = 0.
-!      hhtime = 0.
-!      hnh4 = 0.
-!      hno2 = 0.
-!      hno3 = 0.
-!      horgn = 0.
-!      horgp = 0.
-!      hrchwtr = 0.
-!      hrtwtr = 0.
-!      hsdti = 0.
-!      hsedst = 0.
-!      hsedyld = 0.
-!      hsolp = 0.
-!      hsolpst = 0.
-!      hsorpst = 0.
       peakr = 0.
       qdbank = 0.
       rcharea = 0.

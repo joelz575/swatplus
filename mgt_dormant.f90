@@ -50,8 +50,10 @@
       use hydrograph_module
       use jrw_datalib_module, only : pldb 
       use organic_mineral_mass_module
-      use parm, only : soil, pcom, hru, rsdc_d, dayl, dormhr, phubase, sol_sumno3, sol_sumsolp, ipl, ihru,  &
+      use parm, only : soil, pcom, hru, dayl, dormhr, phubase, sol_sumno3, sol_sumsolp, ipl, ihru,  &
         idp, sol_sumno3, sol_sumsolp
+      use carbon_module
+      use time_module
 
       real :: resnew
       integer :: j
@@ -107,7 +109,7 @@
             !!add by zhang
             !!===================
             if (bsn_cc%cswat == 2) then
-                rsdc_d(j) = rsdc_d(j) + resnew*0.42
+                cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + resnew*0.42
             end if
             !!add by zhang
             !!===================
@@ -240,7 +242,7 @@
             !!add by zhang
             !!===================
             if (bsn_cc%cswat == 2) then
-                rsdc_d(j) = rsdc_d(j) + resnew*0.42
+                cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + resnew*0.42
             end if
             !!add by zhang
             !!===================

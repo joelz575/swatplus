@@ -58,7 +58,9 @@
 
       use basin_module
       use jrw_datalib_module
-      use parm, only : pet_day, rcharea, rtwtr,  sdti
+      use parm, only : pet_day, rcharea, sdti
+      use channel_module
+      use hydrograph_module, only : ob
 
       real :: wtrin, scoef, p, tbase, topw, vol, c, rh
       real :: volrt, maxrt, adddep, addp, addarea, vc, aaa

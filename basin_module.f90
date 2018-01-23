@@ -1,15 +1,12 @@
       module basin_module
       
-      use output_landscape_module
-      use time_module
-      
       integer :: mchg_par, ichg_par, ispu
       real :: ubw, uobw, uobn, uobp
 
       type basin_inputs
-        character(len=13) :: name
-        real :: area_ha = 0.
-        real :: km2 = 0. 
+        character(len=25) :: name
+        real :: area_ls_ha = 0.
+        real :: area_tot_ha = 0. 
       end type basin_inputs
       type (basin_inputs) :: bsn
       
@@ -153,17 +150,19 @@
       type (basin_parms) :: bsn_prm
 
       type print_interval
-        character(len=1) :: d
-        character(len=1) :: m
-        character(len=1) :: y
-        character(len=1) :: a
+        character(len=1) :: d = 'n'
+        character(len=1) :: m = 'n'
+        character(len=1) :: y = 'n'
+        character(len=1) :: a = 'n'
+        character(len=1) :: t = 'n'     !! sub-daily print
       end type print_interval
       
       type basin_print_codes
       !!    PRINT CODES: 'avann' = average annual (always print....unless input is 'null')
       !!                 'year'  = yearly
       !!                 'mon'   = monthly
-      !!                 'day'   = daily                     
+      !!                 'day'   = daily 
+      
         integer :: nyskip = 0                         !!  number of years to skip output summarization
       ! DAILY START/END AND INTERVAL
         integer :: jd_start = 0                       !!  julian day to start printing output
@@ -233,6 +232,7 @@
         type(print_interval) :: ru
       end type basin_print_codes
       type (basin_print_codes) :: pco
+      type (basin_print_codes) :: pco_init
       
       type mgt_header         
           character (len=6) :: hru =          '  hru '
@@ -336,10 +336,10 @@
       type(mgt_header_unit2) :: mgt_hdr_unt2
           
       contains
-      include 'basin_cc_read.f90'
-      include 'basin_prm_read.f90'
-      include 'basin_prm_default.f90'
-      include 'basin_print_codes_read.f90'
+      !include 'basin_cc_read.f90'
+      !include 'basin_prm_read.f90'
+      !include 'basin_prm_default.f90'
+      !include 'basin_print_codes_read.f90'
       !include 'basin_output.f90'
 
       end module basin_module

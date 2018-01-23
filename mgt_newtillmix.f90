@@ -115,7 +115,6 @@
       !!by zhang DSSAT tillage
       !!=======================
       !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
-      !jj is hru number
       if (bsn_cc%cswat == 2) then
           tillage_days(jj) = 0
           tillage_depth(jj) = dtil
@@ -137,7 +136,7 @@
         bactps(jj) = bactps(jj) * (1. - emix)
         bactlpq(jj) = bactlpq(jj) * (1. - emix)
         bactlps(jj) = bactlps(jj) * (1. - emix)
-	end if
+	  end if
       	
 	!! calculate max mixing to preserve target surface residue MJW rev 490
 	!! Assume residue in all other layers is negligible to simplify calculation and remove depth dependency
@@ -166,8 +165,8 @@
       smix = 0.
 
       if (dtil > 0.) then
-!!!  added by Armen 09/10/2010 next line only
-        if (dtil < 10.0) dtil = 11.0
+    ! added by Armen 09/10/2010 next line only
+    if (dtil < 10.0) dtil = 11.0
 	 do l = 1, soil(jj)%nly
 
           if (soil(jj)%phys(l)%d <= dtil) then
@@ -175,17 +174,14 @@
             !! msn = mass of soil not mixed for the layer		
             sol_msm(l) = emix * sol_mass(l)	
             sol_msn(l) = sol_mass(l) - sol_msm(l)	
-          else if (soil(jj)%phys(l)%d > dtil .AND. soil(jj)%phys(l-1)%d      &
-              < dtil) then 
-            sol_msm(l) = emix * sol_mass(l) *                                &                          
-            (dtil - soil(jj)%phys(l-1)%d) / sol_thick(l)
+          else if (soil(jj)%phys(l)%d > dtil .AND. soil(jj)%phys(l-1)%d < dtil) then 
+            sol_msm(l) = emix * sol_mass(l) * (dtil - soil(jj)%phys(l-1)%d) / sol_thick(l)
             sol_msn(l) =  sol_mass(l) -  sol_msm(l)
           else
             sol_msm(l) = 0.
             sol_msn(l) = sol_mass(l)
           end if
 
-			
           !! calculate the mass or concentration of each mixed element 
           !! mass based mixing
           WW1 = sol_msm(l)/(sol_msm(l) + sol_msn(l))
@@ -206,12 +202,10 @@
 
 		!! concentration based mixing
           WW2 = XX + sol_msm(l)
-          smix(15) = (XX * smix(15)+soil(jj)%cbn(l)%cbn *sol_msm(l))/WW2
-          smix(16) = (XX * smix(16) + soil(jj)%ly(l)%n*sol_msm(l))/WW2
-          smix(17) = (XX * smix(17) + soil(jj)%phys(l)%clay *              &
-                  sol_msm(l))/WW2
-          smix(18) = (XX * smix(18) + soil(jj)%phys(l)%silt                &
-                  * sol_msm(l))/WW2
+          smix(15) = (XX * smix(15) + soil1(jj)%tot(l)%c * sol_msm(l))/WW2
+          smix(16) = (XX * smix(16) + soil1(jj)%tot(l)%n * sol_msm(l))/WW2
+          smix(17) = (XX * smix(17) + soil(jj)%phys(l)%clay * sol_msm(l))/WW2
+          smix(18) = (XX * smix(18) + soil(jj)%phys(l)%silt * sol_msm(l))/WW2
           smix(19)=(XX*smix(19)+soil(jj)%phys(l)%sand*sol_msm(l))/WW2
 		!! mass based distribution - check later
           !do k = 1, npmx
@@ -233,7 +227,7 @@
 	        smix(20+npmx+9) = smix(20+npmx+9) + soil1(jj)%meta(l)%n * WW1
 	        smix(20+npmx+10) = smix(20+npmx+10) +soil1(jj)%microb(l)%n* WW1
 	        smix(20+npmx+11) = smix(20+npmx+11) + soil1(jj)%hs(l)%n * WW1
-	        smix(20+npmx+12) = smix(20+npmx+12) +soil(jj)%cbn(l)%hpn* WW1  
+	        smix(20+npmx+12) = smix(20+npmx+12) + soil1(jj)%hp(l)%n * WW1  
 	      end if
             !!by zhang 	
             !!=============
@@ -264,9 +258,9 @@
             soil1(jj)%man(l)%n = soil1(jj)%man(l)%n * WW3 + smix(13)*WW4
             soil1(jj)%man(l)%p = soil1(jj)%man(l)%p * WW3 + smix(14)*WW4
 
-            soil(jj)%cbn(l)%cbn=(soil(jj)%cbn(l)%cbn*sol_msn(l)+smix(15)    &
+            soil1(jj)%tot(l)%c = (soil1(jj)%tot(l)%c * sol_msn(l)+smix(15)    &
                  * sol_msm(l)) / sol_mass(l)
-            soil(jj)%ly(l)%n  = (soil(jj)%ly(l)%n * sol_msn(l)+smix(16)     &
+            soil1(jj)%tot(l)%n  = (soil1(jj)%tot(l)%n * sol_msn(l)+smix(16)     &
                  * sol_msm(l)) / sol_mass(l)
             soil(jj)%phys(l)%clay = (soil(jj)%phys(l)%clay                  &
                  * sol_msn(l)+smix(17) * sol_msm(l)) / sol_mass(l)
@@ -294,7 +288,7 @@
        soil1(jj)%meta(l)%n = soil1(jj)%meta(l)%n * WW3 + smix(20+npmx+9) * WW4
        soil1(jj)%microb(l)%n = soil1(jj)%microb(l)%n * WW3 + smix(20 + npmx + 10) * WW4
        soil1(jj)%hs(l)%n = soil1(jj)%hs(l)%n * WW3 + smix(20 + npmx + 11) * WW4
-       soil(jj)%cbn(l)%hpn=soil(jj)%cbn(l)%hpn*WW3+smix(20+npmx+12)* WW4
+       soil1(jj)%hp(l)%n = soil1(jj)%hp(l)%n * WW3 + smix(20 + npmx+12) * WW4
              end if
             !!by zhang 
             !!==============

@@ -25,8 +25,6 @@
 !!                                |1 HRU currently grazed
 !!    ihru         |none          |HRU number
 !!    grz_days(:)  |none          |number of days grazing will be simulated
-!!    ngr(:)       |none          |sequence number of grazing operation
-!!                                |within the year
 !!    manure_kg(:) |(kg/ha)/day   |dry weight of manure deposited on HRU
 !!                                |daily
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -37,8 +35,6 @@
 !!                               |0 HRU currently not grazed
 !!                               |1 HRU currently grazed
 !!    ndeat(:)    |days          |number of days HRU has been grazed
-!!    ngr(:)      |none          |sequence number of grazing operation
-!!                               |within the year
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -63,12 +59,13 @@
       use jrw_datalib_module, only : mgt, fertdb
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : pcom, soil, emitc_d, rsdc_d, tgrazn, tgrazp, igrz, ndeat, ngr, bio_min, bio_eat,  &
+      use parm, only : pcom, soil, igrz, ndeat, bio_min, bio_eat,  &
         bio_trmp, manure_id, manure_kg, grz_days, ihru, grazn, grazp  
+      use carbon_module
 
       integer :: j, l, it
       real :: dmi, dmii, gc, gc1, swf, frt_t, xx
-      j = 0
+
       j = ihru
       
       bioms_tot = 0.
@@ -80,7 +77,6 @@
 
         do ipl = 1, pcom(j)%npl
         !! determine new biomass in HRU
-        dmi = 0.
         dmi = pcom(j)%plm(ipl)%mass
         !! for now the amount eaten is evenly divided by the number of plants
         !! later we can add preferences - by animal type or simply by n and p content
@@ -90,7 +86,7 @@
         !!add by zhang
         !!=================
         if (bsn_cc%cswat == 2) then
-            emitc_d(j) = emitc_d(j) + dmi - pcom(j)%plm(ipl)%mass
+            cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + dmi - pcom(j)%plm(ipl)%mass
         end if
         !!add by zhang
         !!=================        
@@ -113,7 +109,7 @@
             !!add by zhang
             !!=================
             if (bsn_cc%cswat == 2) then
-                rsdc_d(j) = rsdc_d(j) + dmii - pcom(j)%plm(ipl)%mass
+                cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + dmii - pcom(j)%plm(ipl)%mass
             end if
             !!add by zhang
             !!=================          
@@ -122,7 +118,7 @@
             !!add by zhang
             !!=================
             if (bsn_cc%cswat == 2) then
-                rsdc_d(j) = rsdc_d(j) + bio_trmp(j)
+                cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + bio_trmp(j)
             end if
             !!add by zhang
             !!=================                           
@@ -264,9 +260,7 @@
         
         
         !! apply manure
-        it = 0
         it = manure_id(j)
-        it = mgt%op1
         if (manure_kg(j) > 0.) then 
           l = 1
           
@@ -303,8 +297,7 @@
           if (bsn_cc%cswat == 2) then
           soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 + manure_kg(j) *        &   
                        (1. - fertdb(it)%fnh3n) * fertdb(it)%fminn
-          !sol_fon(l,j) = sol_fon(l,j) + manure_kg(j) *   
-     !! &    !             forgn(it)
+          !sol_fon(l,j) = sol_fon(l,j) + manure_kg(j) * forgn(it)
           orgc_f = 0.35  
           X1 = manure_kg(j)
           X8 = X1 * orgc_f          
@@ -345,21 +338,12 @@
 
         end if
 
-        !! summary calculations
-        !! I do not understand these summary calculations Armen March 2009
-        grazn = grazn + manure_kg(j) *                                  &                                  
-                     (fertdb(it)%fminn + fertdb(it)%forgn)
-        grazp = grazp + manure_kg(j) *                                  &                                  
-                     (fertdb(it)%fminp + fertdb(it)%forgp)
-        tgrazn(j) = tgrazn(j) + grazn
-        tgrazp(j) = tgrazp(j) + grazp
       end if
 
 !! check to set if grazing period is over
       if (ndeat(j) == grz_days(j)) then
         igrz(j) = 0
         ndeat(j) = 0
-        ngr(j) = ngr(j) + 1
       end if
 
       return

@@ -1,7 +1,7 @@
       subroutine obj_output
       
       use time_module
-      !use hydrograph_module
+      use hydrograph_module
         
       integer :: ihd, iob, iunit
       

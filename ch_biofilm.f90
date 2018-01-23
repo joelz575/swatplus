@@ -116,7 +116,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
-      use parm, only : rtwtr, soxy
+      use parm, only : soxy
+      use channel_module
+      use hydrograph_module, only : ob
+      use climate_parms
       
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
       real :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra

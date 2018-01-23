@@ -10,7 +10,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!
       use parm, only : soil, ihru, latqrunon
-      use hydrograph_module, only : ob
+      use hydrograph_module
 
       real :: latqlyr, xslat
 

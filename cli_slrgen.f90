@@ -32,6 +32,8 @@
 !!      integer, intent (in) :: j
 
       use parm, only : i_mo, wgncur
+      use hydrograph_module
+      use climate_parms
 
       real :: rx, rav
 

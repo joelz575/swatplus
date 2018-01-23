@@ -32,6 +32,7 @@
 
       use basin_module
       use parm, only : surfq, hhqday, ihru, voltot 
+      use time_module
 
       integer :: j, ii
       real :: voli

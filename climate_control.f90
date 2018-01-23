@@ -70,7 +70,10 @@
       use basin_module
       use time_module
       use parm, only : i_mo, petmeas
-      
+      use hydrograph_module
+      use jrw_datalib_module, only : db_mx
+      use climate_parms
+           
       integer :: k, inum3sprev, npcpbsb, ii, iyp, idap, ib
       real :: daylbsb, tdif, pdif, ratio
       

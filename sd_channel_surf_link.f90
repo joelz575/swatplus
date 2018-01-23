@@ -4,11 +4,11 @@
       use sd_channel_module
       use ru_module
       use parm, only : hru, ihru 
+      use jrw_datalib_module, only : field_db, topo_db 
       
       character (len=3) :: iobtyp
-      integer :: isdc, ics, imp, mres
-      
-        imp = mres
+      integer :: isdc, ics
+
         ii = 0
         ch_sur(ics)%dep(ii) = sd_chd(isdc)%chd
         ch_sur(ics)%wid(ii) = sd_chd(isdc)%chw
@@ -65,8 +65,7 @@
             !
           end select
         end do
-        
-        mres = imp   
+   
         return
 
       end subroutine sd_channel_surf_link

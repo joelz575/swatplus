@@ -57,16 +57,18 @@
 
       use basin_module
       use jrw_datalib_module
-      use parm, only : peakr, rch_gra, rch_lag, rch_sag, rcharea, rtwtr, sdti
+      use parm, only : peakr, rch_gra, rch_lag, rch_sag, rcharea, sdti
+      use channel_module
+      use hydrograph_module, only : ob
       
       integer :: ch_d50type
       real :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase
       real :: depdeg, dot, vs, x, SC, Tcbnk, Tcbed,Tbank,Tbed,asinea,Tou
       real :: sanin, silin, clain, sagin, lagin, grain, outfract
       real :: depsan, depsil, depcla, depsag, deplag, depgra
-      real :: degsan, degsil, degcla, deggra, degrte
+      real :: degsan, degsil, degcla, deggra
       real :: bnksan, bnksil, bnkcla, bnkgra, pdep, pdepbed, bedsize
-      real :: USpower,bnkrte,adddep,fpratio,watdep,bnkrt,bedrt,effbnkbed
+      real :: USpower, adddep, fpratio, watdep, bnkrt, bedrt, effbnkbed
 
       if (rtwtr > 0. .and. rchdep > 0.) then
 

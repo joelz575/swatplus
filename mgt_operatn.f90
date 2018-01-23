@@ -48,6 +48,7 @@
 
       use jrw_datalib_module, only : sched, mgt 
       use parm, only : pcom, hru, nop, yr_skip, phubase, ihru, iida, ipl
+      use time_module
 
       integer :: j
       real :: aphu, tillphu

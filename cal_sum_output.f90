@@ -3,12 +3,15 @@
       use sd_channel_module
       use hru_lte_module
       use parm, only : hru, ihru
+      use output_landscape_module
+      use jrw_datalib_module, only : cal_codes, db_mx, region, lscal_z, lscalt, plcal, plcal_z, lscal, &
+        chcal, chcal_z
        
         !! sum landscape output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hru == 'y') then
           !calibrate hru's
           do ireg = 1, db_mx%lsu_reg
-            do ilu = 1, lscal(ireg)%lum_num
+            do ilu = 1, region(ireg)%nlum
               lscal(ireg)%lum(ilu)%ha = 0.
               lscal(ireg)%lum(ilu)%precip = 0.
               lscal(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
@@ -29,7 +32,7 @@
               end do
             end do  !lum_num
             
-            do ilu = 1, lscal(ireg)%lum_num
+            do ilu = 1, region(ireg)%nlum
               if (lscal(ireg)%lum(ilu)%ha > 1.e-6) then
                 lscal(ireg)%lum(ilu)%nbyr = lscal(ireg)%lum(ilu)%nbyr + 1
                 !! convert back to mm, t/ha, kg/ha
@@ -49,7 +52,7 @@
         if (cal_codes%hyd_hrul == 'y') then
           !calibrate hru_lte's
           do ireg = 1, db_mx%lsu_reg
-            do ilu = 1, lscalt(ireg)%lum_num
+            do ilu = 1, region(ireg)%nlum
               lscalt(ireg)%lum(ilu)%ha = 0.
               lscalt(ireg)%lum(ilu)%precip = 0.
               lscalt(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
@@ -70,7 +73,7 @@
               end do
             end do  !lum_num
             
-            do ilu = 1, lscalt(ireg)%lum_num
+            do ilu = 1, region(ireg)%nlum
               if (lscalt(ireg)%lum(ilu)%ha > 1.e-6) then
                 lscalt(ireg)%lum(ilu)%nbyr = lscalt(ireg)%lum(ilu)%nbyr + 1
                 !! convert back to mm, t/ha, kg/ha

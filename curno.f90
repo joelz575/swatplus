@@ -78,6 +78,8 @@
       rtos = 1. - 2.54 / smx(h)
       sumul = soil(h)%sumul
       sumfc = soil(h)%sumfc + hru(h)%hyd%cn3_swf * (soil(h)%sumul - soil(h)%sumfc)
+      sumfc = amax1 (.05, sumfc)
+      sumfc = amin1 (sumul-.05, sumfc)
 !! calculate shape parameters
       call ascrv(rto3,rtos,sumfc,sumul,wrt(1,h),wrt(2,h))
 

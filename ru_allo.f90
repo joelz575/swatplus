@@ -3,6 +3,8 @@
       use basin_module
       use time_module
       use jrw_datalib_module
+      use ru_module
+      use hydrograph_module, only : sp_ob
 
       if (time%step > 0) then
 !!    compute unit hydrograph for computing subbasin hydrograph from direct runoff

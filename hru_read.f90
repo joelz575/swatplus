@@ -2,9 +2,10 @@
 
       use jrw_datalib_module, only : db_mx, lum, solt_db, topo_db, hyd_db, soildb, wet_dat_c, snodb, field_db
       use input_file_module
-      use parm, only : hru, hru_db, soil, pcom, ihru, isolt, mhru 
-      use hydrograph_module, only : wet, ob, sp_ob, sp_ob1
+      use parm, only : hru, hru_db, soil, pcom, ihru, isolt 
+      use hydrograph_module, only : ob, sp_ob, sp_ob1, hru, wet
       use organic_mineral_mass_module
+      use carbon_module
       
       character (len=500) :: header
       character (len=80) :: titldum
@@ -12,7 +13,6 @@
       
       eof = 0
       imax = 0
-      mhru_db = 0
       
       call allocate_parms
 
@@ -22,6 +22,8 @@
         allocate (hru(0:0))
         allocate (soil(0:0))
         allocate (soil1(0:0))
+        allocate (soil1_init(0:0))
+        allocate (cbn_loss(0:0))
         allocate (pcom(0:0))
         allocate (rsd1(0:0))
       else 
@@ -35,13 +37,14 @@
             read (113,*,iostat=eof) i
             if (eof < 0) exit
             imax = Max(imax,i)
-            mhru_db = mhru_db + 1
           end do
           
         allocate (hru_db(0:imax))
         allocate (hru(0:imax))
         allocate (soil(0:imax))
         allocate (soil1(0:imax))
+        allocate (soil1_init(0:imax))
+        allocate (cbn_loss(0:imax))
         allocate (pcom(0:imax))
         allocate (wet(0:imax))
         allocate (rsd1(0:imax))
@@ -50,7 +53,7 @@
         read (113,*) titldum
         read (113,*) header
 
-      do ihru = 1, mhru    !mhru_db
+      do ihru = 1, sp_ob%hru
         read (113,*) i
         backspace (113)
         read (113,*,iostat=eof) k, hru_db(i)%dbsc

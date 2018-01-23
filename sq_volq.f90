@@ -12,7 +12,9 @@
 !!    SWAT: surq_hourly
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
       use basin_module
+      use time_module
 
 !! Compute surface runoff for day
       if (time%step == 0) then

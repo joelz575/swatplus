@@ -2,8 +2,23 @@
 
       use parm
       use channel_module
+      use basin_module
+      use hydrograph_module, only : sp_ob
       
 !!!  CHANNEL
+      if (sp_ob%chan > 0) then !subdaily main channel output, Jaehak 2017
+        if (pco%chan%t == 'y') then
+          open (2480,file="channel_subday.txt",recl = 1500)
+          write (2480,'(4a6,10(1x,a15))') "REACH", "year","day","step","pcpmm","flow_m^3/s","sed_tons"
+          write (9000,*) 'CHANNEL             channel_subday.txt'
+          if (pco%csvout == 'y')  then
+            open (2484,file="channel_day.csv",recl = 1500)
+            write (2484,'(*(G0.3,:,","))') ch_hdr !! channel header csv format
+           write (9000,*) 'CHANNEL             channel_day.csv'
+          end if
+        endif
+      endif
+
       if (sp_ob%chan > 0) then
         if (pco%chan%d == 'y') then
           open (2480,file="channel_day.txt",recl = 1500)

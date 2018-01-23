@@ -72,7 +72,9 @@
       use climate_parms
       use jrw_datalib_module
       use time_module
-      use parm, only : pet_day, rcharea, rtwtr, sdti
+      use parm, only : pet_day, rcharea, sdti
+      use channel_module
+      use hydrograph_module, only : ob
 
       integer :: ii, inhyd
       real :: wtrin, c, p, scoef

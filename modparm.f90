@@ -3,32 +3,6 @@
       integer :: mscheds, isep, mcom, isolt
       integer :: ith, ilu, ulu, iadep, ipot, iwgen
       
-      type bacteria_initial
-        character(len=13) :: name
-        integer :: num_db = 0
-        integer :: num_bsn = 0
-        real :: plt = 0.		!!#cfu/m^2	|bacteria on plants at beginning of simulation
-        real :: sol = 0.		!!#cfu/m^2	|soluble bacteria in soil at beginning of simulation
-        real :: sor = 0.		!!#cfu/m^2	|sorbed bacteria in soil at beginning of simulation
-      end type bacteria_initial
-      
-      type bacteria_initial_group
-        character(len=13) :: name = "default"
-        integer :: num = 0
-        type (bacteria_initial), dimension(:), allocatable  :: bac
-      end type bacteria_initial_group
-      type (bacteria_initial_group), dimension(:), allocatable  :: bact
-      
-      type bacteria_outputs
-        character(len=13) :: name
-        real, dimension(:), allocatable :: sol        !!          |Soluble in runoff
-        real, dimension(:), allocatable :: sor        !!          |Sorbed in runoff
-        real, dimension(:), allocatable :: lch        !!          |Leached into 2nd layer
-        real, dimension(:), allocatable :: diegrosol  !!          |Die-off
-        real, dimension(:), allocatable :: diegrosor  !!          |Growth
-      end type bacteria_outputs
-      type (bacteria_outputs), dimension(:), allocatable  :: bac_out
-      
       type atmospheric_deposition
  !       character(len=13) :: name
         real :: no3_rf = .2
@@ -46,7 +20,6 @@
          character(len=4) :: cpnm       !! N/A          4 letter char code represents crop name 
          real :: cht = 0.               !! m            canopy height 
          real :: lai = 0.               !! m**2/m**2    leaf area index
-         real :: yield = 0.             !! kg/ha        land cover/crop yield (dry weight)
          real :: plet = 0.              !! mm H2O       actual ET simulated during life of plant
          real :: plpet = 0.             !! mm H2O       potential ET simulated during life of plant
          real :: laimxfr = 0.           !! 
@@ -67,16 +40,12 @@
         real :: n_fr = 0.             !!none              |nitrogen fraction
         real :: p_fr = 0.             !!none              |phosphorus fraction
       end type plant_mass
-      type (plant_mass) :: plt_mass_z
-      type (plant_mass) :: yld_tbr
-      type (plant_mass) :: yld_grn
-      type (plant_mass) :: yld_veg
-      type (plant_mass) :: yld_rsd
-      type (plant_mass), pointer :: pl_tot
-      type (plant_mass), pointer :: veg_ag
-      type (plant_mass), pointer :: grain
-      type (plant_mass), pointer :: root
-      type (plant_mass), pointer :: rsd_flt
+      !type (plant_mass) :: plt_mass_z
+      !type (plant_mass) :: yld_tbr
+      !type (plant_mass) :: yld_grn
+      !type (plant_mass) :: yld_veg
+      !type (plant_mass) :: yld_rsd
+      !type (plant_mass), pointer :: pl_tot
       
       type plant_status
         integer :: idplt = 0           !! none         land cover code from plants.plt
@@ -87,6 +56,7 @@
         real :: phumat = 0.            !! C            heat units to maturity
         real :: phuacc = 0.            !! fraction     fraction of plant heatunit accumulated
         real :: laimx_pop = 0.         !!
+        real :: yield = 0.             !! kg/ha        land cover/crop yield (dry weight)
         integer :: harv_num = 0        !!              number of harvest operations
         integer :: curyr_mat = 1       !! 
         real :: pop_com = 0.           !! none 
@@ -145,11 +115,9 @@
         real ::conk = 0.         !! mm/hr          lateral saturated hydraulic conductivity for each profile layer in a give HRU. 
         real ::flat = 0.         !! mm H2O         lateral flow storage array
         real ::pperco_sub = 0.   !!
-        real ::hum = 0.          !! kg humus/ha    amount of organic matter in the soil layer classified as humic substances
         real :: prk = 0.         !! mm H2O         percolation from soil layer on current day
         real :: rsd = 0.         !! kg/ha          amount of organic matter in the soil classified as residue
         real :: volcr = 0.       !! mm             crack volume for soil layer 
-        real :: n = 0.           !!
         real :: tillagef = 0. 
         real :: rtfr = 0.        !! none           root fraction
         real :: watp = 0.
@@ -157,9 +125,6 @@
         integer :: b_days = 0
         real :: psp_store = 0.
         real :: ssp_store = 0.    
-        real :: hp = 0.          !!
-        real :: hs = 0.          !!
-        real :: bm = 0.          !!
         real :: percc = 0.       !!
         real :: latc = 0.        !!
         real :: vwt = 0.         !!
@@ -176,6 +141,7 @@
       
       type soil_physical_properties
         real :: d = 0.            !! mm            depth to bottom of soil layer
+        real :: thick = 0.        !! mm            thichness of soil layer
         real :: bd = 0.           !! Mg/m**3       bulk density of the soil
         real :: k = 0.            !! mm/hr         saturated hydraulic conductivity of soil layer. Index:(layer,HRU)
         real :: clay = 0.         !! none          fraction clay content in soil material (UNIT CHANGE!)
@@ -195,54 +161,13 @@
         real :: wp = 0.          !! mm H20/mm soil water content of soil at -1.5 MPa (wilting point)
         real :: wpmm = 0.        !! mm H20         water content of soil at -1.5 MPa (wilting point)
       end type soil_physical_properties
-      
-      type soil_nutrients
-        real :: actp = 0.         !! kg P/ha        amount of phosphorus stored in the active mineral phosphorus pool 
-        real :: aorgn = 0.        !! kg N/ha        amount of nitrogen stored in the active organic (humic) nitrogen pool in soil layer
-        real :: fon = 0.          !! kg N/ha        amount of nitrogen stored in the fresh organic (residue) pool in soil layer
-        real :: fop = 0.          !! kg P/ha        amount of phosphorus stored in the fresh organic (residue) pool in soil layer
-        real :: nh3 = 0.          !! kg N/ha        amount of nitrogen stored in the ammonium pool in soil layer
-        real :: no3 = 0.         !! kg N/ha        amount of nitrogen stored in the nitrate pool in soil layer
-        real :: orgn = 0.        !! kg N/ha        amount of nitrogen stored in the stable organic N pool
-        real :: orgp = 0.        !! kg P/ha        amount of phosphorus stored in the organic P pool in soil layer
-        real :: solp = 0.        !! kg P/ha        amount of phosohorus in solution in soil layer
-        real :: stap = 0.        !! kg P/ha        amount of phosphorus in the soil layer stored in the stable mineral phosphorus pool
-        real :: mn = 0.
-        real :: mp = 0.
-      end type soil_nutrients
-      
-      type soil_carbon
-        real :: cbn = 0.          !! %             percent organic carbon in soil layer 
-        real :: mc = 0.
-        real :: bmc = 0. 
-        real :: bmn = 0. 
-        real :: hsc = 0.          !!                mass of C present in slow humus (kg ha-1)
-        real :: hsn = 0.          !!                mass of N present in slow humus (kg ha-1)
-        real :: hpc = 0.         !!                mass of C present in passive humus (kg ha-1)
-        real :: hpn = 0.         !!                mass of N present in passive humus (kg ha-1)
-        real :: lm = 0. 
-        real :: lmc = 0.         !!                mass of C in metabolic litter (kg ha-1)
-        real :: lmn = 0.         !!                mass of N in metabolic litter (kg ha-1)
-        real :: ls = 0.          !!                mass of structural litter (kg ha-1)
-        real :: lsc = 0.         !!                mass of C in structural litter (kg ha-1)
-        real :: lsn = 0.         !!                mass of N in structural litter (kg ha-1)
-        real :: lsl = 0.         !!                mass of lignin in structural litter (kg ha-1)
-        real :: lslc = 0.        !!
-        real :: lslnc = 0.       !!
-        real :: rnmn = 0.
-        real :: rspc = 0.        !! 
-        real :: woc = 0.         !!
-        real :: won = 0.         !!
-      end type soil_carbon
-      
+
       type soil_profile
         character(len=16) :: snam = ""     !! NA            soil series name  
         character(len=16) :: hydgrp = ""    !! NA            hydrologic soil group
         character(len=16) :: texture = ""
         integer ::  nly  = 0               !! none          number of soil layers 
         type (soil_physical_properties),dimension (:), allocatable::phys
-        type (soil_nutrients), dimension (:), allocatable :: nut
-        type (soil_carbon), dimension (:), allocatable :: cbn
         type (soilayer), dimension (:), allocatable :: ly
         real :: zmx = 0.
         real :: anion_excl = 0.            !! none          fraction of porosity from which anions are excluded
@@ -263,8 +188,6 @@
         real :: wat_tbl = 0.               !! 
         real :: avpor = 0.                 !! none           average porosity for entire soil profile
         real :: avbd = 0.                  !! Mg/m^3         average bulk density for soil profile
-        real :: cmup_kgh = 0.              !! kg/ha          current soil carbon for first soil layer
-        real :: cmtot_kgh = 0.             !! kg/ha          current soil carbon integrated - aggregating all soil layers 
       end type soil_profile
       type (soil_profile), dimension(:), allocatable :: soil
       type (soil_profile), dimension(:), allocatable :: soil_init
@@ -275,8 +198,6 @@
          character(len=16) :: texture = ""
          type (soil_profile) :: s
          type (soil_physical_properties),dimension(:), allocatable::phys
-         type (soil_nutrients), dimension (:), allocatable :: nut
-         type (soil_carbon), dimension (:), allocatable :: cbn
          type (soilayer), dimension(:), allocatable :: ly
       end type soil_hru_database
       type (soil_hru_database), dimension(:), allocatable :: sol
@@ -437,16 +358,13 @@
         !! impunded water - points to res()
         integer :: res
         !! plants
-        type (plant_growth), dimension(:), allocatable :: pl
+        !type (plant_growth), dimension(:), allocatable :: pl
         !type (plant_mass), dimension(:), allocatable :: pl_tot
-        type (plant_mass), dimension(:), allocatable :: veg_ag
-        type (plant_mass), dimension(:), allocatable :: grain
-        type (plant_mass), dimension(:), allocatable :: root
-        type (plant_mass), dimension(:), allocatable :: rsd_flt
-        type (plant_mass), dimension(:), allocatable :: rsd_std
-        type (plant_mass) :: rsd     !total flat residue of all plants
-        type (plant_mass) :: std     !total standing dead biomass of all plants
-        type (plant_mass) :: stl     !total standing live biomass of all plants
+        !type (plant_mass), dimension(:), allocatable :: rsd_flt
+        !type (plant_mass), dimension(:), allocatable :: rsd_std
+        !type (plant_mass) :: rsd     !total flat residue of all plants
+        !type (plant_mass) :: std     !total standing dead biomass of all plants
+        !type (plant_mass) :: stl     !total standing live biomass of all plants
         type (pesticide), dimension(:), allocatable :: pst  !pest names simulated in the hru
 
         !! other data
@@ -541,7 +459,7 @@
       real :: fertn, sol_rd, cfertn, cfertp, sepday, bioday
       real :: sepcrk, sepcrktot, fertno3, fertnh3, fertorgn, fertsolp
       real :: fertorgp
-      real :: fertp, grazn, grazp, soxy, sdti, rtwtr
+      real :: fertp, grazn, grazp, soxy, sdti
       real :: voltot, volcrmin
       real :: canev, usle, rcn, precipday
       real :: thbact, bactrop, bactsedp
@@ -554,7 +472,6 @@
       real :: sbactlchlp
       real :: bsprev
       real :: qday, usle_ei, al5, no3pcp, rcharea
-      real :: respesti
       real :: snocov1, snocov2, rcor, lyrtile
 
       real :: autop, auton, etday, hmntl, rwntl, hmptl, rmn2tl
@@ -566,13 +483,13 @@
       real :: rch_sag, rch_lag, rch_gra
       integer :: mo_atmo, mo_atmo1
       integer :: ifirstatmo, iyr_atmo, iyr_atmo1
-      integer :: mch, mcr, mhru
+      integer :: mcr
       integer :: myr
       integer :: nhru,  mo, nrch, i_mo
       integer :: inum1, ihru
       integer :: npmx, curyr
       integer :: iopera
-      integer :: i, scenario
+      integer :: i
       integer :: nd_30
       integer :: iscen
       integer :: msub, mpst, mlyr, iida
@@ -607,7 +524,6 @@
 ! output files 
 !!  added for binary files 3/25/09 gsm
       real, dimension (:,:), allocatable :: wpstaao
-! mch = max number of channels
 
 !     Sediment parameters added by Balaji for the new routines
 
@@ -640,7 +556,6 @@
       real, dimension (:), allocatable :: ranrns_hru
       integer, dimension (:), allocatable :: itill
 
-! mhru = maximum number of hydrologic response units
       real, dimension (:), allocatable :: tc_gwat
       real, dimension (:), allocatable :: wfsh
       real, dimension (:), allocatable :: fsred
@@ -657,7 +572,7 @@
       real, dimension (:), allocatable :: cnday
       real, dimension (:), allocatable :: bactlpq,auto_eff
       real, dimension (:), allocatable :: bactps,bactlps,tmpav
-      real, dimension (:), allocatable :: sno_hru,hru_ra
+      real, dimension (:), allocatable :: sno_hru,sno_init,hru_ra
       real, dimension (:), allocatable :: tmx,tmn,rsdin,tmp_hi,tmp_lo
       real, dimension (:), allocatable :: tconc,hru_rmx
       real, dimension (:), allocatable :: usle_cfac,usle_eifac
@@ -689,14 +604,13 @@
 !    Drainmod tile equations  01/2006
       real, dimension (:), allocatable :: twash,doxq
       real, dimension (:), allocatable :: percn
-      real, dimension (:), allocatable :: tauton,tautop,cbodu,chl_a,qdr
-      real, dimension (:), allocatable :: tgrazn,tgrazp
+      real, dimension (:), allocatable :: cbodu,chl_a,qdr
       real, dimension (:), allocatable :: latno3,latq,nplnt
       real, dimension (:), allocatable :: tileq, tileno3
       real, dimension (:), allocatable :: sedminpa,sedminps,sedorgn
       real, dimension (:), allocatable :: sedorgp,sedyld,sepbtm
       real, dimension (:), allocatable :: surfq,surqno3
-      real, dimension (:), allocatable :: tcfrtn,tcfrtp,hru_dafr
+      real, dimension (:), allocatable :: hru_dafr
       real, dimension (:), allocatable :: phubase
       real, dimension (:), allocatable :: lai_yrmx,dormhr
       real, dimension (:), allocatable :: wtab,wtab_mn,wtab_mx
@@ -711,13 +625,12 @@
       real, dimension (:,:), allocatable :: bss,surf_bs  
       real, dimension (:,:,:), allocatable :: pst_lag
       integer, dimension (:), allocatable :: swtrg,hrupest
-      integer, dimension (:), allocatable :: nirr
       integer, dimension (:), allocatable :: iafrttyp, nstress
       !! burn
       integer, dimension (:), allocatable :: grz_days
       integer, dimension (:), allocatable :: icr
       integer, dimension (:), allocatable :: irrno,npcp
-      integer, dimension (:), allocatable :: igrz,ndeat,ngr,ncf
+      integer, dimension (:), allocatable :: igrz,ndeat
       integer, dimension (:), allocatable :: hru_sub
       integer, dimension (:), allocatable :: iday_fert,icfrt
       integer, dimension (:), allocatable :: ndcfrt
@@ -798,10 +711,6 @@
         wtp_pmann,wtp_ploss,wtp_k,wtp_dp,wtp_sedi,wtp_sede,wtp_qi 
      
       real :: bio_init, lai_init, cnop, harveff, frac_harvk
-
-	real, dimension(:), allocatable :: sedc_d, surfqc_d, latc_d,        &
-       	percc_d, foc_d, NPPC_d, rsdc_d, grainc_d, stoverc_d,            & 
-          rspc_d, emitc_d 	
 
       integer, dimension(:), allocatable :: tillage_switch
       real, dimension(:), allocatable :: tillage_depth

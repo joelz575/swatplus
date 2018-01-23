@@ -1,6 +1,5 @@
       subroutine cal_chsed
 
-      use parm, only : hru, hru_init, pcom, pcom_init, soil, soil_init 
       use hydrograph_module
       use ru_module
       use climate_module
@@ -69,10 +68,7 @@
         end do
         !initialize hru and hru_lte
         do iihru = 1, sp_ob%hru
-          hru(iihru) = hru_init(iihru)
-          soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rhlt_init(iihru)
-          pcom(iihru) = pcom_init(iihru)
+          call hru_re_initialize (iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
           hlt_init(iihru) = hlt(iihru)
@@ -138,10 +134,7 @@
         end do
         !initialize hru and hru_lte
         do iihru = 1, sp_ob%hru
-          hru(iihru) = hru_init(iihru)
-          soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rhlt_init(iihru)
-          pcom(iihru) = pcom_init(iihru)
+          call hru_re_initialize (iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
           hlt_init(iihru) = hlt(iihru)
@@ -203,10 +196,7 @@
         end do
         !initialize hru and hru_lte
         do iihru = 1, sp_ob%hru
-          hru(iihru) = hru_init(iihru)
-          soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rhlt_init(iihru)
-          pcom(iihru) = pcom_init(iihru)
+          call hru_re_initialize (iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
           hlt_init(iihru) = hlt(iihru)
@@ -272,10 +262,7 @@
         end do
         !initialize hru and hru_lte
         do iihru = 1, sp_ob%hru
-          hru(iihru) = hru_init(iihru)
-          soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rhlt_init(iihru)
-          pcom(iihru) = pcom_init(iihru)
+          call hru_re_initialize (iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
           hlt_init(iihru) = hlt(iihru)
@@ -337,10 +324,7 @@
         end do
         !initialize hru and hru_lte
         do iihru = 1, sp_ob%hru
-          hru(iihru) = hru_init(iihru)
-          soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rhlt_init(iihru)
-          pcom(iihru) = pcom_init(iihru)
+          call hru_re_initialize (iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
           hlt_init(iihru) = hlt(iihru)
@@ -406,10 +390,7 @@
         end do
         !initialize hru and hru_lte
         do iihru = 1, sp_ob%hru
-          hru(iihru) = hru_init(iihru)
-          soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rhlt_init(iihru)
-          pcom(iihru) = pcom_init(iihru)
+          call hru_re_initialize (iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
           hlt_init(iihru) = hlt(iihru)
@@ -472,10 +453,7 @@
         end do
         !initialize hru and hru_lte
         do iihru = 1, sp_ob%hru
-          hru(iihru) = hru_init(iihru)
-          soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rhlt_init(iihru)
-          pcom(iihru) = pcom_init(iihru)
+          call hru_re_initialize (iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
           hlt_init(iihru) = hlt(iihru)
@@ -543,10 +521,7 @@
         end do
         !initialize hru and hru_lte
         do iihru = 1, sp_ob%hru
-          hru(iihru) = hru_init(iihru)
-          soil(iihru) = soil_init(iihru)
-          rsd1(iihru) = rhlt_init(iihru)
-          pcom(iihru) = pcom_init(iihru)
+          call hru_re_initialize (iihru)
         end do
         do iihru = 1, sp_ob%hru_lte
           hlt_init(iihru) = hlt(iihru)

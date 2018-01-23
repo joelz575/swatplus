@@ -1,4 +1,6 @@
        subroutine readcio_read 
+    
+       use input_file_module
            
        character (len=80) :: titldum
        character (len=15) :: name

@@ -67,10 +67,11 @@
 
       use jrw_datalib_module, only : sdr
       use basin_module
-      use hydrograph_module, only : ob
+      use hydrograph_module
       use climate_parms, only : wst
       use parm, only : hru, soil, ihru, wnan, stmaxd, sstmaxd, pot, surfq, etday, iida, inflpcp, &  
           mlyr, precipday, qtile, wt_shall
+      use time_module
 
       integer :: j1, j, m
       real:: cone, depth, dg, ad, ap 
@@ -115,16 +116,8 @@
         sum = 0.
         deep = 0.001
         do j1=1,nlayer
-      !! Compute layer depth ! Daniel 10/05/07
-          dg = 0.
-          if(j1 == 1) then
-            dg = soil(j)%phys(j1)%d
-          else
-            dg = soil(j)%phys(j1)%d - soil(j)%phys(j1-1)%d
-          end if
-      !! Compute layer depth ! Daniel 10/05/07
-		sum=sum + soil(j)%ly(j1)%conk * dg !Daniel 10/09/07
-		deep=deep + dg   !Daniel 10/09/07
+		  sum = sum + soil(j)%ly(j1)%conk * soil(j)%phys(j1)%thick !Daniel 10/09/07
+		  deep = deep + dg   !Daniel 10/09/07
         end do
 	  cone=sum/deep
 	else

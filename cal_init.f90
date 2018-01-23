@@ -3,7 +3,9 @@
       use sd_channel_module
       use hru_lte_module
       use organic_mineral_mass_module
-      use parm, only : hru, hru_init, ihru, mhru, pcom, pcom_init, soil, soil_init
+      use parm, only : hru, hru_init, ihru, pcom, pcom_init, soil, soil_init, sno_hru, sno_init
+      use hydrograph_module, only : sp_ob
+      use jrw_datalib_module, only : cal_codes
       
       !save initial conditions if calibrating
       ical = 0
@@ -13,11 +15,13 @@
              cal_codes%chnut == 'y' .or. cal_codes%res == 'y') ical = 1
              
       if (ical == 1) then
-        do ihru = 1, mhru
+        do ihru = 1, sp_ob%hru
           hru_init(ihru) = hru(ihru)
           soil_init(ihru) = soil(ihru)
-          rhlt_init(ihru) = rsd1(ihru)
+          soil1_init(ihru) = soil1(ihru)
+          rsd1_init(ihru) = rsd1(ihru)
           pcom_init(ihru) = pcom(ihru)
+          sno_init(ihru) = sno_hru(ihru)
         end do
       end if
       

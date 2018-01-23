@@ -38,6 +38,6 @@
       type (decision_table), dimension(:), allocatable :: d_tbl
 
       contains
-      include 'condition_read.f90'
+      !include 'condition_read.f90'
       
       end module conditional_module   

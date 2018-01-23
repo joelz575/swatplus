@@ -39,7 +39,9 @@
                   exit
               endif
           end do
-            
+          if (sched(isched)%mgt_ops(iop)%op1 == 0) then
+            write (9001,*) ' mgt schedule', isched, ' op numb', iop, sched(isched)%mgt_ops(iop)%op_char, ' not found in plants.plt database' 
+          end if  
          
         case ("harv")
           do idb = 1, db_mx%harvop_db
@@ -121,6 +123,7 @@
                   sched(isched)%mgt_ops(iop)%op1 = idb
                   exit
               endif
+!!herehere no null
             end do      
        end select          
       end do                                  !! operation loop

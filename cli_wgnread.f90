@@ -3,6 +3,8 @@
       use input_file_module
       use time_module
       use parm, only : dayl, irelh, wgncur, wgnold
+      use jrw_datalib_module, only : db_mx
+      use climate_parms
       
       character (len=80) :: titldum, header
       integer :: iwgn, mwnd_dir, iwndir, imo, idr

@@ -1,4 +1,6 @@
        subroutine basin_prm_default
+    
+       use basin_module
       
          if (bsn_prm%evlai < 1.e-6) bsn_prm%evlai = 3.0           !! leaf area index at which no evap occurs
          if (bsn_prm%ffcb < 1.e-6) bsn_prm%ffcb = 0.              !! intial soil water cont expressed as a fraction of fc 

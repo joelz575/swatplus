@@ -81,7 +81,7 @@
       use jrw_datalib_module, only : pldb, plcp
       use basin_module
       use parm, only : hru, pcom, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, cht_mx, tmx, tmn,  &
-        albday, epmax, idp, ipl, pet_day, petmeas, sumlai, vpd
+        albday, epmax, idp, ipl, pet_day, petmeas, sumlai, vpd, ep_max
       
       integer :: j
       real :: tk, pb, gma, xl, ea, ed, dlt, ramm, ralb1, ralb, xx

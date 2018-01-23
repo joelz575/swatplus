@@ -1,7 +1,7 @@
       subroutine aqu_1d_control 
     
-      use aquifer_module, only : aqu, aqu_st, aqu_prm, aqudb
-      use time_module, only : time
+      use aquifer_module
+      use time_module
       use hydrograph_module
       use climate_parms, only : wst
 
@@ -83,6 +83,24 @@
       !! set hydrograph flow from aquifer- convert mm to m3
       ob(icmd)%hd(1)%sedp = 10. * aqu(iaq)%flo * ob(icmd)%area_ha
 
+      ! compute outflow objects (flow to channels, reservoirs, or landscape)
+      ! if flow from hru is directly routed
+      iob_out = icmd
+      aqu(iaq)%flo_cha = 0.
+      aqu(iaq)%flo_res = 0.
+      aqu(iaq)%flo_ls = 0.
+      do iout = 1, ob(iob_out)%src_tot
+        select case (ob(iob_out)%obtyp_out(iout))
+        case ('cha')
+          aqu(iaq)%flo_cha = aqu(iaq)%flo_cha + aqu(iaq)%flo * ob(iob_out)%frac_out(iout)
+        case ('res')
+          aqu(iaq)%flo_res = aqu(iaq)%flo_res + aqu(iaq)%flo * ob(iob_out)%frac_out(iout)
+        case ('aqu')
+          aqu(iaq)%flo_ls = aqu(iaq)%flo_ls + aqu(iaq)%flo * ob(iob_out)%frac_out(iout)
+        end select
+      end do
+
+      
       if (time%step > 0) then
         do ii = 1, time%step
           step = real(time%step)

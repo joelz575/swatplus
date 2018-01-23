@@ -5,7 +5,8 @@
 !!    channel routing command loop
 
       use basin_module
-      use parm, only : resclao, resgrao, reslago, respesti, ressago, ressano
+      use parm, only : resclao, resgrao, reslago, ressago, ressano
+      use reservoir_module
 
 !! initialize daily variables
       bury = 0.

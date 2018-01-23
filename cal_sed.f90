@@ -1,6 +1,6 @@
       subroutine cal_sed
 
-      use parm, only : hru, hru_init, ihru, mhru, pcom, pcom_init, soil, soil_init, tconc
+      use parm, only : hru, hru_init, ihru, pcom, pcom_init, soil, soil_init, tconc
       use hydrograph_module
       use ru_module
       use climate_module
@@ -19,7 +19,7 @@
         ! 1st time of concentration adjustment
         isim = 0
         do ireg = 1, db_mx%cha_reg
-          do ilum = 1, lscal(ireg)%lum_num
+          do ilum = 1, region(ireg)%nlum
             soft = lscal(ireg)%lum(ilum)%meas%sed
             diff = 0.
             if (soft > 1.e-6) diff = abs((soft - lscal(ireg)%lum(ilum)%aa%sed) / soft)
@@ -29,10 +29,7 @@
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
                 !set parms for 1st sediment yield calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                rsd1(iihru) = rhlt_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                call hru_re_initialize (iihru)
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 
@@ -71,15 +68,12 @@
           ! additional adjust sediment using tconc
           do isl = 1, 3
           do ireg = 1, db_mx%cha_reg
-          do ilum = 1, lscal(ireg)%lum_num
+          do ilum = 1, region(ireg)%nlum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
                 !set parms for 1st sediment tconc calibration and rerun
-                hru(iihru) = hru_init(iihru)
-                soil(iihru) = soil_init(iihru)
-                rsd1(iihru) = rhlt_init(iihru)
-                pcom(iihru) = pcom_init(iihru)
+                call hru_re_initialize (iihru)
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 
@@ -107,15 +101,12 @@
           
         ! 1st slope adjustment
         do ireg = 1, db_mx%cha_reg
-          do ilum = 1, lscal(ireg)%lum_num
+          do ilum = 1, region(ireg)%nlum
               !check all hru's for proper lum
-              do iihru = 1, mhru
+              do iihru = 1, sp_ob%hru
                 !set parms for 1st slope calibration and rerun
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
-                  hru(iihru) = hru_init(iihru)
-                  soil(iihru) = soil_init(iihru)
-                  rsd1(iihru) = rhlt_init(iihru)
-                  pcom(iihru) = pcom_init(iihru)
+                  call hru_re_initialize (iihru)
                   lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
  
@@ -150,15 +141,12 @@
         ! adjust sediment using slope and slope length
         do isl = 1, 2
           do ireg = 1, db_mx%cha_reg
-          do ilum = 1, lscal(ireg)%lum_num
+          do ilum = 1, region(ireg)%nlum
               !check all hru's for proper lum
-              do iihru = 1, mhru
+              do iihru = 1, sp_ob%hru
                 !set parms for 1st slope calibration and rerun
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
-                  hru(iihru) = hru_init(iihru)
-                  soil(iihru) = soil_init(iihru)
-                  rsd1(iihru) = rhlt_init(iihru)
-                  pcom(iihru) = pcom_init(iihru)
+                  call hru_re_initialize (iihru)
                   lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 

@@ -4,7 +4,8 @@
 !!    this subroutine computes the lake hydrologic pesticide balance.
 
       use jrw_datalib_module
-      use parm, only : respesti
+      use reservoir_module
+      use hydrograph_module, only : res
       
       real :: tpest1, tpest2, fd1, fp1, fd2, dlake, fp2
 

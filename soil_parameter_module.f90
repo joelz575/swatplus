@@ -67,30 +67,6 @@
         real :: mp = 0.
       end type soil_nutrients
       
-      type soil_carbon
-        real :: cbn = 0.          !! %             percent organic carbon in soil layer 
-        real :: mc = 0.
-        real :: bmc = 0. 
-        real :: bmn = 0. 
-        real :: hsc = 0.          !!                mass of C present in slow humus (kg ha-1)
-        real :: hsn = 0.          !!                mass of N present in slow humus (kg ha-1)
-        real :: hpc = 0.         !!                mass of C present in passive humus (kg ha-1)
-        real :: hpn = 0.         !!                mass of N present in passive humus (kg ha-1)
-        real :: lm = 0. 
-        real :: lmc = 0.         !!                mass of C in metabolic litter (kg ha-1)
-        real :: lmn = 0.         !!                mass of N in metabolic litter (kg ha-1)
-        real :: ls = 0.          !!                mass of structural litter (kg ha-1)
-        real :: lsc = 0.         !!                mass of C in structural litter (kg ha-1)
-        real :: lsn = 0.         !!                mass of N in structural litter (kg ha-1)
-        real :: lsl = 0.         !!                mass of lignin in structural litter (kg ha-1)
-        real :: lslc = 0.        !!
-        real :: lslnc = 0.       !!
-        real :: rnmn = 0.
-        real :: rspc = 0.        !! 
-        real :: woc = 0.         !!
-        real :: won = 0.         !!
-      end type soil_carbon
-      
       type soil_profile
         character(len=16) :: snam = ""     !! NA            soil series name  
         character(len=1) :: hydgrp = ""    !! NA            hydrologic soil group
@@ -98,7 +74,6 @@
         integer ::  nly  = 0               !! none          number of soil layers 
         type (soil_physical_properties),dimension (:), allocatable::phys
         type (soil_nutrients), dimension (:), allocatable :: nut
-        type (soil_carbon), dimension (:), allocatable :: cbn
         type (soilayer), dimension (:), allocatable :: ly
         real :: zmx = 0.
         real :: anion_excl = 0.            !! none          fraction of porosity from which anions are excluded
@@ -119,8 +94,6 @@
         real :: wat_tbl = 0.               !! 
         real :: avpor = 0.                 !! none           average porosity for entire soil profile
         real :: avbd = 0.                  !! Mg/m^3         average bulk density for soil profile
-        real :: cmup_kgh = 0.              !! kg/ha          current soil carbon for first soil layer
-        real :: cmtot_kgh = 0.             !! kg/ha          current soil carbon integrated - aggregating all soil layers 
       end type soil_profile
       type (soil_profile), dimension(:), allocatable :: soil
       
@@ -128,7 +101,6 @@
          type (soil_profile) :: s
          type (soil_physical_properties),dimension(:), allocatable::phys
          type (soil_nutrients), dimension (:), allocatable :: nut
-         type (soil_carbon), dimension (:), allocatable :: cbn
          type (soilayer), dimension(:), allocatable :: ly
       end type soil_hru_database
       type (soil_hru_database), dimension(:), allocatable :: sol

@@ -1,11 +1,5 @@
       module reservoir_module
 
-      use hydrograph_module
-      use climate_parms
-      use time_module
-      use parm, only : hru1    !! not sure
-      
-      !integer :: mres
       real :: resflwi, resflwo, ressedi, ressedo, sedcon, respesti
       real :: reactw, volatpst, setlpst, resuspst, difus, reactb, bury
       real :: solpesto, sorpesto, resev, ressep, respcp, resorgno
@@ -209,13 +203,13 @@
       
       contains
 !!    routines for reservoir module
-      include 'res_control.f90'
+      !include 'res_control.f90'
       !include 'res_hourly.f'
       !include 'res_hydsed.f'
-      include 'res_nutrient.f90'
-      include 'res_pest.f90'
-      include 'res_dayinit.f90'
-      include 'reservoir_output.f90'
+      !include 'res_nutrient.f90'
+      !include 'res_pest.f90'
+      !include 'res_dayinit.f90'
+      !include 'reservoir_output.f90'
 
       function resout_add(reso1,reso2) result (reso3)
           type (res_output),  intent (in) :: reso1

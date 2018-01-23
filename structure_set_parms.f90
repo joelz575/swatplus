@@ -93,7 +93,7 @@
           !! default sed coeff to 0.005
           if (hru(j)%lumv%grwat_spcon <= 0.) hru(j)%lumv%grwat_spcon = 0.005
 
-          !! Calculate time of concentration for waterway similar to hydroinit.f
+          !! Calculate time of concentration for waterway similar to hydro_init.f
           tch = .62 * hru(j)%lumv%grwat_l * hru(j)%lumv%grwat_n ** .6 / (hru(j)%km ** .125 * hru(j)%lumv%grwat_s ** .375)
           tc_gwat(j) = tch + t_ov(j)
 

@@ -50,6 +50,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm, only : i_mo, irelh
+      use climate_parms
+      use hydrograph_module
 
       real :: vv, rhm, yy, uplm, blm
       real :: rhmo, tmpmean

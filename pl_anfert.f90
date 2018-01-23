@@ -53,10 +53,6 @@
 !!                               |particles
 !!    bactpq(:)   |# colonies/ha |persistent bacteria in soil solution
 !!    bactps(:)   |# colonies/ha |persistent bacteria attached to soil particles
-!!    tauton(:)   |kg N/ha       |amount of N applied in autofert operation in
-!!                               |year
-!!    tautop(:)   |kg P/ha       |amount of P applied in autofert operation in
-!!                               |year
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -87,9 +83,10 @@
       use jrw_datalib_module, only : fertdb, mgt
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : pcom, soil, anano3, bactpq, bactlpq, bactps, bactlps, tauton, tautop, iafrttyp, iplt_afert, &
+      use parm, only : pcom, soil, anano3, bactpq, bactlpq, bactps, bactlps, iafrttyp, iplt_afert, &
          auto_nstrs, nstress, tnylda, auto_napp, auto_nyr, afrt_surface, phubase, sol_sumno3, sol_sumsolp, ihru,   &
          fertnh3, fertno3, fertorgn, fertorgp, fertsolp, ipl 
+      use time_module
 
       real, parameter :: rtoaf = 0.50
       integer :: j, ly, ifrt
@@ -255,9 +252,7 @@
           auton = auton + dwfert * (fertdb(ifrt)%fminn +                 &
                                                    fertdb(ifrt)%forgn)
           autop = autop + dwfert * (tfp + fertdb(ifrt)%forgp)
-          tauton(j) = tauton(j) + auton
-          tautop(j) = tautop(j) + autop
-        
+
         if (pco%mgtout ==  'year') then
               write (2612, 1000) j, time%yrc, time%mo, time%day,         & 
               fertdb(mgt%op1)%fertnm,                                    &

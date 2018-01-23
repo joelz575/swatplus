@@ -4,6 +4,7 @@
       use basin_module
       use aquifer_module
       use jrw_datalib_module
+      use hydrograph_module, only : sp_ob
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs SUBBASIN variables on daily, monthly and annual time steps

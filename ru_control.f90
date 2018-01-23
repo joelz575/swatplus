@@ -12,6 +12,9 @@
 !!
 
       use parm, only : hhsurfq, ihru, qday 
+      use ru_module
+      use hydrograph_module
+      use time_module
       
       character (len=3) :: ihtyp
       

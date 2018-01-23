@@ -73,6 +73,7 @@
       use organic_mineral_mass_module
       use parm, only : soil, hru, ihru, i_sep, iseptic, qstemm, thbact, bz_perc, isep, sep_tsincefail,  &
          biom, plqm, bio_bod, fcoli, rbiom, percp, iida, precipday, iida, isep 
+      use time_module
       
 	implicit none
 	      

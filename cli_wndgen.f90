@@ -28,8 +28,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm, only : i_mo
+      use hydrograph_module
+      use climate_parms
+      use time_module
       
- 
       real :: v6, v7, rdir2, pi2
       integer :: idir, idir1, idir2, mo
 

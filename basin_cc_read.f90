@@ -1,6 +1,7 @@
        subroutine basin_cc_read
       
        use input_file_module
+       use basin_module
       
        character (len=80) :: titldum
        character (len=80) :: header

@@ -22,6 +22,12 @@
         real :: surq_runon = 0.       !mm H2O        |surface runoff from upland landscape units
         real :: latq_runon = 0.       !mm H2O        |lateral soil flow from upland landscape units
         real :: overbank = 0.         !mm H2O        |overbank flooding from channels
+        real :: surq_cha = 0.         !mm H2O        |surface runoff flowing into channels
+        real :: surq_res = 0.         !mm H2O        |surface runoff flowing into reservoirs
+        real :: surq_ls = 0.          !mm H2O        |surface runoff flowing into a landscape element
+        real :: latq_cha = 0.         !mm H2O        |lateral soil flow into channels
+        real :: latq_res = 0.         !mm H2O        |lateral soil flow into reservoirs
+        real :: latq_ls = 0.          !mm H2O        |lateral soil flow into a landscape element
       end type output_waterbal
        
       type (output_waterbal), dimension (:), allocatable :: hwb_d
@@ -78,8 +84,13 @@
         character (len=12) :: surq_runon =  'sq_run_mm   '
         character (len=12) :: latq_runon =  'lq_run_mm   '
         character (len=12) :: overbank =    'ovbank_mm   '
-      end type output_waterbal_header
-      
+        character (len=12) :: surq_cha =    '   pet_mm   '
+        character (len=12) :: surq_res =    ' qtile_mm   '
+        character (len=12) :: surq_ls =     '   irr_mm   '
+        character (len=12) :: latq_cha =    'sq_run_mm   '
+        character (len=12) :: latq_res =    'lq_run_mm   '
+        character (len=12) :: latq_ls =     'ovbank_mm   '
+      end type output_waterbal_header      
       type (output_waterbal_header) :: wb_hdr
       
       type output_nutbal
@@ -373,12 +384,19 @@
         hru3%surq_cont = hru1%surq_cont + hru2%surq_cont
         hru3%cn = hru1%cn + hru2%cn
         hru3%sw = hru1%sw + hru2%sw
+        hru3%snopack = hru1%snopack + hru2%snopack
         hru3%pet = hru1%pet + hru2%pet
         hru3%qtile = hru1%qtile + hru2%qtile
         hru3%irr = hru1%irr + hru2%irr
         hru3%surq_runon = hru1%surq_runon + hru2%surq_runon
         hru3%latq_runon = hru1%latq_runon + hru2%latq_runon
-        hru3%overbank = hru1%overbank + hru2%overbank 
+        hru3%overbank = hru1%overbank + hru2%overbank
+        hru3%surq_cha = hru1%surq_cha + hru2%surq_cha
+        hru3%surq_res = hru1%surq_res + hru2%surq_res
+        hru3%surq_ls = hru1%surq_ls + hru2%surq_ls
+        hru3%latq_cha = hru1%latq_cha + hru2%latq_cha
+        hru3%latq_res = hru1%latq_res + hru2%latq_res
+        hru3%latq_ls = hru1%latq_ls + hru2%latq_ls
       end function hruout_waterbal_add
       
       function hruout_nutbal_add (hru1, hru2) result (hru3)
@@ -465,12 +483,19 @@
         hru2%surq_cont = hru1%surq_cont / const 
         hru2%cn = hru1%cn / const 
         hru2%sw = hru1%sw / const
+        hru2%snopack = hru1%snopack / const
         hru2%pet = hru1%pet / const 
         hru2%qtile = hru1%qtile / const 
         hru2%irr = hru1%irr / const
         hru2%surq_runon = hru1%surq_runon / const 
         hru2%latq_runon = hru1%latq_runon / const 
         hru2%overbank = hru1%overbank / const
+        hru2%surq_cha = hru1%surq_cha / const 
+        hru2%surq_res = hru1%surq_res / const 
+        hru2%surq_ls = hru1%surq_ls / const
+        hru2%latq_cha = hru1%latq_cha / const 
+        hru2%latq_res = hru1%latq_res / const 
+        hru2%latq_ls = hru1%latq_ls / const
       end function hruout_waterbal_div
       
       function hruout_waterbal_ave (hru1,const) result (hru2)
@@ -479,6 +504,7 @@
         type (output_waterbal) :: hru2   
         hru2%cn = hru1%cn / const 
         hru2%sw = hru1%sw / const
+        hru2%snopack = hru1%snopack / const
         hru2%pet = hru1%pet / const
       end function hruout_waterbal_ave
 

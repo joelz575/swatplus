@@ -2,7 +2,8 @@
 
       use parm
       use aquifer_module
-
+      use basin_module
+      use hydrograph_module, only : sp_ob
          
 !!!  AQUIFER
        if (sp_ob%aqu > 0) then

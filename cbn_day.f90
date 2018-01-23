@@ -28,185 +28,38 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : emitc_d, etday, foc_d, grainc_d, ihru, latc_d, nppc_d, percc_d, rsdc_d, rspc_d, sedc_d,  &
-        soil, stoverc_d, sumbm, sumrwt, surfqc_d, tillage_factor, wdntl 
+      use parm, only : etday, ihru, soil, sumbm, sumrwt, tillage_factor, wdntl 
       use time_module
       use basin_module
       use organic_mineral_mass_module
+      use hydrograph_module
       
-      integer :: j, sb, ii, iflag
-      character (len=4) :: cropname
-
-      !!by zhang print out soil water
-      !!===============================    
-      integer :: ly
-      real :: sumwater, sumwfsc, sumdepth, sat, wc, dp
-      real :: ssoilwater(100), swfsc(100)
-      real :: soilwater(11), wfsc(11), sum_depth(11) !10, 100, 200, 300, 400, ..., 1000 mm
-      !!by zhang print out soil water
-      !!===============================
-
-      !!by zhang print out soil water
-      !!===============================
-      if (bsn_cc%cswat == 2) then
-          soilwater(1) = 0.
-          wfsc(1) = 0.
-          sum_depth(1) = 10.
-          do k = 2, 11
-            soilwater(k) = 0.
-            wfsc(k) = 0.
-            sum_depth(k) = 100. * (k -1)
-          end do
-          
-          wc = soil(ihru)%phys(1)%st + soil(ihru)%phys(1)%wpmm
-          sat = soil(ihru)%phys(1)%ul + soil(ihru)%phys(1)%wpmm
-          soilwater(1) = wc      
-          wfsc(1) = soil(ihru)%phys(1)%por * (wc / sat)   ! fraction
-          
-          if (soil(ihru)%nly .ge. 2) then
-              do k = 2, 11
-                sumwater = 0.
-                sumwfsc = 0.
-                sumdepth = 0.
-                do ly = 2, soil(ihru)%nly
-                    if (soil(ihru)%phys(ly-1)%d.ge. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .le. sum_depth(k)) then
-
-                              dp = soil(ihru)%phys(ly)%d - soil(ihru)%phys(ly-1)%d
-                              if (dp .gt. 0.) then
-                                  wc = soil(ihru)%phys(ly)%st + soil(ihru)%phys(ly)%wpmm*(dp/(soil(ihru)%phys(ly)%d-soil(ihru)%phys(ly-1)%d))
-                                  sat = soil(ihru)%phys(ly)%ul + soil(ihru)%phys(ly)%wpmm*(dp/(soil(ihru)%phys(ly)%d-soil(ihru)%phys(ly-1)%d))
-                                  
-                                  
-                                  sumwater = sumwater + wc * dp
-                                  sumwfsc = sumwfsc + soil(ihru)%phys(ly)%por * (wc / sat) * dp
-                                  sumdepth = sumdepth + dp
-                              end if
-                    
-                    elseif ((soil(ihru)%phys(ly-1)%d .gt. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .gt. sum_depth(k)) &
-                            .or. (soil(ihru)%phys(ly-1)%d .ge. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .gt. sum_depth(k)) &
-                            .or. (soil(ihru)%phys(ly-1)%d .gt. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .ge. sum_depth(k))) &
-                             then
-                            if (soil(ihru)%phys(ly-1)%d .le. sum_depth(k)) then 
-                              dp = sum_depth(k) - soil(ihru)%phys(ly-1)%d
-                              if (dp .gt. 0.) then
-                                  wc = (soil(ihru)%phys(ly)%st + soil(ihru)%phys(ly)%wpmm) *(dp/(soil(ihru)%phys(ly)%d-soil(ihru)%phys(ly-1)%d))
-                                  sat = (soil(ihru)%phys(ly)%ul + soil(ihru)%phys(ly)%wpmm) *(dp/(soil(ihru)%phys(ly)%d-soil(ihru)%phys(ly-1)%d))
-                                  
-                                  
-                                  sumwater = sumwater + wc * dp
-                                  sumwfsc = sumwfsc + soil(ihru)%phys(ly)%por * (wc / sat) * dp
-                                  sumdepth = sumdepth + dp
-                              end if
-                            end if
-                    elseif ((soil(ihru)%phys(ly-1)%d .lt. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .lt. sum_depth(k)) & 
-                            .or. (soil(ihru)%phys(ly-1)%d .le. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .lt. sum_depth(k)) & 
-                            .or. (soil(ihru)%phys(ly-1)%d .lt. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .le. sum_depth(k))) &
-                             then
-                            if (soil(ihru)%phys(ly)%d .ge. sum_depth(k-1)) then
-                              dp = soil(ihru)%phys(ly)%d - sum_depth(k-1)
-                              if (dp .gt. 0.) then
-                                  wc = (soil(ihru)%phys(ly)%st + soil(ihru)%phys(ly)%wpmm)*(dp/(soil(ihru)%phys(ly)%d-soil(ihru)%phys(ly-1)%d))
-                                  sat = (soil(ihru)%phys(ly)%ul + soil(ihru)%phys(ly)%wpmm) *(dp/(soil(ihru)%phys(ly)%d-soil(ihru)%phys(ly-1)%d))
-                                  
-                                  
-                                  sumwater = sumwater + wc * dp
-                                  sumwfsc = sumwfsc + soil(ihru)%phys(ly)%por * (wc / sat) * dp
-                                  sumdepth = sumdepth + dp
-                              end if
-                            end if
-                    
-                    elseif ((soil(ihru)%phys(ly-1)%d .lt. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .gt. sum_depth(k)) & 
-                             .or. (soil(ihru)%phys(ly-1)%d .le. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .gt. sum_depth(k)) & 
-                             .or. (soil(ihru)%phys(ly-1)%d .lt. sum_depth(k-1) .and. soil(ihru)%phys(ly)%d .ge. sum_depth(k))) &
-                              then 
-                              dp = sum_depth(k) - sum_depth(k-1)
-                              if (dp .gt. 0.) then
-                                  wc = (soil(ihru)%phys(ly)%st + soil(ihru)%phys(ly)%wpmm)*(dp/(soil(ihru)%phys(ly)%d-soil(ihru)%phys(ly-1)%d))
-                                  sat = (soil(ihru)%phys(ly)%ul + soil(ihru)%phys(ly)%wpmm)*(dp/(soil(ihru)%phys(ly)%d-soil(ihru)%phys(ly-1)%d))
-                                  
-                                  
-                                  sumwater = sumwater + wc * dp
-                                  sumwfsc = sumwfsc + soil(ihru)%phys(ly)%por * (wc / sat) * dp
-                                  sumdepth = sumdepth + dp    
-                              end if
-                    end if
-                end do !!End lyr
-                
-                if (sumdepth .gt. 0.) then
-                      soilwater(k) = sumwater / sumdepth     
-                      wfsc(k) = sumwfsc / sumdepth   ! fraction                
-                end if
-                
-              end do !!end k
-              
-              
-          end if
-      end if
-      !!by zhang print out soil water
-      !!===============================
-
-      !!add by zhang
-      !!output carbon realted variables
-      !!=================================
-      if (bsn_cc%cswat == 2) then
-          if (j == 1) then
-          tot_mass = 0.
-          tot_cmass = 0.
-          tot_nmass = 0.
-          tot_LSC = 0.
-          tot_LMC = 0.
-          tot_HSC = 0.
-          tot_HPC = 0.
-          tot_BMC = 0.
-          tot_pmass = 0. 
-          tot_solp = 0.
-          tot_no3_nh3 =0.
-          do k = 1, soil(j)%nly 
-              sol_mass = 0.
-              if (k == 1) then
- 		        sol_mass = (10) / 1000.* 10000. * soil(j)%phys(k)%bd* 1000. * (1- soil(j)%phys(k)%rock / 100.)            
-              else
-		        sol_mass = (soil(j)%phys(k)%d - soil(j)%phys(k-1)%d) / 1000.* 10000. * soil(j)%phys(k)%bd * 1000. *	(1- soil(j)%phys(k)%rock / 100.)
-	         end if       
-          sol_cmass = 0.
-          sol_cmass = soil1(j)%str(k)%c + soil1(j)%meta(k)%c + soil1(j)%hp(k)%c + soil1(j)%hs(k)%c + soil1(j)%microb(k)%c
-          sol_nmass = 0. 
-          sol_nmass = soil1(j)%str(k)%n + soil1(j)%meta(k)%n + soil(j)%cbn(k)%hpn + soil1(j)%hs(k)%n + soil1(j)%microb(k)%n     
-          write (98,9000) time%yrc, i, k, j, sol_mass,sol_cmass,                               &
-             sol_nmass, soil1(j)%str(k)%m, soil1(j)%meta(k)%m,                                 &
-             soil1(j)%str(k)%c, soil1(j)%meta(k)%c, soil1(j)%hs(k)%c, soil1(j)%hp(k)%c,        &
-             soil1(j)%microb(k)%c, soil1(j)%str(k)%n, soil1(j)%meta(k)%n, soil(j)%cbn(k)%hpn,    &
-             soil1(j)%hs(k)%n, soil1(j)%microb(k)%n,soil1(j)%mn(k)%no3,soil1(j)%tot(k)%p,      &
-             soil1(j)%hp(k)%p, soil1(j)%mp(k)%lab   
-         
-           tot_mass = tot_mass + sol_mass
-           tot_cmass = tot_cmass + sol_cmass 
-           tot_nmass = tot_nmass + sol_nmass
-           tot_LSC = tot_LSC + soil1(j)%str(k)%c
-           tot_LMC = tot_LMC + soil1(j)%meta(k)%c
-           tot_HSC = tot_HSC + soil1(j)%hs(k)%c
-           tot_HPC = tot_HPC + soil1(j)%hp(k)%c
-           tot_BMC = tot_BMC + soil1(j)%microb(k)%c
-           tot_pmass = tot_pmass + soil1(j)%hp(k)%p + soil1(j)%tot(k)%p +  soil1(j)%mp(k)%lab
-           tot_solp = tot_solp + soil1(j)%mp(k)%lab
-           
-           tot_no3_nh3 = tot_no3_nh3  + soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4
-          end do      
-
-          write (100,9001) time%yrc, i, j, rsdc_d(j), sedc_d(j), percc_d(j),        &
-              latc_d(j),emitc_d(j), grainc_d(j), surfqc_d(j), stoverc_d(j),         &
-              NPPC_d(j), foc_d(j),rspc_d(j),tot_mass,tot_cmass,tot_nmass,           &
-              tot_LSC,tot_LMC,tot_HSC,tot_HPC,tot_BMC,                              &
-              sumbm*0.42, sumrwt, tot_no3_nh3,wdntl,etday,tillage_factor(j),        &
-              (soilwater(ii), ii = 1, 11), (wfsc(ii), ii = 1, 11)     
-          end if  
-      end if
-      !!add by zhang
-      !!output carbon related variables
-      !!=================================
+      ! sum the output for the entire soil profile
+      do ihru = 1, sp_ob%hru
+        soil_prof_tot = soil_org_z
+        soil_prof_mn = soil_mn_z
+        soil_prof_mp = soil_mp_z
+        do ly = 1, soil(ihru)%nly
+          soil_prof_mn = soil_prof_mn + soil1(ihru)%mn(ly)
+          soil_prof_mp = soil_prof_mp + soil1(ihru)%mp(ly)
+          soil_prof_tot = soil_prof_tot + soil1(ihru)%tot(ly)
+          soil_prof_str = soil_prof_str + soil1(ihru)%str(ly)
+          soil_prof_lig = soil_prof_lig + soil1(ihru)%lig(ly)
+          soil_prof_meta = soil_prof_meta + soil1(ihru)%meta(ly)
+          soil_prof_man = soil_prof_man + soil1(ihru)%man(ly)
+          soil_prof_hs = soil_prof_hs + soil1(ihru)%hs(ly)
+          soil_prof_hp = soil_prof_hp + soil1(ihru)%hp(ly)
+          soil_prof_microb = soil_prof_microb + soil1(ihru)%microb(ly)
+          soil_prof_water = soil_prof_water + soil1(ihru)%water(ly)
+        end do
+        
+        ! write all carbon, organic n and p, and mineral n and p for the soil profile
+        !write (98,9000) time%yrc, i, k, j, soil_prof_mn, soil_prof_mp, soil_prof_tot, soil_prof_str,    &
+        !  soil_prof_lig, soil_prof_meta, soil_prof_man, soil_prof_hs, soil_prof_hp, soil_prof_microb,   &
+        !  soil_prof_water
+      end do
 
       return
 
-9000  format(i4,i4,i2,i8,21(f16.3))
-9001  format(i4,i4,i8,48(f16.3))
+9000  format(i4,i4,i2,i8,33(f16.3))
       end subroutine cbn_day

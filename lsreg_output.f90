@@ -4,6 +4,7 @@
       use basin_module
       use jrw_datalib_module
       use parm, only : hru, idp, ihru, ipl, pcom
+      use output_landscape_module
       integer, dimension(:), allocatable :: iarea
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -61,7 +62,7 @@
       do ireg = 1, db_mx%lsu_out
         do ielem = 1, region(ireg)%num_tot
           ihru = region(ireg)%num(ielem)
-          do ilum = 1, lscal(ireg)%lum_num
+          do ilum = 1, region(ireg)%nlum
             if (hru(ihru)%land_use_mgt_c == '                ') then    !need to change '  ' to a variable
               !! const should be fraction of the element that was read in element.lcu
               !! for entire basin - should be the basin fraction
@@ -76,7 +77,7 @@
       end do 
     
       do ireg = 1, db_mx%lsu_out
-        do ilum = 1, lscal(ireg)%lum_num
+        do ilum = 1, region(ireg)%nlum
 !!!!! daily print
         ilum_db = region(ireg)%lum_num(ilum)
         
@@ -225,7 +226,7 @@
           deallocate (rpw_d(ireg)%lum); deallocate (rpw_m(ireg)%lum); deallocate (rpw_y(ireg)%lum)
            
         end if
-        end do      ! lscal(ireg)%lum_num
+        end do      ! region(ireg)%nlum
         
 !!!!! average annual print
         if (time%end_aa_prt == 1) then
@@ -305,14 +306,14 @@
            do ipl = 1, pcom(j)%npl
              idp = pcom(j)%plcur(ipl)%idplt
              if (pcom(j)%plcur(ipl)%harv_num > 0) then 
-               pcom(j)%plg(ipl)%yield = pcom(j)%plg(ipl)%yield /           &
+               pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield /           &
                                          pcom(j)%plcur(ipl)%harv_num
              endif
             write (4428,103) time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
-                                                 pcom(j)%plg(ipl)%yield
+                                                 pcom(j)%plcur(ipl)%yield
             if (pco%csvout == 'y') then
               write (4429,'(*(G0.3,:","))') time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
-                                                 pcom(j)%plg(ipl)%yield 
+                                                 pcom(j)%plcur(ipl)%yield 
             end if
            end do
          end if

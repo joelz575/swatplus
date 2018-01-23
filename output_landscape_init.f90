@@ -6,6 +6,8 @@
       use basin_module
       use jrw_datalib_module
       use aquifer_module
+      use output_landscape_module
+      use time_module
 
       if (sp_ob%hru > 0) then
 !!!  HRU - Water balance

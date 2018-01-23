@@ -95,6 +95,8 @@
       use climate_parms
       use jrw_datalib_module
       use time_module
+      use channel_module
+      use hydrograph_module, only : ob
 
       integer :: ii
       real :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c

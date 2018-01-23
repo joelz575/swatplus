@@ -1,7 +1,5 @@
       module bacteria_module
     
-      use jrw_datalib_module
-    
       type bacteria_db
         character(len=15) :: bactnm         
         real :: do_soln = 0.       !! 1/day         |Die-off factor for pers bac in soil solution
@@ -27,6 +25,32 @@
       end type bacteria_db
       type (bacteria_db), dimension(:), allocatable  :: bac_db
 
+      type bacteria_initial
+        character(len=13) :: name
+        integer :: num_db = 0
+        integer :: num_bsn = 0
+        real :: plt = 0.		!!#cfu/m^2	|bacteria on plants at beginning of simulation
+        real :: sol = 0.		!!#cfu/m^2	|soluble bacteria in soil at beginning of simulation
+        real :: sor = 0.		!!#cfu/m^2	|sorbed bacteria in soil at beginning of simulation
+      end type bacteria_initial
+      
+      type bacteria_initial_group
+        character(len=13) :: name = "default"
+        integer :: num = 0
+        type (bacteria_initial), dimension(:), allocatable  :: bac
+      end type bacteria_initial_group
+      type (bacteria_initial_group), dimension(:), allocatable  :: bact
+      
+      type bacteria_outputs
+        character(len=13) :: name
+        real, dimension(:), allocatable :: sol        !!          |Soluble in runoff
+        real, dimension(:), allocatable :: sor        !!          |Sorbed in runoff
+        real, dimension(:), allocatable :: lch        !!          |Leached into 2nd layer
+        real, dimension(:), allocatable :: diegrosol  !!          |Die-off
+        real, dimension(:), allocatable :: diegrosor  !!          |Growth
+      end type bacteria_outputs
+      type (bacteria_outputs), dimension(:), allocatable  :: bac_out
+      
       contains
       !include 'bac_lsparms_read.f90' 
       

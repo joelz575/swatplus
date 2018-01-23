@@ -1,12 +1,5 @@
       module ru_module
 
-      use parm
-      use hru_lte_module
-      use hydrograph_module
-      use output_landscape_module
-      use jrw_datalib_module
-      use channel_module
-
       integer :: isub, msub_db
       real, dimension (:), allocatable :: ru_tc, ru_n, hyd_flo
       integer, dimension (:), allocatable :: itsb
@@ -36,8 +29,8 @@
 
       contains
       !! routines for routing unit module
-      include 'ru_control.f90'
-      include 'ru_read.f90'
-      include 'ru_allo.f90'
+      !include 'ru_control.f90'
+      !include 'ru_read.f90'
+      !include 'ru_allo.f90'
 
       end module ru_module

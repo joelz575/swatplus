@@ -2,6 +2,7 @@
     
      use basin_module
      use reservoir_module
+     use hydrograph_module, only : res, sp_ob
 
     !! RESERVOIR/WETLAND - DAILY
       if (pco%res%d == 'y' .and. sp_ob%res > 0 ) then

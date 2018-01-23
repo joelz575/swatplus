@@ -15,7 +15,6 @@
 
       eof = 0
       imax = 0
-      mch = 0
 
       inquire (file=in_cha%sed,exist=i_exist)
       if (i_exist == 0 .or. in_cha%sed == 'null') then

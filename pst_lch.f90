@@ -35,7 +35,6 @@
 !!    co          |kg/mm-ha      |concentration of pesticide in water
 !!    cocalc      |kg/mm-ha      |calc concentration of pesticide in water
 !!    csurf       |kg/mm-ha      |concentration of pesticide in surq and latq
-!!    dg          |mm            |depth of soil layer
 !!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    kk          |none          |pesticide number from pest.dat
@@ -58,23 +57,13 @@
       use constituent_mass_module
       
       integer :: j, ly, k, kk
-      real :: dg, yy, qsurf, vf, zdb1, xx, co, csurf, cocalc
- 
-      j = 0
+      real :: yy, qsurf, vf, zdb1, xx, co, csurf, cocalc
+
       j = ihru
 
       if (hrupest(j) /= 0) then
 
         do ly = 1, soil(j)%nly
-          if (ly == 1) then
-            yy = 0.
-          else
-            yy = 0.
-            yy = soil(j)%phys(ly-1)%d
-          end if
-          dg = 0.
-          dg = soil(j)%phys(ly)%d - yy
-          
           npmx = obcs(icmd)%num_pests
           do k = 1, npmx
             kk = hru(j)%pst(k)%num_db
@@ -87,14 +76,12 @@
                 qsurf = 0.
               endif
 
-              zdb1 = 0.0
-!!              zdb1 = soil(j)%phys(ly)%ul + sol_kp(k,j,ly) * soil(j)%phys(1)%bd*dg
+!!              zdb1 = soil(j)%phys(ly)%ul + sol_kp(k,j,ly) * soil(j)%phys(1)%bd*soil(j)%phys(1)%thick
               zdb1 = soil(j)%phys(ly)%ul + soil(j)%ly(ly)%kp(k) *          &
-                                                   soil(j)%phys(1)%bd*dg
+                                                   soil(j)%phys(1)%bd*soil(j)%phys(1)%thick
               !! units: mm + (m^3/ton)*(ton/m^3)*mm = mm
               if (ly == 1) hru(j)%pst(k)%zdb = zdb1
 
-              vf = 0.
               vf = qsurf + soil(j)%ly(ly)%prk + soil(j)%ly(ly)%flat
 
               if (soil(j)%ly(ly)%pst(k) >= 0.0001 .and. vf > 0.) then
@@ -139,18 +126,14 @@
 
                 !! calculate pesticide lost in surface runoff
                 if (ly == 1) then
-                  yy = 0.
                   yy = csurf * surfq(j)
-                  if (yy >  soil(j)%ly(ly)%pst(k)) yy =                  &                 
-                                                 soil(j)%ly(ly)%pst(k)
-                 
+                  if (yy >  soil(j)%ly(ly)%pst(k)) yy = soil(j)%ly(ly)%pst(k)
                    soil(j)%ly(ly)%pst(k) =  soil(j)%ly(ly)%pst(k) - yy
                   hru(j)%pst(k)%surq = yy 
                 endif
 
 
                 !! calculate pesticide lost in lateral flow
-                yy = 0.
                 yy = csurf * soil(j)%ly(ly)%flat
                 if (yy > soil(j)%ly(ly)%pst(k)) yy = soil(j)%ly(ly)%pst(k)
                  

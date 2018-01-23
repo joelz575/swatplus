@@ -11,7 +11,7 @@
       wdn = 0.
 	vof = 1. / (1. + (void/0.04)**5)
 	wdn =  soil1(j)%mn(k)%no3 * (1. - Exp(-bsn_prm%cdn * cdg * vof *          &
-              soil(j)%cbn(k)%cbn))
+              soil1(j)%tot(k)%c))
 	soil1(j)%mn(k)%no3 = soil1(j)%mn(k)%no3 - wdn
 
 	return

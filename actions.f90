@@ -6,10 +6,12 @@
       use time_module
       use parm, only : soil, pcom, bio_eat, bio_trmp, fertno3, fertnh3, fertorgn, fertorgp, fertsolp, frt_kg,  &
         grz_days, ihru, icom, idp, igrz, ipl, irr_no, irr_sc, irramt, isol, manure_id, manure_kg, ndeat,       &
-        phubase, sol_sumno3, sol_sumsolp, strsa_sum, strsn_sum, strsp_sum, strstmp_sum, strsw_sum
+        phubase, sol_sumno3, sol_sumsolp, strsa_sum, strsn_sum, strsp_sum, strstmp_sum, strsw_sum, hru 
+      use jrw_datalib_module, only : mgt, chemapp_db, tilldb, pcomdb, pldb, harvop_db, grazeop_db
       use reservoir_module
       use sd_channel_module
       use hru_lte_module
+      use basin_module
       
       integer, intent (in)  :: id, ob_cur
       integer :: ob_num
@@ -123,7 +125,7 @@
 
                 j = ob_num
                 !! sum yield and num. of harvest to calc ave yields
-                pcom(j)%plg(ipl)%yield = pcom(j)%plg(ipl)%yield + yield
+                pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield + yield
                 pcom(j)%plcur(ipl)%harv_num=pcom(j)%plcur(ipl)%harv_num+1
             
                 idp = pcom(j)%plcur(ipl)%idplt
@@ -186,7 +188,7 @@
 
                 j = ob_num
                 !! sum yield and num. of harvest to calc ave yields
-                pcom(j)%plg(ipl)%yield = pcom(j)%plg(ipl)%yield + yield
+                pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield + yield
                 pcom(j)%plcur(ipl)%harv_num=pcom(j)%plcur(ipl)%harv_num+1
             
                 idp = pcom(j)%plcur(ipl)%idplt
@@ -265,7 +267,7 @@
             hru(ob_num)%dbs%land_use_mgt = ilu
             hru(ob_num)%land_use_mgt_c = d_tbl(id)%act(iac)%file_pointer
             isol = hru(ob_num)%dbs%soil  
-            call pcom_set_parms (1)
+            call plant_init (1)
                      
           !channel change
           case ("chan_change")

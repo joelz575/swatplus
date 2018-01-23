@@ -67,6 +67,7 @@
       use climate_parms
       use time_module
       use parm, only : al5, i_mo
+      use hydrograph_module
 
       integer, intent (in) :: iwgn
       integer :: itime, pt, ihour, nhour, k

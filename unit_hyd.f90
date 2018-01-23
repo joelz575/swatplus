@@ -45,16 +45,17 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : itb, mhru, tconc, uh
+      use parm, only : itb, tconc, uh
     
       use climate_parms
       use jrw_datalib_module
       use basin_module
       use channel_module
       use time_module
+      use hydrograph_module, only : sp_ob
 
 !!    compute unit hydrograph for computing subbasin hydrograph from direct runoff
-      do j = 1, mhru
+      do j = 1, sp_ob%hru
         ql = 0.
         sumq = 0.
         tb = .5 + .6 * tconc(j) + bsn_prm%tb_adj    !baseflow time, hr

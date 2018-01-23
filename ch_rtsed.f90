@@ -53,7 +53,9 @@
 
       use basin_module
       use jrw_datalib_module
-      use parm, only : i_mo, peakr, rch_gra, rch_lag, rch_sag, rcharea, rtwtr, sdti
+      use parm, only : i_mo, peakr, rch_gra, rch_lag, rch_sag, rcharea, sdti
+      use channel_module
+      use hydrograph_module, only : ob
 
       real :: qdin, sedin, vc, cyin, cych, depnet, deg1, deg2, dep
       real :: depdeg, dot, outfract, deg

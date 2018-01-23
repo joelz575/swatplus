@@ -91,9 +91,10 @@
 
       use jrw_datalib_module, only : plcp, pldb 
       use basin_module
-      use parm, only : pcom, hru, uapd, uno3d, nppc_d, lai_yrmx, strsw_sum, strstmp_sum, strsn_sum, strsp_sum,     &
+      use parm, only : pcom, hru, uapd, uno3d, lai_yrmx, strsw_sum, strstmp_sum, strsn_sum, strsp_sum,     &
          strsa_sum, par, auto_nstrs, bio_targ, bioday, ep_day, es_day, idp, ihru, ipl, pet_day, rto_no3, rto_solp, &
          sum_no3, sum_solp, sumlai, uapd_tot, uno3d_tot, vpd
+      use carbon_module
       
       integer :: j
       real :: delg, ruedecl, beadj, reg, f, ff, deltalai
@@ -203,7 +204,7 @@
           !!add by zhang
           !!============
           if (bsn_cc%cswat == 2) then
-            NPPC_d(j) = NPPC_d(j) + bioday * reg* 0.42
+            cbn_loss(j)%nppc_d = cbn_loss(j)%nppc_d + bioday * reg* 0.42
           end if
           !!add by zhang
           !!============          

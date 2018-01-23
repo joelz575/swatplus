@@ -84,9 +84,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
-      use parm, only : pest_sol, rtwtr
+      use parm, only : pest_sol
+      use channel_module
+      use hydrograph_module, only : ob, icmd, jrch
       
-
       real :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
       real :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
 

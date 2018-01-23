@@ -1,9 +1,5 @@
       module aquifer_module
 
-      use hydrograph_module
-      use climate_parms
-
-      !integer :: iaq, iaqdb
       real :: sumrchrg, sumflo, sumseep, sumrevap
        
       type aquifer_database
@@ -48,11 +44,11 @@
       type (aquifer_state_parameters), dimension(:), allocatable :: aqu_st 
              
       type aquifer_dynamic
-        real :: flo = 0.       !m^3       |flow from aquifer in current time step       
-        real :: stor = 0.      !          |water storage in aquifer 
-        real :: rchrg = 0.     !m^3       |recharge
+        real :: flo = 0.       !mm        |flow from aquifer in current time step       
+        real :: stor = 0.      !mm        |water storage in aquifer 
+        real :: rchrg = 0.     !mm        |recharge
         real :: seep = 0.      !kg N/ha   |seepage to next object
-        real :: revap = 0.     !m^3       |revap
+        real :: revap = 0.     !mm        |revap
         real :: hgt = 0.       !m         |groundwater height
         real :: no3 = 0.       !ppm NO3-N |nitrate-N concentration in aquifer
         real :: minp = 0.      !kg        |mineral phosphorus from aquifer on current timestep    
@@ -62,6 +58,9 @@
         real :: nloss = 0. 
         real :: no3gw          !kg N/ha   |nitrate loading to reach in groundwater
         real :: seepno3 = 0.   !kg        |seepage of no3 to next object
+        real :: flo_cha = 0.   !mm H2O    |surface runoff flowing into channels
+        real :: flo_res = 0.   !mm H2O    |surface runoff flowing into reservoirs
+        real :: flo_ls = 0.    !mm H2O    |surface runoff flowing into a landscape element
       end type aquifer_dynamic
       type (aquifer_dynamic), dimension(:), allocatable :: aqu
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_m
@@ -85,11 +84,11 @@
           character (len=6) :: yrs =       ' time '
           character (len=6) :: yrc =       ' year '
           character (len=8) :: isd =       '   unit '
-          character(len=15) :: flo =       '        flo_m^3'          ! (^m3)
+          character(len=15) :: flo =       '        flo_mm'           ! (mm)
           character(len=15) :: stor =      '        stor_mm'          ! (mm)
-          character(len=15) :: rchrg =     '      rchrg_m^3'          ! (m^3)
-          character(len=15) :: seep =      '           seep'          ! (mm)
-          character(len=15) :: revap =     '      revap_m^3'          ! (m^3)
+          character(len=15) :: rchrg =     '      rchrg_mm'           ! (mm)
+          character(len=15) :: seep =      '        seep_mm'          ! (mm)
+          character(len=15) :: revap =     '      revap_mm'           ! (mm)
           character(len=15) :: hgt =       '        hgt_m  '          ! (m)
           character(len=15) :: no3_st =    'no3_stor_kgN/ha'          ! (kg/ha N)
           character(len=15) :: minp =      '        minp_kg'          ! (kg)
@@ -99,6 +98,9 @@
           character(len=15) :: nloss =     '   nloss_kgN/ha'          ! (kg/ha N)
           character(len=15) :: no3gw =     '   no3gw_kgN/ha'          ! (kg N/ha)
           character(len=15) :: seep_no3 =  '     seepno3_kg'          ! (kg)
+          character(len=15) :: flo_cha =   '    flo_cha_m^3'          ! (m^3)
+          character(len=15) :: flo_res =   '    flo_res_m^3'          ! (m^3)
+          character(len=15) :: flo_ls =    '     flo_ls_m^3'          ! (m^3)
       end type aqu_header
       type (aqu_header) :: aqu_hdr
       interface operator (+)
@@ -136,13 +138,15 @@
        aqo3%revap = aqo1%revap + aqo2%revap
        aqo3%no3gw = aqo1%no3gw + aqo2%no3gw
        aqo3%seepno3 = aqo1%seepno3 + aqo2%seepno3
+       aqo3%flo_cha = aqo1%flo_cha + aqo2%flo_cha
+       aqo3%flo_res = aqo1%flo_res + aqo2%flo_res
+       aqo3%flo_ls = aqo1%flo_ls + aqo2%flo_ls
       end function aqu_add
       
       function aqu_div (aq1,const) result (aq2)
         type (aquifer_dynamic), intent (in) :: aq1
         real, intent (in) :: const
         type (aquifer_dynamic) :: aq2
-        ! consta = time%nbyr
         aq2%flo = aq1%flo / const
         aq2%stor = aq1%stor / const
         aq2%hgt = aq1%hgt / const
@@ -157,6 +161,9 @@
         aq2%revap = aq1%revap / const
         aq2%no3gw = aq1%no3gw / const
         aq2%seepno3 = aq1%seepno3 / const
+        aq2%flo_cha = aq1%flo_cha / const
+        aq2%flo_res = aq1%flo_res / const
+        aq2%flo_ls = aq1%flo_ls / const
       end function aqu_div
         
       end module aquifer_module

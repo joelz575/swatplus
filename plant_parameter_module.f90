@@ -26,15 +26,11 @@
         real :: p_fr = 0.             !!none              |phosphorus fraction
       end type plant_mass
 !      type (plant_mass) :: plt_mass_z
-      type (plant_mass) :: yld_tbr
-      type (plant_mass) :: yld_grn
-      type (plant_mass) :: yld_veg
-      type (plant_mass) :: yld_rsd
-      type (plant_mass), pointer :: pl_tot
-      type (plant_mass), pointer :: veg_ag
-      type (plant_mass), pointer :: grain
-      type (plant_mass), pointer :: root
-      !type (plant_mass), pointer :: rsd_flt
+      !type (plant_mass) :: yld_tbr
+      !type (plant_mass) :: yld_grn
+      !type (plant_mass) :: yld_veg
+      !type (plant_mass) :: yld_rsd
+      !type (plant_mass), pointer :: pl_tot
       
       type plant_status
         integer :: idplt = 0           !! none         land cover code from plants.plt

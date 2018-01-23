@@ -1,10 +1,13 @@
       subroutine hru_lte_read
       
-      use jrw_datalib_module, only: pldb
+      use jrw_datalib_module, only: pldb, db_mx
       use hru_lte_module
       use climate_module
       use input_file_module
       use parm, only : ipl
+      use output_landscape_module
+      use climate_parms
+      use time_module
       
       character (len=80) :: titldum
       character (len=80) :: header

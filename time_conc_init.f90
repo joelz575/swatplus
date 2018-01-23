@@ -1,8 +1,11 @@
       subroutine time_conc_init 
     
-      use hydrograph_module
       use ru_module
-      use parm, only : brt, hru, hru_db, ihru, mhru, t_ov, tconc
+      use parm, only : brt, hru, hru_db, ihru, t_ov, tconc
+      use hydrograph_module, only : sp_ob, ru_def, ru_elem, sp_ob1, ob
+      use jrw_datalib_module, only : topo_db, field_db
+      use time_module
+      use basin_module
           
      ! compute weighted Mannings n for each subbasin
       do isub = 1, sp_ob%sub
@@ -21,7 +24,6 @@
       do isub = 1, sp_ob%sub
         iob = sp_ob1%sub + isub - 1
         ru(isub)%da_km2 = ob(iob)%area_ha / 100.
-        bsn%area_ha = bsn%area_ha + ob(iob)%area_ha
         ru_n(isub) = ru_n(isub) / ru(isub)%da_km2
         ith = ru(isub)%dbs%toposub_db
         ifld = ru(isub)%dbs%field_db
@@ -38,7 +40,7 @@
       end do
       
       !!compute time of concentration (sum of overland and channel times)
-      do ihru = 1, mhru
+      do ihru = 1, sp_ob%hru
         ith = hru_db(ihru)%dbs%topo
         ifld = hru_db(ihru)%dbs%field
         t_ov(ihru) = .0556 * (hru(ihru)%topo%slope_len *                    &

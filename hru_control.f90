@@ -12,15 +12,16 @@
          fertn, fertp, fixn, grazn, grazp, hmntl, hmptl, ipl, no3pcp, peakr, qtile, rmn2tl, rmp1tl, rmptl,     &
          roctl, rwntl, snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, wdntl, canev,   &
          ep_day, es_day, etday, iadep, idp, inflpcp, inflrout, ipot, isep, iwgen, ls_overq, nd_30, pet_day,    &
-         pot, precipday, qday, sumbm, sumbm, sumlai, sumrwt, surfqout
+         pot, precipday, qday, sumbm, sumbm, sumlai, sumrwt, surfqout, sno_hru
       
       use basin_module
       use organic_mineral_mass_module
-      use hydrograph_module, only : ob, ht1, ht2, hz
+      use hydrograph_module
       use climate_parms, only : wst, wgn_pms
       use jrw_datalib_module, only : pldb, sched, sep, res_dat
-      use reservoir_module, only :  res_ob
-      use hru_module
+      use reservoir_module
+      use output_landscape_module
+      use time_module
 
       integer :: j, sb, kk
       real :: tmpk, d, gma, ho, pet_alpha, aphu, phuop
@@ -247,22 +248,11 @@
         !! compute actual ET for day in HRU
         etday = ep_day + es_day + canev
 
-        !! write daily air and soil temperature file
-        !! can be uncommmented if needed by user and also in readfile.f
-
-!      write (120,12112) i,j,tmx(j),tmn(j),(sol_tmp(k,j),k=1,sol_nly(j))
-!12112  format (2i4,12f8.2)
-
-        !! compute nitrogen and phosphorus mineralization 
-
+      !! compute nitrogen and phosphorus mineralization 
       if (bsn_cc%cswat == 0) then
         call nut_nminrl
       end if
 
-	if (bsn_cc%cswat == 1) then
-		call cbn_new
-	end if
-	
 	!! Add by zhang
 	!!=================
 	if (bsn_cc%cswat == 2) then
@@ -284,10 +274,6 @@
 	  if (sep(isep)%opt /= 0. .and. time%yrc >= sep(isep)%yr) then
 	   if (soil(j)%phys(i_sep(j))%tmp > 0.) call sep_biozone     
 	  endif
-
-        !! compute ground water contribution
-!        call gwmod
-!        call gwmod_deep
 
         !! compute pesticide washoff   
         if (precipday >= 2.54) call pst_washp
@@ -359,10 +345,6 @@
         !! lag subsurface flow and nitrate in subsurface flow
         call swr_substor
 
-        !! add lateral flow that was routed across the landscape on the previous day
-      !!  latq(j) = latq(j) + latq_ru(j)
-      !!  latq_ru(j) = 0.
-        
         !! compute reduction in pollutants due to edge-of-field filter strip
         if (hru(j)%lumv%vfsi > 0.)then
           call smp_filter
@@ -382,7 +364,6 @@
 	   if (hru(j)%lumv%bmp_flag == 1) then
           call smp_bmpfixed
         end if
-
 
         !! compute water yield for HRU - ht2%flo is outflow from routed runon
         qdr(j) = qday + latq(j) + qtile + ht2%flo
@@ -404,6 +385,61 @@
           call hru_urb_bmp
         end if
       endif
+      
+      ! update total residue on surface
+      rsd1(j)%tot_com = orgz
+      do ipl = 1, pcom(j)%npl
+        rsd1(j)%tot_com = rsd1(j)%tot_com + rsd1(j)%tot(ipl)
+      end do
+
+      ! compute outflow objects (flow to channels, reservoirs, or landscape)
+      ! if flow from hru is directly routed
+      iob_out = iob
+      ! if the hru is part of a ru and it is routed
+      if (ob(iob)%subs_tot > 0) then
+        isub = ob(iob)%sub(1)
+        iob_out = sp_ob1%sub + isub - 1
+      end if
+      
+      do iout = 1, ob(iob_out)%src_tot
+        select case (ob(iob_out)%obtyp_out(iout))
+        case ('cha')
+          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%surq_cha = hwb_d(j)%surq_cha + surfq(j) * ob(iob_out)%frac_out(iout)
+          end if
+          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%latq_cha = hwb_d(j)%latq_cha + latq(j) * ob(iob_out)%frac_out(iout)
+          end if
+        case ('res')
+          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%surq_res = hwb_d(j)%surq_res + surfq(j) * ob(iob_out)%frac_out(iout)
+          end if
+          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%latq_res = hwb_d(j)%latq_res + latq(j) * ob(iob_out)%frac_out(iout)
+          end if
+        case ('hru')
+          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%surq_ls = hwb_d(j)%surq_ls + surfq(j) * ob(iob_out)%frac_out(iout)
+          end if
+          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%latq_ls = hwb_d(j)%latq_ls + latq(j) * ob(iob_out)%frac_out(iout)
+          end if
+        case ('sub')
+          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%surq_ls = hwb_d(j)%surq_ls + surfq(j) * ob(iob_out)%frac_out(iout)
+          end if
+          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%latq_ls = hwb_d(j)%latq_ls + latq(j) * ob(iob_out)%frac_out(iout)
+          end if
+        case ('hlt')
+          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%surq_ls = hwb_d(j)%surq_ls + surfq(j) * ob(iob_out)%frac_out(iout)
+          end if
+          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+            hwb_d(j)%latq_ls = hwb_d(j)%latq_ls + latq(j) * ob(iob_out)%frac_out(iout)
+          end if
+        end select
+      end do
 
       ! output_waterbal
         hwb_d(j)%precip = wst(iwst)%weat%precip
@@ -421,6 +457,7 @@
         hwb_d(j)%surq_cont = surfq(j)
         hwb_d(j)%cn = cnday(j)
         hwb_d(j)%sw = soil(j)%sw
+        hwb_d(j)%snopack = sno_hru(j)
         hwb_d(j)%pet = pet_day
         hwb_d(j)%qtile = qtile
         hwb_d(j)%irr = aird(j)
@@ -451,8 +488,9 @@
       ! output_plantweather
         hpw_d(j)%lai = sumlai
         hpw_d(j)%bioms = sumbm
-        hpw_d(j)%residue = hru(j)%rsd%mass
+        hpw_d(j)%residue = soil(j)%ly(1)%rsd
         hpw_d(j)%yield = yield
+        yield = 0.
         hpw_d(j)%sol_tmp =  soil(j)%phys(2)%tmp
         hpw_d(j)%strsw = (1. - strsw_av(j))
         hpw_d(j)%strsa = (1. - strsa_av)

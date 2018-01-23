@@ -27,6 +27,8 @@
       use reservoir_module
       use aquifer_module
       use hru_lte_module
+      use organic_mineral_mass_module
+      use hydrograph_module
 
       character(len=16), intent (in) :: chg_parm, chg_typ
       real, intent (in) :: chg_val, absmin, absmax
@@ -152,7 +154,7 @@
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
          
       case ("cbn")
-          soil(ielem)%cbn(ly)%cbn = chg_par(soil(ielem)%cbn(ly)%cbn,    &
+          soil1(ielem)%tot(ly)%c = chg_par(soil1(ielem)%tot(ly)%c,    &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
          
       case ("clay")

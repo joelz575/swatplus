@@ -57,9 +57,10 @@
       use jrw_datalib_module, only : urbdb
       use climate_parms
       use basin_module
-      use hydrograph_module, only: iwst
+      use hydrograph_module
       use parm, only : hru, soil, hru_sub, swtrg, hhqday, ubnrunoff, hhsurfq, surfq, cnday, wfsh, ihru
-
+      use time_module
+      
       integer :: j, k, kk,sb
       real :: adj_hc, dthet, soilw, psidt, tst, f1
       real, dimension (time%step+1) :: cumr, cuminf, excum, exinc, rateinf

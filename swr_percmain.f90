@@ -58,9 +58,9 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm, only : aird, hru, ihru, i_sep, inflpcp, isep, latlyr, latq, lyrtile, qstemm, sepbtm, sepcrktot, sepday,   &
-         soil, sw_excess, wt_shall, pot
+         soil, sw_excess, wt_shall, pot, qtile
       use jrw_datalib_module, only : sep
-      use hydrograph_module, only : ht1 
+      use hydrograph_module
       use basin_module
       
       integer :: j, j1, nn, k

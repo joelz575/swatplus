@@ -30,6 +30,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm, only : i_mo, iida
+      use time_module
 
       integer :: m1, nda
 

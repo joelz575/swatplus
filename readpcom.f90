@@ -57,7 +57,10 @@
               exit
             end if
           end do 
-           if (eof < 0) exit
+          if (pcomdb(icom)%pl(iplt)%db_num == 0) then
+                 write (9001,*) ' plant com', icom, ' plant numb', iplt, pcomdb(icom)%pl(iplt)%cpnm, ' not found in plants.plt database' 
+          end if
+          if (eof < 0) exit
          end do
        end do
       end do

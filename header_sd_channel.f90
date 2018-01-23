@@ -2,6 +2,7 @@
 
       use parm
       use sd_channel_module
+      use basin_module
 
 !!!  SWAT-DEG CHANNEL
       if (sp_ob%chandeg > 0) then

@@ -55,7 +55,10 @@
 
       use basin_module
       use time_module
-      use parm, only : rtwtr, thbact, wdlprch
+      use parm, only : thbact, wdlprch
+      use channel_module
+      use hydrograph_module, only : ob
+      use climate_parms
 
       real, external :: Theta
 

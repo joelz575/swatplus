@@ -1,12 +1,6 @@
      subroutine header_soils
     
      use basin_module
-     !use aquifer_module
-     !use channel_module
-     !use reservoir_module
-     !use hydrograph_module
-     !use sd_channel_module
-     !use parm
     
 !!   open soils.out file       
       if (pco%solout == 'y') then

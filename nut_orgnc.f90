@@ -38,33 +38,27 @@
       integer :: j
       real :: xx, wt1, er, conc
 
-      j = 0
       j = ihru
 
-      xx = 0.
-	  wt1 = 0.  !! conversion factor
-      er = 0.	!! enrichment ratio
+      !! HRU calculations
+      xx = soil1(j)%tot(1)%n + rsd1(j)%tot(1)%n + rsd1(j)%man%n
+      wt1 = soil(j)%phys(1)%bd * soil(j)%phys(1)%d / 100.
 
-        !! HRU calculations
-        xx = soil(j)%ly(1)%n + rsd1(j)%tot(1)%n + rsd1(j)%man%n
-        wt1 = soil(j)%phys(1)%bd * soil(j)%phys(1)%d / 100.
+      if (hru(j)%hyd%erorgn > .001) then
+        er = hru(j)%hyd%erorgn
+      else
+        er = enratio
+      end if
 
-        if (hru(j)%hyd%erorgn > .001) then
-          er = hru(j)%hyd%erorgn
-        else
-          er = enratio
-        end if
-
-      conc = 0.
       conc = xx * er / wt1
 
-        !! HRU calculations
-        sedorgn(j) = .001 * conc * sedyld(j) / hru(j)%area_ha
+      !! HRU calculations
+      sedorgn(j) = .001 * conc * sedyld(j) / hru(j)%area_ha
 
-	!! update soil nitrogen pools only for HRU calculations
+	  !! update soil nitrogen pools only for HRU calculations
       if (xx > 1.e-6) then
         xx1 = (1. - sedorgn(j) / xx)
-		soil(j)%ly(1)%n = soil(j)%ly(1)%n * xx1
+		soil1(j)%tot(1)%n = soil1(j)%tot(1)%n * xx1
 		rsd1(j)%tot(1)%n = rsd1(j)%tot(1)%n * xx1
 		rsd1(j)%man%n = rsd1(j)%man%n * xx1
       end if

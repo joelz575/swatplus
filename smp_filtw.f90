@@ -97,6 +97,7 @@
         silyld, clayld, sagyld, lagyld, trapeff, hrupest, hru_dafr, ihru, bactrolp, bactrop, bactsedlp,     &
         bactsedp, npmx, sbactrolp, sbactrop, sbactsedlp, sbactsedp 
       use constituent_mass_module
+      use time_module
       
       integer :: j, k
 

@@ -5,6 +5,8 @@
       use hydrograph_module
       use parm, only : hru, ihru  
       use hru_lte_module
+      use output_landscape_module
+      use basin_module
 
       character (len=80) :: titldum, header
       integer :: eof
@@ -14,76 +16,71 @@
 	  
       inquire (file=in_chg%ls_regions_cal, exist=i_exist)
       if (i_exist == 0 .or. in_chg%ls_regions_cal == 'null') then
-           allocate (lscal(0:0))		        
+        allocate (lscal(0:0))
+        allocate (region(0:0))
       else  
         do
           open (107,file=in_chg%ls_regions_cal)
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
-          read (107,*,iostat=eof) mlscal
+          read (107,*,iostat=eof) mreg
           if (eof < 0) exit
           read (107,*,iostat=eof) header
-          allocate (lscal(mlscal))
+          
+          allocate (lscal(0:mreg))
+          allocate (region(0:mreg))
+          !! allocate regional output files
+          allocate (rwb_d(mreg)); allocate (rwb_m(mreg)); allocate (rwb_y(mreg)); allocate (rwb_a(mreg))
+          allocate (rnb_d(mreg)); allocate (rnb_m(mreg)); allocate (rnb_y(mreg)); allocate (rnb_a(mreg))
+          allocate (rls_d(mreg)); allocate (rls_m(mreg)); allocate (rls_y(mreg)); allocate (rls_a(mreg))
+          allocate (rpw_d(mreg)); allocate (rpw_m(mreg)); allocate (rpw_y(mreg)); allocate (rpw_a(mreg))
 
-          do i = 1, mlscal
+          db_mx%lsu_reg = mreg
 
-            !! read landscape soft calibration data for each land use
-            read (107,*,iostat=eof) ilum_mx, nreg
-            if (eof < 0) exit
-            allocate (lscal(i)%lum(ilum_mx))
-            allocate (lscal(i)%reg(nreg))
-            allocate (lscal(i)%ireg(nreg))
-            backspace (107)
-            read (107,*,iostat=eof) lscal(i)%lum_num, lscal(i)%num_reg, lscal(i)%reg
-            if (lscal(i)%lum_num > 0) then
+          do ireg = 1, mreg
+
+            read (107,*,iostat=eof) region(ireg)%name, region(ireg)%nlum
+            
+            db_mx%landuse = region(ireg)%nlum
+            mlug = region(ireg)%nlum
+            allocate (region(ireg)%lum_ha_tot(mlug))
+            allocate (region(ireg)%lum_num_tot(mlug))
+            allocate (lscal(ireg)%lum(mlug))
+            !! allocate land use for each regional output
+            allocate (rwb_a(ireg)%lum(mlug))
+            allocate (rnb_a(ireg)%lum(mlug))
+            allocate (rls_a(ireg)%lum(mlug))
+            allocate (rpw_a(ireg)%lum(mlug))
+            region(ireg)%lum_ha_tot = 0.
+            region(ireg)%lum_num_tot = 0
+            region(ireg)%lum_ha_tot = 0.
+            
+            if (mlug > 0) then
               read (107,*,iostat=eof) header
               if (eof < 0) exit
               !! read soft calibration data for each land use within the region
-              do ilum = 1, ilum_mx
-                read (107,*,iostat=eof) lscal(i)%lum(ilum)%meas
+              do ilum = 1, mlug
+                read (107,*,iostat=eof) lscal(ireg)%lum(ilum)%meas
                 if (eof < 0) exit
               end do
             end if 
                
-            !! xwalk regions with region()%name - save soft ls data for region
-            do icalreg = 1, lscal(i)%num_reg
-              do ireg = 1, db_mx%lsu_reg
-                if (lscal(i)%reg(icalreg) == region(ireg)%name) then
-                  region(ireg)%lscal = i
-                  lscal(i)%ireg(icalreg) = i
-                end if
-              end do
-            end do
-
-            !! set landscape region for hru and hru-lte
-            if (db_mx%lsu_reg > 0) then
-              do iob = 1, region(i)%num_tot
-                ihru = region(i)%num(iob)
-                if (ihru <= sp_ob%hru) hru(ihru)%region = lscal(i)%name
-                if (ihru <= sp_ob%hru_lte) hlt(ihru)%region = lscal(i)%name
+            !! if calibrating the entire region - later we can set up for lsu/regional calibrations
+            if (region(ireg)%name == 'basin') then
+              region(ireg)%num_tot = sp_ob%hru
+              allocate (region(ireg)%num(sp_ob%hru))
+              allocate (region(ireg)%hru_ha(sp_ob%hru))
+              do ihru = 1, sp_ob%hru
+                region(ireg)%num(ihru) = ihru
+                region(ireg)%hru_ha(ihru) = bsn%area_ls_ha * lsu_elem(ihru)%bsn_frac
               end do
             end if
             
-!            do icalreg = 1, lscal(i)%num_reg
-!              !! allocate land uses within the region for print out
-!              ireg = lscal(i)%ireg(icalreg)
-!              allocate (region(ireg)%lum_ha(ilum_mx))
-!              allocate (rwb_d(ireg)%lum(ilum_mx)); allocate (rwb_m(ireg)%lum(ilum_mx))
-!              allocate (rwb_y(ireg)%lum(ilum_mx))
-!              allocate (rnb_d(ireg)%lum(ilum_mx)); allocate (rnb_m(ireg)%lum(ilum_mx))
-!              allocate (rnb_y(ireg)%lum(ilum_mx))
-!              allocate (rls_d(ireg)%lum(ilum_mx)); allocate (rls_m(ireg)%lum(ilum_mx))
-!              allocate (rls_y(ireg)%lum(ilum_mx))
-!              allocate (rpw_d(ireg)%lum(ilum_mx)); allocate (rpw_m(ireg)%lum(ilum_mx))
-!              allocate (rpw_y(ireg)%lum(ilum_mx))
-!            end do
-          end do    !mlscal
+          end do    !mreg
 
           exit
         end do 
       end if	  
-        
-      db_mx%lscal_reg = mlscal
 	  
       return
       end subroutine lcu_softcal_read

@@ -1,6 +1,7 @@
       subroutine hyd_connect_out
     
       use basin_module
+      use hydrograph_module
       
       !!  0 = average annual (always print)
       !!  1 = yearly

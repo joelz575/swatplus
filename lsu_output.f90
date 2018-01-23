@@ -4,6 +4,7 @@
       use basin_module
       use jrw_datalib_module
       use hydrograph_module
+      use output_landscape_module
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs SUBBASIN variables on daily, monthly and annual time steps
@@ -192,7 +193,7 @@
       
       return
       
-100   format (2i6,i8,21f12.3)
-102   format (a,i6,i8,21f12.3)
+100   format (2i6,i8,27f12.3)
+102   format (a,i6,i8,27f12.3)
        
       end subroutine lsu_output

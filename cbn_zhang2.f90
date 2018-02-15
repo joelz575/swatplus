@@ -292,10 +292,7 @@
           !carbdb%hp_rate=prmt(48) !century passive humus transformation rate d^-1(0.0000082_0.000015) original value = 0.000012 
           carbdb%hp_rate = 1.2000000e-05
 
-          org_allo%apco2 = .55
-          org_allo%asco2 = .60
-          carbdb%microb_top_rate = 0.          !coef adjusts microbial activity function in top soil layer (0.1_1.),
-          carbdb%microb_top_rate = 1.
+          ! set nitrogen carbon ratios for upper layer
           if (k == 1) then
             org_con%cs = org_con%cs * carbdb%microb_top_rate
             org_allo%abco2 = .55
@@ -305,39 +302,42 @@
             carbdb%str_rate = .0107
             org_ratio%nchp = .1
             xbm = 1.
-            
-            ! compute n/c ratios - relative notrogen content in residue
-            rsdn_pct = 0.1 * (soil1(j)%str(k)%n + soil1(j)%meta(k)%n) / (soil(j)%ly(k)%rsd / 1000 + 1.e-5)
+            ! compute n/c ratios - relative nitrogen content in residue
+            rsdn_pct = 0.1 * (rsd1(j)%str%n + rsd1(j)%meta%n) / (rsd1(j)%tot_com%m / 1000. + 1.e-5)
             if (rsdn_pct > 2.) then
               org_ratio%ncbm = .1
-              go to 6
+              org_ratio%nchs = org_ratio%ncbm / (5. * org_ratio%ncbm + 1.)
+              org_allo%abp = .003 + .00032 * soil(j)%phys(k)%clay
             end if
-            if (rsdn_pct > .01) then
+            if (rsdn_pct > .01 .and. rsdn_pct <= 2.) then
               org_ratio%ncbm = 1. / (20.05 - 5.0251 * rsdn_pct)
+              org_ratio%nchs = org_ratio%ncbm / (5. * org_ratio%ncbm + 1.)
+              org_allo%abp = .003 + .00032 * soil(j)%phys(k)%clay
             else
               org_ratio%ncbm = .05
+              org_ratio%nchs = org_ratio%ncbm / (5. * org_ratio%ncbm + 1.)
+              org_allo%abp = .003 + .00032 * soil(j)%phys(k)%clay
             end if    
-          6 org_ratio%nchs = org_ratio%ncbm / (5. * org_ratio%ncbm + 1.)
-            go to 2
-          end if
-          
-          org_allo%abco2 = 0.17 + 0.0068 * soil(j)%phys(k)%sand
-          a1co2 = .55
-          carbdb%microb_rate = .02
-          carbdb%meta_rate = .0507
-          carbdb%str_rate = .0132
-          xbm = .25 + .0075 * soil(j)%phys(k)%sand
-          min_n_ppm = 1000. * sol_min_n / (sol_mass / 1000)
-          if (min_n_ppm > 7.15) then
-            org_ratio%ncbm = .33
-            org_ratio%nchs = .083
-            org_ratio%nchp = .143       
           else
-            org_ratio%ncbm = 1. / (15. - 1.678 * min_n_ppm)
-            org_ratio%nchs = 1. / (20. - 1.119 * min_n_ppm)
-            org_ratio%nchp = 1. / (10. - .42 * min_n_ppm)
-          end if
-        2 org_allo%abp = .003 + .00032 * soil(j)%phys(k)%clay
+            ! set nitrogen carbon ratios for lower layers
+            org_allo%abco2 = 0.17 + 0.0068 * soil(j)%phys(k)%sand
+            a1co2 = .55
+            carbdb%microb_rate = .02
+            carbdb%meta_rate = .0507
+            carbdb%str_rate = .0132
+            xbm = .25 + .0075 * soil(j)%phys(k)%sand
+             min_n_ppm = 1000. * sol_min_n / (sol_mass / 1000)
+            if (min_n_ppm > 7.15) then
+              org_ratio%ncbm = .33
+              org_ratio%nchs = .083
+              org_ratio%nchp = .143       
+            else
+              org_ratio%ncbm = 1. / (15. - 1.678 * min_n_ppm)
+              org_ratio%nchs = 1. / (20. - 1.119 * min_n_ppm)
+              org_ratio%nchp = 1. / (10. - .42 * min_n_ppm)
+            end if
+            org_allo%abp = .003 + .00032 * soil(j)%phys(k)%clay
+          end if          
 
           !coef in century eq allocating slow to passive humus(0.001_0.05) original value = 0.003,
               carbdb%hs_hp = 5.0000001e-02
@@ -580,7 +580,7 @@
               !!determine the final rate of the decomposition of each carbon pool and 
               !!allocation of c and nutrients to different som pools, as well as co2 emissions from different pools
 	          lscta = min(soil1(j)%str(k)%c, lscta)              
-              lslcta = min(soil1(j)%lig(ly)%c, lslcta)
+              lslcta = min(soil1(j)%lig(k)%c, lslcta)
               
               org_flux%co2fstr = .3 * lslcta
               org_flux%co2fstr = a1co2 * lslncta
@@ -603,7 +603,7 @@
               
                       !!s3 (passive humus) to s1 (microbial)
                       org_flux%cfs3s1 = apx * hpcta              
-                      call np_flow (&
+                      call nut_np_flow (&
                             soil1(j)%hp(k)%c, soil1(j)%hp(k)%n,          & !input
                             1/org_ratio%ncbm, org_flux%cfs3s1,           & !input
                             org_flux%co2fs3,                             & !input
@@ -612,7 +612,7 @@
                                     
                       !!s2 (slow humus) to s1 (microbial)
                       org_flux%cfs2s1 = asx * hscta   
-                      call np_flow (&
+                      call nut_np_flow (&
                             soil1(j)%hs(k)%c, soil1(j)%hs(k)%n,          & !input
                             1/org_ratio%ncbm, org_flux%cfs2s1,           & !input
                             org_flux%co2fs2,                             & !input
@@ -621,7 +621,7 @@
                       
                       !!metabolic litter to s1 (microbial)
                       org_flux%cfmets1 = a1 * lmcta              
-                      call np_flow (&
+                      call nut_np_flow (&
                              soil1(j)%meta(k)%c, soil1(j)%meta(k)%n,     &  !input
                              1/org_ratio%ncbm, org_flux%cfmets1,         &  !input
                              org_flux%co2fmet,                           &  !input
@@ -630,7 +630,7 @@
                          
                       !!structural to s1   
                       org_flux%cfstrs1 = a1 * lslncta        
-                      call np_flow (                                     &
+                      call nut_np_flow (                                     &
                              soil1(j)%str(k)%c, soil1(j)%str(k)%n,       &  !input
                              1/org_ratio%ncbm, org_flux%cfstrs1,         &  !input
                              org_flux%co2fstr,                           &  !input
@@ -642,7 +642,7 @@
 
                       !!str (structrual litter) to s2 (slow humus)
                       org_flux%cfstrs2 = .7 * lslcta              
-                      call np_flow (&
+                      call nut_np_flow (&
                              soil1(j)%str(k)%c, soil1(j)%str(k)%n,       & !input
                              1/org_ratio%nchs, org_flux%cfstrs2,         & !input
                              org_flux%co2fstr,                           & !input
@@ -651,7 +651,7 @@
                       
                       !!s1 (microbial biomass)to s2 (slow humus)
                       org_flux%cfs1s2 = bmcta * (1. - org_allo%abp - org_allo%abco2)                
-                      call np_flow (&
+                      call nut_np_flow (&
                             soil1(j)%microb(k)%c, soil1(j)%microb(k)%n,     & !input
                             1/org_ratio%nchs, org_flux%cfs1s2,              & !input
                             org_flux%co2fs1,                                & !input
@@ -665,7 +665,7 @@
                       !!s1 (microbial biomass) to s3 (passive humus)
                       org_flux%cfs1s3 = bmcta * org_allo%abp              
 
-                      call np_flow (&
+                      call nut_np_flow (&
                             soil1(j)%microb(k)%c, soil1(j)%microb(k)%n,      & !input
                             1/org_ratio%nchs, org_flux%cfs1s3,               & !input
                             -99.0,                                           & !input  
@@ -678,7 +678,7 @@
                       
                       !!s2 to s3 (passive humus)
                       org_flux%cfs2s3 = hscta * org_allo%asp   
-                      call np_flow (&
+                      call nut_np_flow (&
                             soil1(j)%hs(k)%c, soil1(j)%hs(k)%n,           & !input
                             1/org_ratio%nchp, org_flux%cfs2s3,            & !input
                             -99.0,                                        & !input  
@@ -744,19 +744,19 @@
               !!update c and n of different som pools
               !!=========================================
               soil1(j)%str(k)%c = max(1.e-10, soil1(j)%str(k)%c - lscta)
-              soil1(j)%lig(ly)%c = max(1.e-10, soil1(j)%lig(ly)%c - lslcta)
-              soil1(j)%lig(ly)%n = max(1.e-10, soil1(j)%lig(ly)%n - lslncta)
+              soil1(j)%lig(k)%c = max(1.e-10, soil1(j)%lig(k)%c - lslcta)
+              soil1(j)%lig(k)%n = max(1.e-10, soil1(j)%lig(k)%n - lslncta)
                             
               soil1(j)%lig(k)%m = max(1.e-10, soil1(j)%lig(k)%m - lslcta / .42)
               soil1(j)%str(k)%m = max(1.e-10, soil1(j)%str(k)%m - lscta / .42)
               
-              if (soil1(j)%meta(ly)%m > 0.) then
-                rto = max(0.42, soil1(j)%meta(k)%c / soil1(j)%meta(ly)%m)
-                soil1(j)%meta(ly)%m = soil1(j)%meta(ly)%m - lmcta / rto
+              if (soil1(j)%meta(k)%m > 0.) then
+                rto = max(0.42, soil1(j)%meta(k)%c / soil1(j)%meta(k)%m)
+                soil1(j)%meta(k)%m = soil1(j)%meta(k)%m - lmcta / rto
                 soil1(j)%meta(k)%c = soil1(j)%meta(k)%c - lmcta
               end if
               !soil1(j)%meta(k)%c=max(1.e-10,soil1(j)%meta(k)%c-lmcta)
-              !soil1(j)%meta(ly)%m=max(1.e-10,soil1(j)%meta(ly)%m-lmcta/.42)              
+              !soil1(j)%meta(k)%m=max(1.e-10,soil1(j)%meta(k)%m-lmcta/.42)              
               
               soil1(j)%meta(k)%n = max(.001, soil1(j)%meta(k)%n - org_flux%efmets1 & !subtract n flow from met (metabolic litter) to s1 (microbial biomass)
                             - org_flux%mnrmets1)                    !subtract n immobilization during transformaiton from met (metabolic litter) to s1 (microbial biomass)
@@ -804,7 +804,7 @@
               
               !!update other vairables used in swat
               !!==================================
-              soil(j)%ly(k)%rsd = soil1(j)%str(k)%m + soil1(j)%meta(ly)%m            
+              soil(j)%ly(k)%rsd = soil1(j)%str(k)%m + soil1(j)%meta(k)%m            
               soil1(j)%tot(k)%c = 100. * (soil1(j)%hs(k)%c + soil1(j)%hp(k)%c + soil1(j)%microb(k)%c) / sol_mass 
         end if  !soil temp and soil water > 0.
 

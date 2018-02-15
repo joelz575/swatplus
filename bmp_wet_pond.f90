@@ -7,7 +7,6 @@
 !!    name             |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    wtp_evrsv        |none         |detention pond evaporation coefficient
-!!    i_mo             |none         |current month of simulation
 !!    sub_subp_dt(:,:)  |mm H2O      |precipitation for time step in subbasin
 !!    wtp_pvol(:       |m^3 H2O      |volume of permanent pool including forebay 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -51,7 +50,7 @@
       dp = wtp_dp(sb) * 0.1 !cm
 	  
       if (time%yrc<wtp_iyr(sb).or.(time%yrc==wtp_iyr(sb)           &
-            .and.i_mo<wtp_imo(sb))) then
+            .and.time%mo<wtp_imo(sb))) then
          return
       endif
       

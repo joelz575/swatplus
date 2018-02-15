@@ -74,7 +74,7 @@
              ru(i)%dbs%toposub_db = ith
         exit
         end if
-      !if (ru(i)%dbs%toposub_db == 0) write (9001,*) ru(i)%dbs%toposub_db, ' not found (ru-toposub)' 
+        !if (ru(i)%dbs%toposub_db == 0) write (9001,*) ru(i)%dbsc%toposub_db, ' not found (ru-toposub)' 
       end do
       
       do ith = 1, db_mx%field
@@ -82,7 +82,7 @@
              ru(i)%dbs%field_db = ith
         exit
         end if
-      !if (ru(i)%dbs%field_db == 0) write (9001,*) ru(i)%dbs%field_db, ' not found (ru-field_db)'
+        !if (ru(i)%dbs%field_db == 0) write (9001,*) ru(i)%dbsc%field_db, ' not found (ru-field_db)'
       end do
 
       

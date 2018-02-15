@@ -2,9 +2,7 @@
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the amount of organic nitrogen removed in
-!!    surface runoff - when using CSWAT it excludes sol_aorgn, uses only sol_n = sol_orgn, 
-!!    and includes sol_mn (nitrogen in manure)
-
+!!    surface runoff 
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition

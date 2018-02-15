@@ -7,7 +7,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hru_sub(:)  |none          |subbasin in which HRU/reach is located
-!!    i_mo        |none          |current month of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -246,7 +245,7 @@
             flw(3,ii) = qloss / (sub_ha *10000. - tsa) * 1000.  !mm
      
          Endif
-!         write(*,'(2i3,20f7.3)') iida, ii, qin(ii),qout(ii),qpnd(ii), 
+!         write(*,'(2i3,20f7.3)') time%day, ii, qin(ii),qout(ii),qpnd(ii), 
 !     &      qsw(ii),qloss
          !--------------------------------------------------------------------------------------
          ! TSS removal 
@@ -326,9 +325,9 @@
             ft_sed_cumul(sb,kk) = ft_sed_cumul(sb,kk) + sed_removed !tons
          End if
 
-!       write(*,'(3i6,20f10.3)') time%yrc,iida,ii,qin(ii),
+!       write(*,'(3i6,20f10.3)') time%yrc,time%day,ii,qin(ii),
 !     & qout(ii),qsw(ii),qpnd(ii),qloss,qevap
-!       write(*,'(3i5,20f10.3)') time%yrc,iida,ii,wst(iwst)%weat%ts(ii),qin(ii),
+!       write(*,'(3i5,20f10.3)') time%yrc,time%day,ii,wst(iwst)%weat%ts(ii),qin(ii),
 !     & qout(ii),qloss,qpndi,qpnde,qpnd(ii),qsw(ii),f(ii),sed(1,ii)*1000,
 !     & sed(2,ii)*1000,sloss*1000
       end do

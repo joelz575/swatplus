@@ -14,7 +14,6 @@
 !!                                 |impervious (both directly and
 !!                                 |indirectly connected)
 !!    hru_km(:)    |km^2           |area of HRU in square kilometers
-!!    iida         |julian date    |day being simulated (current julian date)
 !!    ihru         |none           |HRU number
 !!    isweep(:,:,:)|julian date    |date of street sweeping operation
 !!    surfq(:)     |mm H2O         |surface runoff for the day in HRU
@@ -68,7 +67,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use parm, only : hru, ihru, ulu, twash, surfq, ubntss, surqno3, sedorgn, sedorgp, pcom, init_abstrc,  &
-         surqsolp, ubnrunoff, isweep, phusw, phubase, etday, iida, ipl  
+         surqsolp, ubnrunoff, isweep, phusw, phubase, etday, ipl  
       use jrw_datalib_module, only : urbdb
       use climate_parms
       use time_module
@@ -128,7 +127,7 @@
               twash(j) = twash(j) + time%dtm / 1440.
  
           !! perform street sweeping
-          if (isweep(j) > 0 .and. iida >= isweep(j)) then
+          if (isweep(j) > 0 .and. time%day >= isweep(j)) then
             call hru_sweep
           else if (phusw(j) > 0.0001) then
             if (pcom(j)%plcur(ipl)%gro == 0) then
@@ -148,7 +147,7 @@
 
       !! perform street sweeping
       if(surfq(j) < 0.1) then
-	  if (isweep(j) > 0 .and. iida >= isweep(j)) then
+	  if (isweep(j) > 0 .and. time%day >= isweep(j)) then
                 call hru_sweep
         else if (phusw(j) > 0.0001) then
           if (pcom(j)%plcur(ipl)%gro == 0) then

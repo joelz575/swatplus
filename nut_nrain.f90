@@ -25,26 +25,41 @@
       use basin_module
       use organic_mineral_mass_module
       use hydrograph_module
-      use parm, only : hru, atmodep, ihru, iadep, mo_atmo, no3pcp, precipday 
+      use parm, only : hru, ihru, iadep, mo_atmo, no3pcp, precipday, timest, iyr, imo 
+      use climate_parms
+      use output_landscape_module
 
       real :: nh3pcp
 
       j = ihru
       iob = hru(j)%obj_no
       iwst = ob(iob)%wst
+      iadep = wst(iwst)%wco%atmodep
+      ist = atmodep_cont%ts
         
-      !! calculate nitrogen in precipitation
-       if (bsn_cc%atmo == 2) then
-            nh3pcp = .01 * atmodep(iadep)%nh4_rfmo(mo_atmo) * precipday
-            no3pcp = .01 * atmodep(iadep)%no3_rfmo(mo_atmo) * precipday
-            rsd1(j)%mn%nh4 = nh3pcp + atmodep(iadep)%nh4_drymo(mo_atmo)
-            rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + .8 * rmn1
-       else
-            nh3pcp = .01 * atmodep(iadep)%nh4_rf * precipday
-            no3pcp = .01 * atmodep(iadep)%no3_rf * precipday
-            rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 + nh3pcp + atmodep(iadep)%nh4_dry / 365.
-            rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + no3pcp + atmodep(iadep)%no3_dry / 365.
-       endif
-
+      !! calculate nitrogen in precipitation - mg/l *mm -> kg/ha
+      !! (mg/l*mm) * kg/1,000,000 mg *1,00 l/m3 * m3/1,000 mm * 10,000 m2/ha = 0.01
+      if (ist > 0 .and. ist <= atmodep_cont%num) then
+        if (atmodep_cont%timestep == 'mo') then
+          const = float (ndays(time%mo + 1) - ndays(time%mo))
+          hnb_d(j)%no3atmo = .01 * atmodep(iadep)%no3_rfmo(ist) * precipday + atmodep(iadep)%no3_drymo(ist) / const
+          soil1(j)%mn(1)%no3 = nh3pcp + soil1(j)%mn(1)%no3
+          hnb_d(j)%nh4atmo = .01 * atmodep(iadep)%nh4_rfmo(ist) * precipday + atmodep(iadep)%nh4_drymo(ist) / const
+          soil1(j)%mn(1)%nh4 = soil1(j)%mn(1)%nh4 + hnb_d(j)%nh4atmo
+        end if 
+        if (atmodep_cont%timestep == 'yr') then
+          hnb_d(j)%no3atmo = .01 * atmodep(iadep)%no3_rfyr(ist) * precipday + atmodep(iadep)%no3_dryyr(ist) / 365.
+          soil1(j)%mn(1)%no3 = nh3pcp + soil1(j)%mn(1)%no3
+          hnb_d(j)%nh4atmo = .01 * atmodep(iadep)%nh4_rfyr(ist) * precipday + atmodep(iadep)%nh4_dryyr(ist) / 365.
+          soil1(j)%mn(1)%nh4 = soil1(j)%mn(1)%nh4 + hnb_d(j)%nh4atmo
+        endif
+      end if
+      if (atmodep_cont%timestep == 'aa') then
+        hnb_d(j)%no3atmo = .01 * atmodep(iadep)%no3_rf * precipday + atmodep(iadep)%no3_dry / 365.
+        soil1(j)%mn(1)%no3 = nh3pcp + soil1(j)%mn(1)%no3
+        hnb_d(j)%nh4atmo = .01 * atmodep(iadep)%nh4_rf * precipday + atmodep(iadep)%nh4_dry / 365.
+        soil1(j)%mn(1)%nh4 = soil1(j)%mn(1)%nh4 + hnb_d(j)%nh4atmo
+      endif
+       
       return
       end subroutine nut_nrain

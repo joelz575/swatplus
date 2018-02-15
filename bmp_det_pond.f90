@@ -16,7 +16,6 @@
 !!    dtp_diaweir(:,:)|m            |Diameter of circular wier at different stages
 !!    dtp_pcpret(:,:)|mm            |precipitation for different return periods (not used)
 !!    dtp_cdis(:,:)  |none          |coeffieicne of discharge at different stages
-!!    i_mo           |none          |current month of simulation
 !!    sub_subp_dt(:,:)  |mm H2O      |precipitation for time step in subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -59,7 +58,7 @@
       sb = inum1
       qout = 0.; sedout = 0.; depaddon = 0.
 
-      if (time%yrc<dtp_iyr(sb) .or. (time%yrc==dtp_iyr(sb) .and. i_mo<dtp_imo(sb))) then
+      if (time%yrc<dtp_iyr(sb) .or. (time%yrc==dtp_iyr(sb) .and. time%mo <dtp_imo(sb))) then
          return
       endif
       

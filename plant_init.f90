@@ -23,7 +23,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : blai_com, cn2, cvm_com, hru, icom, idp, ihru, ipl, ipl_com, isol, nop, pcom,  &
+      use parm, only : blai_com, cn2, cvm_com, hru, icom, idp, ihru, ipl, isol, nop, pcom,  &
          rsdco_plcom, sol, tnyld, tnylda, ilu 
       use hydrograph_module
       use climate_parms, only : wst, wgn
@@ -61,7 +61,6 @@
         hru(j)%luse%cons_prac = lum_str(ilu)%cons_prac
 
       !! allocate plants
-        ipl_com(j) = icom
         if (icom == 0) then
           pcom(j)%npl = 0
         else

@@ -168,16 +168,44 @@
       end type climate_measured_data
       type (climate_measured_data), dimension(:), allocatable :: pcp
       
+      type atmospheric_deposition
+        real :: nh4_rf = 1.         !! ave annual ammonia in rainfall - mg/l
+        real :: no3_rf = .2         !! ave annual nitrate in rainfall - mg/l
+        real :: nh4_dry = 0.        !! ave annual ammonia dry deposition - kg/ha/yr
+        real :: no3_dry = 0.        !! ave annual nitrate dry deposition - kg/ha/yr
+        character(len=50) :: name
+        real, dimension(:), allocatable :: nh4_rfmo
+        real, dimension(:), allocatable :: no3_rfmo
+        real, dimension(:), allocatable :: nh4_drymo
+        real, dimension(:), allocatable :: no3_drymo
+        real, dimension(:), allocatable :: nh4_rfyr
+        real, dimension(:), allocatable :: no3_rfyr
+        real, dimension(:), allocatable :: nh4_dryyr 
+        real, dimension(:), allocatable :: no3_dryyr     
+      end type atmospheric_deposition
+      type (atmospheric_deposition),dimension(:), allocatable :: atmodep
+ 
+      type atmospheric_deposition_control
+        integer :: num_sta = 0
+        character(len=2) :: timestep
+        integer :: ts = 0
+        integer :: mo_init = 0
+        integer :: yr_init = 0
+        integer :: num = 0
+        integer :: first = 1
+      end type atmospheric_deposition_control
+      type (atmospheric_deposition_control), save :: atmodep_cont
+      
       character(len=50), dimension(:), allocatable :: wst_n
       character(len=50), dimension(:), allocatable :: wgn_n
       character(len=50), dimension(:), allocatable :: pcp_n
       character(len=50), dimension(:), allocatable :: tmp_n 
       character(len=50), dimension(:), allocatable :: slr_n
       character(len=50), dimension(:), allocatable :: hmd_n
-      character(len=50), dimension(:), allocatable :: wnd_n     
+      character(len=50), dimension(:), allocatable :: wnd_n   
+      character(len=50), dimension(:), allocatable :: atmo_n       
       type (climate_measured_data), dimension(:), allocatable :: tmp    
       type (climate_measured_data), dimension(:), allocatable :: slr
       type (climate_measured_data), dimension(:), allocatable :: hmd
-      type (climate_measured_data), dimension(:), allocatable :: wnd
-      
+      type (climate_measured_data), dimension(:), allocatable :: wnd     
       end module climate_parms

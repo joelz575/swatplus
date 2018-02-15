@@ -10,7 +10,6 @@
 !!    idg(:)      |none        |array location of random number seed
 !!                             |used for a given process
 !!    ihru        |none        |HRU number
-!!    i_mo        |none        |month being simulated
 !!    nstep       |none        |number of lines of rainfall data for each
 !!                             |day
 !!    ovrlnd(:)   |mm H2O      |overland flow onto HRU from upstream
@@ -50,7 +49,7 @@
       use basin_module
       use hydrograph_module
       use time_module
-      use parm, only : ovrlnd, ihru, al5, hru, i_mo, iwgen, precipday, snomlt  
+      use parm, only : ovrlnd, ihru, al5, hru, iwgen, precipday, snomlt  
 
       integer :: j, k, kk, jj
       real :: ab, ajp, preceff, rainsum
@@ -78,10 +77,9 @@
           if (bsn_cc%sed_det == 0) then
             iwst = ob(icmd)%wst          
           iwgn = wst(iwst)%wco%wgn
-          al5 = Atri(ab, wgn_pms(iwgen)%amp_r(i_mo),                     &
-                   ajp,rndseed(idg(6),iwgn))
+          al5 = Atri(ab, wgn_pms(iwgen)%amp_r(time%mo), ajp, rndseed(idg(6),iwgn))
           else
-            al5 = wgn_pms(iwgen)%amp_r(i_mo)
+            al5 = wgn_pms(iwgen)%amp_r(time%mo)
           end if
 
         case default            !! subdaily rainfall, get from pcp data
@@ -122,10 +120,9 @@
             ajp = 0.
             ajp = 1. - expo(-125. / (preceff + 5.))
             if (bsn_cc%sed_det == 0) then
-              al5 = Atri(ab, wgn_pms(iwgn)%amp_r(i_mo), ajp,             &      
-                                              rndseed(idg(6),iwst))
+              al5 = Atri(ab, wgn_pms(iwgn)%amp_r(time%mo), ajp, rndseed(idg(6),iwst))
             else
-              al5 = wgn_pms(iwgn)%amp_r(i_mo)
+              al5 = wgn_pms(iwgn)%amp_r(time%mo)
             end if
           end if
 

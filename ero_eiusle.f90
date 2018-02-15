@@ -9,7 +9,6 @@
 !!    idg(:)      |none        |array location of random number seed
 !!                             |used for a given process
 !!    ihru        |none        |HRU number
-!!    i_mo        |none        |month being simulated
 !!    ovrlnd(:)   |mm H2O      |overland flow onto HRU from upstream
 !!                             |routing unit
 !!    precipday   |mm H2O      |amount of water reaching soil surface
@@ -47,8 +46,9 @@
 
       use climate_parms
       use hydrograph_module
-      use parm, only : hru, usle_ei, usle_eifac, ovrlnd, ihru, i_mo, iwgen, peakr, precipday, snomlt,  &
+      use parm, only : hru, usle_ei, usle_eifac, ovrlnd, ihru, iwgen, peakr, precipday, snomlt,  &
         usle_ei, usle_eifac
+      use time_module
 
       integer :: j
       real :: ab, xa, preceff, ajp, xb, pkrf, pkrf30
@@ -68,14 +68,11 @@
         ajp = 1. - expo(-125. / preceff)
         iob = hru(j)%obj_no
         iwst = ob(iob)%wst
-        xa = Atri(ab, wgn_pms(iwgen)%amp_r(i_mo), ajp,                   &
-                       rndseed(idg(4),iwgen))
+        xa = Atri(ab, wgn_pms(iwgen)%amp_r(time%mo), ajp, rndseed(idg(4),iwgen))
         xb = -2. * Log(1. - xa)
         pkrf30 = 2. * preceff * xa
         pkrf = xb * preceff
-        usle_ei = preceff * (12.1 + 8.9 * (Log10(pkrf) - .4343)) *       & 
-         pkrf30 / 1000.
-!    *    peakr / 10.
+        usle_ei = preceff * (12.1 + 8.9 * (Log10(pkrf) - .4343)) * pkrf30 / 1000.
         if (usle_ei < 1.e-4) usle_ei = 0.
         usle_eifac(j) = usle_ei
       endif

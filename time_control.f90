@@ -27,8 +27,6 @@
 !!    curyr       |none          |current year in simulation (sequence)
 !!    hi_targ(:,:,:)|(kg/ha)/(kg/ha)|harvest index target of cover defined at
 !!                               |planting
-!!    i           |julian date   |current day in simulation--loop counter
-!!    iida        |julian date   |day being simulated (current julian day)
 !!    tnylda(:)   |kg N/kg yield |estimated/target nitrogen content of
 !!                               |yield used in autofertilization
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -52,8 +50,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
-      use parm, only : curyr, hru, i_mo, idp, ifirstatmo, ihru, iida, ipl, iyr_atmo1, mcr, mo_atmo1,   &
-         nhru, nop, pcom, phubase, tnyld, tnylda, yr_skip 
+      use parm, only : curyr, hru, idp, ifirstatmo, ihru, ipl, mcr,    &
+         nhru, nop, pcom, phubase, tnyld, tnylda, yr_skip, timest  
       use time_module
       use climate_module
       use climate_parms
@@ -104,37 +102,13 @@
           !! tell user they are skipping more years than simulating
           time%yrs_prt = time%nbyr
         end if
-        
-        !! set current julian date to begin annual simulation
-        iida = time%idaf
 
-        call xmon
-       if (ifirstatmo == 1) then
-         ifirstatmo = 0
-         if (bsn_cc%atmo == 2) then 
-           iyr_at = iyr_atmo1
-           mo_at = mo_atmo1
-            do
-              mo_atmo = mo_atmo + 1
-              if (iyr_at == time%yrc .and. mo_at == i_mo) exit
-              mo_at = mo_at + 1
-              if (mo_at > 12) then
-                mo_at = 1
-                iyr_at = iyr_at + 1
-              endif
-              if (mo_atmo > 1000) exit
-            end do  
-         endif
-       endif
-       
-        do i = time%idaf, time%idal       !! begin daily loop
-            
-          !! determine month
-          iida = i
+        do julian_day = time%idaf, time%idal       !! begin daily loop
+          time%day = julian_day
+          !! determine month and day of month - time%mo and time%day_mo
           call xmon
-          time%day = i
-          write (*,1234) cal_sim, time%yrs, time%day
-          time%mo = i_mo
+          
+          write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc
           !! check for end of month, year and simulation
           time%end_mo = 0
           time%end_yr = 0
@@ -143,10 +117,10 @@
             time%end_aa_prt = 0
             time%prt_int_cur = 0.
           end if
-          if (i == ndays(i_mo+1)) then
+          if (time%day == ndays(time%mo+1)) then
             time%end_mo = 1
           end if
-          if (i == time%idal) then
+          if (time%day == time%idal) then
             time%end_yr = 1
             if (time%yrs == time%nbyr) then
               time%end_sim = 1
@@ -173,9 +147,11 @@
 
           dtot = dtot + 1.
 
-          if (time%yrs > pco%nyskip) ndmo(i_mo) = ndmo(i_mo) + 1
+          if (time%yrs > pco%nyskip) ndmo(time%mo) = ndmo(time%mo) + 1
 
           call climate_control      !! read in/generate weather
+          
+          call cli_atmodep_time_control     !! set array counter for atmospheric deposition
 
           !! conditional reset of land use and management
           do iupd = 1, db_mx%cond_up
@@ -211,7 +187,7 @@
           isched = hru(j)%mgt_ops
           if (sched(isched)%num_ops > 0) then
           if (time%idaf > 180 .and. wst(iwst)%lat < 0) then
-            if (i == 180) then
+            if (time%day == 180) then
               isched = hru(j)%mgt_ops
               if (sched(isched)%mgt_ops(nop(ihru))%op /= "skip") then
                 dorm_flag = 1
@@ -307,5 +283,5 @@
       time = time_init
 
       return
- 1234 format (1x,a, ' Executing year/day ', 2i4)
+ 1234 format (1x, a, ' Executing month/day/year ', 2i4, 2x,i4)
       end subroutine time_control

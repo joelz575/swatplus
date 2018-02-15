@@ -72,9 +72,10 @@
                                  !!   0 = sim wt_shall using sub orig water table depth routine
         integer :: sol_p_model=0 !! 1 = new soil P model
         integer :: abstr = 0     !! Initial abstraction on impervious cover (mm) 
-        integer :: atmo = 0      !! atmospheric deposition code
-                                 !!   1 = average annual 
-                                 !!   2 = monthly
+        character(len=1) :: atmo = 'a'   !! atmospheric deposition interval
+                                         !!   'm' = monthly
+                                         !!   'y' = yearly
+                                         !!   'a' = annual
         integer :: smax = 0      !! max depressional storage selection code
                                  !!   1 = dynamic stmaxd computed as a cunfction of random
                                  !!          roughness and rain intensity
@@ -154,7 +155,6 @@
         character(len=1) :: m = 'n'
         character(len=1) :: y = 'n'
         character(len=1) :: a = 'n'
-        character(len=1) :: t = 'n'     !! sub-daily print
       end type print_interval
       
       type basin_print_codes
@@ -178,7 +178,7 @@
         character(len=1) :: dbout  = '    n'         !!  code to print database (db) files n=no print; y=print;
         character(len=1) :: cdfout = '    n'         !!  code to print netcdf (cdf) files n=no print; y=print;
       ! OTHER OUTPUTS
-        character(len=1) :: solout = '    n'         !!  soils output file (soils.out)
+        character(len=1) :: snutc  = '    n'         !!  soils nutrients carbon output
         character(len=1) :: mgtout = '    n'         !!  management output file (mgt.out)
         character(len=1) :: hydcon = '    n'         !!  hydrograph connect output file (hydcon.out)
         character(len=1) :: fdcout = '    n'         !!  flow duration curve output n=no print; avann=print;
@@ -334,6 +334,56 @@
           character (len=10) :: phos =   '    kg/ha ' 
       end type mgt_header_unit2
       type(mgt_header_unit2) :: mgt_hdr_unt2
+      
+     type snutc_header                              
+          character (len=12) :: day =          '         day'
+          character (len=12) :: year =         '        year'
+          character (len=12) :: hru =          '         hru'                                                       
+          character (len=16) :: soil_mn_no3 =   '    soil_mn_no3 '
+          character (len=16) :: soil_mn_nh4 =   '    soil_mn_nh4 '
+          character (len=16) :: soil_mp_wsol =  '    soil_mp_wsol'
+          character (len=16) :: soil_mp_lab  =  '    soil_mp_lab '  
+          character (len=16) :: soil_mp_act  =  '    soil_mp_act '
+          character (len=16) :: soil_mp_sta  =  '    soil_mp_sta '
+          character (len=16) :: soil_tot_m =    '    soil_tot_m  '
+          character (len=16) :: soil_tot_c =    '    soil_tot_c  '
+          character (len=16) :: soil_tot_n =    '    soil_tot_n  '
+          character (len=16) :: soil_tot_p  =   '    soil_tot_p  ' 
+          character (len=16) :: soil_str_m =    '    soil_str_m  '
+          character (len=16) :: soil_str_c =    '    soil_str_c  '
+          character (len=16) :: soil_str_n =    '    soil_str_n  '
+          character (len=16) :: soil_str_p  =   '    soil_str_p  '           
+          character (len=16) :: soil_lig_m =    '    soil_lig_m  '
+          character (len=16) :: soil_lig_c =    '    soil_lig_c  '
+          character (len=16) :: soil_lig_n =    '    soil_lig_n  '
+          character (len=16) :: soil_lig_p  =   '    soil_lig_p  ' 
+          character (len=16) :: soil_meta_m =   '   soil_meta_m  '
+          character (len=16) :: soil_meta_c =   '   soil_meta_c  '
+          character (len=16) :: soil_meta_n =   '   soil_meta_n  '
+          character (len=16) :: soil_meat_p  =  '   soil_meta_p  '
+          character (len=16) :: soil_man_m =    '    soil_man_m  '
+          character (len=16) :: soil_man_c =    '    soil_man_c  '
+          character (len=16) :: soil_man_n =    '    soil_man_n  '
+          character (len=16) :: soil_man_p  =   '    soil_man_p  ' 
+          character (len=16) :: soil_hs_m =     '    soil_hs_m   '
+          character (len=16) :: soil_hs_c =     '    soil_hs_c   '
+          character (len=16) :: soil_hs_n =     '    soil_hs_n   '
+          character (len=16) :: soil_hs_p  =    '    soil_hs_p   '   
+          character (len=16) :: soil_hp_m =     '    soil_hp_m   '
+          character (len=16) :: soil_hp_c =     '    soil_hp_c   '
+          character (len=16) :: soil_hp_n =     '    soil_hp_n   '
+          character (len=16) :: soil_hp_p  =    '    soil_hp_p   '
+          character (len=16) :: soil_microb_m = ' soil_microb_m  '
+          character (len=16) :: soil_microb_c = ' soil_microb_c  '
+          character (len=16) :: soil_microb_n = ' soil_microb_n  '
+          character (len=16) :: soil_microb_p  =' soil_microb_p  '  
+          character (len=16) :: soil_water_m =  '   soil_water_m '
+          character (len=16) :: soil_water_c =  '   soil_water_c '
+          character (len=16) :: soil_water_n =  '   soil_water_n '
+          character (len=16) :: soil_water_p  = '   soil_water_p '  
+     end type snutc_header
+     type(snutc_header) :: snutc_hdr
+      
           
       contains
       !include 'basin_cc_read.f90'

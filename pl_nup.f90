@@ -69,7 +69,7 @@
 
       j = ihru
 
-      pcom(j)%plstr(ipl)%strsn= 1.
+      pcom(j)%plstr(ipl)%strsn = 1.
       ir = 0
       if (uno3d(ipl) < 1.e-6) return
 

@@ -86,12 +86,12 @@
              exit
            end if
          end do  
-       !if (wet_dat(ires)%init == 0) write (9001,*) wet_dat(ires)%init, ' not found (wet-init)'
-       !if (wet_dat(ires)%hyd == 0) write (9001,*) wet_dat(ires)%hyd, ' not found (wet-hyd)'
-       !if (wet_dat(ires)%release == 0) write (9001,*) wet_dat(ires)%release, ' not found (wet-release)'
-       !if (wet_dat(ires)%sed == 0) write (9001,*) wet_dat(ires)%sed, ' not found (wet-sed)'
-       !if (wet_dat(ires)%nut == 0) write (9001,*) wet_dat(ires)%nut, ' not found (wet-nut)'
-       !if (wet_dat(ires)%pst == 0) write (9001,*) wet_dat(ires)%pst, ' not found (wet-pst)'
+        if (wet_dat(ires)%init == 0) write (9001,*) wet_dat_c(ires)%init, ' not found (wet-init)'
+        if (wet_dat(ires)%hyd == 0) write (9001,*) wet_dat_c(ires)%hyd, ' not found (wet-hyd)'
+        if (wet_dat(ires)%release == 0) write (9001,*) wet_dat_c(ires)%release, ' not found (wet-release)'
+        if (wet_dat(ires)%sed == 0) write (9001,*) wet_dat_c(ires)%sed, ' not found (wet-sed)'
+        if (wet_dat(ires)%nut == 0) write (9001,*) wet_dat_c(ires)%nut, ' not found (wet-nut)'
+        if (wet_dat(ires)%pst == 0) write (9001,*) wet_dat_c(ires)%pst, ' not found (wet-pst)'
        
        end do
        

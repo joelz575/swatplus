@@ -42,6 +42,20 @@
                 cond_met = 'n'
                 exit
               end if
+            case ("dep_imp")    !for hru
+              ! in ceap2 - condition 1 is 3000. and condition 2 is 50. (high and low leaching potentialP
+              if (ic == 1) then
+                if (cal_upd(ichg_par)%cond(ic)%targ /= 3000.) then 
+                  cond_met = 'n'
+                  exit
+                end if
+              end if
+              if (ic == 2) then
+                if (cal_upd(ichg_par)%cond(ic)%targ /= 50.) then 
+                  cond_met = 'n'
+                  exit
+                end if
+              end if
             case ("region")     !for hru    
               if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%region) then 
                 cond_met = 'n'
@@ -93,7 +107,11 @@
                     end do
                   end do
                 end do
+              case ("dep_imp")
+              !! set depth to impermeable layer
+                hru(ielem)%hyd%dep_imp = cal_upd(ichg_par)%cond(ic)%targ
               end select
+              
             end select
           end if
         end do

@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    iida         |julian date   |day being simulated (current julian date)
 !!    ihru         |none          |HRU number
 !!    precipday    |mm H2O        |precipitation on the current day in the HRU
 !!    sno_hru(:)   |mm H2O        |amount of water in snow in HRU on current day
@@ -57,7 +56,7 @@
 
       use time_module
       use hydrograph_module
-      use parm, only : hru, hru_sub, snotmp, sno_hru, tmpav, tmx, ihru, iida, precipday, snocov1, snocov2,  &
+      use parm, only : hru, hru_sub, snotmp, sno_hru, tmpav, tmx, ihru, precipday, snocov1, snocov2,  &
          snofall, snomlt 
       use jrw_datalib_module, only : snodb
       use climate_parms, only: wst
@@ -92,7 +91,7 @@
           smfac = 0.
           snomlt = 0.
           smfac = (snodb(isno)%meltmx + snodb(isno)%meltmn) / 2. +      &     
-             Sin((iida - 81) / 58.09) *                                 &
+             Sin((time%day - 81) / 58.09) *                                 &
              (snodb(isno)%meltmx - snodb(isno)%meltmn) / 2.             !! 365/2pi = 58.09
           snomlt = smfac * (((snotmp(j)+tmx(j))/2.)-snodb(isno)%melttmp)
 

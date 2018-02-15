@@ -14,8 +14,6 @@
 
       use bacteria_module
       
-       ifirstatmo = 1
-       mo_atmo = 0
       
 !!    apex command initialize
       idapa = 0
@@ -114,7 +112,6 @@
       idop = 0
       idtill = 0
       wstrs_id = 0
-      ifirsta = 1 
       ifrt_freq = 0
       manure_id = 0
       igrz = 0

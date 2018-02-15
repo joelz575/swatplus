@@ -18,7 +18,6 @@
 !!                               |  file
 !!                               |1 first day of potential ET data not located
 !!                               |  in file
-!!    i_mo        |none          |current month of simulation
 !!    nstep       |none          |number of lines of rainfall data for each
 !!                               |day
 !!    welev(:)    |m             |elevation of weather station used to compile
@@ -69,7 +68,7 @@
       use climate_parms
       use basin_module
       use time_module
-      use parm, only : i_mo, petmeas
+      use parm, only : petmeas
       use hydrograph_module
       use jrw_datalib_module, only : db_mx
       use climate_parms
@@ -221,19 +220,19 @@
       
 !! Climate Change Adjustments !!
       do iwst = 1, db_mx%wst
-        wst(iwst)%weat%precip = wst(iwst)%weat%precip * (1. + wst(iwst)%rfinc(i_mo) / 100.)
+        wst(iwst)%weat%precip = wst(iwst)%weat%precip * (1. + wst(iwst)%rfinc(time%mo) / 100.)
         if (wst(iwst)%weat%precip < 0.) wst(iwst)%weat%precip = 0.
         if (time%step > 0) then
           do ii = 1, time%step
-            wst(iwst)%weat%ts(ii) = wst(iwst)%weat%ts(ii) * (1. + wst(iwst)%rfinc(i_mo) / 100.)
+            wst(iwst)%weat%ts(ii) = wst(iwst)%weat%ts(ii) * (1. + wst(iwst)%rfinc(time%mo) / 100.)
             if (wst(iwst)%weat%ts(ii) < 0.) wst(iwst)%weat%ts(ii) = 0.
           end do
         end if
-        wst(iwst)%weat%tmax = wst(iwst)%weat%tmax + wst(iwst)%tmpinc(i_mo)
-        wst(iwst)%weat%tmin = wst(iwst)%weat%tmin + wst(iwst)%tmpinc(i_mo)
-        wst(iwst)%weat%solrad = wst(iwst)%weat%solrad + wst(iwst)%radinc(i_mo)
+        wst(iwst)%weat%tmax = wst(iwst)%weat%tmax + wst(iwst)%tmpinc(time%mo)
+        wst(iwst)%weat%tmin = wst(iwst)%weat%tmin + wst(iwst)%tmpinc(time%mo)
+        wst(iwst)%weat%solrad = wst(iwst)%weat%solrad + wst(iwst)%radinc(time%mo)
         wst(iwst)%weat%solrad = Max(0.,wst(iwst)%weat%solrad)
-        wst(iwst)%weat%rhum = wst(iwst)%weat%rhum + wst(iwst)%huminc(i_mo)
+        wst(iwst)%weat%rhum = wst(iwst)%weat%rhum + wst(iwst)%huminc(time%mo)
         wst(iwst)%weat%rhum = Max(0.01,wst(iwst)%weat%rhum)
         wst(iwst)%weat%rhum = Min(0.99,wst(iwst)%weat%rhum)
       end do

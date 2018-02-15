@@ -4,6 +4,8 @@
       use jrw_datalib_module, only : db_mx, soildb
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob
+      use time_module
+      use basin_module
      
       !!Section 1
       !!this section sets, allocates, and initializes the original soil database
@@ -46,6 +48,8 @@
         sol(isol)%phys(1)%awc = soildb(isol)%ly(1)%awc
         sol(isol)%phys(1)%k = soildb(isol)%ly(1)%k
         sol1(isol)%cbn(1) = soildb(isol)%ly(1)%cbn
+        !assume 0.01% carbon if zero
+        sol1(isol)%cbn(1) = amax1(.01, sol1(isol)%cbn(1))
         sol(isol)%phys(1)%clay = soildb(isol)%ly(1)%clay
         sol(isol)%phys(1)%silt = soildb(isol)%ly(1)%silt
         sol(isol)%phys(1)%sand = soildb(isol)%ly(1)%sand
@@ -75,7 +79,7 @@
           end do
         else
           !!1st layer < 20 mm so dont add 10 mm  layer
-          do j = 2, sol(isol)%s%nly
+          do j = 2, mlyr
             sol(isol)%phys(j)%d = soildb(isol)%ly(j)%z
             sol(isol)%phys(j)%bd = soildb(isol)%ly(j)%bd
             sol(isol)%phys(j)%awc = soildb(isol)%ly(j)%awc
@@ -96,7 +100,7 @@
 
       do isol = 1, msoils
         call soil_phys_init(isol)          !! initialize soil physical parameters
-        call soil_nutcarb_init(isol)      !! initialize soil chemical parameters
+        call soil_nutcarb_init(isol)       !! initialize soil chemical parameters
       end do
       
       !!Section 2
@@ -160,6 +164,14 @@
           !! set arrays that are layer and plant dependent - residue and roots
           allocate (soil(ihru)%ly(ly)%rs(pcom(ihru)%npl))
         end do
+      end do
+      
+      do ihru = 1, sp_ob%hru
+        if (pco%snutc == 'd' .or. pco%snutc == 'm' .or. pco%snutc == 'y' .or. pco%snutc == 'a') then
+          time%day = 0
+          time%yrc = 0
+          call soil_nutcarb_write
+        end if
       end do
 
       return

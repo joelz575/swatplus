@@ -69,7 +69,7 @@
       use basin_module
       use hydrograph_module
       use climate_parms, only : wst
-      use parm, only : hru, soil, ihru, wnan, stmaxd, sstmaxd, pot, surfq, etday, iida, inflpcp, &  
+      use parm, only : hru, soil, ihru, wnan, stmaxd, sstmaxd, pot, surfq, etday, inflpcp, &  
           mlyr, precipday, qtile, wt_shall
       use time_module
 
@@ -173,7 +173,7 @@
                    !water can move to the tile drain tube
       !! Determine surface storage for the day in a given HRU (stor)
         !initialize stor on the beginning day of simulation, Daniel 9/20/2007
-      if (time%yrs == 1 .and. iida == time%idaf) then 
+      if (time%yrs == 1 .and. time%day == time%idaf) then 
         stor= 0.
       end if
       if (pot(j)%sa <= 0.) then ! determine stor
@@ -209,7 +209,7 @@
 	end if
  	qtile = dflux
 	
-!     write(222,222) curyr, iida, hdrain, gee1, gee  !Daniel 3/1/09
+!     write(222,222) curyr, time%day, hdrain, gee1, gee  !Daniel 3/1/09
 !222   format(1x,4x,i4,4x,i3,4x,3f12.3)
        return
        end subroutine swr_drains

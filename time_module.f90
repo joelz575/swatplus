@@ -1,7 +1,7 @@
       module time_module
 
       integer :: int_print = 1       !! current interval between daily prints
-      character (len=32) :: cal_sim = 'Original Simulation'
+      character (len=32) :: cal_sim = ' Original Simulation'
       integer, dimension (13) :: ndays = (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
       integer, dimension (13) :: ndays_leap = (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
       integer, dimension (13) :: ndays_noleap = (/0,31,59,90,120,151,181,212,243,273,304,334,365/)
@@ -11,6 +11,7 @@
       type time_current
         integer :: day = 0            !! current day of simulation
         integer :: mo = 0             !! current month of simulation
+        integer :: mo_start = 0       !! starting month
         integer :: yrc = 0            !! current calendar year
         integer :: yrc_start = 0      !! starting calendar year
         integer :: yrc_end = 0        !! ending calendar year

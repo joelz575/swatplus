@@ -5,6 +5,7 @@
       use jrw_datalib_module, only : cal_codes, db_mx, lscal, lscalt, ls_prms, chcal, region 
       use time_module
       use basin_module
+      use parm, only : hru
       
       pco = pco_init
       pco%wb_bsn%a = 'y'
@@ -37,7 +38,7 @@
             if (abs(lscal(ireg)%lum(ilum)%prm%k_lo) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%slope) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%tconc) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) icvmax = icvmax + 1
+            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) icvmax = icvmax + 2
             if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%revapc) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) icvmax = icvmax + 1
@@ -75,14 +76,38 @@
               write (5000,503) ls_prms(6)%name, ls_prms(6)%chg_typ, lscal(ireg)%lum(ilum)%prm%tconc,    &
               '     0      0      0      0      0      0      0      0      0'
             end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) then
-              write (5000,503) ls_prms(7)%name, ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,     &
+            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) then                                
+              write (5000,503) 'esco            ', ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,  &
+              '     0      0      0      0      0      0      0      0      0'
+              write (5000,503) 'epco            ', ls_prms(7)%chg_typ, -lscal(ireg)%lum(ilum)%prm%etco, &
               '     0      0      0      0      0      0      0      0      0'
             end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) then
-              write (5000,503) ls_prms(8)%name, ls_prms(8)%chg_typ, lscal(ireg)%lum(ilum)%prm%perco,    &
-              '     0      0      0      0      0      0      0      0      0'
+            
+            !write dep_imp conditions for percolation adjustment
+            cond1 = 0.
+            cond2 = 0.
+            icond_sum = 0
+            do ihru = 1, sp_ob%hru
+              if (hru(ihru)%hyd%dep_imp_init == 3000.) then
+                cond1 = hru(ihru)%hyd%dep_imp
+                exit
+              end if
+            end do
+            do ihru = 1, sp_ob%hru
+              if (hru(ihru)%hyd%dep_imp_init == 50.) then
+                cond2 = hru(ihru)%hyd%dep_imp
+                exit
+              end if
+            end do
+            if (cond1 > 0.) icond_sum = icond_sum + 1
+            if (cond2 > 0.) icond_sum = icond_sum + 1
+            if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) then 
+              write (5000,504) ls_prms(8)%name, ls_prms(8)%chg_typ, '       0    ', icond_sum,      &
+              '      0      0      0      0      0      0      0      0'
             end if
+            if (cond1 > 0.) write (5000,505) '     dep_imp   =    ', cond1, '  null'
+            if (cond2 > 0.) write (5000,505) '     dep_imp   =    ', cond2, '  null'
+
             if (abs(lscal(ireg)%lum(ilum)%prm%revapc) > 1.e-6) then
               write (5000,503) ls_prms(9)%name, ls_prms(9)%chg_typ, lscal(ireg)%lum(ilum)%prm%revapc,   &
               '     0      0      0      0      0      0      0      0      0'
@@ -161,6 +186,8 @@
   500 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),10f12.3)
   502 format (a16,f12.3,i12,2(1x,a16,4f12.3),4f12.3)
   503 format (2a16,f12.3,a)
+  504 format (2a16,a,i6,a)
+  505 format (a,f12.3,a)
       
       return
       end subroutine cal_control

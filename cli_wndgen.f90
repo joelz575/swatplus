@@ -9,7 +9,6 @@
 !!    idg(:)      |none          |array location of random number seed used
 !!                               |for a given process
 !!    j           |none          |HRU number
-!!    i_mo        |none          |month being simulated
 !!    rndseed(:,:)|none          |random number seeds
 !!    wndav(:,:)  |m/s           |average wind speed for the month in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -27,7 +26,6 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : i_mo
       use hydrograph_module
       use climate_parms
       use time_module
@@ -40,7 +38,7 @@
       
       !! Generate wind speed !!
       v6 = Aunif(rndseed(idg(5),iwgn))
-      wst(iwst)%weat%windsp = wgn(iwgn)%windav(i_mo) * (-Log(v6)) ** 0.3
+      wst(iwst)%weat%windsp = wgn(iwgn)%windav(time%mo) * (-Log(v6)) ** 0.3
       
       !! Generate wind direction !!
       iwndir = wst(iwst)%wco%wndir

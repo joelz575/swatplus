@@ -53,9 +53,10 @@
 
       use basin_module
       use jrw_datalib_module
-      use parm, only : i_mo, peakr, rch_gra, rch_lag, rch_sag, rcharea, sdti
+      use parm, only : peakr, rch_gra, rch_lag, rch_sag, rcharea, sdti
       use channel_module
       use hydrograph_module, only : ob
+      use time_module
 
       real :: qdin, sedin, vc, cyin, cych, depnet, deg1, deg2, dep
       real :: depdeg, dot, outfract, deg
@@ -118,8 +119,7 @@
 	  !! First the deposited material will be degraded before channel bed
 	  if (deg >= ch(jrch)%depch) then
 	    deg1 = ch(jrch)%depch
-          deg2 = (deg - deg1) * ch_sed(jrch)%erod(i_mo) *                 &     
-                                                    ch_sed(jsed)%cov2
+        deg2 = (deg - deg1) * ch_sed(jrch)%erod(time%mo) * ch_sed(jsed)%cov2
 	  else
 	    deg1 = deg
 	    deg2 = 0.
@@ -149,7 +149,7 @@
 
 !!    Mass balance tests
 !!	ambalsed = sedinorg + deg1 + deg2 - dep - sedrch - sedst(jrch)
-!!	if (ambalsed .gt. 1e-3) write (*,*) iida, jrch, ambalsed
+!!	if (ambalsed .gt. 1e-3) write (*,*) time%day, jrch, ambalsed
 
 !!  In this default sediment routing sediment is not tracked by particle size
       rch_san = 0.

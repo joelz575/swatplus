@@ -61,11 +61,11 @@
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
       integer :: i
 
-      prog = "SWAT+ Jan 23 2018    MODULAR Rev 2018.41"
+      prog = " SWAT+ Feb 13 2018    MODULAR Rev 2018.42"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 41             ",/,             &
+     &          "              Revision 42             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -84,8 +84,7 @@
       
 !!!  open diagnostics.out file to print problems with various files
      open (9001,file='diagnostics.out')
-     write (9001,*) 'DIAGNOSTICS.OUT FILE'
-     write (9000,*) 'DIAGNOSTICS.OUT     review for missing files' 
+     write (9001,*) 'DIAGNOSTICS.OUT FILE' 
           
       call basin_cc_read
       call basin_prm_read
@@ -114,6 +113,7 @@
       call cli_wgnread
       write (*,111) 'reading from wx station file       ', date_time(5), date_time(6), date_time(7)
       call DATE_AND_TIME (b(1), b(2), b(3), date_time)
+      call cli_atmodep_read
       call cli_staread
    
       call sep_read
@@ -135,7 +135,6 @@
       call urbanparm_read                             !! read the urban land types database
       call bac_lsparms_read                           !! read the bacteria data parameters
       call septicparm_read 
-      call cli_atmodep_read
       
       !! read management scheduling and data files
       
@@ -179,6 +178,8 @@
       call res_pst_read
       call res_weir_read
       call res_read
+      
+      call header_snutc
       
       !! set the object number for each hru-to point to weather station
       if (sp_ob%hru > 0) then
@@ -272,7 +273,6 @@
       call header_channel
       call header_aquifer
       call header_sd_channel
-      call header_soils
       call header_mgt
       call header_yield
       call header_hyd

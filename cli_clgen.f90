@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    iida        |julian date   |day being simulated (current julian date)
 !!    j           |none          |HRU number
 !!    latcos(:)   |none          |Cos(Latitude) for HRU
 !!    latsin(:)   |none          |Sin(Latitude) for HRU
@@ -52,7 +51,7 @@
       use basin_module
       use climate_parms
       use time_module
-      use parm, only : dayl, iida, npcp
+      use parm, only : dayl, npcp
       use hydrograph_module
 
       integer :: ii
@@ -67,12 +66,12 @@
 
       !! Calculate Daylength !!
       !! calculate solar declination: equation 2.1.2 in SWAT manual
-      sd = Asin(.4 * Sin((Real(iida) - 82.) / 58.09))  !!365/2pi = 58.09
+      sd = Asin(.4 * Sin((Real(time%day) - 82.) / 58.09))  !!365/2pi = 58.09
 
       !! calculate the relative distance of the earth from the sun
       !! the eccentricity of the orbit
       !! equation 2.1.1 in SWAT manual
-      dd = 1.0 + 0.033 * Cos(Real(iida) / 58.09)
+      dd = 1.0 + 0.033 * Cos(Real(time%day) / 58.09)
 
       !!daylength = 2 * Acos(-Tan(sd) * Tan(lat)) / omega
       !!where the angular velocity of the earth's rotation, omega, is equal

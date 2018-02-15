@@ -8,7 +8,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    hru_rmx(:)  |MJ/m^2        |maximum possible radiation for the day in HRU
 !!    j           |none          |HRU number
-!!    i_mo        |none          |month being simulated
 !!    pr_w(3,:,:) |none          |proportion of wet days in a month
 !!    solarav(:,:)|MJ/m^2/day    |average daily solar radiation for the month
 !!    wgncur(3,:) |none          |parameter which predicts impact of precip on
@@ -31,18 +30,18 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 !!      integer, intent (in) :: j
 
-      use parm, only : i_mo, wgncur
+      use parm, only : wgncur
       use hydrograph_module
       use climate_parms
 
       real :: rx, rav
 
-      rav = wgn(iwgn)%solarav(i_mo) / (1. - 0.5 * wgn_pms(iwgn)%pr_wdays(i_mo))
+      rav = wgn(iwgn)%solarav(time%mo) / (1. - 0.5 * wgn_pms(iwgn)%pr_wdays(time%mo))
       if (wst(iwst)%weat%precip > 0.0) rav = 0.5 * rav
       rx = wst(iwst)%weat%solradmx - rav
       wst(iwst)%weat%solrad = rav + wgncur(3,iwgn) * rx / 4.
       if (wst(iwst)%weat%solrad <= 0.) wst(iwst)%weat%solrad = .05 * wst(iwst)%weat%solradmx
       
-      wst(iwst)%weat%solrad = wgn(iwgn)%solarav(i_mo)
+      wst(iwst)%weat%solrad = wgn(iwgn)%solarav(time%mo)
       return
       end subroutine cli_slrgen

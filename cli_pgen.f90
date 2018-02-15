@@ -8,7 +8,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    j           |none          |HRU number
-!!    i_mo        |none          |month being simulated
 !!    npcp(:)     |none          |prior day category
 !!                               |1 dry day
 !!                               |2 wet day
@@ -52,9 +51,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use parm, only : i_mo, npcp, rcor
+      use parm, only : npcp, rcor
       use climate_parms
       use hydrograph_module
+      use time_module
 
       real :: vv, pcpgen, v8, r6, xlv
 
@@ -62,9 +62,9 @@
       vv = 0.
       vv = Aunif(rndseed(idg(1),iwgn))
       if (npcp(iwst) == 1)  then
-        xx = wgn(iwgn)%pr_wd(i_mo)
+        xx = wgn(iwgn)%pr_wd(time%mo)
       else
-        xx = wgn(iwgn)%pr_ww(i_mo)
+        xx = wgn(iwgn)%pr_ww(time%mo)
       endif
       if (vv > xx) then
         pcpgen = 0.
@@ -75,16 +75,16 @@
           !!skewed rainfall distribution
           r6 = 0.
           xlv = 0.
-          r6 = wgn(iwgn)%pcpskw(i_mo) / 6.
+          r6 = wgn(iwgn)%pcpskw(time%mo) / 6.
           xlv = (cli_Dstn1(rnd3(iwgn),v8) - r6) * r6 + 1.
-          xlv = (xlv**3 - 1.) * 2. / wgn(iwgn)%pcpskw(i_mo)
+          xlv = (xlv**3 - 1.) * 2. / wgn(iwgn)%pcpskw(time%mo)
           rnd3(iwgn) = v8
-          pcpgen = xlv * wgn(iwgn)%pcpstd(i_mo) +            &                     
-                              wgn_pms(iwgn)%pcpmean(i_mo)
-          pcpgen = pcpgen * wgn_pms(iwgn)%pcf(i_mo)
+          pcpgen = xlv * wgn(iwgn)%pcpstd(time%mo) +            &                     
+                              wgn_pms(iwgn)%pcpmean(time%mo)
+          pcpgen = pcpgen * wgn_pms(iwgn)%pcf(time%mo)
         else
           !! mixed exponential rainfall distribution
-          pcpgen=((-Log(v8))**bsn_prm%rexp)*wgn_pms(iwgn)%pcpmean(i_mo) * rcor
+          pcpgen = ((-Log(v8))**bsn_prm%rexp) * wgn_pms(iwgn)%pcpmean(time%mo) * rcor
         end if
         if (pcpgen < .1) pcpgen = .1
       end if

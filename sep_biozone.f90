@@ -26,7 +26,6 @@
 !!    fcoli(:)         |cfu/100ml     |concentration of the fecal coliform in the biozone 
 !!                     |              |septic tank effluent
 !!    ihru             |none          |HRU number
-!!    iida             |day           |day being simulated
 !!    i_sep(:)         |none          |soil layer where biozone exists           
 !!    isep_opt(:)      |none          |Septic system operation flag (1=active,2=failing,0=not operated)                 
 !!    plqm             |kg/ha         |plaque in biozone
@@ -72,7 +71,7 @@
       use basin_module
       use organic_mineral_mass_module
       use parm, only : soil, hru, ihru, i_sep, iseptic, qstemm, thbact, bz_perc, isep, sep_tsincefail,  &
-         biom, plqm, bio_bod, fcoli, rbiom, percp, iida, precipday, iida, isep 
+         biom, plqm, bio_bod, fcoli, rbiom, percp, precipday, isep 
       use time_module
       
 	implicit none
@@ -307,7 +306,7 @@
          p3=solp_end
          p4 = solpconc
 
-	write(173,1000) ihru,time%yrc,iida,precipday,qout,             &
+	write(173,1000) ihru,time%yrc,time%day,precipday,qout,             &
         soil(j)%phys(bz_lyr)%ul, soil(j)%phys(bz_lyr)%st,          &
         soil(j)%phys(bz_lyr)%fc,n1,n2,n3,n4,n5,n6,n7,n8,p1,p2,p3,p4
 	endif 	

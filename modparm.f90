@@ -2,20 +2,9 @@
    
       integer :: mscheds, isep, mcom, isolt
       integer :: ith, ilu, ulu, iadep, ipot, iwgen
-      
-      type atmospheric_deposition
- !       character(len=13) :: name
-        real :: no3_rf = .2
-        real :: nh4_rf = 1.
-        real :: no3_dry = 0.
-        real :: nh4_dry = 0.
-        real, dimension(:), allocatable :: no3_rfmo
-        real, dimension(:), allocatable :: nh4_rfmo
-        real, dimension(:), allocatable :: no3_drymo
-        real, dimension(:), allocatable :: nh4_drymo
-      end type atmospheric_deposition
-      type (atmospheric_deposition),dimension(:), allocatable :: atmodep
-
+      character (len=1) :: timest
+      integer :: iyr, imo
+     
       type plant_growth
          character(len=4) :: cpnm       !! N/A          4 letter char code represents crop name 
          real :: cht = 0.               !! m            canopy height 
@@ -248,6 +237,7 @@
                                    !!                              |and other soil biota. Mixing is performed at
                                    !!                              |the end of every calendar year.
            real :: dep_imp = 0.    !! dep_imp(:)    |mm            |depth to impervious layer
+           real :: dep_imp_init = 0.    !! dep_imp(:)    |mm       |initial depth to impervious layer- for calibration
            real :: lat_orgn = 0.
            real :: lat_orgp = 0.
            real :: harg_pet  = .0023  
@@ -439,13 +429,12 @@
       
 !!    new/modified arrays for plant competition
       integer :: idp, ipl, icom, isol
-      integer, dimension (:), allocatable :: npl, ipl_com
 
-      real :: sumlai,sumbm,sumrwt,strsa_av,strsn_av,strsp_av,strstmp_av
+      real :: sumlai,strsa_av,strsn_av,strsp_av,strstmp_av
       real :: rto_no3,rto_solp,uno3d_tot,uapd_tot,sum_no3
       real :: sum_solp
       real, dimension (:), allocatable :: cht_mx,epmax,cvm_com,blai_com
-      real, dimension (:), allocatable :: rsdco_plcom,iplt_airr,translt
+      real, dimension (:), allocatable :: rsdco_plcom, translt
       real, dimension (:), allocatable :: strsw_av,uno3d,uapd
       real, dimension (:), allocatable :: par,htfac,un2,up2
       integer, dimension (:), allocatable :: iplt_afert,iseptic
@@ -466,7 +455,7 @@
       real :: enratio
       real :: da_ha, vpd
       real :: bactrolp, bactsedlp, pet_day, ep_day
-      real :: snoev, sno3up, nactfr
+      real :: snoev, sno3up
       real :: es_day, ls_overq, latqrunon
       real :: sbactrop, sbactrolp, sbactsedp, sbactsedlp, ep_max
       real :: sbactlchlp
@@ -481,18 +470,17 @@
       real :: pest_sol
       real :: chla_subco
       real :: rch_sag, rch_lag, rch_gra
-      integer :: mo_atmo, mo_atmo1
-      integer :: ifirstatmo, iyr_atmo, iyr_atmo1
+      integer :: mo_atmo
+      integer :: ifirstatmo, iyr_atmo
       integer :: mcr
       integer :: myr
-      integer :: nhru,  mo, nrch, i_mo
+      integer :: nhru,  mo, nrch
       integer :: inum1, ihru
       integer :: npmx, curyr
       integer :: iopera
-      integer :: i
       integer :: nd_30
       integer :: iscen
-      integer :: msub, mpst, mlyr, iida
+      integer :: msub, mpst, mlyr
       integer, dimension(100) :: ida_lup, iyr_lup
       integer :: no_up
 !  routing 5/3/2010 gsm per jga    
@@ -573,7 +561,7 @@
       real, dimension (:), allocatable :: bactlpq,auto_eff
       real, dimension (:), allocatable :: bactps,bactlps,tmpav
       real, dimension (:), allocatable :: sno_hru,sno_init,hru_ra
-      real, dimension (:), allocatable :: tmx,tmn,rsdin,tmp_hi,tmp_lo
+      real, dimension (:), allocatable :: tmx,tmn,tmp_hi,tmp_lo
       real, dimension (:), allocatable :: tconc,hru_rmx
       real, dimension (:), allocatable :: usle_cfac,usle_eifac
       real, dimension (:), allocatable :: anano3,aird,t_ov
@@ -716,21 +704,5 @@
       real, dimension(:), allocatable :: tillage_depth
       integer, dimension(:), allocatable :: tillage_days
       real, dimension(:), allocatable :: tillage_factor
-      
-      interface operator (+)
-        module procedure plant_mass_add
-      end interface
-            
-      contains
-            
-      !! routines for hru module
-      function plant_mass_add (pm1, pm2) result (pm3)
-        type (plant_mass), intent (in) :: pm1
-        type (plant_mass), intent (in) :: pm2
-        type (plant_mass) :: pm3
-        pm3%mass = pm1%mass + pm2%mass
-        pm3%nmass = pm1%nmass + pm2%nmass
-        pm3%nmass = pm1%nmass + pm2%nmass
-      end function plant_mass_add
-            
+
       end module parm

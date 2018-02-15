@@ -42,7 +42,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil, ihru, iida
+      use parm, only : soil, ihru
       use time_module
 
       integer :: j, l
@@ -87,7 +87,7 @@
 !!***************Dynamic Active/Soluble Transformation Coeff******************
 
 	!! on day 1 just set to a value of zero
-	   if ((iida == 1) .and. (time%yrs == 1)) then 
+	   if ((time%day == 1) .and. (time%yrs == 1)) then 
            soil(j)%ly(l)%a_days = 0 !! days since P Application 
            soil(j)%ly(l)%b_days = 0 !! days since P deficit
 	   end if	   

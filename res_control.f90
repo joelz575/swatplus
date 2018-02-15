@@ -3,7 +3,7 @@
       use basin_module
       use jrw_datalib_module
       use time_module
-      use parm, only : i_mo, pet_day, resclai, resgrai, reslagi, ressagi, ressani, ressili, hru
+      use parm, only : pet_day, resclai, resgrai, reslagi, ressagi, ressani, ressili, hru
       use reservoir_module
       use climate_parms
       use hydrograph_module, only : ob, res, hd, icmd, iwst
@@ -39,9 +39,8 @@
       res(jres)%no2 = res(jres)%no2 + ob(icmd)%hin%no2 
       res(jres)%solp = res(jres)%solp + ob(icmd)%hin%solp
 
-      if (time%yrc > res_hyd(jres)%iyres .or.                           &                         
-          (i_mo>=res_hyd(jres)%mores.and.time%yrc==res_hyd(jres)%iyres))&
-                         then
+      if (time%yrc > res_hyd(jres)%iyres .or. (time%mo >= res_hyd(jres)%mores   &
+                                   .and. time%yrc == res_hyd(jres)%iyres)) then
 
         !! Adjust Reservoir Storage for Irrigation Diversions
         !call irr_res

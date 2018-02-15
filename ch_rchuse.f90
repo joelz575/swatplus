@@ -6,7 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i_mo        |none          |month of simulation
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
 !!    sedrch      |metric tons   |sediment transported out of reach on day
 !!    wurch(:,:)  |10^4 m^3/day  |average daily water removal from the reach
@@ -41,12 +40,12 @@
       wtrin = 0.
       wtrin = rtwtr
 
-      !need to integrate with new water use module -->  rtwtr = rtwtr - wurch(i_mo,jrch) * 10000.
+      !need to integrate with new water use module -->  rtwtr = rtwtr - wurch(time%mo,jrch) * 10000.
       if (rtwtr < 0.) rtwtr = 0.
 
 !      if (time%step > 0) then
 !        do ii = 1, time%step
-!          !need to integrate with new water use module --> hrtwtr(ii) = hrtwtr(ii) - wurch(i_mo,jrch) * 10000. 
+!          !need to integrate with new water use module --> hrtwtr(ii) = hrtwtr(ii) - wurch(time%mo,jrch) * 10000. 
 !     &      / real(time%step)
 !          if (hrtwtr(ii) < 0.) hrtwtr(ii) = 0.
 !        end do

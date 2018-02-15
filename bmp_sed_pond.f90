@@ -7,7 +7,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hru_sub(:)  |none          |subbasin in which HRU/reach is located
-!!    i_mo        |none          |current month of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -168,9 +167,9 @@
         ! total sediment removed from the pond, tons
          sp_sed_cumul(sb,kk) = sp_sed_cumul(sb,kk) + sedpndi - sedpnde
 
-!       write(*,'(3i5,20f10.3)') time%yrc,iida,ii,wst(iwst)%weat%ts(ii),qin,
+!       write(*,'(3i5,20f10.3)') time%yrc,time%day,ii,wst(iwst)%weat%ts(ii),qin,
 !     & qpipe,qweir,qtrns,qevap
-!       write(*,'(3i5,20f10.3)') time%yrc,iida,ii,wst(iwst)%weat%ts(ii),qin,
+!       write(*,'(3i5,20f10.3)') time%yrc,time%day,ii,wst(iwst)%weat%ts(ii),qin,
 !     & qpipe,qweir,sed(1,ii)*1000,sed(2,ii)*1000,sweir*1000
                       
       end do

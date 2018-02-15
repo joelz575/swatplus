@@ -92,6 +92,7 @@
           !bwb_m = bwb_m // const
           bwb_m%cn = bwb_m%cn / const 
           bwb_m%sw = bwb_m%sw / const
+          bwb_m%snopack = bwb_m%snopack / const
           bwb_y = bwb_y + bwb_m
           bnb_y = bnb_y + bnb_m
           bls_y = bls_y + bls_m
@@ -133,6 +134,7 @@
            !bwb_y = bwb_y // 12.
            bwb_y%cn = bwb_y%cn / 12. 
            bwb_y%sw = bwb_y%sw / 12.
+           bwb_y%snopack = bwb_y%snopack / 12.
            bwb_a = bwb_a + bwb_y
            bnb_a = bnb_a + bnb_y
            bls_a = bls_a + bls_y

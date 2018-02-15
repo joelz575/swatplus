@@ -42,7 +42,7 @@
      !! read other output
         read (107,*,iostat=eof) header
         if (eof < 0) exit
-        read (107,*,iostat=eof) pco%solout, pco%mgtout, pco%hydcon, pco%fdcout
+        read (107,*,iostat=eof) pco%snutc, pco%mgtout, pco%hydcon, pco%fdcout
         if (eof < 0) exit
              
      !! read objects output
@@ -133,7 +133,7 @@
         if (eof < 0) exit
      !! routing units
         read (107,*,iostat=eof) name, pco%ru
-        if (eof < 0) exit    
+        if (eof < 0) exit  
         exit
       end do
       end if

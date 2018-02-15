@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    iida        |julian date   |day being simulated (current julian day)
 !!    ndays(:)    |julian date   |julian date for last day of preceding
 !!                               |month (where the array location is the
 !!                               |number of the month). The dates are for
@@ -17,7 +16,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i_mo        |none          |current month being simulated
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -29,15 +27,18 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : i_mo, iida
       use time_module
 
-      integer :: m1, nda
+      integer :: m1, nda, i_mo
 
         do i_mo = 1, 12
           m1 = i_mo + 1
           nda = ndays(m1)
-          if (iida <= nda) return
+          if (time%day <= nda) then
+            time%mo = i_mo
+            time%day_mo = time%day - ndays(i_mo)
+            return
+          end if
         end do
 
       return

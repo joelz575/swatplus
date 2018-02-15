@@ -1,57 +1,112 @@
       subroutine cli_atmodep_read
       
-      use parm, only : atmodep, iadep, iyr_atmo1, mo_atmo1
+      use parm, only : iadep, iyr, imo 
       use basin_module
       use input_file_module
+      use climate_parms
+      use time_module
+      use jrw_datalib_module, only : db_mx
       
-      character (len=80) :: titldum
-      character (len=80) :: file
+      character (len=80) :: titldum, header
+      character (len=80) :: file      
       integer :: eof 
   
-      matmodep = 0
       eof = 0
 
       inquire (file=in_cli%atmo_cli,exist=i_exist)
       if (i_exist == 0 .or. in_cli%atmo_cli == 'null') then
         !!no filename 
         allocate (atmodep(0:0))
+        allocate (atmo_n(0:0))
         db_mx%atmodep = 0
       else
         do
           open (127,file = in_cli%atmo_cli)
-            do iii = 1, 5
-              read (127,*,iostat=eof) titldum
-              if (eof < 0) exit
-            end do
-              read (127,*,iostat=eof) matmodep, momax
-              allocate (atmodep(0:matmodep))
-              db_mx%atmodep = matmodep
-              if (eof < 0) exit
+          read (127,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (127,*,iostat=eof) header
+          if (eof < 0) exit
+          read (127,*,iostat=eof) atmodep_cont%num_sta, atmodep_cont%timestep, atmodep_cont%mo_init, atmodep_cont%yr_init, atmodep_cont%num
+          if (eof < 0) exit
           
-       if (bsn_cc%atmo == 0) then
-          do iadep = 1, matmodep
-            read (127,*,iostat=eof)   atmodep(iadep)%no3_rf,                 & 
-                                      atmodep(iadep)%nh4_rf,                 &
-                                      atmodep(iadep)%no3_dry,                &
-                                      atmodep(iadep)%nh4_dry
-            if (eof < 0) exit
-          end do
-       else if (bsn_cc%atmo == 2) then
-            read (127,*,iostat=eof) mo_atmo1, iyr_atmo1
-            do iadep = 1, matmodep
-              allocate (atmodep(iadep)%no3_rfmo(momax))
-              allocate (atmodep(iadep)%nh4_rfmo(momax))
-              allocate (atmodep(iadep)%no3_drymo(momax))
-              allocate (atmodep(iadep)%nh4_drymo(momax))
-              read (127,*) (atmodep(iadep)%nh4_rfmo(imo), imo = 1,momax)
-              read (127,*) (atmodep(iadep)%no3_rfmo(imo), imo = 1,momax)
-              read (127,*) (atmodep(iadep)%nh4_drymo(imo),imo = 1,momax)
-              read (127,*) (atmodep(iadep)%no3_drymo(imo),imo = 1,momax)
+          ! set array pointer to first year and month
+          iyrc_atmo = atmodep_cont%yr_init
+          imo_atmo = atmodep_cont%mo_init
+          if (atmodep_cont%timestep == 'yr') then
+            do iyr = 1, atmodep_cont%num
+              if (iyrc_atmo == time%yrc_start) then
+                atmodep_cont%ts = iyr
+                atmodep_cont%first = 0
+                exit
+              end if
+              iyrc_atmo = iyrc_atmo + 1
             end do
-       endif
-       exit
-       enddo
-      endif
+          end if
+          
+          if (atmodep_cont%timestep == 'mo') then
+            do imo = 1, atmodep_cont%num
+              if (iyrc_atmo == time%yrc_start .and. imo_atmo == time%mo_start) then
+                atmodep_cont%ts = 12 * (time%yrc_start - atmodep_cont%yr_init) + imo_atmo
+                atmodep_cont%first = 0
+                exit
+              end if
+              imo_atmo = imo_atmo + 1
+              if (imo_atmo > 12) then
+                imo_atmo = 1
+                iyrc_atmo = iyrc_atmo + 1
+              end if
+            end do
+          end if
 
+          allocate (atmodep(0:atmodep_cont%num_sta))
+          allocate (atmo_n(atmodep_cont%num_sta))
+
+          do iadep = 1, atmodep_cont%num_sta
+            if (atmodep_cont%timestep == 'aa') then
+              read (127,*,iostat=eof) atmodep(iadep)%name
+              if (eof < 0) exit
+              atmo_n(iadep) = atmodep(iadep)%name
+              read (127,*,iostat=eof)   atmodep(iadep)%nh4_rf
+              if (eof < 0) exit
+              read (127,*,iostat=eof)   atmodep(iadep)%no3_rf 
+              if (eof < 0) exit
+              read (127,*,iostat=eof)   atmodep(iadep)%nh4_dry
+              if (eof < 0) exit
+              read (127,*,iostat=eof)   atmodep(iadep)%no3_dry
+              if (eof < 0) exit
+            end if 
+          
+            if (atmodep_cont%timestep == 'mo') then
+              allocate (atmodep(iadep)%nh4_rfmo(atmodep_cont%num))
+              allocate (atmodep(iadep)%no3_rfmo(atmodep_cont%num))
+              allocate (atmodep(iadep)%nh4_drymo(atmodep_cont%num))
+              allocate (atmodep(iadep)%no3_drymo(atmodep_cont%num))
+              read (127,*,iostat=eof) atmodep(iadep)%name
+              atmo_n(iadep) = atmodep(iadep)%name
+              read (127,*) (atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num)
+              read (127,*) (atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num)
+              read (127,*) (atmodep(iadep)%nh4_drymo(imo),imo = 1,atmodep_cont%num)
+              read (127,*) (atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num)
+            end if
+              
+            if (atmodep_cont%timestep == 'yr') then
+              allocate (atmodep(iadep)%nh4_rfyr(atmodep_cont%num))
+              allocate (atmodep(iadep)%no3_rfyr(atmodep_cont%num))
+              allocate (atmodep(iadep)%nh4_dryyr(atmodep_cont%num))
+              allocate (atmodep(iadep)%no3_dryyr(atmodep_cont%num))
+              read (127,*,iostat=eof) atmodep(iadep)%name
+              atmo_n(iadep) = atmodep(iadep)%name
+              read (127,*) (atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num)
+              read (127,*) (atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num)
+              read (127,*) (atmodep(iadep)%nh4_dryyr(iyr),iyr = 1,atmodep_cont%num)
+              read (127,*) (atmodep(iadep)%no3_dryyr(iyr),iyr = 1,atmodep_cont%num)
+            end if
+          end do    ! iadep
+          exit
+        end do
+      end if        ! if file exists
+
+      db_mx%atmodep = atmodep_cont%num_sta
+      
       return
       end subroutine cli_atmodep_read

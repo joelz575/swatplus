@@ -31,7 +31,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
      
       use parm, only : cbodu,chl_a,clayld,cnday,dayl,doxq,etday,grayld,hhsedy,                     &
-         hhsurfq,hru,hru_ra,hru_rmx,i_mo,irr_flag,lagyld,latno3,latq,npl,nplnt,                    &
+         hhsurfq,hru,hru_ra,hru_rmx,irr_flag,lagyld,latno3,latq,nplnt,                             &
          par,percn,petmeas,pot,pplnt,qdr,rcn,rhd,sagyld,sanyld,sedminpa,                           &
          sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,soil,sol,sol_sumno3,sol_sumsolp,            &
          sub_etday,sub_hhsedy,sub_hhwtmp,sub_pet,sub_subp_dt,surfq,                                &

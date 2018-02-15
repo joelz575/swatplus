@@ -1,7 +1,7 @@
       subroutine res_nutrient (jres, inut)
 
       use jrw_datalib_module
-      use parm, only : i_mo
+      use time_module
       use reservoir_module
       use hydrograph_module, only : res
       
@@ -23,7 +23,7 @@
       if (res(jres)%flo < 1.) return
 
       !! if reservoir volume greater than 1 m^3, perform nutrient calculations
-      if (i_mo>=res_nut(inut)%ires1.and.i_mo<=res_nut(inut)%ires2)then
+      if (time%mo >= res_nut(inut)%ires1 .and. time%mo <= res_nut(inut)%ires2) then
         nsetlr = res_nut(inut)%nsetlr1
         psetlr = res_nut(inut)%psetlr1
       else

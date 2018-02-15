@@ -74,11 +74,12 @@
         character (len=16) :: name
         type (organic_mass), dimension(:), allocatable :: tot       !       |total mass surface residue litter pool-dimensioned by plant
         type (organic_mass), dimension(:), allocatable :: ls        !       |structural litter pool-dimensioned by plant
-        type (organic_mass), dimension(:), allocatable :: lig       !       |lignin pool-dimensioned by plant
+        type (organic_mass), dimension(:), allocatable :: lignin    !       |lignin pool-dimensioned by plant
         type (organic_mass), dimension(:), allocatable :: lm        !       |metabolic litter pool-dimensioned by plant
         type (organic_mass) :: tot_com                              !kg/ha  |total
-        type (organic_mass) :: meta                                 !       |                            nbs added
-        type (organic_mass) :: str                                  !       |                            nbs added
+        type (organic_mass) :: meta                                 !       |
+        type (organic_mass) :: str                                  !       |
+        type (organic_mass) :: lig                                  !       |
         type (organic_mass) :: bm                                   !       |microbial biomass pool
         type (organic_mass) :: man                                  !       |manure pool
         type (mineral_nitrogen) :: mn

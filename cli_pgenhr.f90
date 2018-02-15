@@ -11,7 +11,6 @@
 !!    idg(:)       |none          |array location of random number seed
 !!                                |used for a given process
 !!    jj           |none          |HRU number
-!!    i_mo         |none          |month being simulated
 !!    rndseed(:,:) |none          |random number generator seed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -66,7 +65,7 @@
 
       use climate_parms
       use time_module
-      use parm, only : al5, i_mo
+      use parm, only : al5
       use hydrograph_module
 
       integer, intent (in) :: iwgn
@@ -82,7 +81,7 @@
       !! calculate maximum half-hour rainfall
       ab = 0.02083
       ajp = 1. - expo(-125. / (wst(iwst)%weat%precip + 5.))
-      al5 = Atri(ab, wgn_pms(iwgn)%amp_r(i_mo), ajp, rndseed(10,iwgn))
+      al5 = Atri(ab, wgn_pms(iwgn)%amp_r(time%mo), ajp, rndseed(10,iwgn))
 
       !! need peak rainfall rate 
       !! calculate peak rate using same method used for peak runoff

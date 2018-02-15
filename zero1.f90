@@ -4,7 +4,7 @@
 !!    this subroutine initializes the values for some of the arrays 
 
       use parm, only : bio_bod,biom,bz_perc,cf,cn2,fcoli,hru,i_sep,ida_lup,manure_kg,nop,par,percp,   &
-       plqm,pst_dep,pst_lag,qstemm,rbiom,rch_gra,rch_lag,rch_sag,rsdin,sep_tsincefail,sno_hru,        &
+       plqm,pst_dep,pst_lag,qstemm,rbiom,rch_gra,rch_lag,rch_sag,sep_tsincefail,sno_hru,        &
        sol_cov,sub_fr,sub_km,sub_pet,sweepeff,swtrg,t_ov,tconc,tnyld,tnylda,trapeff,usle,usle_cfac,   &
        usle_ei,usle_eifac,wfsh
 
@@ -50,7 +50,6 @@
       rsp_rt = 0.
       slg_rt = 0.
 !!  septic changes 1/29/09 
-      rsdin = 0.
       sedst = 0.
       silt = 0.
       sno_hru = 0.

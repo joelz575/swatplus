@@ -34,7 +34,7 @@
         hru(ihru)%hyd%biomix = hyd_db(ihyd_db)%biomix
         nly = soildb(isol)%s%nly
         hru(ihru)%hyd%dep_imp = hyd_db(ihyd_db)%dep_imp + soildb(isol)%ly(nly)%z
-        !if (hru(ihru)%hyd%dep_imp < 1.e-6) hru(ihru)%hyd%dep_imp = 6000.
+        hru(ihru)%hyd%dep_imp_init = hyd_db(ihyd_db)%dep_imp
         hru(ihru)%hyd%lat_orgn = hyd_db(ihyd_db)%lat_orgn
         hru(ihru)%hyd%lat_orgp = hyd_db(ihyd_db)%lat_orgp
         ! set field data

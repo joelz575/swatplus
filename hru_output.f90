@@ -28,7 +28,7 @@
              end if
           end if
           if (pco%nb_hru%d == 'y') then
-            write (2020,100) time%day, time%yrc, j, hnb_d(j)  !! nutrient bal
+            write (2020,104) time%day, time%yrc, j, hnb_d(j)  !! nutrient bal
               if (pco%csvout == 'y') then
                 write (2024,'(*(G0.3,:","))') time%day, time%yrc, j, hnb_d(j)  !! nutrient bal
               end if
@@ -68,7 +68,7 @@
                end if
            end if
            if (pco%nb_hru%m == 'y') then
-             write (2021,100) time%mo, time%yrc, j, hnb_m(j)
+             write (2021,104) time%mo, time%yrc, j, hnb_m(j)
                if (pco%csvout == 'y') then
                  write (2025,'(*(G0.3,:","))') time%mo, time%yrc, j, hnb_m(j)
                end if
@@ -112,7 +112,7 @@
                end if
            end if
            if (time%end_yr == 1 .and. pco%nb_hru%y == 'y') then
-             write (2022,100) time%end_yr, time%yrc, j, hnb_y(j)
+             write (2022,104) time%end_yr, time%yrc, j, hnb_y(j)
                if (pco%csvout == 'y') then
                  write (2026,'(*(G0.3,:","))') time%end_yr, time%yrc, j, hnb_y(j)
                end if
@@ -144,7 +144,7 @@
         
          if (time%end_sim == 1 .and. pco%nb_hru%a == 'y') then 
            hnb_a(j) = hnb_a(j) / time%yrs_prt
-           write (2023,100) time%end_yr, time%yrs, j, hnb_a(j)
+           write (2023,104) time%end_yr, time%yrs, j, hnb_a(j)
              if (pco%csvout == 'y') then 
                write (2027,'(*(G0.3,:","))') time%end_yr, time%yrs, j, hnb_a(j)
              end if
@@ -190,5 +190,6 @@
 101   format (2i6,i8,20f12.3)
 102   format (2i6,i8,20f12.3)
 103   format (2i6,i8,4x,a,5x,f12.3)
+104   format (2i6,i8,27f18.3)
        
       end subroutine hru_output

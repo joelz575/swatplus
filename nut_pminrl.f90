@@ -21,7 +21,7 @@
 !!    bk          |
 !!    j           |none          |HRU number
 !!    l           |none          |counter (soil layer)
-!!    rmn1        |kg P/ha       |amount of phosphorus moving from the solution
+!!    rmp1        |kg P/ha       |amount of phosphorus moving from the solution
 !!                               |mineral to the active mineral pool in the
 !!                               |soil layer
 !!    roc         |kg P/ha       |amount of phosphorus moving from the active
@@ -38,27 +38,27 @@
       use basin_module
       use organic_mineral_mass_module
       use parm, only : soil, ihru
+      use output_landscape_module, only : hnb_d
 
       real, parameter :: bk = .0006
       integer :: j, l
-      real :: rto, rmn1, roc
+      real :: rto, rmp1, roc
 
-      j = 0
       j = ihru
 
-      rto = 0.
+      hnb_d(j)%rmp1 = 0.
+      hnb_d(j)%roc = 0.
+
       rto = bsn_prm%psp / (1.-bsn_prm%psp)
 
       do l = 1, soil(j)%nly
-        rmn1 = 0.
-        rmn1 = (soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto)
-!!  mike changed/added per isabelle beaudin's email from 01/21/09
-        if (rmn1 > 0.) rmn1 = rmn1 * 0.1
-        if (rmn1 < 0.) rmn1 = rmn1 * 0.6
-!!  mike changed/added per isabelle beaudin's email from 01/21/09
-        rmn1 = Min(rmn1, soil1(j)%mp(l)%lab)
+        rmp1 = (soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto)
+        !! mike changed/added per isabelle beaudin's email from 01/21/09
+        if (rmp1 > 0.) rmp1 = rmp1 * 0.1
+        if (rmp1 < 0.) rmp1 = rmp1 * 0.6
+        !! mike changed/added per isabelle beaudin's email from 01/21/09
+        rmp1 = Min(rmp1, soil1(j)%mp(l)%lab)
 
-        roc = 0.
         roc = bk * (4. * soil1(j)%mp(l)%act - soil1(j)%mp(l)%sta)
         if (roc < 0.) roc = roc * .1
         roc = Min(roc, soil1(j)%mp(l)%act)
@@ -66,12 +66,14 @@
         soil1(j)%mp(l)%sta = soil1(j)%mp(l)%sta + roc
         if (soil1(j)%mp(l)%sta < 0.) soil1(j)%mp(l)%sta = 0.
 
-        soil1(j)%mp(l)%act = soil1(j)%mp(l)%act - roc + rmn1
+        soil1(j)%mp(l)%act = soil1(j)%mp(l)%act - roc + rmp1
         if (soil1(j)%mp(l)%act < 0.) soil1(j)%mp(l)%act = 0.
 
-        soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - rmn1
+        soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - rmp1
         if (soil1(j)%mp(l)%lab < 0.) soil1(j)%mp(l)%lab = 0.
 
+        hnb_d(j)%rmp1 = hnb_d(j)%rmp1 + rmp1
+        hnb_d(j)%roc = hnb_d(j)%roc + roc
       end do
 
       return

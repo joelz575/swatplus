@@ -17,7 +17,6 @@
 !!    phubase(:)  |heat units    |base zero total heat units (used when no
 !!                               |land cover is growing
 !!    icr(:)      |none          |sequence number of crop grown within a year
-!!    iida        |julian date   |day being simulated (current julian date)
 !!    idc(:)      |none          |crop/landcover category:
 !!                               |1 warm season annual legume
 !!                               |2 cold season annual legume
@@ -47,7 +46,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : sched, mgt 
-      use parm, only : pcom, hru, nop, yr_skip, phubase, ihru, iida, ipl
+      use parm, only : pcom, hru, nop, yr_skip, phubase, ihru, ipl
       use time_module
 
       integer :: j
@@ -59,7 +58,7 @@
       
       mgt = sched(isched)%mgt_ops(nop(j))
 
-        do while(mgt%jday > 0 .and. iida == mgt%jday)
+        do while(mgt%jday > 0 .and. time%day == mgt%jday)
           call mgt_sched (isched)
           if (sched(isched)%num_ops == 1) exit
           if (yr_skip(j) == 1) exit

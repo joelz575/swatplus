@@ -15,7 +15,6 @@
 !!                               |      = 1 (relative humidity)
 !!                               |note:  inputs > 1.0 (dewpoint)
 !!                                       inputs < 1.0 (relative humidity)
-!!    i_mo        |none          |month being simulated
 !!    pr_w(3,:,:) |none          |proportion of wet days in a month
 !!    rndseed(:,:)|none          |random number seeds
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
@@ -49,9 +48,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : i_mo, irelh
+      use parm, only : irelh
       use climate_parms
       use hydrograph_module
+      use time_module
 
       real :: vv, rhm, yy, uplm, blm
       real :: rhmo, tmpmean
@@ -66,17 +66,16 @@
       uplm = 0.
       blm = 0.
       tmpmean = 0.
-      tmpmean = (wgn(iwgn)%tmpmx(i_mo) +                  &                    
-               wgn(iwgn)%tmpmn(i_mo)) / 2.
+      tmpmean = (wgn(iwgn)%tmpmx(time%mo) + wgn(iwgn)%tmpmn(time%mo)) / 2.
 
       !! dewpoint or relative humidity --
       if (irelh(iwgn) == 1) then 
-        rhmo = wgn(iwgn)%dewpt(i_mo)
+        rhmo = wgn(iwgn)%dewpt(time%mo)
       else
-        rhmo = Ee(wgn(iwgn)%dewpt(i_mo)) / Ee(tmpmean)
+        rhmo = Ee(wgn(iwgn)%dewpt(time%mo)) / Ee(tmpmean)
       endif
 
-      yy = 0.9 * wgn_pms(iwgn)%pr_wdays(i_mo)
+      yy = 0.9 * wgn_pms(iwgn)%pr_wdays(time%mo)
       rhm = (rhmo - yy) / (1.0 - yy)
       if (rhm < 0.05) rhm = 0.5 * rhmo
       if (wst(iwst)%weat%precip > 0.0) rhm = rhm * 0.1 + 0.9

@@ -12,7 +12,7 @@
          fertn, fertp, fixn, grazn, grazp, hmntl, hmptl, ipl, no3pcp, peakr, qtile, rmn2tl, rmp1tl, rmptl,     &
          roctl, rwntl, snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, wdntl, canev,   &
          ep_day, es_day, etday, iadep, idp, inflpcp, inflrout, ipot, isep, iwgen, ls_overq, nd_30, pet_day,    &
-         pot, precipday, qday, sumbm, sumbm, sumlai, sumrwt, surfqout, sno_hru
+         pot, precipday, qday, sumlai, surfqout, sno_hru, latqrunon
       
       use basin_module
       use organic_mineral_mass_module
@@ -24,7 +24,7 @@
       use time_module
 
       integer :: j, sb, kk
-      real :: tmpk, d, gma, ho, pet_alpha, aphu, phuop
+      real :: tmpk, d, gma, ho, pet_alpha, aphu, phuop, sumbm, sumrwt
 
       j = ihru
       if (pcom(j)%npl > 0) idp = pcom(ihru)%plcur(1)%idplt
@@ -299,7 +299,7 @@
 		  !! Add by zhang
 		  !! ====================
 		  if (bsn_cc%cswat == 2) then
-		    call orgncswat2
+		    call nut_orgnc2
 		  end if
 		  !! Add by zhang
 		  !! ====================
@@ -401,6 +401,13 @@
         iob_out = sp_ob1%sub + isub - 1
       end if
       
+      hwb_d(j)%surq_cha = 0.
+      hwb_d(j)%latq_cha = 0.
+      hwb_d(j)%surq_res = 0.
+      hwb_d(j)%latq_res = 0.
+      hwb_d(j)%surq_ls = 0.
+      hwb_d(j)%latq_ls = 0.
+      
       do iout = 1, ob(iob_out)%src_tot
         select case (ob(iob_out)%obtyp_out(iout))
         case ('cha')
@@ -472,18 +479,18 @@
         hnb_d(j)%grazp = grazp
         hnb_d(j)%auton = auton
         hnb_d(j)%autop = autop
-        hnb_d(j)%rmp1tl = rmp1tl
-        hnb_d(j)%roctl = roctl
+        !hnb_d(j)%rmp1 = rmp1
+        !hnb_d(j)%roc = roc
         hnb_d(j)%fertn = fertn
         hnb_d(j)%fertp = fertp
         hnb_d(j)%fixn = fixn
-        hnb_d(j)%wdntl = wdntl
-        hnb_d(j)%hmntl = hmntl
-        hnb_d(j)%rwntl = rwntl
-        hnb_d(j)%hmptl = hmptl
-        hnb_d(j)%rmn2tl = rmn2tl
-        hnb_d(j)%rmptl = rmptl
-        hnb_d(j)%no3pcp = no3pcp
+        !hnb_d(j)%wdn = wdn
+        !hnb_d(j)%hmn = hmn
+        !hnb_d(j)%rwn = rwn
+        !hnb_d(j)%hmp = hmp
+        !hnb_d(j)%rmn1 = rmn1
+        !hnb_d(j)%rmp = rmp
+        !hnb_d(j)%no3pcp = no3pcp
 
       ! output_plantweather
         hpw_d(j)%lai = sumlai

@@ -42,35 +42,39 @@
 
       !! HRU  
       case ("biomix") 
-        hru(ielem)%hyd%biomix = chg_par (hru(ielem)%hyd%biomix,         &
+        hru(ielem)%hyd%biomix = chg_par (hru(ielem)%hyd%biomix,           &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+      case ("cn3_swf") 
+        hru(ielem)%hyd%cn3_swf = chg_par (hru(ielem)%hyd%cn3_swf,         &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("usle_p")
-        hru(ielem)%lumv%usle_p = chg_par (hru(ielem)%lumv%usle_p,       &
+        hru(ielem)%lumv%usle_p = chg_par (hru(ielem)%lumv%usle_p,         &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("ovn")
-        hru(ielem)%luse%ovn = chg_par (hru(ielem)%luse%ovn,             &
+        hru(ielem)%luse%ovn = chg_par (hru(ielem)%luse%ovn,               &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("elev")
-        hru(ielem)%topo%elev = chg_par (hru(ielem)%topo%elev,           &
+        hru(ielem)%topo%elev = chg_par (hru(ielem)%topo%elev,             &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("slope")
-        hru(ielem)%topo%slope = chg_par (hru(ielem)%topo%slope,         & 
+        hru(ielem)%topo%slope = chg_par (hru(ielem)%topo%slope,           & 
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("slope_len")
-        hru(ielem)%topo%slope_len = chg_par(hru(ielem)%topo%slope_len,  &
+        hru(ielem)%topo%slope_len = chg_par(hru(ielem)%topo%slope_len,    &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("lat_ttime")
-        hru(ielem)%hyd%lat_ttime = chg_par(hru(ielem)%hyd%lat_ttime,    &
+        hru(ielem)%hyd%lat_ttime = chg_par(hru(ielem)%hyd%lat_ttime,      &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
       case ("lat_sed")
-        hru(ielem)%hyd%lat_sed = chg_par (hru(ielem)%hyd%lat_sed,       & 
+        hru(ielem)%hyd%lat_sed = chg_par (hru(ielem)%hyd%lat_sed,         & 
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("lat_len")

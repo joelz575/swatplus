@@ -50,12 +50,10 @@
        epmax = 0.
 
 !!    arrays for plant communities
-      allocate (ipl_com(mhru))
       allocate (cht_mx(mhru))
       allocate (cvm_com(mhru))
       allocate (blai_com(mhru))
       allocate (rsdco_plcom(mhru))
-      allocate (iplt_airr(mhru))
       allocate (iplt_afert(mhru))
       allocate (strsw_av(mhru))
       allocate (percn(mhru))
@@ -229,7 +227,6 @@
       allocate (qdr(mhru))
       allocate (rhd(mhru))
 
-      allocate (rsdin(mhru))
       allocate (sci(mhru))
 !    Drainmod tile equations  01/2006 
 	  allocate (sstmaxd(mhru))	  

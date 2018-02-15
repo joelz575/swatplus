@@ -14,7 +14,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i_mo        |none          |current month being simulated
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -26,14 +25,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : i_mo
       use time_module
       
       integer :: icl
-      if (i_mo.le.2) then
-           icl = id - ndays(i_mo)
+      if (time%mo .le. 2) then
+           icl = id - ndays(time%mo)
       else 
-           icl = id - ndays(i_mo)
+           icl = id - ndays(time%mo)
       end if
       return
       end function icl

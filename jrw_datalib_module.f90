@@ -489,7 +489,7 @@
         real :: slope = 0.      !+/- or 0/1       |slope adjustment or at limit        
         real :: tconc = 0.      !+/- or 0/1       |time of concentration adjustment or at limit
         real :: etco = 0.       !+/- or 0/1       |etco adjustment or at limit
-        real :: perco = 0.      !+/- or 0/1       |percolation coefficient adjustment or at limit
+        real :: perco = 0.     !+/- or 0/1       |percolation coefficient adjustment or at limit
         real :: revapc = 0.     !+/- or 0/1       |slope adjustment or at limit
         real :: cn3_swf = 0.    !+/- or 0/1       |cn3_swf adjustment or at limit
       end type soft_calib_ls_adjust
@@ -1380,7 +1380,7 @@
 !      include 'potdb_read.f'
       include 'snowdb_read.f90'
       include 'soil_db_read.f90'
-      include 'cli_atmodep_read.f90'
+      !include 'cli_atmodep_read.f90'
       include 'res_init_read.f90'
      ! include 'res_read.f90'
       include 'res_hyd_read.f90'

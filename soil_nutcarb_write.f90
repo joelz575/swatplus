@@ -1,4 +1,4 @@
-      subroutine cbn_day
+      subroutine soil_nutcarb_write
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine writes daily HRU output to the output.hru file
@@ -28,7 +28,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : etday, ihru, soil, sumbm, sumrwt, tillage_factor, wdntl 
+      use parm, only : etday, ihru, soil, tillage_factor, wdntl 
       use time_module
       use basin_module
       use organic_mineral_mass_module
@@ -54,12 +54,11 @@
         end do
         
         ! write all carbon, organic n and p, and mineral n and p for the soil profile
-        !write (98,9000) time%yrc, i, k, j, soil_prof_mn, soil_prof_mp, soil_prof_tot, soil_prof_str,    &
-        !  soil_prof_lig, soil_prof_meta, soil_prof_man, soil_prof_hs, soil_prof_hp, soil_prof_microb,   &
-        !  soil_prof_water
+        write (2610,*) time%day, time%yrc, ihru, soil_prof_mn, soil_prof_mp, soil_prof_tot, soil_prof_str,  &
+          soil_prof_lig, soil_prof_meta, soil_prof_man, soil_prof_hs, soil_prof_hp, soil_prof_microb,       &
+          soil_prof_water
       end do
 
       return
 
-9000  format(i4,i4,i2,i8,33(f16.3))
-      end subroutine cbn_day
+      end subroutine soil_nutcarb_write

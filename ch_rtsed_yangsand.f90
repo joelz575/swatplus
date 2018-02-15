@@ -524,7 +524,7 @@
 !!     &-sagst(jrch)-lagst(jrch)-grast(jrch)
 !!      ambalsed = (sedin-sanin-silin-clain-sagin-lagin-grain)/sedin
 !!      ambalsed = sedrch-rch_san-rch_sil-rch_cla-rch_sag-rch_lag-rch_gra
-!!      if (abs(ambalsed) .gt. 1e-3) write (*,*) iida,jrch,ambalsed,sedrch
+!!      if (abs(ambalsed) .gt. 1e-3) write (*,*) time%day,jrch,ambalsed,sedrch
 
 !!    Deposition during the previous time step
       ch(jrch)%depprch = ch(jrch)%depch  !! Channel

@@ -41,6 +41,8 @@
       use parm, only : ihru
       use basin_module
       use jrw_datalib_module, only : db_mx
+      use output_landscape_module, only : hnb_d
+
       
       real, dimension(7) :: val = 0.
 
@@ -259,7 +261,7 @@
         if (sp_ob%chan > 0) call basin_channel_output
         if (sp_ob%chandeg > 0) call basin_sdchannel_output
         if (sp_ob%recall > 0) call basin_recall_output
-        call cbn_day
+        call soil_nutcarb_output
         !call lsreg_output
         !call region_aquifer_output
         !call region_reservoir_output

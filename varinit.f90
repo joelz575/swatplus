@@ -98,7 +98,7 @@
         bioday, bsprev, canev, cfertn, cfertp, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp, gwseep,     &
         hhsedy, hmntl, hmptl, inflpcp, inflrout, irmmdt, latlyr, latqrunon, ls_overq, lyrtile, no3pcp, peakr,  &
         pet_day, qday, qtile, revapday, rmn2tl, rmp1tl, rmptl, roctl, rwntl, sepday, snoev, snofall, snomlt,   &
-        sol_rd, soxy, sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, wdntl  
+        sol_rd, soxy, sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, wdntl, fixn  
 
       integer :: j, ly
 

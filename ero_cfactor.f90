@@ -43,7 +43,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use parm, only : pcom, usle_cfac, sol_cov, cvm_com, sumlai, cht_mx, ihru, npl 
+      use parm, only : pcom, usle_cfac, sol_cov, cvm_com, sumlai, cht_mx, ihru 
 
       integer :: j
       real :: c

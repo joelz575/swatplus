@@ -68,12 +68,7 @@
       j = ihru
 
       !! initialize water entering first soil layer
-
-      !if (j == 1) then
-      !  inflpcp = 100.
-      !end if
-
-      !ht1%flo is infiltration from overland flow routing
+      !! ht1%flo is infiltration from overland flow routing
       sepday = inflpcp + aird(j) + pot(j)%seep + ht1%flo
       pot(j)%seep = 0.
 
@@ -87,9 +82,9 @@
       slug = 4.  !1000.   !this should be an input in parameters.bsn
       sep_left = sepday
       do                  !slug loop
-        if (sep_left < 1.e-6) exit
         sepday = amin1(sep_left, slug)
         sep_left = sep_left - sepday
+        sep_left = amax1(0., sep_left)
       do j1 = 1, soil(j)%nly
         !! add water moving into soil layer from overlying layer
         soil(j)%phys(j1)%st = soil(j)%phys(j1)%st + sepday
@@ -129,11 +124,11 @@
         qtile = qtile + lyrtile
         soil(j)%ly(j1)%flat = latlyr + lyrtile
         soil(j)%ly(j1)%prk = soil(j)%ly(j1)%prk + sepday
-	  if (latq(j) < 1.e-6) latq(j) = 0.
+	    if (latq(j) < 1.e-6) latq(j) = 0.
         if (qtile < 1.e-6) qtile = 0.
         if (soil(j)%ly(j1)%flat < 1.e-6) soil(j)%ly(j1)%flat = 0.
       end do
-      if (sep_left < 1.e-6) exit
+      if (sep_left <= 0.) exit
       end do                    !slug loop
 
       

@@ -84,12 +84,12 @@
         character (len=12) :: surq_runon =  'sq_run_mm   '
         character (len=12) :: latq_runon =  'lq_run_mm   '
         character (len=12) :: overbank =    'ovbank_mm   '
-        character (len=12) :: surq_cha =    '   pet_mm   '
-        character (len=12) :: surq_res =    ' qtile_mm   '
-        character (len=12) :: surq_ls =     '   irr_mm   '
-        character (len=12) :: latq_cha =    'sq_run_mm   '
-        character (len=12) :: latq_res =    'lq_run_mm   '
-        character (len=12) :: latq_ls =     'ovbank_mm   '
+        character (len=12) :: surq_cha =    'surqcha_mm  '
+        character (len=12) :: surq_res =    'surqres_mm  '
+        character (len=12) :: surq_ls =     'surq_ls_mm  '
+        character (len=12) :: latq_cha =    'latq_cha_mm '
+        character (len=12) :: latq_res =    'latq_res_mm '
+        character (len=12) :: latq_ls =     'latq_ls_mm  '
       end type output_waterbal_header      
       type (output_waterbal_header) :: wb_hdr
       
@@ -102,26 +102,27 @@
         real :: grazp = 0.                !kg P/ha       |amt of phos added to soil in grazing on the day in HRU
         real :: auton = 0.                !kg N/ha       |amt of nit applied in auto-fert applic
         real :: autop = 0.                !kg P/ha       |amt of phos applied in auto-fert applic
-        real :: rmp1tl = 0.               !kg P/ha       |amt of phos moving from the labile min pool to the active min pool
+        real :: rmp1 = 0.                 !kg P/ha       |amt of phos moving from the labile min pool to the active min pool
         !                                                    in the soil profile on the current day in the HRU
-        real :: roctl = 0.                !kg P/ha       |amt of phos moving from the active min pool to the stable min pool
+        real :: roc = 0.                  !kg P/ha       |amt of phos moving from the active min pool to the stable min pool
         !                                                    in the soil profile on the current day in the HRU
         real :: fertn = 0.                !kg N/ha       |tot amt of nit applied to soil in HRU on day
         real :: fertp = 0.                !kg P/ha       |tot amt of phos applied to soil in HRU on day
         real :: fixn = 0.                 !kg N/ha       |amt of nit added to plant biomass via fixation on the day in HRU
-        real :: wdntl = 0.                !kg N/ha       |amt of nit lost from nitrate pool by denit in soil profile
+        real :: wdn = 0.                  !kg N/ha       |amt of nit lost from nitrate pool by denit in soil profile
         !                                                    on current day in HRU
-        real :: hmntl = 0.                !kg N/ha       |amt of nit moving from active org to nit pool in soil profile
+        real :: hmn = 0.                  !kg N/ha       |amt of nit moving from active org to nit pool in soil profile
         !                                                    on current day in HRU 
-        real :: rwntl = 0.                !kg N/ha       |amt of nit moving from active org to stable org pool in soil
+        real :: rwn = 0.                  !kg N/ha       |amt of nit moving from active org to stable org pool in soil
         !                                                    profile on current day in HRU
-        real :: hmptl = 0.                !kg P/ha       |amt of phos moving from the org to labile pool in soil profile
+        real :: hmp = 0.                  !kg P/ha       |amt of phos moving from the org to labile pool in soil profile
         !                                                    on current day in HRU
-        real :: rmn2tl = 0.               !kg N/ha       |amt of nit moving from the fresh org (residue) to the nitrate(80%)
+        real :: rmn1 = 0.                 !kg N/ha       |amt of nit moving from the fresh org (residue) to the nitrate(80%)
         !                                                    and active org(20%) pools in soil profile on current day in HRU
-        real :: rmptl = 0.                !kg P/ha       |amt of phos moving from the fresh org (residue) to the labile(80%)
+        real :: rmp = 0.                  !kg P/ha       |amt of phos moving from the fresh org (residue) to the labile(80%)
         !                                                    and org(20%) pools in soil profile on current day in HRU
-        real :: no3pcp = 0.               !kg N/ha       |nitrate added to the soil in rainfall
+        real :: no3atmo = 0.              !kg N/ha       |nitrate added to the soil from atmospheric deposition (rainfall+dry)
+        real :: nh4atmo = 0.              !kg N/ha       |ammonia added to the soil from atmospheric deposition (rainfall+dry)
       end type output_nutbal
 
       type (output_nutbal), dimension (:), allocatable :: hnb_d
@@ -156,25 +157,26 @@
       type output_nutbal_header
          character (len=6) :: yrs =        ' time '
          character (len=6) :: yrc =        ' year '
-         character (len=8) :: isd =        '   unit '
-         character(len=12) :: cfertn =     'cfrtn_kgha  '
-         character(len=12) :: cfertp =     'cfrtp_kgha  ' 
-         character(len=12) :: grazn =      'grzn_kgha   '
-         character(len=12) :: grazp =      'grzp_kgha   '     
-         character(len=12) :: auton =      'autn_kgha   '    
-         character(len=12) :: autop =      'autp_kgha   '      
-         character(len=12) :: rmp1tl =     'rm1t_kgha   '     
-         character(len=12) :: roctl =      'rctl_kgha   '
-         character(len=12) :: fertn =      'frtn_kgha   '       
-         character(len=12) :: fertp =      'frtp_kgha   '       
-         character(len=12) :: fixn =       'fixn_kgha   '       
-         character(len=12) :: wdntl =      'wntl_kgha   '
-         character(len=12) :: hmntl =      'hntl_kgha   '
-         character(len=12) :: rwntl =      'rbtl_kgha   '
-         character(len=12) :: hmptl =      'hmpt_kgha   '
-         character(len=12) :: rmn2tl =     'rm2t_kgha   '      
-         character(len=12) :: rmptl =      'rmpt_kgha   '      
-         character(len=12) :: no3pcp =     'no3p_kgha   ' 
+         character (len=8) :: isd =        '   unit '          
+         character(len=18) :: cfertn =     'cfrtn_kgha        '
+         character(len=18) :: cfertp =     'cfrtp_kgha        ' 
+         character(len=18) :: grazn =      'grzn_kgha         '
+         character(len=18) :: grazp =      'grzp_kgha         '     
+         character(len=18) :: auton =      'autn_kgha         '    
+         character(len=18) :: autop =      'autp_kgha         '      
+         character(len=18) :: rmp1tl =     'lab_actminp_kgha  '     
+         character(len=18) :: roctl =      'actp_stap_kgha    '
+         character(len=18) :: fertn =      'frtn_kgha         '       
+         character(len=18) :: fertp =      'frtp_kgha         '       
+         character(len=18) :: fixn =       'fixn_kgha         '       
+         character(len=18) :: wdntl =      'denit_kgha        '
+         character(len=18) :: hmntl =      'aorgn_no3_kgha    '
+         character(len=18) :: rwntl =      'actn_stan_kgha    '
+         character(len=18) :: hmptl =      'orgp_lab_kgha     '
+         character(len=18) :: rmn2tl =     'nrsd_no3act_kgha  '      
+         character(len=18) :: rmptl =      'prsd_laborg_kgha  '      
+         character(len=18) :: no3atmo =    'no3_atmo_kgha     ' 
+         character(len=18) :: nh4atmo =    'nh4_atmo_kgha     '
       end type output_nutbal_header
           
       type (output_nutbal_header) :: nb_hdr
@@ -409,18 +411,19 @@
         hru3%grazp = hru1%grazp + hru2%grazp
         hru3%auton = hru1%auton + hru2%auton
         hru3%autop = hru1%autop + hru2%autop
-        hru3%rmp1tl = hru1%rmp1tl + hru2%rmp1tl
-        hru3%roctl = hru1%roctl + hru2%roctl
+        hru3%rmp1 = hru1%rmp1 + hru2%rmp1
+        hru3%roc = hru1%roc + hru2%roc
         hru3%fertn = hru1%fertn + hru2%fertn
         hru3%fertp = hru1%fertp + hru2%fertp
         hru3%fixn = hru1%fixn + hru2%fixn
-        hru3%wdntl = hru1%wdntl + hru2%wdntl
-        hru3%hmntl = hru1%hmntl + hru2%hmntl
-        hru3%rwntl = hru1%rwntl + hru2%rwntl
-        hru3%hmptl = hru1%hmptl + hru2%hmptl
-        hru3%rmn2tl = hru1%rmn2tl + hru2%rmn2tl
-        hru3%rmptl = hru1%rmptl + hru2%rmptl
-        hru3%no3pcp = hru1%no3pcp + hru2%no3pcp
+        hru3%wdn = hru1%wdn + hru2%wdn
+        hru3%hmn = hru1%hmn + hru2%hmn
+        hru3%rwn = hru1%rwn + hru2%rwn
+        hru3%hmp = hru1%hmp + hru2%hmp
+        hru3%rmn1 = hru1%rmn1 + hru2%rmn1
+        hru3%rmp = hru1%rmp + hru2%rmp
+        hru3%no3atmo = hru1%no3atmo + hru2%no3atmo
+        hru3%nh4atmo = hru1%nh4atmo + hru2%nh4atmo
       end function hruout_nutbal_add
 
       function hruout_losses_add (hru1, hru2) result (hru3)
@@ -518,18 +521,19 @@
         hru2%grazp = hru1%grazp / const
         hru2%auton = hru1%auton / const        
         hru2%autop = hru1%autop / const
-        hru2%rmp1tl = hru1%rmp1tl / const
-        hru2%roctl = hru1%roctl / const
+        hru2%rmp1 = hru1%rmp1 / const
+        hru2%roc = hru1%roc / const
         hru2%fertn = hru1%fertn / const
         hru2%fertp = hru1%fertp / const
         hru2%fixn = hru1%fixn / const
-        hru2%wdntl = hru1%wdntl / const
-        hru2%hmntl = hru1%hmntl / const
-        hru2%rwntl = hru1%rwntl / const
-        hru2%hmptl = hru1%hmptl / const
-        hru2%rmn2tl = hru1%rmn2tl / const
-        hru2%rmptl = hru1%rmptl / const
-        hru2%no3pcp = hru1%no3pcp / const
+        hru2%wdn = hru1%wdn / const
+        hru2%hmn = hru1%hmn / const
+        hru2%rwn = hru1%rwn / const
+        hru2%hmp = hru1%hmp / const
+        hru2%rmn1 = hru1%rmn1 / const
+        hru2%rmp = hru1%rmp / const
+        hru2%no3atmo = hru1%no3atmo / const
+        hru2%nh4atmo = hru1%nh4atmo / const
       end function hruout_nutbal_div
       
       function hruout_losses_div (hru1,const) result (hru2)

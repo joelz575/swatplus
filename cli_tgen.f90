@@ -9,7 +9,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    j           |none          |HRU number
-!!    i_mo        |none          |month being simulated
 !!    pr_w(3,:,:) |none          |proportion of wet days in month
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
 !!    tmpmx(:,:)  |deg C         |avg monthly maximum air temperature
@@ -44,19 +43,20 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : i_mo, wgncur
+      use parm, only : wgncur
       use climate_parms
       use hydrograph_module
+      use time_module
 
       real :: tmxg, tmng, tamp, txxm
 
-      tamp = .5 * (wgn(iwgn)%tmpmx(i_mo) - wgn(iwgn)%tmpmn(i_mo))
-      txxm = wgn(iwgn)%tmpmx(i_mo) + tamp * wgn_pms(iwgn)%pr_wdays(i_mo)
+      tamp = .5 * (wgn(iwgn)%tmpmx(time%mo) - wgn(iwgn)%tmpmn(time%mo))
+      txxm = wgn(iwgn)%tmpmx(time%mo) + tamp * wgn_pms(iwgn)%pr_wdays(time%mo)
       
       if (wst(iwst)%weat%precip > 0.0) txxm = txxm - tamp
 
-      tmxg = txxm + wgn(iwgn)%tmpstdmx(i_mo) * wgncur(1,iwgn)
-      tmng = (wgn(iwgn)%tmpmn(i_mo)) + wgn(iwgn)%tmpstdmn(i_mo) *  wgncur(2,iwgn)
+      tmxg = txxm + wgn(iwgn)%tmpstdmx(time%mo) * wgncur(1,iwgn)
+      tmng = (wgn(iwgn)%tmpmn(time%mo)) + wgn(iwgn)%tmpstdmn(time%mo) *  wgncur(2,iwgn)
       if (tmng > tmxg) tmng = tmxg - .2 * Abs(tmxg)
 
       wst(iwst)%weat%tmax = tmxg

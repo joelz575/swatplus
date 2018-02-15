@@ -3,7 +3,7 @@
       use jrw_datalib_module, only : db_mx, lum, solt_db, topo_db, hyd_db, soildb, wet_dat_c, snodb, field_db
       use input_file_module
       use parm, only : hru, hru_db, soil, pcom, ihru, isolt 
-      use hydrograph_module, only : ob, sp_ob, sp_ob1, hru, wet
+      use hydrograph_module, only : ob, sp_ob, sp_ob1, wet
       use organic_mineral_mass_module
       use carbon_module
       

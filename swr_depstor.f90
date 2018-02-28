@@ -9,7 +9,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    iop(:,:,:)  |julian date   |date of tillage operation
 !!    mgt_op      |none          |operation code number
-!!    precipday   |mm H2O        |precipitation for the day in HRU
 !!    ranrns_hru(:)|mm           |random roughness for a given HRU
 !!	sol_ori(:)	|mm			   |oriented roughness (ridges) at time of a given tillage operation
 !!    usle_ei     |100(ft-tn in)/(acre-hr)|USLE rainfall erosion index
@@ -28,7 +27,7 @@
 !!							   |tillage operation
 !!	cumrt(:)	|mm H2O		   |cumulative rainfall since last tillage operation
 !!	df  		|none		   |oriented and random roughness decay factor - based
-!!                               |on cumulative EI and cumulative precipday
+!!                               |on cumulative EI and cumulative precip_eff
 !!    ei          |Mj*mm/ha*hr   |USLE rainfall erosion index
 !!	hru_slpp    |%	           |average percent slope steepness
 !!	sol_orgm    |%      	   |percent organic matter content in soil material
@@ -43,13 +42,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : soil, hru, cumeira, cumei, cumrt, cumrai, ranrns_hru, stmaxd, itill, ihru,  &
-         itill, precipday, usle_ei
+      use hru_module, only : soil, hru, cumeira, cumei, cumrt, cumrai, ranrns_hru, stmaxd, itill, ihru,  &
+         itill, precip_eff, usle_ei
       use organic_mineral_mass_module
 
       integer ::j
 	  real:: df, hru_slpp, sol_orgm, sol_orr, sol_rrr, ei 
-      j = 0
       j = ihru
 
 !! Calculate current cummulative erosivity and rainfall
@@ -57,8 +55,8 @@
 	if (itill(j) ==1)then
 	  cumeira(j) = cumeira(j) + ei
 	  cumei(j) = cumeira(j) - ei
-	  cumrai(j) = cumrai(j) + precipday
-	  cumrt(j) = cumrai(j) - precipday
+	  cumrai(j) = cumrai(j) + precip_eff
+	  cumrt(j) = cumrai(j) - precip_eff
       end if
 !! Calculate the decay factor df based on %clay and %organic matter or %organic carbon
 	sol_orgm = soil1(j)%tot(1)%c / 0.58

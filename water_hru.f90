@@ -14,7 +14,7 @@
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
   
-        use parm, only : tmpav, ihru, hru_ra, albday, etday, pet_day 
+        use hru_module, only : tmpav, ihru, hru_ra, albday, etday, pet_day 
 
 	    j = ihru
 !! if the HRU is water compute only pet and et

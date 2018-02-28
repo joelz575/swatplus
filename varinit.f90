@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ihru        |none          |HRU number
 !!    nstep       |none          |number of lines of rainfall data for each
 !!                               |day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
@@ -15,8 +14,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    al5         |none          |fraction of total rainfall that occurs
-!!                               |during 0.5h of highest intensity rain
 !!    albday      |none          |albedo for the day in HRU
 !!    bactrolp    |# colonies/ha |less persistent bacteria transported to main
 !!                               |channel with surface runoff
@@ -30,10 +27,6 @@
 !!    bsprev      |mm H2O        |surface runoff lagged from prior day of
 !!                               |simulation
 !!    canev       |mm H2O        |amount of water evaporated from canopy storage
-!!    cfertn      |kg N/ha       |amount of nitrogen added to soil in continuous
-!!                               |fertilizer operation on day
-!!    cfertp      |kg P/ha       |amount of phosphorus added to soil in continuous
-!!                               |fertilizer operation on day
 !!    crk         |mm H2O        |percolation due to crack flow
 !!    enratio     |none          |enrichment ratio calculated for day in HRU
 !!    ep_day      |mm H2O        |actual amount of transpiration that occurs on
@@ -51,17 +44,9 @@
 !!                               |soil (enters soil)
 !!    lat_pst(:)  |kg pst/ha     |amount of pesticide in lateral flow in HRU for
 !!                               |the day
-!!    latlyr      |mm H2O        |amount of water in lateral flow in layer in 
-!!                               |HRU for the day
 !!    peakr       |m^3/s         |peak runoff rate for the day in HRU
 !!    pet_day     |mm H2O        |potential evapotranspiration for day in HRU
-!!    precipday   |mm H2O        |precipitation for the day in HRU
-!!    qday        |mm H2O        |surface runoff loading to main channel for 
-!!                               |day in HRU
 !!    qtile       |mm H2O        |drainage tile flow for day in HRU
-!!    revapday    |mm H2O        |amount of water moving from the shallow 
-!!                               |aquifer into the soil profile or being taken
-!!                               |up by plant roots in the shallow aquifer
 !!    sepday      |mm H2O        |percolation from bottom of the soil layer on
 !!                               |day in HRU
 !!    snoev       |mm H2O        |amount of water in snow lost through 
@@ -71,7 +56,6 @@
 !!    snomlt      |mm H2O        |amount of water in snow melt for the day in 
 !!                               |HRU
 !!    sol_rd      |mm            |current rooting depth
-!!    soxy        |mg/L          |saturation dissolved oxygen concentration
 !!    sw_excess   |mm H2O        |amount of water in soil that exceeds field 
 !!                               |capacity (gravity drained water)
 !!    tloss       |mm H2O        |amount of water removed from surface runoff
@@ -79,8 +63,6 @@
 !!    uno3d       |kg N/ha       |plant nitrogen deficiency for day in HRU
 !!    usle_ei     |none          |USLE erodibility index on day for HRU
 !!    vpd         |kPa           |vapor pressure deficit
-!!    voltot      |mm            |total volume of cracks expressed as depth
-!!                               |per unit area
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -94,11 +76,11 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use time_module
-      use parm, only : soil, hhqday, ihru, al5, albday, auton, autop, bactrolp, bactrop, bactsedlp, bactsedp,  &
-        bioday, bsprev, canev, cfertn, cfertp, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp, gwseep,     &
-        hhsedy, hmntl, hmptl, inflpcp, inflrout, irmmdt, latlyr, latqrunon, ls_overq, lyrtile, no3pcp, peakr,  &
-        pet_day, qday, qtile, revapday, rmn2tl, rmp1tl, rmptl, roctl, rwntl, sepday, snoev, snofall, snomlt,   &
-        sol_rd, soxy, sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, wdntl, fixn  
+      use hru_module, only : soil, hhqday, ihru, albday, auton, autop, bactrolp, bactrop, bactsedlp, bactsedp,  &
+        bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp, gwseep,     &
+        hhsedy, hmntl, hmptl, inflpcp, latqrunon, ls_overq, lyrtile, no3pcp, peakr,  &
+        pet_day, qday, qtile, rmn2tl, rmp1tl, rmptl, roctl, rwntl, sepday, snoev, snofall, snomlt,             &
+        sol_rd, sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, wdntl, fixn  
 
       integer :: j, ly
 
@@ -111,7 +93,6 @@
       end do
       
       !!initialize variables NUBS - all these need to be checked
-        al5 = 0.
         albday = 0.
         auton = 0.
         autop = 0.
@@ -122,8 +103,6 @@
         bioday = 0.
         bsprev = 0.
         canev = 0.
-        cfertn = 0.
-        cfertp = 0.
         crk = 0.
         enratio = 0.
         ep_day = 0.
@@ -140,8 +119,6 @@
         hmntl = 0.
         hmptl = 0.
         inflpcp = 0.
-        inflrout = 0.
-        latlyr = 0.
         lyrtile = 0.
         no3pcp = 0.
         peakr = 0.
@@ -151,7 +128,6 @@
         ls_overq = 0.
         over_flow = 0.
         latqrunon = 0.
-        revapday = 0.
         rmn2tl = 0.
         rmp1tl = 0.
         rmptl = 0.
@@ -162,7 +138,6 @@
         snofall = 0.
         snomlt = 0.
         sol_rd = 0.
-        soxy = 0.
         sw_excess = 0.
         tloss = 0.
         uno3d = 0.

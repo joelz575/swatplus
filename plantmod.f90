@@ -9,7 +9,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
 !!    phubase(:)  |heat units    |base zero total heat units (used when no
 !!                               |land cover is growing)
 !!    phutot(:)   |heat units    |total potential heat units for year (used
@@ -36,7 +35,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : ep_max, epmax, hru_ra, htfac, idp, ihru, ipl, par, pcom, soil, sol_cov, sum_no3,  &
+      use hru_module, only : ep_max, epmax, hru_ra, htfac, idp, ihru, ipl, par, pcom, soil, sol_cov, sum_no3,  &
          sum_solp, sumlai, tmpav, translt, uapd, uapd_tot, uno3d, uno3d_tot 
       use jrw_datalib_module
       use organic_mineral_mass_module

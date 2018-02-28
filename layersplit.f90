@@ -1,6 +1,6 @@
       subroutine layersplit(dep_new)
 
-      use parm, only : soil, ihru, isep_ly, ly1
+      use hru_module, only : soil, ihru, isep_ly, ly1
       use organic_mineral_mass_module
       
       integer nly, nly1, lyn

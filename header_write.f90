@@ -6,7 +6,6 @@
      use reservoir_module
      use hydrograph_module
      use sd_channel_module
-     use parm
      use jrw_datalib_module, only : db_mx
      
       if (pco%fdcout == 'y') then
@@ -213,7 +212,7 @@
           open (2120,file="channel_sd_day_bsn.txt", recl = 1500)
           write (2120,*) bsn%name, prog
           write (2120,*) sdch_hdr
-          write (9000,*) 'BASIN SWAT DEGCHAN channel_sd_day_bsn.txt'
+          write (9000,*) 'BASIN SWAT DEG CHAN channel_sd_day_bsn.txt'
           if (pco%csvout == 'y') then 
             open (2124,file="channel_sd_day_bsn.csv", recl = 1500)
             write (2124,*) bsn%name, prog

@@ -29,7 +29,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : pcom, soil, ipl, manure_kg, sumlai
+      use hru_module, only : pcom, soil, ipl, manure_kg, sumlai
       use bacteria_module
 
       real :: frt_t

@@ -77,7 +77,7 @@
  
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : hru, soil, tmpav, canstor, sno_hru, sol_cov, hru_dafr, ihru, canev, ep_max,  &
+      use hru_module, only : hru, soil, tmpav, canstor, sno_hru, sol_cov, hru_dafr, ihru, canev, ep_max,  &
          es_day, pet_day, snoev, sumlai
 
       integer :: j, ib, ly

@@ -1,6 +1,7 @@
       module channel_module
 
-      integer :: jhyd, jsed, jnut, jpst      
+      integer :: jhyd, jsed, jnut, jpst
+      real :: pet_day
       real :: rttime, rchdep, rtevp, rttlc 
       real, dimension (:), allocatable :: hrtwtr     !m^3 H2O       |water leaving reach
       real, dimension (:), allocatable :: hharea     !m^2           |cross-sectional area of flow
@@ -30,12 +31,16 @@
       real, dimension (:), allocatable :: hsorpst    !mg pst/m^3    |sorbed pesticide concentration in outflow on day
       real, dimension (:), allocatable :: rchsep     !
       
-      
+      real :: peakr, rcharea, sdti
       real :: bnkrte              !
       real :: degrte              !
       real :: sedrch              !metric tons       |sediment transported out of reach on day
+      real :: rch_san             !
       real :: rch_sil             !
       real :: rch_cla             !
+      real :: rch_sag             !
+      real :: rch_lag             !
+      real :: rch_gra             !
       real :: rtwtr               !m^3 H2O           |water leaving reach on day
       integer:: sed_ch 
       

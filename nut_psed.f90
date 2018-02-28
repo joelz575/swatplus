@@ -49,7 +49,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
-      use parm, only : hru, soil, pcom, sedyld, sedorgp, sedminpa, sedminps, ihru, enratio,  &
+      use hru_module, only : hru, soil, pcom, sedyld, sedorgp, sedminpa, sedminps, ihru, enratio,  &
         ihru, ipl  
       use organic_mineral_mass_module
 

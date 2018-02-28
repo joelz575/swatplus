@@ -23,7 +23,6 @@
 !!    hrchwtr(:)  |m^3 H2O       |water stored in reach at beginning of hour
 !!    hrtwtr(:)   |m^3           |water leaving reach in hour
 !!    hsdti(:)    |m^3/s         |flow rate in reach for hour
-!!    qdbank      |m^3 H2O       |streamflow contribution from bank storage
 !!    rcharea     |m^2           |cross-sectional area of flow
 !!    rchdep      |m             |depth of flow on day
 !!    rchwtr      |m^3 H2O       |water stored in reach at beginning of day
@@ -31,8 +30,6 @@
 !!                               |through reactions
 !!    reactb      |mg pst        |amount of pesticide in sediment that is lost
 !!                               |through reactions
-!!    revapday    |m^3 H2O       |amount of water moving from bank storage
-!!                               |into the soil profile or being taken
 !!                               |up by plant roots in the bank storage zone
 !!    resuspst    |mg pst        |amount of pesticide moving from sediment to
 !!                               |reach due to resuspension
@@ -48,7 +45,6 @@
 !!                               |on day
 !!    sorpesto    |mg pst/m^3    |sorbed pesticide concentration in outflow
 !!                               |on day
-!!    soxy        |mg O2/L       |saturation oxygen concentration in water
 !!    volatpst    |mg pst        |amount of pesticide lost from reach by
 !!                               |volatilization
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -72,12 +68,10 @@
       bury = 0.
       difus = 0.
       peakr = 0.
-      qdbank = 0.
       rcharea = 0.
       rchdep = 0.
       reactb = 0.
       reactw = 0.
-      revapday = 0.
       resuspst = 0.
       rtevp = 0.
       rttime = 0.
@@ -88,7 +82,6 @@
       setlpst = 0.
       solpesto = 0.
       sorpesto = 0.
-      soxy = 0.
       volatpst = 0.
       ch(jrch)%vel_chan = 0.
       sedrch = 0.

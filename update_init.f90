@@ -2,13 +2,13 @@
 
       use jrw_datalib_module, only : db_mx, cal_upd, cal_parms 
       use hru_lte_module
-      use parm, only : soil, hru
+      use hru_module, only : soil, hru
       use time_module
-      use climate_parms, only : pcp, tmp
+      use climate_module, only : pcp, tmp
       
       character(len=16) :: chg_parm, chg_typ
       character(len=1) :: cond_met
-      integer :: lyr = 1
+      integer :: lyr = 1, iyr
       
       do ichg_par = 1, db_mx%cal_upd
         do ispu = 1, cal_upd(ichg_par)%num_elem

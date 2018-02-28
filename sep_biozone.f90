@@ -69,15 +69,15 @@
 
       use jrw_datalib_module, only : sep, sepdb
       use basin_module
+      use bacteria_module
       use organic_mineral_mass_module
-      use parm, only : soil, hru, ihru, i_sep, iseptic, qstemm, thbact, bz_perc, isep, sep_tsincefail,  &
-         biom, plqm, bio_bod, fcoli, rbiom, percp, precipday, isep 
+      use hru_module, only : soil, hru, ihru, i_sep, iseptic, qstemm, bz_perc, isep, sep_tsincefail,  &
+         biom, plqm, bio_bod, fcoli, rbiom, percp, isep 
       use time_module
       
 	implicit none
-	      
-!	real ntr_rt
-      integer bz_lyr, isp, ii,j,nly
+
+    integer bz_lyr, isp, ii,j,nly, ibac
 	real*8 bz_vol, rtrate,bodconc, qin, qout,qmm,qvol,pormm,rplqm
 	real*8 ntr_rt,dentr_rt, bod_rt, fcoli_rt,rtof,xx,bodi,bode
 	real*8 rnit, rdenit, rbio, rmort, rrsp, rslg, rbod, rfcoli
@@ -89,16 +89,17 @@
 
 	j = ihru
 	nly = soil(j)%nly
-      isep = iseptic(j)
+    isep = iseptic(j)
 	isp = sep(isep)%typ 	   !! J.Jeong 3/09/09
-      bz_lyr = i_sep(j)    
+    bz_lyr = i_sep(j)    
 	bza = hru(j)%area_ha
 	bz_vol = sep(isep)%thk * bza * 10. !m^3
 	qlyr = qstemm(j)
 	qsrf = 0
 	
 	!temperature correctioin factor for bacteria growth/dieoff (Eppley, 1972)
-	ctmp = thbact ** (soil(j)%phys(bz_lyr)%tmp- 20.) 
+    ibac = 1        !there should be a loop for all pathogens in this hru
+	ctmp = bac_db(ibac)%t_adj ** (soil(j)%phys(bz_lyr)%tmp- 20.) 
 
 	! initial water volume
 	qi = (soil(j)%phys(bz_lyr)%st + soil(j)%ly(bz_lyr-1)%prk + qstemm(j)) *   &
@@ -290,26 +291,6 @@
 
 	!! total live biomass in biozone(kg/ha)    
 	biom(j) = biom(j) + rbiom(j)
-	       
-	!! print out time series results 
-      if (time%yrs > pco%nyskip) then
-         n1=nh3_init 
-         n2=nh3_begin
-         n3=nh3_end
-         n4=no3_init
-         n5=no3_begin
-         n6=no3_end !*bza/hvol*1000
-         n7=rnit
-         n8=rdenit
-         p1=solp_init
-         p2=solp_begin
-         p3=solp_end
-         p4 = solpconc
-
-	write(173,1000) ihru,time%yrc,time%day,precipday,qout,             &
-        soil(j)%phys(bz_lyr)%ul, soil(j)%phys(bz_lyr)%st,          &
-        soil(j)%phys(bz_lyr)%fc,n1,n2,n3,n4,n5,n6,n7,n8,p1,p2,p3,p4
-	endif 	
        
 1000  format(3i5,50es15.4)
       return

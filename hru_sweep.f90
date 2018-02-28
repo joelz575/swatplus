@@ -34,7 +34,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
  
-      use parm, only : ihru, sweepeff, twash, ulu
+      use hru_module, only : ihru, sweepeff, twash, ulu
       use jrw_datalib_module, only : urbdb
 
       integer :: j

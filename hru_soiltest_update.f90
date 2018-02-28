@@ -1,6 +1,6 @@
       subroutine hru_soiltest_update(isol, isolt)
     
-      use parm, only : soil  
+      use hru_module, only : soil  
       use jrw_datalib_module, only : solt_db
       use organic_mineral_mass_module
 

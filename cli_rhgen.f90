@@ -11,10 +11,6 @@
 !!    idg(:)      |none          |array location of random number seed used
 !!                               |for a given process
 !!    j           |none          |HRU number
-!!    irelh       |none          |irelh = 0 (dewpoint)
-!!                               |      = 1 (relative humidity)
-!!                               |note:  inputs > 1.0 (dewpoint)
-!!                                       inputs < 1.0 (relative humidity)
 !!    pr_w(3,:,:) |none          |proportion of wet days in a month
 !!    rndseed(:,:)|none          |random number seeds
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
@@ -48,8 +44,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : irelh
-      use climate_parms
+      use climate_module
       use hydrograph_module
       use time_module
 
@@ -59,21 +54,10 @@
       !! Climate Paramenters required for Penman-Monteith !!
 
       !! Generate relative humidity !!
-      rhmo = 0.
-      yy = 0.
-      rhm = 0.
-      vv = 0.
-      uplm = 0.
-      blm = 0.
-      tmpmean = 0.
       tmpmean = (wgn(iwgn)%tmpmx(time%mo) + wgn(iwgn)%tmpmn(time%mo)) / 2.
 
-      !! dewpoint or relative humidity --
-      if (irelh(iwgn) == 1) then 
-        rhmo = wgn(iwgn)%dewpt(time%mo)
-      else
-        rhmo = Ee(wgn(iwgn)%dewpt(time%mo)) / Ee(tmpmean)
-      endif
+      !! convert dewpoint to relative humidity
+      rhmo = Ee(wgn(iwgn)%dewpt(time%mo)) / Ee(tmpmean)
 
       yy = 0.9 * wgn_pms(iwgn)%pr_wdays(time%mo)
       rhm = (rhmo - yy) / (1.0 - yy)

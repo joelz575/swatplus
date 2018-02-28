@@ -44,10 +44,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : dormhr, hru, hrupest, i_sep, idp, isep, isep_ly, iseptic, npmx, npno, pcom,  &
+      use hru_module, only : dormhr, hru, hrupest, i_sep, idp, isep, isep_ly, iseptic, npmx, npno, pcom,  &
          soil
          
-      use climate_parms
+      use climate_module
       use jrw_datalib_module
       use basin_module
       use channel_module

@@ -58,7 +58,6 @@
 
       use basin_module
       use jrw_datalib_module
-      use parm, only : pet_day, rcharea, sdti
       use channel_module
       use hydrograph_module, only : ob
 

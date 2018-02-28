@@ -12,7 +12,7 @@
 !!    ht1== deposition: write to deposition.out
 !!    ht2== outflow from inflow: added to hru generated flows
 
-      use parm, only : hru, ihru, usle_cfac, ls_overq, precipday
+      use hru_module, only : hru, ihru, usle_cfac, ls_overq, precip_eff
       use hydrograph_module
       use jrw_datalib_module, only : field_db
 
@@ -20,7 +20,7 @@
 
 !!    compute infiltration from surface runon to next landscape unit
       ls_overq = ob(iob)%hin%flo        !/ (10. * hru(j)%area_ha)   ! m3/10*ha = mm
-      precipday = precipday + ls_overq
+      precip_eff = precip_eff + ls_overq
       
 !!    compute infiltration from surface runon to next landscape unit
       !ls_overq = ob(iob)%hin%flo    !/ (10. * hru(j)%area_ha) 
@@ -43,7 +43,6 @@
       !! use surface runoff (mm) for eiq - m3/(10 * ha) = mm
       trancap = hru(j)%topo%dep_co * usle_cfac(j) * ls_overq *        &
                 hru(j)%topo%slope**1.4 * field_db(ifield)%wid**1.4
-      !trancap = trancap * daru_km(inum3,inum1) * 100.   !! t/ha -> t
       if (sed > trancap) then
         ht1%sed = (sed - trancap) * hru(j)%area_ha
         ht2%sed = trancap * hru(j)%area_ha

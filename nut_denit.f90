@@ -3,7 +3,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil
+      use hru_module, only : soil
 
 	integer :: k,j
 	real :: cdg, wdn, void

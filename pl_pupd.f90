@@ -48,7 +48,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : pldb, plcp
-      use parm, only : pcom, up2, uapd, ihru, ipl, idp 
+      use hru_module, only : pcom, up2, uapd, ihru, ipl, idp 
 
       integer :: j, icrop, l, ir
       real :: uapl, gx

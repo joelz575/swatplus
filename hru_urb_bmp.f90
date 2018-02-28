@@ -19,7 +19,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-    use parm, only : hru, ihru, sedyld, sedorgn, sedorgp, sedminpa, sedminps, sed_con, soln_con, solp_con,  &
+    use hru_module, only : hru, ihru, sedyld, sedorgn, sedorgp, sedminpa, sedminps, sed_con, soln_con, solp_con,  &
        surqno3, latno3, surqsolp, qdr, orgn_con, orgp_con 
 
 	j = 0

@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
 !!    nperco      |none          |nitrate percolation coefficient (0-1)
 !!                               |0:concentration of nitrate in surface runoff
 !!                               |  is zero
@@ -43,7 +42,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil, hru, latno3, percn, surqno3, tileno3, surfq, ihru, qtile  
+      use hru_module, only : soil, hru, latno3, percn, surqno3, tileno3, surfq, ihru, qtile  
 
       integer :: j, jj
       real :: sro, ssfnlyr, percnlyr, vv, vno3, co

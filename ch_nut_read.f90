@@ -2,7 +2,6 @@
       
       use input_file_module
       use basin_module
-      use parm, only : chla_subco
       use time_module
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -69,7 +68,6 @@
       if (ch_nut(ich)%lambda1 <= 0.) ch_nut(ich)%lambda1 = 0.03
       if (ch_nut(ich)%lambda2 <= 0.) ch_nut(ich)%lambda2 = 0.054
       if (ch_nut(ich)%p_n <= 0.) ch_nut(ich)%p_n = 0.5
-      if (chla_subco <= 0.) chla_subco = 40.0 
       
 !! convert units on k_l:read in as kJ/(m2*min), use as MJ/(m2*hr)
       ch_nut(ich)%k_l = ch_nut(ich)%k_l * 1.e-3 * 60.

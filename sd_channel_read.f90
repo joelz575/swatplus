@@ -3,6 +3,7 @@
       use input_file_module
       use sd_channel_module
       use jrw_datalib_module, only : db_mx
+      use hydrograph_module
       
       character (len=80) :: titldum
       character (len=80) :: header

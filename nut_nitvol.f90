@@ -31,7 +31,6 @@
 !!    rvol        |kg N/ha       |amount of nitrogen lost from the NH3 pool due
 !!                               |to volatilization
 !!    sw25        |
-!!    swf         |
 !!    swwp        |
 !!    tf          |
 !!    xx          |
@@ -45,7 +44,7 @@
       use jrw_datalib_module, only : sep
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil, ihru, i_sep, isep 
+      use hru_module, only : soil, ihru, i_sep, isep 
       
       integer :: j, k
       real :: sw25, swwp, swf, xx, dmidl, dpf, akn, akv, rnv, rnit, rvol

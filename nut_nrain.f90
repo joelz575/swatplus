@@ -5,8 +5,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
-!!    precipday   |mm H2O        |precipitation for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -25,11 +23,12 @@
       use basin_module
       use organic_mineral_mass_module
       use hydrograph_module
-      use parm, only : hru, ihru, iadep, mo_atmo, no3pcp, precipday, timest, iyr, imo 
-      use climate_parms
+      use hru_module, only : hru, ihru, no3pcp, precipday, timest 
+      use climate_module
       use output_landscape_module
 
       real :: nh3pcp
+      integer :: iadep
 
       j = ihru
       iob = hru(j)%obj_no

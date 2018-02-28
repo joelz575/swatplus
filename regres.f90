@@ -21,7 +21,6 @@
 !!                                |  2 suspended solid load
 !!                                |  3 total nitrogen
 !!                                |  4 total phosphorus
-!!    precipday    |mm H2O        |precipitation for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -48,8 +47,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : hru, ihru, iwgen, precipday 
-      use climate_parms
+      use hru_module, only : hru, ihru, iwgen, precipday 
+      use climate_module
       use jrw_datalib_module
 
       integer, intent (in) :: k

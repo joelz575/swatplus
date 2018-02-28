@@ -28,11 +28,9 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-!!      integer, intent (in) :: j
 
-      use parm, only : wgncur
       use hydrograph_module
-      use climate_parms
+      use climate_module
 
       real :: rx, rav
 

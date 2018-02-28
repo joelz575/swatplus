@@ -31,7 +31,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : soil, hru, pesti_db, sol_cov
+      use hru_module, only : soil, hru, pesti_db, sol_cov
       use constituent_mass_module
       use hydrograph_module, only : sp_ob, icmd
         

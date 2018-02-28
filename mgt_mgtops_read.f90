@@ -6,8 +6,7 @@
       character (len=80) :: header
       character (len=13) :: file
       integer :: eof, nops, m_auto
-      
-      mscheds = 0
+
       eof = 0
       imax = 0
         

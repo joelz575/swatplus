@@ -9,7 +9,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    albday      |none          |albedo of ground for day
 !!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
-!!    ihru        |none          |HRU number
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
 !!    tmp_an(:)   |deg C         |average annual air temperature
@@ -49,9 +48,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use climate_parms
+      use climate_module
       use jrw_datalib_module, only : sep
-      use parm, only : soil, sno_hru, hru_ra, iseptic, ihru, sol_cov, tmpav, tmx, tmn, i_sep, iwgen,  &
+      use hru_module, only : soil, sno_hru, hru_ra, iseptic, ihru, sol_cov, tmpav, tmx, tmn, i_sep, iwgen,  &
          albday, isep 
       use time_module
 

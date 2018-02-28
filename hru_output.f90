@@ -1,6 +1,6 @@
       subroutine hru_output(ihru)
     
-      use parm, only : pcom, idp, ipl
+      use hru_module, only : pcom, idp, ipl
       use jrw_datalib_module, only : pldb
       use time_module
       use basin_module

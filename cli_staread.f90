@@ -1,9 +1,8 @@
     subroutine cli_staread 
 
     use input_file_module
-    use parm, only : npcp
     use jrw_datalib_module, only : db_mx 
-    use climate_parms
+    use climate_module
     use time_module
 
     character (len=500) :: header
@@ -14,11 +13,8 @@
 
     inquire (file=in_cli%weat_sta, exist=i_exist)
     if (i_exist == 0 .or. in_cli%weat_sta == 'null') then
-        !mwst = 1
         allocate (wst(0:1))
         allocate (wst_n(0:0))
-        allocate (npcp(0:1))
-        npcp = 1
     else
         do
             !! read weather stations data from weather.wst - gages and meas/gen
@@ -39,10 +35,9 @@
             allocate (wst(imax))
             allocate (wst_n(imax))
             do iwst = 1, db_mx%wst
-                allocate (wst(iwst)%weat%ts(time%step+1))
+              allocate (wst(iwst)%weat%ts(time%step+1))
+              wst(iwst)%weat%precip_prior_day = 'dry'
             end do
-            allocate (npcp(imax))
-            npcp = 1
 
             rewind (107)
             read (107,*) titldum

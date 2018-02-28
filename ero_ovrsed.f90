@@ -13,7 +13,6 @@
 !!    hhqday(:)   |mm H2O        |surface runoff generated each timestep 
 !!                               |of day in HRU
 !!    hru_km(:)   |km2           |area of HRU in square kilometers
-!!    inum1       |none          |subbasin number
 !!    rwst(:)%weat%ts(:)  |mm H2O        |precipitation for the time step during the
 !!                               |day in HRU
 !!    eros_spl	  |none          |coefficient of splash erosion varing 0.9-3.1
@@ -60,10 +59,10 @@
 
       use jrw_datalib_module, only : urbdb
       use basin_module
-      use climate_parms
+      use climate_module
       use time_module
       use hydrograph_module
-      use parm, only : hru, soil, hhsedy, cht_mx, hhqday, cvm_com, sol_cov, ihru, sumlai 
+      use hru_module, only : hru, soil, hhsedy, cht_mx, hhqday, cvm_com, sol_cov, ihru, sumlai 
       
 	integer :: k, j
 	real :: percent_clay, percent_silt, percent_sand, erod_k
@@ -176,7 +175,7 @@
 	!! Impervious area of HRU
 	  if(hru(j)%luse%urb_lu > 0) sedov = sedov * (1.- urbdb(ulu)%fimp)
 
-	  hhsedy(j,k) =  (sedspl + sedov) ! * dratio(inum1) - Jaehak
+	  hhsedy(j,k) =  (sedspl + sedov)
 	  if (hhsedy(j,k) < 1.e-10) hhsedy(j,k) = 0.
 
 	end do

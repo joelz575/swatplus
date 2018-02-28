@@ -7,7 +7,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hru_km(:)   |km^2          |area of HRU in square kilometers
-!!    ihru        |none          |HRU number
 !!    lat_sed(:)  |g/L           |sediment concentration in lateral flow
 !!    latq(:)     |mm H2O        |total lateral flow in soil profile for the
 !!                               |day in HRU
@@ -26,7 +25,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
-      use parm, only : hru, soil, ihru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, sedorgn,  &
+      use hru_module, only : hru, soil, ihru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, sedorgn,  &
          sedorgp, latq 
 
       integer :: j

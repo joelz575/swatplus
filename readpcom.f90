@@ -1,14 +1,12 @@
       subroutine readpcom
       
       use input_file_module
-
-      use parm, only : icom
       use jrw_datalib_module
       
       character (len=80) :: titldum
       character (len=80) :: header
       character (len=13) :: file, name
-      integer :: eof
+      integer :: eof, mcom, icom
       
       mcom = 0
       eof = 0

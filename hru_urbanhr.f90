@@ -66,10 +66,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : hru, ihru, ulu, twash, surfq, ubntss, surqno3, sedorgn, sedorgp, pcom, init_abstrc,  &
+      use hru_module, only : hru, ihru, ulu, twash, surfq, ubntss, surqno3, sedorgn, sedorgp, pcom, init_abstrc,  &
          surqsolp, ubnrunoff, isweep, phusw, phubase, etday, ipl  
       use jrw_datalib_module, only : urbdb
-      use climate_parms
+      use climate_module
       use time_module
 
       real :: cod, sus_sol, tn, tp, urbk, dirto, qdt

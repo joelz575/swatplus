@@ -3,7 +3,7 @@
       use aquifer_module
       use time_module
       use hydrograph_module
-      use climate_parms, only : wst
+      use climate_module, only : wst
 
       !! set pointers to aquifer database and weather station
       iaq = ob(icmd)%num

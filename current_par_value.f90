@@ -22,7 +22,7 @@
       
       use basin_module
       use jrw_datalib_module
-      use parm, only : hru, isol, soil, sol, cn2
+      use hru_module, only : hru, isol, soil, sol, cn2
       use channel_module
       use reservoir_module
       use aquifer_module

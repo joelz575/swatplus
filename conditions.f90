@@ -5,11 +5,12 @@
     
       use jrw_datalib_module
       use conditional_module
-      use climate_parms
+      use climate_module
       use time_module
-      use parm, only : hru, ipl, pcom, soil 
+      use hru_module, only : hru, ipl, pcom, soil 
       use reservoir_module
       use sd_channel_module
+      use hydrograph_module
       
       integer, intent (in)  :: id, ob_cur
       integer :: ob_num

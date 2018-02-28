@@ -84,7 +84,6 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
-      use parm, only : pest_sol
       use channel_module
       use hydrograph_module, only : ob, icmd, jrch
       
@@ -92,7 +91,6 @@
       real :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
 
 !! initialize depth of water for pesticide calculations
-      depth = 0.
       if (rchdep < 0.1) then
         depth = .1
       else
@@ -100,18 +98,13 @@
       endif
 
 !! calculate volume of active river bed sediment layer
-      bedvol = 0.
       bedvol = ch_hyd(jhyd)%w *ch_hyd(jhyd)%l * 1000.*                    &
                ch_pst(jpst)%sedpst_act
 
 !! calculate volume of water entering reach
-      wtrin = 0.
       wtrin = ob(icmd)%hin%flo 
          
 !! pesticide transported into reach during day
-      solpstin = 0.
-      sorpstin = 0.
-      pstin = 0.
       solpstin = ob(icmd)%hin%psol 
       sorpstin = ob(icmd)%hin%psor 
       pstin = solpstin + sorpstin
@@ -165,7 +158,6 @@
         fd2 = 1. / (.5 + ch_pst(jpst)%pst_koc)
 
         !! calculate flow duration
-         tday = 0.
          tday = rttime / 24.0
          if (tday > 1.0) tday = 1.0
          tday = 1.0
@@ -241,7 +233,6 @@
         end if
 
         !! verify that water concentration is at or below solubility
-        solmax = 0.
         solmax = pest_sol * (rchwtr + wtrin)
         if (solmax < chpstmass * frsol) then
          sedpstmass = sedpstmass + (chpstmass * frsol - solmax)

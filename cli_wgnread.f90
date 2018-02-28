@@ -2,9 +2,8 @@
       
       use input_file_module
       use time_module
-      use parm, only : dayl, irelh, wgncur, wgnold
       use jrw_datalib_module, only : db_mx
-      use climate_parms
+      use climate_module
       
       character (len=80) :: titldum, header
       integer :: iwgn, mwnd_dir, iwndir, imo, idr
@@ -24,7 +23,6 @@
         wgncur = 0.
         wgnold = 0.
         allocate (wgn_pms(0:1))
-        allocate (dayl(0:1))
         allocate (frad(0:1,1))
         allocate (rnd2(0:1))
          allocate (rnd3(0:1))
@@ -32,7 +30,6 @@
          allocate (rnd9(0:1))
          allocate (rndseed(10,0:1))
          allocate (idg(9))
-         allocate (irelh(0:1))
         call gcycl
       else 
       do
@@ -56,7 +53,6 @@
         
         !! allocate weather variables
         allocate (wgn(imax))
-        !allocate (wgn1(imax))
         allocate (wgn_n(imax))
         allocate (wgn_pms(imax))
         allocate (wgn_orig(imax))
@@ -65,20 +61,17 @@
         wgncur = 0.
         wgnold = 0.
         allocate (rnd2(imax))
-        allocate (dayl(imax))
         allocate (frad(imax,time%step))
         allocate (rnd3(imax))
         allocate (rnd8(imax))
         allocate (rnd9(imax))
         allocate (rndseed(10,imax))
         allocate (idg(9))
-        allocate (irelh(imax))
         rnd2 = 0.
         rnd3 = 0.
         rnd8 = 0.
         rnd9 = 0.
         rndseed = 0
-        irelh = 1
 
         rewind (114)
         read (114,*) titldum
@@ -95,7 +88,6 @@
               wgn(iwgn)%solarav(mo), wgn(iwgn)%dewpt(mo), wgn(iwgn)%windav(mo)
         end do
         
-        !read (114,*,iostat=eof) i, wgn_n(iwgn), wgn1(iwgn)
         !! initialize weather generator parameters
         call cli_initwgn(iwgn)
         if (eof < 0) exit

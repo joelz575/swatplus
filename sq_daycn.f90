@@ -11,8 +11,6 @@
 !!                               |current soil moisture
 !!    fcimp(:)    |fraction      |fraction of HRU area that is classified
 !!                               |as directly connected impervious
-!!    ihru        |none          |HRU number
-!!    precipday   |mm H2O        |precipitation for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -37,7 +35,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : urbdb
-      use parm, only : hru, cnday, surfq, ihru, precipday
+      use hru_module, only : hru, cnday, surfq, ihru, precip_eff
       
       integer :: j
       real :: r2, bb, pb, cnimp, surfqimp
@@ -46,10 +44,10 @@
 
       r2 = 25400. / cnday(j) - 254.
       bb = .2 * r2
-      pb = precipday - bb
+      pb = precip_eff - bb
 
       if (pb > 0.) then
-        surfq(j) = pb * pb / (precipday + .8 * r2)
+        surfq(j) = pb * pb / (precip_eff + .8 * r2)
       end if
 
       if (hru(j)%luse%urb_lu > 0) then
@@ -57,9 +55,9 @@
         cnimp = 98.
         r2 = 25400. / cnimp - 254.
         bb = .2 * r2
-        pb = precipday - bb
+        pb = precip_eff - bb
         if (pb > 0.) then
-          surfqimp = pb * pb / (precipday + .8 * r2)
+          surfqimp = pb * pb / (precip_eff + .8 * r2)
         end if
         ulu = hru(j)%luse%urb_lu
         surfq(j) = surfq(j) * (1. - urbdb(ulu)%fcimp) +                 &                 

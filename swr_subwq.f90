@@ -9,7 +9,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    enratio     |none          |enrichment ratio calculated for day in HRU
 !!    hru_km(:)   |km^2          |area of HRU in square kilometers
-!!    ihru        |none          |HRU number
 !!    sedorgn(:)  |kg N/ha       |amount of organic nitrogen in surface runoff
 !!                               |in HRU for the day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -58,15 +57,14 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use parm, only : soil, hru, ihru, tmpav, qdr, sedorgn, surqno3, cbodu, doxq, chl_a, sedyld,   &
-         chla_subco, enratio, soxy
+      use hru_module, only : soil, hru, ihru, tmpav, qdr, sedorgn, surqno3, cbodu, doxq, chl_a, sedyld, enratio
       use organic_mineral_mass_module
       use carbon_module
 
       integer :: j
+      real :: soxy
       real :: tn, tp, qtot, org_c, tn_tp, wtmp, ww, xx, yy, zz, flow_cms
 
-      j = 0
       j = ihru
 
         !! calculcate water temperature
@@ -79,8 +77,8 @@
         wtmp = wtmp + 273.15    !! deg C to deg K
       
         if (qdr(j) > 1.e-4) then
-          tp = 100. * (sedorgn(j) + surqno3(j)) / qdr(j)   !100*kg/ha/mm = ppm 
-          chl_a(j) = chla_subco * tp
+          tp = 100. * (sedorgn(j) + surqno3(j)) / qdr(j)    !100*kg/ha/mm = ppm 
+          chl_a(j) = .1 * tp                                ! assume chlorophyll a is 0.01 total p
  
           !! calculate organic carbon loading to main channel
           org_c = 0.

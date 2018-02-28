@@ -2,7 +2,7 @@
     
       use sd_channel_module
       use hru_lte_module
-      use parm, only : hru, ihru
+      use hru_module, only : hru, ihru
       use output_landscape_module
       use jrw_datalib_module, only : cal_codes, db_mx, region, lscal_z, lscalt, plcal, plcal_z, lscal, &
         chcal, chcal_z

@@ -13,11 +13,9 @@
 !!    gsi(:)     |m/s            |maximum stomatal conductance
 !!    hru_ra(:)  |MJ/m^2         |solar radiation for the day in HRU
 !!    hru_rmx(:) |MJ/m^2         |maximum possible radiation for the day in HRU
-!!    hru_sub(:) |none           |subbasin in which HRU is located
 !!    icr(:)     |none           |sequence number of crop grown within the
 !!                               |current year
 !!    ihru       |none           |HRU number
-!!    petmeas    |mm H2O         |potential ET value read in for day
 !!    rhd(:)     |none           |relative humidity for the day in HRU
 !!    sno_hru(:) |mm H2O         |amount of water in snow in HRU on current day
 !!    u10(:)     |m/s            |wind speed (measured at 10 meters above 
@@ -80,8 +78,10 @@
 
       use jrw_datalib_module, only : pldb, plcp
       use basin_module
-      use parm, only : hru, pcom, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, cht_mx, tmx, tmn,  &
-        albday, epmax, idp, ipl, pet_day, petmeas, sumlai, vpd, ep_max
+      use hydrograph_module
+      use climate_module
+      use hru_module, only : hru, pcom, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, cht_mx, tmx, tmn,  &
+        albday, epmax, idp, ipl, pet_day, sumlai, vpd, ep_max
       
       integer :: j
       real :: tk, pb, gma, xl, ea, ed, dlt, ramm, ralb1, ralb, xx
@@ -279,7 +279,9 @@
         endif
       
        case (3)  !! READ IN PET VALUES
-        pet_day = petmeas
+        iob = hru(j)%obj_no
+        iwst = ob(iob)%wst
+        pet_day = wst(iwst)%weat%pet
   
       end select
 

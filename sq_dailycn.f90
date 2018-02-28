@@ -6,7 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
 !!    sci(:)      |none          |retention coefficient for cn method based on 
 !!                               |plant ET
 !!    smx(:)      |none          |retention coefficient for cn method based on
@@ -40,7 +39,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use parm, only : soil, cnday, wrt, smx, sci, ihru
+      use hru_module, only : soil, cnday, wrt, smx, sci, ihru
       
       integer :: j   
 

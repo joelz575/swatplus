@@ -1,6 +1,6 @@
       subroutine cli_pmeas
       
-      use climate_parms
+      use climate_module
       use jrw_datalib_module, only : db_mx
       use basin_module
       use input_file_module
@@ -9,7 +9,7 @@
       character (len=80) :: header
       character (len=80) :: titldum
       character (len=5) :: hr_min
-      integer :: eof, imax
+      integer :: eof, imax, iyr
        
        mpcp = 0
        eof = 0

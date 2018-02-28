@@ -32,9 +32,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use climate_parms
+      use climate_module
       use basin_module
-      use parm, only : pcom, soil, ihru, idp, ipl
+      use hru_module, only : pcom, soil, ihru, idp, ipl
       use jrw_datalib_module, only:  pldb
 
       real :: resnew

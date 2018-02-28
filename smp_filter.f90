@@ -22,7 +22,6 @@
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
 !!                               | 1: pesticides used in HRU
-!!    ihru        |none          |HRU number
 !!    npmx        |none          |number of different pesticides used in
 !!                               |the simulation
 !!    pst_sed(:,:)|kg/ha         |pesticide loading from HRU sorbed onto
@@ -116,7 +115,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use parm, only : hru, soil, surfq, ihru, sagyld, silyld, clayld, lagyld, sedorgn, surqno3, sedminpa,  &
+      use hru_module, only : hru, soil, surfq, ihru, sagyld, silyld, clayld, lagyld, sedorgn, surqno3, sedminpa,  &
         sedminps, sedorgp, surqsolp, sedyld, sanyld, hrupest, hru_dafr, bactrolp, bactrop, bactsedlp,       &
         bactsedp, npmx, sbactrolp, sbactrop, sbactsedlp, sbactsedp
       use constituent_mass_module

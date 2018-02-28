@@ -3,8 +3,7 @@
       use reservoir_module
       use jrw_datalib_module
       use hydrograph_module
-      use parm
-  
+
       do ires = 1, db_mx%res
         !! set initial volumes for res and hru types
         !! convert units

@@ -6,7 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    dayl(:)     |hours         |day length for current day
 !!    daylmn(:)   |hours         |shortest daylength occurring during the
 !!                               |year
 !!    dormhr(:)   |hours         |time threshold used to define dormant
@@ -25,7 +24,6 @@
 !!                               |5 cold season annual
 !!                               |6 perennial
 !!                               |7 trees
-!!    ihru        |none          |HRU number
 !!    iop(:,:,:)  |julian date   |date of tillage operation
 !!    ntil(:)     |none          |sequence number of tillage operation within
 !!                               |current year
@@ -46,7 +44,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : sched, mgt 
-      use parm, only : pcom, hru, nop, yr_skip, phubase, ihru, ipl
+      use hru_module, only : pcom, hru, nop, yr_skip, phubase, ihru, ipl
       use time_module
 
       integer :: j

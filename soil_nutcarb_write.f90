@@ -28,7 +28,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : etday, ihru, soil, tillage_factor, wdntl 
+      use hru_module, only : etday, ihru, soil, tillage_factor, wdntl 
       use time_module
       use basin_module
       use organic_mineral_mass_module

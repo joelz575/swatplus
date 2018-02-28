@@ -1,16 +1,16 @@
       subroutine cli_atmodep_read
       
-      use parm, only : iadep, iyr, imo 
       use basin_module
       use input_file_module
-      use climate_parms
+      use climate_module
       use time_module
       use jrw_datalib_module, only : db_mx
       
       character (len=80) :: titldum, header
       character (len=80) :: file      
-      integer :: eof 
-  
+      integer :: eof, iadep, imo, iyr
+      integer :: imo_atmo
+      
       eof = 0
 
       inquire (file=in_cli%atmo_cli,exist=i_exist)

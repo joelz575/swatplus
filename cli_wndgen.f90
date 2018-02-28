@@ -27,7 +27,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hydrograph_module
-      use climate_parms
+      use climate_module
       use time_module
       
       real :: v6, v7, rdir2, pi2

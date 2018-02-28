@@ -5,10 +5,6 @@
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
-!!                               |into soil (enters soil)
-!!    ihru        |none          |HRU number
 !!    volcrmin    |mm            |minimum soil volume in profile
 !!    voltot      |mm            |total volume of cracks expressed as depth
 !!                               |per unit area
@@ -37,8 +33,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : soil, sepbtm, voltot, inflpcp, ihru, sepcrk, sepcrktot, volcrmin
-
+      use hru_module, only : soil, sepbtm, voltot, inflpcp, ihru, sepcrk, sepcrktot, volcrmin
 
       integer :: j, ly
       real :: crklch = 0.5, xx

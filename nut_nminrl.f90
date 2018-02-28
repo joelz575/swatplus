@@ -64,7 +64,7 @@
       use jrw_datalib_module, only : pldb, sep
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil, pcom, rsdco_plcom, i_sep, ihru, idp, ipl, isep  
+      use hru_module, only : soil, pcom, rsdco_plcom, i_sep, ihru, idp, ipl, isep  
       use output_landscape_module, only : hnb_d
 
       integer :: j, k, kk

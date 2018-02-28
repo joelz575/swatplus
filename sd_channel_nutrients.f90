@@ -1,8 +1,9 @@
-      subroutine sd_channel_nutrients (ht1, ht2)
+      subroutine sd_channel_nutrients
     
       use jrw_datalib_module, only : rte_nut, field_db
-    
-      type (hyd_output), intent (inout) :: ht1, ht2
+      use hydrograph_module
+      use sd_channel_module
+
       integer :: nb_overb = 0
       real :: no3_conc
       

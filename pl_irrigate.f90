@@ -31,7 +31,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : irrop_db
-      use parm, only : hru, aird, qird
+      use hru_module, only : hru, aird, qird
       
       integer, intent (in) :: jj, irrop
       real, intent (in out) :: volmm

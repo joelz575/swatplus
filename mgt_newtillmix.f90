@@ -42,8 +42,6 @@
 !!                                 |particles
 !!    ntil(:)       |none          |sequence number of tillage operation within
 !!                                 |current year
-!!    min_res(:)	|kg/ha		   |Min residue allowed due to implementation of 
-!!                                 |residue managment in the OPS file.
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -76,8 +74,8 @@
       use jrw_datalib_module, only:  tilldb
       use basin_module
       use organic_mineral_mass_module
-      use parm, only: soil, tillage_days, tillage_depth, tillage_switch, bactpq, bactps, bactlpq, bactlps,   &
-          ntil, npmx, min_res, cnop
+      use hru_module, only: soil, tillage_days, tillage_depth, tillage_switch, bactpq, bactps, bactlpq, bactlps,   &
+          ntil, npmx, cnop
 
       integer, intent (in) :: jj, idtill
       real, intent (in) :: bmix
@@ -137,15 +135,6 @@
         bactlpq(jj) = bactlpq(jj) * (1. - emix)
         bactlps(jj) = bactlps(jj) * (1. - emix)
 	  end if
-      	
-	!! calculate max mixing to preserve target surface residue MJW rev 490
-	!! Assume residue in all other layers is negligible to simplify calculation and remove depth dependency
-      if (min_res(jj) > 1. .and. bmix < 0.001) then
-	  maxmix = 1 - min_res(jj)/soil(jj)%ly(1)%rsd
-	  if (maxmix <0.05)  maxmix = 0.05	
-	  if (emix > maxmix)  emix = maxmix
-      end if
-
 
       do l = 1, soil(jj)%nly
         if ( l == 1) then

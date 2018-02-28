@@ -47,7 +47,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : pcom, soil, uapd, up2, pplnt, ihru, ipl, rto_solp, sol_rd
+      use hru_module, only : pcom, soil, uapd, up2, pplnt, ihru, ipl, rto_solp, sol_rd
 
       integer :: j, icrop, l, ir
       real :: uapl, gx

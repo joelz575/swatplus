@@ -31,7 +31,6 @@
 
          use basin_module
          use time_module
-         use parm, only : rch_gra, rch_lag, rch_sag
          use channel_module
          
 

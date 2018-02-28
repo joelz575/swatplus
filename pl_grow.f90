@@ -9,13 +9,10 @@
 !!    name        |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    blai(:)     |none             |maximum (potential) leaf area index
-!!    auto_nstrs(:) |none           |nitrogen stress factor which triggers
-!!                                  |auto fertilization
 !!    bio_e(:)    |(kg/ha)/(MJ/m**2)|biomass-energy ratio
-!!                                  |The potential (unstressed) growth rate per
+!!                                  |The potential (un stressed) growth rate per
 !!                                  |unit of intercepted photosynthetically
 !!                                  |active radiation.
-!!    bio_targ(:,:,:)|kg/ha          |biomass target
 !!    chtmx(:)    |m                |maximum canopy height
 !!    curyr       |none             |current year of simulation
 !!    dlai(:)     |none             |fraction of growing season when leaf
@@ -91,9 +88,8 @@
 
       use jrw_datalib_module, only : plcp, pldb 
       use basin_module
-      use parm, only : pcom, hru, uapd, uno3d, lai_yrmx, strsw_sum, strstmp_sum, strsn_sum, strsp_sum,     &
-         strsa_sum, par, auto_nstrs, bio_targ, bioday, ep_day, es_day, idp, ihru, ipl, pet_day, rto_no3, rto_solp, &
-         sum_no3, sum_solp, sumlai, uapd_tot, uno3d_tot, vpd
+      use hru_module, only : pcom, hru, uapd, uno3d, lai_yrmx, par, bioday, ep_day, es_day,  &
+         idp, ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, sumlai, uapd_tot, uno3d_tot, vpd
       use carbon_module
       
       integer :: j
@@ -145,14 +141,6 @@
           bioday = beadj * par(ipl)
           if (bioday < 0.) bioday = 0.
 
-          !! auto fertilization-nitrogen demand (non-legumes only)
-          select case (pldb(idp)%idc)
-            case (4, 5, 6, 7)    !non-legumes
-            if (auto_nstrs(j) > 0.) then
-              call pl_anfert
-            end if
-          end select
-
           uno3d(ipl) = Min(4. * pldb(idp)%pltnfr3 * bioday, uno3d(ipl))
           if (uapd(ipl) > 10.) then
             uapd(ipl) = Min(4. * pldb(idp)%pltpfr3 * bioday, uapd(ipl))
@@ -176,11 +164,6 @@
             pcom(j)%plstr(ipl)%strsn, pcom(j)%plstr(ipl)%strsp, pcom(j)%plstr(ipl)%strsa)
           if (reg < 0.) reg = 0.
           if (reg > 1.) reg = 1.
-
-          if (bio_targ(j) > 1.e-2) then
-            bioday = bioday * (bio_targ(j) - pcom(j)%plm(ipl)%mass) / bio_targ(j)
-            reg = 1.
-          end if
 
           pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass + bioday * reg
 
@@ -288,11 +271,11 @@
           
 
 !!  added per JGA for Srini by gsm 9/8/2011
-          strsw_sum(j) = strsw_sum(j) + (1. - pcom(j)%plstr(ipl)%strsw)
-          strstmp_sum(j) = strstmp_sum(j)+(1.-pcom(j)%plstr(ipl)%strst)
-          strsn_sum(j) = strsn_sum(j) + (1. - pcom(j)%plstr(ipl)%strsn)
-          strsp_sum(j) = strsp_sum(j) + (1. - pcom(j)%plstr(ipl)%strsp) 
-          strsa_sum(j) = strsa_sum(j) + (1. - pcom(j)%plstr(ipl)%strsa)
+          pcom(j)%plstr(ipl)%sum_w = pcom(j)%plstr(ipl)%sum_w + (1. - pcom(j)%plstr(ipl)%strsw)
+          pcom(j)%plstr(ipl)%sum_tmp = pcom(j)%plstr(ipl)%sum_tmp + (1.-pcom(j)%plstr(ipl)%strst)
+          pcom(j)%plstr(ipl)%sum_n = pcom(j)%plstr(ipl)%sum_n + (1. - pcom(j)%plstr(ipl)%strsn)
+          pcom(j)%plstr(ipl)%sum_p = pcom(j)%plstr(ipl)%sum_p + (1. - pcom(j)%plstr(ipl)%strsp) 
+          pcom(j)%plstr(ipl)%sum_a = pcom(j)%plstr(ipl)%sum_a + (1. - pcom(j)%plstr(ipl)%strsa)
         end if
         end if  ! if plant is growing
       end do    ! loop for number of plants

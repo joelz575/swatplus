@@ -27,7 +27,7 @@
 !!snow sublimation needs to be taken into account
 !!ie this equation needs work
 
-      use parm
+      use hru_module
 
       real, intent (in) :: snow, irrg
 

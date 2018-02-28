@@ -3,12 +3,11 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine initializes the values for some of the arrays 
 
-      use parm, only : bio_bod,biom,bz_perc,cf,cn2,fcoli,hru,i_sep,ida_lup,manure_kg,nop,par,percp,   &
-       plqm,pst_dep,pst_lag,qstemm,rbiom,rch_gra,rch_lag,rch_sag,sep_tsincefail,sno_hru,        &
-       sol_cov,sub_fr,sub_km,sub_pet,sweepeff,swtrg,t_ov,tconc,tnyld,tnylda,trapeff,usle,usle_cfac,   &
+      use hru_module, only : bio_bod,biom,bz_perc,cf,cn2,fcoli,hru,i_sep,ida_lup,manure_kg,nop,par,percp,   &
+       plqm,pst_dep,pst_lag,qstemm,rbiom,sep_tsincefail,sno_hru,        &
+       sol_cov,sweepeff,swtrg,t_ov,tconc,trapeff,usle,usle_cfac,   &
        usle_ei,usle_eifac,wfsh
-
-      
+     
 !!  septic changes 6/07/10  jaehak
       bio_bod = 0.
       fcoli = 0.  
@@ -67,16 +66,6 @@
       strip_cn = 0.
       strip_c = 0.
       strip_p = 0.
-      rch_san = 0.
-      rch_sil = 0.
-      rch_cla = 0.
-      rch_sag = 0.
-      rch_lag = 0.
-      rch_gra = 0.
-      sub_fr = 0.
-      sub_km = 0.
-      sub_dgra = 0.
-      sub_petco = 0.       ! CB 8/24/09
       sweepeff = 0.
       swtrg = 0
       t_ov = 0.
@@ -84,8 +73,6 @@
       thalf = 0.
       tnconc = 0.
       tno3conc = 0.
-      tnyld = 0.
-      tnylda = 0.
       tpconc = 0.
       trapeff = 0.
       urbcoef = 0.

@@ -8,8 +8,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    da_ha       |ha            |area of watershed in hectares
-!!    ihru        |none          |HRU number
-!!    sub_fr(:)   |none          |fraction of watershed area in subbasin
 !!    surfq(:)    |mm H2O        |surface runoff generated on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -28,7 +26,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : sedyld, sanyld, silyld, clayld, sagyld, lagyld, ihru, enratio
+      use hru_module, only : sedyld, sanyld, silyld, clayld, sagyld, lagyld, ihru, enratio
       
       integer :: j
       real :: cy

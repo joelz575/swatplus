@@ -38,7 +38,7 @@
       use sd_channel_module
       use reservoir_module
       use organic_mineral_mass_module
-      use parm, only : ihru
+      use hru_module, only : ihru
       use basin_module
       use jrw_datalib_module, only : db_mx
       use output_landscape_module, only : hnb_d

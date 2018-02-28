@@ -48,7 +48,7 @@
 
       use jrw_datalib_module, only : mgt, chemapp_db
       use basin_module
-      use parm, only : soil, hru, driftco, pst_dep, sumlai
+      use hru_module, only : soil, hru, driftco, pst_dep, sumlai
       
       integer :: j, kk, k
       real :: xx, gc

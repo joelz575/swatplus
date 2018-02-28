@@ -1,9 +1,8 @@
       subroutine calt_hyd
 
-      use parm
+      use hru_module
       use hydrograph_module
       use ru_module
-      use climate_module
       use aquifer_module
       use channel_module
       use hru_lte_module

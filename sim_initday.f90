@@ -11,7 +11,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    dayl(:)     |hr            |day length for the day in HRU
 !!    frad(:,:)   |none          |fraction of solar radiation occuring during 
 !!                               |hour in day in HRU
 !!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
@@ -23,18 +22,17 @@
 !!                               |day in HRU
 !!    rhd(:)      |none          |relative humidity for the day in HRU
 !!    hrupstd(:,:,:)|varies      |HRU daily pesticide output array
-!!    sub_etday(:)|mm H2O        |actual evapotranspiration on day in subbasin
 !!    u10(:)      |m/s           |wind speed for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
      
-      use parm, only : cbodu,chl_a,clayld,cnday,dayl,doxq,etday,grayld,hhsedy,                     &
+      use hru_module, only : cbodu,chl_a,clayld,cnday,doxq,etday,grayld,hhsedy,                     &
          hhsurfq,hru,hru_ra,hru_rmx,irr_flag,lagyld,latno3,latq,nplnt,                             &
-         par,percn,petmeas,pot,pplnt,qdr,rcn,rhd,sagyld,sanyld,sedminpa,                           &
+         par,percn,pot,pplnt,qdr,rcn,rhd,sagyld,sanyld,sedminpa,                           &
          sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,soil,sol,sol_sumno3,sol_sumsolp,            &
-         sub_etday,sub_hhsedy,sub_hhwtmp,sub_pet,sub_subp_dt,surfq,                                &
+         surfq,                                &
          surqno3,surqsolp,tileno3,tmn,tmpav,tmx,u10,ubnrunoff,ubntss
             
       use organic_mineral_mass_module
@@ -45,7 +43,6 @@
       cbodu = 0.
       chl_a = 0.
       cnday = 0.
-      dayl = 0.
       doxq = 0.
       drift = 0.
       hru_ra = 0.
@@ -56,7 +53,6 @@
       latq = 0.
       nplnt = 0.
       percn = 0.
-      petmeas = 0.
       pplnt = 0.
       qdr = 0.
       rhd = 0.
@@ -74,10 +70,6 @@
       grayld = 0.
 
       sepbtm = 0.
-      sub_etday = 0.
-      sub_hhwtmp = 0.
-      sub_pet = 0.
-      sub_dgra = 0.
       surfq = 0.
       surqno3 = 0.
       surqsolp = 0.
@@ -92,8 +84,6 @@
       ubnrunoff = 0.
       ubntss = 0.
       latq = 0.
-	  sub_subp_dt = 0.
-	  sub_hhsedy = 0.
       hhsurfq = 0.
 !-----------------------------------------------------        
 

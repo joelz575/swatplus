@@ -3,9 +3,9 @@
       use jrw_datalib_module
       use reservoir_module
       use conditional_module
-      use climate_parms
+      use climate_module
       use time_module
-      use parm, only : resclai, resclao, resgrai, resgrao, ressagi, ressago, ressani, ressano, ressili, ressilo
+      use hru_module, only : resclai, resclao, resgrai, resgrao, ressagi, ressago, ressani, ressano, ressili, ressilo
       use hydrograph_module, only : res
 
 	real :: sed,san,sil,cla,sag,lag,gra

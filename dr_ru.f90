@@ -3,7 +3,7 @@
       use hydrograph_module
       use hru_lte_module
       use ru_module
-      use parm, only : ihru, tconc
+      use hru_module, only : ihru, tconc
     
      ! compute delivery ratio for each hru in the sub
       sumn = 0.

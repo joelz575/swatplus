@@ -6,7 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
 !!    t_base(:)   |deg C         |minimum temperature for plant growth
 !!    t_opt(:)    |deg C         |optimal temperature for plant growth
 !!    tmp_an(:)   |deg C         |average annual air temperature
@@ -30,9 +29,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use climate_parms
+      use climate_module
       use jrw_datalib_module, only : pldb
-      use parm, only : pcom, tmpav, tmn, ihru, idp, ipl, iwgen, tmn, tmpav
+      use hru_module, only : pcom, tmpav, tmn, ihru, idp, ipl, iwgen, tmn, tmpav
       
       integer :: j
       real :: tgx, rto

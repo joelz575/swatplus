@@ -31,7 +31,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use organic_mineral_mass_module
-      use parm, only : soil, hru, sedorgn, sedyld, ihru, enratio, pcom
+      use hru_module, only : soil, hru, sedorgn, sedyld, ihru, enratio, pcom
 
       integer :: j
       real :: xx, wt1, er, conc

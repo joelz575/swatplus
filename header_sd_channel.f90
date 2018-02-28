@@ -1,8 +1,8 @@
       subroutine header_sd_channel
 
-      use parm
       use sd_channel_module
       use basin_module
+      use hydrograph_module
 
 !!!  SWAT-DEG CHANNEL
       if (sp_ob%chandeg > 0) then

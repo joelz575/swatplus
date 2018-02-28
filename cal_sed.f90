@@ -1,9 +1,8 @@
       subroutine cal_sed
 
-      use parm, only : hru, hru_init, ihru, pcom, pcom_init, soil, soil_init, tconc
+      use hru_module, only : hru, hru_init, ihru, pcom, pcom_init, soil, soil_init, tconc
       use hydrograph_module
       use ru_module
-      use climate_module
       use aquifer_module
       use channel_module
       use hru_lte_module

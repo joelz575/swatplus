@@ -2,16 +2,15 @@
       
       use jrw_datalib_module, only: pldb, db_mx
       use hru_lte_module
-      use climate_module
+      use hydrograph_module
       use input_file_module
-      use parm, only : ipl
       use output_landscape_module
-      use climate_parms
+      use climate_module
       use time_module
       
       character (len=80) :: titldum
       character (len=80) :: header
-      integer :: eof, grow_start, grow_end
+      integer :: eof, grow_start, grow_end, ipl
       real :: rtos, rto3
       
       eof = 0

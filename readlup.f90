@@ -29,7 +29,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : ida_lup, iyr_lup, no_up 
+      use hru_module, only : ida_lup, iyr_lup, no_up 
       use time_module
       character*13 fnam
       integer :: eof

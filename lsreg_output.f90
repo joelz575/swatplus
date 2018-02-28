@@ -3,7 +3,7 @@
       use time_module
       use basin_module
       use jrw_datalib_module
-      use parm, only : hru, idp, ihru, ipl, pcom
+      use hru_module, only : hru, idp, ihru, ipl, pcom
       use output_landscape_module
       integer, dimension(:), allocatable :: iarea
              

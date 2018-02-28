@@ -2,9 +2,7 @@
 
       use reservoir_module
       use hydrograph_module
-      
-      use parm
-    
+
       !! set reservoir object numbers for reservoir objects
       iob1 = sp_ob1%res
       iob2 = sp_ob1%res + sp_ob%res - 1

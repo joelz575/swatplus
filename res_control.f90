@@ -3,9 +3,9 @@
       use basin_module
       use jrw_datalib_module
       use time_module
-      use parm, only : pet_day, resclai, resgrai, reslagi, ressagi, ressani, ressili, hru
+      use hru_module, only : pet_day, resclai, resgrai, reslagi, ressagi, ressani, ressili, hru
       use reservoir_module
-      use climate_parms
+      use climate_module
       use hydrograph_module, only : ob, res, hd, icmd, iwst
       
       integer :: k, ii, jres

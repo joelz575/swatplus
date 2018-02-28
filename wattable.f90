@@ -6,7 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
 !!    watab       |mm            |water table based on 30 day antecedent
 !!                               | climate (precip,et)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -30,7 +29,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : rfqeo_30d,eo_30d, wtab, wtab_mx, wtab_mn, nd_30, ihru, pet_day, precipday,  &
+      use hru_module, only : rfqeo_30d,eo_30d, wtab, wtab_mx, wtab_mn, nd_30, ihru, pet_day, precip_eff,  &
         qday 
 
       integer :: j, j1
@@ -41,7 +40,7 @@
       wtab_mx(j) = 2.5
 
       !! compute 30 day sums
-      rfqeo_30d(nd_30,j) = precipday - qday - pet_day
+      rfqeo_30d(nd_30,j) = precip_eff - qday - pet_day
       eo_30d(nd_30,j) = pet_day
       rfqeo_sum = 0.
       eo_sum = 0.

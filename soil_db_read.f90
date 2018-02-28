@@ -1,7 +1,7 @@
       subroutine soil_db_read
       
       use input_file_module
-      use parm, only : isol, mlyr
+      use hru_module, only : isol, mlyr
 
       character (len=80) :: titldum
       character (len=80) :: header

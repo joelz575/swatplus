@@ -4,20 +4,20 @@
 !!    this subroutine controls the simulation of the land phase of the 
 !!    hydrologic cycle
 
-      use parm, only : pcom, hru, soil, ihru, tmx, tmn, tmpav, hru_ra, hru_rmx, rhd, u10, tillage_switch,      &
-         tillage_days, icr, ndeat, qdr, phubase, cht_mx, strsw_av, sedyld, sci, ndcfrt, aird, ndcpst, surfq,   &
-         yr_skip, latq, tconc, smx, sepbtm, icfrt, igrz, iseptic, i_sep, filterw, sed_con, soln_con, solp_con, & 
-         orgn_con, orgp_con, cnday, nplnt, percn, tileno3, icpst, pplnt, sedorgn, sedorgp, surqno3, latno3,    &
-         surqsolp, sedminpa, sedminps, auton, autop, bactrop, bactsedlp, bactsedp, bactrolp, cfertn, cfertp,   &
+      use hru_module, only : pcom, hru, soil, ihru, tmx, tmn, tmpav, hru_ra, hru_rmx, rhd, u10, tillage_switch,      &
+         tillage_days, icr, ndeat, qdr, phubase, cht_mx, strsw_av, sedyld, sci, aird, surfq,   &
+         yr_skip, latq, tconc, smx, sepbtm, igrz, iseptic, i_sep, filterw, sed_con, soln_con, solp_con, & 
+         orgn_con, orgp_con, cnday, nplnt, percn, tileno3, pplnt, sedorgn, sedorgp, surqno3, latno3,    &
+         surqsolp, sedminpa, sedminps, auton, autop, bactrop, bactsedlp, bactsedp, bactrolp,     &
          fertn, fertp, fixn, grazn, grazp, hmntl, hmptl, ipl, no3pcp, peakr, qtile, rmn2tl, rmp1tl, rmptl,     &
          roctl, rwntl, snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, wdntl, canev,   &
-         ep_day, es_day, etday, iadep, idp, inflpcp, inflrout, ipot, isep, iwgen, ls_overq, nd_30, pet_day,    &
-         pot, precipday, qday, sumlai, surfqout, sno_hru, latqrunon
+         ep_day, es_day, etday, idp, inflpcp, ipot, isep, iwgen, ls_overq, nd_30, pet_day,              &
+         pot, precipday, precip_eff, qday, sumlai, sno_hru, latqrunon
       
       use basin_module
       use organic_mineral_mass_module
       use hydrograph_module
-      use climate_parms, only : wst, wgn_pms
+      use climate_module, only : wst, wgn_pms
       use jrw_datalib_module, only : pldb, sched, sep, res_dat
       use reservoir_module
       use output_landscape_module
@@ -33,13 +33,13 @@
       iwst = ob(iob)%wst
       iwgen = wst(iwst)%wco%wgn
       ith = hru(j)%dbs%topo
-      iadep = wst(iwst)%wco%atmodep
       ipot = hru(ihru)%dbs%surf_stor
       iwgn = wst(iwst)%wco%wgn
       jres = hru(j)%res
       isched = hru(j)%mgt_ops
       
       precipday = wst(iwst)%weat%precip
+      precip_eff = precipday
       tmx(j) = wst(iwst)%weat%tmax
       tmn(j) = wst(iwst)%weat%tmin
       tmpav(j) = (tmx(j) + tmn(j)) / 2.
@@ -86,8 +86,6 @@
       else
 
         !! Add incoming lateral soil flow
-        surfqout = 0.
-        inflrout = 0.
         !!ht1== deposition: write to deposition.out
         !!ht2== outflow from inflow: added to hru generated flows
         ht1 = hz
@@ -173,8 +171,8 @@
         sedyld(j) = sedyld(j) + ht2%sed
 
         !! compute effective rainfall (amount that percs into soil)
-        !! add infiltration from surface runon (inflrout)
-        inflpcp = Max(0.,precipday - surfq(j)) + inflrout
+        !! add infiltration from surface runon 
+        inflpcp = Max(0., precip_eff - surfq(j))
          
         !! perform management operations
         if (yr_skip(j) == 0) call mgt_operatn   
@@ -200,27 +198,16 @@
         !! new CN method
         if (icn == 1) then 
         sci(j) = sci(j) + pet_day * exp(-hru(j)%hyd%cncoef * sci(j) /      &
-           smx(j)) - precipday + qday + qtile + latq(j) + sepbtm(j)
+           smx(j)) - precip_eff + qday + qtile + latq(j) + sepbtm(j)
         else if (icn == 2) then 
         sci(j) = sci(j) + pet_day * exp(-hru(j)%hyd%cncoef * sci(j) /      &
-           smx(j)) - precipday + qday + latq(j) + sepbtm(j) + qtile
+           smx(j)) - precip_eff + qday + latq(j) + sepbtm(j) + qtile
         sci(j) = amin1(sci(j), bsn_prm%smxco * smx(j))
         end if 
         
         !! apply fertilizer/manure in continuous fert operation
-        if (icfrt(j) == 1) then
-          ndcfrt(j) = ndcfrt(j) + 1
-          call pl_confert
-          call bac_apply_hrucon
-          soil(j)%ly(1)%bacsol(ibac) = sol_bacsol
-          soil(j)%ly(1)%bacsor(ibac) = sol_bacsor
-        end if
+
         
-        !! apply pesticide in continuous pest operation
-        if (icpst(j) == 1) then 
-          ndcpst(j) = ndcpst(j) + 1
-          call pl_conapply
-        end if 
         
         !! remove biomass from grazing and apply manure
         if (igrz(j) == 1) then
@@ -285,7 +272,7 @@
         call pst_lch
 
         if (surfq(j) > 0. .and. peakr > 1.e-6) then
-          if (precipday > 0.) then
+          if (precip_eff > 0.) then
             call pst_enrsb
             if (sedyld(j) > 0.) call pst_pesty
 
@@ -473,8 +460,8 @@
         hwb_d(j)%overbank = over_flow
 
       ! output_nutbal
-        hnb_d(j)%cfertn = cfertn
-        hnb_d(j)%cfertp =  cfertp
+        !hnb_d(j)%cfertn = cfertn
+        !hnb_d(j)%cfertp =  cfertp
         hnb_d(j)%grazn = grazn
         hnb_d(j)%grazp = grazp
         hnb_d(j)%auton = auton

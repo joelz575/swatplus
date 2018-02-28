@@ -47,7 +47,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : hru, hru_dafr, hrupest, ihru, iscen, nhru, npmx, soil, wpstaao
+      use hru_module, only : hru, hru_dafr, hrupest, ihru, iscen, nhru, npmx, soil, wpstaao
       use jrw_datalib_module
       use constituent_mass_module
 

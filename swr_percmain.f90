@@ -5,24 +5,13 @@
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    drainmod tile equations   08/2006
-!!	  dep_imp(:)  |mm            |depth to impervious layer
-!!    drainmod tile equations   08/2006
-!!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
-!!                               |into soil (enters soil)
-!!    ihru        |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    new water table depth  equations   01/2009
 !!	  c			  |none		     |a factor used to convert airvol to wtd
-!!	  deep_p      |mm            |total thickness of soil profile in HRU
 !!    dg          |mm            |soil layer thickness in HRU
 !!    new water table depth  equations   01/2009
-!!    latlyr      |mm H2O        |lateral flow in soil layer for the day
 !!    latq(:)     |mm H2O        |total lateral flow in soil profile for the 
 !!                               |day in HRU
 !!    lyrtile     |mm H2O        |drainage tile flow in soil layer for day
@@ -41,29 +30,18 @@
 !!    new water table depth  equations   01/2009
 !!    wt_shall    |mm H2O        |shallow water table depth above the impervious layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    j1          |none          |counter
 !!	  w2          |mm            |
 !!	  y1          |mm 		     |dummy variable for wat
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
-!!    SWAT: percmacro, percmicro, drains(wt_shall), origtile(wt_shall,d)
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
-      use parm, only : aird, hru, ihru, i_sep, inflpcp, isep, latlyr, latq, lyrtile, qstemm, sepbtm, sepcrktot, sepday,   &
+      use hru_module, only : aird, hru, ihru, i_sep, inflpcp, isep, latlyr, latq, lyrtile, qstemm, sepbtm, sepcrktot, sepday,   &
          soil, sw_excess, wt_shall, pot, qtile
       use jrw_datalib_module, only : sep
       use hydrograph_module
       use basin_module
       
-      integer :: j, j1, nn, k
+      integer :: j          !!none       |HRU number
+      integer :: j1         !!none       |counter
 
       j = ihru
 

@@ -15,8 +15,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    tair        |deg C         |air temperature for hour in HRU
-!!    tmp_hi(:)   |deg C         |last maximum temperature in HRU
-!!    tmp_lo(:)   |deg C         |last minimum temperature in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -35,20 +33,19 @@
 !!    Hydrology-Vrije Universiteit Brussel, Belgium
 !!    subroutine modified by SLN
 
-      use parm, only : tmx, tmn, tmp_hi, tmp_lo 
+      use climate_module
        
       integer, intent (in) ::  jj
       real, intent(in) :: hr
-      real :: cli_tair
+      real :: cli_tair, tmp_lo, tmp_hi
 
 !! update hi or lo temperature depending on hour of day
-      if (hr == 3) tmp_lo(jj) = tmn(jj)
-      if (hr == 15) tmp_hi(jj) = tmx(jj)
+      if (hr == 3) tmp_lo = wst(iwst)%weat%tmax
+      if (hr == 15) tmp_hi = wst(iwst)%weat%tmin
 
 !! SWAT manual equation 2.3.1
       cli_tair = 0.
-      cli_tair = 0.5 * (tmp_hi(jj) + tmp_lo(jj) + (tmp_hi(jj) -      &        
-             tmp_lo(jj) * Cos(0.2618 * Real(hr - 15))))
+      cli_tair = 0.5 * (tmp_hi + tmp_lo + (tmp_hi - tmp_lo * Cos(0.2618 * Real(hr - 15))))
 
       return
       end function

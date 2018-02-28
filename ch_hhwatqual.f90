@@ -198,12 +198,12 @@
       
       use jrw_datalib_module
       use time_module
-      use parm, only : soxy
       use channel_module
       use hydrograph_module, only : ob
-      use climate_parms
+      use climate_module
 
       integer :: ii
+      real :: soxy
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
       real :: orgpin, dispin, cbodin, disoxin, thour, wtmp, fll, gra
       real :: lambda, fnn, fpp, algi, xx, yy, zz, ww, cinn

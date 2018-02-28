@@ -10,8 +10,6 @@
 !!    blai(:)     |none          |maximum (potential) leaf area index
 !!    canmx(:)    |mm H2O        |maximum canopy storage
 !!    canstor(:)  |mm H2O        |amount of water held in canopy storage
-!!    ihru        |none          |HRU number
-!!    precipday   |mm H2O        |precipitation for the day in HRU
 !!    wst(:)%weat%ts(:) |mm H2O        |precipitation in time step for HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -19,7 +17,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    canstor(:)  |mm H2O        |amount of water held in canopy storage
-!!    precipday   |mm H2O        |precipitation reaching soil surface
 !!    wst(:)%weat%ts(:) |mm H2O        |precipitation reaching soil surface in
 !!                               |time step
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -39,8 +36,8 @@
 
       use basin_module
       use time_module
-      use climate_parms, only : wst
-      use parm, only : hru, canstor, blai_com, ihru, precipday, sumlai
+      use climate_module, only : wst
+      use hru_module, only : hru, canstor, blai_com, ihru, precipday, sumlai
 
       integer :: j, ii
       real :: xx, canmxl, canstori
@@ -80,14 +77,11 @@
           end if
 
         else
-          xx = 0.
-          canmxl = 0.
-          xx = precipday
           canmxl = hru(j)%hyd%canmx * sumlai / blai_com(j)
-          precipday = precipday - (canmxl - canstor(j))
+          precip_eff = precip_eff - (canmxl - canstor(j))
           if (precipday < 0.) then
-            canstor(j) = canstor(j) + xx
-            precipday = 0.
+            canstor(j) = canstor(j) + precipday
+            precip_eff = 0.
           else
             canstor(j) = canmxl
           endif

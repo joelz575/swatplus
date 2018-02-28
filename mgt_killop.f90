@@ -41,7 +41,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : pcom, soil, hru, plgz, plmz, plstrz, hrupest, ihru, ipl, npmx
+      use hru_module, only : pcom, soil, hru, plgz, plmz, plstrz, hrupest, ihru, ipl, npmx
       use constituent_mass_module
   
       integer :: j, k
@@ -319,7 +319,7 @@
 	!! reset variables
       pcom(j)%plg(ipl) = plgz
       pcom(j)%plm(ipl) = plmz
-      pcom(j)%plstr(ipl) = plstrz
+      
       !! can't reset entire plcur - harv_num can't be zero'd
       pcom(j)%plcur(ipl)%gro = 0
       pcom(j)%plcur(ipl)%idorm = 0

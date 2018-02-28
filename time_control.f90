@@ -11,24 +11,13 @@
 !!                               |Mixing of soil due to activity of earthworms
 !!                               |and other soil biota. Mixing is performed at
 !!                               |the end of every calendar year.
-!!    hi_targ(:,:,:)|(kg/ha)/(kg/ha)|harvest index target of cover defined at
-!!                               |planting
-!!    mcr         |none          |max number of crops grown per year
 !!    nhru        |none          |number of HRUs in watershed
-!!    tnyld(:)    |kg N/kg yield |modifier for autofertilization target
-!!                               |nitrogen content for plant
-!!    tnylda(:)   |kg N/kg yield |estimated/target nitrogen content of
-!!                               |yield used in autofertilization
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    curyr       |none          |current year in simulation (sequence)
-!!    hi_targ(:,:,:)|(kg/ha)/(kg/ha)|harvest index target of cover defined at
-!!                               |planting
-!!    tnylda(:)   |kg N/kg yield |estimated/target nitrogen content of
-!!                               |yield used in autofertilization
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -50,11 +39,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
-      use parm, only : curyr, hru, idp, ifirstatmo, ihru, ipl, mcr,    &
-         nhru, nop, pcom, phubase, tnyld, tnylda, yr_skip, timest  
+      use hru_module, only : curyr, hru, idp, ihru, ipl,     &
+         nhru, nop, pcom, phubase, yr_skip, timest  
       use time_module
       use climate_module
-      use climate_parms
       use basin_module
       use sd_channel_module
       use hru_lte_module
@@ -245,13 +233,6 @@
                 pcom(j)%plcur(ipl)%curyr_mat = Min(pcom(j)%plcur(ipl)%curyr_mat,pldb(idp)%mat_yrs)
               end if
             end if
-          end do
-
-          !! update target nitrogen content of yield with data from
-          !! year just simulated
-          do ic = 1, mcr
-            xx = Real(time%yrs)
-            tnylda(j) = (tnylda(j) * xx + tnyld(j)) / (xx + 1.)
           end do
 
           if (time%idaf < 181) then

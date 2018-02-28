@@ -14,7 +14,6 @@
 !!    rchdep      |m             |depth of flow on day
 !!    rttlc       |m^3 H2O       |transmission losses from reach on day
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
-!!    sub_fr(:)   |none          |fraction of watershed area in subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -23,6 +22,7 @@
 !!                               |into the soil profile or being taken
 !!                               |up by plant roots in the bank storage zone
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
+!!    qdbank      |m^3 H2O       |streamflow contribution from bank storage
 !!    sedrch      |metric tons   |sediment transported out of reach on day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -41,16 +41,15 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use climate_parms
+      use climate_module
       use hydrograph_module
       use basin_module
       use jrw_datalib_module
       use time_module
-      use parm, only : inum1, pet_day, qdbank, rch_gra, rch_lag, rch_sag, revapday, sub_fr
       use channel_module
 
       integer :: ii
-      real :: subwtr
+      real :: subwtr, qdbank, revapday
       
       jhyd = ch_dat(jrch)%hyd
       jsed = ch_dat(jrch)%sed
@@ -59,6 +58,8 @@
 
       iwst = ob(icmd)%wst
       pet_day = wst(iwst)%weat%pet
+      qdbank = 0.
+      revapday = 0.
       
       !! initialize variables for route command loop
       call ch_rchinit
@@ -89,13 +90,6 @@
 
 !! add transmission losses to bank storage/deep aquifer in subbasin
       if (rttlc > 0.) then
-!        ch(jrch)%bankst = ch(jrch)%bankst + rttlc * (1. - bsn_prm%trnsrch)
-!        if (da_ha > 1.e-9) then 
-!          subwtr = rttlc * bsn_prm%trnsrch / (da_ha * sub_fr(jrch) * 10.)
-!          do j = hru1(jrch), hru1(jrch) + hrutot(jrch) - 1
-!            hru(j)%dpa%deepst = hru(j)%dpa%deepst + subwtr
-!          end do
-!	  end if
         ch(jrch)%bankst = ch(jrch)%bankst + rttlc * (1.-bsn_prm%trnsrch)
 !!!! Jeff add to hydrograph -----------------------------
         rchsep(jrch) = rttlc * bsn_prm%trnsrch
@@ -129,7 +123,7 @@
 	  ch(jrch)%orgp = 0.
 
 !! do not perform sediment routing for headwater subbasins when i_subhw = 0
-	  if (bsn_cc%i_subhw == 0 .and. inum1 == inum2) then
+	  if (bsn_cc%i_subhw == 0) then
           if (time%step == 0) then
             if (rtwtr > 0. .and. rchdep > 0.) then
               sedrch  = ob(icmd)%hd(1)%flo 

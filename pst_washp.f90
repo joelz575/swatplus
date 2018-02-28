@@ -39,7 +39,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : pestdb
-      use parm, only : hru, soil, hrupest, ihru, npmx
+      use hru_module, only : hru, soil, hrupest, ihru, npmx
       use constituent_mass_module
       
       integer :: j, k, kk

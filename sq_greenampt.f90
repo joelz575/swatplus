@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
 !!    nstep       |none          |max number of time steps per day
 !!    nstep       |none          |number of rainfall time steps for day
 !!    wst(:)%weat%ts(:)  |mm H2O        |precipitation for the time step during day
@@ -55,20 +54,19 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : urbdb
-      use climate_parms
+      use climate_module
       use basin_module
       use hydrograph_module
-      use parm, only : hru, soil, hru_sub, swtrg, hhqday, ubnrunoff, hhsurfq, surfq, cnday, wfsh, ihru
+      use hru_module, only : hru, soil, swtrg, hhqday, ubnrunoff, hhsurfq, surfq, cnday, wfsh, ihru
       use time_module
       
-      integer :: j, k, kk,sb
+      integer :: j, k, kk
       real :: adj_hc, dthet, soilw, psidt, tst, f1
       real, dimension (time%step+1) :: cumr, cuminf, excum, exinc, rateinf
       real, dimension (time%step+1) :: rintns
         !! array location #1 is for last time step of prev day
 
        j = ihru
-       sb = hru_sub(j)
        ulu = hru(j)%luse%urb_lu
        
        !! reset values for day

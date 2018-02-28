@@ -69,10 +69,9 @@
 !!	Modified by N.Kannan, Blackland Research, Temple, USA
 
       use basin_module
-      use climate_parms
+      use climate_module
       use jrw_datalib_module
       use time_module
-      use parm, only : pet_day, rcharea, sdti
       use channel_module
       use hydrograph_module, only : ob
 

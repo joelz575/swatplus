@@ -2,14 +2,14 @@
       
        use jrw_datalib_module
        use input_file_module
-       use parm, only : hru, hru_init, pcom_init, soil, soil_init 
+       use hru_module, only : hru, hru_init, pcom_init, soil, soil_init 
        use hydrograph_module
        use hru_lte_module
        use sd_channel_module
        use organic_mineral_mass_module
       
        character (len=80) :: titldum, header
-       integer :: eof
+       integer :: eof, icom
        
        eof = 0
 

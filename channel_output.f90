@@ -5,7 +5,7 @@
       use jrw_datalib_module
       use hydrograph_module, only : ob
       use channel_module
-      use climate_parms
+      use climate_module
       
       integer, intent (in) :: jrch
              

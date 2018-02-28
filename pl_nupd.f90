@@ -60,7 +60,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : pldb, plcp
-      use parm, only : pcom, un2, uno3d, ihru, ipl, idp 
+      use hru_module, only : pcom, un2, uno3d, ihru, ipl, idp 
       
       integer :: j, icrop, l, ir
       real :: unmx, uno3l, gx

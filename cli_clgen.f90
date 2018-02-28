@@ -10,21 +10,14 @@
 !!    j           |none          |HRU number
 !!    latcos(:)   |none          |Cos(Latitude) for HRU
 !!    latsin(:)   |none          |Sin(Latitude) for HRU
-!!    npcp(:)     |none          |prior day category
-!!                               |1 dry day
-!!                               |2 wet day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    dayl(:)     |hours         |day length
 !!    frad(:,:)   |none          |fraction of solar radiation occuring during 
 !!                               |hour in day in HRU
 !!    hru_rmx(:)  |MJ/m^2        |maximum possible radiation for the day in HRU
-!!    npcp(:)     |none          |prior day category
-!!                               |1 dry day
-!!                               |2 wet day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -49,9 +42,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use climate_parms
+      use climate_module
       use time_module
-      use parm, only : dayl, npcp
       use hydrograph_module
 
       integer :: ii
@@ -59,9 +51,9 @@
 
       !! Reset prior day category for precipitation     
       if (wst(iwst)%weat%precip >= 0.1) then
-        npcp(iwst) = 2
+        wst(iwst)%weat%precip_prior_day = 'wet'
       else
-        npcp(iwst) = 1
+        wst(iwst)%weat%precip_prior_day = 'dry'
       end if
 
       !! Calculate Daylength !!
@@ -87,7 +79,7 @@
       else
         h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
       endif 
-      dayl(iwgn) = 7.6394 * h
+      wst(iwst)%weat%daylength = 7.6394 * h
           
       !! Calculate Potential (maximum) Radiation !!
       !! equation 2.2.7 in SWAT manual

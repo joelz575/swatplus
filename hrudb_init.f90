@@ -1,7 +1,7 @@
       subroutine hrudb_init
     
       use hydrograph_module, only : sp_ob, sp_ob1, ob
-      use parm, only : hru, hru_db
+      use hru_module, only : hru, hru_db
 
       integer :: eof
 

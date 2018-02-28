@@ -62,7 +62,7 @@
       use jrw_datalib_module, only : pldb
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : pcom, soil, uno3d, un2, nplnt, fixn, idp, ihru, ipl, rto_no3, sol_rd  
+      use hru_module, only : pcom, soil, uno3d, un2, nplnt, fixn, idp, ihru, ipl, rto_no3, sol_rd  
 
       integer :: j, icrop, l, ir
       real :: unmx, uno3l, gx

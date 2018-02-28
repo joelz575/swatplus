@@ -17,7 +17,7 @@
       use basin_module
       use jrw_datalib_module, only : fire_db
       use organic_mineral_mass_module
-      use parm, only : pcom, soil, cn2, ihru, cnop, ipl 
+      use hru_module, only : pcom, soil, cn2, ihru, cnop, ipl 
       use carbon_module
    
       integer :: j

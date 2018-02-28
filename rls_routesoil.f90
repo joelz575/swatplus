@@ -9,7 +9,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!
-      use parm, only : soil, ihru, latqrunon
+      use hru_module, only : soil, ihru, latqrunon
       use hydrograph_module
 
       real :: latqlyr, xslat

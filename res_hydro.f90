@@ -3,7 +3,7 @@
       use jrw_datalib_module
       use reservoir_module
       use conditional_module
-      use climate_parms
+      use climate_module
       use time_module
       use hydrograph_module, only : res, recall, ob
       

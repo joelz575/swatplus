@@ -63,10 +63,9 @@
       use basin_module
       use jrw_datalib_module
       use time_module
-      use parm, only : peakr, rch_gra, rch_lag, rch_sag
       use channel_module
       use hydrograph_module, only : ob
-      use climate_parms
+      use climate_module
 
 	integer :: ii
 	real :: qin, qdin, sedin, vc, cyin, cych, depnet, deg, dep

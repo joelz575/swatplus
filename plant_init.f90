@@ -23,10 +23,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : blai_com, cn2, cvm_com, hru, icom, idp, ihru, ipl, isol, nop, pcom,  &
-         rsdco_plcom, sol, tnyld, tnylda, ilu 
+      use hru_module, only : blai_com, cn2, cvm_com, hru, idp, ihru, ipl, isol, nop, pcom,  &
+         rsdco_plcom, sol, ilu 
       use hydrograph_module
-      use climate_parms, only : wst, wgn
+      use climate_module, only : wst, wgn
       use time_module
       use hru_lte_module
       use jrw_datalib_module, only : lum_str, lum, lum_grp, pcomdb, pldb, plcp, cn, cons_prac, db_mx,  &
@@ -35,6 +35,7 @@
       use organic_mineral_mass_module
       
       integer, intent (in) :: init
+      integer :: icom
   
       j = ihru
       
@@ -83,7 +84,6 @@
 
         cvm_com(j) = 0.
         blai_com(j) = 0.
-        tnylda(j) = 0.
         rsdco_plcom(j) = 0.
         pcom(j)%pcomdb = icom
         do ipl = 1, pcom(j)%npl
@@ -146,8 +146,6 @@
            pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
           pcom(j)%plm(ipl)%pmass = pcom(j)%plm(ipl)%p_fr *                 &
                 pcom(j)%plm(ipl)%mass
-          tnylda(j) = tnylda(j) + 350. * pldb(idp)%cnyld *                 &
-                pldb(idp)%bio_e / pcom(j)%npl
           if (pcom(j)%plcur(ipl)%pop_com < 1.e-6) then
             pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai
           else

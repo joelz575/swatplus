@@ -43,8 +43,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : wgncur
-      use climate_parms
+      use climate_module
       use hydrograph_module
       use time_module
 

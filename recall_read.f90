@@ -9,7 +9,7 @@
  
       character (len=80) :: titldum, header
       character (len=16) :: namedum
-      integer :: eof, imax
+      integer :: eof, imax, iyr
 
       eof = 0
       imax = 0

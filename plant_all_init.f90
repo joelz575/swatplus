@@ -1,6 +1,6 @@
       subroutine plant_all_init
     
-      use parm, only : hru, ihru, isol, ilu
+      use hru_module, only : hru, ihru, isol, ilu
       use hydrograph_module, only : sp_ob
 
       !!assign land use pointers for the hru

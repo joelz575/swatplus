@@ -29,7 +29,6 @@
 !!    bc4(:)       |1/day         |rate constant for the decay of organic P to
 !!                                |dissolved P in reach at 20 deg C
 !!    chlora(:)    |mg chl-a/L    |chlorophyll-a concentration in reach
-!!    dayl(:)      |hours         |day length for current day
 !!    disolvp(:)   |mg P/L        |dissolved phosphorus concentration in reach
 !!    hru_ra(:)    |MJ/m^2        |solar radiation for the day in HRU
 !!    k_l          |MJ/(m2*hr)    |half saturation coefficient for light
@@ -196,11 +195,11 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use jrw_datalib_module
-      use parm, only : soxy
       use channel_module
       use hydrograph_module, only : ob
-      use climate_parms
+      use climate_module
 
+      real :: soxy
       real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
       real :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra
       real :: lambda, fnn, fpp, algi, fl_1, xx, yy, zz, ww, cinn

@@ -1,8 +1,10 @@
     subroutine sd_channel_control
-    
-    use parm, only : rcharea, sdti
+
     use sd_channel_module
     use basin_module
+    use hydrograph_module
+    
+    real :: rcharea, sdti
       
       ich = isdch
       isd_db = ob(icmd)%props
@@ -280,7 +282,7 @@
          ht2 = ht1
          !convert mass to concentration
          call hyd_convert_conc (ht1)
-         call sd_channel_nutrients (ht1, ht2)
+         call sd_channel_nutrients
         end if
 
       END IF

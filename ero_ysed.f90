@@ -11,11 +11,9 @@
 !!                               |of the USLE C factor for the land cover)
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
 !!    icr(:)      |none          |sequence number of crop grown within a year
-!!    ihru        |none          |HRU number
 !!    peakr       |m^3/s         |peak runoff rate
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
-!!    sub_km(:)   |km^2          |area of subbasin in square kilometers
 !!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
 !!    usle_ei     |100(ft-tn in)/(acre-hr)|USLE rainfall erosion index
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -42,7 +40,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : hru, soil, usle_cfac, cklsp, surfq, sedyld, sanyld, silyld, clayld, lagyld, sagyld,  &
+      use hru_module, only : hru, soil, usle_cfac, cklsp, surfq, sedyld, sanyld, silyld, clayld, lagyld, sagyld,  &
          sno_hru, ihru, peakr
 
       integer :: j

@@ -11,7 +11,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!
 
-      use parm, only : hhsurfq, ihru, qday 
+      use hru_module, only : hhsurfq, ihru, qday 
       use ru_module
       use hydrograph_module
       use time_module

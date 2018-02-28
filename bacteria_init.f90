@@ -31,7 +31,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : hru, hru_db, ihru, ipl, isol, isolt, mlyr, mpst, npmx, pcom, pesti_db,  &
+      use hru_module, only : hru, hru_db, ihru, ipl, isol, isolt, mlyr, mpst, npmx, pcom, pesti_db,  &
          soil, sol, sol_cov, wfsh
       use bacteria_module
       use channel_module

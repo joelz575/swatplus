@@ -50,7 +50,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm
+      use hru_module
 
       real, intent (in) :: evx, spx, pp, qin, ox, yi, yo, ysx
       real, intent (in) :: vf, vyf, aha

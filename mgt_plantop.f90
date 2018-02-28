@@ -1,6 +1,6 @@
       subroutine mgt_plantop
     
-      use parm, only: pcom, soil, bio_init, cnop, ihru, ipl, lai_init, strsa_sum, strsn_sum, strsp_sum, strsw_sum
+      use hru_module, only: pcom, soil, bio_init, cnop, ihru, ipl, lai_init, plstrz
       use jrw_datalib_module, only: pldb
   
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -70,13 +70,7 @@
       pcom(j)%plg(ipl)%hvstiadj = 0.
       pcom(j)%plg(ipl)%olai = 0.
       pcom(j)%plg(ipl)%rwt = 0.
-      
- !!   added for Srini in output.mgt per JGA by gsm 9/8/2011     
-      strsw_sum = 0.
-      strstmp_sum = 0.
-      strsn_sum = 0.
-      strsp_sum = 0.
-      strsa_sum = 0.  
+      pcom(j)%plstr(ipl) = plstrz 
 
       !! initialize transplant variables
       if (lai_init > 0.) then

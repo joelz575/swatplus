@@ -2,10 +2,9 @@
       
       use hru_lte_module
       use hydrograph_module
-      use climate_module
       use output_landscape_module
       use basin_module
-      use climate_parms
+      use climate_module
       use time_module
       use jrw_datalib_module, only : pldb, plcp
       

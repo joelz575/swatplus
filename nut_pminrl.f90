@@ -37,7 +37,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil, ihru
+      use hru_module, only : soil, ihru
       use output_landscape_module, only : hnb_d
 
       real, parameter :: bk = .0006

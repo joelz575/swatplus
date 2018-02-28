@@ -1,6 +1,6 @@
         subroutine cbn_zhang2
     
-        use parm, only : ihru, soil, tillage_days, tillage_depth, tillage_factor, tillage_switch, wdntl
+        use hru_module, only : ihru, soil, tillage_days, tillage_depth, tillage_factor, tillage_switch, wdntl
         use basin_module
         use organic_mineral_mass_module
         use carbon_module

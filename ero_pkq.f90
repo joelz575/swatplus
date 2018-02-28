@@ -7,13 +7,8 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    al5          |none          |fraction of daily rainfall that occurs
-!!                                |during 0.5h highest intensity
 !!    hru_km(:)    |km^2          |area of HRU in square kilometers
 !!    ihru         |none          |HRU number
-!!    qday         |mm H2O        |surface runoff that reaches main channel
-!!                                |during day in HRU
-
 !!    tconc(:)     |hr            |time of concentration for HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -35,14 +30,18 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only: hru, tconc, ihru, al5, peakr, qday 
+      use hru_module, only: hru, tconc, ihru, peakr, qday
+      use hydrograph_module
+      use climate_module
 
       integer :: j
       real :: altc
 
       j = ihru
-
-      altc = 1. - expo(2. * tconc(j) * Log(1. - al5))
+      iob = hru(j)%obj_no
+      iwst = ob(iob)%wst
+      
+      altc = 1. - expo(2. * tconc(j) * Log(1. - wst(iwst)%weat%precip_half_hr))
       peakr = altc * qday / tconc(j)           !! mm/h
       peakr = peakr * hru(j)%km / 3.6          !! m^3/s
 

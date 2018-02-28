@@ -17,7 +17,6 @@
 !!                               |5 cold season annual
 !!                               |6 perennial
 !!                               |7 trees
-!!    ihru        |none          |HRU number
 !!    stsol_rd(:) |mm            |storing last soil root depth for use in harvestkillop/killop
 !!    uobw        |none          |water uptake normalization parameter
 !!                               |This variable normalizes the water uptake so
@@ -56,7 +55,7 @@
 
       use jrw_datalib_module, only : pldb
       use basin_module
-      use parm, only : soil, pcom, hru, ihru, stsol_rd, epmax, ipl, ep_day, idp, sol_rd  
+      use hru_module, only : soil, pcom, hru, ihru, stsol_rd, epmax, ipl, ep_day, idp, sol_rd  
       
       integer :: j, k, ir
       real :: sum, xx, gx, reduc, sump

@@ -5,7 +5,8 @@
       use jrw_datalib_module, only : cal_codes, db_mx, lscal, lscalt, ls_prms, chcal, region 
       use time_module
       use basin_module
-      use parm, only : hru
+      use hru_module, only : hru
+      use hydrograph_module
       
       pco = pco_init
       pco%wb_bsn%a = 'y'

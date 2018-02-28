@@ -64,7 +64,7 @@
 !!    SWAT: Qman
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-      use parm, only : hru, ihru, wat_phi
+      use hru_module, only : hru, ihru, wat_phi
       
  
       integer :: jj, k

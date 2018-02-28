@@ -28,7 +28,7 @@
       use jrw_datalib_module, only : chemapp_db, fertdb
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : ihru, cfertn, cfertp, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
+      use hru_module, only : ihru, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
         fertsolp  
       
       
@@ -177,11 +177,9 @@
       fertorgn = frt_kg * fertdb(ifrt)%forgn
       fertsolp = frt_kg * fertdb(ifrt)%fminp
       fertorgp = frt_kg * fertdb(ifrt)%forgp  
-      fertn = fertn + (frt_kg + cfertn) * (fertdb(ifrt)%fminn +         &         
+      fertn = fertn + frt_kg * (fertdb(ifrt)%fminn +         &         
                                                    fertdb(ifrt)%forgn)
-
-      fertp = fertp + (frt_kg + cfertp) * (fertdb(ifrt)%fminp +         &         
+      fertp = fertp + frt_kg * (fertdb(ifrt)%fminp +         &         
                                                    fertdb(ifrt)%forgp)
-
       return
       end subroutine pl_fert

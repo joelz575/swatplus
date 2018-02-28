@@ -47,7 +47,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use climate_parms
+      use climate_module
       use basin_module
       use jrw_datalib_module
 

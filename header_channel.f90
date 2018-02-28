@@ -1,6 +1,5 @@
       subroutine header_channel
 
-      use parm
       use channel_module
       use basin_module
       use hydrograph_module, only : sp_ob

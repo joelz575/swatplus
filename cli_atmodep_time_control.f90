@@ -1,6 +1,6 @@
       subroutine cli_atmodep_time_control
 
-      use climate_parms
+      use climate_module
       use time_module
       
       if (atmodep_cont%num_sta > 0) then

@@ -1,7 +1,6 @@
       subroutine read_mgtops(isched)
       
       use jrw_datalib_module
-      use parm
       use time_module
       
       integer :: iyear, day, mon

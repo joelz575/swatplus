@@ -1,6 +1,6 @@
       subroutine hru_re_initialize (iihru)
     
-      use parm, only : hru, hru_init, soil, soil_init, pcom, pcom_init, sno_hru, sno_init, nop, bss
+      use hru_module, only : hru, hru_init, soil, soil_init, pcom, pcom_init, sno_hru, sno_init, nop, bss
 
       use organic_mineral_mass_module
 

@@ -27,13 +27,13 @@
          sweepop_db, sweepop, sched
       use basin_module
       use hydrograph_module
-      use parm, only : pcom, soil, hru, ihru, imp_trig, phubase, ndeat, igrz, manure_id, grz_days, bio_trmp, bio_min,   &
-        manure_kg, yr_skip, nop, bio_eat, sol_sumno3, sol_sumsolp, strsn_sum, strsp_sum, strstmp_sum, strsw_sum,        &
-        strsa_sum, irramt, irr_sc, irr_no, fertnh3, fertno3, fertorgn, fertorgp, fertsolp, idp, ipl, sweepeff,          &
-        yr_skip, yield
+      use hru_module, only : pcom, soil, hru, ihru, imp_trig, phubase, ndeat, igrz, manure_id, grz_days, bio_trmp, bio_min,   &
+        manure_kg, yr_skip, nop, bio_eat, sol_sumno3, sol_sumsolp, irramt, irr_sc, irr_no, fertnh3, fertno3, fertorgn,  &
+        fertorgp, fertsolp, idp, ipl, sweepeff, yr_skip, yield, plstrz
       use time_module
       use constituent_mass_module
       
+      integer :: icom
       j = ihru
       
       ! determine which plant in community (%op2)
@@ -62,7 +62,7 @@
                 pcom(j)%plcur(ipl)%gro = 1
                 pcom(j)%plcur(ipl)%idorm = 0
                 if (pco%mgtout ==  'y') then
-                  write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,  "PLANT ",             &
+                  write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,  "PLANT ",          &
                       phubase(ihru), pcom(ihru)%plcur(ipl)%phuacc,  soil(ihru)%sw,                          &
                       pcom(ihru)%plm(ipl)%mass, soil(ihru)%ly(1)%rsd, sol_sumno3(ihru),                     &
                       sol_sumsolp(ihru),pcom(ihru)%plg(ipl)%lai, pcom(ihru)%plcur(ipl)%laimx_pop
@@ -120,10 +120,11 @@
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == 'y') then
-                  write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARVEST ",         &
+                  write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARVEST ",    &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, soil(j)%ly(1)%rsd,    &
-                      sol_sumno3(j), sol_sumsolp(j), yield, strsn_sum(j), strsp_sum(j), strstmp_sum(j), &
-                      strsw_sum(j), strsa_sum(j)
+                      sol_sumno3(j), sol_sumsolp(j), yield, pcom(j)%plstr(ipl)%sum_n,                   &
+                      pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w,   &
+                      pcom(j)%plstr(ipl)%sum_a
                 end if 
               end if
               pcom(j)%plcur(ipl)%phuacc = 0.
@@ -137,10 +138,11 @@
   
                   idp = pcom(j)%plcur(ipl)%idplt
                   if (pco%mgtout == 'y') then
-                    write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARVEST ",       &
+                    write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARVEST ",  &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, soil(j)%ly(1)%rsd,    &
-                      sol_sumno3(j), sol_sumsolp(j), yield, strsn_sum(j), strsp_sum(j), strstmp_sum(j), &
-                      strsw_sum(j), strsa_sum(j)
+                      sol_sumno3(j), sol_sumsolp(j), yield, pcom(j)%plstr(ipl)%sum_n,                   &
+                      pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w,   &
+                      pcom(j)%plstr(ipl)%sum_a
                   end if 
                 end if
                 pcom(j)%plcur(ipl)%phuacc = 0.
@@ -172,12 +174,14 @@
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == 'y') then
-                  write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARV/KILL ",      &
+                  write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARV/KILL ",  &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, soil(j)%ly(1)%rsd,    &
-                      sol_sumno3(j), sol_sumsolp(j), yield, strsn_sum(j), strsp_sum(j), strstmp_sum(j), &
-                      strsw_sum(j), strsa_sum(j)
+                      sol_sumno3(j), sol_sumsolp(j), yield, pcom(j)%plstr(ipl)%sum_n,                   &
+                      pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w,   &
+                      pcom(j)%plstr(ipl)%sum_a
                 end if 
               end if
+              pcom(j)%plstr(ipl) = plstrz
               pcom(j)%plcur(ipl)%phuacc = 0.
               phubase(j) = 0.
             end do
@@ -223,7 +227,7 @@
             call pl_fert (j, ifrt, frt_kg, ifertop)
 
             if (pco%mgtout == 'y') then
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, chemapp_db(mgt%op4)%name, "    FERT ", &
+              write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    FERT ", &
                 phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pcom(j)%plm(ipl)%mass,           &
                 soil(j)%ly(1)%rsd, sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3,         &
                 fertorgn, fertsolp, fertorgp
@@ -245,7 +249,7 @@
             call pl_apply (j, ipest, pest_kg, ipestop)
             
             if (pco%mgtout == 'y') then
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, chemapp_db(mgt%op4)%name, "    FERT ", &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    PEST ", &
                 phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,            &
                 soil(j)%ly(1)%rsd, sol_sumno3(j), sol_sumsolp(j), pst_kg
             endif

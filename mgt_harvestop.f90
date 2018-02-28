@@ -6,9 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    auto_eff(:) |none           |fertilizer application efficiency calculated
-!!                                |as the amount of N applied divided by the
-!!                                |amount of N removed at harvest
 !!    cnyld(:)    |kg N/kg yield  |fraction of nitrogen in yield
 !!    cpyld(:)    |kg P/kg yield  |fraction of phosphorus in yield
 !!    curyr       |none           |current year in simulation
@@ -51,8 +48,6 @@
 !!    rsr1c(:)    |               |initial root to shoot ratio at beg of growing season
 !!    rsr2c(:)    |               |root to shoot ratio at end of growing season
 !!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
-!!    tnyld(:)    |kg N/kg yield  |modifier for autofertilization target
-!!                                |nitrogen content for plant
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -80,7 +75,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : pcom, hru, soil, tnyld, auto_eff, hrupest, harveff, idp, ihru,  &
+      use hru_module, only : pcom, hru, soil, hrupest, harveff, idp, ihru,  &
         ipl, npmx
       use jrw_datalib_module, only: harvop_db, pldb
       use constituent_mass_module
@@ -138,12 +133,6 @@
       ssr = ssb * pcom(j)%plg(ipl)%rwt                           ! Armen 16 Jan 2009 storing info
       ssn = pcom(j)%plm(ipl)%nmass                             ! Armen 20 May 2006 storing info
       ssp = pcom(ihru)%plm(ipl)%pmass                              ! Armen 20 May 2006 storing info
-	
-	
-!! calculate modifier for autofertilization target nitrogen content
-      tnyld(j) = 0.
-      tnyld(j) = (1. - pcom(j)%plg(ipl)%rwt) * pcom(j)%plm(ipl)%mass *    &  
-         pcom(j)%plm(ipl)%n_fr * auto_eff(j)
 
       hiad1 = 0.
       if (hi_ovr > 0.) then

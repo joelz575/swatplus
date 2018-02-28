@@ -45,9 +45,9 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : itb, tconc, uh
+      use hru_module, only : itb, tconc, uh
     
-      use climate_parms
+      use climate_module
       use jrw_datalib_module
       use basin_module
       use channel_module

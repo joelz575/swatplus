@@ -36,7 +36,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : enratio, hru, ihru, sedorgn, soil, sedyld, surfq
+      use hru_module, only : enratio, hru, ihru, sedorgn, soil, sedyld, surfq
       use jrw_datalib_module
       use organic_mineral_mass_module
       use carbon_module

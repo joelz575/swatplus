@@ -9,7 +9,7 @@
       use hydrograph_module
       use constituent_mass_module
       use time_module
-      use climate_parms
+      use climate_module
       use jrw_datalib_module
       
       integer, intent(in) :: nhyds, ndsave, nspu, nspu1

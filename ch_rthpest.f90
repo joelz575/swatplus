@@ -22,7 +22,6 @@
 !!    drift(:)      |kg            |amount of pesticide drifting onto main
 !!                                 |channel in subbasin
 !!    hdepth(:)     |m             |depth of flow in hour
-!!    hru_sub(:)    |none          |subbasin number where reach is located
 !!    rchwtr        |m^3 H2O       |water stored in reach at beginning of day
 !!    rtwtr         |m^3 H2O       |water leaving reach on day
 !!    sedpst_act(:) |m             |depth of active sediment layer in reach for
@@ -87,7 +86,6 @@
       
       use jrw_datalib_module
       use time_module
-      use parm, only : pest_sol
       use channel_module
       use hydrograph_module, only : ob
 
@@ -96,7 +94,6 @@
       real :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
 
 !! calculate volume of active river bed sediment layer
-      bedvol = 0.
       bedvol =ch_hyd(jhyd)%w * ch_hyd(jhyd)%l*1000.*                     &
                     ch_pst(jpst)%sedpst_act
 
@@ -110,13 +107,9 @@
       endif
 
 !! calculate volume of water entering reach
-      wtrin = 0.
       wtrin = ob(icmd)%ts(1,ii)%flo 
          
 !! pesticide transported into reach during day
-      solpstin = 0.
-      sorpstin = 0.
-      pstin = 0.
       solpstin = ob(icmd)%ts(1,ii)%psol 
       sorpstin = ob(icmd)%ts(1,ii)%psor 
       pstin = solpstin + sorpstin
@@ -130,11 +123,9 @@
 !      endif
  
       !! calculate mass of pesticide in reach
-      chpstmass = 0.
       chpstmass = pstin + ch(jrch)%pst_conc * hrchwtr(ii)
       
       !! calculate mass of pesticide in bed sediment
-      sedpstmass = 0.
       sedpstmass = ch_pst(jpst)%sedpst_conc * bedvol
 
       if (chpstmass + sedpstmass < 1.e-6) then
@@ -146,12 +137,9 @@
 !!in-stream processes
       if (hrtwtr(ii) / (time%dtm*60.) > 0.01) then
         !! calculated sediment concentration
-        sedcon = 0.
         sedcon = hsedyld(ii) / hrtwtr(ii) * 1.e6
 
         !! calculate fraction of soluble and sorbed pesticide
-        frsol = 0.
-        frsrb = 0.
         if (solpstin + sorpstin > 1.e-6) then
           if (ch_pst(jpst)%pst_koc > 0.) then
             frsol = 1. / (1. + ch_pst(jpst)%pst_koc)
@@ -171,7 +159,6 @@
         fd2 = 1. / (.5 + ch_pst(jpst)%pst_koc)
 
         !! calculate flow duration
-         thour = 0.
          thour = hhtime(ii)
          if (thour > 1.0) thour = 1.0
          thour = 1.0
@@ -246,7 +233,6 @@
         end if
 
         !! verify that water concentration is at or below solubility
-        solmax = 0.
         solmax = pest_sol * (rchwtr + wtrin)
         if (solmax < chpstmass * frsol) then
          sedpstmass = sedpstmass + (chpstmass * frsol - solmax)

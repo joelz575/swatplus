@@ -3,7 +3,7 @@
 	!! code developed by Armen R. Kemanian in 2008 
 	!! March, 2009 further adjustments expected
     
-    use parm, only : soil, ihru, stsol_rd
+    use hru_module, only : soil, ihru, stsol_rd
 
 	real :: sol_thick(soil(ihru)%nly)
 	real :: cum_rd, cum_d, cum_rf, x1, x2

@@ -26,7 +26,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module
-      use parm, only : hru, iseptic, soil, t_ov, tc_gwat
+      use hru_module, only : hru, iseptic, soil, t_ov, tc_gwat
     
       character (len=16), intent (in) :: str_name
       integer, intent (in) :: istr, j

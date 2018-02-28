@@ -122,13 +122,12 @@
       use basin_module
       use time_module
       use constituent_mass_module
-      use parm, only : hru, pst_lag, sedyld, surf_bs, ihru, hhsurf_bs, hhsedy, sanyld, silyld,     &
+      use hru_module, only : hru, pst_lag, sedyld, surf_bs, ihru, hhsurf_bs, hhsedy, sanyld, silyld,     &
          clayld, sagyld, lagyld, sedorgn, sedorgp, surqno3, surqsolp, sedminpa, sedminps, brt,     &
-         hrupest, bactrolp, bactrop, bactsedlp, bactsedp, inum1, npmx  
+         hrupest, bactrolp, bactrop, bactsedlp, bactsedp, npmx  
    
       integer :: j, k
-     
-      j = 0
+
       j = ihru
 
       if (bsn_cc%event<3) then

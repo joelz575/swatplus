@@ -21,7 +21,6 @@
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
 !!                               | 1: pesticides used in HRU
-!!    ihru        |none          |HRU number
 !!    npmx        |none          |number of different pesticides used in
 !!                               |the simulation
 !!    pst_sed(:,:)|kg/ha         |pesticide loading from HRU sorbed onto
@@ -88,7 +87,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : latno3, filterw, ihru
+      use hru_module, only : latno3, filterw, ihru
       
       integer :: j, k
 

@@ -1,6 +1,7 @@
       subroutine output_landscape_init
 
-      use parm
+      use hru_module
+      use hydrograph_module
       use channel_module
       use sd_channel_module
       use basin_module

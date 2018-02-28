@@ -1,7 +1,7 @@
       subroutine solt_db_read
       
       use input_file_module
-      use parm, only : isolt
+      use hru_module, only : isolt
       
       character (len=80) :: titldum
       character (len=80) :: header

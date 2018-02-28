@@ -1,7 +1,7 @@
       subroutine time_conc_init 
     
       use ru_module
-      use parm, only : brt, hru, hru_db, ihru, t_ov, tconc
+      use hru_module, only : brt, hru, hru_db, ihru, t_ov, tconc
       use hydrograph_module, only : sp_ob, ru_def, ru_elem, sp_ob1, ob
       use jrw_datalib_module, only : topo_db, field_db
       use time_module

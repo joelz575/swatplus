@@ -1,13 +1,13 @@
       subroutine cli_tmeas
       
       use input_file_module
-      use climate_parms
+      use climate_module
       use jrw_datalib_module, only : db_mx
       use time_module
       
       character (len=80) :: header
       character (len=80) :: titldum
-      integer :: eof, i, imax
+      integer :: eof, i, imax, iyr
        
        mtmp = 0
        eof = 0

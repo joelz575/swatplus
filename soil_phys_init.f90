@@ -38,7 +38,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : sol
+      use hru_module, only : sol
       use basin_module
       use time_module
 

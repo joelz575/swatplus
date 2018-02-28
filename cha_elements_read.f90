@@ -4,7 +4,6 @@
       use jrw_datalib_module
       use hydrograph_module
       use sd_channel_module
-      use parm, only : ihru
 
       character (len=80) :: titldum, header
       integer :: eof
@@ -177,11 +176,11 @@
           deallocate (elem_cnt)
           end if   !nspu > 1
         else
-          !!all hrus are in region 
+          !!all channels are in region 
           allocate (ccu_reg(i)%num(sp_ob%hru))
           ccu_reg(i)%num_tot = sp_ob%chan
           do icha = 1, sp_ob%chan
-            ccu_reg(i)%num(ihru) = icha
+            ccu_reg(i)%num(icha) = icha
           end do      
         end if
 
@@ -246,8 +245,8 @@
         do icha = 1, ccu_reg(ireg)%num_tot      !elements have to be hru or hru_lte
           ielem = ccu_reg(ireg)%num(icha)
           !switch %num from element number to hru number
-          ccu_cal(ireg)%num(ihru) = ccu_elem(ielem)%obtypno
-          ccu_cal(ireg)%hru_ha(ihru) = ccu_elem(ielem)%sub_frac * ccu_cal(ireg)%area_ha
+          ccu_cal(ireg)%num(icha) = ccu_elem(ielem)%obtypno
+          ccu_cal(ireg)%hru_ha(icha) = ccu_elem(ielem)%sub_frac * ccu_cal(ireg)%area_ha
         end do
       end do
       

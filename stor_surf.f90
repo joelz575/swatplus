@@ -2,11 +2,11 @@
     
       use jrw_datalib_module, only : wet_hyd, wet_dat, res_weir, res_dat 
       use reservoir_module
-      use parm, only : hru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, grayld, sedminps, sedminpa,   &
+      use hru_module, only : hru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, grayld, sedminps, sedminpa,   &
         surqno3, sedorgn, sedorgp, qdr, ihru, pet_day, qday, resclai, resclao, resgrai, resgrao, reslagi, &
         reslago, ressagi, ressago, ressani, ressano, ressili, ressilo
       use conditional_module
-      use climate_parms
+      use climate_module
       use hydrograph_module, only : wet, res, recall, ob
       use time_module
       use basin_module

@@ -1,13 +1,13 @@
       subroutine cli_smeas
       
-      use climate_parms
+      use climate_module
       use input_file_module
       use time_module
       use jrw_datalib_module, only : db_mx
       
       character (len=80) :: header
       character (len=80) :: titldum
-      integer :: eof, i, imax
+      integer :: eof, i, imax, iyr
        
       eof = 0
       imax = 0

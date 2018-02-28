@@ -1,33 +1,8 @@
       subroutine bac_hrucontrol
-      
-!!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates bacteria growth, transport with runoff and
 !!    loss due to percolation into soil 
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
-!!    precipday   |mm H2O        |precipitation for the day in HRU
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    blpq        |# cfu/m^2     |less persistent bacteria in soil solution at
-!!                               |beginning of day
-!!    blps        |# cfu/m^2     |less persistent bacteria attached to soil
-!!                               |particles at beginning of day
-!!    bpq         |# cfu/m^2     |persistent bacteria in soil solution at
-!!                               |beginning of day
-!!    bps         |# cfu/m^2     |persistent bacteria attached to soil particles
-!!                               |at beginning of day
 !!    cbact       |
 !!    j           |none          |HRU number
 !!    wt1         |none          |conversion factor to convert kg/ha to g/t(ppm)
@@ -39,7 +14,7 @@
 !!    SWAT: Theta
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-      use parm, only : soil, hru, pcom, ihru, tmpav, sedyld, precipday, qday
+      use hru_module, only : soil, hru, pcom, ihru, tmpav, sedyld, precipday, qday
       use bacteria_module
       use constituent_mass_module
       use hydrograph_module

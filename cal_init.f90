@@ -3,7 +3,7 @@
       use sd_channel_module
       use hru_lte_module
       use organic_mineral_mass_module
-      use parm, only : hru, hru_init, ihru, pcom, pcom_init, soil, soil_init, sno_hru, sno_init
+      use hru_module, only : hru, hru_init, ihru, pcom, pcom_init, soil, soil_init, sno_hru, sno_init
       use hydrograph_module, only : sp_ob
       use jrw_datalib_module, only : cal_codes
       

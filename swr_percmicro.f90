@@ -17,7 +17,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    latlyr       |mm H2O        |lateral subsurface flow in layer
 !!    lyrtile      |mm H2O        |drainage tile flow in layer for day in HRU
 !!    sepday       |mm H2O        |percolation from soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -41,7 +40,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : sep
-      use parm, only : soil, hru, ihru, bz_perc, i_sep, isep, latlyr, lyrtile, sepday, sw_excess
+      use hru_module, only : soil, hru, ihru, bz_perc, i_sep, isep, latlyr, lyrtile, sepday, sw_excess
       
       integer, intent (in) :: ly1
       integer :: j

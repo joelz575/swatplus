@@ -12,7 +12,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    elevp(:)    |m             |elevation of precipitation gage station
 !!    elevt(:)    |m             |elevation of temperature gage station
-!!    hru_sub(:)  |none          |subbasin in which HRU is located
 !!    ifirstpet   |none          |potential ET data search code
 !!                               |0 first day of potential ET data located in
 !!                               |  file
@@ -65,16 +64,16 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use climate_parms
+      use climate_module
       use basin_module
       use time_module
-      use parm, only : petmeas
       use hydrograph_module
       use jrw_datalib_module, only : db_mx
-      use climate_parms
            
-      integer :: k, inum3sprev, npcpbsb, ii, iyp, idap, ib
-      real :: daylbsb, tdif, pdif, ratio
+      integer :: k, inum3sprev, ii, iyp, idap, ib
+      real :: daylbsb, tdif, pdif, ratio, petmeas
+      real :: half_hr_mn        !! mm H2O        |lowest value half hour precip fraction can have
+      real :: half_hr_mx        !! mm H2O        |highest value half hour precip fraction can have
       
       !! Precipitation:
       do iwst = 1, db_mx%wst
@@ -155,6 +154,8 @@
             call cli_rhgen(iwgn)
           end if
         end if
+        !! simple dewpoint eqn from Lawrence 2005. Bull. Amer. Meteor. Soc.
+        wst(iwst)%weat%dewpt = wst(iwst)%weat%tave - (1. - wst(iwst)%weat%rhum) / 5.
       end do 
 
 !! Wind Speed: 
@@ -205,6 +206,15 @@
         end do
       end if
 
+            
+!! Calculate maximum half-hour rainfall fraction
+      do iwst = 1, db_mx%wst
+        iwgn = wst(iwst)%wco%wgn
+        half_hr_mn = 0.02083
+        half_hr_mx = 1. - expo(-125. / (wst(iwst)%weat%precip + 5.))
+        wst(iwst)%weat%precip_half_hr = Atri(half_hr_mn, wgn_pms(iwgn)%amp_r(time%mo), half_hr_mx, rndseed(10,iwgn))
+      end do
+
 !! Base Zero Heat Units
       do iwst = 1, db_mx%wst
         iwgn = wst(iwst)%wco%wgn
@@ -216,8 +226,7 @@
         end if
         if (time%end_yr == 1) wst(iwst)%weat%phubase0 = 0.
       end do
-      
-      
+
 !! Climate Change Adjustments !!
       do iwst = 1, db_mx%wst
         wst(iwst)%weat%precip = wst(iwst)%weat%precip * (1. + wst(iwst)%rfinc(time%mo) / 100.)

@@ -42,7 +42,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil, ihru
+      use hru_module, only : soil, ihru
       use time_module
 
       integer :: j, l

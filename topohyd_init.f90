@@ -1,7 +1,7 @@
       subroutine topohyd_init
     
       use hydrograph_module, only : sp_ob, sp_ob1, ob
-      use parm, only : hru, hru_db, sno_hru, ihru
+      use hru_module, only : hru, hru_db, sno_hru, ihru
       use jrw_datalib_module
 
       integer :: eof

@@ -63,7 +63,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : hru, surfq, sedyld, ihru, wat_phi, clayld, sanyld, silyld, sagyld, lagyld,  &
+      use hru_module, only : hru, surfq, sedyld, ihru, wat_phi, clayld, sanyld, silyld, sagyld, lagyld,  &
         sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, hrupest, bactrolp,       &
         bactrop, bactsedlp, bactsedp, npmx, peakr, rcharea, sdti
       use constituent_mass_module

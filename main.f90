@@ -30,10 +30,9 @@
 !!    i           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
-      use parm, only : hru, ihru, prog, soil
+      use hru_module, only : hru, ihru, prog, soil
       use hydrograph_module
       use ru_module
-      use climate_module
       use aquifer_module
       use channel_module
       use hru_lte_module
@@ -45,7 +44,7 @@
       use input_file_module
       use organic_mineral_mass_module
       use time_module
-      use climate_parms
+      use climate_module
       
       implicit none
       integer :: date_time(8)
@@ -61,11 +60,11 @@
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
       integer :: i
 
-      prog = " SWAT+ Feb 13 2018    MODULAR Rev 2018.42"
+      prog = " SWAT+ Feb 28 2018    MODULAR Rev 2018.43"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 42             ",/,             &
+     &          "              Revision 43             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)

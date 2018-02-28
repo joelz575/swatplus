@@ -1,70 +1,22 @@
-      subroutine pl_graze
-      
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine simulates biomass lost to grazing
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name         |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bio_min(:)   |kg/ha         |minimum plant biomass for grazing
-!!    bio_eat(:)   |(kg/ha)/day   |dry weight of biomass removed by grazing
-!!                                |daily
-!!    bio_trmp(:)  |(kg/ha)/day   |dry weight of biomass removed by
-!!                                |trampling daily
-!!    fminn(:)     |kg minN/kg frt|fraction of mineral N (NO3 + NH3) in 
-!!                                |fertilizer/manure
-!!    fminp(:)     |kg minP/kg frt|fraction of mineral P in fertilizer/manure
-!!    fnh3n(:)     |kg NH3-N/kg minN|fraction of NH3-N in mineral N in 
-!!                                |fertilizer/manure
-!!    forgn(:)     |kg orgN/kg frt|fraction of organic N in fertilizer/manure
-!!    forgp(:)     |kg orgP/kg frt|fraction of organic P in fertilizer/manure
-!!    manure_id(:) |none          |manure (fertilizer) identification
-!!                                |number from fert.dat
-!!    igrz(:)      |none          |grazing flag for HRU:
-!!                                |0 HRU currently not grazed
-!!                                |1 HRU currently grazed
-!!    ihru         |none          |HRU number
-!!    grz_days(:)  |none          |number of days grazing will be simulated
-!!    manure_kg(:) |(kg/ha)/day   |dry weight of manure deposited on HRU
-!!                                |daily
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    igrz(:)     |none          |grazing flag for HRU:
-!!                               |0 HRU currently not grazed
-!!                               |1 HRU currently grazed
-!!    ndeat(:)    |days          |number of days HRU has been grazed
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    dmi         |kg/ha         |biomass in HRU prior to grazing
-!!    dmii        |kg/ha         |biomass prior to trampling
-!!    frt_t       |
-!!    gc          |
-!!    gc1         |
-!!    it          |none          |manure/fertilizer id number from fert.dat
-!!    j           |none          |HRU number
-!!    l           |none          |number of soil layer that manure is applied
-!!    swf         |
-!!    xx          |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
-!!    SWAT: Erfc
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
+      subroutine pl_graze      
+    
       use jrw_datalib_module, only : mgt, fertdb
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : pcom, soil, igrz, ndeat, bio_min, bio_eat,  &
+      use hru_module, only : pcom, soil, igrz, ndeat, bio_min, bio_eat,  &
         bio_trmp, manure_id, manure_kg, grz_days, ihru, grazn, grazp  
       use carbon_module
 
-      integer :: j, l, it
-      real :: dmi, dmii, gc, gc1, swf, frt_t, xx
+      integer :: j         !!none        |HRU number
+      integer :: l         !!none        |number of soil layer that manure applied
+      integer :: it        !!none        |manure/fertilizer id from fertilizer.frt
+      real :: gc           !!
+      real :: gc1          !!
+      real :: swf          !!
+      real :: frt_t        !!
+      real :: xx           !!
+      real :: dmi          !!kg/ha       |biomass in HRU prior to grazing
+      real :: dmii         !!kg/ha       |biomass prior to trampling
 
       j = ihru
       

@@ -3,9 +3,9 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine zeros all array values
 
-      use parm, only : bactlpq,bactlps,bactpq,bactps,bio_init,clayld,flowfr,fsred,harveff,   &
-       hru,hru_sub,hru1,hrutot,imp_trig,lagyld,lai_init,ndeat,ovrlnd,par,phi,sagyld,sanyld,sci,   &
-       sedyld,silyld,smx,snotmp,surf_bs,tmp_hi,tmp_lo,twash,wpstaao,wrt
+      use hru_module, only : bactlpq,bactlps,bactpq,bactps,bio_init,clayld,flowfr,fsred,harveff,   &
+       hru,imp_trig,lagyld,lai_init,ndeat,ovrlnd,par,phi,sagyld,sanyld,sci,    &
+       sedyld,silyld,smx,snotmp,surf_bs,twash,wpstaao,wrt
       
       use bacteria_module
 
@@ -34,10 +34,7 @@
       flowfr = 0.
       fsred = 0.
       harveff = 0.
-      hru_sub = 0
-      hru1 = 0
-      hrutot = 0     
-      
+
       irelease = 0
       imp_trig = 1
       minpcnst = 0.
@@ -76,8 +73,6 @@
       smx = 0.
       snotmp = 0.
       surf_bs = 0.
-      tmp_hi = 0.
-      tmp_lo = 0.
       twash = 0.
       wpstaao = 0.
       wrt = 0.

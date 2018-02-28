@@ -9,7 +9,6 @@
 !!    alai_min(:)    |m**2/m**2     |minimum LAI during winter dormant period
 !!    bio_leaf(:)    |none          |fraction of biomass that drops during
 !!                                  |dormancy (for trees only)
-!!    dayl(:)        |hours         |day length for current day
 !!    daylmn(:)      |hours         |shortest daylength occurring during the
 !!                                  |year
 !!    dormhr(:)      |hour          |time threshold used to define dormant
@@ -45,12 +44,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use climate_parms
+      use climate_module
       use basin_module
       use hydrograph_module
       use jrw_datalib_module, only : pldb 
       use organic_mineral_mass_module
-      use parm, only : soil, pcom, hru, dayl, dormhr, phubase, sol_sumno3, sol_sumsolp, ipl, ihru,  &
+      use hru_module, only : soil, pcom, hru, dormhr, phubase, sol_sumno3, sol_sumsolp, ipl, ihru,  &
         idp, sol_sumno3, sol_sumsolp
       use carbon_module
       use time_module
@@ -91,7 +90,7 @@
 
 !! check for beginning of dormant season
       if (pldb(idp)%idc == 1 .or. pldb(idp)%idc == 4) return
-      if (pcom(j)%plcur(ipl)%idorm == 0 .and. dayl(iwgn)-dormhr(j) < wgn_pms(iwgn)%daylmn) then
+      if (pcom(j)%plcur(ipl)%idorm == 0 .and. wst(iwst)%weat%daylength - dormhr(j) < wgn_pms(iwgn)%daylmn) then
           
         select case (pldb(idp)%idc)
         
@@ -383,7 +382,7 @@
           end if
 
 !! check if end of dormant period
-        if (pcom(j)%plcur(ipl)%idorm == 1.and.dayl(iwgn) - dormhr(j) >=   &
+        if (pcom(j)%plcur(ipl)%idorm == 1 .and. wst(iwst)%weat%daylength - dormhr(j) >=   &
             wgn_pms(iwgn)%daylmn) then
 
           select case (pldb(idp)%idc)

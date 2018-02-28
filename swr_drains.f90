@@ -11,7 +11,6 @@
 !!    drain_co(:) |mm/day        |drainage coefficient 
 !!    dg(:,:)     |mm            |depth of soil layer
 !!    ddrain(:)   |mm            |depth of drain tube from the soil surface							 
-!!    ihru        |none          |HRU number
 !!    latksatf(:) |none          |multiplication factor to determine conk(j1,j) from sol_k(j1,j) for HRU
 !!    pc(:)       |mm/hr         |pump capacity (default pump capacity = 1.042mm/hr or 25mm/day)
 !!    sdrain(:)   |mm            |distance between two drain tubes or tiles
@@ -68,9 +67,9 @@
       use jrw_datalib_module, only : sdr
       use basin_module
       use hydrograph_module
-      use climate_parms, only : wst
-      use parm, only : hru, soil, ihru, wnan, stmaxd, sstmaxd, pot, surfq, etday, inflpcp, &  
-          mlyr, precipday, qtile, wt_shall
+      use climate_module, only : wst
+      use hru_module, only : hru, soil, ihru, wnan, stmaxd, sstmaxd, pot, surfq, etday, inflpcp, &  
+          mlyr, precip_eff, qtile, wt_shall
       use time_module
 
       integer :: j1, j, m
@@ -177,8 +176,8 @@
         stor= 0.
       end if
       if (pot(j)%sa <= 0.) then ! determine stor
-        stor = precipday - inflpcp - etday !Daniel 10/05/07
-        if(surfq(j) > 0.0) stor=stmaxd(j)
+        stor = precip_eff - inflpcp - etday !Daniel 10/05/07
+        if(surfq(j) > 0.0) stor = stmaxd(j)
       else
         stor = pot(j)%vol/(pot(j)%sa*1000)
       endif

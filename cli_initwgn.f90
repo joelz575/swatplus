@@ -62,10 +62,6 @@
 !!                               |daylength for the area, the plant will go
 !!                               |dormant)
 !!    j           |none          |counter
-!!    irelh       |none          |irelh = 0 (dewpoint)
-!!                               |      = 1 (relative humidity)
-!!                               |note:  inputs > 1.0 (dewpoint)
-!!                               |       inputs < 1.0 (relative hum)
 !!    lattan      |none          |Tan(Latitude)
 !!    m1          |none          |array location (see definition of ndays)
 !!    mdays       |none          |number of days in the month
@@ -107,8 +103,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use parm, only : irelh
-      use climate_parms, only : wgn, wgn_pms, idg, rndseed
+      use climate_module, only : wgn, wgn_pms, idg, rndseed
       use time_module
 
       real :: xx, lattan, x1, x2, x3, tav, tmin, tmax
@@ -116,67 +111,46 @@
       real, dimension (12) :: rain_hhsm
       real :: tmpsoil, sffc, rndm1, dl
       integer :: mon, mdays, j, m1, nda, xrnd
-      
-
-      !! determine if input for dewpt is relative humidity
-      i = iwgn
-      do mon = 1,12
-       if (wgn(i)%dewpt(mon) > 1.0  .or. wgn(i)%dewpt(mon) < 0.0) then
-         irelh(i) = 0
-       end if
-      end do 
 
       !! variables needed for radiation calcs.
-      xx = 0.0
-      lattan = 0.0
       x1 = 0.0
       x2 = 0.0
-      xx = wgn(i)%lat / 57.296 
-                          !!convert degrees to radians (2pi/360=1/57.296)
-      wgn_pms(i)%latsin = Sin(xx)
-      wgn_pms(i)%latcos = Cos(xx)
+      xx = wgn(iwgn)%lat / 57.296     !!convert degrees to radians (2pi/360=1/57.296)
+      wgn_pms(iwgn)%latsin = Sin(xx)
+      wgn_pms(iwgn)%latcos = Cos(xx)
       lattan = Tan(xx)
-!! calculate minimum daylength 
-!! daylength=2*acos(-tan(sd)*tan(lat))/omega
-!! where solar declination, sd, = -23.5 degrees for minimum daylength in
-!!                      northern hemisphere and -tan(sd) = .4348
-!!       absolute value is taken of tan(lat) to convert southern hemisphere
-!!                      values to northern hemisphere
-!!       the angular velocity of the earth's rotation, omega, = 15 deg/hr or
-!!                      0.2618 rad/hr and 2/0.2618 = 7.6394
+      !! calculate minimum daylength -> daylength=2*acos(-tan(sd)*tan(lat))/omega
+      !! where solar declination, sd, = -23.5 degrees for minimum daylength in northern hemisphere and -tan(sd) = .4348
+      !! absolute value is taken of tan(lat) to convert southern hemisphere values to northern hemisphere
+      !! the angular velocity of the earth's rotation, omega, = 15 deg/hr or 0.2618 rad/hr and 2/0.2618 = 7.6394
       x1 = .4348 * Abs(lattan)      
       if (x1 < 1.) x2 = Acos(x1) 
-      wgn_pms(i)%daylmn = 7.6394 * x2
+      wgn_pms(iwgn)%daylmn = 7.6394 * x2
 
-!! calculate day length threshold for dormancy
+      !! calculate day length threshold for dormancy
       if (bsn_prm%dorm_hr < -1.e-6) then
         dl = 0.
-         if (Abs(wgn(i)%lat) > 40.) then
+         if (Abs(wgn(iwgn)%lat) > 40.) then
           dl = 1.
-         else if (Abs(wgn(i)%lat) < 20.) then
+         else if (Abs(wgn(iwgn)%lat) < 20.) then
           dl = -1.
          else
-         dl = (Abs(wgn(i)%lat) - 20.) / 20.
+         dl = (Abs(wgn(iwgn)%lat) - 20.) / 20.
          end if
       else
          dl = bsn_prm%dorm_hr
       end if
-      wgn_pms(i)%daylth = dl
+      wgn_pms(iwgn)%daylth = dl
 
-
-!! calculate smoothed maximum 0.5hr rainfall amounts
+      !! calculate smoothed maximum 0.5hr rainfall amounts
       rain_hhsm = 0.
-      rain_hhsm(1) = (wgn(i)%rainhmx(12) + wgn(i)%rainhmx(1) +          &       
-                                       wgn(i)%rainhmx(2)) / 3.
+      rain_hhsm(1) = (wgn(iwgn)%rainhmx(12) + wgn(iwgn)%rainhmx(1) + wgn(iwgn)%rainhmx(2)) / 3.
       do mon = 2, 11
-        rain_hhsm(mon) = (wgn(i)%rainhmx(mon-1) + wgn(i)%rainhmx(mon) + &
-                         wgn(i)%rainhmx(mon+1)) / 3.
+        rain_hhsm(mon) = (wgn(iwgn)%rainhmx(mon-1) + wgn(iwgn)%rainhmx(mon) + wgn(iwgn)%rainhmx(mon+1)) / 3.
       end do
-      rain_hhsm(12) = (wgn(i)%rainhmx(11) + wgn(i)%rainhmx(12) +        &     
-                         wgn(i)%rainhmx(1)) / 3.
+      rain_hhsm(12) = (wgn(iwgn)%rainhmx(11) + wgn(iwgn)%rainhmx(12) + wgn(iwgn)%rainhmx(1)) / 3.
 
-
-!! calculate missing values and additional parameters
+      !! calculate missing values and additional parameters
       summx_t = 0.
       summn_t = 0.
       summm_p = 0.
@@ -186,40 +160,40 @@
         mdays = 0
         tav = 0.
         mdays = ndays(mon+1) - ndays(mon)
-        tav = (wgn(i)%tmpmx(mon) + wgn(i)%tmpmn(mon)) / 2.
+        tav = (wgn(iwgn)%tmpmx(mon) + wgn(iwgn)%tmpmn(mon)) / 2.
         if (tav > tmax) tmax = tav
         if (tav < tmin) tmin = tav
-        summx_t = summx_t + wgn(i)%tmpmx(mon)
-        summn_t = summn_t + wgn(i)%tmpmn(mon)
+        summx_t = summx_t + wgn(iwgn)%tmpmx(mon)
+        summn_t = summn_t + wgn(iwgn)%tmpmn(mon)
 
         !! calculate total potential heat units
-        if (tav > 0.) wgn_pms(i)%phutot = wgn_pms(i)%phutot + tav * mdays
+        if (tav > 0.) wgn_pms(iwgn)%phutot = wgn_pms(iwgn)%phutot + tav * mdays
 
         !! calculate values for pr_w if missing or bad
-        if (wgn(i)%pr_ww(mon) <= wgn(i)%pr_wd(mon).or.                    &
-                                      wgn(i)%pr_wd(mon) <= 0.) then
-          if (wgn(i)%pcpd(mon) < .1) wgn(i)%pcpd(mon) = 0.1
-          wgn(i)%pr_wd(mon) = .75 * wgn(i)%pcpd(mon) / mdays
-          wgn(i)%pr_ww(mon) = .25 + wgn(i)%pr_wd(mon)
+        if (wgn(iwgn)%pr_ww(mon) <= wgn(iwgn)%pr_wd(mon).or.                    &
+                                      wgn(iwgn)%pr_wd(mon) <= 0.) then
+          if (wgn(iwgn)%pcpd(mon) < .1) wgn(iwgn)%pcpd(mon) = 0.1
+          wgn(iwgn)%pr_wd(mon) = .75 * wgn(iwgn)%pcpd(mon) / mdays
+          wgn(iwgn)%pr_ww(mon) = .25 + wgn(iwgn)%pr_wd(mon)
         else
         !! if pr_w values good, use calculated pcpd based on these values
         !! using first order Markov chain
-        wgn(i)%pcpd(mon) = mdays * wgn(i)%pr_wd(mon) /                  &               
-                       (1. - wgn(i)%pr_ww(mon) + wgn(i)%pr_wd(mon))
+        wgn(iwgn)%pcpd(mon) = mdays * wgn(iwgn)%pr_wd(mon) /                  &               
+                       (1. - wgn(iwgn)%pr_ww(mon) + wgn(iwgn)%pr_wd(mon))
     
         end if
 
         !! calculate precipitation-related values
-        if (wgn(i)%pcpd(mon) <= 0.) wgn(i)%pcpd(mon) = .001
-        wgn_pms(i)%pr_wdays(mon) = wgn(i)%pcpd(mon) / mdays
-        wgn_pms(i)%pcpmean(mon) = wgn(i)%pcpmm(mon) / wgn(i)%pcpd(mon)
-        if (wgn(i)%pcpskw(mon) < 0.2) wgn(i)%pcpskw(mon) = 0.2
-        summm_p = summm_p + wgn(i)%pcpmm(mon)
-        wgn_pms(i)%pcpdays = wgn_pms(i)%pcpdays + wgn(i)%pcpd(mon)
+        if (wgn(iwgn)%pcpd(mon) <= 0.) wgn(iwgn)%pcpd(mon) = .001
+        wgn_pms(iwgn)%pr_wdays(mon) = wgn(iwgn)%pcpd(mon) / mdays
+        wgn_pms(iwgn)%pcpmean(mon) = wgn(iwgn)%pcpmm(mon) / wgn(iwgn)%pcpd(mon)
+        if (wgn(iwgn)%pcpskw(mon) < 0.2) wgn(iwgn)%pcpskw(mon) = 0.2
+        summm_p = summm_p + wgn(iwgn)%pcpmm(mon)
+        wgn_pms(iwgn)%pcpdays = wgn_pms(iwgn)%pcpdays + wgn(iwgn)%pcpd(mon)
       end do
 
-      wgn_pms(i)%pcp_an = summm_p
-      wgn_pms(i)%tmp_an = (summx_t + summn_t) / 24.
+      wgn_pms(iwgn)%pcp_an = summm_p
+      wgn_pms(iwgn)%tmp_an = (summx_t + summn_t) / 24.
 
       !! calculate initial temperature of soil layers
       if (time%idaf > ndays(2)) then
@@ -234,56 +208,49 @@
         mon = 1
       end if
 
-      xrnd = rndseed(idg(3),i)
+      xrnd = rndseed(idg(3),iwgn)
       rndm1 = Aunif(xrnd)
       do mon = 1, 12
         !! calculate precipitation correction factor for pcp generator
-        if (bsn_prm%rdist == 0) then
-          r6 = 0.
-          rnm2 = 0.
-          xlv = 0.
-          pcp = 0.
-          sum = 0.
-          r6 = wgn(i)%pcpskw(mon) / 6.
-          do j = 1, 1000
-            rnm2 = Aunif(xrnd)
-            xlv = (cli_Dstn1(rndm1,rnm2) -r6) * r6 + 1
-            rndm1 = rnm2
-            xlv = (xlv**3 - 1.) * 2 / wgn(i)%pcpskw(mon)
-            pcp = xlv * wgn(i)%pcpstd(mon) + wgn_pms(i)%pcpmean(mon)
-            if (pcp < 0.01) pcp = 0.01
-            sum = sum + pcp
-          end do
-          if (sum > 0.) then
-            wgn_pms(i)%pcf(mon) = 1000. * wgn_pms(i)%pcpmean(mon) / sum
-          else
-            wgn_pms(i)%pcf(mon) = 1.
-          end if
+        r6 = wgn(iwgn)%pcpskw(mon) / 6.
+        do j = 1, 1000
+          rnm2 = Aunif(xrnd)
+          xlv = (cli_Dstn1(rndm1,rnm2) -r6) * r6 + 1
+          rndm1 = rnm2
+          xlv = (xlv**3 - 1.) * 2 / wgn(iwgn)%pcpskw(mon)
+          pcp = xlv * wgn(iwgn)%pcpstd(mon) + wgn_pms(iwgn)%pcpmean(mon)
+          if (pcp < 0.01) pcp = 0.01
+          sum = sum + pcp
+        end do
+        if (sum > 0.) then
+          wgn_pms(iwgn)%pcf(mon) = 1000. * wgn_pms(iwgn)%pcpmean(mon) / sum
+        else
+          wgn_pms(iwgn)%pcf(mon) = 1.
         end if
 
         !! calculate or estimate amp_r values
         x1 = 0.
         x2 = 0.
         x3 = 0.
-        if (wgn(i)%rain_yrs < 1.0) wgn(i)%rain_yrs = 10.
-        x1 = .5 / wgn(i)%rain_yrs 
-        x2 = x1 / wgn(i)%pcpd(mon)
+        if (wgn(iwgn)%rain_yrs < 1.0) wgn(iwgn)%rain_yrs = 10.
+        x1 = .5 / wgn(iwgn)%rain_yrs 
+        x2 = x1 / wgn(iwgn)%pcpd(mon)
         x3 = rain_hhsm(mon) / Log(x2)
-        if (wgn_pms(i)%pcpmean(mon) > 1.e-4) then
-          wgn_pms(i)%amp_r(mon) = bsn_prm%adj_pkr * (1. - Exp(x3 /       &
-                                       wgn_pms(i)%pcpmean(mon)))
+        if (wgn_pms(iwgn)%pcpmean(mon) > 1.e-4) then
+          wgn_pms(iwgn)%amp_r(mon) = bsn_prm%adj_pkr * (1. - Exp(x3 /       &
+                                       wgn_pms(iwgn)%pcpmean(mon)))
         else
-          wgn_pms(i)%amp_r(mon) = 0.95
+          wgn_pms(iwgn)%amp_r(mon) = 0.95
         end if
-        if (wgn_pms(i)%amp_r(mon) < .1) wgn_pms(i)%amp_r(mon) = .1
-        if (wgn_pms(i)%amp_r(mon) > .95) wgn_pms(i)%amp_r(mon) = .95
+        if (wgn_pms(iwgn)%amp_r(mon) < .1) wgn_pms(iwgn)%amp_r(mon) = .1
+        if (wgn_pms(iwgn)%amp_r(mon) > .95) wgn_pms(iwgn)%amp_r(mon) = .95
       end do
 
-!!    determine precipitation category (ireg initialized to category 1)
+      !! determine precipitation category (ireg initialized to category 1)
       xx = 0
       xx = summm_p
-      if (summm_p > 508.) wgn_pms(i)%ireg = 2
-      if (summm_p > 1016.) wgn_pms(i)%ireg = 3
+      if (summm_p > 508.) wgn_pms(iwgn)%ireg = 2
+      if (summm_p > 1016.) wgn_pms(iwgn)%ireg = 3
 
       return
       end subroutine cli_initwgn

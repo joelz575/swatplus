@@ -33,7 +33,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use parm, only : soil, hru, surqsolp, percp, surfq, i_sep, ihru, qtile 
+      use hru_module, only : soil, hru, surqsolp, percp, surfq, i_sep, ihru, qtile 
 
       integer :: j
       real :: xx, vap

@@ -90,15 +90,15 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use jrw_datalib_module, only : potdb
-      use parm, only : soil, hru, irrsc, irrno, aird, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
+      use hru_module, only : soil, hru, irrsc, irrno, aird, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
         irr_sc, irr_no, irr_asq, irr_sca, irr_noa, flowmin, divmax, flowfr, irramt, irr_mx, irr_eff, ipot,   &
-        nhru, rch_gra, rch_lag, rch_sag, sq_rto
+        nhru
       use basin_module
       use time_module
       use channel_module
       use hydrograph_module, only : jrch
 
-      real :: cnv, vmm, vminmm, vol, wtrin
+      real :: cnv, vmm, vminmm, vol, wtrin, sq_rto
 
       wtrin = 0.
       wtrin = rtwtr + ch(jrch)%rchstor

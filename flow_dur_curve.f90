@@ -4,6 +4,7 @@
       use hydrograph_module
 
       real, dimension(7) :: val = 0.
+      integer :: iyr
 
         !set linked list for daily flow duration curves
         ob(icmd)%fdc_ll(time%day)%val = ob(icmd)%hd(1)%flo

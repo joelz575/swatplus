@@ -3,7 +3,7 @@
       use hydrograph_module
       use sd_channel_module
       use ru_module
-      use parm, only : hru, ihru 
+      use hru_module, only : hru, ihru 
       use jrw_datalib_module, only : field_db, topo_db 
       
       character (len=3) :: iobtyp

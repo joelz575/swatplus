@@ -20,9 +20,9 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cn1(:)      |none          |SCS runoff curve number for moisture
+!!    cn1         |none          |SCS runoff curve number for moisture
 !!                               |condition I
-!!    cn3(:)      |none          |SCS runoff curve number for moisture
+!!    cn3         |none          |SCS runoff curve number for moisture
 !!                               |condition III
 !!    sci(:)      |none          |retention coefficient for cn method based on
 !!                               |plant ET
@@ -52,26 +52,26 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use time_module
-      use parm, only : cn1, cn2, cn3, hru, sci, smx, soil, wrt
+      use hru_module, only : cn2, hru, sci, smx, soil, wrt
 
       integer, intent (in) :: h
       real, intent (in) :: cnn
-      real :: c2, s3, rto3, rtos
+      real :: c2, cn1, cn3, s3, rto3, rtos
    
       cn2(h) = cnn
-      if (cn1(h) > 1.e-6) smxold = 254.* (100. / cn1(h) - 1.)
+      if (cn1 > 1.e-6) smxold = 254.* (100. / cn1 - 1.)
 
 !! calculate moisture condition I and III curve numbers
       c2 = 100. - cnn
-      cn1(h) = cnn - 20. * c2 / (c2 + Exp(2.533 - 0.0636 * c2))
-      cn1(h) = Max(cn1(h), .4 * cnn)
-      cn3(h) = cnn * Exp(.006729 * c2)
+      cn1 = cnn - 20. * c2 / (c2 + Exp(2.533 - 0.0636 * c2))
+      cn1 = Max(cn1, .4 * cnn)
+      cn3 = cnn * Exp(.006729 * c2)
 
 !! calculate maximum retention parameter value
-      smx(h) = 254. * (100. / cn1(h) - 1.)
+      smx(h) = 254. * (100. / cn1 - 1.)
 
 !! calculate retention parameter value for CN3
-      s3 = 254. * (100. / cn3(h) - 1.)
+      s3 = 254. * (100. / cn3 - 1.)
 
 !! calculate fraction difference in retention parameters
       rto3 = 1. - s3 / smx(h)

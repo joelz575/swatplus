@@ -57,7 +57,6 @@
 
       use basin_module
       use jrw_datalib_module
-      use parm, only : peakr, rch_gra, rch_lag, rch_sag, rcharea, sdti
       use channel_module
       use hydrograph_module, only : ob
       

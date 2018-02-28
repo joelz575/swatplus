@@ -14,7 +14,6 @@
 !!    brt(:)      |none          |fraction of surface runoff that takes
 !!                               |one day or less to reach the subbasin
 !!                               |outlet
-!!    ihru        |none          |HRU number
 !!    surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
 !!                               |day
 !!    surfq(:)    |mm H2O        |surface runoff generated in HRU on the
@@ -25,8 +24,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    bsprev      |mm H2O        |surface runoff lagged from prior day
-!!    qday        |mm H2O        |surface runoff loading to main channel
-!!                               |from HRU on current day
 !!    surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
 !!                               |day 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -44,7 +41,7 @@
 
       use basin_module
       use time_module
-      use parm, only : surf_bs, surfq, brt, hhsurf_bs, hhsurfq, ihru, bsprev, qday 
+      use hru_module, only : surf_bs, surfq, brt, hhsurf_bs, hhsurfq, ihru, bsprev, qday 
 
       integer :: j
 

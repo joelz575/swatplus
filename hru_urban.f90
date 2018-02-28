@@ -7,8 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    al5          |none           |fraction of daily rainfall that occurs
-!!                                 |during 0.5h highest intensity
 !!    curbden(:)   |km/ha          |curb length density in HRU
 !!    dirtmx(:)    |kg/curb km     |maximum amount of solids allowed to
 !!                                 |build up on impervious surfaces
@@ -20,7 +18,6 @@
 !!    nsweep(:)    |none           |sequence number of street sweeping operation
 !!                                 |within the year
 !!    peakr        |m^3/s          |peak runoff rate
-!!    precipday    |mm H2O         |precipitation for the day in HRU
 !!    sedyld(:)    |metric tons    |daily soil loss caused by water erosio
 !!    surfq(:)     |mm H2O         |surface runoff for the day in HRU
 !!    tconc(:)     |hr             |time of concentration
@@ -75,15 +72,19 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : hru, ihru, sedyld, surfq, ulu, sanyld, silyld, clayld, sagyld, lagyld, sedorgn, sedorgp,  &
-        surqno3, surqsolp, twash, tconc, al5, peakr, precipday 
+      use hru_module, only : hru, ihru, sedyld, surfq, ulu, sanyld, silyld, clayld, sagyld, lagyld, sedorgn, sedorgp,  &
+        surqno3, surqsolp, twash, tconc, peakr, precipday 
       use jrw_datalib_module, only : urbdb
+      use hydrograph_module
+      use climate_module
 
       real :: cod, sus_sol, tn, tp, urbk, turo, dirto, durf, rp1, dirt
       integer :: j
 
       j = ihru
       ulu = hru(j)%luse%urb_lu
+      iob = hru(j)%obj_no
+      iwst = ob(iob)%wst
 
       select case (hru(j)%luse%urb_ro)
 
@@ -139,8 +140,7 @@
           rp1 = 0.
           durf = 0.
           turo = 0.
-          if(al5==0) al5 = 1e-6    !J.Jeong urban modeling
-          rp1 = -2. * Log(1.- al5)
+          rp1 = -2. * Log(1.- wst(iwst)%weat%precip_half_hr)
           durf = 4.605 / rp1         
           turo = durf + tconc(j)
           if (turo > 24.) turo = 24.

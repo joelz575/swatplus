@@ -40,7 +40,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use parm, only : hru, soil, hrupest, sedyld, ihru, enratio, npmx
+      use hru_module, only : hru, soil, hrupest, sedyld, ihru, enratio, npmx
       use constituent_mass_module
 
       integer :: j, k, kk

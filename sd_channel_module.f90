@@ -50,10 +50,9 @@
         real :: hc_len = 0.     !m          |length of head cut
         real :: hc_hgt          !m          |headcut height
         character (len=2) :: overbank  !    |0=inbank; 1=overbank flood
-        real, dimension(13) :: phi
       end type swatdeg_channel_dynamic
       type (swatdeg_channel_dynamic),dimension (:), allocatable :: sd_ch
-      type (swatdeg_channel_dynamic),dimension (:), allocatable :: sdch_init
+      type (swatdeg_channel_dynamic),dimension (:), allocatable :: sdch_init  
               
       type sd_ch_output
         real :: flo = 0.              ! (m^3/s)      !ave flow rate

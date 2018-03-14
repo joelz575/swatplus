@@ -2,7 +2,7 @@
       
       use time_module
       use hydrograph_module
-      use jrw_datalib_module
+      use calibration_data_module
       use output_landscape_module
       use basin_module
       
@@ -51,8 +51,7 @@
         bpw_m = bpw_m + bpw_d
         
 !!!!! daily print - SUBBASIN
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                    .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%wb_bsn%d == 'y') then
             write (2050,100) time%day, time%yrc, iz, bwb_d  !! waterbal
             if (pco%csvout == 'y') then 

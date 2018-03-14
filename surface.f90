@@ -37,7 +37,7 @@
       use climate_module, only:  wst
       use hru_module, only : soil, hru, surfq, qird, ovrlnd_dt, ihru, &
         peakr, precipday, precip_eff, qday
-      use jrw_datalib_module, only:  urbdb
+      use urban_data_module
 
       integer :: j,kk
       real :: precip_fr

@@ -57,7 +57,7 @@
 !!	Rill/interill erosion model is adoped from Modified ANSWERS model by Park et al.(1982)
 !!  Code developed by J. Jeong and N. Kannan, BRC.
 
-      use jrw_datalib_module, only : urbdb
+      use urban_data_module
       use basin_module
       use climate_module
       use time_module

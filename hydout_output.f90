@@ -13,8 +13,7 @@
       !!  3 = daily  
 
 !!!!! daily print
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                              .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%hyd%d == 'y') then
             write (2580,*) time%day, time%yrs, icmd, ob(icmd)%typ,        &
              ob(icmd)%props, ob(icmd)%obtyp_out(iout),                      &

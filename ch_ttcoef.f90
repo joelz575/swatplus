@@ -1,8 +1,5 @@
       subroutine ch_ttcoef(k)
-    
-      use channel_module
-      use jrw_datalib_module
-      
+          
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes travel time coefficients for routing
 !!    along the main channel
@@ -21,29 +18,6 @@
 !!    chsslope(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
-!!    phi(1,:)    |m^2           |cross-sectional area of flow at bankfull
-!!                               |depth
-!!    phi(2,:)    |none          |
-!!    phi(3,:)    |none          |
-!!    phi(4,:)    |none          |
-!!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
-!!    phi(6,:)    |m             |bottom width of main channel
-!!    phi(7,:)    |m             |depth of water when reach is at bankfull
-!!                               |depth
-!!    phi(8,:)    |m/s           |average velocity when reach is at 
-!!                               |bankfull depth
-!!    phi(9,:)    |m/s           |wave celerity when reach is at
-!!                               |bankfull depth
-!!    phi(10,:)   |hr            |storage time constant for reach at
-!!                               |bankfull depth (ratio of storage to
-!!                               |discharge)
-!!    phi(11,:)   |m/s           |average velocity when reach is at
-!!                               |0.1 bankfull depth (low flow)
-!!    phi(12,:)   |m/s           |wave celerity when reach is at
-!!                               |0.1 bankfull depth (low flow)
-!!    phi(13,:)   |hr            |storage time constant for reach at
-!!                               |0.1 bankfull depth (low flow) (ratio
-!!                               |of storage to discharge)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -72,15 +46,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
-      use jrw_datalib_module
+      use channel_data_module
+      use channel_module
+      use channel_velocity_module
 
       integer, intent (in) :: k
       integer :: jj
       real :: fps, d, b, p, a, qq1, rh, tt1, tt2, aa
-
-      do jj = 1, 13
-        ch(k)%phi(jj) = 0.
-      end do
 
       aa = 1.
       b = 0.
@@ -106,8 +78,8 @@
         b = Max(0., b)
         chsslope = (ch_hyd(k)%w - b) / (2. * d)
       end if
-      ch(k)%phi(6) = b
-      ch(k)%phi(7) = d
+      ch_vel(k)%wid_btm = b
+      ch_vel(k)%dep_bf = d
 
 !!    compute flow and travel time at bankfull depth
       p = 0.
@@ -117,12 +89,12 @@
       p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
       a = b * d + chsslope * d * d
       rh = a / p
-      ch(k)%phi(1) = a
-      ch(k)%phi(5) = Qman(a, rh, ch_hyd(k)%n, ch_hyd(k)%s)
-      ch(k)%phi(8) = Qman(aa, rh, ch_hyd(k)%n, ch_hyd(k)%s)
-      ch(k)%phi(9) = ch(k)%phi(8) * 5. / 3.
-      ch(k)%phi(10) = ch_hyd(k)%l / ch(k)%phi(9) / 3.6
-      tt2 = ch_hyd(k)%l * a / ch(k)%phi(5)
+      ch_vel(k)%area = a
+      ch_vel(k)%vel_bf = Qman(a, rh, ch_hyd(k)%n, ch_hyd(k)%s)
+      ch_vel(k)%velav_bf = Qman(aa, rh, ch_hyd(k)%n, ch_hyd(k)%s)
+      ch_vel(k)%celerity_bf = ch_vel(k)%velav_bf * 5. / 3.
+      ch_vel(k)%st_dis = ch_hyd(k)%l / ch_vel(k)%celerity_bf / 3.6
+      tt2 = ch_hyd(k)%l * a / ch_vel(k)%vel_bf
 
 !!    compute flow and travel time at 1.2 bankfull depth
       d = 0.
@@ -149,9 +121,9 @@
       rh = a / p
       qq1 = Qman(a, rh, ch_hyd(k)%n, ch_hyd(k)%s)
       tt1 = ch_hyd(k)%l * a / qq1
-      ch(k)%phi(11) = Qman(aa, rh, ch_hyd(k)%n, ch_hyd(k)%s)
-      ch(k)%phi(12) = ch(k)%phi(11) * 5. / 3.
-      ch(k)%phi(13) = ch_hyd(k)%l / ch(k)%phi(12) / 3.6
+      ch_vel(k)%vel_1bf = Qman(aa, rh, ch_hyd(k)%n, ch_hyd(k)%s)
+      ch_vel(k)%celerity_1bf = ch_vel(k)%vel_1bf * 5. / 3.
+      ch_vel(k)%stor_dis_1bf = ch_hyd(k)%l / ch_vel(k)%celerity_1bf / 3.6
 
       return
       end subroutine ch_ttcoef

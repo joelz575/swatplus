@@ -15,9 +15,6 @@
 !!                                   |change in vertical distance on channel
 !!                                   |side slopes; always set to 2 (slope=1/2)
 !!    pet_day         |mm H2O        |potential evapotranspiration
-!!    phi(1,:)        |m^2           |cross-sectional area of flow in channel at
-!!                                   |bankfull depth
-!!    phi(6,:)        |m             |bottom width of main channel
 !!    rchstor(:)      |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -70,10 +67,11 @@
 
       use basin_module
       use climate_module
-      use jrw_datalib_module
+      use channel_data_module
       use time_module
       use channel_module
       use hydrograph_module, only : ob
+      use channel_velocity_module
 
       integer :: ii, inhyd
       real :: wtrin, c, p, scoef
@@ -109,12 +107,12 @@
 
         c = 0.
         c = ch_hyd(jhyd)%side
-        if (hharea(ii) <= ch(jrch)%phi(1)) then
-          hdepth(ii) = Sqrt(hharea(ii) / c + ch(jrch)%phi(6) *          &         
-           ch(jrch)%phi(6) / (4. * c * c)) - ch(jrch)%phi(6) / (2. * c)
+        if (hharea(ii) <= ch_vel(jrch)%area) then
+           hdepth(ii) = Sqrt(hharea(ii) / c + ch_vel(jrch)%wid_btm *        &         
+           ch_vel(jrch)%wid_btm / (4. * c * c)) - ch_vel(jrch)%wid_btm / (2. * c)
           if (hdepth(ii) < 0.) hdepth(ii) = 0.
         else
-          hdepth(ii) = Sqrt((hharea(ii) - ch(jrch)%phi(1)) / 4. + 25. * & 
+          hdepth(ii) = Sqrt((hharea(ii) - ch_vel(jrch)%area) / 4. + 25. * & 
              ch_hyd(jhyd)%w * ch_hyd(jhyd)%w / 64.) - 5. *              &
                                              ch_hyd(jhyd)%w / 8.
           if (hdepth(ii) < 0.) hdepth(ii) = 0.
@@ -125,9 +123,9 @@
 
         p = 0.
         if (hdepth(ii) <= ch_hyd(jhyd)%d) then
-          p = ch(jrch)%phi(6) + 2. * hdepth(ii) * Sqrt(1. + c * c)
+          p = ch_vel(jrch)%wid_btm + 2. * hdepth(ii) * Sqrt(1. + c * c)
         else
-          p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c) +    &
+          p = ch_vel(jrch)%wid_btm + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c) +    &
              4. * ch_hyd(jhyd)%w + 2. * (hdepth(ii) - ch_hyd(jhyd)%d) *     &
                Sqrt(17.)
         end if
@@ -185,7 +183,7 @@
 
             topw = 0.
             if (hdepth(ii) <= ch_hyd(jhyd)%d) then
-              topw = ch(jrch)%phi(6) + 2. * hdepth(ii)*ch_hyd(jhyd)%side
+              topw = ch_vel(jrch)%wid_btm + 2. * hdepth(ii)*ch_hyd(jhyd)%side
             else
               topw = 5. * ch_hyd(jhyd)%w + 8. * (hdepth(ii) -            & 
                                                ch_hyd(jhyd)%d)

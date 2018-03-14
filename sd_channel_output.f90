@@ -13,8 +13,7 @@
       chsd_m(ichan) = chsd_m(ichan) + chsd_d(ichan)
       
 !!!!! daily print
-      if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                    .and. time%day <= pco%jd_end) then
+       if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
         if (pco%sd_chan%d == 'y') then
           write (2500,100) time%day, time%yrc, ich, chsd_d(ichan)
            if (pco%csvout == 'y') then

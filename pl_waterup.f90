@@ -9,14 +9,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    epco(:)     |none          |plant water uptake compensation factor (0-1)
-!!    idc(:)      |none          |crop/landcover category:
-!!                               |1 warm season annual legume
-!!                               |2 cold season annual legume
-!!                               |3 perennial legume
-!!                               |4 warm season annual
-!!                               |5 cold season annual
-!!                               |6 perennial
-!!                               |7 trees
 !!    stsol_rd(:) |mm            |storing last soil root depth for use in harvestkillop/killop
 !!    uobw        |none          |water uptake normalization parameter
 !!                               |This variable normalizes the water uptake so
@@ -53,11 +45,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : pldb
+      use plant_data_module
       use basin_module
-      use hru_module, only : soil, pcom, hru, ihru, stsol_rd, epmax, ipl, ep_day, idp, sol_rd  
+      use hru_module, only : soil, pcom, hru, ihru, stsol_rd, epmax, ipl, ep_day, sol_rd  
       
-      integer :: j, k, ir
+      integer :: j, k, ir, idp
       real :: sum, xx, gx, reduc, sump
 
       j = ihru

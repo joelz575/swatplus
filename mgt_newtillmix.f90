@@ -26,8 +26,6 @@
 !!    effmix(:)     |none          |mixing efficiency of tillage operation
 !!    npmx          |none          |number of different pesticides used in
 !!                                 |the simulation
-!!    ntil(:)       |none          |sequence number of tillage operation within
-!!                                 |current year
 !!    sol_pst(:,:,:)|kg/ha         |amount of pesticide in layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -40,8 +38,6 @@
 !!    bactpq(:)     |# colonies/ha |persistent bacteria in soil solution
 !!    bactps(:)     |# colonies/ha |persistent bacteria attached to soil 
 !!                                 |particles
-!!    ntil(:)       |none          |sequence number of tillage operation within
-!!                                 |current year
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -71,11 +67,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only:  tilldb
+      use tillage_data_module
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only: soil, tillage_days, tillage_depth, tillage_switch, bactpq, bactps, bactlpq, bactlps,   &
-          ntil, npmx, cnop
+          npmx, cnop
 
       integer, intent (in) :: jj, idtill
       real, intent (in) :: bmix
@@ -288,16 +284,8 @@
             call mgt_tillfactor(jj,bmix,emix,dtil,sol_thick)
         end if
       end if
-	
-      !! perform final calculations for tillage operation
- 
-      !! count the tillage only if it is a scheduled operation biomix does not count MJW Rev 490
-      if (bmix <= 1.e-6) then
-        ntil(jj) = ntil(jj) + 1
-      end if
+
       if (cnop > 1.e-4) call curno(cnop,jj)
-      
-      !ntil(jj) = ntil(jj) + 1 ' orig code
 
       return
       end subroutine mgt_newtillmix

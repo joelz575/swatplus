@@ -24,7 +24,6 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
       use hru_module, only : hru, soil, ihru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, sedorgn,  &
          sedorgp, latq 
 

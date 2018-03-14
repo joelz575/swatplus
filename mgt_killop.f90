@@ -10,8 +10,6 @@
 !!    hrupest(:)  |none           |pesticide use flag:
 !!                                | 0: no pesticides used in HRU
 !!                                | 1: pesticides used in HRU
-!!    icr(:)       |none          |sequence number of crop grown within the
-!!                                |current year
 !!    ihru         |none          |HRU number
 !!    npmx        |none           |number of different pesticides used in
 !!                                |the simulation

@@ -5,9 +5,11 @@
       use climate_module
       use time_module
       use hru_module, only : soil, pcom, bio_eat, bio_trmp, fertno3, fertnh3, fertorgn, fertorgp, fertsolp, frt_kg,  &
-        grz_days, ihru, idp, igrz, ipl, irr_no, irr_sc, irramt, isol, manure_id, manure_kg, ndeat,       &
+        grz_days, ihru, igrz, ipl, irr_no, irr_sc, irramt, isol, manure_id, manure_kg, ndeat,       &
         phubase, sol_sumno3, sol_sumsolp, hru, yield 
-      use jrw_datalib_module, only : mgt, chemapp_db, tilldb, pcomdb, pldb, harvop_db, grazeop_db
+      use plant_data_module
+      use mgt_operations_module  
+      use tillage_data_module
       use reservoir_module
       use sd_channel_module
       use hru_lte_module
@@ -18,7 +20,7 @@
       integer, intent (in)  :: id, ob_cur
       integer :: ob_num, icom
       integer :: iac, ial, jj, i, iburn, ich, idtill, ifertop, ifrt, iharvop, iihru, ilu, irrop, j  
-      real :: hiad1, amt_mm, biomass, wur
+      real :: hiad1, amt_mm, biomass, wur, idp
       character(len=1) :: action
 
       do iac = 1, d_tbl(id)%acts

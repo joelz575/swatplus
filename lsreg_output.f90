@@ -2,13 +2,17 @@
       
       use time_module
       use basin_module
-      use jrw_datalib_module
-      use hru_module, only : hru, idp, ihru, ipl, pcom
+      use maximum_data_module
+      use calibration_data_module
+      use plant_data_module
+      use landuse_data_module
+      use hru_module, only : hru, ihru, ipl, pcom
       use output_landscape_module
-      integer, dimension(:), allocatable :: iarea
+      
+      integer, dimension(:), allocatable :: iarea, idp
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!!    PRINT CODES: 'avann' = average annual (always print)
+!!!    PRINT CODES: 'avann' = average annual (always print)lum(
 !!                  'year'  = yearly
 !!                  'mon'   = monthly
 !!                  'day'   = daily
@@ -81,8 +85,7 @@
 !!!!! daily print
         ilum_db = region(ireg)%lum_num(ilum)
         
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                 .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%wb_hru%d == 'y') then
             write (4412,100) time%day, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_d(ireg)%lum(ilum)  !! waterbal

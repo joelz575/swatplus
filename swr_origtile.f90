@@ -29,7 +29,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : sdr
+      use tiles_data_module
       use hru_module, only : hru, soil, ihru, qtile, sw_excess, wt_shall
 
       integer :: j

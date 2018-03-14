@@ -1,7 +1,8 @@
       subroutine soiltest_all_init
       
       use hru_module, only : sol, hru, soil, wfsh, pcom, pcom_init, ihru
-      use jrw_datalib_module, only : db_mx, soildb, solt_db
+      use maximum_data_module
+      use soil_data_module
       use hydrograph_module, only : sp_ob
 
       do ihru = 1, sp_ob%hru

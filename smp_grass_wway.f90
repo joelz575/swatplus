@@ -7,34 +7,11 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ihru            |none          |HRU number
 !!    surfq(:)	   	|mm H2O        |amount of water in surface runoff generated
-!!	grwat_l(:)      |km	           |Length of Grass Waterway
+!!	 grwat_l(:)      |km	           |Length of Grass Waterway
 !!	grwat_w(:)      |none          |Width of grass waterway
 !!	grwat_s(:)      |m/m           |Slope of grass waterway
 !!	grwat_spcon(:)  |none          |sediment transport coefficant defined by user
 !!	tc_gwat(:)      |none          |Time of concentration for Grassed waterway and its drainage area
-!!    wat_phi(1,:)        |m^2           |cross-sectional area of flow at bankfull
-!!                                   |depth
-!!    wat_phi(2,:)        |none          |
-!!    wat_phi(3,:)        |none          |
-!!    wat_phi(4,:)        |none          |
-!!    wat_phi(5,:)        |m^3/s         |flow rate when reach is at bankfull depth
-!!    wat_phi(6,:)        |m             |bottom width of main channel
-!!    wat_phi(7,:)        |m             |depth of water when reach is at bankfull
-!!                                   |depth
-!!    wat_phi(8,:)        |m/s           |average velocity when reach is at 
-!!                                   |bankfull depth
-!!    wat_phi(9,:)        |m/s           |wave celerity when reach is at
-!!                                   |bankfull depth
-!!    wat_phi(10,:)       |hr            |storage time constant for reach at
-!!                                   |bankfull depth (ratio of storage to
-!!                                   |discharge)
-!!    wat_phi(11,:)       |m/s           |average velocity when reach is at
-!!                                   |0.1 bankfull depth (low flow)
-!!    wat_phi(12,:)       |m/s           |wave celerity when reach is at
-!!                                   |0.1 bankfull depth (low flow)
-!!    wat_phi(13,:)       |hr            |storage time constant for reach at
-!!                                   |0.1 bankfull depth (low flow) (ratio
-!!                                   |of storage to discharge)
 !!    surfq(:)        |mm H2O        |surface runoff generated on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -63,10 +40,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : hru, surfq, sedyld, ihru, wat_phi, clayld, sanyld, silyld, sagyld, lagyld,  &
+      use hru_module, only : hru, surfq, sedyld, ihru, clayld, sanyld, silyld, sagyld, lagyld,  &
         sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, hrupest, bactrolp,       &
         bactrop, bactsedlp, bactsedp, npmx, peakr, rcharea, sdti
       use constituent_mass_module
+      use channel_velocity_module
 
       real :: chflow_m3, sf_area, surq_remove, sf_sed, sed_remove, vc,      &
             chflow_day
@@ -84,8 +62,8 @@
           peakr = 2. * chflow_m3 / (1.5 * tc_gwat(j))
 
 !! if peak rate is greater than bankfull discharge
-          if (peakr > wat_phi(5,j)) then
-            rcharea = wat_phi(1,j)
+          if (peakr > grwway_vel(j)%vel_bf) then
+            rcharea = grwway_vel(j)%area
             rchdep = hru(j)%lumv%grwat_d
           else
 !!          find the crossectional area and depth for todays flow
@@ -96,8 +74,8 @@
 
             Do While (sdti < peakr)
               rchdep = rchdep + 0.01
-              rcharea = (wat_phi(6,j) + 8 * rchdep) * rchdep
-              p = wat_phi(6,j) + 2. * rchdep * Sqrt(1. + 8 * 8)
+              rcharea = (grwway_vel(j)%wid_btm + 8 * rchdep) * rchdep
+              p = grwway_vel(j)%wid_btm + 2. * rchdep * Sqrt(1. + 8 * 8)
               rh = rcharea / p
               sdti = Qman(rcharea, rh, hru(j)%lumv%grwat_n, hru(j)%lumv%grwat_s)
             end do
@@ -144,7 +122,7 @@
           vc = 0.001
           if (rcharea > 1.e-4) then
             vc = peakr / rcharea
-            if (vc > wat_phi(9,j)) vc = wat_phi(9,j)
+            if (vc > grwway_vel(j)%celerity_bf) vc = grwway_vel(j)%celerity_bf
           end if
 
 !!        compute deposition in the waterway

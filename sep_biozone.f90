@@ -67,7 +67,7 @@
 !!    Coded by J.Jeong and C.Santhi. BRC, Temple TX
 !!    Septic algorithm adapted from Siegrist et al., 2005
 
-      use jrw_datalib_module, only : sep, sepdb
+      use septic_data_module
       use basin_module
       use bacteria_module
       use organic_mineral_mass_module

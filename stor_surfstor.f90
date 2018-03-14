@@ -118,7 +118,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : sep
+      use septic_data_module
       use basin_module
       use time_module
       use constituent_mass_module

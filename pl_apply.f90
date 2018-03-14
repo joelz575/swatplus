@@ -46,7 +46,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : mgt, chemapp_db
+      use mgt_operations_module
       use basin_module
       use hru_module, only : soil, hru, driftco, pst_dep, sumlai
       

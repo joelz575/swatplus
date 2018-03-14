@@ -15,28 +15,6 @@
 !!    chsslope(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
-!!    wat_phi(1,:)    |m^2       |cross-sectional area of flow at bankfull
-!!                               |depth
-!!    wat_phi(2,:)    |none      |
-!!    wat_phi(3,:)    |none      |
-!!    wat_phi(4,:)    |none      |
-!!    wat_phi(5,:)    |m^3/s     |flow rate when reach is at bankfull depth
-!!    wat_phi(6,:)    |m         |bottom width of main channel
-!!    wat_phi(7,:)    |m         |depth of water when reach is at bankfull
-!!    wat_phi(8,:)    |m/s       |average velocity when reach is at 
-!!                               |bankfull depth
-!!    wat_phi(9,:)    |m/s       |wave celerity when reach is at
-!!                               |bankfull depth
-!!    wat_phi(10,:)   |hr        |storage time constant for reach at
-!!                               |bankfull depth (ratio of storage to
-!!                               |discharge)
-!!    wat_phi(11,:)   |m/s       |average velocity when reach is at
-!!                               |0.1 bankfull depth (low flow)
-!!    wat_phi(12,:)   |m/s       |wave celerity when reach is at
-!!                               |0.1 bankfull depth (low flow)
-!!    wat_phi(13,:)   |hr        |storage time constant for reach at
-!!                               |0.1 bankfull depth (low flow) (ratio
-!!                               |of storage to discharge)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -64,17 +42,13 @@
 !!    SWAT: Qman
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-      use hru_module, only : hru, ihru, wat_phi
-      
- 
+      use hru_module, only : hru, ihru
+      use channel_velocity_module
+       
       integer :: jj, k
       real :: fps, d, b, p, a, qq1, rh, tt1, tt2, aa
       
       k = ihru
-      
-      do jj = 1, 13
-        wat_phi(jj,k) = 0.
-      end do
 
       aa = 1.
       b = 0.
@@ -100,8 +74,8 @@
         b = .5 * hru(k)%lumv%grwat_w
         chsslope = (hru(k)%lumv%grwat_w - b) / (2. * d)
       end if
-      wat_phi(6,k) = b
-      wat_phi(7,k) = d
+      grwway_vel(k)%wid_btm = b
+      grwway_vel(k)%dep_bf = d
 
 !!    compute flow and travel time at bankfull depth
       p = 0.
@@ -111,12 +85,12 @@
       p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
       a = b * d + chsslope * d * d
       rh = a / p
-      wat_phi(1,k) = a
-      wat_phi(5,k) = Qman(a, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
-      wat_phi(8,k) = Qman(aa, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
-      wat_phi(9,k) = wat_phi(8,k) * 5. / 3.
-      wat_phi(10,k) = hru(k)%lumv%grwat_l / wat_phi(9,k) / 3.6
-      tt2 = hru(k)%lumv%grwat_l * a / wat_phi(5,k)
+      grwway_vel(k)%area = a
+      grwway_vel(k)%vel_bf = Qman(a, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
+      grwway_vel(k)%velav_bf = Qman(aa, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
+      grwway_vel(k)%celerity_bf = grwway_vel(k)%velav_bf * 5. / 3.
+      grwway_vel(k)%st_dis = hru(k)%lumv%grwat_l / grwway_vel(k)%celerity_bf / 3.6
+      tt2 = hru(k)%lumv%grwat_l * a / grwway_vel(k)%vel_bf
 
 !!    compute flow and travel time at 1.2 bankfull depth
       d = 0.
@@ -143,9 +117,9 @@
       rh = a / p
       qq1 = Qman(a, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
       tt1 = hru(k)%lumv%grwat_l * a / qq1
-      wat_phi(11,k) = Qman(aa, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
-      wat_phi(12,k) = wat_phi(11,k) * 5. / 3.
-      wat_phi(13,k) = hru(k)%lumv%grwat_l / wat_phi(12,k) / 3.6
+      grwway_vel(k)%vel_1bf = Qman(aa, rh, hru(k)%lumv%grwat_n, hru(k)%lumv%grwat_s)
+      grwway_vel(k)%celerity_1bf = grwway_vel(j)%vel_1bf * 5. / 3.
+      grwway_vel(j)%stor_dis_1bf = hru(k)%lumv%grwat_l / grwway_vel(k)%celerity_1bf / 3.6
 
       return
       end

@@ -1,6 +1,7 @@
       subroutine update_init
 
-      use jrw_datalib_module, only : db_mx, cal_upd, cal_parms 
+      use maximum_data_module
+      use calibration_data_module
       use hru_lte_module
       use hru_module, only : soil, hru
       use time_module

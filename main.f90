@@ -38,7 +38,8 @@
       use hru_lte_module
       use sd_channel_module
       use basin_module
-      use jrw_datalib_module
+      use maximum_data_module
+      use mgt_operations_module
       use conditional_module
       use reservoir_module
       use input_file_module
@@ -60,18 +61,18 @@
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
       integer :: i
 
-      prog = " SWAT+ Feb 28 2018    MODULAR Rev 2018.43"
+      prog = " SWAT+ Mar 13 2018    MODULAR Rev 2018.44"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 43             ",/,             &
+     &          "              Revision 44             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
 
 !! process input
       		
-      call basin_objs_read
+      call basin_read_objs
       call readtime_read
       if (time%step > 0) then
         time%dtm = 1440. / time%step
@@ -85,8 +86,8 @@
      open (9001,file='diagnostics.out')
      write (9001,*) 'DIAGNOSTICS.OUT FILE' 
           
-      call basin_cc_read
-      call basin_prm_read
+      call basin_read_cc
+      call basin_read_prm
       call basin_prm_default
       call basin_print_codes_read
    
@@ -132,23 +133,23 @@
       call pestparm_read                              !! read the pesticide database
       call fertparm_read                              !! read the fertilizer/nutrient database
       call urbanparm_read                             !! read the urban land types database
-      call bac_lsparms_read                           !! read the bacteria data parameters
+      call bac_read_lsparms                           !! read the bacteria data parameters
       call septicparm_read 
       
       !! read management scheduling and data files
       
-      call mgt_irrops_read
-      call mgt_chemapp_read
-      call mgt_harvops_read
-      call mgt_grazeops_read
-      call mgt_sweepops_read
-      call mgt_fireops_read
-      call mgt_mgtops_read
+      call mgt_read_irrops
+      call mgt_read_chemapp
+      call mgt_read_harvops
+      call mgt_read_grazeops
+      call mgt_read_sweepops
+      call mgt_read_fireops
+      call mgt_read_mgtops
       
       !! read structural operations files
-      call scen_grwway_read
-      call scen_filtstrip_read
-      call scen_bmpuser_read
+      call scen_read_grwway
+      call scen_read_filtstrip
+      call scen_read_bmpuser
       !call scen_septic_read
          
       !! call readseptwq         !! read the septic database (read from HRU_READ)
@@ -159,10 +160,10 @@
       call overland_n_read
       call landuse_read
 
-      call bac_lsinit_read
+      call bac_read_lsinit
       call pst_lsinit_read
       
-      call hyd_read_connect
+      call hyd_connect
       
       call object_output_read
 
@@ -170,12 +171,12 @@
       call condition_read     
       
       ! read reservoir data
-      call res_init_read
-      call res_hyd_read
-      call res_sed_read
-      call res_nut_read
-      call res_pst_read
-      call res_weir_read
+      call res_read_init
+      call res_read_hyd
+      call res_read_sed
+      call res_read_nut
+      call res_read_pst
+      call res_read_weir
       call res_read
       
       call header_snutc
@@ -208,11 +209,11 @@
         
       call rte_read_nut
       
-      call ch_init_read
-      call ch_hyd_read
-      call ch_sed_read
-      call ch_nut_read
-      call ch_pst_read
+      call ch_read_init
+      call ch_read_hyd
+      call ch_read_sed
+      call ch_read_nut
+      call ch_read_pst
       call ch_read
       
       call channel_allo
@@ -260,12 +261,12 @@
       call ls_parms_cal_read
       call pl_regions_cal_read      !soft data for hru_lte calibration
       call pl_parms_cal_read
-      call aqu_elements_read        !defining regions by aquifer
-      call cha_elements_read        !defining regions by channel
-      call res_elements_read        !defining regions by reservoir
+      call aqu_read_elements        !defining regions by aquifer
+      call ch_read_elements        !defining regions by channel
+      call res_read_elements        !defining regions by reservoir
       call rec_elements_read        !defining regions by recall object (point source, gage data, model output, etc)
-      call ch_regions_cal_read
-      call ch_parms_cal_read
+      call ch_read_orders_cal
+      call ch_read_parms_cal
 
       !! write headers in output files
       call output_landscape_init

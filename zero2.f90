@@ -4,7 +4,7 @@
 !!    this subroutine zeros all array values
 
       use hru_module, only : bactlpq,bactlps,bactpq,bactps,bio_init,clayld,flowfr,fsred,harveff,   &
-       hru,imp_trig,lagyld,lai_init,ndeat,ovrlnd,par,phi,sagyld,sanyld,sci,    &
+       hru,imp_trig,lagyld,lai_init,ndeat,ovrlnd,par,sagyld,sanyld,sci,                            &
        sedyld,silyld,smx,snotmp,surf_bs,twash,wpstaao,wrt
       
       use bacteria_module
@@ -57,7 +57,6 @@
       orgpmon = 0.
       orgpyr = 0.
       ovrlnd = 0.
-      phi = 0.
       rchstor = 0.
       res_out = 0.
       sci = 0.

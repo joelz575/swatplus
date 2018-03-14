@@ -4,8 +4,7 @@
       use time_module
 
       !! print soil nutrients carbon output file
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                 .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+        if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%snutc == 'd') then
             call soil_nutcarb_write
           end if

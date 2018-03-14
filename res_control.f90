@@ -1,7 +1,7 @@
       subroutine res_control (jres)
       
       use basin_module
-      use jrw_datalib_module
+      use reservoir_data_module 
       use time_module
       use hru_module, only : pet_day, resclai, resgrai, reslagi, ressagi, ressani, ressili, hru
       use reservoir_module

@@ -2,7 +2,8 @@
     
       use sd_channel_module
       use hru_lte_module
-      use jrw_datalib_module, only : cal_codes, db_mx, lscal, lscalt, plcal, chcal, region      
+      use maximum_data_module
+      use calibration_data_module
 
         !! average output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%sed == 'y') then

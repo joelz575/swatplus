@@ -10,16 +10,6 @@
 !!                                |equation
 !!    bio_n2(:)   |none           |2nd shape parameter for plant N uptake
 !!                                |equation
-!!    icr(:)      |none           |sequence number of crop grown within the
-!!                                |current year
-!!    idc(:)      |none           |crop/landcover category:
-!!                                |1 warm season annual legume
-!!                                |2 cold season annual legume
-!!                                |3 perennial legume
-!!                                |4 warm season annual
-!!                                |5 cold season annual
-!!                                |6 perennial
-!!                                |7 trees
 !!    ihru        |none           |HRU number
 !!    pltnfr(1,:) |kg N/kg biomass|nitrogen uptake parameter #1: normal fraction
 !!                                |of N in crop biomass at emergence
@@ -59,10 +49,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : pldb, plcp
-      use hru_module, only : pcom, un2, uno3d, ihru, ipl, idp 
+      use plant_data_module
+      use hru_module, only : pcom, un2, uno3d, ihru, ipl
       
-      integer :: j, icrop, l, ir
+      integer :: j, icrop, l, ir, idp
       real :: unmx, uno3l, gx
 
       j = ihru

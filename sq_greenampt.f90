@@ -53,7 +53,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : urbdb
+      use urban_data_module
       use climate_module
       use basin_module
       use hydrograph_module

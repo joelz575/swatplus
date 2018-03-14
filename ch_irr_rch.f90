@@ -89,7 +89,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : potdb
+      use tiles_data_module
       use hru_module, only : soil, hru, irrsc, irrno, aird, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
         irr_sc, irr_no, irr_asq, irr_sca, irr_noa, flowmin, divmax, flowfr, irramt, irr_mx, irr_eff, ipot,   &
         nhru

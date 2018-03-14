@@ -1,6 +1,6 @@
       subroutine res_nutrient (jres, inut)
 
-      use jrw_datalib_module
+      use reservoir_data_module
       use time_module
       use reservoir_module
       use hydrograph_module, only : res

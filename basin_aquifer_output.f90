@@ -3,7 +3,7 @@
       use time_module
       use basin_module
       use aquifer_module
-      use jrw_datalib_module
+      use calibration_data_module
       use hydrograph_module, only : sp_ob
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -26,8 +26,7 @@
         baqu_m = baqu_m + baqu_d
         
         !! daily print - AQUIFER
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                              .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%aqu_bsn%d == 'y') then
             write (2090,100) time%day, time%yrc, iaq, baqu_d
             if (pco%csvout == 'y') then

@@ -1,7 +1,7 @@
       subroutine soiltest_init (isol, isolt)
     
       use hru_module, only : soil  
-      use jrw_datalib_module, only : solt_db
+      use soil_data_module
       use organic_mineral_mass_module
 
       do ly = 1, soil(isol)%nly

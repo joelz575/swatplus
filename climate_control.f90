@@ -68,7 +68,7 @@
       use basin_module
       use time_module
       use hydrograph_module
-      use jrw_datalib_module, only : db_mx
+      use maximum_data_module
            
       integer :: k, inum3sprev, ii, iyp, idap, ib
       real :: daylbsb, tdif, pdif, ratio, petmeas
@@ -182,7 +182,7 @@
             iyp = 0
             idap = 0
             read (140,5000) iyp, idap, petmeas
-            if (iyp == time%yrc .and. idap == time%idaf) exit
+            if (iyp == time%yrc .and. idap == time%day_start) exit
           end do
         end if
         do iwst = 1, db_mx%wst

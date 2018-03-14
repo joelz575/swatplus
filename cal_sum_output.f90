@@ -4,8 +4,8 @@
       use hru_lte_module
       use hru_module, only : hru, ihru
       use output_landscape_module
-      use jrw_datalib_module, only : cal_codes, db_mx, region, lscal_z, lscalt, plcal, plcal_z, lscal, &
-        chcal, chcal_z
+      use maximum_data_module
+      use calibration_data_module
        
         !! sum landscape output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hru == 'y') then

@@ -20,7 +20,8 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) header
         if (eof < 0) exit
-        read (107,*,iostat=eof) pco%nyskip, pco%jd_start, pco%jd_end, pco%yr_start, pco%yr_end, pco%interval
+        !read (107,*,iostat=eof) pco%nyskip, pco%day_start, pco%day_end, pco%yrc_start, pco%yrc_end, pco%int_day
+        read (107,*,iostat=eof) pco%nyskip, pco%day_start, pco%yrc_start, pco%day_end, pco%yrc_end, pco%int_day        
         if (eof < 0) exit
         read (107,*,iostat=eof) header
         if (eof < 0) exit
@@ -139,12 +140,12 @@
       end if
       close (107)
       
-      if (pco%jd_start == 0) pco%jd_start = 1
-      if (pco%jd_end == 0) pco%jd_end = 366
-      if (pco%yr_start == 0) pco%yr_start = time%yrc
-      if (pco%yr_end == 0) pco%yr_end = time%yrc + time%nbyr
-      if (pco%interval <= 0) pco%interval = 1
-      int_print = pco%interval - 1  !incremented on first day of print period triggering print
-            
+      if (pco%day_start == 0) pco%day_start = 1
+      if (pco%day_end == 0) pco%day_end = 366
+      if (pco%yrc_start == 0) pco%yrc_start = time%yrc
+      if (pco%yrc_end == 0) pco%yrc_end = time%yrc + time%nbyr
+      if (pco%int_day <= 0) pco%int_day = 1
+      pco%int_day_cur = pco%int_day
+ 
       return
       end subroutine basin_print_codes_read           

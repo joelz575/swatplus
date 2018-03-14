@@ -1,6 +1,6 @@
       module time_module
 
-      integer :: int_print = 1       !! current interval between daily prints
+      !integer :: int_print = 1       !! current interval between daily prints
       character (len=32) :: cal_sim = ' Original Simulation'
       integer, dimension (13) :: ndays = (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
       integer, dimension (13) :: ndays_leap = (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
@@ -9,6 +9,7 @@
       !! month since the simulation began - the array location number is the number of the month
       
       type time_current
+        character (len=1)  :: day_print = 'n'
         integer :: day = 0            !! current day of simulation
         integer :: mo = 0             !! current month of simulation
         integer :: mo_start = 0       !! starting month
@@ -21,9 +22,9 @@
         integer :: end_yr = 0         !! set to 1 if end of year
         integer :: end_sim = 0        !! set to 1 if end of simulation
         integer :: end_aa_prt = 0     !! set to 1 if end of simulation
-        integer :: idaf = 0           !! beginning julian day of simulation
-        integer :: idal = 0           !! ending julian day of simulation for each year
-        integer :: idal_in = 0        !! input ending julian day of simulation
+        integer :: day_start = 0      !! beginning julian day of simulation
+        integer :: day_end_yr = 0     !! ending julian day of each year
+        integer :: day_end = 0        !! input ending julian day of simulation
         integer :: nbyr = 3           !! number of years of simulation run
         integer :: step = 0           !! number of time steps in a day for rainfall, runoff and routing
                                       !! 0 = daily; 1=increment(12 hrs); 24=hourly; 96=15 mins; 1440=minute;
@@ -35,12 +36,5 @@
       end type time_current
       type (time_current) :: time
       type (time_current) :: time_init
-
-      contains
-
-      !! routines for time_module
-      !include 'icl.f90'
-      !include 'jdt.f90'
-      !include 'xmon.f90'
 
       end module time_module

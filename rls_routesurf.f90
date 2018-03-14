@@ -14,7 +14,7 @@
 
       use hru_module, only : hru, ihru, usle_cfac, ls_overq, precip_eff
       use hydrograph_module
-      use jrw_datalib_module, only : field_db
+      use topography_data_module
 
       j = ihru
 

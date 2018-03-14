@@ -14,9 +14,6 @@
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
 !!    pet_day     |mm H2O        |potential evapotranspiration
-!!    phi(1,:)    |m^2           |cross-sectional area of flow in channel at
-!!                               |bankfull depth
-!!    phi(6,:)    |m             |bottom width of main channel
 !!    rchstor(:)   |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -57,9 +54,10 @@
 !!    Spatial Sciences Laboratory, Texas A&M University
 
       use basin_module
-      use jrw_datalib_module
+      use channel_data_module
       use channel_module
       use hydrograph_module, only : ob
+      use channel_velocity_module
 
       real :: wtrin, scoef, p, tbase, topw, vol, c, rh
       real :: volrt, maxrt, adddep, addp, addarea, vc, aaa
@@ -75,9 +73,9 @@
 
       !! Find maximum flow capacity of the channel at bank full
       c = ch_hyd(jhyd)%side
-	  p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
-	  rh = ch(jrch)%phi(1) / p
-	  maxrt = Qman(ch(jrch)%phi(1), rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
+	  p = ch_vel(jrch)%wid_btm + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
+	  rh = ch_vel(jrch)%area / p
+	  maxrt = Qman(ch_vel(jrch)%area, rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
 
       sdti = 0.
 	  rchdep = 0.
@@ -88,10 +86,10 @@
       !! If average flowrate is greater than than the channel capacity at bank full
       !! then simulate flood plain flow else simulate the regular channel flow
       if (volrt > maxrt) then
-	    rcharea = ch(jrch)%phi(1)
+	    rcharea = ch_vel(jrch)%area
 	    rchdep = ch_hyd(jhyd)%d
-	    p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
-	    rh = ch(jrch)%phi(1) / p
+	    p = ch_vel(jrch)%wid_btm + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
+	    rh = ch_vel(jrch)%area / p
 	    sdti = maxrt
 	    adddep = 0
 	    !! find the crossectional area and depth for volrt
@@ -117,8 +115,8 @@
 	  !! find the depth until the discharge rate is equal to volrt
 	    Do While (sdti < volrt)
 	      rchdep = rchdep + 0.01
-	      rcharea = (ch(jrch)%phi(6) + c * rchdep) * rchdep
-	      p = ch(jrch)%phi(6) + 2. * rchdep * Sqrt(1. + c * c)
+	      rcharea = (ch_vel(jrch)%wid_btm + c * rchdep) * rchdep
+	      p = ch_vel(jrch)%wid_btm + 2. * rchdep * Sqrt(1. + c * c)
 	      rh = rcharea / p
           sdti = Qman(rcharea, rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
 	    end do
@@ -128,7 +126,7 @@
       !! calculate top width of channel at water level
       topw = 0.
       if (rchdep <= ch_hyd(jhyd)%d) then
-        topw = ch(jrch)%phi(6) + 2. * rchdep * c
+        topw = ch_vel(jrch)%wid_btm + 2. * rchdep * c
       else
         topw = 5 * ch_hyd(jhyd)%w + 2. * (rchdep - ch_hyd(jhyd)%d) * 4.
       end if
@@ -204,7 +202,7 @@
 	        else
 	          rtevp = (rchdep - ch_hyd(jhyd)%d) 
 	          rtevp = rtevp + (aaa - (rchdep - ch_hyd(jhyd)%d)) 
-              topw = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * c           
+              topw = ch_vel(jrch)%wid_btm + 2. * ch_hyd(jhyd)%d * c           
 	          rtevp = rtevp * ch_hyd(jhyd)%l * 1000. * topw
 	        end if
 	      end if

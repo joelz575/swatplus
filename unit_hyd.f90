@@ -48,7 +48,6 @@
       use hru_module, only : itb, tconc, uh
     
       use climate_module
-      use jrw_datalib_module
       use basin_module
       use channel_module
       use time_module

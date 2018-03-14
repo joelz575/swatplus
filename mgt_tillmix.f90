@@ -22,8 +22,6 @@
 !!    mlyr          |none          |maximum number of soil layers
 !!    npmx          |none          |number of different pesticides used in
 !!                                 |the simulation
-!!    ntil(:)       |none          |sequence number of tillage operation within
-!!                                 |current year
 !!	  ranrns(:)     |mm            |random roughness of a given tillage operation 
 !	  Drainmod  07/2006
 !!    sol_pst(:,:,:)|kg/ha         |amount of pesticide in layer
@@ -38,8 +36,6 @@
 !!    bactpq(:)     |# colonies/ha |persistent bacteria in soil solution
 !!    bactps(:)     |# colonies/ha |persistent bacteria attached to soil 
 !!                                 |particles
-!!    ntil(:)       |none          |sequence number of tillage operation within
-!!                                 |current year
 !	  Drainmod  08/2006
 !!    ranrns_hru(:) |mm            |random roughness for a given HRU
 !	  Drainmod  08/2006
@@ -73,10 +69,10 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : tilldb
+      use tillage_data_module
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : soil, cumei, cumeira, cumrt, cumrai, ranrns_hru, bactpq, bactps, bactlpq, bactlps, ntil,  &
+      use hru_module, only : soil, cumei, cumeira, cumrt, cumrai, ranrns_hru, bactpq, bactps, bactlpq, bactlps,   &
         mlyr, npmx, itill, hrupest, cnop
 
       integer, intent (in) :: jj, idtill
@@ -228,7 +224,6 @@
       if (cnop > 1.e-4) then
         call curno(cnop,jj)
       end if
-      ntil(jj) = ntil(jj) + 1
-
+      
       return
       end subroutine mgt_tillmix

@@ -1,7 +1,8 @@
       subroutine soils_init
       
       use hru_module, only : sol, hru, soil, wfsh, pcom, pcom_init, ihru
-      use jrw_datalib_module, only : db_mx, soildb
+      use maximum_data_module
+      use soil_data_module
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob
       use time_module

@@ -17,16 +17,6 @@
 !!    flwin(:)    |m^3 H2O       |flow into reach on previous day
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
 !!    pet_day     |mm H2O        |potential evapotranspiration for the day
-!!    phi(1,:)    |m^2           |cross-sectional area of flow in channel at
-!!                               |bankfull depth
-!!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
-!!    phi(6,:)    |m             |bottom width of main channel
-!!    phi(10,:)   |hr            |storage time constant for reach at
-!!                               |bankfull depth (ratio of storage to
-!!                               |discharge)
-!!    phi(13,:)   |hr            |storage time constant for reach at
-!!                               |0.1 bankfull depth (low flow) (ratio
-!!                               |of storage to discharge)
 !!    rchstor(:)  |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -88,10 +78,11 @@
 
       use basin_module
       use climate_module
-      use jrw_datalib_module
+      use channel_data_module
       use time_module
       use channel_module
       use hydrograph_module, only : ob
+      use channel_velocity_module
 
       integer :: ii
       real :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c
@@ -99,7 +90,7 @@
 
       !! set current day within subdaily hydrograph ts
  !! Compute storage time constant for reach
-      xkm = ch(jrch)%phi(10) * bsn_prm%msk_co1 + ch(jrch)%phi(13) *        &  
+      xkm = ch_vel(jrch)%st_dis * bsn_prm%msk_co1 + ch_vel(jrch)%stor_dis_1bf *        &  
                 bsn_prm%msk_co2
       det = time%dtm / 60. 
 
@@ -108,14 +99,14 @@
       c1 = (det - 2. * xkm * bsn_prm%msk_x) / yy
       c2 = (det + 2. * xkm * bsn_prm%msk_x) / yy
       c3 = (2. * xkm * (1. - bsn_prm%msk_x) - det) / yy
-      c4 = ch(jrch)%phi(5) * ch_hyd(jhyd)%l * det / yy
+      c4 = ch_vel(jrch)%vel_bf * ch_hyd(jhyd)%l * det / yy
  	
       do ii = 1, time%step   !! begin time step loop
         !! Water entering reach on day
         wtrin = ob(icmd)%tsin(ii)%flo 
  
         !! Compute water leaving reach at the end of time step
-        if (time%yrs == 1 .and. i == time%idaf .and. ii == 1) then
+        if (time%yrs == 1 .and. i == time%day_start .and. ii == 1) then
          hrtwtr(ii) = c1 * wtrin + c2 * ch(jrch)%rchstor +                &         
                                            c3 * ch(jrch)%rchstor + c4
         else
@@ -143,12 +134,12 @@
 
         !! calculate depth of flow
         c = ch_hyd(jhyd)%side
-        if (hharea(ii) <= ch(jrch)%phi(1)) then
-          hdepth(ii) = Sqrt(hharea(ii) / c + ch(jrch)%phi(6)*             &         
-            ch(jrch)%phi(6) / (4. * c * c)) -ch(jrch)%phi(6) / (2. * c)
+        if (hharea(ii) <= ch_vel(jrch)%area) then
+          hdepth(ii) = Sqrt(hharea(ii) / c + ch_vel(jrch)%wid_btm *          &         
+            ch_vel(jrch)%wid_btm / (4. * c * c)) -ch_vel(jrch)%wid_btm / (2. * c)
           if (hdepth(ii) < 0.) hdepth(ii) = 0.
         else
-          hdepth(ii) = Sqrt((hharea(ii) - ch(jrch)%phi(1)) / 4. + 25. *   &
+          hdepth(ii) = Sqrt((hharea(ii) - ch_vel(jrch)%area) / 4. + 25. *   &
           ch_hyd(jhyd)%w * ch_hyd(jhyd)%w / 64.) - 5.*                    &  
                                               ch_hyd(jhyd)%w / 8.
           if (hdepth(ii) < 0.) hdepth(ii) = 0.
@@ -158,9 +149,9 @@
         !! calculate wetted perimeter
         p = 0.
         if (hdepth(ii) <= ch_hyd(jhyd)%d) then
-          p = ch(jrch)%phi(6) + 2. * hdepth(ii) * Sqrt(1. + c * c)
+          p = ch_vel(jrch)%wid_btm + 2. * hdepth(ii) * Sqrt(1. + c * c)
         else
-          p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c) +    &
+          p = ch_vel(jrch)%wid_btm + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c) +    &
              4. * ch_hyd(jhyd)%w + 2. * (hdepth(ii) - ch_hyd(jhyd)%d)       &
                                                      * Sqrt(17.)
         end if
@@ -208,7 +199,7 @@
           !! calculate width of channel at water level
           topw = 0.
           if (hdepth(ii) <= ch_hyd(jhyd)%d) then
-            topw = ch(jrch)%phi(6) + 2. * hdepth(ii) * ch_hyd(jhyd)%side
+            topw = ch_vel(jrch)%wid_btm + 2. * hdepth(ii) * ch_hyd(jhyd)%side
           else
             topw = 5. * ch_hyd(jhyd)%w + 2. *                            &            
                   (hdepth(ii)- ch_hyd(jhyd)%d) * 4.

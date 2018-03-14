@@ -1,6 +1,7 @@
     subroutine sd_channel_control
 
     use sd_channel_module
+    use channel_velocity_module
     use basin_module
     use hydrograph_module
     
@@ -36,20 +37,20 @@
          !! compute changes in channel dimensions
           chside = sd_chd(isd_db)%chss
           b = sd_ch(ich)%chw
-          sd_ch(ich)%phi(6) = b
-          sd_ch(ich)%phi(7) = sd_ch(ich)%chd
+          sd_ch_vel(ich)%wid_btm = b
+          sd_ch_vel(ich)%dep_bf = sd_ch(ich)%chd
 
           !! compute flow and travel time at bankfull depth
           p = b + 2. * sd_ch(ich)%chd * Sqrt(chside * chside + 1.)
           a = b * sd_ch(ich)%chd + chside * sd_ch(ich)%chd * sd_ch(ich)%chd
           rh = a / p
-          sd_ch(ich)%phi(1) = a
-          sd_ch(ich)%phi(5) = Qman(a,rh,sd_chd(isd_db)%chn,sd_ch(ich)%chs)
+          sd_ch_vel(ich)%area = a
+          sd_ch_vel(ich)%vel_bf = Qman(a,rh,sd_chd(isd_db)%chn,sd_ch(ich)%chs)
   
-          IF (peakrate > sd_ch(ich)%phi(5)) THEN
+          IF (peakrate > sd_ch_vel(ich)%vel_bf) THEN
           !! OVERBANK FLOOD
             sd_ch(ich)%overbank = "ob"
-            rcharea = sd_ch(ich)%phi(1)
+            rcharea = sd_ch_vel(ich)%area
             rchdep = sd_ch(ich)%chd
             !calculate hydraulic radius at hydrograph time increments for degredation
             sdti = 0.
@@ -60,8 +61,8 @@
             tb_pr = tbase
             DO WHILE (sdti < peakrate)
               rchdep = rchdep + 0.01
-              rcharea = (sd_ch(ich)%phi(6) + chside * rchdep) * rchdep
-              p=sd_ch(ich)%phi(6)+2. * rchdep*Sqrt(1.+chside *chside)
+              rcharea = (sd_ch_vel(ich)%wid_btm + chside * rchdep) * rchdep
+              p=sd_ch_vel(ich)%wid_btm + 2. * rchdep*Sqrt(1. + chside *chside)
               rh = rcharea / p
               sdti = Qman(rcharea, rh, sd_chd(isd_db)%chn, sd_ch(ich)%chs)
               !need to save hydraulic radius and time for each flow interval for downcutting and widening
@@ -77,9 +78,9 @@
             
             !! estimate overbank flow - assume a triangular hyd
             tbase = 1.5 * sd_chd(isd_db)%tc * 60.  !seconds
-            vol_ovb = 0.5 * (peakrate - sd_ch(ich)%phi(5)) * sd_ch(ich)%phi(5) / peakrate * tbase
+            vol_ovb = 0.5 * (peakrate - sd_ch_vel(ich)%vel_bf) * sd_ch_vel(ich)%vel_bf / peakrate * tbase
             vol_ovb = amin1(vol_ovb, chflow_m3)
-            vol_ovb = peakrate - sd_ch(ich)%phi(5)
+            vol_ovb = peakrate - sd_ch_vel(ich)%vel_bf
             const = vol_ovb / peakrate
             ob(icmd)%hd(3) = const * ob(icmd)%hin
             !find current total flood volume (ht1)
@@ -163,8 +164,8 @@
             tb_pr = tbase
             DO WHILE (sdti < peakrate)
               rchdep = rchdep + 0.01
-              rcharea = (sd_ch(ich)%phi(6) + chside * rchdep) * rchdep
-              p=sd_ch(ich)%phi(6)+2. * rchdep*Sqrt(1.+chside *chside)
+              rcharea = (sd_ch_vel(ich)%wid_btm + chside * rchdep) * rchdep
+              p = sd_ch_vel(ich)%wid_btm + 2. * rchdep*Sqrt(1. + chside * chside)
               rh = rcharea / p
               sdti = Qman(rcharea, rh, sd_chd(isd_db)%chn, sd_ch(ich)%chs)
               !need to save hydraulic radius and time for each flow interval for downcutting and widening
@@ -185,7 +186,7 @@
           vc = 0.001
           if (rcharea > 1.e-4) then
             vc = peakrate / rcharea
-            if (vc > sd_ch(ich)%phi(9)) vc = sd_ch(ich)%phi(9)
+            if (vc > sd_ch_vel(ich)%celerity_bf) vc = sd_ch_vel(ich)%celerity_bf
           end if
 
         !! adjust peak rate for headcut advance -also adjusts CEAP gully from

@@ -1,6 +1,8 @@
       subroutine fertparm_read
       
       use input_file_module
+      use maximum_data_module
+      use fertilizer_data_module
    
       integer :: it
       character (len=80) :: titldum

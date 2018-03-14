@@ -1,6 +1,7 @@
        subroutine ls_parms_cal_read
       
-       use jrw_datalib_module
+       use maximum_data_module
+       use calibration_data_module
        use input_file_module
       
        character (len=80) :: titldum

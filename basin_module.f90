@@ -161,13 +161,16 @@
       !!                 'mon'   = monthly
       !!                 'day'   = daily 
       
-        integer :: nyskip = 0                         !!  number of years to skip output summarization
+        character (len=1)  :: day_print = 'n'
+        character (len=1)  :: day_print_over = 'n'
+        integer :: nyskip = 0                           !!  number of years to skip output summarization
       ! DAILY START/END AND INTERVAL
-        integer :: jd_start = 0                       !!  julian day to start printing output
-        integer :: jd_end = 0                         !!  julian day to end printing output
-        integer :: yr_start = 0                       !!  calendar year to start printing output
-        integer :: yr_end = 0                         !!  calendar year to end printing output
-        integer :: interval = 1                       !!  interval between daily printing within period
+        integer :: day_start = 0                        !!  julian day to start printing output
+        integer :: day_end = 0                          !!  julian day to end printing output
+        integer :: yrc_start = 0                        !!  calendar year to start printing output
+        integer :: yrc_end = 0                          !!  calendar year to end printing output
+        integer :: int_day = 1                          !!  interval between daily printing
+        integer :: int_day_cur = 1                      !!  current day since last print
       ! AVE ANNUAL END YEARS
         integer :: aa_numint                          !! number of print intervals for ave annual output
         integer, dimension(:), allocatable :: aa_yrs  !! end years for ave annual output
@@ -329,8 +332,8 @@
       
           
       contains
-      !include 'basin_cc_read.f90'
-      !include 'basin_prm_read.f90'
+      !include 'basin_read_cc.f90'
+      !include 'basin_read_prm.f90'
       !include 'basin_prm_default.f90'
       !include 'basin_print_codes_read.f90'
       !include 'basin_output.f90'

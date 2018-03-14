@@ -44,7 +44,7 @@
       use climate_module
       use hydrograph_module
       use basin_module
-      use jrw_datalib_module
+      use channel_data_module
       use time_module
       use channel_module
 

@@ -21,16 +21,6 @@
 !!                                | 1: pesticides used in HRU
 !!    hvsti(:)    |(kg/ha)/(kg/ha)|harvest index: crop yield/aboveground
 !!                                |biomass
-!!    icr(:)      |none           |sequence number of crop grown within the
-!!                                |current year
-!!    idc(:)      |none           |crop/landcover category:
-!!                                |1 warm season annual legume
-!!                                |2 cold season annual legume
-!!                                |3 perennial legume
-!!                                |4 warm season annual
-!!                                |5 cold season annual
-!!                                |6 perennial
-!!                                |7 trees
 !!    ihru        |none           |HRU number
 !!    npmx        |none           |number of different pesticides used in
 !!                                |the simulation
@@ -75,13 +65,13 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : pcom, hru, soil, hrupest, harveff, idp, ihru,  &
-        ipl, npmx
-      use jrw_datalib_module, only: harvop_db, pldb
+      use hru_module, only : pcom, hru, soil, hrupest, harveff, ihru, npmx
+      use plant_data_module
+      use mgt_operations_module
       use constituent_mass_module
       use carbon_module
       
-      integer :: j, k
+      integer :: j, k, idp
       integer, intent (in) :: jj, iplant, iharvop 
 
 !!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f

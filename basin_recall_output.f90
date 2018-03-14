@@ -22,8 +22,7 @@
         brec_m = brec_m + brec_d
         
         !! daily print - BASIN RECALL
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                              .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+        if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%recall_bsn%d == 'y') then
             write (8000,100) time%day, time%yrc, iaq, brec_d
             if (pco%csvout == 'y') then

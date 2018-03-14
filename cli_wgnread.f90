@@ -2,7 +2,7 @@
       
       use input_file_module
       use time_module
-      use jrw_datalib_module, only : db_mx
+      use maximum_data_module
       use climate_module
       
       character (len=80) :: titldum, header

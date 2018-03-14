@@ -91,7 +91,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use jrw_datalib_module
+      use channel_data_module
       use time_module
       use channel_module
       use hydrograph_module, only : ob, iwst, icmd, jrch

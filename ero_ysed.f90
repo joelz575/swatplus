@@ -10,7 +10,6 @@
 !!    cvm(:)      |none          |natural log of USLE_C (the minimum value
 !!                               |of the USLE C factor for the land cover)
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
-!!    icr(:)      |none          |sequence number of crop grown within a year
 !!    peakr       |m^3/s         |peak runoff rate
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface

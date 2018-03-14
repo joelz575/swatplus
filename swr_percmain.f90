@@ -36,7 +36,7 @@
 
       use hru_module, only : aird, hru, ihru, i_sep, inflpcp, isep, latlyr, latq, lyrtile, qstemm, sepbtm, sepcrktot, sepday,   &
          soil, sw_excess, wt_shall, pot, qtile
-      use jrw_datalib_module, only : sep
+      use septic_data_module
       use hydrograph_module
       use basin_module
       

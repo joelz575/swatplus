@@ -16,14 +16,6 @@
 !!                                  |the time specified by dormhr from the minimum
 !!                                  |daylength for the area, the plant will go
 !!                                  |dormant)
-!!    idc(:)         |none          |crop/landcover category:
-!!                                  |1 warm season annual legume
-!!                                  |2 cold season annual legume
-!!                                  |3 perennial legume
-!!                                  |4 warm season annual
-!!                                  |5 cold season annual
-!!                                  |6 perennial
-!!                                  |7 trees
 !!    ihru           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -47,15 +39,15 @@
       use climate_module
       use basin_module
       use hydrograph_module
-      use jrw_datalib_module, only : pldb 
+      use plant_data_module
       use organic_mineral_mass_module
       use hru_module, only : soil, pcom, hru, dormhr, phubase, sol_sumno3, sol_sumsolp, ipl, ihru,  &
-        idp, sol_sumno3, sol_sumsolp
+         sol_sumno3, sol_sumsolp
       use carbon_module
       use time_module
 
       real :: resnew
-      integer :: j
+      integer :: j, idp
 
       !!by zhang
       !!====================

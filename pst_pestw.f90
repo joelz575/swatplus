@@ -48,7 +48,6 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, hru_dafr, hrupest, ihru, iscen, nhru, npmx, soil, wpstaao
-      use jrw_datalib_module
       use constituent_mass_module
 
       integer :: k, kk, j, l

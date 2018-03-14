@@ -2,7 +2,8 @@
       
       use basin_module
       use input_file_module
-      use jrw_datalib_module
+      use channel_data_module
+      use maximum_data_module
 
       character (len=80) :: titldum, header
       integer :: eof, mon, i, imax

@@ -1,6 +1,6 @@
       subroutine res_sediment (jres, ihyd, ised)
 
-      use jrw_datalib_module
+      use reservoir_data_module
       use reservoir_module
       use conditional_module
       use climate_module

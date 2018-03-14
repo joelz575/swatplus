@@ -40,10 +40,9 @@
       use organic_mineral_mass_module
       use hru_module, only : ihru
       use basin_module
-      use jrw_datalib_module, only : db_mx
+      use maximum_data_module
       use output_landscape_module, only : hnb_d
-
-      
+    
       real, dimension(7) :: val = 0.
 
       icmd = sp_ob1%objs

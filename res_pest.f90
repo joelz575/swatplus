@@ -3,7 +3,7 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes the lake hydrologic pesticide balance.
 
-      use jrw_datalib_module
+      use reservoir_data_module
       use reservoir_module
       use hydrograph_module, only : res
       

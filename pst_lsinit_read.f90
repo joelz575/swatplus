@@ -3,7 +3,9 @@
       use input_file_module
       use constituent_mass_module
       use hru_module, only : pesti_db
-      use jrw_datalib_module, only : db_mx, pestdb, sched
+      use maximum_data_module
+      use mgt_operations_module
+      use pesticide_data_module
 
       character (len=80) :: titldum, header
       integer :: ipestdb, eof

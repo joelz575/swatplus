@@ -35,7 +35,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
  
       use hru_module, only : ihru, sweepeff, twash, ulu
-      use jrw_datalib_module, only : urbdb
+      use urban_data_module
 
       integer :: j
       real :: dirt

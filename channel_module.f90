@@ -99,13 +99,12 @@
           real :: sagst = 0.
           real :: lagst = 0.
           real :: grast = 0.
-          real, dimension (13) :: phi = 0.
           real :: wattemp = 0.         
           real :: bactp = 0.
-         real :: bactlp = 0.
+          real :: bactlp = 0.
       end type channel
       type (channel), dimension(:), allocatable :: ch 
-      
+           
       type channel_wq_db
           character(len=13) :: name
   !        real :: rs1 = 1.          ! m/day or m/hr   |local algal settling rate in reach at 20 deg C

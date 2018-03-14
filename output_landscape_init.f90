@@ -1,14 +1,15 @@
       subroutine output_landscape_init
 
-      use hru_module
       use hydrograph_module
       use channel_module
       use sd_channel_module
       use basin_module
-      use jrw_datalib_module
+      use maximum_data_module
+      use calibration_data_module
       use aquifer_module
       use output_landscape_module
       use time_module
+      use hru_module, only : prog
 
       if (sp_ob%hru > 0) then
 !!!  HRU - Water balance
@@ -626,7 +627,6 @@
         if (pco%wb_bsn%d == 'y') then
           open (2050,file="waterbal_day_bsn.txt",recl = 1500)
           write (2050,*) bsn%name, prog
-          write (2050,*) prog
           write (2050,*) wb_hdr  !! bsn
           write (9000,*) 'BASIN               waterbal_day_bsn.txt'
           if (pco%csvout == 'y') then 

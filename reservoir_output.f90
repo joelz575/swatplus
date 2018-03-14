@@ -10,8 +10,7 @@
 !!    this subroutine outputs reservoir output variables    
 
 !!!!! daily print
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                         .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%res%d == 'y') then
             write (2540,100) time%day, time%yrs, j, res_d(j)
              if (pco%csvout == 'y') then

@@ -21,7 +21,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use basin_module
-      use jrw_datalib_module
+      use channel_data_module 
+      use reservoir_data_module
       use hru_module, only : hru, isol, soil, sol, cn2
       use channel_module
       use reservoir_module

@@ -64,7 +64,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : sdr
+      use tiles_data_module
       use basin_module
       use hydrograph_module
       use climate_module, only : wst
@@ -172,7 +172,7 @@
                    !water can move to the tile drain tube
       !! Determine surface storage for the day in a given HRU (stor)
         !initialize stor on the beginning day of simulation, Daniel 9/20/2007
-      if (time%yrs == 1 .and. time%day == time%idaf) then 
+      if (time%yrs == 1 .and. time%day == time%day_start) then 
         stor= 0.
       end if
       if (pot(j)%sa <= 0.) then ! determine stor

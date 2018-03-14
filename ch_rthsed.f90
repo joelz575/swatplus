@@ -18,7 +18,6 @@
 !!    hhstor(:)   |m^3 H2O       |water stored in reach at end of time step
 !!    hrtwtr(:)   |m^3 H2O       |water leaving reach during time step
 !!    hsdti(:)    |m^3/s         |average flow rate during time step
-!!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
 !!    rhy(:)      |m H2O         |main channel hydraulic radius
 !!    sedst(:)    |metric tons   |amount of sediment stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -61,7 +60,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use jrw_datalib_module
+      use channel_data_module
       use time_module
       use channel_module
       use hydrograph_module, only : ob

@@ -1,6 +1,11 @@
       subroutine condition_read
       
-      use jrw_datalib_module
+      use maximum_data_module
+      use reservoir_data_module
+      use landuse_data_module
+      use mgt_operations_module
+      use tillage_data_module
+      use fertilizer_data_module
       use input_file_module
       use conditional_module
       

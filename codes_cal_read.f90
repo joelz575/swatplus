@@ -1,6 +1,7 @@
        subroutine codes_cal_read
       
-       use jrw_datalib_module
+       use calibration_data_module
+       use plant_data_module
        use input_file_module
        use hru_module, only : hru, hru_init, pcom_init, soil, soil_init 
        use hydrograph_module

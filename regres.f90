@@ -49,8 +49,7 @@
 
       use hru_module, only : hru, ihru, iwgen, precipday 
       use climate_module
-      use jrw_datalib_module
-
+      use urban_data_module
       integer, intent (in) :: k
       real, dimension (5,3) :: beta
       real :: regres

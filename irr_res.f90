@@ -69,7 +69,7 @@
 
       use hru_module, only : soil, hru, irrsc, irrno, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,  &
          irr_sc, irr_no, irr_asq, irr_noa, irr_sca, irramt, irr_mx, aird, irr_eff, nhru
-      use jrw_datalib_module, only : potdb
+      use tiles_data_module
       use reservoir_module
       use hydrograph_module, only : res
 

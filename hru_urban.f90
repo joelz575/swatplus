@@ -74,7 +74,7 @@
 
       use hru_module, only : hru, ihru, sedyld, surfq, ulu, sanyld, silyld, clayld, sagyld, lagyld, sedorgn, sedorgp,  &
         surqno3, surqsolp, twash, tconc, peakr, precipday 
-      use jrw_datalib_module, only : urbdb
+      use urban_data_module
       use hydrograph_module
       use climate_module
 

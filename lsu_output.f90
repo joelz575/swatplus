@@ -2,7 +2,8 @@
       
       use time_module
       use basin_module
-      use jrw_datalib_module
+      use maximum_data_module
+      use calibration_data_module
       use hydrograph_module
       use output_landscape_module
              
@@ -43,8 +44,7 @@
         rupw_m(isub) = rupw_m(isub) + rupw_d(isub)
         
 !!!!! daily print - SUBBASIN
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%wb_sub%d == 'y') then
             write (2140,100) time%day, time%yrc, isub, ruwb_d(isub)  !! waterbal
               if (pco%csvout == 'y') then 

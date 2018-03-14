@@ -1,6 +1,10 @@
       subroutine read_mgtops(isched)
       
-      use jrw_datalib_module
+      use maximum_data_module
+      use plant_data_module
+      use mgt_operations_module
+      use tillage_data_module
+      use fertilizer_data_module
       use time_module
       
       integer :: iyear, day, mon

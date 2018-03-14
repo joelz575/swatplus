@@ -437,7 +437,7 @@
       real :: yield,  pst_kg
       
 !!    new/modified arrays for plant competition
-      integer :: idp, ipl, isol
+      integer :: ipl, isol
 
       real :: sumlai,strsa_av,strsn_av,strsp_av,strstmp_av
       real :: rto_no3,rto_solp,uno3d_tot,uapd_tot,sum_no3
@@ -589,21 +589,17 @@
       real, dimension (:), allocatable :: phubase
       real, dimension (:), allocatable :: lai_yrmx,dormhr
       real, dimension (:), allocatable :: wtab,wtab_mn,wtab_mx
-      real :: frt_surface
       real, dimension (:), allocatable :: manure_kg
       real, dimension (:,:), allocatable :: rfqeo_30d,eo_30d
       real, dimension (:,:), allocatable :: wrt
-      real, dimension (:,:), allocatable :: phi
-      real, dimension (:,:), allocatable :: wat_phi
       real, dimension (:,:), allocatable :: bss,surf_bs  
       real, dimension (:,:,:), allocatable :: pst_lag
       integer, dimension (:), allocatable :: swtrg,hrupest
       !! burn
       integer, dimension (:), allocatable :: grz_days
-      integer, dimension (:), allocatable :: icr
       integer, dimension (:), allocatable :: irrno
       integer, dimension (:), allocatable :: igrz,ndeat
-      integer, dimension (:), allocatable :: ntil,irrsc
+      integer, dimension (:), allocatable :: irrsc
       integer, dimension (:), allocatable :: irr_flag
       integer, dimension (:), allocatable :: manure_id
 
@@ -616,10 +612,6 @@
 ! Modifications to Pesticide and Water routing routines by Balaji Narasimhan
 !Additional buffer and filter strip variables Mike White
       real, dimension (:), allocatable :: stsol_rd
-!! Armen Jan 08 end
-!! sj & armen changes for SWAT-C
-	real, dimension (:), allocatable :: cf, cfh, cfdec
-!! sj & armen changes for SWAT-C end
 
 	real, dimension (:), allocatable :: ubnrunoff,ubntss
 	real, dimension (:,:), allocatable :: ovrlnd_dt,hhsurfq	

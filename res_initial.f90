@@ -1,7 +1,8 @@
       subroutine res_initial
       
       use reservoir_module
-      use jrw_datalib_module
+      use maximum_data_module
+      use reservoir_data_module
       use hydrograph_module
 
       do ires = 1, db_mx%res

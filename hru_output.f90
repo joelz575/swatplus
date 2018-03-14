@@ -1,12 +1,13 @@
       subroutine hru_output(ihru)
     
-      use hru_module, only : pcom, idp, ipl
-      use jrw_datalib_module, only : pldb
+      use hru_module, only : pcom, ipl
+      use plant_data_module
       use time_module
       use basin_module
       use output_landscape_module
       
       integer, intent (in) :: ihru
+      integer :: idp
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs HRU variables on daily, monthly and annual time steps
@@ -19,8 +20,7 @@
         hpw_m(j) = hpw_m(j) + hpw_d(j)
 
       !! daily print
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                 .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%wb_hru%d == 'y') then
             write (2000,100) time%day, time%yrc, j, hwb_d(j)  !! waterbal
              if (pco%csvout == 'y') then

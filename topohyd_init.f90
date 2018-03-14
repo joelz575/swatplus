@@ -2,11 +2,13 @@
     
       use hydrograph_module, only : sp_ob, sp_ob1, ob
       use hru_module, only : hru, hru_db, sno_hru, ihru
-      use jrw_datalib_module
+      use hydrology_data_module
+      use topography_data_module
+      use soil_data_module
 
       integer :: eof
 
-      !!assign topography and hyd paramters
+      !!assign topography and hyd parameters
       do ihru = 1, sp_ob%hru
         iob = sp_ob1%hru + ihru - 1
         itopo_db = hru(ihru)%dbs%topo

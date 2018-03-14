@@ -21,7 +21,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
       use input_file_module
-      use jrw_datalib_module
+      use maximum_data_module
+      use calibration_data_module
       use hydrograph_module
 
       integer, dimension (:), allocatable :: elem_cnt1

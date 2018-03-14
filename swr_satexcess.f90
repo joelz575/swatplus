@@ -28,7 +28,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : sep, sepdb
+      use septic_data_module
       use hru_module, only : soil, hru, ihru, cbodu, surfq, surqno3, surqsolp, sep_tsincefail, pot, i_sep,  &
         isep, qday, sepday 
       

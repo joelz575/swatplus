@@ -34,7 +34,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : urbdb
+      use urban_data_module
       use hru_module, only : hru, cnday, surfq, ihru, precip_eff
       
       integer :: j

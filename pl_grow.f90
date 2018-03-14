@@ -23,14 +23,6 @@
 !!                                  |occurs on day in HRU
 !!    hvsti(:)    |(kg/ha)/(kg/ha)  |harvest index: crop yield/aboveground
 !!                                  |biomass
-!!    idc(:)      |none             |crop/landcover category:
-!!                                  |1 warm season annual legume
-!!                                  |2 cold season annual legume
-!!                                  |3 perennial legume
-!!                                  |4 warm season annual
-!!                                  |5 cold season annual
-!!                                  |6 perennial
-!!                                  |7 trees
 !!    ihru        |none             |HRU number
 !!    lai_yrmx(:) |none             |maximum leaf area index for the year in the
 !!                                  |HRU
@@ -86,13 +78,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : plcp, pldb 
+      use plant_data_module
       use basin_module
       use hru_module, only : pcom, hru, uapd, uno3d, lai_yrmx, par, bioday, ep_day, es_day,  &
-         idp, ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, sumlai, uapd_tot, uno3d_tot, vpd
+         ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, sumlai, uapd_tot, uno3d_tot, vpd
       use carbon_module
       
-      integer :: j
+      integer :: j, idp
       real :: delg, ruedecl, beadj, reg, f, ff, deltalai
       real :: laimax, lai_exp
 

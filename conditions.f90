@@ -3,7 +3,6 @@
       ! year_rot, year_cal, year_seq, prob, land_use   
       !target variables include: w_stress -> wp, fc, ul; vol -> pvol, evol
     
-      use jrw_datalib_module
       use conditional_module
       use climate_module
       use time_module

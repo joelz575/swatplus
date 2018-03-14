@@ -1,6 +1,7 @@
       subroutine hru_lte_read
       
-      use jrw_datalib_module, only: pldb, db_mx
+      use maximum_data_module
+      use plant_data_module
       use hru_lte_module
       use hydrograph_module
       use input_file_module

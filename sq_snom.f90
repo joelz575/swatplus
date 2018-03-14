@@ -55,7 +55,7 @@
       use hydrograph_module
       use hru_module, only : hru, snotmp, sno_hru, tmpav, tmx, ihru, precip_eff, snocov1, snocov2,  &
          snofall, snomlt 
-      use jrw_datalib_module, only : snodb
+      use hydrology_data_module
       use climate_module, only: wst
       
 

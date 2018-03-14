@@ -2,7 +2,6 @@
       
       use time_module
       use basin_module
-      use jrw_datalib_module
       use channel_module
       use hydrograph_module, only : sp_ob
              
@@ -20,8 +19,7 @@
       bch_m = bch_m + bch_d
       
 !!!!! daily print
-      if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                            .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+       if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
         if (pco%chan_bsn%d == 'y') then
           write (2110,100) time%day, time%yrc, jrch, bch_d
           if (pco%csvout == 'y') then

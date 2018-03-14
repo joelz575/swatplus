@@ -196,13 +196,13 @@
       wgn_pms(iwgn)%tmp_an = (summx_t + summn_t) / 24.
 
       !! calculate initial temperature of soil layers
-      if (time%idaf > ndays(2)) then
+      if (time%day_start > ndays(2)) then
         do mon = 2, 12
           m1 = 0
           nda = 0
           m1 = mon + 1
           nda = ndays(m1) - 1
-          if (time%idaf <= nda) exit
+          if (time%day_start <= nda) exit
         end do
       else
         mon = 1

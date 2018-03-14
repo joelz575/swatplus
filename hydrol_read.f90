@@ -1,6 +1,8 @@
       subroutine hydrol_read
       
       use input_file_module
+      use maximum_data_module
+      use hydrology_data_module
       
       character (len=80) :: titldum
       character (len=80) :: header

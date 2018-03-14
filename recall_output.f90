@@ -18,8 +18,7 @@
         rec_m(irec) = rec_m(irec) + rec_d(irec)
         
         !! daily print - RECALL
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                              .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%recall%d == 'y') then
             write (4500,100) time%day, time%yrc, irec, rec_d(irec)
             if (pco%csvout == 'y') then

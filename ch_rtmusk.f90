@@ -17,16 +17,6 @@
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
 !!    i           |none          |current day of simulation
 !!    pet_day     |mm H2O        |potential evapotranspiration
-!!    phi(1,:)    |m^2           |cross-sectional area of flow in channel at
-!!                               |bankfull depth
-!!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
-!!    phi(6,:)    |m             |bottom width of main channel
-!!    phi(10,:)   |hr            |storage time constant for reach at
-!!                               |bankfull depth (ratio of storage to
-!!                               |discharge)
-!!    phi(13,:)   |hr            |storage time constant for reach at
-!!                               |0.1 bankfull depth (low flow) (ratio
-!!                               |of storage to discharge)
 !!    rchstor(:)   |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -81,10 +71,11 @@
 !!    Spatial Sciences Laboratory, Texas A&M University
 
       use basin_module
-      use jrw_datalib_module
+      use channel_data_module
       use channel_module
       use hydrograph_module, only : ob, icmd, jrch
       use time_module
+      use channel_velocity_module
       
       integer :: nn,ii
       real :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c, rh
@@ -105,7 +96,7 @@
 	bsn_prm%msk_co1 = msk1
 	bsn_prm%msk_co2 = msk2
       xkm = 0.
-      xkm = ch(jrch)%phi(10) * bsn_prm%msk_co1 + ch(jrch)%phi(13) * bsn_prm%msk_co1
+      xkm = ch_vel(jrch)%wid_btm * bsn_prm%msk_co1 + ch_vel(jrch)%stor_dis_1bf * bsn_prm%msk_co1
       
 !! Muskingum numerical stability -Jaehak Jeong, 2011
 !! Check numerical stability
@@ -141,9 +132,9 @@
 !! Find maximum flow capacity of the channel at bank full
       c = 0.
       c = ch_hyd(jhyd)%side
-	p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
-	rh = ch(jrch)%phi(1) / p
-	maxrt = Qman(ch(jrch)%phi(1), rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
+	  p = ch_vel(jrch)%wid_btm + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
+	  rh = ch_vel(jrch)%area / p
+	  maxrt = Qman(ch_vel(jrch)%area, rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
 
       sdti = 0.
 	rchdep = 0.
@@ -154,10 +145,10 @@
 !! If average flowrate is greater than than the channel capacity at bank full
 !! then simulate flood plain flow else simulate the regular channel flow
       if (volrt > maxrt) then
-	  rcharea =ch(jrch)%phi(1)
+	  rcharea =ch_vel(jrch)%area
 	  rchdep = ch_hyd(jhyd)%d
-	  p = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
-	  rh = ch(jrch)%phi(1) / p
+	  p = ch_vel(jrch)%wid_btm + 2. * ch_hyd(jhyd)%d * Sqrt(1. + c * c)
+	  rh = ch_vel(jrch)%area / p
 	  sdti = maxrt
 	  adddep = 0
 	!! find the crossectional area and depth for volrt
@@ -182,8 +173,8 @@
 	!! find the depth until the discharge rate is equal to volrt
 	  Do While (sdti < volrt)
 	    rchdep = rchdep + 0.01
-	    rcharea = (ch(jrch)%phi(6) + c * rchdep) * rchdep
-	    p = ch(jrch)%phi(6) + 2. * rchdep * Sqrt(1. + c * c)
+	    rcharea = (ch_vel(jrch)%wid_btm + c * rchdep) * rchdep
+	    p = ch_vel(jrch)%wid_btm + 2. * rchdep * Sqrt(1. + c * c)
 	    rh = rcharea / p
 	    sdti = Qman(rcharea, rh, ch_hyd(jhyd)%n, ch_hyd(jhyd)%s)
 	  end do
@@ -193,7 +184,7 @@
 !! calculate top width of channel at water level
          topw = 0.
          if (rchdep <= ch_hyd(jhyd)%d) then
-           topw = ch(jrch)%phi(6) + 2. * rchdep * c
+           topw = ch_vel(jrch)%wid_btm + 2. * rchdep * c
          else
            topw = 5 * ch_hyd(jhyd)%w + 2. *(rchdep - ch_hyd(jhyd)%d) * 4.
          end if
@@ -217,7 +208,7 @@
       c3 = (2. * xkm * (1. - bsn_prm%msk_x) - det) / yy
 
 !! Compute water leaving reach on day
-	   if (time%yrs == 1 .and. i == time%idaf) then
+	   if (time%yrs == 1 .and. i == time%day_start) then
 	     ch(jrch)%flwin = ch(jrch)%rchstor
 	     ch(jrch)%flwout = ch(jrch)%rchstor
 	   end if
@@ -283,7 +274,7 @@
 	         else
 	           rtevp = (rchdep - ch_hyd(jhyd)%d) 
 	           rtevp = rtevp + (aaa - (rchdep - ch_hyd(jhyd)%d)) 
-                 topw = ch(jrch)%phi(6) + 2. * ch_hyd(jhyd)%d * c        
+                 topw = ch_vel(jrch)%wid_btm + 2. * ch_hyd(jhyd)%d * c        
 	           rtevp = rtevp * ch_hyd(jhyd)%l * 1000. * topw
 	         end if
 	      end if

@@ -1,6 +1,11 @@
       subroutine hru_read
 
-      use jrw_datalib_module, only : db_mx, lum, solt_db, topo_db, hyd_db, soildb, wet_dat_c, snodb, field_db
+      use maximum_data_module
+      use reservoir_data_module
+      use landuse_data_module
+      use hydrology_data_module
+      use topography_data_module
+      use soil_data_module
       use input_file_module
       use hru_module, only : hru, hru_db, soil, pcom, ihru, isolt 
       use hydrograph_module, only : ob, sp_ob, sp_ob1, wet

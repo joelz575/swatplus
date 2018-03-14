@@ -1,6 +1,7 @@
       subroutine stor_surf
     
-      use jrw_datalib_module, only : wet_hyd, wet_dat, res_weir, res_dat 
+      use reservoir_data_module
+      use reservoir_data_module
       use reservoir_module
       use hru_module, only : hru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, grayld, sedminps, sedminpa,   &
         surqno3, sedorgn, sedorgp, qdr, ihru, pet_day, qday, resclai, resclao, resgrai, resgrao, reslagi, &

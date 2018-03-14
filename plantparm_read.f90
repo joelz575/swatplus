@@ -1,6 +1,8 @@
       subroutine plantparm_read
       
       use input_file_module
+      use maximum_data_module
+      use plant_data_module
 
       integer :: ic
       character (len=80) :: titldum

@@ -10,8 +10,7 @@
       do icmd = 1, sp_ob%objs
         do iin = 1, ob(icmd)%rcv_tot
         !! daily print
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                    .and. time%day <= pco%jd_end) then
+         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%hyd%d == 'y') then
             write (2560,*) time%day, time%yrs, ob(icmd)%typ, ob(icmd)%num, ob(icmd)%obtyp_in(iin),        &
              ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_d(iin)

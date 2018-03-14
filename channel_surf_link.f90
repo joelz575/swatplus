@@ -3,7 +3,7 @@
       use hydrograph_module
       use channel_module
       use ru_module
-      use jrw_datalib_module
+      use maximum_data_module
       
       character (len=3) :: iobtyp
       integer :: isdc, ics

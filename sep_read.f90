@@ -2,6 +2,8 @@
       
       use input_file_module
       use hru_module, only : isep
+      use maximum_data_module
+      use septic_data_module
       
       character (len=80) :: titldum
       character (len=80) :: header

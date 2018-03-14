@@ -1,7 +1,7 @@
       subroutine mgt_plantop
     
       use hru_module, only: pcom, soil, bio_init, cnop, ihru, ipl, lai_init, plstrz
-      use jrw_datalib_module, only: pldb
+      use plant_data_module
   
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the plant operation
@@ -43,7 +43,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
-!!    idp         |none          |plant number from plants.plt file
 !!    nly         |none          |number of soil layer
 !!    plt_zmx     |mm            |rooting depth of plant
 !!    cnop        |none          |SCS runoff curve number for moisture condII
@@ -57,7 +56,7 @@
       integer :: j
 
       j = ihru
-      idp = pcom(j)%plcur(1)%idplt
+      !idp = pcom(j)%plcur(1)%idplt
 
       pcom(j)%plcur(ipl)%gro = 1
       pcom(j)%plcur(ipl)%idorm = 0

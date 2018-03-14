@@ -13,7 +13,6 @@
 !!    ch_s(2,:)   |m/m           |average slope of main channel
 !!    ch_si(:)    |m/m           |initial slope of main channel
 !!    ch_wdr(:)   |m/m           |channel width to depth ratio
-!!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
 !!    rchdep      |m             |depth of flow on day
 !!    sdti        |m^3/s         |average flow on day in reach
 !!    sedst(:)    |metric tons   |amount of sediment stored in reach
@@ -56,9 +55,10 @@
 !!    Plus particle size tracking.
 
       use basin_module
-      use jrw_datalib_module
       use channel_module
       use hydrograph_module
+      use channel_data_module
+      use channel_velocity_module
 
       integer :: ch_d50type
       real :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase
@@ -149,20 +149,20 @@
 	effbnkbed = 0.
 
       c = ch_hyd(jhyd)%side
-	pbed = ch(jrch)%phi(6)
+	  pbed = ch_vel(jrch)%wid_btm
       pbank = 2. * rchdep * Sqrt(1. + c * c)
       rh = rcharea / (pbed + pbank)
 
       topw = 0.
       if (rchdep <= ch_hyd(jhyd)%d) then
-        topw = ch(jrch)%phi(6) + 2. * rchdep * c
+        topw = ch_vel(jrch)%wid_btm + 2. * rchdep * c
 	  fpratio = 0.
 	  watdep = rchdep
       else
         topw = 5 * ch_hyd(jhyd)%w + 2. * (rchdep - ch_hyd(jhyd)%d) * 4.
 	  adddep = rchdep - ch_hyd(jhyd)%d
 	  !! Area Ratio of water in flood plain to total cross sectional area
-        fpratio = (rcharea - ch(jrch)%phi(1) -                          &                 
+        fpratio = (rcharea - ch_vel(jrch)%area -                          &                 
                                     ch_hyd(jhyd)%w*adddep)/rcharea
 	  fpratio = max(0.,fpratio)
 	  watdep = ch_hyd(jhyd)%d
@@ -190,7 +190,7 @@
 !!    Potential Bed degradation rate in metric tons per day
       degrte = ch_sed(jsed)%bed_kd * (Tbed - ch_sed(jsed)%tc_bed)*1e-06
       if (degrte < 0.) degrte = 0.
-      degrte = degrte * ch_hyd(jhyd)%l * 1000.* ch(jrch)%phi(6)         &  
+      degrte = degrte * ch_hyd(jhyd)%l * 1000.* ch_vel(jrch)%wid_btm    &  
                                          * ch_sed(jsed)%bed_bd * 86400.
 
 !!    Relative potential for bank/bed erosion

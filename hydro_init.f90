@@ -44,18 +44,20 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : dormhr, hru, hrupest, i_sep, idp, isep, isep_ly, iseptic, npmx, npno, pcom,  &
-         soil
-         
+      use hru_module, only : dormhr, hru, hrupest, i_sep, isep, isep_ly, iseptic, npmx, npno, pcom,  &
+         soil       
       use climate_module
-      use jrw_datalib_module
+      use septic_data_module
+      use plant_data_module
+      use tiles_data_module
+      use pesticide_data_module
       use basin_module
       use channel_module
       use time_module
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob, ob
 
-      integer :: j, l
+      integer :: j, l, idp
       real :: t_ch, scmx, xx, tsoil
 
       do j = 1, sp_ob%hru

@@ -39,7 +39,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : sep
+      use septic_data_module
       use hru_module, only : soil, hru, ihru, bz_perc, i_sep, isep, latlyr, lyrtile, sepday, sw_excess
       
       integer, intent (in) :: ly1

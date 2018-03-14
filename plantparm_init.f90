@@ -1,6 +1,8 @@
       subroutine plantparm_init
     
       use basin_module
+      use maximum_data_module
+      use plant_data_module
 
       integer :: ic
       

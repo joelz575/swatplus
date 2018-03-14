@@ -2,7 +2,8 @@
       
       use basin_module
       use input_file_module
-      use jrw_datalib_module
+      use maximum_data_module
+      use reservoir_data_module
       use conditional_module
 
       character (len=80) :: titldum, header

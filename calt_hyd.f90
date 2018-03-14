@@ -1,6 +1,5 @@
       subroutine calt_hyd
 
-      use hru_module
       use hydrograph_module
       use ru_module
       use aquifer_module
@@ -8,7 +7,8 @@
       use hru_lte_module
       use sd_channel_module
       use basin_module
-      use jrw_datalib_module
+      use maximum_data_module
+      use calibration_data_module
       use conditional_module
       use reservoir_module
 

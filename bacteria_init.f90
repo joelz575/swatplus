@@ -36,7 +36,6 @@
       use bacteria_module
       use channel_module
       use basin_module
-      use jrw_datalib_module
       use conditional_module
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob, icmd

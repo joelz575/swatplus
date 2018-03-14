@@ -23,17 +23,18 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : mgt, pcomdb, pldb, harvop_db, tilldb, chemapp_db, grazeop_db,  &
-         sweepop_db, sweepop, sched
+      use plant_data_module
+      use mgt_operations_module
+      use tillage_data_module
       use basin_module
       use hydrograph_module
       use hru_module, only : pcom, soil, hru, ihru, imp_trig, phubase, ndeat, igrz, manure_id, grz_days, bio_trmp, bio_min,   &
         manure_kg, yr_skip, nop, bio_eat, sol_sumno3, sol_sumsolp, irramt, irr_sc, irr_no, fertnh3, fertno3, fertorgn,  &
-        fertorgp, fertsolp, idp, ipl, sweepeff, yr_skip, yield, plstrz
+        fertorgp, fertsolp, ipl, sweepeff, yr_skip, yield, plstrz
       use time_module
       use constituent_mass_module
       
-      integer :: icom
+      integer :: icom, idp
       j = ihru
       
       ! determine which plant in community (%op2)

@@ -15,7 +15,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use jrw_datalib_module, only : fire_db
+      use mgt_operations_module
       use organic_mineral_mass_module
       use hru_module, only : pcom, soil, cn2, ihru, cnop, ipl 
       use carbon_module

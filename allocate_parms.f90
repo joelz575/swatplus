@@ -140,7 +140,6 @@
       allocate (hru_ra(mhru))
       allocate (hru_rmx(mhru))
       allocate (hrupest(mhru))
-      allocate (icr(mhru))
       allocate (igrz(mhru))
       allocate (irramt(mhru))
       allocate (yr_skip(mhru))
@@ -156,7 +155,6 @@
       allocate (ndeat(mhru))
       allocate (nop(mhru))
       allocate (nplnt(mhru))
-      allocate (ntil(mhru))
       allocate (orgn_con(mhru))
       allocate (orgp_con(mhru))
       allocate (ovrlnd(mhru))
@@ -221,9 +219,7 @@
 
       allocate (bss(4,mhru))
       allocate (wrt(2,mhru))
-      allocate (surf_bs(17,mhru))
-      allocate (phi(13,mch))  
-      allocate (wat_phi(13,mhru))
+      allocate (surf_bs(17,mhru))  
       allocate (rfqeo_30d(30,mhru))
       allocate (eo_30d(30,mhru))
 
@@ -235,11 +231,6 @@
 !!    arrays
       allocate (wpstaao(mpst,5))
 
-!!Armen Jan 2008 end
-!! sj aug 09 SWAT-C MC stuff
-	allocate (cf(mhru))
-	allocate (cfh(mhru))
-	allocate (cfdec(mhru))
 !! sj aug 09 end
 	allocate (hhsurf_bs(2,mhru,time%step))  !! nstep changed to nstep  OCt. 18,2007
       allocate (ubnrunoff(time%step),ubntss(time%step))

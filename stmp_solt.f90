@@ -49,7 +49,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use climate_module
-      use jrw_datalib_module, only : sep
+      use septic_data_module
       use hru_module, only : soil, sno_hru, hru_ra, iseptic, ihru, sol_cov, tmpav, tmx, tmn, i_sep, iwgen,  &
          albday, isep 
       use time_module

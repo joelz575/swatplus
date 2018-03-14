@@ -13,8 +13,6 @@
 !!    gsi(:)     |m/s            |maximum stomatal conductance
 !!    hru_ra(:)  |MJ/m^2         |solar radiation for the day in HRU
 !!    hru_rmx(:) |MJ/m^2         |maximum possible radiation for the day in HRU
-!!    icr(:)     |none           |sequence number of crop grown within the
-!!                               |current year
 !!    ihru       |none           |HRU number
 !!    rhd(:)     |none           |relative humidity for the day in HRU
 !!    sno_hru(:) |mm H2O         |amount of water in snow in HRU on current day
@@ -76,14 +74,14 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : pldb, plcp
+      use plant_data_module
       use basin_module
       use hydrograph_module
       use climate_module
       use hru_module, only : hru, pcom, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, cht_mx, tmx, tmn,  &
-        albday, epmax, idp, ipl, pet_day, sumlai, vpd, ep_max
+        albday, epmax, ipl, pet_day, sumlai, vpd, ep_max
       
-      integer :: j
+      integer :: j, idp
       real :: tk, pb, gma, xl, ea, ed, dlt, ramm, ralb1, ralb, xx
       real :: rbo, rto, rn, uzz, zz, zom, zov, rv, rn_pet, fvpd
       real :: rc, rho, rout, d, chz, gsi_adj, pet_alpha

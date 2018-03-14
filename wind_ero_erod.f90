@@ -1,7 +1,7 @@
       subroutine wind_ero_erod
 
       use hru_module, only : sol
-      use jrw_datalib_module, only : wind_factors
+      use wind_data_module
       
       sand = sol(j)%phys(1)%sand
       silt = sol(J)%phys(1)%silt

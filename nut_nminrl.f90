@@ -61,13 +61,14 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : pldb, sep
+      use septic_data_module
+      use plant_data_module
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : soil, pcom, rsdco_plcom, i_sep, ihru, idp, ipl, isep  
+      use hru_module, only : soil, pcom, rsdco_plcom, i_sep, ihru, ipl, isep  
       use output_landscape_module, only : hnb_d
 
-      integer :: j, k, kk
+      integer :: j, k, kk, idp
       real :: rmn1, rmp, xx, csf, rwn, hmn, hmp, r4, cnr, cnrf, cpr
       real :: cprf, ca, decr, rdc, wdn, cdg, sut, nactfr
 

@@ -62,7 +62,6 @@
       integer :: j
       real :: cej, eaj
 
-      j = 0
       j = ihru
 
 !! calculate albedo

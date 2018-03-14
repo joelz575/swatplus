@@ -6,7 +6,7 @@
      use reservoir_module
      use hydrograph_module
      use sd_channel_module
-     use jrw_datalib_module, only : db_mx
+     use maximum_data_module
      
       if (pco%fdcout == 'y') then
         open (6000,file="flow_duration_curve.out", recl=800)

@@ -5,7 +5,9 @@
 !!    This file contains data related to initial pesticide and nutrient levels
 !!    in the lake/reservoir and transformation processes occuring within the 
 !!    lake/reservoir. Data in the lake water quality input file is assumed to
-!!    apply to all reservoirs in the watershed.          
+!!    apply to all reservoirs in the watershed.    
+
+      use channel_data_module
 
       integer :: eof, i, imax
       character (len=80) :: titldum

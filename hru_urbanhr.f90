@@ -68,7 +68,7 @@
 
       use hru_module, only : hru, ihru, ulu, twash, surfq, ubntss, surqno3, sedorgn, sedorgp, pcom, init_abstrc,  &
          surqsolp, ubnrunoff, isweep, phusw, phubase, etday, ipl  
-      use jrw_datalib_module, only : urbdb
+      use urban_data_module
       use climate_module
       use time_module
 

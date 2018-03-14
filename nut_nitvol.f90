@@ -41,7 +41,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : sep
+      use septic_data_module
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : soil, ihru, i_sep, isep 

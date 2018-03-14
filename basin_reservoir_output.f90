@@ -3,7 +3,6 @@
       use time_module
       use basin_module
       use reservoir_module
-      use jrw_datalib_module
       use hydrograph_module, only : res, sp_ob
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -38,8 +37,7 @@
         bres_m = bres_m + bres_d
         
         !! daily print - RESERVOIR
-        if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                              .and. time%day <= pco%jd_end .and. int_print == pco%interval) then
+        if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%res_bsn%d == 'y') then
             write (2100,100) time%day, time%yrc, ires, bres_d
             if (pco%csvout == 'y') then

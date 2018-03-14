@@ -2,7 +2,8 @@
     
       use sd_channel_module
       use hru_lte_module
-      use jrw_datalib_module, only : cal_codes, db_mx, lscal, lscalt, ls_prms, chcal, region 
+      use maximum_data_module 
+      use calibration_data_module
       use time_module
       use basin_module
       use hru_module, only : hru

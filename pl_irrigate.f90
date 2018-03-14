@@ -30,7 +30,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : irrop_db
+      use mgt_operations_module
       use hru_module, only : hru, aird, qird
       
       integer, intent (in) :: jj, irrop

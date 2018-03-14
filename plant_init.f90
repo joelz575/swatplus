@@ -23,19 +23,22 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : blai_com, cn2, cvm_com, hru, idp, ihru, ipl, isol, nop, pcom,  &
+      use hru_module, only : blai_com, cn2, cvm_com, hru, ihru, ipl, isol, nop, pcom,  &
          rsdco_plcom, sol, ilu 
       use hydrograph_module
       use climate_module, only : wst, wgn
       use time_module
       use hru_lte_module
-      use jrw_datalib_module, only : lum_str, lum, lum_grp, pcomdb, pldb, plcp, cn, cons_prac, db_mx,  &
-         urbdb, overland_n, sched
+      use maximum_data_module
+      use plant_data_module
+      use landuse_data_module
+      use mgt_operations_module
+      use urban_data_module
       use conditional_module
       use organic_mineral_mass_module
       
       integer, intent (in) :: init
-      integer :: icom
+      integer :: icom, idp
   
       j = ihru
       

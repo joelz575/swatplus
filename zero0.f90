@@ -4,19 +4,16 @@
 !!    this subroutine initializes the values for some of the arrays 
 
       use hru_module, only : aird,auto_wstr, bio_eat, bio_init,        &
-       bio_min,bio_trmp,brt,bss,canstor,cf,cfdec,cfh,cn2,cnop,cumei,   &
-       cumeira,cumrai,cumrt,divmax,dormhr,driftco,filterw,flowmin,frac_harvk,frt_kg,frt_surface,grz_days,  &
-       hru,hru_dafr,hrupest,icr,igrz,      &
+       bio_min,bio_trmp,brt,bss,canstor,cn2,cnop,cumei,   &
+       cumeira,cumrai,cumrt,divmax,dormhr,driftco,filterw,flowmin,frac_harvk,frt_kg,grz_days,  &
+       hru,hru_dafr,hrupest,igrz,      &
        irr_asq,irr_mx,irr_no,irr_noa,irr_sc,irr_sca,irramt,irrno,irrsc,irrsq,isep,isep_ly,iseptic,itb,        &
-       lai_init,latno3,manure_id,nop,npno,ntil,orgn_con,orgp_con,par,phubase,qird,ranrns_hru,     &
+       lai_init,latno3,manure_id,nop,npno,orgn_con,orgp_con,par,phubase,qird,ranrns_hru,     &
        sed_con,sepcrk,sol_rd,sol_sumsolp,soln_con,solp_con,sstmaxd,stmaxd,stsol_rd,tileq,tmx,uh,         &
        wstrs_id,wt_shall,wtab,yr_skip
 
       use bacteria_module
 
-      cf = 0.0
-      cfh = 0.0
-      cfdec = 0.0
       wtab = 0.8
 !    Drainmod tile equations  01/2006 
       cumeira = 0.
@@ -82,11 +79,6 @@
       hqd = 0.
       hru_dafr = 0.
       hrupest = 0
-      hru_rufr = 0.
-      icr = 0
-      idc = 0
-      idop = 0
-      idtill = 0
       wstrs_id = 0
       manure_id = 0
       igrz = 0
@@ -114,9 +106,7 @@
       irr_mx = 0.
   !! change per JGA irrigation 4/2/2009
       latno3 = 0.
-      nicr = 0
       npno = 0
-      ntil = 1
       orgn_con = 0.
       orgp_con = 0.
 	  phubase = 0.

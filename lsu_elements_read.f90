@@ -1,7 +1,8 @@
       subroutine lsu_elements_read
    
       use input_file_module
-      use jrw_datalib_module
+      use maximum_data_module
+      use calibration_data_module
       use hydrograph_module
       use hru_module, only : ihru
       use output_landscape_module

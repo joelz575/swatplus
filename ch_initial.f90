@@ -1,6 +1,6 @@
       subroutine ch_initial (idat, irch)
 
-      use jrw_datalib_module
+      use channel_data_module
       use channel_module
       
       integer :: irch

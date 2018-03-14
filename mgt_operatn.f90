@@ -15,18 +15,7 @@
 !!                               |dormant)
 !!    phubase(:)  |heat units    |base zero total heat units (used when no
 !!                               |land cover is growing
-!!    icr(:)      |none          |sequence number of crop grown within a year
-!!    idc(:)      |none          |crop/landcover category:
-!!                               |1 warm season annual legume
-!!                               |2 cold season annual legume
-!!                               |3 perennial legume
-!!                               |4 warm season annual
-!!                               |5 cold season annual
-!!                               |6 perennial
-!!                               |7 trees
 !!    iop(:,:,:)  |julian date   |date of tillage operation
-!!    ntil(:)     |none          |sequence number of tillage operation within
-!!                               |current year
 !!    phut(:,:,:) |none          |fraction of heat units (base zero or plant)
 !!                               |at which tillage occurs
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -43,7 +32,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : sched, mgt 
+      use mgt_operations_module
       use hru_module, only : pcom, hru, nop, yr_skip, phubase, ihru, ipl
       use time_module
 

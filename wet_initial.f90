@@ -1,7 +1,8 @@
       subroutine wet_initial
       
       use reservoir_module
-      use jrw_datalib_module
+      use reservoir_data_module
+      use reservoir_data_module
       use hydrograph_module
       use hru_module, only : hru, ihru
   

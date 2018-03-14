@@ -5,7 +5,7 @@
       use organic_mineral_mass_module
       use hru_module, only : hru, hru_init, ihru, pcom, pcom_init, soil, soil_init, sno_hru, sno_init
       use hydrograph_module, only : sp_ob
-      use jrw_datalib_module, only : cal_codes
+      use calibration_data_module
       
       !save initial conditions if calibrating
       ical = 0

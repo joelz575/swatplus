@@ -6,14 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    idc(:)         |none          |crop/landcover category:
-!!                                  |1 warm season annual legume
-!!                                  |2 cold season annual legume
-!!                                  |3 perennial legume
-!!                                  |4 warm season annual
-!!                                  |5 cold season annual
-!!                                  |6 perennial
-!!                                  |7 trees
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -34,11 +26,11 @@
 
       use climate_module
       use basin_module
-      use hru_module, only : pcom, soil, ihru, idp, ipl
-      use jrw_datalib_module, only:  pldb
+      use hru_module, only : pcom, soil, ihru, ipl
+      use plant_data_module
 
       real :: resnew
-      integer :: j
+      integer :: j, idp
 
       j = ihru
 

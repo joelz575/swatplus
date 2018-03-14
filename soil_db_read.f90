@@ -2,6 +2,8 @@
       
       use input_file_module
       use hru_module, only : isol, mlyr
+      use maximum_data_module
+      use soil_data_module
 
       character (len=80) :: titldum
       character (len=80) :: header

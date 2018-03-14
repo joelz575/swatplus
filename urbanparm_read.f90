@@ -1,6 +1,8 @@
       subroutine urbanparm_read
       
       use input_file_module
+      use maximum_data_module
+      use urban_data_module
       
       character (len=80) :: titldum
       character (len=80) :: header

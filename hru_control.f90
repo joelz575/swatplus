@@ -5,29 +5,32 @@
 !!    hydrologic cycle
 
       use hru_module, only : pcom, hru, soil, ihru, tmx, tmn, tmpav, hru_ra, hru_rmx, rhd, u10, tillage_switch,      &
-         tillage_days, icr, ndeat, qdr, phubase, cht_mx, strsw_av, sedyld, sci, aird, surfq,   &
+         tillage_days, ndeat, qdr, phubase, cht_mx, strsw_av, sedyld, sci, aird, surfq,   &
          yr_skip, latq, tconc, smx, sepbtm, igrz, iseptic, i_sep, filterw, sed_con, soln_con, solp_con, & 
          orgn_con, orgp_con, cnday, nplnt, percn, tileno3, pplnt, sedorgn, sedorgp, surqno3, latno3,    &
          surqsolp, sedminpa, sedminps, auton, autop, bactrop, bactsedlp, bactsedp, bactrolp,     &
          fertn, fertp, fixn, grazn, grazp, hmntl, hmptl, ipl, no3pcp, peakr, qtile, rmn2tl, rmp1tl, rmptl,     &
          roctl, rwntl, snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, wdntl, canev,   &
-         ep_day, es_day, etday, idp, inflpcp, ipot, isep, iwgen, ls_overq, nd_30, pet_day,              &
+         ep_day, es_day, etday, inflpcp, ipot, isep, iwgen, ls_overq, nd_30, pet_day,              &
          pot, precipday, precip_eff, qday, sumlai, sno_hru, latqrunon
       
       use basin_module
       use organic_mineral_mass_module
       use hydrograph_module
       use climate_module, only : wst, wgn_pms
-      use jrw_datalib_module, only : pldb, sched, sep, res_dat
+      use septic_data_module
+      use reservoir_data_module
+      use plant_data_module
+      use mgt_operations_module
       use reservoir_module
       use output_landscape_module
       use time_module
 
-      integer :: j, sb, kk
+      integer :: j, sb, kk, idp
       real :: tmpk, d, gma, ho, pet_alpha, aphu, phuop, sumbm, sumrwt
 
       j = ihru
-      if (pcom(j)%npl > 0) idp = pcom(ihru)%plcur(1)%idplt
+      !if (pcom(j)%npl > 0) idp = pcom(ihru)%plcur(1)%idplt
       ulu = hru(j)%luse%urb_lu
       iob = hru(j)%obj_no
       iwst = ob(iob)%wst
@@ -72,19 +75,7 @@
       call varinit
       nd_30 = nd_30 + 1
       if (nd_30 > 30) nd_30 = 1
-      if (icr(j) <= 0) icr(j) = 1
       
-      i_wtrhru = 0
-      if (idp /= 0) then
-          if (pldb(idp)%plantnm == "watr") then
-              i_wtrhru = 1
-          end if
-      endif
-      
-	if (i_wtrhru == 1) then
-         call water_hru
-      else
-
         !! Add incoming lateral soil flow
         !!ht1== deposition: write to deposition.out
         !!ht2== outflow from inflow: added to hru generated flows
@@ -371,7 +362,6 @@
         if (xx > 1.e-6) then
           call hru_urb_bmp
         end if
-      endif
       
       ! update total residue on surface
       rsd1(j)%tot_com = orgz

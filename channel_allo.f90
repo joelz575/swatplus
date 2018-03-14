@@ -3,10 +3,12 @@
       use time_module
       use channel_module
       use hydrograph_module, only : sp_ob
+      use channel_velocity_module
       
       mch = sp_ob%chan
       
       allocate (ch(mch))
+      allocate (ch_vel(mch))
       allocate (ch_d(mch))
       allocate (ch_m(mch))
       allocate (ch_y(mch))

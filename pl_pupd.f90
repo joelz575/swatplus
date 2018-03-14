@@ -10,8 +10,6 @@
 !!                                |equation
 !!    bio_p2(:)   |none           |2st shape parameter for plant P uptake
 !!                                |equation
-!!    icr(:)      |none           |sequence number of crop grown within the
-!!                                |current year
 !!    ihru        |none           |HRU number
 !!    pltpfr(1,:) |kg P/kg biomass|phosphorus uptake parameter #1: normal
 !!                                |fraction of P in crop biomass at emergence
@@ -47,13 +45,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : pldb, plcp
-      use hru_module, only : pcom, up2, uapd, ihru, ipl, idp 
+      use plant_data_module
+      use hru_module, only : pcom, up2, uapd, ihru, ipl
 
-      integer :: j, icrop, l, ir
+      integer :: j, icrop, l, ir, idp 
       real :: uapl, gx
 
-      j = 0
       j = ihru
 
       idp = pcom(j)%plcur(ipl)%idplt

@@ -49,7 +49,7 @@
 
       use climate_module
       use basin_module
-      use jrw_datalib_module
+      use maximum_data_module
 
       real :: xx, rn
       integer :: ii, j, k, rndseed10

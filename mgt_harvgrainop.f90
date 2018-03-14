@@ -17,8 +17,6 @@
 !!                                | 1: pesticides used in HRU
 !!    hvsti(:)    |(kg/ha)/(kg/ha)|harvest index: crop yield/aboveground
 !!                                |biomass
-!!    icr(:)      |none           |sequence number of crop grown within the
-!!                                |current year
 !!    ihru        |none           |HRU number
 !!    npmx        |none           |number of different pesticides used in
 !!                                |the simulation
@@ -58,12 +56,12 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use hru_module, only : pcom, plant_mass, ihru, cnop, harveff, idp,  &
-        ipl, yield
-      use jrw_datalib_module, only: pldb, harvop_db
+      use hru_module, only : pcom, plant_mass, ihru, cnop, harveff, ipl, yield
+      use plant_data_module
+      use mgt_operations_module
       use carbon_module
  
-      integer :: j, k
+      integer :: j, k, idp
       integer, intent (in) :: jj, iplant, iharvop 
       real :: wur, hiad1, resnew,  yieldn, yieldp, yldpst
       type (plant_mass) :: plant

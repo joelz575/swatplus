@@ -5,7 +5,8 @@
       use time_module
       use ru_module
       use hydrograph_module, only : ru_d, ru_m, ru_y, ru_a, sp_ob
-      use jrw_datalib_module, only : db_mx, topo_db, field_db
+      use maximum_data_module
+      use topography_data_module
       
       ! read subbasin parameters (ie drainage area and topographic inputs)
       character (len=80) :: titldum, header

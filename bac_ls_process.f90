@@ -37,7 +37,7 @@
 !!    SWAT: Theta
 
 !!    ~ ~ ~ MODULES USED ~ ~ ~
-!!    bac_ls_parms   |type bacteria_db - contains  'bac_lsparms_read.f'
+!!    bac_ls_parms   |type bacteria_db - contains  'bac_read_lsparms.f'
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 

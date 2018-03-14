@@ -38,9 +38,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
-      use hru_module, only : curyr, hru, idp, ihru, ipl,     &
-         nhru, nop, pcom, phubase, yr_skip, timest  
+      use maximum_data_module
+      use calibration_data_module
+      use plant_data_module
+      use mgt_operations_module
+      use hru_module, only : curyr, hru, ihru, ipl, nhru, nop, pcom, phubase, yr_skip, timest  
       use time_module
       use climate_module
       use basin_module
@@ -50,7 +52,7 @@
       use hydrograph_module, only : sp_ob
       use output_landscape_module
       
-      integer :: j, iix, iiz, ic, mon, ii
+      integer :: j, iix, iiz, ic, mon, ii, idp
       integer :: isce = 1
       real :: xx
       character(len=16):: chg_parm, chg_typ
@@ -72,26 +74,26 @@
         end if
 
         !! set beginning day of simulation for year
-        if (time%yrs > 1 .or. time%idaf == 0) then
-          time%idaf = 1
+        if (time%yrs > 1 .or. time%day_start == 0) then
+          time%day_start = 1
         end if
 
         !! set ending day of simulation for year
-        time%idal = ndays(13)
-        if (time%yrs == time%nbyr .and. time%idal_in > 0) then
-          time%idal = time%idal_in
-          time%idal =  amin0 (time%idal, ndays(13))  ! if user inputs 366 on non-leap year
+        time%day_end_yr = ndays(13)
+        if (time%yrs == time%nbyr .and. time%day_end > 0) then
+          time%day_end_yr = time%day_end
+          time%day_end_yr =  amin0 (time%day_end_yr, ndays(13))  ! if user inputs 366 on non-leap year
         end if
         
         !! sum years of printing for average annual writes
         if (time%yrs > pco%nyskip) then
-          time%yrs_prt = time%yrs_prt + float(time%idal - time%idaf + 1)
+          time%yrs_prt = time%yrs_prt + float(time%day_end_yr - time%day_start + 1)
         else
           !! tell user they are skipping more years than simulating
           time%yrs_prt = time%nbyr
         end if
 
-        do julian_day = time%idaf, time%idal       !! begin daily loop
+        do julian_day = time%day_start, time%day_end_yr      !! begin daily loop
           time%day = julian_day
           !! determine month and day of month - time%mo and time%day_mo
           call xmon
@@ -108,7 +110,7 @@
           if (time%day == ndays(time%mo+1)) then
             time%end_mo = 1
           end if
-          if (time%day == time%idal) then
+          if (time%day == time%day_end_yr) then
             time%end_yr = 1
             if (time%yrs == time%nbyr) then
               time%end_sim = 1
@@ -124,12 +126,22 @@
           end if
 
           !! check time interval for daily printing
-          if (time%yrc >= pco%yr_start .and. time%day >= pco%jd_start .and. time%yrc <= pco%yr_end  &
-                                                    .and. time%day <= pco%jd_end) then
-            int_print = int_print + 1
-            if (int_print > pco%interval) int_print = 1
+          if (pco%day_print_over == 'n') then
+          if (pco%day_print == 'n') then 
+            if (time%day >= pco%day_start .and. time%yrc >= pco%yrc_start) then
+              pco%day_print = 'y'
+            end if 
+          else
+            if (time%day > pco%day_end .and. time%yrc == pco%yrc_end) then
+              pco%day_print = 'n'
+              pco%day_print_over = 'y'
+            else
+              pco%int_day_cur = pco%int_day_cur + 1
+              if (pco%int_day_cur > pco%int_day) pco%int_day_cur = 1
+            end if
           end if
-          
+          end if
+
           !! initialize variables at beginning of day for hru's
           if (sp_ob%hru > 0) call sim_initday
 
@@ -174,7 +186,7 @@
         do ihru = 1, nhru  
           isched = hru(j)%mgt_ops
           if (sched(isched)%num_ops > 0) then
-          if (time%idaf > 180 .and. wst(iwst)%lat < 0) then
+          if (time%day_start > 180 .and. wst(iwst)%lat < 0) then
             if (time%day == 180) then
               isched = hru(j)%mgt_ops
               if (sched(isched)%mgt_ops(nop(ihru))%op /= "skip") then
@@ -235,7 +247,7 @@
             end if
           end do
 
-          if (time%idaf < 181) then
+          if (time%day_start < 181) then
             isched = hru(j)%mgt_ops
             if (sched(isched)%num_ops > 0) then
               if (sched(isched)%mgt_ops(nop(j))%op /= "skip") then

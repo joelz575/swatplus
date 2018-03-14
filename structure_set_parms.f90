@@ -25,7 +25,8 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module
+      use tiles_data_module
+      use mgt_operations_module
       use hru_module, only : hru, iseptic, soil, t_ov, tc_gwat
     
       character (len=16), intent (in) :: str_name

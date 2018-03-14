@@ -35,13 +35,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : ep_max, epmax, hru_ra, htfac, idp, ihru, ipl, par, pcom, soil, sol_cov, sum_no3,  &
+      use hru_module, only : ep_max, epmax, hru_ra, htfac, ihru, ipl, par, pcom, soil, sol_cov, sum_no3,  &
          sum_solp, sumlai, tmpav, translt, uapd, uapd_tot, uno3d, uno3d_tot 
-      use jrw_datalib_module
+      use plant_data_module
       use organic_mineral_mass_module
       use time_module
 
-      integer :: j
+      integer :: j, idp
 
       j = ihru  
       par = 0.

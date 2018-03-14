@@ -30,14 +30,15 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use climate_module
-      use jrw_datalib_module, only : pldb
-      use hru_module, only : pcom, tmpav, tmn, ihru, idp, ipl, iwgen, tmn, tmpav
+      use plant_data_module
+      use hru_module, only : pcom, tmpav, tmn, ihru, ipl, iwgen, tmn, tmpav
       
-      integer :: j
+      integer :: j, idp
       real :: tgx, rto
 
       j = ihru
 
+      idp = pcom(j)%plcur(ipl)%idplt
       tgx = tmpav(j) - pldb(idp)%t_base
 
       if (tgx <= 0.) then

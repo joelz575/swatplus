@@ -44,7 +44,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : pstcp
+      use pesticide_data_module
       use hru_module, only : soil, hru, hrupest, ihru, npmx
       use constituent_mass_module
       

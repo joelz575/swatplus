@@ -194,7 +194,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       
-      use jrw_datalib_module
+      use channel_data_module
       use channel_module
       use hydrograph_module, only : ob
       use climate_module

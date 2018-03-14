@@ -2,7 +2,8 @@
       
       use input_file_module
       use sd_channel_module
-      use jrw_datalib_module, only : db_mx
+      use channel_velocity_module
+      use maximum_data_module
       use hydrograph_module
       
       character (len=80) :: titldum
@@ -10,7 +11,6 @@
       integer :: eof, imax, iisd
       real :: kh
       
-
       eof = 0
       imax = 0
       maxint = 10
@@ -18,6 +18,7 @@
       allocate (timeint(maxint))
       allocate (hyd_rad(maxint))
       allocate (sd_ch(0:sp_ob%chandeg))
+      allocate (sd_ch_vel(0:sp_ob%chandeg))
       allocate (chsd_d(0:sp_ob%chandeg))
       allocate (chsd_m(0:sp_ob%chandeg))
       allocate (chsd_y(0:sp_ob%chandeg))
@@ -92,19 +93,19 @@
             b = Max(0., b)
             chside = (sd_ch(i)%chw - b) / (2. * sd_ch(i)%chd)
           END IF
-          sd_ch(i)%phi(6) = b
-          sd_ch(i)%phi(7) = sd_ch(i)%chd
+          sd_ch_vel(i)%wid_btm = b
+          sd_ch_vel(i)%dep_bf = sd_ch(i)%chd
 
 !!      compute flow and travel time at bankfull depth
         p = b + 2. * sd_ch(i)%chd * Sqrt(chside * chside + 1.)
         a = b * sd_ch(i)%chd + chside * sd_ch(i)%chd * sd_ch(i)%chd
         rh = a / p
-        sd_ch(i)%phi(1) = a
-        sd_ch(i)%phi(5) = Qman(a, rh, sd_chd(idb)%chn, sd_ch(i)%chs)
-        sd_ch(i)%phi(8) = Qman(aa, rh, sd_chd(idb)%chn, sd_ch(i)%chs)
-        sd_ch(i)%phi(9) = sd_ch(i)%phi(8) * 5. / 3.
-        sd_ch(i)%phi(10) = sd_ch(i)%chl / sd_ch(i)%phi(9) / 3.6
-        tt2 = sd_ch(i)%chl * a / sd_ch(i)%phi(5)
+        sd_ch_vel(i)%area = a
+        sd_ch_vel(i)%vel_bf = Qman(a, rh, sd_chd(idb)%chn, sd_ch(i)%chs)
+        sd_ch_vel(i)%velav_bf = Qman(aa, rh, sd_chd(idb)%chn, sd_ch(i)%chs)
+        sd_ch_vel(i)%celerity_bf = sd_ch_vel(i)%velav_bf * 5. / 3.
+        sd_ch_vel(i)%st_dis = sd_ch(i)%chl / sd_ch_vel(i)%celerity_bf / 3.6
+        tt2 = sd_ch(i)%chl * a / sd_ch_vel(i)%vel_bf
   
 !!      compute flow and travel time at 1.2 bankfull depth
         d = 0.
@@ -127,9 +128,9 @@
         rh = a / p
         qq1 = Qman(a, rh, sd_chd(idb)%chn, sd_ch(i)%chs)
         tt1 = sd_ch(i)%chl * a / qq1
-        sd_ch(i)%phi(11) = Qman(aa, rh, sd_chd(idb)%chn, sd_ch(i)%chs)
-        sd_ch(i)%phi(12) = sd_ch(i)%phi(11) * 5. / 3.
-        sd_ch(i)%phi(13) = sd_ch(i)%chl / sd_ch(i)%phi(12) / 3.6 
+        sd_ch_vel(i)%vel_1bf = Qman(aa, rh, sd_chd(idb)%chn, sd_ch(i)%chs)
+        sd_ch_vel(i)%celerity_1bf = sd_ch_vel(i)%vel_1bf * 5. / 3.
+        sd_ch_vel(i)%stor_dis_1bf = sd_ch(i)%chl / sd_ch_vel(i)%celerity_1bf / 3.6 
         end do
         exit
       enddo

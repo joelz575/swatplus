@@ -1,6 +1,7 @@
       subroutine pl_graze      
     
-      use jrw_datalib_module, only : mgt, fertdb
+      use mgt_operations_module
+      use fertilizer_data_module
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : pcom, soil, igrz, ndeat, bio_min, bio_eat,  &

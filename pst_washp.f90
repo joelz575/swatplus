@@ -38,7 +38,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use jrw_datalib_module, only : pestdb
+      use pesticide_data_module
       use hru_module, only : hru, soil, hrupest, ihru, npmx
       use constituent_mass_module
       

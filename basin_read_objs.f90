@@ -4,22 +4,6 @@
 !!     reads in the routing information from the watershed configuration
 !!     input file (.fig) and calculates the number of subbasins, reaches, 
 !!     and reservoirs
-     
-!!     ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!     name         |units         |definition
-!!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!     ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!     name         |units         |definition
-!!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!     titldum      |NA            |description line
-!!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!     ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!     Intrinsic: Max
-!!     SWAT: caps
-
-!!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hydrograph_module
       use input_file_module
@@ -27,9 +11,14 @@
       use constituent_mass_module
       use basin_module
       
-      character (len=80) :: titldum, header
-      integer :: npsu, isp, cmdno,hydno, cmd_prev, ob1, ob2
-      integer :: eof
+      implicit none
+      
+      character (len=80) :: titldum   !            |title of file
+      character (len=80) :: header    !            |header
+      integer :: npsu                 !            |
+      integer :: isp                  !            |counter
+      integer :: eof                  !            |end of file
+      integer :: i_exist              !            |check to determine if file exists
       
       eof = 0
       

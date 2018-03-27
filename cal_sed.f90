@@ -13,6 +13,23 @@
       use conditional_module
       use reservoir_module
       use organic_mineral_mass_module
+      
+      implicit none
+      
+      integer :: isim          !          |
+      integer :: ireg          !none      |counter
+      integer :: ilum          !none      |counter
+      integer :: iihru         !none      |counter
+      integer :: ihru_s        !none      |counter
+      integer :: iter          !none      |counter
+      integer :: isl           !none      |counter
+      real :: rmeas            !          |
+      real :: denom            !          |
+      real :: soft             !          |
+      real :: diff             !          |
+      real :: chg_val          !          | 
+      real :: xm               !          |    
+      real :: sin_sl           !          | 
 
       !calibrate sediment
 

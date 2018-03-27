@@ -72,11 +72,35 @@
       use channel_data_module
       use channel_module
       use hydrograph_module, only : ob, icmd, jrch
+      
+      implicit none
 
-      real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
-      real :: orgpin, dispin, cbodin, disoxin
-      real :: algcon, orgncon, nh3con, no2con, no3con
-      real :: orgpcon, solpcon, cbodcon, o2con, wtrtot
+      real :: wtrin       !m^3 H2O       |water flowing into reach on day
+      real :: chlin       !mg chl-a/L    |chlorophyll-a concentration in inflow
+      real :: algin       !mg alg/L      |algal biomass concentration in inflow
+      real :: orgnin      !mg N/L        |organic N concentration in inflow
+      real :: ammoin      !mg N/L        |ammonium N concentration in inflow
+      real :: nitratin    !mg N/L        |nitrate concentration in inflow
+      real :: nitritin    !mg N/L        |nitrite concentration in inflow
+      real :: orgpin      !mg P/L        |organic P concentration in inflow
+      real :: dispin      !mg P/L        |soluble P concentration in inflow
+      real :: cbodin      !mg/L          |carbonaceous biological oxygen demand 
+                          !              |concentration in inflow
+      real :: disoxin     !mg O2/L       |dissolved oxygen concentration in inflow
+      real :: algcon      !mg alg/L      |initial algal biomass concentration in reach
+      real :: orgncon     !mg N/L        |initial organic N concentration in reach
+      real :: nh3con      !mg N/L        |initial ammonia concentration in reach
+      real :: no2con      !mg N/L        |initial nitrite concentration in reach
+      real :: no3con      !mg N/L        |initial nitrate concentration in reach
+      real :: orgpcon     !mg P/L        |initial organic P concentration in reach
+      real :: solpcon     !mg P/L        |initial soluble P concentration in reach
+      real :: cbodcon     !mg/L          |initial carbonaceous biological oxygen demand
+                          !              |concentration in reach
+      real :: o2con       !mg O2/L       |initial dissolved oxygen concentration in 
+                          !              |reach
+      real :: wtrtot      !m^3 H2O       |inflow + storage water
+      real :: cinn        !mg N/L        |effective available nitrogen concentration
+      real :: rchwtr      !m^3 H2O       |water stored in reach at beginning of day
 
        !! initialize water flowing into reach
        wtrin = 0.

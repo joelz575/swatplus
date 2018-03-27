@@ -403,7 +403,7 @@
       endif
       end if  
       
-!!! ROUTING UNIT - Water Balance
+!!!  Water Balance
       if (db_mx%lsu_out > 0 .and. time%step == 0) then   
         if (pco%wb_sub%d == 'y') then
           open (2140,file="waterbal_day_lsu.txt",recl = 1500)
@@ -460,7 +460,7 @@
           end if
        end if
         
-!!! ROUTING UNIT - Nutrient Balance
+!!!  Nutrient Balance
         if (pco%nb_sub%d == 'y') then
           open (2150,file="nutbal_day_lsu.txt",recl = 1500)
           write (2150,*) bsn%name, prog
@@ -513,7 +513,7 @@
           end if 
         end if 
 
-!!! ROUTING UNIT - Losses
+!!!  Losses
         if (pco%ls_sub%d == 'y') then
           open (2160,file="losses_day_lsu.txt",recl = 1500)
           write (2160,*) bsn%name, prog
@@ -566,7 +566,7 @@
         end if 
        end if
 
-!!! ROUTING UNIT - Plant/Weather
+!!!  Plant/Weather
         if (pco%pw_sub%d == 'y') then
           open (2170,file="plantwx_day_lsu.txt",recl = 1500)
           write (2170,*) bsn%name, prog

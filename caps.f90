@@ -19,6 +19,8 @@
 !!    Intrinsic: Len, Index, AdjustL
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+      
+      implicit none
 
 
       intrinsic Len, Index, AdjustL

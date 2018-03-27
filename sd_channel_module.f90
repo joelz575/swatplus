@@ -91,7 +91,8 @@
           character (len=6) :: yrs =          ' time '
           character (len=6) :: yrc =          ' year '
           character (len=8) :: isd =        '   unit '
-                                            
+          character (len=8) :: id =         '     id '           
+          character (len=16) :: name =     ' name              '        
           character(len=15) :: flo =       '    floin_m^3/s'        ! (m^3/s)
           character(len=15) :: peakr =     '       pr_m^3/s'        ! (m^3/s)
           character(len=15) :: sed_in =    '     sedin_tons'        ! (tons)

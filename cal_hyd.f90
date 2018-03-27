@@ -14,6 +14,31 @@
       use reservoir_module
       use organic_mineral_mass_module
       use time_module
+      
+      implicit none
+      
+      integer :: iter_all      !none      |counter
+      integer :: iterall       !none      |counter
+      integer :: isim          !          |
+      integer :: ireg          !none      |counter
+      integer :: ilum          !none      |counter
+      integer :: iihru         !none      |counter
+      integer :: icn           !none      |counter
+      integer :: ihru_s        !none      |counter
+      integer :: iter_ind      !          |end of loop
+      integer :: ietco         !none      |counter
+      integer :: ik            !none      |counter
+      integer :: nly           !          |end of loop
+      integer :: iperco        !none      |counter
+      real :: rmeas            !          |
+      real :: denom            !          |
+      real :: soft             !          |
+      real :: diff             !          |
+      real :: chg_val          !          | 
+      real :: dep_below_soil   !          |     
+      
+         
+      
 
       !calibrate hydrology
         ical_hyd = 0

@@ -4,6 +4,18 @@
       use time_module
       use hydrograph_module
       use climate_module, only : wst
+      
+      implicit none
+      
+      integer :: iaq            !none      |counter
+      integer :: iaqdb          !          |
+      integer :: iob_out        !          !object type out
+      integer :: iout           !none      |counter
+      integer :: ii             !none      |counter
+      real :: stor_init         !          |
+      real :: conc_no3          !          |
+      real :: step              !          |
+      real :: err               !          |
 
       !! set pointers to aquifer database and weather station
       iaq = ob(icmd)%num

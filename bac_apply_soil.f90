@@ -29,8 +29,19 @@
 
       use bacteria_module
       
-      real :: frt_t
-
+      implicit none
+      
+      real :: frt_t          !          |
+      real :: gc1            !          |
+      real :: gc             !none      |fraction of ground covered by plant foliage
+      real :: sol_bacsol     !# cfu/m^2 |soluble bacteria in soil layer
+      real :: bac_kd         !          |
+      real :: sol_bacsor     !# cfu/m^2 |sorbed bacteria in soil layer
+      integer :: ibtyp       !NA        |bacteria type from 'bact_parms.dat' 
+      integer :: ibacdb      !          | 
+      integer :: ibac        !none      |counter
+      
+      
       gc1 = 1. - gc
       sol_bacsol = gc1 * sol_bacsol * frt_t * 100. + sol_bacsol
       sol_bacsol = bac_kd * sol_bacsol

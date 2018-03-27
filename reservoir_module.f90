@@ -101,6 +101,8 @@
           character (len=6) :: yrs =          ' time '
           character (len=6) :: yrc =          ' year '
           character (len=8) :: j =            ' resnum '
+          character (len=8) :: id =           '     id '        
+          character (len=16) :: name =     ' name              ' 
           character (len=10) :: vol =      '      vol'        !ha-m                 |flow volume res
           character (len=10) :: area =     '     area'        !ha                   |surface area res
           character (len=10) :: flowi =    '    flowi'        !ha-m                 |flow into res
@@ -148,7 +150,9 @@
       type res_header_unit
           character (len=6) :: yrs =       '      '
           character (len=6) :: yrc =       '      '
-          character (len=8) :: isd =       '         '
+          character (len=8) :: isd =       '         '         
+          character (len=8) :: id =           '        '         
+          character (len=16) :: name =     '                '          
           character (len=10) :: vol =      '     ha_m'        !ha-m                 |volume res
           character (len=10) :: area =     '       ha'        !ha                   |surface area res
           character (len=10) :: flowi =    '     ha_m'        !ha-m                 |flow into res

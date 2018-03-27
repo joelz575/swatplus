@@ -15,11 +15,6 @@
 !!                                |of N in crop biomass at emergence
 !!    pltnfr(3,:) |kg N/kg biomass|nitrogen uptake parameter #3: normal fraction
 !!                                |of N in crop biomass at maturity
-!!    uobn        |none           |nitrogen uptake normalization parameter
-!!                                |This variable normalizes the nitrogen uptake
-!!                                |so that the model can easily verify that
-!!                                |upake from the different soil layers sums to
-!!                                |1.0
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -52,7 +47,7 @@
       use plant_data_module
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : pcom, soil, uno3d, un2, nplnt, fixn, ihru, ipl, rto_no3, sol_rd  
+      use hru_module, only : pcom, soil, uno3d, un2, nplnt, fixn, ihru, ipl, rto_no3, sol_rd, uptake  
 
       integer :: j, icrop, l, ir, idp
       real :: unmx, uno3l, gx
@@ -75,7 +70,7 @@
           gx = soil(j)%phys(l)%d
         end if
 
-        unmx = uno3d(ipl) * rto_no3 * (1. - Exp(-bsn_prm%n_updis * gx / sol_rd)) / uobn
+        unmx = uno3d(ipl) * rto_no3 * (1. - Exp(-bsn_prm%n_updis * gx / sol_rd)) / uptake%n_norm
         uno3l = Min(unmx - nplnt(j), soil1(j)%mn(l)%no3)
         nplnt(j) = nplnt(j) + uno3l 
         soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 - uno3l
@@ -83,19 +78,24 @@
       if (nplnt(j) < 0.) nplnt(j) = 0.
 
 !! if crop is a legume, call nitrogen fixation routine
-      select case (pldb(idp)%idc)
-        case (1,2,3)
+      !select case (pldb(idp)%idc)
+        !case (1,2,3)
+      if (pldb(idp)%idc == 'warm_annual_legume' .or. pldb(idp)%idc == 'cold_annual_legume' .or.  &
+          pldb(idp)%idc == 'perennial_legume') then
           call pl_nfix
-      end select
+      end if
 
       nplnt(j) = nplnt(j) + fixn
       pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass + nplnt(j)
  
 !! compute nitrogen stress
-      select case (pldb(idp)%idc)
-        case (1,2,3)
+      !select case (pldb(idp)%idc)
+        !case (1,2,3)
+      if (pldb(idp)%idc == 'warm_annual_legume' .or. pldb(idp)%idc == 'cold_annual_legume' .or.  &
+          pldb(idp)%idc == 'perennial_legume') then
           pcom(j)%plstr(ipl)%strsn = 1.
-        case default
+        !case default
+      else
          call nuts (pcom(j)%plm(ipl)%nmass, un2(ipl), pcom(j)%plstr(ipl)%strsn)
           if (uno3d(ipl) > 1.e-5) then
             xx = nplnt(j) / uno3d(ipl)
@@ -104,7 +104,7 @@
           end if
           pcom(j)%plstr(ipl)%strsn = Max(pcom(j)%plstr(ipl)%strsn, xx)
           pcom(j)%plstr(ipl)%strsn = amin1(pcom(j)%plstr(ipl)%strsn, 1.)
-      end select
+      end if
 
       return
       end subroutine pl_nup

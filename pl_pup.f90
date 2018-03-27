@@ -15,11 +15,6 @@
 !!                                |fraction of P in crop biomass at emergence
 !!    pltpfr(3,:) |kg P/kg biomass|phosphorus uptake parameter #3: normal
 !!                                |fraction of P in crop biomass at maturity
-!!    uobp        |none           |phosphorus uptake normalization parameter
-!!                                |This variable normalizes the phosphorus
-!!                                |uptake so that the model can easily verify
-!!                                |that uptake from the different soil layers
-!!                                |sums to 1.0
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~     
@@ -47,7 +42,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : pcom, soil, uapd, up2, pplnt, ihru, ipl, rto_solp, sol_rd
+      use hru_module, only : pcom, soil, uapd, up2, pplnt, ihru, ipl, rto_solp, sol_rd, uptake
 
       integer :: j, icrop, l, ir
       real :: uapl, gx
@@ -73,7 +68,7 @@
         upmx = 0.
         uapl = 0.
         upmx = uapd(ipl) * rto_solp * (1. - Exp(-bsn_prm%p_updis * gx /  &
-                                  sol_rd)) / uobp
+                                  sol_rd)) / uptake%p_norm
         uapl = Min(upmx - pplnt(j), soil1(j)%mp(l)%lab)
         pplnt(j) = pplnt(j) + uapl
         soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - uapl

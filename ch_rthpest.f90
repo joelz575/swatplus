@@ -88,10 +88,48 @@
       use time_module
       use channel_module
       use hydrograph_module, only : ob
+      
+      implicit none
 
-      integer :: ii
-      real :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
-      real :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
+      integer :: ii         !none          |counter
+      integer :: icmd       !units         |description
+      integer :: jrch       !units         |description
+      real :: solpstin      !mg pst        |soluble pesticide entering reach during 
+                            !              |time step
+      real :: sorpstin      !mg pst        |sorbed pesticide entering reach during
+                            !              |time step
+      real :: pstin         !mg pst        |total pesticide transported into reach
+                            !              |during time step
+      real :: depth         !m             |depth of water in reach
+      real :: chpstmass     !mg pst        |mass of pesticide in reach
+      real :: frsol         !none          |fraction of pesticide in reach that is soluble
+      real :: frsrb         !none          |fraction of pesticide in reach that is sorbed
+      real :: sedpstmass    !mg pst        |mass of pesticide in bed sediment
+      real :: bedvol        !m^3           |volume of river bed sediment
+      real :: fd2           !units         |description
+      real :: wtrin         !m^3 H2O       |volume of water entering reach during time
+                            !              |step
+      real :: solmax        !units         |description
+      real :: sedcon        !g/m^3         |sediment concentration
+      !real :: tday          !not used in this subroutine
+      real :: reactb        !mg pst        |amount of pesticide in sediment that is lost
+                            !              |through reactions
+      real :: rchwtr        !m^3 H2O       |water stored in reach at beginning of day
+      real :: pest_sol      !kg/ha or kg   |soluble pesticide mass
+      real :: sedpstmas     !mg pst        |mass of pesticide in bed sediment
+      real :: bury          !mg pst        |loss of pesticide from active sediment layer
+                            !              |by burial
+      real :: difus         !mg pst        |diffusion of pesticide from sediment to reach
+      real :: resuspst      !mg pst        |amount of pesticide moving from sediment to
+                            !              |reach due to resuspension
+      real :: setlpst       !mg pst        |amount of pesticide moving from water to
+                            !              |sediment due to settling
+      real :: volatpst      !mg pst        |amount of pesticide in reach lost by
+                            !              |volatilization
+      real :: reactw        !mg pst        |amount of pesticide in reach that is lost
+                            !              |through reactions
+      real :: thour         !hour          |flow duration
+      
 
 !! calculate volume of active river bed sediment layer
       bedvol =ch_hyd(jhyd)%w * ch_hyd(jhyd)%l*1000.*                     &

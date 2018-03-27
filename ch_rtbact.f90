@@ -58,11 +58,24 @@
       use channel_module
       use hydrograph_module, only : ob
       use climate_module
+      
+      implicit none
 
-      real, external :: Theta
-
-      real :: totbactp, totbactlp, netwtr, initlp, initp
-      real :: tday, wtmp
+      real, external :: Theta  !units         |description        
+      real :: totbactp         !10^4 cfu      |mass persistent bacteria
+      real :: totbactlp        !10^4 cfu      |mass less persistent bacteria
+      real :: netwtr           !m^3 H2O       |net amount of water in reach during time step
+      real :: initlp           !# cfu/100mL   |bacteria concentration in reach at beginning
+      real :: initp            !# cfu/100mL   |bacteria concentration in reach at beginning
+      real :: tday             !day           |routing time for the reach
+      real :: wtmp             !deg C         |temperature of water in reach
+      real :: rchwtr           !m^3 H2O       |water stored in reach at beginning of day
+      integer :: iwst          !units         |description
+      integer :: ii            !none          |counter
+      integer :: icmd          !units         |description
+      integer :: ibac          !units         |description
+      integer :: jrch          !none          |reach number
+      
 
       if (rtwtr > 0. .and. rchdep > 0.) then
 

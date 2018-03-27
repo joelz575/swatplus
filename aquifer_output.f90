@@ -3,27 +3,25 @@
       use time_module
       use basin_module
       use aquifer_module
+      use hydrograph_module, only : ob, sp_ob1
       
-      integer, intent (in) :: iaq
-             
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine outputs SUBBASIN variables on daily, monthly and annual time steps
-
-!!    PRINT CODES: 0 = average annual (always print)
-!!                 1 = yearly
-!!                 2 = monthly
-!!                 3 = daily
-     
-        !! sum monthly variables
-        !iaq = ob(icmd)%num 
+      implicit none
+            
+      integer, intent (in) :: iaq        !             |
+      real :: const                      !             |constant used for rate, days, etc
+      integer :: iob                     !             |
+                          
+      iob = sp_ob1%aqu + iaq - 1    
+        
+        !! sum monthly variables        
         aqu_m(iaq) = aqu_m(iaq) + aqu(iaq)
         
         !! daily print - AQUIFER
          if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%aqu%d == 'y') then
-            write (2520,100) time%day, time%yrc, iaq, aqu(iaq)
+            write (2520,100) time%day, time%yrc, iaq, ob(iob)%num, ob(iob)%name, aqu(iaq)
             if (pco%csvout == 'y') then
-              write (2524,'(*(G0.3,:","))') time%day, time%yrc, iaq, aqu(iaq)
+              write (2524,'(*(G0.3,:","))') time%day, time%yrc, iaq, ob(iob)%num, ob(iob)%name, aqu(iaq)
             end if
           end if
         end if
@@ -36,9 +34,9 @@
           aqu_m(iaq)%no3 = aqu_m(iaq)%no3 / const
           aqu_y(iaq) = aqu_y(iaq) + aqu_m(iaq)
           if (pco%aqu%m == 'y') then
-            write (2521,100) time%mo, time%yrc, iaq, aqu_m(iaq)
+            write (2521,100) time%mo, time%yrc, iaq, ob(iob)%num, ob(iob)%name, aqu_m(iaq)
             if (pco%csvout == 'y') then
-              write (2525,'(*(G0.3,:","))') time%mo, time%yrc, iaq, aqu_m(iaq)
+              write (2525,'(*(G0.3,:","))') time%mo, time%yrc, iaq, ob(iob)%num, ob(iob)%name, aqu_m(iaq)
             endif
           end if
           aqu_m(iaq) = aquz
@@ -51,9 +49,9 @@
           aqu_y(iaq)%no3 = aqu_y(iaq)%no3 / 12.
           aqu_a(iaq) = aqu_a(iaq) + aqu_y(iaq)
           if (pco%aqu%y == 'y') then
-            write (2522,102) '     0', time%yrc, iaq, aqu_y(iaq)
+            write (2522,102) '     0', time%yrc, iaq, ob(iob)%num, ob(iob)%name, aqu_y(iaq)
             if (pco%csvout == 'y') then
-              write (2526,'(*(G0.3,:","))') '     0', time%yrc, iaq, aqu_y(iaq) 
+              write (2526,'(*(G0.3,:","))') '     0', time%yrc, iaq, ob(iob)%num, ob(iob)%name, aqu_y(iaq) 
             end if
           end if
           !! zero yearly variables        
@@ -63,15 +61,15 @@
       !! average annual print - AQUIFER
       if (time%end_sim == 1 .and. pco%aqu%a == 'y') then
         aqu_a(iaq) = aqu_a(iaq) / time%yrs_prt
-        write (2523,102) '     0', time%yrs, iaq, aqu_a(iaq)
+        write (2523,102) '     0', time%yrs, iaq, ob(iob)%num, ob(iob)%name, aqu_a(iaq)
         if (pco%csvout == 'y') then 
-          write (2527,'(*(G0.3,:","))') '     0', time%yrs, iaq, aqu_a(iaq)  
+          write (2527,'(*(G0.3,:","))') '     0', time%yrs, iaq, ob(iob)%num, ob(iob)%name, aqu_a(iaq)  
         end if 
       end if
       
       return
       
-100   format (2i6,i8,20f15.3)
-102   format (a6,i6,i8,20f15.3)
+100   format (2i6,2i8,2x,a,20f15.3)
+102   format (a6,i6,2i8,2x,a,20f15.3)
        
       end subroutine aquifer_output

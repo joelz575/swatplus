@@ -22,9 +22,18 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      real, intent (in) :: val_cur, chg_val
-      character(len=16), intent (in) :: chg_typ
-      integer, intent (in) :: num_db
+      implicit none
+
+      real, intent (in) :: val_cur                    !variable      |current parameter value
+                                                      !              |the standard temperature (20 degrees C)
+      real, intent (in) :: chg_val                    !variable      |amount of change
+      character(len=16), intent (in) :: chg_typ       !variable      |type of change (absval, abschg, pctchg) 
+      integer, intent (in) :: num_db                  !crosswalk number of parameter, structure or land use to get database array number
+      real :: chg_par                                 !variable      |new parameter value
+      real :: absmin                                  !minimum range for variable
+      real :: absmax                                  !maximum change for variable
+      real :: amin1                                   !units         |description   
+      integer :: ielem                                !none          |counter
 
       select case (chg_typ)
 

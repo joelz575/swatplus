@@ -23,8 +23,11 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      real, intent (in) :: rn1, rn2
-      real :: cli_dstn1
+      implicit none
+      
+      real, intent (in) :: rn1     !none          |first random number
+      real, intent (in) :: rn2     !none          |second random number 
+      real :: cli_dstn1            !units         |description  
 
       cli_dstn1 = Sqrt(-2. * Log(rn1)) * Cos(6.283185 * rn2)
 

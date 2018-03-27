@@ -56,9 +56,29 @@
       use channel_module
       use hydrograph_module, only : ob
       use time_module
+             
+      implicit none
 
-      real :: qdin, sedin, vc, cyin, cych, depnet, deg1, deg2, dep
-      real :: depdeg, dot, outfract, deg
+      real :: qdin             !m^3 H2O       |water in reach during time step
+      real :: sedin            !units         |description
+      real :: vc               !m/s           |flow velocity in reach
+      real :: cyin             !units         |description
+      real :: cych             !units         |description
+      real :: depnet           !metric tons   |
+      real :: deg1             !units         |description
+      real :: deg2             !units         |description
+      real :: dep              !metric tons   |sediment deposited on river bottom
+      real :: depdeg           !m             |depth of degradation/deposition from original
+      real :: dot              !mm            |actual depth from impermeable layer to water level
+                               !              |above drain during subsurface irrigation
+      real :: outfract         !units         |description
+      real :: deg              !metric tons   |sediment reentrained in water by channel
+                               !              |degradation
+      real :: sedinorg         !units         |description
+      real :: tbase            !none          |flow duration (fraction of 1 hr)
+      real :: dat2             !m             |change in channel depth during time step
+      integer :: jrch          !none          |reach number
+      integer :: icmd          !units         |description
 
       sedin = 0.0
 

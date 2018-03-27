@@ -15,11 +15,6 @@
 !!                                |fraction of P in crop biomass at emergence
 !!    pltpfr(3,:) |kg P/kg biomass|phosphorus uptake parameter #3: normal
 !!                                |fraction of P in crop biomass at maturity
-!!    uobp        |none           |phosphorus uptake normalization parameter
-!!                                |This variable normalizes the phosphorus
-!!                                |uptake so that the model can easily verify
-!!                                |that uptake from the different soil layers
-!!                                |sums to 1.0
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    
@@ -46,7 +41,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use plant_data_module
-      use hru_module, only : pcom, up2, uapd, ihru, ipl
+      use hru_module, only : pcom, up2, uapd, ihru, ipl, uptake
 
       integer :: j, icrop, l, ir, idp 
       real :: uapl, gx

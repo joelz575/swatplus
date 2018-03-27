@@ -5,9 +5,31 @@
       use hydrograph_module
       use aquifer_module
       use maximum_data_module
+      
+      implicit none
 
-      character (len=80) :: titldum, header
-      integer :: eof
+      character (len=80) :: titldum     !             |title of file
+      character (len=80) :: header      !             |header of file
+      integer :: eof                    !             |end of file
+      integer :: imax                   !             |determine max number for array (imax) and total number in file
+      integer :: mcal                   !             |
+      integer :: i_exist                !             |check to determine if file exists
+      integer :: mreg                   !             |
+      integer :: i                      !none         |counter
+      integer :: k                      !             |
+      integer :: nspu                   !             | 
+      integer :: isp                    !             |
+      integer :: ielem                  !none         |counter
+      integer :: ii                     !none         |counter
+      integer :: ie1                    !none         |counter
+      integer :: ie2                    !none         |counter
+      integer :: ie                     !none         |counter
+      integer :: ihru                   !none         |counter
+      integer :: iaqu                   !none         |counter
+      integer :: msub_elems             !             |
+      integer :: ireg                   !none         |counter
+           
+      
       
       imax = 0
       mcal = 0

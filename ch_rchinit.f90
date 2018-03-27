@@ -61,6 +61,28 @@
 
       use channel_module
       use hydrograph_module
+      
+      implicit none
+      
+      real :: rchwtr     !m^3 H2O       |water stored in reach at beginning of day
+      real :: bury       !mg pst        |loss of pesticide from active sediment layer
+                         !              |by burial
+      real :: difus      !mg pst        |diffusion of pesticide from sediment to reach
+      real :: reactb     !mg pst        |amount of pesticide in sediment that is lost
+                         !              |through reactions
+                         !              |up by plant roots in the bank storage zone
+      real :: reactw     !mg pst        |amount of pesticide in reach that is lost
+                         !              |through reactions
+      real :: resuspst   !mg pst        |amount of pesticide moving from sediment to
+                         !              |reach due to resuspension
+      real :: setlpst    !mg pst        |amount of pesticide moving from water to
+                         !              |sediment due to settling
+      real :: solpesto   !mg pst/m^3    |soluble pesticide concentration in outflow
+                         !              |on day
+      real :: sorpesto   !mg pst/m^3    |sorbed pesticide concentration in outflow
+                         !              |on day 
+      real :: volatpst   !mg pst        |amount of pesticide lost from reach by
+                         !                |volatilization
 
 !! initialize daily variables
       rchwtr = ch(jrch)%rchstor

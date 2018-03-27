@@ -1,4 +1,6 @@
       module channel_data_module
+    
+      implicit none
    
        type routing_nut_data         ! used for 2-stage ditch in chandeg and overland flow
         character(len=16) :: name = 'Drainage_Ditch'

@@ -3,15 +3,12 @@
       use time_module
       use basin_module
       use hydrograph_module
+      
+      implicit none
              
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine outputs SUBBASIN variables on daily, monthly and annual time steps
-
-!!    PRINT CODES: 'avann' = average annual (always print)
-!!                 'year'  = yearly
-!!                 'mon'   = monthly
-!!                 'day'   = daily
-     
+      integer ::  irec      !none      |counter
+      integer ::  iaq       !          |
+           
         brec_d = hz
         !! sum monthly variables
         do irec = 1,sp_ob%recall
@@ -24,9 +21,9 @@
         !! daily print - BASIN RECALL
         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%recall_bsn%d == 'y') then
-            write (8000,100) time%day, time%yrc, iaq, brec_d
+            write (8000,100) time%day, time%yrc, iaq, '     1', bsn%name, brec_d
             if (pco%csvout == 'y') then
-              write (8002,'(*(G0.3,:","))') time%day, time%yrc, iaq, brec_d
+              write (8002,'(*(G0.3,:","))') time%day, time%yrc, iaq, '     1', bsn%name, brec_d
             end if
           end if
         end if
@@ -35,9 +32,9 @@
         if (time%end_mo == 1) then
           brec_y = brec_y + brec_m
           if (pco%recall_bsn%m == 'y') then
-            write (8000,100) time%mo, time%yrc, iaq, brec_m
+            write (8000,100) time%mo, time%yrc, iaq, '     1', bsn%name, brec_m
             if (pco%csvout == 'y') then
-              write (8002,'(*(G0.3,:","))') time%mo, time%yrc, iaq, brec_m
+              write (8002,'(*(G0.3,:","))') time%mo, time%yrc, iaq, '     1', bsn%name, brec_m
             endif
           end if
           brec_m = hz
@@ -47,9 +44,9 @@
         if (time%end_yr == 1) then
           brec_a = brec_a + brec_y
           if (pco%recall_bsn%y == 'y') then
-            write (8000,102) '     0', time%yrc, iaq, brec_y
+            write (8000,102) '     0', time%yrc, iaq, '     1', bsn%name, brec_y
             if (pco%csvout == 'y') then
-              write (8002,'(*(G0.3,:","))') '     0', time%yrc, iaq, brec_y 
+              write (8002,'(*(G0.3,:","))') '     0', time%yrc, iaq, '     1', bsn%name, brec_y 
             end if
           end if
           !! zero yearly variables        
@@ -60,15 +57,15 @@
 
       if (time%end_sim == 1 .and. pco%recall_bsn%a == 'y') then
         brec_a = brec_a / time%yrs_prt
-        write (8001,102) '     0', time%yrs, iaq, brec_a
+        write (8001,102) '     0', time%yrs, iaq, '     1', bsn%name, brec_a
         if (pco%csvout == 'y') then 
-          write (8003,'(*(G0.3,:","))') '     0', time%yrs, iaq, brec_a 
+          write (8003,'(*(G0.3,:","))') '     0', time%yrs, iaq, '     1', bsn%name, brec_a 
         end if 
       end if
       
       return
       
-100   format (2i6,i8,25f15.3)
-102   format (a6,i6,i8,25f15.3)
+100   format (2i6,i8,2x,a,2x,a16,25f15.3)
+102   format (a6,i6,i8,2x,a,2x,a16,25f15.3)
        
       end subroutine basin_recall_output

@@ -1,8 +1,16 @@
       module channel_module
-
-      integer :: jhyd, jsed, jnut, jpst
-      real :: pet_day
-      real :: rttime, rchdep, rtevp, rttlc 
+    
+      implicit none
+    
+      integer :: jhyd    !units         |description    
+      integer :: jsed    !units         |description 
+      integer :: jnut    !units         |description
+      integer :: jpst    !units         |description
+      real :: pet_day    !mm H2O        |potential evapotranspiration
+      real :: rttime     !hr            |reach travel time
+      real :: rchdep     !m             |depth of flow on day
+      real :: rtevp      !m^3 H2O       |evaporation from reach on day
+      real :: rttlc      !m^3 H2O       |transmission losses from reach on day
       real, dimension (:), allocatable :: hrtwtr     !m^3 H2O       |water leaving reach
       real, dimension (:), allocatable :: hharea     !m^2           |cross-sectional area of flow
       real, dimension (:), allocatable :: hdepth     !m             |depth of flow
@@ -223,10 +231,12 @@
           character (len=6) :: yrs =          ' time '
           character (len=6) :: yrc =          ' year '
           character (len=8) :: isd =        '   unit '
-          character(len=15) :: flo_in =    '    floin_ha-m'         ! (ha-m)
-          character(len=15) :: flo_out =   '   floout_ha-m'         ! (ha-m)
-          character(len=15) :: evap =      '     evap_ha-m'         ! (ha-m)
-          character(len=15) :: tloss =     '    tloss_ha-m'         ! (ha-m)
+          character (len=8) :: id =         '     id '           
+          character (len=16) :: name =     ' name              '           
+          character(len=15) :: flo_in =    '     floin_ha-m'        ! (ha-m)
+          character(len=15) :: flo_out =   '    floout_ha-m'        ! (ha-m)
+          character(len=15) :: evap =      '      evap_ha-m'        ! (ha-m)
+          character(len=15) :: tloss =     '     tloss_ha-m'        ! (ha-m)
           character(len=15) :: sed_in =    '     sedin_tons'        ! (tons)
           character(len=15) :: sed_out=    '    sedout_tons'        ! (tons)
           character(len=15) :: sed_conc =  '   sedconc_mg/L'        ! (mg/L)
@@ -280,10 +290,11 @@
           character(len=15) :: bnk_ero =   '        bnk_ero'        ! bank erosion
           character(len=15) :: ch_deg =    '         ch_deg'        ! channel degradation
           character(len=15) :: ch_dep =    '         ch_dep'        ! channel deposition
-          character(len=15) :: fp_dep =    '         fp_dep'        ! flood deposition
-          character(len=15) :: tot_ssed =  '       tot_ssed'        ! total suspended sediments
+          character(len=15) :: fp_dep =    '         fp_dep'        ! flood deposition         
+          character(len=15) :: tot_ssed =  '       tot_ssed'        ! total suspended sediments       
       end type ch_header
       type (ch_header) :: ch_hdr
+      
       interface operator (+)
         module procedure ch_add
       end interface

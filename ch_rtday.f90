@@ -59,10 +59,36 @@
       use hydrograph_module, only : ob
       use channel_velocity_module
 
-      real :: wtrin, scoef, p, tbase, topw, vol, c, rh
-      real :: volrt, maxrt, adddep, addp, addarea, vc, aaa
-      real :: rttlc1, rttlc2, rtevp1, rtevp2, det
-
+      implicit none
+      
+      real :: wtrin         !m^3 H2O       |amount of water flowing into reach on day
+      real :: scoef         !none          |Storage coefficient (fraction of water in
+      real :: p             !m             |wetted perimeter
+      !real :: tbase        !not used in this subroutine
+      real :: topw          !m             |top width of main channel
+      real :: vol           !m^3 H2O       |volume of water in reach at beginning of
+                            !              |day
+      real :: c             !none          |inverse of channel side slope
+      real :: rh            !m             |hydraulic radius
+      real :: volrt         !units         |description 
+      real :: maxrt         !units         |description 
+      real :: dddep         !units         |description 
+      real :: addp          !units         |description 
+      real :: addarea       !units         |description 
+      real :: vc            !m/s           |flow velocity in reach
+      real :: aaa           !units         |description 
+      real :: rttlc1        !units         |description 
+      real :: rttlc2        !units         |description 
+      real :: rtevp1        !units         |description 
+      real :: rtevp2        !units         |description 
+      real :: det           !hr            |time step (24 hours)
+      real :: qman          !m^3/s or m/s  |flow rate or flow velocity
+      real :: adddep        !units         |description 
+      integer :: icmd       !units         |description 
+      integer :: jrch       !units         |description 
+      integer :: itermx     !units         |description 
+      
+      
       wtrin = ob(icmd)%hin%flo
 
       !! calculate volume of water in reach

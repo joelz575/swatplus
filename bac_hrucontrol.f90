@@ -4,24 +4,30 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    cbact       |
-!!    j           |none          |HRU number
 !!    wt1         |none          |conversion factor to convert kg/ha to g/t(ppm)
 !!    xx          |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Min, Max
-!!    SWAT: Theta
 
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       use hru_module, only : soil, hru, pcom, ihru, tmpav, sedyld, precipday, qday
       use bacteria_module
       use constituent_mass_module
       use hydrograph_module
+      
+      implicit none
 
-      integer :: j
-      real :: bacsol_out, bacsor_out
-
+      integer :: j             !none      |counter
+      real :: bacsol_out       !          |
+      real :: bacsor_out       !          |
+      integer :: mbac          !          |
+      integer :: ib            !none      |counter
+      integer :: ibtyp         !none      |bacteria type from 'bact_parms.dat' 
+      integer :: ibacdb        !          |
+      real :: bacdiegrosol_out !# cfu/m^2 |regrowth and dieoff of soluble bacteria in soil 
+      real :: bacdiegrosor_out !          |
+      real :: bacdiegroplt_out !          |
+      real :: baclch_out       !# cfu/m^2 |bacteria leached to the next layer 
+      
       j = ihru
 
       mbac = obcs(icmd)%num_paths

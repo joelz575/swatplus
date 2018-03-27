@@ -59,21 +59,56 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use basin_module
-      use channel_data_module
-      use time_module
-      use channel_module
-      use hydrograph_module, only : ob
-      use climate_module
-
-	integer :: ii
-	real :: qin, qdin, sedin, vc, cyin, cych, depnet, deg, dep
-	real :: depdeg, dot, ycoeff, Reynolds_g, visco_h2o, tmpw
-	real :: channel_d50, particle_specific_gravity, Fr_g, Fr_gc
-	real :: log10sedcon, sedcon, deg24, dep24
-	real :: vfall, coefa, coefb, coefc, coefd, coefe
+    use basin_module
+    use channel_data_module
+    use time_module
+    use channel_module
+    use hydrograph_module, only : ob
+    use climate_module
       
-      real :: thbase,  shear_stress, vshear, deg1, deg2, d_fract, dat2
+    implicit none
+
+	integer :: ii                         !none          |counter
+    integer :: icmd                       !units         |description
+    integer :: jrch                       !none          |reach number
+    integer :: iwst                       !none          |counter
+	real :: qin                           !m^3 H2O       |water in reach during time step
+    real :: qdin                          !m^3 H2O       |water in reach during time step
+    real :: sedin                         !units         |description
+    real :: vc                            !m/s           |flow velocity in reach
+    real :: cyin                          !units         |description
+    real :: cych                          !units         |description
+    real :: depnet                        !metric tons   |
+    real :: deg                           !metric tons   |sediment reentrained in water by channel degradation 
+    real :: dep                           !metric tons   |sediment deposited on river bottom
+	real :: depdeg                        !m             |depth of degradation/deposition from original
+    real :: dot                           !mm            |actual depth from impermeable layer to water level
+                                          !              |above drain during subsurface irrigation
+    real :: ycoeff                        !units         |description
+    real :: Reynolds_g                    !none          |grain Reynolds number 
+    real :: visco_h2o                     !units         |description
+    real :: tmpw                          !units         |description
+	real :: channel_d50                   !units         |description
+    real :: particle_specific_gravity     !units         |description
+    real :: Fr_g                          !units         |description                     
+    real :: Fr_gc                         !units         |description
+	real :: log10sedcon                   !units         |description
+    real :: sedcon                        !g/m^3         |sediment concentration
+    real :: deg24                         !units         |description
+    real :: dep24                         !units         |description
+	real :: vfall                         !units         |description
+    real :: coefa                         !units         |description
+    real :: coefb                         !units         |description
+    real :: coefc                         !units         |description
+    real :: coefd                         !units         |description
+    real :: coefe                         !units         |description
+    real :: thbase                        !units         |description
+    real :: shear_stress                  !units         |description
+    real :: vshear                        !units         |description
+    real :: deg1                          !units         |description 
+    real :: deg2                          !units         |description
+    real :: d_fract                       !units         |description
+    real :: dat2                          !m             |change in channel depth during time step
 
 	deg24=0.; dep24=0
 	channel_d50 = bsn_prm%ch_d50 / 1000. !! unit change mm->m

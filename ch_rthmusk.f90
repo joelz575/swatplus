@@ -83,10 +83,30 @@
       use channel_module
       use hydrograph_module, only : ob
       use channel_velocity_module
+      
+      implicit none
 
-      integer :: ii
-      real :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c
-      real :: tbase, topw
+      integer :: ii        !none          |counter (Number of operational step during day)
+      integer :: jrch      !none          |reach number
+      integer :: icmd      !units         |description 
+      integer :: i         !units         |description 
+      real :: qman         !m^3/s or m/s  |flow rate or flow velocity
+      real :: xkm          !hr            |storage time constant for the reach on
+                           !              |current day
+      real :: det          !hr            |time step
+      real :: yy           !none          |variable to hold intermediate calculation
+                           !              |value
+      real :: c1           !units         |description
+      real :: c2           !units         |description 
+      real :: c3           !units         |description
+      real :: c4           !m^3 H2O       |
+      real :: wtrin        !m^3 H2O       |water entering reach on day
+      real :: p            !m             |wetted perimeter
+      real :: vol          !m^3 H2O       |volume of water applied in irrigation 
+                           !              |operation
+      real :: c            !none          |inverse of channel side slope
+      real :: tbase        !none          |flow duration (fraction of 1 hr)
+      real :: topw         !m             |top width of main channel
 
       !! set current day within subdaily hydrograph ts
  !! Compute storage time constant for reach

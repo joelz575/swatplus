@@ -5,6 +5,8 @@
         use organic_mineral_mass_module
         use carbon_module
         
+        implicit none
+        
         !!transput variables;
         !!  std(:)          : standing dead (kg ha-1)                                               (not used)
         !!  stdl(:)         : mass of lignin in standing dead (kg ha-1)                             (not used)
@@ -90,20 +92,130 @@
                 !of structural litter [xlslf = exp(-3* lslf) (parton et al., 1993, 1994)]
        !prmt_51 !coef adjusts microbial activity function in top soil layer (0.1_1.)
        
-       integer :: j, k, kk
-       real :: sol_mass, sol_min_n  
-       real :: fc, wc, sat, void, sut, cdg, ox, cs
-       real :: x1, x3, xx
-       real :: lmf, lsf, lslf, xlslf, lsr, bmr, xbmt, hsr, hpr       
-       real :: lscta, lslcta, lslncta,lsnta, lmcta, lmnta, bmcta, bmnta, hscta, hsnta, hpcta, hpnta
-       real :: lsctp, lslctp, lslnctp, lsntp, lmr, lmctp, lmntp, bmctp,hsctp, hsntp, hpctp, hpntp
-       real :: nchp, nf, ncbm, nchs, alslco2, alslnco2, almco2, abco2, a1co2, apco2, asco2, abp, asp, a1, asx, apx
-       real :: prmt_51
-       real :: df1, df2, snmn,  df3, df4, df5, df6, add, adf1, adf2, adf3, adf4, adf5
-       real :: tot
-       real :: pn1, pn2, pn3, pn4, pn5, pn6, pn7, pn8, pn9
-       real :: sum, cpn1, cpn2, cpn3, cpn4, cpn5
-       real :: wmin, dmdn, wdn, delta_bmc, deltawn
+       integer :: j              !number of hru
+       integer :: k              !none      |counter
+       integer :: kk             !units     |description 
+       integer :: lmnta          !units     |description       
+       integer :: min_n_ppm      !units     |description
+       integer :: lslncat        !units     |description
+       integer :: min_n          !units     |description
+       real :: sol_mass          !units     |description
+       real :: sol_min_n         !units     |description
+       real :: fc                !mm H2O    |amount of water available to plants in soil layer at field capacity (fc - wp),Index:(layer,HRU)
+       real :: wc                !none      |scaling factor for soil water impact on daily
+       real :: sat               !units     |description
+       real :: void              !units     |description
+       real :: sut               !          |soil water control on biological processes
+       real :: cdg               !          |soil temperature control on biological processes
+       real :: ox                !          |oxygen control on biological processes with soil depth
+       real :: cs                !          |combined factor controlling biological processes [cs = sqrt(cdg×sut)* 0.8*ox*x1), cs < 10; cs = 10, cs>=10 (williams, 1995)]
+       real :: x1                !none      |tillage control on residue decomposition (not used)
+       real :: x3                !none      |amount of c transformed from passive, slow, metabolic, and non-lignin structural pools to microbial pool
+       real :: lmf               !frac      |fraction of the litter that is metabolic 
+       real :: lsf               !frac      |fraction of the litter that is structural
+       real :: lslf              !kg kg-1   |fraction of structural litter that is lignin 
+       real :: xlslf             !          |control on potential transformation of structural litter by lignin fraction
+       real :: lsr               !units     |description
+       !real :: bmr              !not used 
+       !real :: xbmt             !not used  |control on transformation of microbial biomass by soil texture and structure
+       !real :: hsr              !not used
+       !real :: hpr              !not used
+       real :: lscta             !units     |description
+       real :: lslcta            !units     |description
+       real :: lslncta           !units     |description
+       real :: lsnta             !units     |description
+       real :: lmcta             !units     |description
+       real :: lsctp             !kg ha-1 day-1        |potential transformation of C in structural litter
+       real :: lslctp            !kg ha-1 day-1        |potential transformation of C in lignin of structural litter
+       real :: lslnctp           !kg ha-1 day-1        |potential transformation of C in nonlignin structural litter
+       real :: lsntp             !kg ha-1 day-1        |potential transformation of N in structural litter			  
+       real :: lmr               !units     |description
+       real :: lmctp             !kg ha-1 day-1        |potential transformation of C in metabolic litter
+       real :: lmntp             !kg ha-1 day-1        |potential transformation of N in metabolic litter	
+       real :: bmctp             !kg ha-1 day-1        |potential transformation of C in microbial biomass
+       real :: hsctp             !kg ha-1 day-1        |potential transformation of C in slow humus
+       real :: hsntp             !kg ha-1 day-1        |potential transformation of N in slow humus
+       real :: hpctp             !kg ha-1 day-1        |potential transformation of C in passive humus 
+       real :: hpntp             !kg ha-1 day-1        |potential transformation of N in passive humus
+       real :: nchp              !          |n/c ratio of passive humus
+       real :: nf                !units     |description
+       real :: ncbm              !          |n/c ratio of biomass
+       real :: nchs              !          |n/c ration of slow humus
+       real :: alslco2           !          |Fraction of decomposed lignin of structural litter allocated to CO2
+       real :: alslnco2          !          |Fraction of decomposed lignin of structural litter allocated to CO2
+       real :: almco2            !          |Fraction of decomposed metabolic litter allocated to CO2 
+       real :: abco2             !          |Fraction of decomposed microbial biomass allocated to CO2
+       real :: a1co2             !units     |description
+       real :: apco2             !          |Fraction of decomposed  passive humus allocated to CO2
+       real :: asco2             !          |Fraction of decomposed slow humus allocated to CO2 
+       real :: abp               !          |Fraction of decomposed microbial biomass allocated to passive humus
+       real :: asp               !          |Fraction of decomposed slow humus allocated to passive
+       real :: a1                !units     |description
+       real :: asx               !units     |description
+       real :: apx               !units     |description
+       !real :: prmt_51          !not used
+       real :: df1               !units     |description
+       real :: df2               !units     |description
+       real :: snmn              !not used
+       real :: df3               !units     |description
+       real :: df4               !units     |description
+       real :: df5               !units     |description
+       real :: df6               !units     |description
+       real :: add               !units     |description
+       real :: adf1              !units     |description
+       real :: adf2              !units     |description
+       real :: adf3              !units     |description
+       real :: adf4              !units     |description
+       real :: adf5              !units     |description
+       real :: tot               !units     |description
+       real :: pn1               !units     |description
+       real :: pn2               !units     |description
+       real :: pn3               !units     |description
+       real :: pn4               !units     |description
+       real :: pn5               !units     |description
+       real :: pn6               !units     |description
+       real :: pn7               !units     |description
+       real :: pn8               !units     |description
+       real :: pn9               !units     |description
+       real :: cpn1              !units     |description
+       real :: cpn2              !units     |description
+       real :: cpn3              !units     |description
+       real :: cpn4              !units     |description
+       real :: cpn5              !units     |description
+       real :: wmin              !units     |description
+       real :: dmdn              !units     |description
+       real :: wdn               !kg N/ha   |amount of nitrogen lost from nitrate pool in
+       !real :: delta_bmc        !not used
+       real :: deltawn           !units     |description
+       real :: deltabmc          !units     |description
+       real :: snta              !units     |description
+       real :: till_eff          !units     |description 
+       !real :: rcgd             !not used
+       real :: rlr               !units     |description
+       real :: xbm               !units     |description
+       real :: bmcta             !units     |description
+       real :: bmnta             !units     |description
+       real :: hscta             !units     |description
+       real :: hsnta             !units     |description
+       real :: hpcta             !units     |description
+       real :: hpnta             !units     |description
+       real :: fcgd              !units     |description 
+       real :: rsdn_pct          !units     |description
+       real :: sum         !units     |description
+       real :: sum1        !potential n supply resulting from the transformation of structural litter; calc as lsntp-(pn1+pn2) if lsntp > (pn1+pn2), otherwise = 0 (kg n ha-1 day-1)
+       real :: sum2        !units     |description
+       real :: sum3        !units     |description
+       real :: sum4        !units     |description
+       real :: sum5        !units     |description
+       real :: reduc       !none      |fraction of water uptake by plants achieved
+       real :: rnmn        !units     |description
+       real :: hmp_rate    !units     |description
+       real :: hmp         !kg P/ha   |amount of phosphorus moving from the organic
+       real :: decr        !units     |description
+       real :: rmp         !kg P/ha   |amount of phosphorus moving from fresh organic
+       real :: rto         !none      |cloud cover factor
+       real :: rspc        !units     |description
+       real :: xx          !varies    |variable to hold calculation results
        
        !! initialize local variables
        deltawn = 0.

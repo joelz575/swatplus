@@ -5,8 +5,22 @@
       use channel_data_module
       use maximum_data_module
 
-      character (len=80) :: titldum, header
-      integer :: eof, mon, i, imax
+      implicit none
+      
+      character (len=80) :: titldum     !              |title of file
+      character (len=80) :: header      !              |header of file
+      integer :: eof                    !              |end of file
+      integer :: i                      !units         |description
+      integer :: imax                   !units         |description
+      integer :: i_exist                !              |check to determine if file exists
+      integer :: ich                    !none          |counter
+      integer :: k                      !units         |description
+      integer :: iinit                  !none          |counter
+      integer :: ihyd                   !none          |counter
+      integer :: ised                   !none          |counter
+      integer :: inut                   !none          |counter
+      integer :: ipst                   !none          |counter
+      
 
       eof = 0
       imax = 0

@@ -77,11 +77,46 @@
       use time_module
       use channel_velocity_module
       
-      integer :: nn,ii
-      real :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c, rh
-      real :: topw,msk1,msk2,detmax,detmin,qinday,qoutday
-	real :: volrt, maxrt, adddep, addp, addarea
-	real :: rttlc1, rttlc2, rtevp1, rtevp2
+      implicit none
+      
+      integer :: nn        !none              |number of subdaily computation points for stable 
+                           !                  |routing in the muskingum routing method
+      integer :: ii        !none              |counter
+      integer :: i         !none              |current day of simulation
+      real :: xkm          !hr                |storage time constant for the reach on
+                           !                  |current day 
+      real :: det          !hr                |time step (24 hours)
+      real :: yy           !none              |variable to hold intermediate calculation
+                           !                  |value
+      real :: c1           !units             |description 
+      real :: c2           !units             |description
+      real :: c3           !units             |description
+      real :: c4           !m^3 H2O           |
+      real :: wtrin        !m^3 H2O           |water flowing into reach on day
+      real :: p            !m                 |wetted perimeter
+      real :: vol          !m^3 H2O           |volume of water in reach at beginning of
+                           !                  |day
+      real :: c            !none              |inverse of channel side slope
+      real :: rh           !m                 |hydraulic radius
+      real :: topw         !m                 |top width of main channel
+      real :: msk1         !units             |description 
+      real :: msk2         !units             |description 
+      real :: detmax       !units             |description 
+      real :: detmin       !units             |description 
+      real :: qinday       !units             |description 
+      real :: qoutday      !units             |description  
+	  real :: volrt        !units             |description 
+      real :: maxrt        !units             |description 
+      real :: adddep       !units             |description 
+      real :: addp         !units             |description 
+      real :: addarea      !units             |description 
+	  real :: rttlc1       !units             |description 
+      real :: rttlc2       !units             |description 
+      real :: rtevp1       !units             |description 
+      real :: rtevp2       !units             |description 
+      real :: qman         !m^3/s or m/s      |flow rate or flow velocity
+      real :: vc           !m/s              |flow velocity in reach
+      real :: aaa          !units             |description 
 
       qinday = 0; qoutday = 0
       det = 24.

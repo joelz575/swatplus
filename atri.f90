@@ -4,45 +4,29 @@
 !!    this function generates a random number from a triangular distribution
 !!    given X axis points at start, end, and peak Y value
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    at1         |none          |lower limit for distribution
-!!    at2         |none          |monthly mean for distribution
-!!    at3         |none          |upper limit for distribution
-!!    at4i        |none          |random number seed 
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    atri        |none          |daily value generated for distribution
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    amn         |              |
-!!    b1          |              |
-!!    b2          |              |
-!!    rn          |none          |random number between 0.0 and 1.0
-!!    u3          |              |
-!!    x1          |              |
-!!    xx          |              |
-!!    y           |              |
-!!    yy          |              |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Sqrt
 !!    SWAT: Aunif
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+      
+      implicit none
 
-      real, intent (in) :: at1, at2, at3
-      integer, intent (in out) :: at4i
-      real :: u3, rn, y, b1, b2, x1, xx, yy, amn
-      real :: atri
+      real, intent (in) :: at1           !none          |lower limit for distribution
+      real, intent (in) :: at2           !none          |monthly mean for distribution
+      real, intent (in) :: at3           !none          |upper limit for distribution
+      integer, intent (in out) :: at4i   !none          |random number seed 
+      real :: u3                         !              | 
+      real :: rn                         !none          |random number between 0.0 and 1.0
+      real :: y                          !              | 
+      real :: b1                         !              | 
+      real :: b2                         !              | 
+      real :: x1                         !              | 
+      real :: xx                         !              | 
+      real :: yy                         !              | 
+      real :: amn                        !              | 
+      real :: atri                       !none          |daily value generated for distribution
+      real :: aunif                      !              | 
 
       u3 = 0.
       rn = 0.

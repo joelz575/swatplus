@@ -25,8 +25,17 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+ 
+      implicit none
 
-      real :: frt_t
+      real :: frt_t        !          |
+      real :: pl_bac       !# cfu/m^2 |bacteria on plant 
+      real :: gc           !none      |fraction of ground covered by plant foliage
+      real :: sol_bacsol   !# cfu/m^2 |soluble bacteria in soil layer
+      real :: sol_bacsor   !# cfu/m^2 |sorbed bacteria in soil layer
+      integer :: ibacdb    !          |
+      integer :: ibac      !none      |counter
+      real :: bac_kd       !          |
 
       !! add bacteria - #cfu/g * t(manure)/ha * 1.e6 g/t * ha/10,000 m^2 = 100.
       pl_bac = gc * (sol_bacsol + sol_bacsor)* frt_t * 100. + pl_bac

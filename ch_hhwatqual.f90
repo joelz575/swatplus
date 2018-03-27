@@ -201,19 +201,93 @@
       use channel_module
       use hydrograph_module, only : ob
       use climate_module
+      
+      implicit none
 
-      integer :: ii
-      real :: soxy
-      real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
-      real :: orgpin, dispin, cbodin, disoxin, thour, wtmp, fll, gra
-      real :: lambda, fnn, fpp, algi, xx, yy, zz, ww, cinn
-      real :: uu, vv, cordo, f1, algcon, orgncon, nh3con, no2con, no3con
-      real :: orgpcon, solpcon, cbodcon, o2con, wtrtot, bc1mod, bc2mod
-      real :: thgra = 1.047, thrho = 1.047, thrs1 = 1.024
-      real :: thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
-      real :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047, thbc4 = 1.047
-      real :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
-!      real :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
+      integer :: ii             !none          |counter
+      integer :: icmd           !units         |description 
+      integer :: jrch           !units         |description 
+      integer :: iwst           !none          |counter
+      integer :: iwgn           !units         |description
+      real :: orgnpin           !units         |description
+      real :: theta             !units         |description
+      real :: soxy              !mg O2/L       |saturation concetration of dissolved oxygen
+      real :: wtrin             !m^3 H2O       |water flowing into reach on day
+      real :: chlin             !mg chl-a/L    |chlorophyll-a concentration in inflow
+      real :: algin             !mg alg/L      |algal biomass concentration in inflow
+      real :: orgnin            !mg N/L        |organic N concentration in inflow
+      real :: ammoin            !mg N/L        |ammonium N concentration in inflow
+      real :: nitratin          !mg N/L        |nitrate concentration in inflow
+      real :: nitritin          !mg N/L        |nitrite concentration in inflow
+      real :: orgpin            !mg P/L        |organic P concentration in inflow
+      real :: dispin            !mg P/L        |soluble P concentration in inflow
+      real :: cbodin            !mg/L          |carbonaceous biological oxygen demand 
+      real :: disoxin           !mg O2/L       |dissolved oxygen concentration in inflow
+      real :: thour             !none          |flow duration (fraction of hr)
+      real :: wtmp              !deg C         |temperature of water in reach
+      real :: fll               !none          |growth attenuation factor for light
+      real :: gra               !1/hr          |local algal growth rate at 20 deg C
+      real :: lambda            !1/m           |light extinction coefficient
+      real :: fnn               !none          |algal growth limitation factor for nitrogen
+      real :: fpp               !none          |algal growth limitation factor for phosphorus
+      real :: algi              !MJ/(m2*hr)    |photosynthetically active light intensity
+      real :: xx                !varies        |variable to hold intermediate calculation result
+      real :: yy                !varies        |variable to hold intermediate calculation result
+      real :: zz                !varies        |variable to hold intermediate calculation result
+      real :: ww                !varies        |variable to hold intermediate calculation result
+      real :: cinn              !mg N/L        |effective available nitrogen concentration
+      real :: uu                !varies        |variable to hold intermediate calculation result
+      real :: vv                !varies        |variable to hold intermediate calculation result
+      real :: cordo             !none          |nitrification rate correction factor
+      real :: f1                !none          |fraction of algal nitrogen uptake from
+                                !              |ammonia pool 
+      real :: algcon            !mg alg/L      |initial algal biomass concentration in reach
+      real :: orgncon           !mg N/L        |initial organic N concentration in reach
+      real :: nh3con            !mg N/L        |initial ammonia concentration in reach
+      real :: no2con            !mg N/L        |initial nitrite concentration in reach
+      real :: no3con            !mg N/L        |initial nitrate concentration in reach
+      real :: orgpcon           !mg P/L        |initial organic P concentration in reach
+      real :: solpcon           !mg P/L        |initial soluble P concentration in reach
+      real :: cbodcon           !mg/L          |initial carbonaceous biological oxygen demand
+                                !              |concentration in reach
+      real :: o2con             !mg O2/L       |initial dissolved oxygen concentration in 
+                                !              |reach
+      real :: wtrtot            !m^3 H2O       |inflow + storage water
+      real :: bc1mod            !1/day         |rate constant for biological oxidation of NH3
+                                !              |to NO2 modified to reflect impact of low 
+                                !              |oxygen concentration
+      real :: bc2mod            !1/day         |rate constant for biological oxidation of NO2
+                                !              |to NO3 modified to reflect impact of low
+                                !              |oxygen concentration
+      real :: thgra = 1.047     !none          |temperature adjustment factor for local algal growth rate
+      real :: thrho = 1.047     !none          |temperature adjustment factor for local algal
+                                !              |respiration rate 
+      real :: thrs1 = 1.024     !none          |temperature adjustment factor for local algal
+                                !              |settling rate
+      real :: thrs2 = 1.074     !none          |temperature adjustment factor for local
+                                !              |benthos source rate for dissolved phosphorus
+      real :: thrs3 = 1.074     !none          |temperature adjustment factor for local
+                                !              |benthos source rate for ammonia nitrogen
+      real :: thrs4 = 1.024     !none          |temperature adjustment factor for local
+                                !              |organic N settling rate
+      real :: thrs5 = 1.024     !none          |temperature adjustment factor for local
+                                !              |organic P settling rate
+      real :: thbc1 = 1.083     !none          |temperature adjustment factor for local
+                                !              |biological oxidation of NH3 to NO2
+      real :: thbc2 = 1.047     !none          |temperature adjustment factor for local
+                                !              |biological oxidation of NO2 to NO3
+      real :: thbc3 = 1.047     !none          |temperature adjustment factor for local
+                                !              |hydrolysis of organic N to ammonia N
+      real :: thbc4 = 1.047     !none          |temperature adjustment factor for local
+                                !              |decay of organic P to dissolved P
+      real :: thrk1 = 1.047     !none          |temperature adjustment factor for local CBOD
+                                !              |deoxygenation
+      real :: thrk2 = 1.024     !none          |temperature adjustment factor for local oxygen
+                                !              |reaeration rate
+      real :: thrk3 = 1.024     !none          |temperature adjustment factor for loss of
+                                !              |CBOD due to settling
+      real :: thrk4 = 1.060     !none          |temperature adjustment factor for local
+                                !              |sediment oxygen demand
 
 !! hourly loop
       do ii = 1, time%step

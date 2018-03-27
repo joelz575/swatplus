@@ -3,9 +3,14 @@
        use calibration_data_module
        use input_file_module
       
-       character (len=80) :: titldum
-       character (len=80) :: header
-       integer :: eof
+      implicit none
+       
+      character (len=80) :: titldum    !             |title of file
+      character (len=80) :: header     !             |header of file
+      integer :: eof                   !             |end of file
+      integer :: i_exist               !             |check to determine if file exists
+      integer :: mchp                  !             |ending of loop
+      integer :: i                     !none          |counter 
        
        eof = 0
        

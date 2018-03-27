@@ -12,6 +12,25 @@
       use calibration_data_module
       use conditional_module
       use reservoir_module
+      
+      implicit none
+      
+      integer :: iter_all      !          |end of loop
+      integer :: iterall       !none      |counter
+      integer :: isim          !          |
+      integer :: ireg          !none      |counter
+      integer :: ilum          !none      |counter
+      integer :: iihru         !none      |counter
+      integer :: ihru_s        !none      |counter
+      integer :: iter_ind      !          !end of loop
+      integer :: ist           !          |
+      real :: rmeas            !          |
+      real :: denom            !          |
+      real :: soft             !          |
+      real :: diff             !          |
+      real :: chg_val          !          | 
+      
+      
 
       !calibrate hydrology
         ical_hyd = 0

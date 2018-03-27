@@ -15,7 +15,7 @@
 !!!!! daily print
          if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%hyd%d == 'y') then
-            write (2580,*) time%day, time%yrs, icmd, ob(icmd)%typ,        &
+            write (2580,*) time%day, time%yrs, icmd, ob(icmd)%typ,          &
              ob(icmd)%props, ob(icmd)%obtyp_out(iout),                      &
              ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),           &
              ob(icmd)%obj_out(iout), ht1

@@ -10,10 +10,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    epco(:)     |none          |plant water uptake compensation factor (0-1)
 !!    stsol_rd(:) |mm            |storing last soil root depth for use in harvestkillop/killop
-!!    uobw        |none          |water uptake normalization parameter
-!!                               |This variable normalizes the water uptake so
-!!                               |that the model can easily verify that uptake
-!!                               |from the different soil layers sums to 1.0
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -47,7 +43,7 @@
 
       use plant_data_module
       use basin_module
-      use hru_module, only : soil, pcom, hru, ihru, stsol_rd, epmax, ipl, ep_day, sol_rd  
+      use hru_module, only : soil, pcom, hru, ihru, stsol_rd, epmax, ipl, ep_day, sol_rd, uptake  
       
       integer :: j, k, ir, idp
       real :: sum, xx, gx, reduc, sump
@@ -55,14 +51,17 @@
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
 
-      select case (pldb(idp)%idc)
-        case (1, 2, 4, 5)
-          sol_rd = 2.5 * pcom(j)%plcur(ipl)%phuacc * soil(j)%zmx
-          if (sol_rd > soil(j)%zmx) sol_rd = soil(j)%zmx
-          if (sol_rd < 10.) sol_rd = 10.
-        case default
+      !select case (pldb(idp)%idc)
+        !case (1, 2, 4, 5)
+      if (pldb(idp)%idc == 'warm_annual_legume' .or. pldb(idp)%idc == 'cold_annual_legume' .or.  &
+          pldb(idp)%idc == 'warm_annual' .or. pldb(idp)%idc == 'cold_annual') then
+            sol_rd = 2.5 * pcom(j)%plcur(ipl)%phuacc * soil(j)%zmx
+            if (sol_rd > soil(j)%zmx) sol_rd = soil(j)%zmx
+            if (sol_rd < 10.) sol_rd = 10.
+        !case default
+      else
           sol_rd = soil(j)%zmx
-      end select
+      end if
 
 	  stsol_rd(j) = sol_rd ! cole armen 26 Feb
 
@@ -101,9 +100,9 @@
           end if
 
           if (sol_rd <= 0.01) then
-            sum = epmax(ipl) / uobw
+            sum = epmax(ipl) / uptake%water_norm
           else
-            sum = epmax(ipl) * (1. - Exp(-ubw * gx / sol_rd)) / uobw
+            sum = epmax(ipl) * (1. - Exp(-uptake%water_dis * gx / sol_rd)) / uptake%water_norm
           end if
 
           wuse = sum - sump + yy * hru(j)%hyd%epco

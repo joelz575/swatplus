@@ -5,9 +5,28 @@
       use calibration_data_module
       use hydrograph_module
       use sd_channel_module
+      
+      implicit none
 
-      character (len=80) :: titldum, header
-      integer :: eof, ihru
+      character (len=80) :: titldum    !          |title of file
+      character (len=80) :: header     !          |header of file
+      integer :: eof                   !          |end of file
+      integer :: ihru                  !          |number of hrus
+      integer :: i_exist               !          |check to determine if file exists
+      integer :: imax                  !          |determine max number for array (imax) and total number in file
+      integer :: mcal                  !units     |description
+      integer :: mreg                  !units     |description
+      integer :: i                     !none      |counter
+      integer :: nspu                  !units     |description
+      integer :: isp                   !none      |counter
+      integer :: ielem                 !none      |counter
+      integer :: ii                    !none      |counter
+      integer :: ie                    !none      |counter
+      integer :: ie1                   !beginning of loop
+      integer :: ie2                   !ending of loop
+      integer :: iord_mx               !ending of loop
+      integer :: iord                  !none      |counter
+      integer :: ich_s                 !none      |counter
       
       imax = 0
       mcal = 0

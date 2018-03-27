@@ -2,16 +2,16 @@
      
       type plant_db
         character(len=16) :: plantnm = 'frsd ' !N/A  |4 letter char code represents crop name
-        integer :: idc = 7        !none               |crop/landcoover category
-                                  !                   |1 warm annual legume
-                                  !                   |2 cold season annual legume
-                                  !                   |3 perennial legume
-                                  !                   |4 warm season annual
-                                  !                   |5 cold season annual
-                                  !                   |6 perennial
-                                  !                   |7 trees
-                                  !                   |8 tropical trees
-                                  !                   |9 tropical grasses
+        character(len=18) :: idc    !none               |crop/landcoover category
+                                    !                   |warm_annual_legume
+                                    !                   |cold_annual_legume
+                                    !                   |perennial_legume
+                                    !                   |warm_annual
+                                    !                   |cold_annual
+                                    !                   |perennial
+                                    !                   |trees
+                                    !                   |tropical_trees
+                                    !                   |tropical_grasses
         real :: phu = 2500.        !heat units   |total number of heat units to bring crop to maturity
         real :: bio_e = 15.0             !(kg/ha/(MJ/m**2)  |biomass-energy ratio
         real :: hvsti = 0.76             !(kg/ha)/(kg/ha)   |harvest index: crop yield/aboveground biomass

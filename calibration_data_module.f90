@@ -1,11 +1,13 @@
       module calibration_data_module
+    
+      implicit none
       
        type calibration_parameters
-        character(len=16) :: name       !! cn2, esco, awc, etc.
-        character(len=16) :: ob_typ     !! object type the parameter is associated with (hru, chan, res, basin, etc)
-        real :: absmin                  !! minimum range for variable
-        real :: absmax                  !! maximum change for variable
-        character(len=16) :: units      !! units used for each parameter
+        character(len=16) :: name       !         |cn2, esco, awc, etc.
+        character(len=16) :: ob_typ     !         |object type the parameter is associated with (hru, chan, res, basin, etc)
+        real :: absmin                  !         |minimum range for variable
+        real :: absmax                  !         |maximum change for variable
+        character(len=16) :: units      !         |units used for each parameter
       end type calibration_parameters
       type (calibration_parameters), dimension (:), allocatable :: cal_parms    !dimensioned to db_mx%cal_parms_tot
       

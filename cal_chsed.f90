@@ -12,7 +12,28 @@
       use conditional_module
       use reservoir_module
       use organic_mineral_mass_module
+      
+      implicit none
 
+      integer :: ical_sed        !          |
+      integer :: iter_all        !          |end of loop
+      integer :: iterall         !none      |counter
+      integer :: isim            !          |
+      integer :: ireg            !none      |counter
+      integer :: iord            !none      |counter
+      real :: soft               !          |
+      real :: diff               !          |
+      real :: chg_val            !          |
+      integer :: ich_s           !none      |counter
+      integer :: iich            !          |
+      integer :: iihru           !none      |counter
+      integer :: icov            !none      |counter
+      real :: rmeas              !          |
+      real :: denom              !          |
+      integer :: iter_ind        !          |end of loop
+      integer :: ierod           !none      |counter
+      
+            
       !calibrate sediment
         ical_sed = 0
         

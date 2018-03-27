@@ -1,5 +1,7 @@
       module carbon_module 
 	  
+      implicit none
+      
       type carbon_inputs
           real :: hp_rate = 0.          !               |rate of transformation of passive humus under optimal conditions
           real :: hs_rate = 0.          !               |rate of transformation of slow humus under optimal conditions

@@ -81,19 +81,20 @@
       iwgn = wst(iwst)%wco%wgn
 
 !! check for beginning of dormant season
-      if (pldb(idp)%idc == 1 .or. pldb(idp)%idc == 4) return
+      if (pldb(idp)%idc == 'warm_annual_legume' .or. pldb(idp)%idc == 'warm_annual') return
       if (pcom(j)%plcur(ipl)%idorm == 0 .and. wst(iwst)%weat%daylength - dormhr(j) < wgn_pms(iwgn)%daylmn) then
-          
-        select case (pldb(idp)%idc)
-        
+                
           !! make sure all operations are scheduled during growing season of warm season annual
-          case (1,4)
+          ! case (1,4)
+          if (pldb(idp)%idc == 'warm_annual_legume' .or. pldb(idp)%idc == 'warm_annual') then 
             dorm_flag = 1
             call mgt_operatn
             dorm_flag = 0
+          end if
 
           !! beginning of forest dormant period
-          case (7)
+      ! case (7)
+          if (pldb(idp)%idc == 'trees') then
             pcom(j)%plcur(ipl)%idorm = 1
             resnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%bio_leaf
             
@@ -223,9 +224,11 @@
             pcom(j)%plg(ipl)%lai = pldb(idp)%alai_min
             pcom(j)%plcur(ipl)%phuacc = 0.
             pcom(j)%plg(ipl)%laimxfr = 0.        !Sue White - dormancy
+        end if    !(case end)
 
           !! beginning of perennial (pasture/alfalfa) dormant period
-          case (3, 6)
+          ! case (3,6)
+          if (pldb(idp)%idc == 'perennial_legume' .or. pldb(idp)%idc == 'perennial') then
             pcom(j)%plcur(ipl)%idorm = 1
             resnew = 0.
             resnew = pldb(idp)%bm_dieoff * pcom(j)%plm(ipl)%mass
@@ -355,40 +358,43 @@
             pcom(ihru)%plm(ipl)%pmass = (1. - pldb(idp)%bm_dieoff) *     &
               pcom(ihru)%plm(ipl)%pmass
             pcom(j)%plstr(ipl)%strsw = 1.
+        end if  !(case end)
 
           !! beginning of cool season annual dormant period
-          case (2, 5)
+          ! case (2,5)
+          if (pldb(idp)%idc == 'cold_annual_legume' .or. pldb(idp)%idc == 'cold_annual') then
             if (pcom(j)%plcur(ipl)%phuacc < 0.75) then
               pcom(j)%plcur(ipl)%idorm = 1
               pcom(j)%plstr(ipl)%strsw = 1.
             end if 
-          end select
+          end if
+
            if (pco%mgtout ==  'y') then
             write (2612, 1000) j, time%yrc, time%mo, time%day,           &
               pldb(idp)%plantnm, "START-DORM", phubase(j),               & 
               pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,                     &
               pcom(j)%plm(ipl)%mass,soil(j)%ly(1)%rsd,                   &
               sol_sumno3(j), sol_sumsolp(j)
-           end if
-           
+           end if           
           end if
 
 !! check if end of dormant period
         if (pcom(j)%plcur(ipl)%idorm == 1 .and. wst(iwst)%weat%daylength - dormhr(j) >=   &
             wgn_pms(iwgn)%daylmn) then
 
-          select case (pldb(idp)%idc)
-          
+         if (pldb(idp)%idc == 'perennial_legume' .or. pldb(idp)%idc == 'perennial' .or.   &
+           pldb(idp)%idc == 'trees') then
             !! end of perennial dormant period
-            case (3, 6, 7)
+            !case (3, 6, 7)
               pcom(j)%plcur(ipl)%idorm = 0
+         end if
 
             !! end of cool season annual dormant period
-            case (2, 5)
+         if (pldb(idp)%idc == 'cold_annual_legume' .or. pldb(idp)%idc == 'cold_annual') then
+            !case (2, 5)
               pcom(j)%plcur(ipl)%idorm = 0
               pcom(j)%plcur(ipl)%phuacc = 0.
-
-            end select
+         end if
             
           if (pco%mgtout == 'y') then
             write (2612,1000) j, time%yrc, time%mo, time%day,           & 

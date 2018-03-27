@@ -4,9 +4,15 @@
       use input_file_module
       use maximum_data_module
       use channel_data_module
+      
+      implicit none
 
-      character (len=80) :: titldum, header
-      integer :: eof, mon, i, imax
+      character (len=80) :: titldum    !          |title of file
+      character (len=80) :: header     !          |header of file
+      integer :: eof                   !          |end of file
+      integer :: i_exist               !          |check to determine if file exists
+      integer :: imax                  !units     |description
+      integer :: ich                   !none      |counter
 
       eof = 0
       imax = 0

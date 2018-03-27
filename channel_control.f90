@@ -47,9 +47,30 @@
       use channel_data_module
       use time_module
       use channel_module
+      
+      implicit none
 
-      integer :: ii
-      real :: subwtr, qdbank, revapday
+      integer :: ii       !units         |description
+      real :: qdbank      !m^3 H2O       |streamflow contribution from bank storage
+      real :: revapday    !m^3 H2O       |amount of water moving from bank storage
+                          !              |into the soil profile or being taken
+                          !              |up by plant roots in the bank storage zone
+      real :: sedcon      !g/m^3         |sediment concentration
+      real :: reactw      !mg pst        |amount of pesticide in reach that is lost
+                          !              |through reactions  
+      real :: volatpst    !mg pst        |amount of pesticide lost from reach by
+                          !              |volatilization
+      real :: setlpst     !mg pst        |amount of pesticide moving from water to
+                          !              |sediment due to settling
+      real :: resuspst    !mg pst        |amount of pesticide moving from sediment to
+                          !              |reach due to resuspension
+      real :: difus       !mg pst        |diffusion of pesticide from sediment to reach
+      real :: reactb      !mg pst        |amount of pesticide in sediment that is lost
+                          !              |through reactions
+                          !              |up by plant roots in the bank storage zone
+      real :: bury        !mg pst        |loss of pesticide from active sediment layer
+                          !              |by burial
+      real :: sedpest     !mg pst        |pesticide in river bed sediment 
       
       jhyd = ch_dat(jrch)%hyd
       jsed = ch_dat(jrch)%sed

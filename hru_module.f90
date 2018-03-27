@@ -3,7 +3,15 @@
       integer :: isep, isolt
       integer :: ith, ilu, ulu, ipot, iwgen
       character (len=1) :: timest
-     
+      
+      type uptake_parameters
+       real :: water_dis = 10.        !               |the uptake distribution for water is hardwired
+       real :: water_norm             !none           |water uptake normalization parameter 
+       real :: n_norm                 !none           |nitrogen uptake normalization parameter 
+       real :: p_norm                 !none           |phosphorus uptake normalization parameter
+      end type uptake_parameters
+      type (uptake_parameters)  :: uptake
+      
       type plant_growth
          character(len=4) :: cpnm       !! N/A          4 letter char code represents crop name 
          real :: cht = 0.               !! m            canopy height 

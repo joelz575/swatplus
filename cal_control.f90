@@ -9,6 +9,20 @@
       use hru_module, only : hru
       use hydrograph_module
       
+      implicit none
+      
+      integer :: ireg        !none      |counter
+      integer :: ilum        !none      |counter
+      integer :: icvmax      !          |
+      integer :: icond_sum   !          |
+      integer :: ihru        !none      |counter
+      integer :: isdh        !none      |counter
+      integer :: idb         !          |   
+      integer :: iord        !none      |counter
+      integer :: isdc        !none      |counter
+      real :: cond1          !          |   
+      real :: cond2          !          |   
+      
       pco = pco_init
       pco%wb_bsn%a = 'y'
         

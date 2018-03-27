@@ -160,19 +160,21 @@
           pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass + bioday * reg
 
           !!maximum lai and bioimass for perrenials
-          select case (pldb(idp)%idc)
-            case (3, 6, 7)  ! all perenials
-            if (pldb(idp)%mat_yrs > 0) then
-              rto = float(pcom(j)%plcur(ipl)%curyr_mat + 1) / float(pldb(idp)%mat_yrs)
-              rto = Min(rto, 1.)
+          !select case (pldb(idp)%idc)
+          !case (3, 6, 7)  ! all perennials
+            if (pldb(idp)%idc == 'perennial_legume' .or. pldb(idp)%idc == 'perennial' .or.   &
+                pldb(idp)%idc == 'trees') then 
+              if (pldb(idp)%mat_yrs > 0) then
+                rto = float(pcom(j)%plcur(ipl)%curyr_mat + 1) / float(pldb(idp)%mat_yrs)
+                rto = Min(rto, 1.)
             else
-              rto = 1.
+                rto = 1.
             end if
             biomxyr = rto * pldb(idp)%bmx_peren * 1000.  !t/ha -> kg/ha
             if (biomxyr > 1.e-6 .and. pcom(j)%plm(ipl)%mass > biomxyr) then
               pcom(j)%plm(ipl)%mass = biomxyr
             end if
-          end select
+           end if !case end)
 
           pcom(j)%plm(ipl)%mass = Max(pcom(j)%plm(ipl)%mass,0.)
 
@@ -193,7 +195,7 @@
           pcom(j)%plg(ipl)%laimxfr = f
 
           !! calculate new canopy height
-          if (pldb(idp)%idc == 7) then
+          if (pldb(idp)%idc == 'trees') then
             pcom(j)%plg(ipl)%cht = rto * pldb(idp)%chtmx
           else
             pcom(j)%plg(ipl)%cht = pldb(idp)%chtmx * Sqrt(f)
@@ -203,7 +205,7 @@
           if (pcom(j)%plcur(ipl)%phuacc < pldb(idp)%dlai) then
             laimax = 0.
             deltalai = 0.
-            if (pldb(idp)%idc == 7) then
+            if (pldb(idp)%idc == 'trees') then
               if (pcom(j)%plcur(ipl)%curyr_mat < 1) pcom(j)%plcur(ipl)%curyr_mat = 1
               rto = float(pcom(j)%plcur(ipl)%curyr_mat) / float(pldb(idp)%mat_yrs)
               rto = alog10 (rto)
@@ -214,7 +216,7 @@
             end if
             
             !! calculate fraction of above ground tree biomass that is leaf
-            if (pldb(idp)%idc == 7) then
+            if (pldb(idp)%idc == 'trees') then
               pcom(j)%plg(ipl)%bio_leaf = .4 - (.3 * float(pcom(j)%plcur(ipl)%curyr_mat) - 1.) /  &
                     (float(pldb(idp)%mat_yrs) - 1.)
             end if

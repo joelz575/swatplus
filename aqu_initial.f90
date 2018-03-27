@@ -3,8 +3,14 @@
       use aquifer_module  
       use hydrograph_module
       
-      character (len=500) :: header
-      character (len=80) :: titldum
+      implicit none
+      
+      character (len=500) :: header    !header for output file
+      character (len=80) :: titldum    !title 
+      integer :: maqu_sp               !          | 
+      integer :: iaq                   !none      |counter
+      integer :: iob                   !          | 
+      integer :: iaqdb                 !          | 
        
       maqu_sp = sp_ob%aqu
       

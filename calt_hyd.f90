@@ -11,6 +11,35 @@
       use calibration_data_module
       use conditional_module
       use reservoir_module
+      
+      implicit none
+      
+      integer :: iter_all      !none      |counter
+      integer :: iterall       !none      |counter
+      integer :: isim          !          |
+      integer :: ireg          !none      |counter
+      integer :: ilum          !none      |counter
+      integer :: iihru         !none      |counter
+      integer :: icn           !none      |counter
+      integer :: ihru_s        !none      |counter
+      integer :: iter_ind      !          |end of loop
+      integer :: ietco         !none      |counter
+      integer :: ik            !none      |counter
+      integer :: iperco        !none      |counter
+      real :: rmeas            !          |
+      real :: denom            !          |
+      real :: soft             !          |
+      real :: diff             !          |
+      real :: chg_val          !          | 
+      real :: dep_below_soil   !          | 
+      real :: qn1              !          |
+      real :: qn3              !          |
+      real :: s3               !none      |retention parameter for CN3
+      real :: rto3             !none      |fraction difference between CN3 and CN1 
+      real :: rtos             !none      |fraction difference between CN=99 and CN1 
+      real :: sumul            !mm H2O    |amount of water held in soil profile at saturation
+      real :: sumfc            !mm H2O    |amount of water held in the soil profile at field capacity
+      
 
       !calibrate hydrology
         ical_hyd = 0

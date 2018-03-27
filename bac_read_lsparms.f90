@@ -3,11 +3,17 @@
       use input_file_module
       use bacteria_module, only : bac_db
       use maximum_data_module
+      
+      implicit none
 
-      character (len=80) :: titldum, header
-      integer :: ibac
-      character (len=13) :: file
-      integer :: eof, i, imax
+      character (len=80) :: titldum      !              |title of file
+      character (len=80) :: header       !              |header of file
+      integer :: ibac                    !none          |counter  
+      character (len=13) :: file         !              |file name
+      integer :: eof                     !              |end of file
+      integer :: i                       !none          |counter
+      integer :: imax                    !none          |counter 
+      integer :: i_exist                 !              |check to determine if file exists
       
       eof = 0
       imax = 0    

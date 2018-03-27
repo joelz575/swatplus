@@ -59,16 +59,102 @@
       use channel_module
       use channel_velocity_module
       use hydrograph_module, only : ob
+      
+      implicit none
 
-      integer :: ch_d50type
-      real :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase
-      real :: depdeg, dot, vs, x, SC, Tcbnk, Tcbed,Tbank,Tbed,asinea,Tou
-      real :: sanin, silin, clain, sagin, lagin, grain, outfract
-      real :: depsan, depsil, depcla, depsag, deplag, depgra
-      real :: degsan, degsil, degcla, deggra
-      real :: bnksan, bnksil, bnkcla, bnkgra, pdep, pdepbed, bedsize
-      real :: USpower, adddep, fpratio, watdep, bnkrt, bedrt, effbnkbed
-
+      integer :: ch_d50type          !units         |description
+      integer :: jrch                !none          |reach number
+      integer :: icmd                !units         |description
+      real :: qdin                   !m^3 H2O       |water in reach during time step
+      real :: sedin                  !units         |description
+      real :: vc                     !m/s           |flow velocity in reach         
+      real :: cyin                   !units         |description
+      real :: cych                   !units         |description
+      real :: depnet                 !metric tons   |
+      real :: deg                    !metric tons   |sediment reentrained in water by channel
+                                     !              |degradation 
+      real :: dep                    !metric tons   |sediment deposited on river bottom
+      real :: tbase                  !units         |description
+      real :: depdeg                 !m             |depth of degradation/deposition from original
+      real :: dot                    !mm            |actual depth from impermeable layer to water level
+                                     !              |above drain during subsurface irrigation
+      real :: vs                     !units         |description
+      real :: x                      !units         |description
+      real :: SC                     !units         |description
+      real :: Tcbnk                  !units         |description
+      real :: Tcbed                  !units         |description
+      real :: Tbank                  !units         |description
+      real :: Tbed                   !units         |description
+      real :: asinea                 !units         |description
+      real :: Tou                    !units         |description
+      real :: sanin                  !units         |description
+      real :: silin                  !units         |description
+      real :: clain                  !units         |description
+      real :: sagin                  !units         |description
+      real :: lagin                  !units         |description
+      real :: grain                  !units         |description
+      real :: outfract               !units         |description
+      real :: depsan                 !units         |description
+      real :: depsil                 !units         |description
+      real :: depcla                 !units         |description
+      real :: depsag                 !units         |description
+      real :: deplag                 !units         |description 
+      real :: depgra                 !units         |description
+      real :: degsan                 !units         |description
+      real :: degsil                 !units         |description
+      real :: degcla                 !units         |description
+      real :: deggra                 !units         |description
+      real :: bnksan                 !units         |description
+      real :: bnksil                 !units         |description
+      real :: bnkcla                 !units         |description
+      real :: bnkgra                 !units         |description
+      real :: pdep                   !units         |description
+      real :: pdepbed                !units         |description
+      real :: bedsize                !units         |description
+      real :: USpower                !units         |description
+      real :: adddep                 !units         |description
+      real :: fpratio                !units         |description
+      real :: watdep                 !units         |description
+      real :: bnkrt                  !units         |description
+      real :: bedrt                  !units         |description
+      real :: effbnkbed              !units         |description
+      real :: sedinorg               !units         |description
+      real :: deg1                   !units         |description
+      real :: deg1san                !units         |description
+      real :: deg1sil                !units         |description
+      real :: deg1cla                !units         |description
+      real :: deg1sag                !units         |description
+      real :: deg1lag                !units         |description
+      real :: deg1gra                !units         |description
+      real :: degremain              !units         |description
+      real :: c                      !units         |description 
+      real :: pbed                   !units         |description
+      real :: pbank                  !units         |description
+      real :: rh                     !m             |hydraulic radius
+      real :: topw                   !m             |top width of main channel
+      real :: sfbank                 !units         |description
+      real :: vsh                    !units         |description
+      real :: w50                    !units         |description
+      real :: var1                   !units         |description
+      real  :: var2                  !units         |description
+      real  :: var3                  !units         |description
+      real  :: var4                  !units         |description
+      real  :: var5                  !units         |description 
+      real  :: var6                  !units         |description 
+      real  :: var56                 !units         |description 
+      real :: cychppm                !units         |description
+      real :: cychw                  !units         |description
+      real :: cychv                  !units         |description
+      real :: vgra                   !units         |description
+      real :: vsan                   !units         |description
+      real :: vsil                   !units         |description
+      real :: vcla                   !units         |description
+      real :: vsag                   !units         |description
+      real :: vlag                   !units         |description
+      real :: dat2                   !m             |change in channel depth during time step 
+      real :: alog10cychppm          !units         |description
+      
+      
       if (rtwtr > 0. .and. rchdep > 0.) then
 
 !! initialize water in reach during time step

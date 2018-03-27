@@ -3,9 +3,19 @@
       use input_file_module
       use bacteria_module
       use maximum_data_module
+      
+      implicit none
 
-      character (len=80) :: titldum
-      integer :: mbac_db, ibac, eof
+      character (len=80) :: titldum      !             |title of file
+      character (len=80) :: header       !             |header of file
+      integer :: mbac_db                 !             |
+      integer :: ibac                    !none         |counter
+      integer :: eof                     !             |end of file 
+      integer :: i_exist                 !             |check to determine if file exists
+      integer :: mbac                    !             |
+      integer :: ibact                   !none         |counter
+      
+      
       
       mbac_db = 0
       

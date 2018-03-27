@@ -1,24 +1,26 @@
       module aquifer_module
+    
+      implicit none
 
       real :: sumrchrg, sumflo, sumseep, sumrevap
        
       type aquifer_database
-        character(len=16) :: aqunm = ""
-        real :: flo = 0.05
-        real :: stor = 0.
-        real :: hgt
-        real :: no3 = 0.           
-        real :: minp = 0.   
-        real :: orgn = 0.         
-        real :: orgp = 0.         
-        real :: delay = 0.
-        real :: alpha = 0.        
-        real :: revap = 0.      
-        real :: seep = 0.
-        real :: spyld = 0. 
-        real :: hlife_n = 0.
-        real :: flo_min = 0. 
-        real :: revap_min = 0.      
+        character(len=16) :: aqunm = ""       !aquifer name
+        real :: flo = 0.05         !mm        |flow from aquifer in current time step 
+        real :: stor = 0.          !mm        |water storage in aquifer 
+        real :: hgt                !m         |groundwater height
+        real :: no3 = 0.           !ppm NO3-N |nitrate-N concentration in aquifer 
+        real :: minp = 0.          !kg        |mineral phosphorus from aquifer on current timestep 
+        real :: orgn = 0.          !(kg/ha N) |organic nitrogen 
+        real :: orgp = 0.          !(kg/ha P) |organic phosphorus
+        real :: delay = 0.         !          |
+        real :: alpha = 0.         !          |
+        real :: revap = 0.         !mm        |revap
+        real :: seep = 0.          !kg N/ha   |seepage to next object
+        real :: spyld = 0.         !          |
+        real :: hlife_n = 0.       !          |
+        real :: flo_min = 0.       !mm        |minimum aquifer storage to allow return flow
+        real :: revap_min = 0.     !mm H2O    |threshold depth of water in shallow aquifer required to allow revap to occur 
       end type aquifer_database
       type (aquifer_database), dimension(:), allocatable :: aqudb 
       
@@ -84,12 +86,14 @@
           character (len=6) :: yrs =       ' time '
           character (len=6) :: yrc =       ' year '
           character (len=8) :: isd =       '   unit '
-          character(len=15) :: flo =       '        flo_mm'           ! (mm)
+          character (len=8) :: id =         '     id '           
+          character (len=16) :: name =     ' name              '          
+          character(len=15) :: flo =       '         flo_mm'          ! (mm)
           character(len=15) :: stor =      '        stor_mm'          ! (mm)
-          character(len=15) :: rchrg =     '      rchrg_mm'           ! (mm)
+          character(len=15) :: rchrg =     '       rchrg_mm'          ! (mm)
           character(len=15) :: seep =      '        seep_mm'          ! (mm)
-          character(len=15) :: revap =     '      revap_mm'           ! (mm)
-          character(len=15) :: hgt =       '        hgt_m  '          ! (m)
+          character(len=15) :: revap =     '       revap_mm'          ! (mm)
+          character(len=15) :: hgt =       '         hgt_m '          ! (m)
           character(len=15) :: no3_st =    'no3_stor_kgN/ha'          ! (kg/ha N)
           character(len=15) :: minp =      '        minp_kg'          ! (kg)
           character(len=15) :: orgn =      '    orgn_kgN/ha'          ! (kg/ha N)

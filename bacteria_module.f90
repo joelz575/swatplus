@@ -1,5 +1,7 @@
       module bacteria_module
     
+      implicit none
+    
       type bacteria_db
         character(len=15) :: bactnm         
         real :: do_soln = 0.       !! 1/day         |Die-off factor for pers bac in soil solution
@@ -21,7 +23,7 @@
         real :: do_res = 0.        !! 1/day         |Die-off factor for less persistent bacteria in reservoirs
         real :: gr_res = 0.        !! 1/day         |growth factor for less persistent bacteria in reservoirs
         real :: swf = 0.           !! cfu           |fraction of manure containing active colony forming units
-        real :: conc_min
+        real :: conc_min           !!               |
       end type bacteria_db
       type (bacteria_db), dimension(:), allocatable  :: bac_db
 

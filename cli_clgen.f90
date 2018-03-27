@@ -45,9 +45,21 @@
       use climate_module
       use time_module
       use hydrograph_module
+      
+      implicit none
 
-      integer :: ii
-      real :: sd, sdlat, h, ys, yc, dd, w, cosrho(time%step), totrho
+      integer :: ii               !none          |counter
+      integer :: iwgn             !units         |description 
+      real :: sd                  !radians       |solar declination: latitude at which the sun
+                                  !              |is directly overhead at noon
+      real :: sdlat               !none          |(-Tan(sd)*Tan(lat))
+      real :: h                   !none          |Acos(-Tan(sd)*Tan(lat))
+      real :: ys                  !none          |Sin(sd)*Sin(lat) 
+      real :: yc                  !none          |Cos(sd)*Cos(lat)
+      real :: dd                  !none          |relative distance of the earth from the sun
+      real :: cosrho(time%step)   !none          |Cos(zenith angle for hour)
+      real :: totrho              !none          |sum of cosrho values for all hours of day
+      real :: w                   !none          |hour angle
 
       !! Reset prior day category for precipitation     
       if (wst(iwst)%weat%precip >= 0.1) then

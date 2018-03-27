@@ -87,8 +87,46 @@
       use channel_module
       use hydrograph_module, only : ob, icmd, jrch
       
-      real :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
-      real :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
+      implicit none
+      
+      real :: solpstin          !mg pst        |soluble pesticide entering reach during 
+                                !              |time step
+      real :: sorpstin          !mg pst        |sorbed pesticide entering reach during
+                                !              |time step
+      real :: pstin             !mg pst        |total pesticide transported into reach
+                                !              |during time step
+      real :: depth             !m             |depth of water in reach
+      real :: chpstmass         !mg pst        |mass of pesticide in reach
+      real :: frsol             !none          |fraction of pesticide in reach that is soluble
+      real :: frsrb             !none          |fraction of pesticide in reach that is sorbed
+      real :: sedpstmass        !mg pst        |mass of pesticide in bed sediment
+      real :: bedvol            !m^3           |volume of river bed sediment
+      real :: fd2               !units         |description
+      real :: wtrin             !m^3 H2O       |water flowing into reach on day
+      real :: solmax            !units         |description
+      real :: sedcon            !g/m^3         |sediment concentration 
+      real :: tday              !none          |flow duration (fraction of 24 hr)
+      real :: rchwtr            !m^3 H2O       |water stored in reach at beginning of day
+      real :: reactw            !mg pst        |amount of pesticide in reach that is lost
+                                !              |through reactions
+      real :: volatpst          !mg pst        |amount of pesticide lost from reach by
+                                !              |volatilization
+      real :: setlpst           !mg pst        |amount of pesticide moving from water to
+                                !              |sediment due to settling
+      real :: resuspst          !mg pst        |amount of pesticide moving from sediment to
+                                !              |reach due to resuspension
+      real :: difus             !mg pst        |diffusion of pesticide from sediment to reach      
+      real :: bury              !mg pst        |loss of pesticide from active sediment layer
+                                !              |by burial
+      real :: pest_sol          !kg/ha or kg   |soluble pesticide mass
+      real :: reactb            !mg pst        |amount of pesticide in sediment that is lost
+                                !              |through reactions
+                                !              |up by plant roots in the bank storage zone            
+      real :: solpesto          !mg pst/m^3    |soluble pesticide concentration in outflow
+                                !              |on day
+      real :: sorpesto          !mg pst/m^3    |sorbed pesticide concentration in outflow
+                                !              |on day
+      
 
 !! initialize depth of water for pesticide calculations
       if (rchdep < 0.1) then

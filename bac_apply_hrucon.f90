@@ -32,7 +32,19 @@
       use hru_module, only : pcom, soil, ipl, manure_kg, sumlai
       use bacteria_module
 
-      real :: frt_t
+      implicit none
+            
+      real :: frt_t        !          |
+      real :: bioms_tot    !          |
+      real :: bioms_min    !          |
+      real :: gc           !none      |fraction of ground covered by plant foliage
+      real :: gc1          !          |
+      integer :: ibac      !none      |counter
+      integer :: ibacdb    !          |
+      integer :: ibtyp     !NA        |bacteria type from 'bact_parms.dat'
+      real :: j            !          |
+            
+      
       
       if (bioms_tot > bioms_min) then
         gc = (1.99532 - erfc(1.333 * sumlai - 2.)) / 2.1

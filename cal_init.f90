@@ -7,6 +7,11 @@
       use hydrograph_module, only : sp_ob
       use calibration_data_module
       
+      implicit none
+      
+      integer :: ical         !          |
+      integer :: isdc         !none      |counter
+      
       !save initial conditions if calibrating
       ical = 0
       if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hrul == 'y'.or.       &

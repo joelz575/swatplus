@@ -72,10 +72,21 @@
       use channel_module
       use hydrograph_module, only : ob
       use channel_velocity_module
+      
+      implicit none
 
-      integer :: ii, inhyd
-      real :: wtrin, c, p, scoef
-      real :: vol, topw
+      integer :: ii        !none          |counter (hour)
+      integer :: inhyd     !none          |inflow hydrograph storage location number 
+      integer :: inum2     !none          |inflow hydrograph storage location number
+      integer :: icmd      !units         |description
+      integer :: jrch      !none          |reach number
+      real :: wtrin        !m^3 H2O       |water entering reach during hour
+      real :: c            !none          |inverse of channel side slope
+      real :: p            !m             |wetted perimeter
+      real :: scoef        !none          |storage coefficient
+      real :: vol          !m^3 H2O       |volume of water in reach
+      real :: topw         !m             |width of channel at water level
+      real :: qman         !m^3/s or m/s  |flow rate or flow velocity
 
       inhyd = 0
       inhyd = inum2

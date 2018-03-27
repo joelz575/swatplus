@@ -3,7 +3,8 @@
       use channel_module
       use basin_module
       use hydrograph_module, only : sp_ob
-      
+      use hru_module, only : prog
+            
 !!!  CHANNEL
       !if (sp_ob%chan > 0) then !subdaily main channel output, Jaehak 2017
       !   if (pco%chan%t == 'y') then
@@ -72,7 +73,7 @@
           if (pco%csvout == 'y') then
             open (2487,file="channel_aa.csv",recl = 1500)
             write (2487,*) bsn%name, prog
-            write (2487,'(*(G0.3,:,","))') ch_hdr   !! channel aa header csv formatt'
+            write (2487,'(*(G0.3,:,","))') ch_hdr   !! channel aa header csv format
             write (9000,*) 'CHANNEL             channel_aa.csv'
           end if
           end if

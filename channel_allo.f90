@@ -5,6 +5,10 @@
       use hydrograph_module, only : sp_ob
       use channel_velocity_module
       
+      implicit none
+      
+      integer mch       !units    |description
+      
       mch = sp_ob%chan
       
       allocate (ch(mch))

@@ -1,6 +1,9 @@
        subroutine basin_prm_default
     
        use basin_module
+       use hru_module, only :  uptake
+       
+       implicit none
       
          if (bsn_prm%evlai < 1.e-6) bsn_prm%evlai = 3.0           !! leaf area index at which no evap occurs
          if (bsn_prm%ffcb < 1.e-6) bsn_prm%ffcb = 0.              !! intial soil water cont expressed as a fraction of fc 
@@ -54,12 +57,12 @@
          if (bsn_prm%r2adj > .95) bsn_prm%r2adj = .95             !! 
          
          !! set additional parameters
-         ubw = 10.0       !! the uptake distribution for water is hardwired
-                       !! users are not allowed to modify the water
-                       !! water uptake distribution
-         uobw = 1. - exp(-ubw)
-         uobn = 1. - exp(-bsn_prm%n_updis)
-         uobp = 1. - exp(-bsn_prm%p_updis)
+         uptake%water_dis = 10.0       !! the uptake distribution for water is hardwired
+                                       !! users are not allowed to modify the water
+                                       !! water uptake distribution
+         uptake%water_norm = 1. - exp(-uptake%water_dis)
+         uptake%n_norm = 1. - exp(-bsn_prm%n_updis)
+         uptake%p_norm = 1. - exp(-bsn_prm%p_updis)
          
          return
           

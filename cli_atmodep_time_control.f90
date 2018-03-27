@@ -3,6 +3,8 @@
       use climate_module
       use time_module
       
+      implicit none
+      
       if (atmodep_cont%num_sta > 0) then
         if (atmodep_cont%first == 1) then
           if (atmodep_cont%timestep == 'yr') then

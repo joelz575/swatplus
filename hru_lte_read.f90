@@ -188,7 +188,9 @@
          ! change from growing season to time to maturity
          hlt(i)%phu = .9 * phutot
          hlt(i)%phu = Max(500., hlt(i)%phu)
-         if (pldb(iplt)%idc <= 2 .or. pldb(iplt)%idc == 4 .or. pldb(iplt)%idc == 5) then
+         
+         if (pldb(iplt)%idc == 'warm_annual_legume' .or. pldb(iplt)%idc == 'cold_annual_legume' .or.   &
+             pldb(iplt)%idc == 'warm_annual' .or. pldb(iplt)%idc == 'cold_annual') then
            hlt(i)%phu = Min(2000., hlt(i)%phu)
          end if
 

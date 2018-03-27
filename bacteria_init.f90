@@ -40,9 +40,17 @@
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob, icmd
       use constituent_mass_module
+      
+      implicit none
 
-      integer :: eof, isched
-      character (len=80) :: titldum
+      integer :: eof                   !          |end of file
+      character (len=80) :: titldum    !          |title of file
+      integer :: mbac                  !          |
+      integer :: ly                    !none      |counter
+      integer :: ibac                  !none      |counter
+      integer :: ibac_db               !          |
+      integer :: j                     !          |
+      
      
       do ihru = 1, sp_ob%hru
 

@@ -15,11 +15,6 @@
 !!                                |of N in crop biomass at emergence
 !!    pltnfr(3,:) |kg N/kg biomass|nitrogen uptake parameter #3: normal fraction
 !!                                |of N in crop biomass at maturity
-!!    uobn        |none           |nitrogen uptake normalization parameter
-!!                                |This variable normalizes the nitrogen uptake
-!!                                |so that the model can easily verify that
-!!                                |upake from the different soil layers sums to
-!!                                |1.0
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~

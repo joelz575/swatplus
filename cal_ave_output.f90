@@ -4,6 +4,13 @@
       use hru_lte_module
       use maximum_data_module
       use calibration_data_module
+      
+      implicit none
+      
+      integer :: ireg       !none      |counter
+      integer :: ilu        !none      |counter
+      integer :: ich        !none      |counter 
+      
 
         !! average output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%sed == 'y') then

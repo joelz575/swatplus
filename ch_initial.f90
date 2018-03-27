@@ -3,7 +3,14 @@
       use channel_data_module
       use channel_module
       
-      integer :: irch
+      implicit none
+      
+      integer :: irch     !none      |counter
+      integer :: ised     !none      |counter
+      integer :: idat     !units     |description
+      real :: bnksize     !units     |description
+      real :: bedsize     !units     |description
+      real :: sc          !units     |description    
       
       ised = ch_dat(idat)%sed
       bnksize = ch_sed(ised)%bnk_d50 / 1000.  !! Units conversion Micrometer to Millimeters

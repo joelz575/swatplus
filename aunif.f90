@@ -12,19 +12,10 @@
 !!    Bratley, P., B.L. Fox and L.E. Schrage. 1983. A Guide to Simulation.
 !!        Springer-Verlag, New York. (pages 199-202)
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name       |units          |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    x1         |none           |random number generator seed (integer)
-!!                               |where  0 < x1 < 2147483647
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name       |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    unif       |none           |random number between 0.0 and 1.0
-!!    x1         |none           |random number generator seed (integer)
-!!                               |set to new value where 0 < x1 < 2147483647
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -35,7 +26,10 @@
 
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      integer, intent (in out) :: x1
+      implicit none
+
+      integer, intent (in out) :: x1   !none           |random number generator seed (integer)
+                                       !               |where  0 < x1 < 2147483647
       integer :: x2
 
       x2 = x1 / 127773

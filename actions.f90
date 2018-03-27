@@ -1,6 +1,5 @@
       subroutine actions (id, ob_cur)
-      !actions include: irrigate, fertilize, release, till, plant, drainage, herd, water_rights
-    
+   
       use conditional_module
       use climate_module
       use time_module
@@ -17,11 +16,30 @@
       
       implicit none
       
-      integer, intent (in)  :: id, ob_cur
-      integer :: ob_num, icom
-      integer :: iac, ial, jj, i, iburn, ich, idtill, ifertop, ifrt, iharvop, iihru, ilu, irrop, j  
-      real :: hiad1, amt_mm, biomass, wur, idp
-      character(len=1) :: action
+      integer, intent (in)  :: id          !         |
+      integer, intent (in)  :: ob_cur      !         |
+      integer :: ob_num                    !         |object number 
+      integer :: icom                      !         |
+      integer :: iac                       !none     |counter
+      integer :: ial                       !none     |counter
+      integer :: jj                        !none     |counter
+      integer :: i                         !none     |counter
+      integer :: iburn                     !none     |burn type from fire data base
+      integer :: ich                       !none     |object number 
+      integer :: idtill                    !none     |tillage type
+      integer :: ifertop                   !         |surface application fraction from chem app data base
+      integer :: ifrt                      !         |fertilizer type from fert data base
+      integer :: iharvop                   !         |harvest operation type
+      integer :: iihru                     !         |
+      integer :: ilu                       !         |landuse type 
+      integer :: irrop                     !         |irrigation operations
+      integer :: j                         !none     |counter
+      real :: hiad1                        !         |
+      real :: amt_mm                       !         |
+      real :: biomass                      !         |
+      real :: wur                          !         |
+      real :: idp                          !         |
+      character(len=1) :: action           !         |
 
       do iac = 1, d_tbl(id)%acts
         action = "n"

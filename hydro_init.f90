@@ -98,12 +98,20 @@
       do ipl = 1, pcom(j)%npl
         idp = pcom(j)%plcur(ipl)%idplt
 	    if (idp > 0) then
-          if (pldb(idp)%idc > 0) then
-            !! set initial residue by summing each plant
-            soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + rsd1(j)%tot(ipl)%m
-            plt_zmxp = plt_zmx
-            plt_zmx = 1000. * pldb(idp)%rdmx
-            plt_zmx = Max(plt_zmx,plt_zmxp)
+          if (pldb(idp)%idc == 'warm_annual_legume' .or.                  &
+            pldb(idp)%idc == 'cold_annual_legume' .or.                    &
+            pldb(idp)%idc == 'perennial_legume' .or.                      &
+            pldb(idp)%idc == 'warm_annual' .or.                           &
+            pldb(idp)%idc == 'cold_annual' .or.                           &
+            pldb(idp)%idc == 'perennial' .or.                             &
+            pldb(idp)%idc == 'trees' .or.                                 &
+            pldb(idp)%idc == 'tropical_trees' .or.                        &
+            pldb(idp)%idc == 'tropical_grasses') then          
+              !! set initial residue by summing each plant
+              soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + rsd1(j)%tot(ipl)%m
+              plt_zmxp = plt_zmx
+              plt_zmx = 1000. * pldb(idp)%rdmx
+              plt_zmx = Max(plt_zmx,plt_zmxp)
           end if
         end if
       end do

@@ -2,10 +2,18 @@
       
        use input_file_module
        use aquifer_module
+       
+       implicit none
       
        character (len=500) :: header
        character (len=80) :: titldum
-       integer :: eof, i, imax
+       integer :: eof             !                |end of file
+       integer :: i               !none            |counter
+       integer :: imax            !                |maximum count
+       integer :: msh_aqp         !none            |counter
+       integer :: i_exist         !                |check to determine if file exists
+       integer :: ish_aqp         !none            |counter  
+       integer :: k               !                |index
        
        msh_aqp = 0
        eof = 0

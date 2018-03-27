@@ -82,11 +82,36 @@
       use hydrograph_module, only : ob
       use climate_module
 
-      integer :: ii
-      real :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
-      real :: orgpin, dispin, cbodin, disoxin, wtmp
-      real :: orgpcon, solpcon, cbodcon, o2con, wtrtot
-      real :: algcon, orgncon, nh3con, no2con, no3con
+      implicit none
+      
+      integer :: ii           !none          |counter
+      integer :: icmd         !units         |description
+      integer :: jrch         !none          |reach number
+      integer :: iwst         !none          |counter
+      real :: algon           !units         |description
+      real :: wtrin           !m^3 H2O       |water flowing into reach on day
+      real :: chlin           !mg chl-a/L    |chlorophyll-a concentration in inflow
+      real :: algin           !mg alg/L      |algal biomass concentration in inflow
+      real :: orgnin          !mg N/L        |organic N concentration in inflow
+      real :: ammoin          !mg N/L        |ammonium N concentration in inflow
+      real :: nitratin        !mg N/L        |nitrate concentration in inflow
+      real :: nitritin        !mg N/L        |nitrite concentration in inflow
+      real :: orgpcon         !mg P/L        |initial organic P concentration in reach
+      real :: orgpin          !mg P/L        |organic P concentration in inflow
+      real :: solpcon         !mg P/L        |initial soluble P concentration in reach
+      real :: wtmp            !deg C         |temperature of water in reach
+      real :: wtrtot          !m^3 H2O       |inflow + storage water
+      real :: dispin          !mg P/L        |soluble P concentration in inflow
+      real :: cbodin          !mg/L          |carbonaceous biological oxygen demand 
+      real :: disoxin         !mg O2/L       |dissolved oxygen concentration in inflow
+      real :: cbodcon         !mg/L          |initial carbonaceous biological oxygen demand
+      real :: o2con           !mg O2/L       |initial dissolved oxygen concentration in reach
+      real :: algcon          !mg alg/L      |initial algal biomass concentration in reach
+      real :: orgncon         !mg N/L        |initial organic N concentration in reach
+      real :: nh3con          !mg N/L        |initial ammonia concentration in reach
+      real :: no2con          !mg N/L        |initial nitrite concentration in reach
+      real :: no3con          !mg N/L        |initial nitrate concentration in reach
+
       
 !! hourly loop
       do ii = 1, time%step

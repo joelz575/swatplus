@@ -96,8 +96,18 @@
       use channel_module
       use hydrograph_module, only : ob, iwst, icmd, jrch
       use climate_module
+      
+      implicit none
            
-      real :: sedcon, bedvol, sedpest, wtmp
+      real :: sedcon       !mg/L          |sediment concentration in outflow
+      real :: bedvol       !m^3           |volume of river bed sediment
+      real :: sedpest      !mg pst        |pesticide in river bed sediment
+      real :: wtmp         !deg C         |temperature of water in reach
+      real :: solpesto     !mg pst/m^3    |soluble pesticide concentration in outflow
+                           !              |on day
+      real :: sorpesto     !mg pst/m^3    |sorbed pesticide concentration in outflow
+                           !              |on day 
+      integer :: ii        !none          |counter
 
       wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
 !! set values for routing variables

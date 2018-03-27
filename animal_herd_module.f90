@@ -1,8 +1,10 @@
       module animal_herd_module
+    
+      implicit none
 
       type animals
-        character(len=16) :: name               !animal name (cattle, sheep, goats, etc)
-        real :: phyp = 0.           !units      |description
+        character(len=16) :: name   !           |animal name (cattle, sheep, goats, etc)
+        real :: phyp = 0.           !           |
         real :: pthd = 0.           !           |
         real :: pthu = 0.           !           |
         real :: gzlm = 0.           !t/ha       |

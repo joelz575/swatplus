@@ -61,10 +61,12 @@
             allocate (recall(i)%hd(366,nbyr))
             
            case (2) !! monthly
-            allocate (rec_om(i)%hd_om(12,nbyr))
+            !allocate (rec_om(i)%hd_om(12,nbyr))  !!!!!!!!!!this didn't seem right added commented and added next line
+            allocate (recall(i)%hd(12,nbyr))
             
            case (3) !! annual
-            allocate (rec_om(i)%hd_om(1,nbyr))
+            !allocate (rec_om(i)%hd_om(1,nbyr))   !!!!!!!!!!same here
+            allocate (recall(i)%hd(1,nbyr))
         end select
            
         ! read and store entire year

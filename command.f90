@@ -259,7 +259,7 @@
         if (sp_ob%res > 0) call basin_reservoir_output
         if (sp_ob%chan > 0) call basin_channel_output
         if (sp_ob%chandeg > 0) call basin_sdchannel_output
-        if (sp_ob%recall > 0) call basin_recall_output
+        !if (sp_ob%recall > 0) call basin_recall_output   !!! all recall outputs need to be addressed
         call soil_nutcarb_output
         !call lsreg_output
         !call region_aquifer_output

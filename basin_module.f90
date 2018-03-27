@@ -1,8 +1,6 @@
       module basin_module
-      
-      integer :: mchg_par, ichg_par, ispu
-      real :: ubw, uobw, uobn, uobp
-
+    
+      implicit none
       type basin_inputs
         character(len=25) :: name
         real :: area_ls_ha = 0.
@@ -191,8 +189,8 @@
         type(print_interval) :: aqu_bsn         !!  
         type(print_interval) :: res_bsn         !!
         type(print_interval) :: chan_bsn        !!
+        type(print_interval) :: sd_chan_bsn     !!
         type(print_interval) :: recall_bsn      !!
-        type(print_interval) :: sd_chan_bsn     !! 
       ! REGION
         type(print_interval) :: wb_reg          !!  water balance REGION output
         type(print_interval) :: nb_reg          !!  nutrient balance REGION output
@@ -201,8 +199,8 @@
         type(print_interval) :: aqu_reg         !!  
         type(print_interval) :: res_reg         !!
         type(print_interval) :: chan_reg        !!
-        type(print_interval) :: recall_reg      !!
         type(print_interval) :: sd_chan_reg     !! 
+        type(print_interval) :: recall_reg      !!
        ! SUBBASIN
         type(print_interval) :: wb_sub          !!  water balance SUBBASIN output
         type(print_interval) :: nb_sub          !!  nutrient balance SUBBASIN output

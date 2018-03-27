@@ -3,11 +3,15 @@
       use input_file_module
       use basin_module
       use time_module
+      
+      implicit none
        
-      character (len=500) :: header
-      character (len=80) :: titldum
-      character (len=16) :: name
-      integer :: eof
+      character (len=500) :: header    !              |header of file
+      character (len=80) :: titldum    !              |title of file
+      character (len=16) :: name       !              |name
+      integer :: eof                   !              |end of file
+      integer :: i_exist               !              |check to determine if file exists
+      integer :: ii                    !none          |counter
        
       eof = 0
 

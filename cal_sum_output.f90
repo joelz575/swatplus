@@ -6,7 +6,18 @@
       use output_landscape_module
       use maximum_data_module
       use calibration_data_module
+      
+      implicit none
        
+      integer :: ireg          !none      |counter
+      integer :: ilu           !none      |counter
+      integer :: iord          !none      |counter
+      integer :: ihru_s        !none      |counter
+      integer :: ich           !          |
+      integer :: ich_s         !none      |counter
+      real :: ha_hru           !          |
+      
+      
         !! sum landscape output for soft data calibration
         if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hru == 'y') then
           !calibrate hru's

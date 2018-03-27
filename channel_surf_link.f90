@@ -5,8 +5,20 @@
       use ru_module
       use maximum_data_module
       
-      character (len=3) :: iobtyp
-      integer :: isdc, ics
+      implicit none
+      
+      character (len=3) :: iobtyp   !none          |object type
+      integer :: isdc               !none          |counter
+      integer :: ics                !none          |counter 
+      integer :: ii                 !none          |counter 
+      integer :: i                  !units         |description  
+      integer :: iob                !units         |description   
+      integer :: ihru               !none          |counter 
+      integer :: ith                !units         |description    
+      integer :: ifld               !units         |description   
+      integer :: iele               !units         |description   
+      real :: tot_ha                !units         |description   
+        
 
       tot_ha = 0
       

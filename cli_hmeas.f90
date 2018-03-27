@@ -5,9 +5,18 @@
       use maximum_data_module
       use time_module
       
-      character (len=80) :: header
-      character (len=80) :: titldum
-      integer :: eof, i, imax, iyr
+      implicit none
+      
+      character (len=80) :: titldum     !title of file
+      character (len=80) :: header      !header of file
+      integer :: eof                    !end of file
+      integer ::i                       !none      |counter
+      integer :: imax                   !none      |determine max number for array (imax) and total number in file
+      integer ::iyr                     !none      !number of years
+      integer :: i_exist                !none      |check to determine if file exists
+      integer :: istep                  !units     |description
+      integer :: iyr_prev               !none      |previous year
+      integer :: iyrs                   !units     |description
        
        eof = 0
        imax = 0

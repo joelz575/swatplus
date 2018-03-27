@@ -14,39 +14,25 @@
 !!    sol_bacsor   |# cfu/m^2     |sorbed bacteria in soil layer
 !!    precip       |mm            |precipitation
 !!    tmpav        |deg C         |average temperature
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name              |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    bacdiegrosol_out  |# cfu/m^2     |regrowth and dieoff of soluble bacteria in soil
-!!    bacdiegrosol_out  |# cfu/m^2     |regrowth and dieoff of sorbed bacteria in soil
-!!    bacdiegrosol_out  |# cfu/m^2     |regrowth and dieoff of bacteria on plant
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    bpq         |# cfu/m^2     |bacteria (soluble) in soil at start of timestep
-!!    bps         |# cfu/m^2     |bacteria (sorbed) in soil at start of timestep
-!!    bpl         |# cfu/m^2     |bacteria on plant at start of timestep
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Min, Max
-!!    SWAT: Theta
-
-!!    ~ ~ ~ MODULES USED ~ ~ ~
-!!    bac_ls_parms   |type bacteria_db - contains  'bac_read_lsparms.f'
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use bacteria_module
       
-      integer :: ibtyp
-      real :: bpq, bps, bpl
-      real :: precip, washoff, pl_bac, sol_bacsol, sol_bacsor, tmpav
-      real :: bacdiegrosol_out, bacdiegrosor_out, bacdiegroplt_out
+      implicit none
+      
+      integer :: ibtyp         !none          |bacteria type from 'bact_parms.dat'
+      real :: bpq              !# cfu/m^2     |bacteria (soluble) in soil at start of timestep 
+      real :: bpl              !# cfu/m^2     |bacteria on plant at start of timestep
+      real :: bps              !# cfu/m^2     |bacteria (sorbed) in soil at start of timestep
+      real :: precip           !mm            |precipitation
+      real :: washoff          !none          |frac of pers bac on foliage washed off by a rainfall event
+      real :: pl_bac           !# cfu/m^2     |bacteria on plant
+      real :: sol_bacsol       !# cfu/m^2     |soluble bacteria in soil layer
+      real :: sol_bacsor       !# cfu/m^2     |sorbed bacteria in soil layer
+      real :: tmpav            !deg C         |average temperature
+      real :: bacdiegrosol_out !# cfu/m^2     |regrowth and dieoff of soluble bacteria in soil 
+      real :: bacdiegrosor_out !              |
+      real :: bacdiegroplt_out !              |
+      real, external :: Theta  !gsm not sure about this one copied from ch_rtbact.f
       
       !! compute bacteria wash off
       if (precip >= 2.54) then

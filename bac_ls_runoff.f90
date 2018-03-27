@@ -7,10 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ibtyp        |NA            |bacteria type from 'bact_parms.dat'
-!!    pl_bac       |# cfu/m^2     |bacteria on plant
-!!    sol_bacsol   |# cfu/m^2     |soluble bacteria in soil layer
-!!    sol_bacsor   |# cfu/m^2     |sorbed bacteria in soil layer
 !!    precip       |mm            |precipitation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
@@ -37,10 +33,22 @@
 
       use bacteria_module
       
-      integer :: ibtyp
-      real :: sol_bacsol, sol_bacsor, surf_ro, sol_bd, sol_dep, wt1
-      real :: cbact, enratio, sed_yld, da_ha
-      real, intent (out) :: bacsol_out, bacsor_out
+      implicit none
+      
+      integer :: ibtyp                  !none          |bacteria type from 'bact_parms.dat'
+      real :: sol_bacsol                !# cfu/m^2     |soluble bacteria in soil layer
+      real ::sol_bacsor                 !# cfu/m^2     |sorbed bacteria in soil layer
+      real ::surf_ro                    !              |
+      real ::sol_bd                     !              |
+      real ::sol_dep                    !              |
+      real ::wt1                        !none          |conversion factor to convert kg/ha to g/t(ppm)
+      real :: cbact                     !              |
+      real ::enratio                    !none          |enrichment ratio calculated for day in HRU
+      real ::sed_yld                    !              |
+      real ::da_ha                      !ha            |area of watershed in hectares
+      real, intent (out) :: bacsol_out  !              |  
+      real, intent (out) ::bacsor_out   !              | 
+      real :: pl_bac                    !# cfu/m^2     |bacteria on plant
       
       !! compute soluble bacteria in the surface runoff
       bacsol_out = sol_bacsol * surf_ro /                        &

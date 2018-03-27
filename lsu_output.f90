@@ -6,19 +6,12 @@
       use calibration_data_module
       use hydrograph_module
       use output_landscape_module
-             
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine outputs SUBBASIN variables on daily, monthly and annual time steps
-
-!!    PRINT CODES: 0 = average annual (always print)
-!!                 1 = yearly
-!!                 2 = monthly
-!!                 3 = daily
-     
+                      
       do isub = 1, db_mx%lsu_out
         ! summing HRU output for the subbasin
         do ielem = 1, lsu_out(isub)%num_tot
           ihru = lsu_out(isub)%num(ielem)
+          iob = sp_ob1%sub + isub - 1                          !!! double check for placement and 'isub'
           if (lsu_elem(ihru)%sub_frac > 1.e-9) then
             const = 1. / lsu_elem(ihru)%sub_frac   !only have / operator set up
             if (lsu_elem(ihru)%obtyp == 'hru') then
@@ -46,27 +39,27 @@
 !!!!! daily print - SUBBASIN
          if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
           if (pco%wb_sub%d == 'y') then
-            write (2140,100) time%day, time%yrc, isub, ruwb_d(isub)  !! waterbal
+            write (2140,100) time%day, time%yrc, isub, ob(iob)%num, ob(iob)%name, ruwb_d(isub)  !! waterbal
               if (pco%csvout == 'y') then 
-                write (2144,'(*(G0.3,:","))') time%day, time%yrc, isub, ruwb_d(isub)  !! waterbal
+                write (2144,'(*(G0.3,:","))') time%day, time%yrc, isub, ob(iob)%num, ob(iob)%name, ruwb_d(isub)  !! waterbal
               end if 
           end if 
           if (pco%nb_sub%d == 'y') then
-            write (2150,100) time%day, time%yrc, isub, runb_d(isub)  !! nutrient bal
+            write (2150,103) time%day, time%yrc, isub, ob(iob)%num, ob(iob)%name, runb_d(isub)  !! nutrient bal
             if (pco%csvout == 'y') then 
-              write (2154,'(*(G0.3,:","))') time%day, time%yrc, isub, runb_d(isub)  !! nutrient bal
+              write (2154,'(*(G0.3,:","))') time%day, time%yrc, isub, ob(iob)%num, ob(iob)%name, runb_d(isub)  !! nutrient bal
             end if 
           end if
           if (pco%ls_sub%d == 'y') then
-            write (2160,100) time%day, time%yrc, isub, ruls_d(isub)  !! losses
+            write (2160,100) time%day, time%yrc, isub, ob(iob)%num, ob(iob)%name, ruls_d(isub)  !! losses
             if (pco%csvout == 'y') then 
-              write (2164,'(*(G0.3,:","))') time%day, time%yrc, isub, ruls_d(isub)  !! losses
+              write (2164,'(*(G0.3,:","))') time%day, time%yrc, isub, ob(iob)%num, ob(iob)%name, ruls_d(isub)  !! losses
             end if 
           end if
           if (pco%pw_sub%d == 'y') then
-            write (2170,100) time%day, time%yrc, isub, rupw_d(isub)  !! plant weather
+            write (2170,100) time%day, time%yrc, isub, ob(iob)%num, ob(iob)%name, rupw_d(isub)  !! plant weather
             if (pco%csvout == 'y') then 
-              write (2175,'(*(G0.3,:","))') time%day, time%yrc, isub, rupw_d(isub)  !! plant weather 
+              write (2175,'(*(G0.3,:","))') time%day, time%yrc, isub, ob(iob)%num, ob(iob)%name, rupw_d(isub)  !! plant weather 
             end if
           end if 
        end if
@@ -88,27 +81,27 @@
           rupw_y(isub) = rupw_y(isub) + rupw_m(isub)
           
           if (pco%wb_sub%m == 'y') then
-            write (2141,100) time%mo, time%yrc, isub, ruwb_m(isub)
+            write (2141,100) time%mo, time%yrc, isub, ob(iob)%num, ob(iob)%name, ruwb_m(isub)
             if (pco%csvout == 'y') then 
-              write (2145,'(*(G0.3,:","))') time%mo, time%yrc, isub, ruwb_m(isub)
+              write (2145,'(*(G0.3,:","))') time%mo, time%yrc, isub, ob(iob)%num, ob(iob)%name, ruwb_m(isub)
             end if 
           end if
           if (pco%nb_sub%m == 'y') then 
-            write (2151,100) time%mo, time%yrc, isub, runb_m(isub)
+            write (2151,103) time%mo, time%yrc, isub, ob(iob)%num, ob(iob)%name, runb_m(isub)
             if (pco%csvout == 'y') then 
-              write (2155,'(*(G0.3,:","))') time%mo, time%yrc, isub, runb_m(isub)
+              write (2155,'(*(G0.3,:","))') time%mo, time%yrc, isub, ob(iob)%num, ob(iob)%name, runb_m(isub)
             end if 
           end if
           if (pco%ls_sub%m == 'y') then
-            write (2161,100) time%mo, time%yrc, isub, ruls_m(isub)
+            write (2161,100) time%mo, time%yrc, isub, ob(iob)%num, ob(iob)%name, ruls_m(isub)
             if (pco%csvout == 'y') then 
-              write (2165,'(*(G0.3,:","))') time%mo, time%yrc, isub, ruls_m(isub)
+              write (2165,'(*(G0.3,:","))') time%mo, time%yrc, isub, ob(iob)%num, ob(iob)%name, ruls_m(isub)
             end if 
           end if
           if (pco%pw_sub%m == 'y') then
-            write (2171,100) time%mo, time%yrc, isub, rupw_m(isub)
+            write (2171,100) time%mo, time%yrc, isub, ob(iob)%num, ob(iob)%name, rupw_m(isub)
             if (pco%csvout == 'y') then 
-              write (2175,'(*(G0.3,:","))') time%mo, time%yrc, isub, rupw_m(isub)
+              write (2175,'(*(G0.3,:","))') time%mo, time%yrc, isub, ob(iob)%num, ob(iob)%name, rupw_m(isub)
             end if 
           end if
   
@@ -129,27 +122,27 @@
            rupw_a(isub) = rupw_a(isub) + rupw_y(isub)
            
            if (pco%wb_sub%y == 'y') then
-             write (2142,102) '     0', time%yrc, isub, ruwb_y(isub)
+             write (2142,102) '     0', time%yrc, isub, ob(iob)%num, ob(iob)%name, ruwb_y(isub)
              if (pco%csvout == 'y') then 
-               write (2146,'(*(G0.3,:","))') '     0', time%yrc, isub, ruwb_y(isub)
+               write (2146,'(*(G0.3,:","))') '     0', time%yrc, isub, ob(iob)%num, ob(iob)%name, ruwb_y(isub)
              end if 
            end if
            if (pco%nb_sub%y == 'y') then
-             write (2152,102) '     0', time%yrc, isub, runb_y(isub)
+             write (2152,104) '     0', time%yrc, isub, ob(iob)%num, ob(iob)%name, runb_y(isub)
              if (pco%csvout == 'y') then 
-               write (2156,'(*(G0.3,:","))') '     0', time%yrc, isub, runb_y(isub)
+               write (2156,'(*(G0.3,:","))') '     0', time%yrc, isub, ob(iob)%num, ob(iob)%name, runb_y(isub)
              end if 
            end if
            if (pco%ls_sub%y == 'y') then
-             write (2162,102) '     0', time%yrc, isub, ruls_y(isub)
+             write (2162,102) '     0', time%yrc, isub, ob(iob)%num, ob(iob)%name, ruls_y(isub)
              if (pco%csvout == 'y') then 
-               write (2166,'(*(G0.3,:","))') '     0', time%yrc, isub, ruls_y(isub)
+               write (2166,'(*(G0.3,:","))') '     0', time%yrc, isub, ob(iob)%num, ob(iob)%name, ruls_y(isub)
              end if 
            end if
            if (pco%pw_sub%y == 'y') then
-             write (2172,102) '     0', time%yrc, isub, rupw_y(isub)
+             write (2172,102) '     0', time%yrc, isub, ob(iob)%num, ob(iob)%name, rupw_y(isub)
              if (pco%csvout == 'y') then 
-               write (2176,'(*(G0.3,:","))') '     0', time%yrc, isub, rupw_y(isub)
+               write (2176,'(*(G0.3,:","))') '     0', time%yrc, isub, ob(iob)%num, ob(iob)%name, rupw_y(isub)
              end if 
            end if
  
@@ -163,37 +156,39 @@
 !!!!! average annual print - SUBBASIN
       if (time%end_sim == 1 .and. pco%wb_sub%a == 'y') then
         ruwb_a(isub) = ruwb_a(isub) / time%yrs_prt
-        write (2143,102) '     0', time%yrs, isub, ruwb_a(isub)
+        write (2143,102) '     0', time%yrs, isub, ob(iob)%num, ob(iob)%name, ruwb_a(isub)
         if (pco%csvout == 'y') then 
-          write (2147,'(*(G0.3,:","))') '     0', time%yrs, isub, ruwb_a(isub)
+          write (2147,'(*(G0.3,:","))') '     0', time%yrs, isub, ob(iob)%num, ob(iob)%name, ruwb_a(isub)
         end if 
       end if
       if (time%end_sim == 1 .and. pco%nb_sub%a == 'y') then
         runb_a(isub) = runb_a(isub) / time%yrs_prt
-        write (2153,102) '     0', time%yrs, isub, runb_a(isub)
+        write (2153,104) '     0', time%yrs, isub, ob(iob)%num, ob(iob)%name, runb_a(isub)
         if (pco%csvout == 'y') then 
-          write (2157,'(*(G0.3,:","))') '     0', time%yrs, isub, runb_a(isub)
+          write (2157,'(*(G0.3,:","))') '     0', time%yrs, isub, ob(iob)%num, ob(iob)%name, runb_a(isub)
         end if
       end if
       if (time%end_sim == 1 .and. pco%ls_sub%a == 'y') then     
         ruls_a(isub) = ruls_a(isub) / time%yrs_prt
-        write (2163,102) '     0', time%yrs, isub, ruls_a(isub)
+        write (2163,102) '     0', time%yrs, isub, ob(iob)%num, ob(iob)%name, ruls_a(isub)
         if (pco%csvout == 'y') then 
-          write (2167,'(*(G0.3,:","))') '     0', time%yrs, isub, ruls_a(isub)
+          write (2167,'(*(G0.3,:","))') '     0', time%yrs, isub, ob(iob)%num, ob(iob)%name, ruls_a(isub)
         end if 
       end if
       if (time%end_sim == 1 .and. pco%pw_sub%a == 'y') then    
         rupw_a(isub) = rupw_a(isub) / time%yrs_prt
-        write (2173,102) '     0', time%yrs, isub, rupw_a(isub) 
+        write (2173,102) '     0', time%yrs, isub, ob(iob)%num, ob(iob)%name, rupw_a(isub) 
         if (pco%csvout == 'y') then 
-          write (2177,'(*(G0.3,:","))') '     0', time%yrs, isub, rupw_a(isub)
+          write (2177,'(*(G0.3,:","))') '     0', time%yrs, isub, ob(iob)%num, ob(iob)%name, rupw_a(isub)
         end if
       end if
       end do    !isub
       
       return
       
-100   format (2i6,i8,27f12.3)
-102   format (a,i6,i8,27f12.3)
+100   format (2i6,2i8,2x,a,27f12.3)
+102   format (a,i6,2i8,2x,a,27f12.3)
+103   format (2i6,2i8,2x,a,27(6x,f12.3))
+104   format (a,i6,2i8,2x,a,27(6x,f12.3))
        
       end subroutine lsu_output

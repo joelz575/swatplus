@@ -97,8 +97,30 @@
       use time_module
       use channel_module
       use hydrograph_module, only : jrch
+      
+      implicit none
 
-      real :: cnv, vmm, vminmm, vol, wtrin, sq_rto
+      real :: cnv        !none          |conversion factor (mm => m^3)
+      real :: vmm        !mm H2O        |depth of irrigation water over HRU
+      real :: vminmm     !mm H2O        |maximum amount of water available for
+                         !              |irrigation from reach
+      real :: vol        !m^3 H2O       |volume of water applied in irrigation 
+                         !              |operation
+      real :: wtrin      !m^3 H2O       |water outflow from reach prior to subtracting
+                         !              |irrigation diversions
+      real :: sq_rto     !units         |description 
+      real :: flag       !none          |irrigation flag:
+                         !              |0 no irrigation operation on current day
+                         !              |1 scheduled irrigation
+                         !              |2 auto irrigation 
+      real :: wtr_avail  !units         |description 
+      real ::  vmxi      !mm H2O        |amount of water specified in irrigation
+                         !              |operation
+      real :: xx         !none          |temp variable, used to hold calculated
+                         !              |value needed in later equations
+      integer :: ii      !none          |counter
+      integer :: min     !units         |description 
+      integer :: k       !none          |counter
 
       wtrin = 0.
       wtrin = rtwtr + ch(jrch)%rchstor

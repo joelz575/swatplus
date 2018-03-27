@@ -7,6 +7,7 @@
      use hydrograph_module
      use sd_channel_module
      use maximum_data_module
+     use hru_module, only : prog
      
       if (pco%fdcout == 'y') then
         open (6000,file="flow_duration_curve.out", recl=800)
@@ -104,11 +105,13 @@
           open (2100,file="reservoir_day_bsn.txt", recl = 1500)
           write (2100,*) bsn%name, prog
           write (2100,*) res_hdr
+          write (2100,*) res_hdr_unt
           write (9000,*) 'BASIN RESERVOIR     reservoir_day_bsn.txt'
           if (pco%csvout == 'y') then 
             open (2104,file="reservoir_day_bsn.csv", recl = 1500)
             write (2104,*) bsn%name, prog
             write (2104,'(*(G0.3,:","))') res_hdr
+            write (2104,'(*(G0.3,:","))') res_hdr_unt
             write (9000,*) 'BASIN RESERVOIR     reservoir_day_bsn.csv'
           end if
         endif
@@ -116,12 +119,14 @@
       if (pco%res_bsn%m == 'y') then
         open (2101,file="reservoir_mon_bsn.txt",recl = 1500)
         write (2101,*) bsn%name, prog
-        write (2101,*) res_hdr 
+        write (2101,*) res_hdr
+        write (2101,*) res_hdr_unt
         write (9000,*) 'BASIN RESERVOIR AA  reservoir_mon_bsn.txt'
        if (pco%csvout == 'y') then 
           open (2105,file="reservoir_mon_bsn.csv",recl = 1500)
           write (2105,*) bsn%name, prog
-          write (2105,'(*(G0.3,:","))') res_hdr 
+          write (2105,'(*(G0.3,:","))') res_hdr
+          write (2105,'(*(G0.3,:","))') res_hdr_unt
           write (9000,*) 'BASIN RESERVOIR     reservoir_mon_bsn.csv'
        end if
       end if
@@ -130,11 +135,13 @@
           open (2102,file="reservoir_yr_bsn.txt", recl = 1500)
           write (2102,*) bsn%name, prog
           write (2102,*) res_hdr 
+          write (2102,*) res_hdr_unt
           write (9000,*) 'BASIN RESERVOIR     reservoir_yr_bsn.txt'
           if (pco%csvout == 'y') then 
             open (2106,file="reservoir_yr_bsn.csv", recl = 1500)
             write (2106,*) bsn%name, prog
             write (2106,'(*(G0.3,:","))') res_hdr
+            write (2106,'(*(G0.3,:","))') res_hdr_unt
             write (9000,*) 'BASIN RESERVOIR     reservoir_yr_bsn.csv'
           end if
        endif
@@ -143,11 +150,13 @@
        open (2103,file="reservoir_aa_bsn.txt",recl = 1500)
         write (2103,*) bsn%name, prog
         write (2103,*) res_hdr
+        write (2103,*) res_hdr_unt
         write (9000,*) 'BASIN RESERVOIR AA  reservoir_aa_bsn.txt'
        if (pco%csvout == 'y') then 
           open (2107,file="reservoir_aa_bsn.csv",recl = 1500)
           write (2107,*) bsn%name, prog
-          write (2107,'(*(G0.3,:","))') res_hdr 
+          write (2107,'(*(G0.3,:","))') res_hdr
+          write (2107,'(*(G0.3,:","))') res_hdr_unt
           write (9000,*) 'BASIN RESERVOIR               reservoir_aa_bsn.csv'
        end if
       end if

@@ -61,11 +61,11 @@
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
       integer :: i
 
-      prog = " SWAT+ Mar 13 2018    MODULAR Rev 2018.44"
+      prog = " SWAT+ Mar 27 2018    MODULAR Rev 2018.45"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 44             ",/,             &
+     &          "              Revision 45             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -113,7 +113,7 @@
       call cli_wgnread
       write (*,111) 'reading from wx station file       ', date_time(5), date_time(6), date_time(7)
       call DATE_AND_TIME (b(1), b(2), b(3), date_time)
-      call cli_atmodep_read
+      call cli_read_atmodep
       call cli_staread
    
       call sep_read
@@ -161,11 +161,11 @@
       call landuse_read
 
       call bac_read_lsinit
-      call pst_lsinit_read
+      call pst_read_lsinit
       
       call hyd_connect
       
-      call object_output_read
+      call object_read_output
 
       !! read decision table data for conditional management
       call condition_read     
@@ -244,27 +244,27 @@
       call aqu_initial
 
       !read calibration data (if included)
-      call cal_parms_read
-      call update_parm_read
+      call cal_read_parms
+      call update_read_parm
 
       call update_init
             
       !! read update data
       !call update_sched_read
-      call update_cond_read
+      call update_read_cond
             
       !! read soft calibration parameters
-      call codes_cal_read
-      call lsu_elements_read        !defining landscape units by hru
-      !call reg_elements_read        !defining regions by lsu and/or hru
-      call lcu_softcal_read         !soft data for landscape calibration (needs to be renamed)***
-      call ls_parms_cal_read
-      call pl_regions_cal_read      !soft data for hru_lte calibration
-      call pl_parms_cal_read
+      call codes_read_cal
+      call lsu_read_elements        !defining landscape units by hru
+      !call reg_read_elements        !defining regions by lsu and/or hru
+      call lcu_read_softcal         !soft data for landscape calibration (needs to be renamed)***
+      call ls_read_lsparms_cal
+      call pl_read_regions_cal      !soft data for hru_lte calibration
+      call pl_read_parms_cal
       call aqu_read_elements        !defining regions by aquifer
       call ch_read_elements        !defining regions by channel
       call res_read_elements        !defining regions by reservoir
-      call rec_elements_read        !defining regions by recall object (point source, gage data, model output, etc)
+      call rec_read_elements        !defining regions by recall object (point source, gage data, model output, etc)
       call ch_read_orders_cal
       call ch_read_parms_cal
 

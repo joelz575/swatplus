@@ -61,11 +61,11 @@
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
       integer :: i
 
-      prog = " SWAT+ Mar 27 2018    MODULAR Rev 2018.45"
+      prog = " SWAT+ Mar 28 2018    MODULAR Rev 2018.46"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 45             ",/,             &
+     &          "              Revision 46             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)

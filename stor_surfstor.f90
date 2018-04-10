@@ -175,7 +175,7 @@
       surf_bs(12,j) = Max(0., surf_bs(12,j) + bactsedp)
       if (hrupest(j) == 1) then
                     
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
  !       do k = 1, npmx
           !MFW, 3/15/12: Modified to account for decay during lag
           !pst_lag(k,1,j) = pst_lag(k,1,j) + pst_surq(k,j)
@@ -234,7 +234,7 @@
       surf_bs(12,j) = surf_bs(12,j) - bactsedp
       if (hrupest(j) == 1) then
                     
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         do k = 1, npmx
           pst_lag(k,1,j) = pst_lag(k,1,j) - hru(j)%pst(k)%surq
           pst_lag(k,2,j) = pst_lag(k,2,j) - hru(j)%pst(k)%sed

@@ -16,6 +16,8 @@
       do i = 1, 31
          read (107,*,iostat=eof) name, in_sim  
          if (eof < 0) exit
+         read (107,*,iostat=eof) name, in_basin
+         if (eof < 0) exit
          read (107,*,iostat=eof) name, in_cli
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_con
@@ -28,6 +30,10 @@
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_hru
          if (eof < 0) exit
+         read (107,*,iostat=eof) name, in_exco
+         if (eof < 0) exit
+         read (107,*,iostat=eof) name, in_rec
+         if (eof < 0) exit
          read (107,*,iostat=eof) name, in_delr
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_aqu
@@ -38,13 +44,7 @@
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_link
          if (eof < 0) exit
-         read (107,*,iostat=eof) name, in_basin
-         if (eof < 0) exit
          read (107,*,iostat=eof) name, in_hyd
-         if (eof < 0) exit
-         read (107,*,iostat=eof) name, in_exco
-         if (eof < 0) exit
-         read (107,*,iostat=eof) name, in_bac
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_str
          if (eof < 0) exit
@@ -62,8 +62,6 @@
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_cond
          if (eof < 0) exit
-		 read (107,*,iostat=eof) name, in_const
-		 if (eof < 0) exit
          read (107,*,iostat=eof) name, in_regs
          if (eof < 0) exit
 !!!!!weather path code

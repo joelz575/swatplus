@@ -317,7 +317,7 @@
         type (hyd_output) :: hdep_a
         integer, dimension(:), allocatable :: obj_subs                      !subbasins object number that contain this object
       end type object_connectivity
-      type (object_connectivity), dimension(:),allocatable, save :: ob
+      type (object_connectivity), dimension(:), allocatable, save :: ob
       
      type water_right_elements
         character(len=16) :: name

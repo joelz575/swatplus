@@ -12,39 +12,43 @@
       eof = 0
       imax = 0
       
-      inquire (file=in_const%cs_db, exist=i_exist)
-      if (i_exist == 0 .or. in_const%cs_db == 'null') then
-        allocate (cs_db(0:0))
+      inquire (file=in_sim%cs_db, exist=i_exist)
+      if (i_exist == 0 .or. in_sim%cs_db == 'null') then
+        allocate (cs_db%pests(0:0))
+        allocate (cs_db%paths(0:0))
+        allocate (cs_db%metals(0:0))
+        allocate (cs_db%salts(0:0))
       else
       do
-        open (106,file=in_const%cs_db)
+        open (106,file=in_sim%cs_db)
         read (106,*,iostat=eof) titldum
         if (eof < 0) exit
-        read (106,*,iostat=eof) header
+        read (106,*,iostat=eof) cs_db%num_pests
         if (eof < 0) exit
-          do while (eof == 0)
-            read (106,*,iostat=eof) i
-            if (eof < 0) exit
-            imax = Max(imax,i)
-          end do
-          
-        allocate (cs_db(0:imax))
-
-        rewind (106)
-        read (106,*) titldum
-        read (106,*) header 
-        
-        do ip = 1, imax
-          read (106,*) i
-          backspace (106)
-          read (106,*,iostat=eof) cs_db(i)
-          if (eof < 0) exit
-        end do
+        allocate (cs_db%pests(0:cs_db%num_pests))
+        allocate (cs_db%pest_num(0:cs_db%num_pests))
+        read (106,*,iostat=eof) (cs_db%pests(i), i = 1, cs_db%num_pests)
+        if (eof < 0) exit
+        read (106,*,iostat=eof) cs_db%num_paths
+        if (eof < 0) exit
+        allocate (cs_db%paths(cs_db%num_paths))
+        allocate (cs_db%path_num(0:cs_db%num_paths))
+        read (106,*,iostat=eof) (cs_db%paths(i), i = 1, cs_db%num_paths)
+        if (eof < 0) exit
+        read (106,*,iostat=eof) cs_db%num_metals
+        if (eof < 0) exit
+        allocate (cs_db%metals(cs_db%num_metals))
+        allocate (cs_db%metals_num(0:cs_db%num_metals))
+        read (106,*,iostat=eof) (cs_db%metals(i), i = 1, cs_db%num_metals)
+        if (eof < 0) exit
+        read (106,*,iostat=eof) cs_db%num_salts
+        if (eof < 0) exit
+        allocate (cs_db%salts(cs_db%num_salts))
+        allocate (cs_db%salts_num(0:cs_db%num_salts))
+        read (106,*,iostat=eof) (cs_db%salts(i), i = 1, cs_db%num_salts)
         exit
-      enddo
-      endif
-      
-      db_mx%cs_db = imax
+      end do
+      end if
 
       close (106)
       return

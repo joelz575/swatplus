@@ -14,14 +14,14 @@
       imax = 0
 
 !! Open plant community data file
-      inquire (file=in_init%initial_plt, exist=i_exist)
-      if (i_exist == 0 .or. in_init%initial_plt == 'null') then
+      inquire (file=in_init%plant, exist=i_exist)
+      if (i_exist == 0 .or. in_init%plant == 'null') then
         allocate (pcomdb(0:0))
         allocate (pcomdb(0)%pl(0:0))
         db_mx%plantcom = mcom + 1
       else
       do     
-       open (113,file=in_init%initial_plt)
+       open (113,file=in_init%plant)
        read (113,*,iostat=eof) titldum
        if (eof < 0) exit
        read (113,*,iostat=eof) header

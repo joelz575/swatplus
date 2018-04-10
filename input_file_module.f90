@@ -8,9 +8,17 @@
         character(len=25) :: prt = "print.prt"
         character(len=25) :: object_prt = "object.prt"
         character(len=25) :: object_cnt = "object.cnt"
+        character(len=25) :: cs_db = "constituents.cs"		
       end type input_sim
       type (input_sim) :: in_sim
 
+!! basin
+      type input_basin
+       character(len=25) :: codes_bas = "codes.bsn"
+       character(len=25) :: parms_bas = "parameters.bsn"
+      end type input_basin
+      type (input_basin) :: in_basin
+      	  	  
 !! climate
       type input_cli
        character(len=25) :: weat_sta = "weather-sta.cli"
@@ -51,6 +59,9 @@
        character(len=25) :: sed =  "sediment.cha"
        character(len=25) :: nut =  "nutrients.cha"
        character(len=25) :: pest = "pesticide.cha"
+	   character(len=25) :: path = "pathogens.cha"
+	   character(len=25) :: metals = "metals.cha"
+	   character(len=25) :: salt = "salt.cha"
        character(len=25) :: chan_ez = "channel-lte.cha"
       end type input_cha
       type (input_cha) :: in_cha
@@ -62,6 +73,9 @@
        character(len=25) :: hyd_res =  "hydrology.res"
        character(len=25) :: nut_res =  "nutrients.res"
        character(len=25) :: pest_res = "pesticide.res"
+	   character(len=25) :: path = "pathogens.res"
+	   character(len=25) :: metals = "metals.res"
+	   character(len=25) :: salt = "salt.res"
        character(len=25) :: sed_res =  "sediment.res"
        character(len=25) :: weir_res = "weir.res"
        character(len=25) :: wet =      "wetland.wet"
@@ -84,10 +98,32 @@
        character(len=25) :: hru_ez   = "hru-lte.hru"
       end type input_hru
       type (input_hru) :: in_hru
+	  
+!! exco (recall constant)
+      type input_exco
+       character(len=25) :: exco = "exco.exc"
+       character(len=25) :: om = "exco_om.exc"
+       character(len=25) :: pest = "exco_pest.exc"
+       character(len=25) :: path = "exco_path.exc"
+       character(len=25) :: hmet = "exco_hmet.exc"
+       character(len=25) :: salt = "exco_salt.exc"
+      end type input_exco
+      type (input_exco) :: in_exco
+	  
+!! recall (daily, monthly and annual)
+      type input_rec 
+       character(len=25) :: recall_rec = "recall.rec"
+      end type input_rec
+      type (input_rec) :: in_rec
 
 !! delivery ratio
       type input_delr
        character(len=25) :: del_ratio = "delratio.del"
+	   character(len=25) :: om = "dr_om.del"
+	   character(len=25) :: pest = "dr_pest.del"
+	   character(len=25) :: path = "dr_path.del"
+	   character(len=25) :: hmet = "dr_hmet.del"
+	   character(len=25) :: salt = "dr_salt.del"
       end type input_delr
       type (input_delr) :: in_delr
 
@@ -120,13 +156,6 @@
       end type input_link
       type (input_link) :: in_link
 
-!! basin
-      type input_basin
-       character(len=25) :: codes_bas = "codes.bsn"
-       character(len=25) :: parms_bas = "parameters.bsn"
-      end type input_basin
-      type (input_basin) :: in_basin
-      
 !! hydrology
       type input_hydrology
        character(len=25) :: hydrol_hyd = "hydrology.hyd"
@@ -134,21 +163,7 @@
        character(len=25) :: field_fld  = "field.fld"
       end type input_hydrology
       type (input_hydrology) :: in_hyd
-  
-!! exco
-      type input_exco
-       character(len=25) :: exco = "exco.exc"
-       character(len=25) :: recall_rec = "recall.rec"
-      end type input_exco
-      type (input_exco) :: in_exco
-      
-!! bacteria
-      type input_bacteria
-       character(len=25) :: init_bac = "initial.bac"
-       character(len=25) :: bacteria = "bacteria.bac"
-      end type input_bacteria
-      type (input_bacteria) :: in_bac
-      
+            
 !! structural
       type input_structural
        character(len=25) :: tiledrain_str = "tiledrain.str"
@@ -159,12 +174,15 @@
       end type input_structural
       type (input_structural) :: in_str
       
-!! databases
+!! HRU databases
       type input_parameter_databases
        character(len=25) :: plants_plt = "plants.plt"
        character(len=25) :: fert_frt = "fertilizer.frt"
        character(len=25) :: till_til = "tillage.til"
-       character(len=25) :: pest_pst = "pesticide.pst"
+       character(len=25) :: pest = "pesticide.pst"
+	   character(len=25) :: pathcom_db = "pathogens.pth"
+	   character(len=25) :: hmetcom_db = "metals.mtl"
+	   character(len=25) :: saltcom_db = "salt.slt"
        character(len=25) :: urban_urb = "urban.urb"
        character(len=25) :: septic_sep = "septic.sep"
        character(len=25) :: snow = "snow.sno"
@@ -206,10 +224,17 @@
       end type input_chg
       type (input_chg) :: in_chg
       
-!! initial 
+!! initial conditions
       type input_init
-       character(len=25) :: initial_pst = "initial.pst"
-       character(len=25) :: initial_plt = "initial.plt"
+	   character(len=25) :: plant = "plant.ini"
+	   character(len=25) :: pest_soil = "pest_soil.ini"
+	   character(len=25) :: pest_water = "pest_water.ini"
+	   character(len=25) :: path_soil = "path_soil.ini"
+	   character(len=25) :: path_water = "path_water.ini"
+	   character(len=25) :: hmet_soil = "hmet_soil.ini"
+	   character(len=25) :: hmet_water = "hmet_water.ini"
+	   character(len=25) :: salt_soil = "salt_soil.ini"
+	   character(len=25) :: salt_water = "salt_water.ini"
        end type input_init
       type (input_init) :: in_init
 
@@ -225,17 +250,7 @@
        character(len=25) :: cond_ctl = "d_table.dtl"
       end type input_condition
       type (input_condition) :: in_cond
-      
-!! constituents
-      type input_constituents
-        character(len=25) :: cs_db = "constituents.cs"
-        character(len=25) :: pestcom_db = "pest.cs"
-        character(len=25) :: pathcom_db = "path.cs"
-        character(len=25) :: hmetcom_db = "hmet.cs"
-        character(len=25) :: saltcom_db = "salt.cs"
-      end type input_constituents
-      type (input_constituents) :: in_const
-      
+           
 !! regions
       type input_regions
         character(len=25) :: ele_lsu = "ls_unit.ele"
@@ -284,7 +299,5 @@
       type (input_path_wnd) :: in_path_wnd
       
       contains
-
-      !include 'readcio_read.f90'
 
       end module input_file_module 

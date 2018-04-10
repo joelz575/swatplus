@@ -12,12 +12,12 @@
       eof = 0
       imax = 0
       
-      inquire (file=in_const%hmetcom_db, exist=i_exist)
-      if (i_exist == 0 .or. in_const%hmetcom_db == 'null') then
+      inquire (file=in_parmdb%hmetcom_db, exist=i_exist)
+      if (i_exist == 0 .or. in_parmdb%hmetcom_db == 'null') then
         allocate (hmetcom_db(0:0))
       else
       do
-        open (106,file=in_const%hmetcom_db)
+        open (106,file=in_parmdb%hmetcom_db)
         read (106,*,iostat=eof) titldum
         if (eof < 0) exit
         read (106,*,iostat=eof) header

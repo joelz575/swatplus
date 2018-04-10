@@ -9,7 +9,7 @@
       do ihru = 1, sp_ob%hru
 
         !! allocate bacteria
-        mbac = obcs(icmd)%num_paths
+        mbac = cs_db%num_paths
         if (mbac > 0) then
           do ly = 1, sol(isol)%s%nly
             allocate (soil(ihru)%ly(ly)%bacsol(mbac))
@@ -31,9 +31,9 @@
         end if
       
         !! allocate pesticides
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         allocate (hru(ihru)%pst(mpst))
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         if (npmx > 0) then
           do ly = 1, sol(isol)%s%nly
             allocate (soil(ihru)%ly(ly)%kp(npmx))
@@ -41,7 +41,7 @@
           end do
         end if
         
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         do ipest = 1, npmx
           hru(ihru)%pst(ipest)%num_db = pesti_db(ipest_db)%pesti(ipest)%num_db
           hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt

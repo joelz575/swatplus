@@ -49,7 +49,7 @@
 
       if (hrupest(j) == 0) return
  
-      npmx = obcs(icmd)%num_pests
+      npmx = cs_db%num_pests
       do k = 1, npmx
         kk = hru(j)%pst(k)%num_db
         if (hru(j)%pst(k)%plt >= 0.0001) then

@@ -307,7 +307,7 @@
 	end do
 
       if (hrupest(j) == 1) then
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         do k = 1, npmx
            soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + hru(j)%pst(k)%plt
            hru(j)%pst(k)%plt = 0.

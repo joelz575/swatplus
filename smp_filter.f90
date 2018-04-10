@@ -300,7 +300,7 @@
 !! Calculate pesticide removal 
 !! based on the sediment and runoff removal only
       if (hrupest(j) == 1) then
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
           
         do k = 1, npmx
           hru(j)%pst(k)%surq = hru(j)%pst(k)%surq *                     &                     

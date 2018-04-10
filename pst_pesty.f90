@@ -51,7 +51,7 @@
 
       if (hrupest(j) == 0) return
           
-      npmx = obcs(icmd)%num_pests
+      npmx = cs_db%num_pests
       do k = 1, npmx
         kk = hru(j)%pst(k)%num_db
         if (kk > 0) then

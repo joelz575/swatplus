@@ -13,13 +13,13 @@
       eof = 0
       imax = 0
       
-      inquire (file=in_parmdb%pest_pst, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%pest_pst == 'null') then
+      inquire (file=in_parmdb%pest, exist=i_exist)
+      if (i_exist == 0 .or. in_parmdb%pest == 'null') then
         allocate (pestdb(0:0))
         allocate (pstcp(0:0))
       else
       do
-        open (106,file=in_parmdb%pest_pst)
+        open (106,file=in_parmdb%pest)
         read (106,*,iostat=eof) titldum
         if (eof < 0) exit
         read (106,*,iostat=eof) header

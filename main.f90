@@ -61,11 +61,11 @@
       integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
       integer :: i
 
-      prog = " SWAT+ Mar 28 2018    MODULAR Rev 2018.46"
+      prog = " SWAT+ Apr 10 2018    MODULAR Rev 2018.47"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "              Revision 46             ",/,             &
+     &          "               Revision 47          ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -161,7 +161,7 @@
       call landuse_read
 
       call bac_read_lsinit
-      call pst_read_lsinit
+      !call pst_read_lsinit
       
       call hyd_connect
       

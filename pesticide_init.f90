@@ -37,7 +37,7 @@
         
         !! allocate pesticides
         do ihru = 1, sp_ob%hru
-          npmx = obcs(icmd)%num_pests
+          npmx = cs_db%num_pests
           if (npmx > 0) then
             allocate (hru(ihru)%pst(mpst))
             do ly = 1, soil(ihru)%nly
@@ -46,7 +46,7 @@
             end do
           end if
 
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         do ipest = 1, npmx
          hru(ihru)%pst(ipest)%num_db = pesti_db(ipest_db)%pesti(ipest)%num_db
          hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt

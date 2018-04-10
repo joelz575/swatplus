@@ -38,7 +38,7 @@
       use sd_channel_module
       use reservoir_module
       use organic_mineral_mass_module
-      use hru_module, only : ihru
+      use hru_module, only : ihru, hru
       use basin_module
       use maximum_data_module
       use output_landscape_module, only : hnb_d

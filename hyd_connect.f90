@@ -96,7 +96,7 @@
       
       !read constituent data base that all objects (except subbasin) point to
       call constit_db_read
-      call pestcom_db_read
+      !call pestcom_db_read
       
       !read connect file for hrus
       if (sp_ob%hru > 0) then
@@ -146,13 +146,13 @@
       !read connect file for export coefficients
       if (sp_ob%exco > 0) then
         call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, 2, 0) 
-        call exco_read    
+        call exco_db_read
       endif
                   
       !read connect file for delivery ratio
       if (sp_ob%dr > 0) then
         call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, 2, 0) 
-        call dr_read
+        call dr_db_read
       end if
                   
       !read connect file for outlet

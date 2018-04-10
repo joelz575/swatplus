@@ -1,20 +1,22 @@
       module constituent_mass_module
-
-      type spatial_object_constituents_data
-        character(len=13) :: name = "default"
-        integer :: units = 1                        !1=mass, 2=mass/area, 3=frac for dr, 4=cms and concentration
-        character (len=16) :: pest_com = "null"     !name of pesticide community (pesticide.com)
-        character (len=16) :: pest_dat = "null"     !name of pesticide data (filename for recall, and object in file for exco/dr)
-        character (len=16) :: path_com = "null"     !name of pathogen community (pathogen.com)
-        character (len=16) :: path_dat = "null"     !name of pathogen data (filename for recall, and object in file for exco/dr)
-        character (len=16) :: hmet_com = "null"     !name of heavy metal community (heavy_metal_.com)
-        character (len=16) :: hmet_dat = "null"     !name of heavy metal data (filename for recall, and object in file for exco/dr)
-        character (len=16) :: salt_com = "null"     !name of salt ion community (salt_ion.com)
-        character (len=16) :: salt_dat = "null"     !name of salt ion data (filename for recall, and object in file for exco/dr)
-      end type spatial_object_constituents_data
-      !each spatial object will point to constituent data - need to crosswalk to get obcs integer pointers
-      type (spatial_object_constituents_data), dimension(:),allocatable :: cs_db
       
+      type constituents
+        integer :: num_pests                                        !number of pesticides simulated
+        character (len=16), dimension(:), allocatable :: pests      !name of the pesticides- points to pesticide database
+        !!need to crosswalk pests to get pest_num for database - use sequential for object
+        integer, dimension(:), allocatable :: pest_num              !number of the pesticides- points to pesticide database
+        integer :: num_paths                                        !number of pathogens simulated
+        character (len=16), dimension(:), allocatable :: paths      !name of the pathogens- points to pathogens database
+        integer, dimension(:), allocatable :: path_num              !number of the pathogens- points to pathogens database
+        integer :: num_metals                                       !number of heavy metals simulated
+        character (len=16), dimension(:), allocatable :: metals     !name of the heavy metals- points to heavy metals database
+        integer, dimension(:), allocatable :: metals_num            !number of the heavy metals- points to heavy metals database
+        integer :: num_salts                                        !number of salts simulated
+        character (len=16), dimension(:), allocatable :: salts      !name of the salts - points to salts database
+        integer, dimension(:), allocatable :: salts_num             !number of the alts - points to salts database
+      end type constituents
+      type (constituents) :: cs_db
+
       type pesticide_initialization_data
         character(len=13) :: name
         integer :: num_db       !!          |pesticide number in pesticide.pst
@@ -70,23 +72,7 @@
         character (len=16), dimension(:), allocatable :: salts      !name of the salts in the community
       end type salt_community_data
       type (salt_community_data), dimension (:), allocatable :: saltcom_db
-      
-      type spatial_object_constituents
-        character (len=16) :: name                                  !should match the object_connectivity object
-        integer :: num_pests                                        !number of pesticides simulated by this object
-        character (len=16), dimension(:), allocatable :: pests      !name of the pesticides- points to pesticide database
-        !!need to crosswalk pests to get pest_num for database - use sequential for object
-        integer, dimension(:), allocatable :: pest_num              !number of the pesticides- points to pesticide database
-        integer :: num_paths                                        !number of pesticides simulated by this object
-        character (len=16), dimension(:), allocatable :: paths      !name of the pesticides- points to pesticide database
-        integer :: num_metals                                       !number of pesticides simulated by this object
-        character (len=16), dimension(:), allocatable :: metals     !name of the pesticides- points to pesticide database
-        integer :: num_salts                                        !number of pesticides simulated by this object
-        character (len=16), dimension(:), allocatable :: salts      !name of the pesticides- points to pesticide database
-      end type spatial_object_constituents
-      !track spatial_object_hydrographs with ob - use same pointer
-      type (spatial_object_constituents), dimension(:),allocatable :: obcs
-      
+
       type spatial_object_pesticide
         real :: pest_sol      !kg/ha or kg       |soluble pesticide mass
         real :: pest_sor      !kg/ha or kg       |sorbed pesticide mass
@@ -118,19 +104,4 @@
       end type recall_pesticide_inputs
       type (recall_pesticide_inputs),dimension(:),allocatable:: rec_pest
 
-      !export coefficient and delivery ratio pesticides
-      type (spatial_object_pesticide), dimension(:,:), allocatable :: exco_pest
-      
-      !export coefficient and delivery ratio pesticides
-      type (spatial_object_pesticide), dimension(:,:), allocatable :: dr_pest
-      
-      !point to subbasin element objects - same as sub_elem
-      type (spatial_object_constituents), dimension(:), allocatable :: sub_e_cs
-
-      !point to channel-surface objects - same as ch_sur
-      type (spatial_object_constituents), dimension(:), allocatable :: ch_sur_cs
-      
-      !objects needed for operators
-      type (spatial_object_constituents) :: cs1, cs2, cs3
-   
       end module constituent_mass_module

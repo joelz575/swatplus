@@ -121,7 +121,7 @@
       sagyld(j) = sagyld(j) * (1. - trapeff(j))
       lagyld(j) = lagyld(j) * (1. - trapeff(j))
       if (hrupest(j) == 1) then
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         do k = 1, npmx
           hru(j)%pst(k)%surq = hru(j)%pst(k)%surq * (1. - trapeff(j))
           hru(j)%pst(k)%sed = hru(j)%pst(k)%sed * (1. - trapeff(j))

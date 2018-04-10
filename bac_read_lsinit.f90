@@ -14,19 +14,17 @@
       integer :: i_exist                 !             |check to determine if file exists
       integer :: mbac                    !             |
       integer :: ibact                   !none         |counter
-      
-      
-      
+           
       mbac_db = 0
       
       !! allocate and initialize bacteria in soil and plant
-      inquire (file=in_bac%init_bac,exist=i_exist)
-      if (i_exist == 0 .or. in_bac%init_bac == 'null') then
+      inquire (file=in_init%path_soil,exist=i_exist)
+      if (i_exist == 0 .or. in_init%path_soil == 'null') then
          allocate (bact(0:0))
          db_mx%bactdb = 0
       else
         do
-          open (107,file=in_bac%init_bac)
+          open (107,file=in_init%path_soil)
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
           read (107,*,iostat=eof) mbac_db

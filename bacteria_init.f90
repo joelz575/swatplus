@@ -77,7 +77,7 @@
         
         !! allocate bacteria
         icmd = hru(ihru)%obj_no
-        mbac = obcs(icmd)%num_paths
+        mbac = cs_db%num_paths
         if (mbac > 0) then
           !! allocate bacteria associated with
           do ly = 1, soil(ihru)%nly
@@ -94,7 +94,7 @@
             end if
           end do   
           !! allocate bacteria associated with plant
-          mbac = obcs(icmd)%num_paths
+          mbac = cs_db%num_paths
           if (mbac > 0) then
             do ipl = 1, pcom(j)%npl
               allocate (pcom(ihru)%plg(ipl)%bac(mbac))

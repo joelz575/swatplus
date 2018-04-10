@@ -27,7 +27,6 @@
       if (i_exist == 0 .or. in_sim%object_cnt == 'null') then
           allocate (ob(0:0))
           allocate (obom(0:0))
-          allocate (obcs(0:0))
       else
       do
         open (107,file=in_sim%object_cnt)
@@ -43,7 +42,5 @@
       close (107)
       allocate (ob(sp_ob%objs))
       allocate (obom(sp_ob%objs))
-      allocate (obcs(sp_ob%objs))
-
       return    
       end subroutine basin_read_objs

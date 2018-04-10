@@ -64,7 +64,7 @@
       if (hrupest(j) /= 0) then
 
         do ly = 1, soil(j)%nly
-          npmx = obcs(icmd)%num_pests
+          npmx = cs_db%num_pests
           do k = 1, npmx
             kk = hru(j)%pst(k)%num_db
 

@@ -15,10 +15,10 @@
       imax = 0
 
       !read all recall files
-      inquire (file=in_exco%recall_rec, exist=i_exist)
-      if (i_exist /= 0 .or. in_exco%recall_rec /= 'null') then
+      inquire (file=in_rec%recall_rec, exist=i_exist)
+      if (i_exist /= 0 .or. in_rec%recall_rec /= 'null') then
       do
-        open (107,file=in_exco%recall_rec)
+        open (107,file=in_rec%recall_rec)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header
@@ -182,36 +182,5 @@
       end do
       end if     
       
-      inquire (file=in_const%pestcom_db, exist=i_exist)
-      if (i_exist /= 0 .or. in_const%pestcom_db /= 'null') then
-      do
-        open (107,file=in_const%pestcom_db)
-        read (107,*,iostat=eof) titldum
-        if (eof < 0) exit
-        read (107,*,iostat=eof) header
-        if (eof < 0) exit
-        imax = 0
-          do while (eof == 0)
-            read (107,*,iostat=eof) i
-            if (eof < 0) exit
-            imax = Max(imax,i) 
-          end do
-          
-      allocate (pest_init(0:imax,db_mx%pestcom))
-      rewind (107)
-      read (107,*) titldum
-      read (107,*) header
-      
-      do ipc = 1, db_mx%pestcom
-         read (107,*,iostat=eof) pest_init(i,ipc)
-         if (pestcom_db(i)%exco_df /= 'null') then
-           read (107,*,iostat=eof) exco_pest(i,ipc)
-         endif 
-         read (107,*,iostat=eof) dr_pest(i,ipc)
-      enddo
-      
-      end do
-      end if
-       
       return
       end subroutine recall_read

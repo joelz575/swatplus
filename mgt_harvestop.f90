@@ -490,7 +490,7 @@
 
 	!! adjust foliar pesticide for plant removal
       if (hrupest(j) == 1) then
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         do k = 1, npmx
           !! calculate amount of pesticide removed with yield and clippings
           yldpst = 0.

@@ -237,8 +237,8 @@
           case ("pest")   !! pesticide operation
             !xwalk application in the mgt file with the pest community
             iob = sp_ob%hru + ihru - 1
-            do ipestcom = 1, obcs(iob)%num_pests
-              if (obcs(iob)%pests(ipestcom) == mgt%op_char) then
+            do ipestcom = 1, cs_db%num_pests
+              if (cs_db%pests(ipestcom) == mgt%op_char) then
                 mgt%op1 = ipestcom
               end if
             end do

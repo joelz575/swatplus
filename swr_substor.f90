@@ -67,7 +67,7 @@
 
       if (hrupest(j) == 1) then
                     
-        npmx = obcs(icmd)%num_pests
+        npmx = cs_db%num_pests
         do k = 1, npmx
           if (pst_lag(k,3,j) < 1.e-6) pst_lag(k,3,j) = 0.0
           !MFW, 3/3/12: Modified lagged pesticide to include decay in lag

@@ -19,12 +19,12 @@
       imax = 0    
       
       !! read bacteria properties
-      inquire (file=in_bac%bacteria,exist=i_exist)
-      if (i_exist == 0 .or. in_bac%bacteria == 'null') then
+      inquire (file=in_parmdb%pathcom_db,exist=i_exist)
+      if (i_exist == 0 .or. in_parmdb%pathcom_db == 'null') then
          allocate (bac_db(0:0))
       else
       do
-        open (107,file=in_bac%bacteria)
+        open (107,file=in_parmdb%pathcom_db)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header

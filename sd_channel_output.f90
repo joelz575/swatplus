@@ -6,6 +6,8 @@
       use hydrograph_module
       
       integer, intent (in) :: ichan
+      
+      iob = sp_ob1%chandeg + ichan - 1
 
       chsd_m(ichan) = chsd_m(ichan) + chsd_d(ichan)
       

@@ -30,7 +30,7 @@
       
       j = ihru
 
-      mbac = obcs(icmd)%num_paths
+      mbac = cs_db%num_paths
       if (mbac == 0) return          
       do ib = 1, mbac
         ibtyp = bact(ibacdb)%bac(ib)%num_db

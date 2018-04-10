@@ -19,7 +19,7 @@
       character (len=3) :: iob_out, ihtyp
       character (len=8) :: obtyp
       integer :: isp, cmdno, idone, hydno, cmd_prev, ob1, ob2
-      integer :: iobj_tot
+      integer :: iobj_tot, k
       integer :: eof, i, imax, nout
       
       eof = 0
@@ -39,6 +39,17 @@
           if (nspu > 0) then
             ob1 = nspu1
             ob2 = nspu1 + nspu - 1
+            
+            !find maximum id number
+            do i = ob1, ob2
+              read (107,*,iostat=eof) k
+              id_max = Max (id_max, k)
+            end do
+              
+            rewind (107)
+            read (107,*) titldum
+            read (107,*) header
+        
             do i = ob1, ob2
               ob(i)%typ = obtyp
               allocate (ob(i)%hd(nhyds))
@@ -47,9 +58,8 @@
                 allocate (ob(i)%ts(ob(i)%day_max,time%step))
                 allocate (ob(i)%tsin(time%step))
               end if
-              read (107,*,iostat=eof) k, ob(i)%name, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,      &
+              read (107,*,iostat=eof) k, ob(i)%name, ob(i)%num, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,   &
                 ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
-              ob(i)%num = k
               if (eof < 0) exit
 
               if (ob(i)%src_tot > 0) then
@@ -64,29 +74,17 @@
                 allocate (ob(i)%hout_y(nout))
                 allocate (ob(i)%hout_a(nout))
                 backspace (107)
-                read (107,*,iostat=eof) k, ob(i)%name, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &
+                read (107,*,iostat=eof) k, ob(i)%name, ob(i)%num, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &
                   ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot,      &
                   (ob(i)%obtyp_out(isp), ob(i)%obtypno_out(isp), ob(i)%htyp_out(isp),                       &
                   ob(i)%frac_out(isp), isp = 1, nout)
                 if (eof < 0) exit
               else
-                !! set outflow object type to 0 - needed in final hyd_connect loop 
+                !! set outflow object type to 0 - needed in final hyd_read_connect loop 
                 allocate (ob(i)%obtypno_out(1))
                 ob(i)%obtypno_out(1) = 0
               end if
-              !set the constituents
-              ics = ob(i)%constit
-              if (ics > 0) then
-                if (cs_db(ics)%pest_com /= "null") then
-                  ipestmx = pestcom_db(ics)%num
-                  allocate (obcs(i)%pests(ipestmx))
-                  allocate (obcs(i)%pest_num(ipestmx))
-                  obcs(i)%num_pests = pestcom_db(ics)%num     !set number of pesticides of object
-                  obcs(i)%pests = pestcom_db(ics)%pests       !set pesticide name array of object
-                  obcs(i)%pest_num = pestcom_db(ics)%num_db   !set pesticide database number array of object
-                end if
-              end if
-              
+
               !set arrays for flow duration curves
               !if (printcode == 1) then
                 allocate (ob(i)%fdc_ll(366))

@@ -3,26 +3,15 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    This function calculates saturation vapor pressure at a given 
 !!    air temperature. 
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    tk          |deg C         |mean air temperature
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ee          |kPa           |saturation vapor pressure
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      real, intent (in) :: tk
-      real :: ee
+      implicit none
+
+      real, intent (in) :: tk        !deg C         |mean air temperature
+      real :: ee                     !kPa           |saturation vapor pressure
 
       ee = 0.
       if (tk + 237.3 /= 0.) then

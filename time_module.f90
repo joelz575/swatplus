@@ -1,4 +1,6 @@
       module time_module
+    
+      implicit none
 
       !integer :: int_print = 1       !! current interval between daily prints
       character (len=32) :: cal_sim = ' Original Simulation'

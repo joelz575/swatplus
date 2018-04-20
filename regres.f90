@@ -16,33 +16,16 @@
 !!                                |  1 precipitation <= 508 mm/yr
 !!                                |  2 precipitation > 508 and <= 1016 mm/yr
 !!                                |  3 precipitation > 1016 mm/yr
-!!    k            |none          |identification code for regression data
-!!                                |  1 carbonaceous oxygen demand
-!!                                |  2 suspended solid load
-!!                                |  3 total nitrogen
-!!                                |  4 total phosphorus
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    regres       |kg            |amount of constituent removed in surface
-!!                                |runoff
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bcod(:,:)    |none          |regression coefficients for calculating
-!!                                |carbonaceous oxygen demand of urban runoff
-!!    bsus(:,:)    |none          |regression coefficients for calculating
-!!                                |suspended solid load of urban runoff
-!!    btn(:,:)     |none          |regression coefficients for calculating
-!!                                |total nitrogen in urban runoff
-!!    btp(:,:)     |none          |regression coefficients for calculating
-!!                                |total phosphorus in urban runoff
-!!    ii           |none          |precipitation category
-!!    j            |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -50,11 +33,22 @@
       use hru_module, only : hru, ihru, iwgen, precipday 
       use climate_module
       use urban_data_module
-      integer, intent (in) :: k
-      real, dimension (5,3) :: beta
-      real :: regres
-      integer :: j, ii
-      real, dimension(5,3) :: bcod =                                   &                                    
+      
+      implicit none
+            
+      integer, intent (in) :: k                                            !none          |identification code for regression data
+                                                                           !              |  1 carbonaceous oxygen demand
+                                                                           !              |  2 suspended solid load
+                                                                           !              |  3 total nitrogen
+                                                                           !              |  4 total phosphorus
+      real, dimension (5,3) :: beta                                        !              |
+      real :: regres                                                       !kg            |amount of constituent removed in surface
+                                                                           !              |runoff
+      real :: ulu                                                          !              |
+      integer :: j                                                         !none          |HRU number
+      integer :: ii                                                        !none          |precipitation category
+      real, dimension(5,3) :: bcod =                                   &   !none          |regression coefficients for calculating
+                                                                           !              |carbonaceous oxygen demand of urban runoff                                 
            reshape ((/407.0, 0.626, 0.710, 0.379, 1.518,               &
                       151.0, 0.823, 0.726, 0.564, 1.451,               &
                       102.0, 0.851, 0.601, 0.528, 1.978/), (/5,3/))

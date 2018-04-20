@@ -12,15 +12,35 @@
       use climate_module
       use maximum_data_module
       
-      integer, intent(in) :: nhyds, ndsave, nspu, nspu1
-
-      character (len=80) :: titldum, header
-      character (len=16) :: namedum, con_file
-      character (len=3) :: iob_out, ihtyp
-      character (len=8) :: obtyp
-      integer :: isp, cmdno, idone, hydno, cmd_prev, ob1, ob2
-      integer :: iobj_tot, k
-      integer :: eof, i, imax, nout
+      implicit none
+      
+      integer, intent(in) :: nhyds    !           |
+      integer, intent(in) :: ndsave   !           |
+      integer, intent(in) :: nspu     !           | 
+      integer, intent(in) :: nspu1    !           |
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=16) :: namedum   !           |
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      character (len=16) ::con_file   !           |
+      character (len=3) :: ihtyp      !           |
+      character (len=8) :: obtyp      !           |
+      integer :: isp                  !none       |counter
+      integer :: cmd_prev             !none       |previous command (object) number
+      integer :: ob1                  !none       |beginning of loop
+      integer :: ob2                  !none       |ending of loop
+      integer :: i                    !none       |counter
+      integer :: nout                 !           |       
+      integer :: k                    !           |
+      integer :: ics                  !           |
+      integer :: ipestmx              !           |
+      integer :: ihyd                 !           |hydrograph counter
+      integer :: npests               !           |pesticides counter
+      integer :: npaths               !           |pathogens counter
+      integer :: nmetals              !           |heavy metals counter
+      integer :: nsalts                !           |salts counter
       
       eof = 0
       imax = 0
@@ -41,18 +61,45 @@
             ob2 = nspu1 + nspu - 1
             
             !find maximum id number
-            do i = ob1, ob2
-              read (107,*,iostat=eof) k
-              id_max = Max (id_max, k)
-            end do
-              
-            rewind (107)
-            read (107,*) titldum
-            read (107,*) header
-        
+            !do i = ob1, ob2
+            !  read (107,*,iostat=eof) k
+            !  id_max = Max (id_max, k)
+            !end do
+                
             do i = ob1, ob2
               ob(i)%typ = obtyp
               allocate (ob(i)%hd(nhyds))
+              if (cs_db%num_tot_con > 0) then
+                allocate (obcs(i)%hd(nhyds))
+                
+                do ihyd = 1, nhyds
+                  npests = cs_db%num_pests
+                  if (npests > 0) then 
+                    allocate (obcs(i)%hd(ihyd)%pest(npests))
+                    allocate (obcs(i)%hin%pest(npests))
+                    allocate (obcs(i)%hin_s%pest(npests))
+                  end if
+                  npaths = cs_db%num_paths
+                  if (npaths > 0) then 
+                    allocate (obcs(i)%hd(ihyd)%path(npaths))
+                    allocate (obcs(i)%hin%path(npaths))
+                    allocate (obcs(i)%hin_s%path(npaths))
+                  end if
+                  nmetals = cs_db%num_metals
+                  if (nmetals > 0) then 
+                    allocate (obcs(i)%hd(ihyd)%hmet(nmetals))
+                    allocate (obcs(i)%hin%hmet(nmetals))
+                    allocate (obcs(i)%hin_s%hmet(nmetals))
+                  end if
+                  nsalts = cs_db%num_salts
+                  if (nsalts > 0) then 
+                    allocate (obcs(i)%hd(ihyd)%salt(nsalts))
+                    allocate (obcs(i)%hin%salt(nsalts))
+                    allocate (obcs(i)%hin_s%salt(nsalts))
+                  end if
+                end do
+              end if
+                
               if (time%step > 0) then
                 ob(i)%day_max = ndsave
                 allocate (ob(i)%ts(ob(i)%day_max,time%step))

@@ -1,4 +1,6 @@
       module input_file_module
+    
+      implicit none
 
 !! file.cio input file 
 

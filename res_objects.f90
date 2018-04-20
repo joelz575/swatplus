@@ -2,6 +2,13 @@
 
       use reservoir_module
       use hydrograph_module
+      
+      implicit none 
+      
+      integer :: iob1            !none         |beginning of loop
+      integer :: iob2            !none         |ending of loop
+      integer :: ires            !none         |counter
+      integer :: i               !none         |counter
 
       !! set reservoir object numbers for reservoir objects
       iob1 = sp_ob1%res

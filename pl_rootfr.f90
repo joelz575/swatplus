@@ -4,10 +4,26 @@
 	!! March, 2009 further adjustments expected
     
     use hru_module, only : soil, ihru, stsol_rd
+    
+    implicit none    
 
-	real :: sol_thick(soil(ihru)%nly)
-	real :: cum_rd, cum_d, cum_rf, x1, x2
-	integer :: k, l, jj
+	real :: sol_thick(soil(ihru)%nly) !            |
+	real :: cum_rd                    !            |
+    real :: cum_d                     !            | 
+    real :: cum_rf                    !            |
+    real :: x1                        !            |
+    real :: x2                        !            |
+	integer :: k                      !            |
+    integer :: l                      !none        |number of soil layer that manure applied
+    integer :: jj                     !none        |counter
+    real :: a                         !            |
+    real :: b                         !            |
+    real :: c                         !            | 
+    real :: d                         !            |
+    real :: rtfr                      !none        |root fraction
+    real :: xx1                       !            |
+    real :: xx2                       !            |
+    real :: xx                        !            |
 	
 	jj = ihru
       

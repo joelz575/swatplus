@@ -3,34 +3,22 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine controls the simulation of the land phase of the 
 !!    hydrologic cycle
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use tiles_data_module
       use mgt_operations_module
       use hru_module, only : hru, iseptic, soil, t_ov, tc_gwat
+      
+      implicit none
     
-      character (len=16), intent (in) :: str_name
-      integer, intent (in) :: istr, j
+      character (len=16), intent (in) :: str_name     !              |
+      integer, intent (in) :: istr                    !              |
+      integer, intent (in) :: j                       !none          |HRU number
+      integer :: jj                                   !none          |counter
+      real :: tch                                     !              |
+      real :: b                                       !m             |bottom width of channel
 
       select case(str_name)
 

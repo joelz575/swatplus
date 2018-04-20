@@ -3,12 +3,19 @@
       use input_file_module
       use maximum_data_module
       use fertilizer_data_module
+      
+      implicit none
    
-      integer :: it
-      character (len=80) :: titldum
-      character (len=80) :: header
-      character (len=13) :: fertdbase
-      integer :: eof, i, imax
+      integer :: it                   !none       |counter
+      character (len=13) :: fertdbase !           |counter
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: i                    !           |
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: mfrt                 !           |
+      integer :: i_exist              !none       |check to determine if file exists
+      
       
       eof = 0
       imax = 0

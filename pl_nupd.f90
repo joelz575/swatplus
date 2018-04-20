@@ -26,16 +26,9 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    gx          |mm            |lowest depth in layer from which nitrogen
-!!                               |may be removed
-!!    icrop       |none          |land cover code
-!!    ir          |none          |flag to denote bottom of root zone reached
-!!    j           |none          |HRU number
-!!    l           |none          |counter (soil layer)
 !!    un2         |kg N/ha       |ideal plant nitrogen content
 !!    unmx        |kg N/ha       |maximum amount of nitrogen that can be 
 !!                               |removed from soil layer
-!!    uno3l       |kg N/ha       |amount of nitrogen removed from soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -47,8 +40,16 @@
       use plant_data_module
       use hru_module, only : pcom, un2, uno3d, ihru, ipl
       
-      integer :: j, icrop, l, ir, idp
-      real :: unmx, uno3l, gx
+      implicit none      
+      
+      integer :: icrop       !none      |land cover code
+      integer :: j           !none      |hru number
+      integer :: l           !none      |counter (soil layer)
+      real :: uno3l          !kg N/ha   |plant nitrogen demand
+      integer :: ir          !none      |flag to denote bottom of root zone reached
+      integer :: idp         !          |       
+      real :: gx             !mm        |lowest depth in layer from which nitrogen
+                             !          |may be removed
 
       j = ihru
 

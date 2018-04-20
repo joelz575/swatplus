@@ -17,14 +17,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    peakr        |m^3/s         |peak runoff rate
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name         |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    altc         |
-!!    j            |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Log, Expo
 
@@ -33,10 +25,14 @@
       use hru_module, only: hru, tconc, ihru, peakr, qday
       use hydrograph_module
       use climate_module
+      
+      implicit none
 
-      integer :: j
-      real :: altc
-
+      integer :: j      !none          |HRU number
+      real :: altc      !              |
+      real :: expo      !              | 
+      integer :: iob    !              | 
+      
       j = ihru
       iob = hru(j)%obj_no
       iwst = ob(iob)%wst

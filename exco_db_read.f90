@@ -1,14 +1,12 @@
       subroutine exco_db_read
     
-      use exco_module   
-      !use hydrograph_module
+      use exco_module
+      use constituent_mass_module
       use input_file_module
-      !use organic_mineral_mass_module
-      !use maximum_data_module
+      use maximum_data_module
  
-      character (len=80) :: titldum, header
-      character (len=16) :: namedum
-      integer :: eof, imax, ob1, ob2
+      character (len=80) :: titldum
+      integer :: eof, imax
 
       eof = 0
       
@@ -26,6 +24,8 @@
             imax = imax + 1
           end do
           
+          db_mx%exco = imax
+          
           allocate (exco_db(0:imax))
           rewind (107)
           read (107,*) titldum
@@ -38,15 +38,13 @@
           exit
         end do
       end if
-      
- !!!!!!!!!!!!!!!!Jeff fix up
-      !set exco object hydrograph
-      !ob1 = sp_ob1%exco
-      !ob2 = sp_ob1%exco + sp_ob%exco - 1
-      !do iob = ob1, ob2
-      !  iexco = ob(iob)%props
-      !  ob(iob)%hd(1) = exco(iexco)
-      !end do
+
+      ! read export coefficient data for all constituent types
+      call exco_read_om
+      if (cs_db%num_pests > 0) call exco_read_pest
+      if (cs_db%num_paths > 0) call exco_read_path
+      if (cs_db%num_metals > 0) call exco_read_hmet
+      if (cs_db%num_salts > 0) call exco_read_salt
       
       return
       end subroutine exco_db_read

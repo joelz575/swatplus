@@ -7,6 +7,11 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs hyd variables on daily, monthly and annual time steps
 
+      implicit none
+      
+      integer :: iin              !none          |counter
+      
+
       do icmd = 1, sp_ob%objs
         do iin = 1, ob(icmd)%rcv_tot
         !! daily print

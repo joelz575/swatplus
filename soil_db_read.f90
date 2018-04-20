@@ -4,12 +4,18 @@
       use hru_module, only : isol, mlyr
       use maximum_data_module
       use soil_data_module
-
-      character (len=80) :: titldum
-      character (len=80) :: header
-      integer :: j, nlyr
-      integer :: eof
       
+      implicit none
+      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: j                    !none       |hru            
+      integer :: nlyr                 !           |
+      integer :: lyr                  !none       |counter
+ 
       eof = 0
       imax = 0
 

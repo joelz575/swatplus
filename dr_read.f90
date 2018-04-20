@@ -4,9 +4,17 @@
       use input_file_module
       use organic_mineral_mass_module
       
-      character (len=80) :: titldum, header
-      character (len=16) :: namedum
-      integer :: eof, imax
+      implicit none
+      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: i_exist              !none       |check to determine if file exists
+      character (len=16) :: namedum   !           |  
+      integer :: imax                 !           |
+      integer :: mdr_sp               !           |ending of loop 
+      integer :: ii                   !none       |counter
+      integer :: i                    !none       |counter
 
       eof = 0
       imax = 0

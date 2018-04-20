@@ -4,8 +4,11 @@
       use basin_module
       use hydrograph_module
       
-      integer, intent (in) :: irec
+      implicit none
       
+      integer, intent (in) :: irec            !          |     
+      integer :: iob                          !          |
+   
       iob = sp_ob1%recall + irec - 1   !!!!!! added for new output write
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~

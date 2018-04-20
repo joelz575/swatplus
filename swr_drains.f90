@@ -9,16 +9,12 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    curyr       |none          |current year in simulation (sequence)
 !!    drain_co(:) |mm/day        |drainage coefficient 
-!!    dg(:,:)     |mm            |depth of soil layer
 !!    ddrain(:)   |mm            |depth of drain tube from the soil surface							 
 !!    latksatf(:) |none          |multiplication factor to determine conk(j1,j) from sol_k(j1,j) for HRU
 !!    pc(:)       |mm/hr         |pump capacity (default pump capacity = 1.042mm/hr or 25mm/day)
 !!    sdrain(:)   |mm            |distance between two drain tubes or tiles
 !!    sstmaxd(:)  |mm            |static maximum depressional storage; read from .sdr
 !!    stmaxd(:)   |mm            |maximum surface depressional storage for the day in a given HRU
-!!    stor        |mm            |surface storage for the day in a given HRU
-!!    storro	    |mm            |surface storage that must b
-!!                               |can move to the tile drain tube
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -31,31 +27,11 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    above       |mm            |depth of top layer considered
-!!    depth       |mm            |actual depth from surface to impermeable layer
-!!    cone        |mm/hr         |effective saturated lateral conductivity - based
-!!                               |on water table depth and conk/sol_k of layers
 !!    ddarnp      |mm            |a variable used to indicate distance slightly less
 !!                               |than ddrain. Used to prevent calculating subirrigation
 !!                               |when water table is below drain bottom or when it is empty
-!!    deep        |mm            |total thickness of saturated zone
-!!    depth       |mm            |effective depth to impermeable layer from soil surface
-!!                               |effective depth may be smaller than actual depth to account
-!!                               |for convergence near drain tubes
-!!    dflux       |mm/hr         |drainage flux
-!!    dot         |mm            |actual depth from impermeable layer to water level
-!!                               |above drain during subsurface irrigation
-!!    em          |mm            |distance from water level in the drains to water table 
-!!                               |at midpoint: em is negative during subirrigation
-!!    gee         |none          |factor -g- in Kirkham equation
-!!    hdrain      |mm            |equivalent depth from water surface in drain tube to
-!!                               |impermeable layer
 !!    i           |none          |counter
-!!    j           |none          |HRU number
-!!    j1          |none          |counter
 !!    w           |mm            |thickness of saturated zone in layer considered
-!!    y1          |mm            |dummy variable for dtwt
-!!    nlayer      |none          |number of layers to be used to determine cone
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -71,12 +47,50 @@
       use hru_module, only : hru, soil, ihru, wnan, stmaxd, sstmaxd, pot, surfq, etday, inflpcp, &  
           mlyr, precip_eff, qtile, wt_shall
       use time_module
+      
+      implicit none
 
-      integer :: j1, j, m
-      real:: cone, depth, dg, ad, ap 
-      real:: hdrain, gee, e, gee1, gee2, gee3, pi	
-      real:: k2, k3, k4, k5, k6 
-
+      integer :: j1              !none          |counter
+      integer :: j               !none          |HRU number 
+      integer :: m               !none          |counter
+      real:: cone                !mm/hr         |effective saturated lateral conductivity - based
+                                 !              |on water table depth and conk/sol_k of layers
+      real:: depth               !mm            |actual depth from surface to impermeable layer 
+      real:: dg                  !mm            |depth of soil layer
+      real:: ad                  !              | 
+      real:: ap                  !              |
+      real:: hdrain              !mm            |equivalent depth from water surface in drain tube to
+                                 !              |impermeable layer
+      real:: gee                 !none          |factor -g- in Kirkham equation
+      real:: e                   !              |
+      real:: gee1                !              | 
+      real:: gee2                !              | 
+      real:: gee3                !              | 
+      real:: pi	                 !              |
+      real:: k2                  !              |
+      real:: k3                  !              |
+      real:: k4                  !              |
+      real:: k5                  !              |
+      real:: k6                  !              |
+      real :: y1                 !mm            |dummy variable for dtwt 
+      integer :: isdr            !              |
+      real :: above              !mm            |depth of top layer considered
+      integer :: nlayer          !none          |number of layers to be used to determine cone 
+      real :: x                  !              |
+      real :: sum                !              | 
+      real :: deep               !mm            |total thickness of saturated zone
+      real :: xx                 !              |
+      real :: hdmin              !              |
+      real :: storro             !mm            |surface storage that must b
+                                 !              |can move to the tile drain tube
+      real :: stor               !mm            |surface storage for the day in a given HRU
+      real :: dflux              !mm/hr         |drainage flux
+      real :: em                 !mm            |distance from water level in the drains to water table 
+                                 !              |at midpoint: em is negative during subirrigation
+      real :: ddranp             !              |
+      real :: dot                !mm            |actual depth from impermeable layer to water level
+                                 !              |above drain during subsurface irrigation
+   
       !! initialize variables
 
       j = ihru

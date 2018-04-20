@@ -1,4 +1,6 @@
       module septic_data_module
+    
+      implicit none
                           
       type septic_db
           character(len=20) :: sepnm

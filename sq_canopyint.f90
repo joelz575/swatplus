@@ -20,28 +20,25 @@
 !!    wst(:)%weat%ts(:) |mm H2O        |precipitation reaching soil surface in
 !!                               |time step
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    canmxl      |mm H2O        |maximum canopy storage at current day's leaf
-!!                               |area
-!!    canstori    |mm H2O        |initial canopy storage water content
-!!    ii          |none          |counter
-!!    j           |none          |HRU number
-!!    xx          |mm H2O        |precipitation prior to canopy interception 
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
       use time_module
       use climate_module, only : wst
       use hru_module, only : hru, canstor, blai_com, ihru, precipday, sumlai
+      
+      implicit none
 
-      integer :: j, ii
-      real :: xx, canmxl, canstori
-
+      real :: xx                 !mm H2O        |precipitation prior to canopy interception 
+      integer :: j               !none          |HRU number
+      integer :: ii              !none          |counter
+      real ::canmxl              !mm H2O        |maximum canopy storage at current day's leaf
+                                 !              |area
+      real :: canstori           !mm H2O        |initial canopy storage water content 
+      integer :: iwst            !none          |counter
+      real :: precip_eff         !mm            |daily effective precip for runoff calculations = precipday + ls_overq + snomlt - canstor
+                                 !     |precip_eff = precipday + ls_overq - snofall + snomlt - canstor
+      
       j = ihru
 
       if (blai_com(j) < 0.001) return

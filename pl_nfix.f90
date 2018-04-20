@@ -15,14 +15,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fxg         |
-!!    fxn         |
-!!    fxr         |
-!!    fxw         |
-!!    j           |none          |HRU number
-!!    l           |none          |counter (soil layer)
-!!    sumn        |kg N/ha       |total amount of nitrate stored in soil profile
-!!    uno3l       |kg N/ha       |plant nitrogen demand
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -33,9 +25,18 @@
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : soil, pcom, uno3d, nplnt, ihru, fixn, ipl 
+      
+      implicit none
 
-      integer :: j, l
-      real :: uno3l, fxw, sumn, fxn, fxg, fxr
+      integer :: j           !none      |hru number
+      integer :: l           !none      |counter (soil layer)
+      real :: uno3l          !kg N/ha   |plant nitrogen demand
+      real :: fxw            !          | 
+      real :: sumn           !kg N/ha   |total amount of nitrate stored in soil profile
+      real :: fxn            !          |
+      real :: fxg            !          |
+      real :: fxr            !          |
+      real :: fixco
 
       j = 0
       j = ihru

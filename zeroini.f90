@@ -8,6 +8,13 @@
         volcrmin      
       use time_module
       
+      implicit none
+      
+      real :: p_n                 !none          |algal preference factor for ammonia
+      real :: snocov2             !none          |2nd shape parameter for snow cover equation
+                                  !              |This parameter is determined by solving the
+                                  !              |equation for 95% snow cover
+      
       bactrolp = 0.
       bactsedlp = 0.
       da_ha = 0.

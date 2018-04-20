@@ -1,4 +1,6 @@
       module tillage_data_module
+    
+      implicit none
            
       type tillage_db
         character(len=8) :: tillnm = ' '

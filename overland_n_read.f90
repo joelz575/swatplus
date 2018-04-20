@@ -4,9 +4,14 @@
       use maximum_data_module
       use landuse_data_module
       
-      character (len=80) :: titldum
-      character (len=80) :: header
-      integer :: eof, i, imax
+      implicit none 
+      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: il                   !none       |counter
       
       eof = 0
       imax = 0

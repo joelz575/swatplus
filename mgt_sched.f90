@@ -1,27 +1,4 @@
       subroutine mgt_sched (isched)
-      
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name       |units            |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name            |units          |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!                |none          | 
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use plant_data_module
       use mgt_operations_module
@@ -34,7 +11,31 @@
       use time_module
       use constituent_mass_module
       
-      integer :: icom, idp
+      implicit none
+      
+      integer :: icom              !         |  
+      integer :: idp               !         |
+      integer :: j                 !none     |counter
+      integer :: iharvop           !         |harvest operation type 
+      integer :: idtill            !none     |tillage type
+      integer :: irrop             !         |irrigation operations
+      integer :: ifrt              !         |fertilizer type from fert data base
+      integer :: iob               !         | 
+      integer :: ipestcom          !none     |counter
+      integer :: ipest             !none     |sequential pesticide type from pest community
+      integer :: ipestop           !none     |surface application fraction from chem app data base 
+      integer :: jj                !none     |counter
+      integer :: isched            !         | 
+      integer :: iburn             !none     |burn type from fire data base
+      integer :: ifertop           !frac     |surface application fraction from chem app data base
+      real :: fr_curb              !none     |availability factor, the fraction of the 
+                                   !         |curb length that is sweepable
+      real :: biomass              !         |
+      real :: amt_mm               !         |
+      real :: frt_kg               !kg/ha    |amount of fertilizer applied
+      real :: pest_kg              !kg/ha    |amount of pesticide applied 
+      real :: pst_kg               !kg/ha    |amount of pesticide applied to HRU
+      
       j = ihru
       
       ! determine which plant in community (%op2)

@@ -3,7 +3,11 @@
      use basin_module
      use reservoir_module
      use hydrograph_module, only : res, sp_ob
+     
+     implicit none
 
+     real :: prog            !                |
+     
     !! RESERVOIR/WETLAND - DAILY
       if (pco%res%d == 'y' .and. sp_ob%res > 0 ) then
         open (2548,file="wetland_day.txt",recl=800)

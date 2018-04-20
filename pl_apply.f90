@@ -12,11 +12,8 @@
 !!    driftco(:)   |none             |coefficient for pesticide drift directly
 !!                                   |onto stream
 !!    hru_km(:)    |km**2            |area of HRU in square kilometers
-!!    ipest        |none             |pesticide identification number from
-!!                                   |pest.dat
 !!    plt_pst(:,:) |kg/ha            |pesticide on plant foliage
 !!    pst_dep      |kg/ha          |depth of pesticide in soil
-!!    pst_kg       |kg/ha            |amount of pesticide applied to HRU
 !!    sol_pst(:,:,1)|kg/ha           |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -28,19 +25,6 @@
 !!    plt_pst(:,:)|kg/ha         |pesticide on plant foliage
 !!    sol_pst(:,:,1)|kg/ha       |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    gc          |none          |fraction of ground covered by plant foliage
-!!    j           |none          |HRU number
-!!    jj          |none          |subbasin number
-!!    k           |none          |sequence number of pesticide in NPNO(:)
-!!    kk          |none          |pesticide identification number from
-!!                               |pest.dat
-!!    xx          |kg/ha         |amount of pesticide applied to HRU
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    SWAT: Erfc
 
@@ -50,10 +34,20 @@
       use basin_module
       use hru_module, only : soil, hru, driftco, pst_dep, sumlai
       
-      integer :: j, kk, k
-      real :: xx, gc
-      integer, intent (in) :: jj, ipest, pestop
-      real, intent (in) :: pest_kg
+      implicit none
+      
+      integer :: j                       !none          |HRU number
+      integer, intent (in) :: jj         !none          |subbasin number
+      integer :: k                       !none          |sequence number of pesticide in NPNO(:)
+      integer :: kk                      !none          |pesticide identification number from
+                                         !              |pest.dat
+      real :: xx                         !kg/ha         |amount of pesticide applied to HRU
+      real :: gc                         !none          |fraction of ground covered by plant foliage
+      integer, intent (in) :: ipest      !none          |counter
+      integer, intent (in) :: pestop     !              | 
+      real, intent (in) :: pest_kg       !kg/ha         |amount of pesticide applied 
+      real :: pst_kg                     !kg/ha         |amount of pesticide applied to HRU
+      integer :: nly                     !none          |counter
 
       j = jj
 

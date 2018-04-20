@@ -35,37 +35,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    chz         |cm            |vegetation height
-!!    d           |cm            |displacement height for plant type
-!!    dlt         |kPa/deg C     |slope of the saturation vapor pressure-
-!!                               |temperature curve
-!!    ea          |kPa           |saturated vapor pressure
-!!    ed          |kPa           |actual vapor pressure
-!!    fvpd        |kPa           |amount of vapro pressure deficit over 
-!!                               |threshold value
-!!    gma         |kPa/deg C     |psychrometric constant
-!!    j           |none          |HRU number
-!!    pb          |kPa           |mean atmospheric pressure
-!!    pet_alpha  |none           |alpha factor in Priestley-Taylor PET equation
-!!    ralb        |MJ/m2         |net incoming radiation for PET
-!!    ralb1       |MJ/m2         |net incoming radiation
-!!    ramm        |MJ/m2         |extraterrestrial radiation
-!!    rbo         |none          |net emissivity
-!!    rc          |s/m           |canopy resistance
-!!    rho         |MJ/(m3*kPa)   |K1*0.622*xl*rho/pb
-!!    rn          |MJ/m2         |net radiation
-!!    rn_pet      |MJ/m2         |net radiation for continuous crop cover
-!!    rout        |MJ/m2         |outgoing radiation
-!!    rto         |none          |cloud cover factor
-!!    rv          |s/m           |aerodynamic resistance to sensible heat and
-!!                               |vapor transfer
-!!    tk          |deg K         |average air temperature on current day for HRU
-!!    uzz         |m/s           |wind speed at height zz
-!!    xl          |MJ/kg         |latent heat of vaporization
-!!    xx          |kPa           |difference between vpd and vpthreshold
-!!    zom         |cm            |roughness length for momentum transfer
-!!    zov         |cm            |roughness length for vapor transfer
-!!    zz          |cm            |height at which wind speed is determined
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -81,10 +50,45 @@
       use hru_module, only : hru, pcom, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, cht_mx, tmx, tmn,  &
         albday, epmax, ipl, pet_day, sumlai, vpd, ep_max
       
-      integer :: j, idp
-      real :: tk, pb, gma, xl, ea, ed, dlt, ramm, ralb1, ralb, xx
-      real :: rbo, rto, rn, uzz, zz, zom, zov, rv, rn_pet, fvpd
-      real :: rc, rho, rout, d, chz, gsi_adj, pet_alpha
+      implicit none
+      
+      integer :: j                 !none          |HRU number            
+      integer :: idp               !              |
+      integer :: iob               !              |
+      real :: tk                   !deg K         |average air temperature on current day for HRU
+      real :: pb                   !kPa           |mean atmospheric pressure
+      real :: gma                  !kPa/deg C     |psychrometric constant
+      real :: xl                   !MJ/kg         |latent heat of vaporization
+      real :: ea                   !kPa           |saturated vapor pressure
+      real :: ed                   !              |
+      real :: dlt                  !kPa/deg C     |slope of the saturation vapor pressure-
+                                   !              |temperature curve 
+      real :: ramm                 !MJ/m2         |extraterrestrial radiation
+      real :: ralb1                !MJ/m2         |net incoming radiation
+      real :: ralb                 !MJ/m2         |net incoming radiation for PET
+      real :: xx                   !kPa           |difference between vpd and vpthreshold
+      real :: rbo                  !none          |net emissivity
+      real :: rto                  !none          |cloud cover factor 
+      real :: rn                   !MJ/m2         |net radiation
+      real :: uzz                  !m/s           |wind speed at height zz
+      real :: zz                   !cm            |height at which wind speed is determined
+      real :: zom                  !cm            |roughness length for momentum transfer
+      real :: zov                  !cm            |roughness length for vapor transfer
+      real :: rv                   !s/m           |aerodynamic resistance to sensible heat and
+                                   !              |vapor transfer
+      real :: rn_pet               !MJ/m2         |net radiation for continuous crop cover 
+      real :: fvpd                 !kPa           |amount of vapro pressure deficit over 
+                                   !              |threshold value
+      real :: rc                   !s/m           |canopy resistance
+      real :: rho                  !MJ/(m3*kPa)   |K1*0.622*xl*rho/pb
+      real :: rout                 !MJ/m2         |outgoing radiation
+      real :: d                    !cm            |displacement height for plant type
+      real :: chz                  !cm            |vegetation height
+      real :: gsi_adj              !              |
+      real :: pet_alpha            !none          |alpha factor in Priestley-Taylor PET equation
+      real :: ee                   !              | 
+      real ::  gsi_wav             !              | 
+      integer :: igrocom           !              | 
 
       !! initialize local variables
       j = ihru

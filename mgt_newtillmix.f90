@@ -46,19 +46,8 @@
 !!    bmix        |none          |biological mixing efficiency: this 
 !!                               |number is zero for tillage operations
 !!    dg          |mm            |depth of soil layer
-!!    dtil        |mm            |depth of mixing
-!!    emix        |none          |mixing efficiency
-!!    jj          |none          |HRU number
-!!    k           |none          |counter
-!!    l           |none          |counter
 !!    nl          |none          |number of layers being mixed
-!!    smix(:)     |varies        |amount of substance in soil profile
-!!                               |that is being redistributed between 
-!!                               |mixed layers
 !!    thtill(:)   |none          |fraction of soil layer that is mixed
-!!    sol_msm					 | sol_mass mixed
-!!    sol_msn					 | sol_mass not mixed
-!!    maxmix      |none          | maximum mixing eff to preserve specified minimum residue cover
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -72,20 +61,36 @@
       use organic_mineral_mass_module
       use hru_module, only: soil, tillage_days, tillage_depth, tillage_switch, bactpq, bactps, bactlpq, bactlps,   &
           npmx, cnop
+      
+      implicit none
 
-      integer, intent (in) :: jj, idtill
-      real, intent (in) :: bmix
-      integer :: l, k              !CB 12/2/09 nl and a are not used.
-      real :: emix, dtil, XX, WW1, WW2, WW3, WW4, maxmix
+      integer, intent (in) :: jj       !none           |HRU number
+      integer, intent (in) :: idtill   !none           |tillage type
+      real, intent (in) :: bmix        !               | 
+      integer :: l                     !none           |counter
+      integer :: k                     !none           |counter
+      integer :: kk                    !               |
+      !CB 12/2/09 nl and a are not used.
+      real :: emix                     !none           |mixing efficiency
+      real :: dtil                     !mm             |depth of mixing
+      real :: XX                       !varies         |variable to hold calculation results
+      real :: WW1                      !               |
+      real :: WW2                      !               |
+      real :: WW3                      !               |
+      real :: WW4                      !               |
+      real :: maxmix                   !none           | maximum mixing eff to preserve specified minimum residue cover
       !!by zhang
       !!=============   
-      real :: smix(22+npmx+12)        !CB 12/2/09 thtill is not used. mjw rev 490
+      real :: smix(22+npmx+12)         !varies         |amount of substance in soil profile
+                                       !               |that is being redistributed between mixed layers
+      !CB 12/2/09 thtill is not used. mjw rev 490
       !!changed the dimension from 22 + npmx to 22 + npmx + 12
       !!by zhang
       !!=============
-      real :: sol_mass(soil(jj)%nly)
-      real :: sol_thick(soil(jj)%nly), sol_msm(soil(jj)%nly)
-      real :: sol_msn(soil(jj)%nly)
+      real :: sol_mass(soil(jj)%nly)    !              | 
+      real :: sol_thick(soil(jj)%nly)   !              |
+      real :: sol_msm(soil(jj)%nly)     !              |sol_mass mixed
+      real :: sol_msn(soil(jj)%nly)     !              |sol_mass not mixed 
 
 
       XX = 0.

@@ -56,7 +56,7 @@
       use basin_module
       use channel_data_module
       use channel_module
-      use hydrograph_module, only : ob
+      use hydrograph_module, only : ob, icmd, jrch
       use channel_velocity_module
 
       implicit none
@@ -83,9 +83,7 @@
       real :: rtevp2        !units         |description 
       real :: det           !hr            |time step (24 hours)
       real :: qman          !m^3/s or m/s  |flow rate or flow velocity
-      real :: adddep        !units         |description 
-      integer :: icmd       !units         |description 
-      integer :: jrch       !units         |description 
+      real :: adddep        !units         |description  
       integer :: itermx     !units         |description 
       
       

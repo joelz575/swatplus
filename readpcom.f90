@@ -4,10 +4,23 @@
       use maximum_data_module
       use plant_data_module
       
-      character (len=80) :: titldum
-      character (len=80) :: header
-      character (len=13) :: file, name
-      integer :: eof, mcom, icom
+      implicit none      
+      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=13) :: file      !           |
+      character (len=13) :: name      !           |
+      integer :: eof                  !           |end of file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: mcom                 !           |
+      integer :: icom                 !none       |counter
+      integer :: imax                 !none       |counter
+      integer :: numb                 !none       |end of loop
+      integer :: ii                   !none       |counter
+      integer :: mpcom                !none       |end of loop   
+      integer :: iplt                 !none       |counter
+      integer :: ipldb                !none       |counter
+      
       
       mcom = 0
       eof = 0

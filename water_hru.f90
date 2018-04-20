@@ -1,21 +1,21 @@
       subroutine water_hru    
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units       |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units       |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units       |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
   
         use hru_module, only : tmpav, ihru, hru_ra, albday, etday, pet_day 
-
+        
+        implicit none
+        
+        integer :: j               !none            |hru number
+        real :: tmpk               !                | 
+        real :: d                  !m               |depth of flow
+        real :: gma                !kPa/deg C       |psychrometric constant
+        real :: ho                 !none            |variable to hold intermediate calculation
+                                   !                |result
+        real :: pet_alpha          !none            |alpha factor in Priestley-Taylor PET equation       
+        
 	    j = ihru
 !! if the HRU is water compute only pet and et
 !! using Priestly-Taylor and a coefficient

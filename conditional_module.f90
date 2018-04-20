@@ -1,6 +1,8 @@
       module conditional_module
     
-      integer :: ical_hyd
+      implicit none
+    
+      integer :: ical_hyd                   !              |
 
       type conditions_var
         character(len=16) :: var            ! condition variable (ie volume, flow, sw, time, etc)
@@ -36,8 +38,5 @@
         integer, dimension(:), allocatable :: act_app                   ! pointer to operation or application type (ie harvest.ops, chem_app.ops, wier shape, etc)
       end type decision_table
       type (decision_table), dimension(:), allocatable :: d_tbl
-
-      contains
-      !include 'condition_read.f90'
       
       end module conditional_module   

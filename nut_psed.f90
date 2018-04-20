@@ -25,37 +25,31 @@
 !!    sedorgp(:)   |kg P/ha       |amount of organic phosphorus in surface
 !!                                |runoff in HRU for the day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    conc        |              |concentration of P in soil
-!!    er          |none          |enrichment ratio
-!!    j           |none          |HRU number
-!!    porgg       |kg P/ha       |total amount of P in organic pools prior to
-!!                               |sediment removal
-!!    psedd       |kg P/ha       |total amount of P in mineral sediment pools
-!!                               |prior to sediment removal
-!!    sedp        |kg P/ha       |total amount of P removed in sediment erosion
-!!    sb          |none          |subbasin number
-!!    wt1         |none          |conversion factor (mg/kg => kg/ha)
-!!    xx          |kg P/ha       |amount of phosphorus attached to sediment 
-!!                               |in soil
-!!    xxa         |kg P/ha       |fraction of active mineral phosphorus in soil
-!!    xxo         |kg P/ha       |fraction of organic phosphorus in soil
-!!    xxs         |kg P/ha       |fraction of stable mineral phosphorus in soil
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : hru, soil, pcom, sedyld, sedorgp, sedminpa, sedminps, ihru, enratio,  &
-        ihru, ipl  
-      use organic_mineral_mass_module
+        use hru_module, only : hru, soil, pcom, sedyld, sedorgp, sedminpa, sedminps, ihru, enratio,  &
+          ihru, ipl  
+        use organic_mineral_mass_module
+      
+        implicit none       
 
-      integer :: j, sb
-      real :: xx, wt1, er, conc, xxo, sedp, psedd, porgg, xxa, xxs
+        integer :: j              !none          |HRU number
+        integer :: sb             !none          |subbasin number
+        real :: xx                !kg P/ha       |amount of phosphorus attached to sediment 
+                                  !              |in soil
+        real :: wt1               !none          |conversion factor (mg/kg => kg/ha)
+        real :: er                !none          |enrichment ratio
+        real :: conc              !              |concentration of organic N in soil
+        real :: xxo               !kg P/ha       |fraction of organic phosphorus in soil
+        real :: sedp              !kg P/ha       |total amount of P removed in sediment erosion 
+        real :: psedd             !kg P/ha       |total amount of P in mineral sediment pools
+                                  !              |prior to sediment removal
+        real :: porgg             !kg P/ha       |total amount of P in organic pools prior to
+                                  !              |sediment removal 
+        real :: xxa               !kg P/ha       |fraction of active mineral phosphorus in soil
+        real :: xxs               !kg P/ha       |fraction of stable mineral phosphorus in soil
 
-      j = ihru
+        j = ihru
 
         !! HRU sediment calculations
         xx = soil1(j)%hp(1)%p

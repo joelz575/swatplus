@@ -22,33 +22,11 @@
 !!                               |on current day in HRU
 !!    doxq(:)     |mg/L          |dissolved oxygen concentration in the surface
 !!                               |runoff on current day in HRU
-!!    soxy        |mg/L          |dissolved oxygen saturation concentration
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    flow_cms    |m^3/s H2O     |rate of flow to main channel generated on
-!!                               |day in HRU
-!!    j           |none          |HRU number
-!!    org_c       |kg            |organic carbon content of surface runoff on
-!!                               |day in HRU
-!!    qtot        |mm H2O        |total loadings to main channel generated on
-!!                               |day in HRU
-!!    tn          |kmoles N      |kilomoles of nitrogen in nutrient loading to
-!!                               |main channel
-!!    tn_tp       |mol N/mol P   |atomic ratio of N to P in surface runoff
-!!    tp          |kmoles P      |kilomoles of phosphorus in nutrient loading to
-!!                               |main channel
-!!    wtmp        |deg K         |temperature of surface runoff
-!!    ww          |none          |variable to hold intermediate calculation
-!!                               |result
-!!    xx          |none          |variable to hold intermediate calculation
-!!                               |result
-!!    yy          |none          |variable to hold intermediate calculation
-!!                               |result
-!!    zz          |none          |variable to hold intermediate calculation
-!!                               |result
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -60,10 +38,31 @@
       use hru_module, only : soil, hru, ihru, tmpav, qdr, sedorgn, surqno3, cbodu, doxq, chl_a, sedyld, enratio
       use organic_mineral_mass_module
       use carbon_module
+      
+      implicit none
 
-      integer :: j
-      real :: soxy
-      real :: tn, tp, qtot, org_c, tn_tp, wtmp, ww, xx, yy, zz, flow_cms
+      integer :: j             !none          |HRU number
+      real :: soxy             !mg/L          |dissolved oxygen saturation concentration 
+      real :: tn               !kmoles N      |kilomoles of nitrogen in nutrient loading to
+                               !              |main channel
+      real :: tp               !kmoles P      |kilomoles of phosphorus in nutrient loading to
+                               !              |main channel
+      real :: qtot             !mm H2O        |total loadings to main channel generated on
+                               !              |day in HRU
+      real :: org_c            !kg            |organic carbon content of surface runoff on
+                               !              |day in HRU
+      real :: tn_tp            !mol N/mol P   |atomic ratio of N to P in surface runoff
+      real :: wtmp             !deg K         |temperature of surface runoff
+      real :: ww               !none          |variable to hold intermediate calculation
+                               !              |result
+      real :: xx               !none          |variable to hold intermediate calculation
+                               !              |result
+      real :: yy               !none          |variable to hold intermediate calculation
+                               !              |result
+      real :: zz               !none          |variable to hold intermediate calculation
+                               !              |result
+      real :: flow_cms         !m^3/s H2O     |rate of flow to main channel generated on
+                               !              |day in HRU
 
       j = ihru
 

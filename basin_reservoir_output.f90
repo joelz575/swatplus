@@ -79,8 +79,8 @@
       
       return
       
-100   format (2i6,i8,2x,a,2x,a16,43f10.3)
-102   format (a6,i6,i8,2x,a,2x,a16,43f10.3)
-103   format (a6,i6,i8,2x,a,2x,a16,43f10.3)
+100   format (2i6,i8,2x,a,2x,a16,43f15.3)
+102   format (a6,i6,i8,2x,a,2x,a16,43f15.3)
+103   format (a6,i6,i8,2x,a,2x,a16,43f15.3)
        
       end subroutine basin_reservoir_output

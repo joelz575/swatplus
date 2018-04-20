@@ -10,11 +10,24 @@
       use reservoir_module
       use sd_channel_module
       use hydrograph_module
+           
+      implicit none
       
-      integer, intent (in)  :: id, ob_cur
-      integer :: ob_num
-      integer :: nbz=748932582
-      integer, dimension(1) :: seed = (/3/)
+      integer, intent (in)  :: id             !          |
+      integer, intent (in)  :: ob_cur         !          |
+      integer :: ob_num                       !          |object number   
+      integer :: nbz=748932582                !          |
+      integer, dimension(1) :: seed = (/3/)   !          |
+      integer :: ic                           !none      |counter
+      integer :: ialt                         !none      |counter
+      integer :: iob                          !          |
+      real :: targ_val                        !          |
+      real :: ran_num                         !          |
+      real :: aunif                           !          |
+      integer :: ires                         !          |
+      real :: targ                            !          | 
+      
+      
 
       d_tbl(id)%act_hit = "y"
       do ic = 1, d_tbl(id)%conds

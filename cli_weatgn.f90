@@ -28,21 +28,7 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    a(:,:)      |none          |3 x 3 matrix whose elements are defined such
-!!                               |that the new sequences of max temp, min temp, 
-!!                               |and radiation have the desired serial-
-!!                               |correlation and cross-correlation coefficients
-!!    b(:,:)      |none          |3 x 3 matrix whose elements are defined such
-!!                               |that the new sequences of max temp, min temp, 
-!!                               |and radiation have the desired serial-
-!!                               |correlation and cross-correlation coefficients
-!!    e(:)        |none          |3 x 1 matrix of independent random components
 !!    j           |none          |HRU number
-!!    l           |none          |counter
-!!    n           |none          |counter
-!!    v2          |none          |random number between 0.0 and 1.0
-!!    xx(:)       |none          |variable to hold calculation value
-!!    zshape(:)   |none          |array shape parameters
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
@@ -52,12 +38,26 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use climate_module
+      
+      implicit none
 
-      integer, dimension (2) :: zshape
-      integer :: n, l
-      real, dimension (3,3) :: a, b
-      real, dimension (3) :: xx, e
-      real :: v2
+      integer, dimension (2) :: zshape    !none          |array shape parameters
+      integer :: n                        !none          |counter                                       
+      integer :: l                        !none          |counter
+      integer :: iwgn
+      real, dimension (3,3) :: a          !none          |3 x 3 matrix whose elements are defined such
+                                          !              |that the new sequences of max temp, min temp, 
+                                          !              |and radiation have the desired serial-
+                                          !              |correlation and cross-correlation coefficients
+      real, dimension (3,3) :: b          !none          |3 x 3 matrix whose elements are defined such
+                                          !              |that the new sequences of max temp, min temp, 
+                                          !              |and radiation have the desired serial-
+                                          !              |correlation and cross-correlation coefficients
+      real, dimension (3) :: xx           !none          |variable to hold calculation value 
+      real, dimension (3) :: e            !none          |3 x 1 matrix of independent random components
+      real :: v2                          !none          |random number between 0.0 and 1.0
+      real :: aunif                       !              |
+      real :: cli_dstn1                   !              |
  
       zshape = (/3, 3/)
       a = Reshape((/.567, .253, -.006, .086, .504, -.039, -.002, -.050,     &

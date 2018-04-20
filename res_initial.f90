@@ -4,6 +4,19 @@
       use maximum_data_module
       use reservoir_data_module
       use hydrograph_module
+      
+      implicit none
+      
+      integer :: ires        !none          |counter
+      integer :: iprop       !              |     
+      integer :: ihyd        !none          |counter 
+      integer :: lnvol       !              |
+      integer :: iires       !              | 
+      real :: resdif         !              |
+      integer :: i           !none          |counter
+      integer :: init        !              | 
+      real :: cnv            !              |
+      
 
       do ires = 1, db_mx%res
         !! set initial volumes for res and hru types

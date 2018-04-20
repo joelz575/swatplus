@@ -1,5 +1,7 @@
       module recall_module
     
+      implicit none
+    
       type recall_databases
         character(len=13) :: name = ""
         integer :: units = 1                !1=mass, 2=mass/area, 3=frac for dr, 4=cms and concentration

@@ -1,9 +1,16 @@
     subroutine search(sch, max, cfind, iseq)
     
-    character(len=50) :: cfind
-    integer :: iseq, max
+    implicit none
     
-    character(len=50), dimension(max) ::  sch 
+    character(len=50) :: cfind                   !             |
+    integer :: iseq                              !             |
+    integer :: max                               !             | 
+    character(len=50), dimension(max) ::  sch    !             |
+    integer :: nf                                !             |
+    integer :: int                               !             |
+    integer :: nn                                !none         |number of subdaily computation points for stable 
+                                                 !             |routing in the muskingum routing method
+    integer :: nl                                !none         |number of layers being mixed
     
     nf = 1
     nl = max

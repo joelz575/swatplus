@@ -19,20 +19,16 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    rav         |MJ/m^2        |modified monthly average solar radiation
-!!    rx          |none          |variable to hold intermediate calculation
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hydrograph_module
       use climate_module
+      
+      implicit none
 
-      real :: rx, rav
+      real :: rx                     !none          |variable to hold intermediate calculation
+      real ::  rav                   !MJ/m^2        |modified monthly average solar radiation
+      integer :: iwgn                !              |
 
       rav = wgn(iwgn)%solarav(time%mo) / (1. - 0.5 * wgn_pms(iwgn)%pr_wdays(time%mo))
       if (wst(iwst)%weat%precip > 0.0) rav = 0.5 * rav

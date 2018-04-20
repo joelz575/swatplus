@@ -1,4 +1,6 @@
       module pesticide_data_module
+    
+      implicit none    
           
       type pesticide_db
         character(len=16) :: pestnm   !!                     |pesticide name

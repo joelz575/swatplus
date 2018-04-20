@@ -1,4 +1,6 @@
       module plant_data_module
+    
+      implicit none    
      
       type plant_db
         character(len=16) :: plantnm = 'frsd ' !N/A  |4 letter char code represents crop name

@@ -328,12 +328,4 @@
      end type snutc_header
      type(snutc_header) :: snutc_hdr
       
-          
-      contains
-      !include 'basin_read_cc.f90'
-      !include 'basin_read_prm.f90'
-      !include 'basin_prm_default.f90'
-      !include 'basin_print_codes_read.f90'
-      !include 'basin_output.f90'
-
       end module basin_module

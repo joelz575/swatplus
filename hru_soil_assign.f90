@@ -4,6 +4,17 @@
       use hru_module, only : sol, soil, pcom, hru, pesti_db, ihru, ipl, isol, mpst, npmx
       use bacteria_module
       use hydrograph_module
+      
+      implicit none
+      
+      integer :: mbac               !none          |ending of loop  
+      integer :: ly                 !none          |counter
+      integer :: ibac               !none          |counter
+      integer :: mbac_db            !              |
+      integer :: mpl                !none          |ending of loop
+      integer :: ibacdb             !              |
+      integer :: ipest              !none          |counter
+      integer :: ipest_db           !              |
 
       !! set hru soils to appropriate database soils
       do ihru = 1, sp_ob%hru
@@ -43,10 +54,8 @@
         
         npmx = cs_db%num_pests
         do ipest = 1, npmx
-          hru(ihru)%pst(ipest)%num_db = pesti_db(ipest_db)%pesti(ipest)%num_db
           hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt
           soil(ihru)%ly(1)%pst(ipest) = pesti_db(ipest_db)%pesti(ipest)%soil
-          hru(ihru)%pst(ipest)%enr = pesti_db(ipest_db)%pesti(ipest)%enr
         end do
 
       end do   !hru loop

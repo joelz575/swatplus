@@ -30,62 +30,78 @@
 !!    isep_opt(:)      |none          |Septic system operation flag (1=active,2=failing,0=not operated)                 
 !!    plqm             |kg/ha         |plaque in biozone
 !!    rbiom(:)         |kg/ha         |daily change in biomass of live bacteria
-!!    rplqm            |kg/ha         |daily change in plaque
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name             |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!                     |none          |                       
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name             |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bod_rt           |1/day         |BOD reaction rate
-!!    bz_lyr           |none          |soil layer where biozone exists
-!!    bz_vol           |m^3           |volume of biozone
-!!    dentr_rt         |1/day         |denitrification reaction rate
-!!    fcoli_rt         |1/day         |fecal coliform reaction rate
-!!    isp              |none          |type of septic system for current hru
-!!    ntr_rt           |1/day         |nitrification reaction rate
-!!    rbod             |mg/l          |daily change in bod concentration
-!!    rdenit           |kg/ha         |denitrification during the day
-!!    rfcoli           |cfu/100ml     |daily change in fecal coliform
-!!    rmort            |kg/ha         |daily mortality of bacteria
-!!    rnit             |kg/ha         |nitrification during the day
-!!    rrsp             |kg/ha         |daily resparation of bacteria
-!!    rslg             |kg/ha         |daily slough-off bacteria
-!!    rtof             |none          |weighting factor used to partition the 
-!!                                    |organic N & P concentration of septic effluent
-!!                                    |between the fresh organic and the stable 
-!!                                    |organic pools
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 !!    Coded by J.Jeong and C.Santhi. BRC, Temple TX
 !!    Septic algorithm adapted from Siegrist et al., 2005
 
-      use septic_data_module
-      use basin_module
-      use bacteria_module
-      use organic_mineral_mass_module
-      use hru_module, only : soil, hru, ihru, i_sep, iseptic, qstemm, bz_perc, isep, sep_tsincefail,  &
-         biom, plqm, bio_bod, fcoli, rbiom, percp, isep 
-      use time_module
+    use septic_data_module
+    use basin_module
+    use bacteria_module
+    use organic_mineral_mass_module
+    use hru_module, only : soil, hru, ihru, i_sep, iseptic, qstemm, bz_perc, isep, sep_tsincefail,    &
+       biom, plqm, bio_bod, fcoli, rbiom, percp, isep 
+    use time_module
       
 	implicit none
 
-    integer bz_lyr, isp, ii,j,nly, ibac
-	real*8 bz_vol, rtrate,bodconc, qin, qout,qmm,qvol,pormm,rplqm
-	real*8 ntr_rt,dentr_rt, bod_rt, fcoli_rt,rtof,xx,bodi,bode
-	real*8 rnit, rdenit, rbio, rmort, rrsp, rslg, rbod, rfcoli
-	real*8 nh3_begin, nh3_end, nh3_inflw_ste, no3_begin, no3_end 
-	real*8 no3_inflow_ste, bio_steintobz,bio_outbz,bza,qi,nperc
-	real*8 nh3_init, no3_init, hvol, solpconc, solpsorb, qlyr,qsrf
-	real*8 n1,n2,n3,n4,n5,n6,n7,n8,p1,p2,p3,p4
-	real*8 solp_init,solp_begin,solp_end,svolp,totalp,ctmp
+    integer bz_lyr             !none          |soil layer where biozone exists
+    integer isp                !none          |type of septic system for current hru
+    integer j                  !none          |hru
+    integer nly                !              |
+    integer ibac               !              |
+	real*8 bz_vol              !m^3           |volume of biozone
+    real*8 rtrate              !              |
+    real*8 bodconc             !              |
+    real*8 qin                 !m^3 H2O       |water in reach during time step
+    real*8 qout                !              |
+    real*8 qmm                 !              |  
+    real*8 qvol                !              | 
+    real*8 pormm               !mm            |porosity in mm depth
+    real*8 rplqm               !kg/ha         |daily change in plaque
+	real*8 ntr_rt              !1/day         |nitrification reaction rate
+    real*8 dentr_rt            !1/day         |denitrification reaction rate
+    real*8 bod_rt              !1/day         |BOD reaction rate
+    real*8 fcoli_rt            !1/day         |fecal coliform reaction rate
+    real*8 rtof                !none          |weighting factor used to partition the 
+                               !              |organic N & P concentration of septic effluent
+                               !              |between the fresh organic and the stable 
+                               !              |organic pools
+    real*8 xx                  !none          |temp variable, used to hold calculated
+                               !              |value needed in later equations
+    real*8 bodi                !              |
+    real*8 bode                !              |
+	real*8 rnit                !kg/ha         |nitrification during the day
+    real*8 rdenit              !kg/ha         |denitrification during the day
+    real*8 rbio                !              |
+    real*8 rmort               !kg/ha         |daily mortality of bacteria
+    real*8 rrsp                !kg/ha         |daily resparation of bacteria
+    real*8 rslg                !kg/ha         |daily slough-off bacteria
+    real*8 rbod                !mg/l          |daily change in bod concentration
+    real*8 rfcoli              !cfu/100ml     |daily change in fecal coliform
+	real*8 nh3_begin           !              | 
+    real*8 nh3_end             !              |
+    real*8 nh3_inflw_ste       !              |
+    real*8 no3_begin           !              |
+    real*8 no3_end             !              |
+	real*8 no3_inflow_ste      !              |
+    real*8 bza                 !              |
+    real*8 qi                  !              |
+    real*8 nperc               !              |
+	real*8 nh3_init            !              | 
+    real*8 no3_init            !              |
+    real*8 hvol                !              |
+    real*8 solpconc            !              |
+    real*8 solpsorb            !              |
+    real*8 qlyr                !              | 
+    real*8 qsrf                !              |
+	real*8 solp_init           !              |
+    real*8 solp_begin          !              |
+    real*8 solp_end            !              |
+    real*8 svolp               !              |
+    real*8 totalp              !              |
+    real*8 ctmp                !              |
 
 	j = ihru
 	nly = soil(j)%nly

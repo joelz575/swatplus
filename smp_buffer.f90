@@ -77,19 +77,15 @@
 !!    sedminps    |kg P/ha       |amount of stable mineral phosphorus sorbed to
 !!                               |sediment in surface runoff in HRU for day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : latno3, filterw, ihru
       
-      integer :: j, k
+      implicit none
+      
+      integer :: j              !none             |hru number
+      integer :: k              !none             |counter
+      real :: reduc             !none             |fraction of water uptake by plants achieved 
 
       j = 0
       j = ihru

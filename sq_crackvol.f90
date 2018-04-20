@@ -6,21 +6,21 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    crlag       |none          |lag factor for day
-!!    crlagdry    |none          |lag in crack development when soil is dry
-!!    crlagwet    |none          |lag in crack development when soil is wet
-!!    j           |none          |HRU number
-!!    l           |none          |counter
-!!    volcrnew    |mm            |crack volume for soil layer based on new 
-!!                               |moisture conditions
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : soil, ihru, volcrmin, voltot
-
-      integer :: l, j
-      real :: volcrnew, crlag, crlagdry = .99, crlagwet = 0.
+      
+      implicit none
+      
+      real :: crlag              !none          |lag factor for day
+      real :: crlagdry = .99     !none          |lag in crack development when soil is dry
+      real :: crlagwet = 0.      !none          |lag in crack development when soil is wet
+      integer :: j               !none          |HRU number
+      integer :: l               !none          |counter
+      real :: volcrnew           !mm            |crack volume for soil layer based on new 
+                                 !              |moisture conditions
 
       j = 0
       j = ihru

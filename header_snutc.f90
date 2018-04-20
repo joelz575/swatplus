@@ -2,6 +2,10 @@
     
      use basin_module
 
+     implicit none 
+     
+     real :: prog                 !              |
+          
 !!   open mgt.out file 
       if (pco%snutc == 'd' .or. pco%snutc == 'm' .or. pco%snutc == 'y' .or. pco%snutc == 'a') then
         open (2610,file="soil_nutcarb_out.txt",recl=800)

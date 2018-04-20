@@ -29,23 +29,8 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!	  bed_shear		|N/m2		   |shear stress b/w stream bed and flow	
-!!	  erod_k		|g/J		   |soil detachability value	
 !!    jj			|none          |HRU number
 !!    kk			|none          |time step of the day
-!!	  ke_direct		|J/m2/mm	   |rainfall kinetic energy of direct throughfall
-!!	  ke_leaf		|J/m2/mm	   |rainfall kinetic energy of leaf drainage
-!!	  ke_total		|J/m2   	   |total kinetic energy of rainfall
-!!	  percent_clay	|percent	   |percent clay
-!!	  percent_sand	|percent	   |percent sand
-!!	  percent_silt	|percent	   |percent silt
-!!	  pheff     	|m			   |effective plant height
-!!	  rdepth_direct	|mm			   |rainfall depth of direct throughfall
-!!	  rdepth_leaf	|mm			   |rainfall depth of leaf drainage
-!!	  rdepth_tot	|mm			   |total rainfall depth 
-!!    rintnsty	    |mm/hr         |rainfall intensity
-!!	  sedspl		|tons		   |sediment yield by rainfall impact during time step
-!!	  sedov 		|tons		   |sediment yield by overland flow during time step
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -57,18 +42,36 @@
 !!	Rill/interill erosion model is adoped from Modified ANSWERS model by Park et al.(1982)
 !!  Code developed by J. Jeong and N. Kannan, BRC.
 
-      use urban_data_module
-      use basin_module
-      use climate_module
-      use time_module
-      use hydrograph_module
-      use hru_module, only : hru, soil, hhsedy, cht_mx, hhqday, cvm_com, sol_cov, ihru, sumlai 
+    use urban_data_module
+    use basin_module
+    use climate_module
+    use time_module
+    use hydrograph_module
+    use hru_module, only : hru, soil, hhsedy, cht_mx, hhqday, cvm_com, sol_cov, ihru, sumlai 
       
-	integer :: k, j
-	real :: percent_clay, percent_silt, percent_sand, erod_k
-	real :: ke_direct, ke_leaf, ke_total,pheff, c
-	real :: rdepth_direct, rdepth_leaf, rdepth_tot, canopy_cover
-	real :: bed_shear, sedov, sedspl, rain_d50, rintnsty
+    implicit none
+      
+	integer :: k                     !             |
+    integer :: j                     !             |
+	real :: percent_clay             !percent	   |percent clay
+    real :: percent_silt             !percent	   |percent silt
+    real :: percent_sand             !percent	   |percent sand
+    real :: erod_k                   !g/J		   |soil detachability value	
+	real :: ke_direct                !J/m2/mm	   |rainfall kinetic energy of direct throughfall
+    real :: ke_leaf                  !J/m2/mm	   |rainfall kinetic energy of leaf drainage
+    real :: ke_total                 !J/m2   	   |total kinetic energy of rainfall
+    real :: pheff                    !m			   |effective plant height
+    real :: c                        !             |
+	real :: rdepth_direct            !mm		   |rainfall depth of direct throughfall
+    real :: rdepth_leaf              !mm		   |rainfall depth of leaf drainage
+    real :: rdepth_tot               !mm		   |total rainfall depth 
+    real :: canopy_cover             !             |
+	real :: bed_shear                !N/m2		   |shear stress b/w stream bed and flow	
+    real :: sedspl                   !tons		   |sediment yield by rainfall impact during time step
+    real :: sedov                    !tons		   |sediment yield by overland flow during time step
+    real :: rain_d50                 !             |
+    real :: rintnsty                 !mm/hr        |rainfall intensity
+    real :: ulu                      !             |
 
 	j = ihru
 	ulu = hru(j)%luse%urb_lu

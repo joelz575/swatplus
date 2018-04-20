@@ -116,14 +116,7 @@
       end interface
         
       contains
-        
-      !! routines for shallow aquifer module
-      !include 'aqu_initial.f90'
-      !include 'aqu_1d_control.f90'
-      !include 'aquifer_output.f90'
-      !include 'aqu_read.f90'
-
-     
+            
       function aqu_add(aqo1,aqo2) result (aqo3)
       type (aquifer_dynamic),  intent (in) :: aqo1
       type (aquifer_dynamic),  intent (in) :: aqo2

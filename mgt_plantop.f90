@@ -42,9 +42,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    nly         |none          |number of soil layer
-!!    plt_zmx     |mm            |rooting depth of plant
 !!    cnop        |none          |SCS runoff curve number for moisture condII
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -53,7 +50,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      integer :: j
+      implicit none
+
+      integer :: j            !none          |HRU number
+      integer :: nly          !none          |number of soil layer
+      integer :: min          !              | 
+      real :: plt_zmx         !mm            |rooting depth of plant
+      
 
       j = ihru
       !idp = pcom(j)%plcur(1)%idplt

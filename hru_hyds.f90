@@ -9,17 +9,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    bactrolp      |# cfu/m^2     |less persistent bacteria transported to main
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    SWAT: hruday, impndday, subday
 !!    SWAT: alph, pkq, ysed, enrsb, pesty, orgn, psed
@@ -33,10 +22,35 @@
       use hydrograph_module
       use basin_module
       use time_module
+      
+      implicit none
 
-      integer :: j, sb, kk, ii
-      real :: cnv, sub_ha, wtmp, baseflw, bf_fr,hr
-      real :: sub_hwyld(time%step), hqd(4*time%step), hsd(4*time%step),hqdtst(time%step)   ! hqd, hsd locally defined. J.Jeong 4/26/2009
+      integer :: j                   !none          |same as ihru (hru number)
+      integer :: kk                  !none          |counter
+      integer :: ii                  !none          |counter
+      real :: cnv                    !none          |conversion factor (mm/ha => m^3)
+      real :: wtmp                   !deg C         |temperature of water in reach
+      ! hqd, hsd locally defined. J.Jeong 4/26/2009
+      !real :: hqd(4*time%step)
+      !real :: hsd(4*time%step)
+      !real :: hqdtst(time%step)  
+      real :: cnv_m3                 !              |
+      real :: cnv_kg                 !              |
+      integer :: ihdmx               !              | 
+      integer :: iob                 !              |
+      integer :: ihyd                !none          |counter  
+      integer :: iday                !              | 
+      integer :: iday_prev           !              |
+      real :: ssq                    !              |
+      real :: sumflo                 !              |
+      real :: sumflo_day             !              |
+      integer :: itot                !              |
+      integer :: ib                  !none          |counter
+      real :: rto                    !none          |cloud cover factor
+      real :: ratio                  !              |   
+      integer :: iadj                !none          |counter
+      integer :: istep               !none          |counter 
+      
 
       j = ihru
       cnv_m3 = hru(j)%area_ha * 10.

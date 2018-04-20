@@ -1,6 +1,10 @@
      subroutine header_mgt
     
      use basin_module
+     
+     implicit none 
+     
+     real :: prog       !               |
     
 !!   open mgt.out file 
       if (pco%mgtout == 'y') then

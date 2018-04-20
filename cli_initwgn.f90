@@ -56,44 +56,15 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    dl          |hour          |time threshold used to define dormant
-!!                               |period for plant (when daylength is within
-!!                               |the time specified by dl from the minimum
-!!                               |daylength for the area, the plant will go
-!!                               |dormant)
-!!    j           |none          |counter
-!!    lattan      |none          |Tan(Latitude)
-!!    m1          |none          |array location (see definition of ndays)
-!!    mdays       |none          |number of days in the month
-!!    mon         |none          |monthly counter
-!!    nda         |julian date   |julian date of last day in the month
-!!    pcp         |mm H2O        |generated precipitation
 !!    pcpmm(:)    |mm            |amount of precipitation in month
 !!    pcpd(:)     |days          |average number of days of precipitation
 !!                               |in the month
-!!    r6          |none          |variable to hold calculation result
 !!    rainhhmx(:) |mm            |maximum 0.5 hour rainfall in month
 !!                               |for entire period of record
-!!    rain_hhsm(:)|mm            |smoothed values for maximum 0.5 hour rainfall
 !!    rain_yrs    |none          |number of years of recorded maximum 0.5h 
 !!                               |rainfall used to calculate values for 
 !!                               |rainhhmx(:)
-!!    rndm1       |none          |random number between 0.0 and 1.0
-!!    rnm2        |none          |random number between 0.0 and 1.0
-!!    sum         |none          |variable to hold summation results
-!!    summm_p     |mm            |sum of precipitation over year
-!!    summn_t     |deg C         |sum of mimimum temp values over year
-!!    summx_t     |deg C         |sum of maximum temp values over year
-!!    tav         |deg C         |average monthly temperature
 !!    titldum     |NA            |title line of .wgn file (not used elsewhere)
-!!    tmax        |deg C         |maximum average monthly temperature
-!!    tmin        |deg C         |minimum average monthly temperature
-!!    tmpsoil     |deg C         |initial temperature of soil layers
-!!    x1          |none          |variable to hold calculation results
-!!    x2          |none          |variable to hold calculation results
-!!    x3          |none          |variable to hold calculation results
-!!    xlv         |none          |variable to hold calculation results
-!!    xx          |varies        |variable to hold calculation results
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -105,12 +76,44 @@
       use basin_module
       use climate_module, only : wgn, wgn_pms, idg, rndseed
       use time_module
+      
+      implicit none
 
-      real :: xx, lattan, x1, x2, x3, tav, tmin, tmax
-      real :: summx_t, summn_t, summm_p, sum, rnm2, r6, xlv
-      real, dimension (12) :: rain_hhsm
-      real :: tmpsoil, sffc, rndm1, dl
-      integer :: mon, mdays, j, m1, nda, xrnd
+      real :: xx                            !varies        |variable to hold calculation results
+      real :: lattan                        !none          |Tan(Latitude)
+      real :: x1                            !none          |variable to hold calculation results
+      real :: x2                            !none          |variable to hold calculation results
+      real :: x3                            !none          |variable to hold calculation results
+      real :: tav                           !deg C         |average monthly temperature
+      real :: tmin                          !deg C         |minimum average monthly temperature
+      real :: tmax                          !deg C         |maximum average monthly temperature
+      real :: sum                           !none          |variable to hold summation results
+      real :: summm_p                       !mm            |sum of precipitation over year
+      real :: summn_t                       !deg C         |sum of mimimum temp values over year
+      real :: summx_t                       !deg C         |sum of maximum temp values over year
+      real :: rnm2                          !none          |random number between 0.0 and 1.0
+      real :: r6                            !none          |variable to hold calculation result
+      real :: xlv                           !none          |variable to hold calculation results
+      real, dimension (12) :: rain_hhsm     !mm            |smoothed values for maximum 0.5 hour rainfall 
+      real :: tmpsoil                       !deg C         |initial temperature of soil layers
+      real :: sffc                          !              |
+      real :: rndm1                         !none          |random number between 0.0 and 1.0
+      real :: dl                            !hour          |time threshold used to define dormant
+                                            !              |period for plant (when daylength is within
+                                            !              |the time specified by dl from the minimum
+                                            !              |daylength for the area, the plant will go
+                                            !              |dormant)     
+      integer :: mon                        !none          |monthly counter
+      real :: mdays                         !none          |number of days in the month
+      real :: j                             !none          |counter
+      real :: m1                            !none          |array location (see definition of ndays)
+      real ::  nda                          !julian date   |julian date of last day in the month
+      real :: cli_dstn1                     !              |
+      real :: pcp                           !mm H2O        |generated precipitation
+      real :: aunif                         !              |
+      integer :: xrnd                       !              |
+      integer :: iwgn                       !              |
+      
 
       !! variables needed for radiation calcs.
       x1 = 0.0

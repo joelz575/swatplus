@@ -4,53 +4,31 @@
 !!    this subroutine estimates daily mineralization (NH3 to NO3)
 !!    and volatilization of NH3
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru          |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    akn         |
-!!    akv         |
-!!    cecf        |none          |volatilization CEC factor
-!!    dmidl       |
-!!    dpf         |
-!!    j           |none          |HRU number
-!!    k           |none          |counter (soil layer)
-!!    rnit        |kg N/ha       |amount of nitrogen moving from the NH3 to the
-!!                               |NO3 pool (nitrification) in the layer
-!!    rnv         |
-!!    rvol        |kg N/ha       |amount of nitrogen lost from the NH3 pool due
-!!                               |to volatilization
-!!    sw25        |
-!!    swwp        |
-!!    tf          |
-!!    xx          |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
       use septic_data_module
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : soil, ihru, i_sep, isep 
       
-      integer :: j, k
-      real :: sw25, swwp, swf, xx, dmidl, dpf, akn, akv, rnv, rnit, rvol
-      real :: tf 
-      real :: cecf = 0.15
-
+      implicit none 
+      
+      integer :: j                !none          |HRU number
+      integer :: k                !none          |counter 
+      real :: sw25                !              |
+      real :: swwp                !              |  
+      real :: swf                 !cfu           |fraction of manure containing active colony forming units 
+      real :: xx                  !              | 
+      real :: dmidl               !              | 
+      real :: dpf                 !              |  
+      real :: akn                 !              | 
+      real :: akv                 !              | 
+      real :: rnv                 !              |
+      real :: rnit                !kg N/ha       |amount of nitrogen moving from the NH3 to the
+                                  !              |NO3 pool (nitrification) in the layer
+      real :: rvol                !kg N/ha       |amount of nitrogen lost from the NH3 pool due
+                                  !              |to volatilization
+      real :: tf                  !              | 
+      real :: cecf = 0.15         !none          |volatilization CEC factor 
+ 
       j = 0
       j = ihru 
 

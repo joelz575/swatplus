@@ -1,10 +1,15 @@
       module ru_module
+    
+      implicit none 
 
-      integer :: isub, msub_db
-      real, dimension (:), allocatable :: ru_tc, ru_n, hyd_flo
-      integer, dimension (:), allocatable :: itsb
-      real, dimension (:,:), allocatable :: uhs
-      
+      integer :: isub                              !none            |counter
+      integer :: msub_db                           !                |
+      real, dimension (:), allocatable :: ru_tc    !                |    
+      real, dimension (:), allocatable :: ru_n     !                | 
+      real, dimension (:), allocatable :: hyd_flo  !                |
+      integer, dimension (:), allocatable :: itsb  !none            |end of loop 
+      real, dimension (:,:), allocatable :: uhs    !                |
+   
       type ru_databases_char
         character(len=16) :: elem_def = ""
         character(len=16) :: elem_dr = ""
@@ -26,11 +31,5 @@
         type (ru_databases) :: dbs
       end type ru_parameters
       type (ru_parameters), dimension(:), allocatable :: ru
-
-      contains
-      !! routines for routing unit module
-      !include 'ru_control.f90'
-      !include 'ru_read.f90'
-      !include 'ru_allo.f90'
 
       end module ru_module

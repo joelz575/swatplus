@@ -3,9 +3,19 @@
       use input_file_module
       use hydrograph_module
       
-      character (len=80) :: titldum, header
-      integer :: i, iobj, eof
-      
+      implicit none
+       
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: i                    !none       |counter
+      integer :: iobj                 !           |
+      integer :: ii                   !none       !counter
+      integer :: k                    !           |
+      integer :: iunit                !           | 
+            
       mobj_out = 0
       imax = 0
       
@@ -52,7 +62,7 @@
               ob_out(i)%objno = sp_ob1%chan + ob_out(i)%obtypno - 1
             case ("exc")   !export coefficient
               ob_out(i)%objno = sp_ob1%exco + ob_out(i)%obtypno - 1
-            case ("del")   !delivery ratio
+            case ("dr")   !delivery ratio
               ob_out(i)%objno = sp_ob1%dr + ob_out(i)%obtypno - 1
             case ("out")   !outlet
               ob_out(i)%objno = sp_ob1%outlet + ob_out(i)%obtypno - 1

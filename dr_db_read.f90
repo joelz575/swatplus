@@ -1,14 +1,14 @@
       subroutine dr_db_read
     
-      use dr_module   
-      !use hydrograph_module
+      use dr_module
       use input_file_module
+      use constituent_mass_module
       !use organic_mineral_mass_module
       !use maximum_data_module
  
-      character (len=80) :: titldum, header
+      character (len=80) :: titldum
       character (len=16) :: namedum
-      integer :: eof, imax, ob1, ob2
+      integer :: eof, imax
 
       eof = 0
       
@@ -26,7 +26,7 @@
             imax = imax + 1
           end do
           
-          allocate (dr_db(0:imax))
+          allocate (dr_db(imax))
           rewind (107)
           read (107,*) titldum
           
@@ -38,6 +38,13 @@
           exit
         end do
       end if
+
+      ! read delivery ratio data for all constituent types
+      call dr_read_om
+      if (cs_db%num_pests > 0) call dr_read_pest
+      if (cs_db%num_paths > 0) call dr_path_read
+      if (cs_db%num_metals > 0) call dr_read_hmet
+      if (cs_db%num_salts > 0) call dr_read_salt
       
       return
       end subroutine dr_db_read

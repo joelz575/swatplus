@@ -20,13 +20,6 @@
 !!                               |at which tillage occurs
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    aphu        |heat units    |fraction of total heat units accumulated
-!!    j           |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    SWAT: plantop, dormant, harvkillop, harvestop, killop, tillmix
 
@@ -35,9 +28,13 @@
       use mgt_operations_module
       use hru_module, only : pcom, hru, nop, yr_skip, phubase, ihru, ipl
       use time_module
+      
+      implicit none
 
-      integer :: j
-      real :: aphu, tillphu
+      integer :: j           !none          |HRU number
+      real :: aphu           !heat units    |fraction of total heat units accumulated 
+      integer :: isched      !              |
+      real :: dorm_flag      !              |
 
       j = ihru
       isched = hru(j)%mgt_ops

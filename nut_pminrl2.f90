@@ -4,38 +4,6 @@
 !!    this subroutine computes p flux between the labile, active mineral
 !!    and stable mineral p pools.  
 !!    this is the alternate phosphorus model described in Vadas and White (2010)
-   
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name         |units         |definition  
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru         |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name         |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    solp(:)		|mg/kg	       |Solution pool phosphorous content
-!!    actpp(:)    |mg/kg	       |Active pool phosphorous content
-!!    stap(:)		|mg/kg	       |Stable pool phosphorous content
-!!    vara					       |Intermediate Variable
-!!    varb					       |Intermediate Variable
-!!    varc					       |Intermediate Variable
-!!    arate 					   |Intermediate Variable      |
-!!    j           |none            |HRU number
-!!    l           |none            |counter (soil layer)
-!!    rmn1        |kg P/ha         |amount of phosphorus moving from the solution
-!!                                 |mineral to the active mineral pool in the
-!!                                 |soil layer
-!!    roc         |kg P/ha         |amount of phosphorus moving from the active
-!!                                 |mineral to the stable mineral pool in the 
-!!                                 |soil layer
-!!    rto         |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Min
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -44,11 +12,30 @@
       use organic_mineral_mass_module
       use hru_module, only : soil, ihru
       use time_module
+      
+      implicit none      
 
-      integer :: j, l
-      real :: rto, rmn1, roc, wetness, base, vara, varb, varc, as_p_coeff
-	!real*8  solp(mlyr),actpp(mlyr),stap(mlyr) !! locals for concentation based data
-
+      integer :: j                      !none          |HRU number
+      integer :: l                      !none          |counter 
+      real :: rto                       !              |
+      real :: rmn1                      !kg P/ha       |amount of phosphorus moving from the solution
+                                        !              |mineral to the active mineral pool in the
+                                        !              |soil layer
+      real :: roc                       !kg P/ha       |amount of phosphorus moving from the active
+                                        !              |mineral to the stable mineral pool in the 
+                                        !              |soil layer
+      real :: wetness                   !              |
+      real :: base                      !              |
+      real :: vara                      !		       |Intermediate Variable
+      real :: varb                      !    	       |Intermediate Variable
+      real :: varc                      !    	       |Intermediate Variable
+      real :: as_p_coeff                !              | 
+      real :: solp                      !mg/kg	       |Solution pool phosphorous content
+      real :: actpp                     !mg/kg	       |Active pool phosphorous content
+      real :: stap                      !mg/kg	       |Stable pool phosphorous content
+      real :: arate                     !			   |Intermediate Variable      
+      real :: ssp                       !              | 
+ 
       j = 0
       j = ihru
         

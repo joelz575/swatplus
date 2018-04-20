@@ -34,6 +34,10 @@
       use organic_mineral_mass_module
       use hydrograph_module
       
+      implicit none
+      
+      integer :: ly           !none        |counter
+      
       ! sum the output for the entire soil profile
       do ihru = 1, sp_ob%hru
         soil_prof_tot = soil_org_z

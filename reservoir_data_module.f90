@@ -1,4 +1,6 @@
-      module reservoir_data_module
+    module reservoir_data_module
+    
+    implicit none      
  
     type reservoir_initial
         character(len=16) :: name

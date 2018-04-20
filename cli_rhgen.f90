@@ -16,28 +16,6 @@
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
 !!    tmpmx(:,:)  |deg C         |avg monthly maximum air temperature
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    blm         |none          |lowest relative humidity value allowed for
-!!                               |any day in month
-!!    rhm         |none          |mean monthly relative humidity adjusted for
-!!                               |wet or dry condiditions
-!!    rhmo        |none          |mean monthly relative humidity
-!!    tmpmean     |deg C         |average temperature for the month in HRU
-!!    uplm        |none          |highest relative humidity value allowed for
-!!                               |any day in month
-!!    vv          |none          |variable to hold intermediate calculation
-!!    yy          |none          |variable to hold intermediate calculation
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp
 !!    SWAT: Atri, Ee
@@ -48,8 +26,22 @@
       use hydrograph_module
       use time_module
 
-      real :: vv, rhm, yy, uplm, blm
-      real :: rhmo, tmpmean
+      implicit none
+      
+      real :: vv                  !none          |variable to hold intermediate calculation 
+      real :: rhm                 !none          |mean monthly relative humidity adjusted for
+                                  !              |wet or dry condiditions
+      real :: yy                  !none          |variable to hold intermediate calculation
+      real :: uplm                !none          |highest relative humidity value allowed for
+                                  !              |any day in month
+      real :: blm                 !none          |lowest relative humidity value allowed for
+                                  !              |any day in month
+      real :: rhmo                !none          |mean monthly relative humidity
+      real :: tmpmean             !deg C         |average temperature for the month in HRU
+      real :: atri                !none          |daily value generated for distribution
+      real :: ee                  !              |
+      integer :: iwgn             !              |
+      
 
       !! Climate Paramenters required for Penman-Monteith !!
 

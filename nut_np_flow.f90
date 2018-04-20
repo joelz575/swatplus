@@ -2,25 +2,21 @@
     SUBROUTINE nut_np_flow (                                           &                                 
         C_A, E_A, CEtoB, C_AtoB, CO2fromA,                                  &   !Input             
         E_AtoB, IMM_AtoB, MNR_AtoB)                          !Output
-       
-       
-    ! C_A          Amount of carbon in pool A at the beginning of the time step (kg C ha-1)
-    ! E_A          Amount of N or P in pool A at the beginning of the time step (kg C ha-1)
-    ! CEtoB         C:E ratio (i.e. C:N or C:P) of the material enters pool B (fraction)
-    ! C_AtoB        C flow from pool A to pool B (kg N or P ha-1 day-1)
-    ! CO2fromA       CO2 emission during the decomposition of pool A (kg C ha-1 day-1)
-    ! E_AtoB        E (i.e. N or P) flow from pool A to B (kg N or P ha-1 day-1)
-    ! EFCO2       E mineralization resulting from CO2 respiration as result of pool A decomposition (kg N or P ha-1 day-1)
-    ! IMM_AtoB       Immobilization of E in order to satisfy the CEtoB ratio (kg N or P ha-1 day-1)
-    ! MNR_AtoB       Mineralization of E as the result of pool A to Pool B transformation (kg N or P ha-1 day-1)
 
     IMPLICIT NONE
 
-    real, intent(in) :: C_A, E_A, CEtoB, C_AtoB, CO2fromA
-    real, intent(out) :: E_AtoB, IMM_AtoB, MNR_AtoB
+    real, intent(in) :: C_A            !         |Amount of carbon in pool A at the beginning of the time step (kg C ha-1)
+    real, intent(in) :: E_A            !         | Amount of N or P in pool A at the beginning of the time step (kg C ha-1)
+    real, intent(in) :: CEtoB          !         | C:E ratio (i.e. C:N or C:P) of the material enters pool B (fraction)
+    real, intent(in) :: C_AtoB         !         | C flow from pool A to pool B (kg N or P ha-1 day-1)
+    real, intent(in) ::  CO2fromA      !         | CO2 emission during the decomposition of pool A (kg C ha-1 day-1)
+    real, intent(out) :: E_AtoB        !         | E (i.e. N or P) flow from pool A to B (kg N or P ha-1 day-1)
+    real, intent(out) :: IMM_AtoB      !         | Immobilization of E in order to satisfy the CEtoB ratio (kg N or P ha-1 day-1)
+    real, intent(out) :: MNR_AtoB      !         | Mineralization of E as the result of pool A to Pool B transformation (kg N or P ha-1 day-1)
 
     !!Local
-    real :: EfromCO2, efco2
+    real :: EfromCO2                   !         |
+    real :: efco2                      !         |E mineralization resulting from CO2 respiration as result of pool A decomposition (kg N or P ha-1 day-1)  
 
     !Initialize to zero. 
     E_AtoB = 0.

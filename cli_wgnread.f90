@@ -5,9 +5,20 @@
       use maximum_data_module
       use climate_module
       
-      character (len=80) :: titldum, header
-      integer :: iwgn, mwnd_dir, iwndir, imo, idr
-      integer :: eof, imax
+      implicit none
+            
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: iwgn                 !           | 
+      integer :: mwnd_dir             !           | 
+      integer :: iwndir               !none       |counter
+      integer :: imo                  !none       |counter 
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists  
+      integer :: mo                   !none       !counter
+      integer :: idir                 !none       !counter
+
       
       eof = 0
       imax = 0

@@ -8,9 +8,18 @@
       use maximum_data_module
       use topography_data_module
       
+      implicit none
+      
       ! read subbasin parameters (ie drainage area and topographic inputs)
-      character (len=80) :: titldum, header
-      integer :: eof, imax
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: i                    !           |
+      integer :: max                  !           |
+      integer :: k                    !           |
+      integer :: ith                  !none       |counter
       
       msub_db = 0
       eof = 0

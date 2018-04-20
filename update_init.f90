@@ -7,9 +7,31 @@
       use time_module
       use climate_module, only : pcp, tmp
       
-      character(len=16) :: chg_parm, chg_typ
-      character(len=1) :: cond_met
-      integer :: lyr = 1, iyr
+      implicit none
+           
+      character(len=16) :: chg_parm                           !                |               
+      character(len=16) :: chg_typ                            !variable        |type of change (absval, abschg, pctchg)
+      character(len=1) :: cond_met                            !                |       
+      integer :: lyr = 1, iyr                                 !none            |counter
+      integer :: ichg_par                                     !none            |counter
+      integer :: ispu                                         !none            |counter
+      integer :: ielem                                        !none            |counter
+      real :: chg_val                                         !                |
+      real :: absmin                                          !                |minimum range for variable
+      real :: absmax                                          !                |maximum change for variable
+      integer :: num_db                                       !                |
+      integer :: ic                                           !none            |counter
+      integer :: ipg                                          !                |
+      integer :: iyear                                        !none            |counter
+      real :: val_cur                                         !variable        |current parameter value
+                                                              !                |the standard temperature (20 degrees C)
+      real :: chg_par                                         !variable        |type of change (absval, abschg, pctchg)
+      integer :: iday                                         !none            |counter
+      integer :: ig                                           !                |
+      
+      
+      
+      
       
       do ichg_par = 1, db_mx%cal_upd
         do ispu = 1, cal_upd(ichg_par)%num_elem

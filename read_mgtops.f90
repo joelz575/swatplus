@@ -7,7 +7,15 @@
       use fertilizer_data_module
       use time_module
       
-      integer :: iyear, day, mon
+      implicit none      
+      
+      integer :: iyear       !            |
+      integer :: day         !            |
+      integer :: mon         !            |
+      integer :: iop         !none        |
+      integer :: isched      !            |
+      integer :: jdt         !none        |julian date
+      integer :: idb         !none        | 
 
       iyear = 1
       do iop = 1, sched(isched)%num_ops                             !! operation loop

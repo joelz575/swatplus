@@ -9,10 +9,50 @@
       use climate_module
       use time_module
       
-      character (len=80) :: titldum
-      character (len=80) :: header
-      integer :: eof, grow_start, grow_end, ipl
-      real :: rtos, rto3
+      implicit none
+      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: grow_start           !           |
+      integer :: grow_end             !           |
+      integer :: ipl                  !none       |counter
+      real :: rtos                    !none       |fraction difference between CN=99 and CN1 
+      real :: rto3                    !none       |fraction difference between CN3 and CN1 
+      real :: a1                      !           |
+      real :: a2                      !           |
+      integer :: i                    !           | 
+      real :: max                     !           |
+      integer :: isd_h                !none       |counter 
+      integer :: k                    !           |
+      integer :: idb                  !none       |counter
+      integer :: mo                   !none       |counter
+      real :: qn1                     !           |
+      real :: qn3                     !           |
+      real :: s3                      !none       |retention parameter for CN3 
+      real :: sumul                   !mm H2O     |amount of water held in soil profile at saturation
+      real :: sumfc                   !mm H2O     |amount of water held in the soil profile at field capacity 
+      real :: xi                      !           |
+      real :: xx                      !           |
+      real :: sin                     !           |
+      real :: cos                     !           |
+      integer :: iwgn                 !           |
+      integer :: iplt                 !none       |counter
+      integer :: imo                  !none       |counter
+      real :: hu_init                 !           |
+      real :: phutot                  !heat unit  |total potential heat units for year (used
+                                      !           |when no crop is growing) 
+      integer :: iday                 !none       |counter
+      real :: tave                    !           |
+      real :: phuday                  !           | 
+      real :: xm                      !           |
+      real :: sin_sl                  !           |
+      real :: ch_len                  !           |
+      real :: ch_sl                   !           | 
+      real :: sd_sl                   !           |
+      integer :: msd_h                !           | 
       
       eof = 0
       imax = 0

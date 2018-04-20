@@ -5,9 +5,20 @@
       use hydrology_data_module
       use topography_data_module
       use soil_data_module
+      
+      implicit none
 
-      integer :: eof
-
+      integer :: eof                  !           |end of file
+      integer :: i                    !none       |counter
+      integer :: isno                 !none       |counter
+      integer :: nly                  !           |
+      integer :: ifield_db            !           |
+      integer :: isol                 !           |
+      integer :: itopohd_db           !           |
+      integer :: ihyd_db              !           |
+      integer :: itopo_db             !           |
+      integer :: iob                  !           |
+    
       !!assign topography and hyd parameters
       do ihru = 1, sp_ob%hru
         iob = sp_ob1%hru + ihru - 1

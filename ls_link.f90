@@ -1,6 +1,11 @@
       subroutine ls_link
     
       use hydrograph_module
+      
+      implicit none
+      
+      integer :: isdc            !none    |counter
+      integer :: i               !        |  
     
      !set parms for sd-channel-landscape linkage
       do isdc = 1, sp_ob%chandeg

@@ -1,5 +1,16 @@
       module dr_module
-          
+                    
+      integer, dimension(:), allocatable :: dr_om_num
+      integer, dimension(:), allocatable :: dr_pest_num
+      integer, dimension(:), allocatable :: dr_path_num
+      integer, dimension(:), allocatable :: dr_hmet_num
+      integer, dimension(:), allocatable :: dr_salt_num
+      character(len=16), dimension(:), allocatable :: dr_om_name
+      character(len=16), dimension(:), allocatable :: dr_pest_name
+      character(len=16), dimension(:), allocatable :: dr_path_name
+      character(len=16), dimension(:), allocatable :: dr_hmet_name
+      character(len=16), dimension(:), allocatable :: dr_salt_name
+    
       type delivery_ratio_datafiles       
         character(len=16) :: name
         character(len=16) :: om_file

@@ -1,13 +1,15 @@
-     subroutine header_write
+      subroutine header_write
     
-     use basin_module
-     use aquifer_module
-     use channel_module
-     use reservoir_module
-     use hydrograph_module
-     use sd_channel_module
-     use maximum_data_module
-     use hru_module, only : prog
+      use basin_module
+      use aquifer_module
+      use channel_module
+      use reservoir_module
+      use hydrograph_module
+      use sd_channel_module
+      use maximum_data_module
+      use hru_module, only : prog
+     
+      implicit none
      
       if (pco%fdcout == 'y') then
         open (6000,file="flow_duration_curve.out", recl=800)

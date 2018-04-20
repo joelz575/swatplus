@@ -2,17 +2,22 @@
       
        use calibration_data_module
        use input_file_module
+       
+       implicit none        
       
-       character (len=80) :: titldum
-       character (len=80) :: header
-       integer :: eof
+       character (len=80) :: titldum   !           |title of file
+       character (len=80) :: header    !           |header of file
+       integer :: eof                  !           |end of file
+       integer :: i_exist              !none       |check to determine if file exists
+       integer :: mlsp                 !none       |end of loop
+       integer :: i                    !none       |counter
        
        eof = 0
 
-      inquire (file=in_chg%pl_parms_cal, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%pl_parms_cal /= 'null') then
+       inquire (file=in_chg%pl_parms_cal, exist=i_exist)
+       if (i_exist == 0 .or. in_chg%pl_parms_cal /= 'null') then
         allocate (pl_prms(0:0))	   	   
-      else   
+       else   
        do 
          open (107,file=in_chg%pl_parms_cal)
          read (107,*,iostat=eof) titldum
@@ -30,8 +35,8 @@
          if (eof < 0) exit 
        end do
 
-      end if	   
+       end if	   
     
-      close(107)
-      return
-      end subroutine pl_read_parms_cal
+       close(107)
+       return
+       end subroutine pl_read_parms_cal

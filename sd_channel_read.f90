@@ -6,11 +6,38 @@
       use maximum_data_module
       use hydrograph_module
       
-      character (len=80) :: titldum
-      character (len=80) :: header
-      integer :: eof, imax, iisd
+      implicit none      
+      
+      integer :: iisd
       real :: kh
       
+      character (len=80) :: titldum   !             |title of file
+      character (len=80) :: header    !             |header of file
+      character (len=16) :: namedum   !             |
+      integer :: eof                  !             |end of file
+      integer :: imax                 !none         |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none         |check to determine if file exists
+      integer :: idb                  !             |
+      integer :: i                    !none         |counter  
+      real :: aa                      !none         |area/area=1 (used to calculate velocity with
+                                      !             |Manning's equation)
+      real :: a                       !m^2          |cross-sectional area of channel
+      real :: b                       !m            |bottom width of channel
+      real :: d                       !m            |depth of flow
+      real :: p                       !m            |wetting perimeter
+      real :: chside                  !none         |change in horizontal distance per unit
+                                      !             |change in vertical distance on channel side
+                                      !             |slopes; always set to 2 (slope=1/2)
+      real :: fps                     !none         |change in horizontal distance per unit
+                                      !             |change in vertical distance on floodplain side
+                                      !             |slopes; always set to 4 (slope=1/4)
+      integer :: max                  !             |
+      real :: rh                      !m            |hydraulic radius
+      real :: qman                    !m^3/s or m/s |flow rate or flow velocity
+      real :: tt1                     !km s/m       |time coefficient for specified depth
+      real :: tt2                     !km s/m       |time coefficient for bankfull depth
+      real :: qq1                     !m^3/s        |flow rate for a specified depth
+         
       eof = 0
       imax = 0
       maxint = 10

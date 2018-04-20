@@ -37,21 +37,17 @@
 !!                                 |the day
 !!    pst_lag(:,3,:)|kg pst/ha     |amount of pesticide lagged
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use pesticide_data_module
       use hru_module, only : hru, ihru, latq, latno3, qtile, bss, pst_lag, tileno3, hrupest, npno, npmx
       use constituent_mass_module
       
-      integer :: j, k
+      implicit none      
+      
+      integer :: j           !none          |HRU number
+      integer :: k           !none          |counter
+      integer :: icmd        !              |  
 
       j = 0
       j = ihru

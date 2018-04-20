@@ -7,9 +7,31 @@
       use hydrograph_module
       use hru_module, only : hru, ihru 
       use output_landscape_module
+      
+      implicit none
 
-      character (len=80) :: titldum, header
-      integer :: eof
+      character (len=80) :: titldum     !             |title of file
+      character (len=80) :: header      !             |header of file
+      integer :: eof                    !             |end of file
+      integer :: i_exist                !none         |check to determine if file exists
+      integer :: imax                   !             |determine max number for array (imax) and total number in file
+      integer :: mcal                   !             |
+      integer :: mreg                   !             |
+      integer :: mlug
+      integer :: ireg
+      integer :: i                      !none         |counter
+      integer :: k                      !             |
+      integer :: ilum
+      integer :: nspu                   !             | 
+      integer :: isp                    !             |
+      integer :: ielem                  !none         |counter
+      integer :: ii                     !none         |counter
+      integer :: ie1                    !none         |counter
+      integer :: ie2                    !none         |counter
+      integer :: ie                     !none         |counter
+      integer :: iihru                  !none         |counter
+      integer :: ihru_tot               !             |
+      integer :: ilsu                   !             |
       
       imax = 0
       mcal = 0

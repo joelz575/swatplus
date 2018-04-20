@@ -7,27 +7,26 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    numdays(:)  |julian date   |julian date for last day of preceding
-!!                               |month (where the array location is the
-!!                               |number of the month). The dates are for
-!!                               |leap years (numdays=ndays)
-!!    m           |none          |month
-!!    i           |none          |day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    jdt         |julian date   |julian date
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use time_module
+      
+      implicit none
 
-      integer, intent (in), dimension (13) :: numdays
-      integer, intent (in) :: m, i
-      integer :: jdt
+      integer, intent (in), dimension (13) :: numdays     !julian date   |julian date for last day of preceding
+                                                          !              |month (where the array location is the
+                                                          !              |number of the month). The dates are for
+                                                          !              |leap years (numdays=ndays)
+      integer, intent (in) :: m                           !none          |month
+      integer, intent (in) ::i                            !none          |day
+      integer :: jdt                                      !julian date   |julian date
      
       jdt = 0
 

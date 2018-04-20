@@ -27,7 +27,11 @@
 
       use time_module
       
-      integer :: icl
+      implicit none
+            
+      integer :: icl          !            |
+      integer :: id           !            |
+      
       if (time%mo .le. 2) then
            icl = id - ndays(time%mo)
       else 

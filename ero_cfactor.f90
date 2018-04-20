@@ -22,18 +22,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cklsp(:)    |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    c           |
-!!    j           |none          |HRU number
-!!    bio_frcov   |              |fraction of cover by biomass - adjusted for
-!!                                  canopy height
-!!    grcov_fr    |              |fraction of cover by biomass as function of lai
-!!    rsd_frcov   |              |fraction of cover by residue
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp
 
@@ -41,10 +29,17 @@
 
       use basin_module
       use hru_module, only : pcom, usle_cfac, sol_cov, cvm_com, sumlai, cht_mx, ihru 
+      
+      implicit none
 
-      integer :: j
-      real :: c
-
+      integer :: j       !none          |HRU number
+      real :: c          !              |
+      real :: rsd_frcov  !              |fraction of cover by residue
+      real :: grcov_fr   !              |fraction of cover by biomass as function of lai 
+      real :: bio_frcov  !              |fraction of cover by biomass - adjusted for
+                         !              |canopy height
+      integer :: max     !              |   ??? should this be real??
+    
       j = ihru
 
       !! HRU sediment calculations

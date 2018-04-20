@@ -3,25 +3,11 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine is the master soil percolation component.
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    nn          |none          |number of soil layers
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    sep         |mm H2O        |micropore percolation from soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    j1          |none          |counter
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
 !!    SWAT: percmacro, percmicro
@@ -34,13 +20,31 @@
       
       use basin_module
       use organic_mineral_mass_module
+      
+      implicit none
 
-      integer :: j, j1, ii, isp
-      real:: ul_excess,qlyr,pormm,rtof
+      integer :: j                 !none          |HRU number
+      integer :: j1                !none          |counter
+      integer :: ii                !none          |counter
+      integer :: isp               !              | 
+      real:: ul_excess             !              |
+      real:: qlyr                  !              |
+      real:: pormm                 !mm            |porosity in mm depth 
+      real:: rtof                  !none          |weighting factor used to partition the 
+                                   !              |organic N & P concentration of septic effluent
+                                   !              |between the fresh organic and the stable 
+                                   !              |organic pools
+      real :: qvol                 !              |     
+      real :: xx                   !              |
+      integer :: jj                !              |
+      integer :: l                 !              | 
+      integer :: nn                !none          |number of soil layers
+      integer :: ly                !none          |counter
+      
 
       j = 0
       j = ihru
-     	isp = sep(isep)%typ 	   !! J.Jeong 3/09/09
+      isp = sep(isep)%typ 	   !! J.Jeong 3/09/09
       rtof = 0.5
 
  	if (sep(isep)%opt ==2.and.j1==i_sep(j)) then

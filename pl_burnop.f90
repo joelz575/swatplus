@@ -7,11 +7,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ibrn        |none          |counter in readmgt 
-!!    iburn(:     |julian date   |date of burning                       
 !!    phub        |              |heat units to schedule burning
-!!    pburn       |              |amount of phosphorus that burns - removed from plant
-!!                               |phosphorus and added to soil organic phosphorus 
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
@@ -19,10 +15,16 @@
       use organic_mineral_mass_module
       use hru_module, only : pcom, soil, cn2, ihru, cnop, ipl 
       use carbon_module
+      
+      implicit none      
    
-      integer :: j
-      integer, intent (in) :: jj, iplant, iburn
-      real :: fr_burn
+      integer :: j                           !none          |counter
+      integer, intent (in) :: jj             !none          |counter
+      integer, intent (in) :: iplant         !              |plant number xwalked from hlt_db()%plant and plants.plt  
+      integer, intent (in) :: iburn          !julian date   |date of burning    
+      real :: fr_burn                        !              |fraction burned
+      real :: pburn                          !              |amount of phosphorus that burns - removed from plant
+                                             !              |phosphorus and added to soil organic phosphorus 
 
       j = jj
 

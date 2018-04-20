@@ -26,7 +26,6 @@
 !!    sw_excess   |mm H2O        |amount of water in excess of field capacity
 !!                               |stored in soil layer on the current day
 !!    new water table depth  equations   01/2009
-!!    wat         |mm H2O        |shallow water table depth below the soil surface to up to impervious layer
 !!    new water table depth  equations   01/2009
 !!    wt_shall    |mm H2O        |shallow water table depth above the impervious layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -40,9 +39,21 @@
       use hydrograph_module
       use basin_module
       
-      integer :: j          !!none       |HRU number
-      integer :: j1         !!none       |counter
-
+      implicit none
+      
+      integer :: j           !none       |HRU number
+      integer :: j1          !none       |counter
+      real :: slug           !           | 
+      real :: sep_left       !           |
+      real :: por_air        !           |
+      real :: d              !           |
+      real :: yy             !           |
+      real :: xx             !           |
+      real :: wat            !mm H2O     |shallow water table depth below the soil surface to up to impervious layer
+      real :: sw_del         !           |
+      real :: wt_del         !           |
+      real :: sumqtile       !           | 
+    
       j = ihru
 
       !! initialize water entering first soil layer

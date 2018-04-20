@@ -1,11 +1,79 @@
-    subroutine sd_channel_control
+      subroutine sd_channel_control
 
-    use sd_channel_module
-    use channel_velocity_module
-    use basin_module
-    use hydrograph_module
+      use sd_channel_module
+      use channel_velocity_module
+      use basin_module
+      use hydrograph_module
     
-    real :: rcharea, sdti
+      implicit none     
+    
+      real :: rcharea                 !m^2           |cross-sectional area of flow
+      real :: sdti                    !m^3/s         |flow rate in reach for day
+      integer :: isd_db               !              |
+      real :: erode_btm               !              |
+      real :: erode_bank              !              |
+      real :: deg_btm                 !tons          |bottom erosion
+      real :: deg_bank                !tons          |bank erosion
+      real :: sedout                  !mg		     |sediment out of waterway channel
+      real :: washld                  !tons          |wash load  
+      real :: bedld                   !tons          |bed load
+      real :: dep                     !tons          |deposition
+      real :: hc_sed                  !tons          |headcut erosion
+      real :: chflow_m3               !m^3/s         |Runoff in CMS
+      real :: sedin                   !              |
+      real :: chside                  !none          |change in horizontal distance per unit
+                                      !              |change in vertical distance on channel side
+                                      !              |slopes; always set to 2 (slope=1/2)
+      real :: a                       !m^2           |cross-sectional area of channel
+      real :: b                       !m             |bottom width of channel
+      real :: c                       !none          |inverse of channel side slope
+      real :: p                       !m             |wetting perimeter
+
+      real :: rh                      !m             |hydraulic radius
+      real :: qman                    !m^3/s or m/s  |flow rate or flow velocity
+      real :: rchdep                  !m             |depth of flow on day 
+      real :: valint                  !              | 
+      integer :: ivalint              !              |
+      real :: tbase                   !none          |flow duration (fraction of 24 hr)
+      real :: tb_pr                   !              |
+      real :: tb                      !              |
+      real :: vol_ovb                 !              |
+      real :: const                   !              |
+      integer :: ics                  !none          |counter
+      real :: ob_const                !              |
+      integer :: ii                   !none          |counter
+      real :: sum_vol                 !              |
+      real :: xx                      !              | 
+      integer :: ic                   !              |
+      real :: vol_overmx              !              |
+      real :: flood_dep               !              | 
+      real :: dep_e                   !              |
+      real :: rto                     !none          |cloud cover factor 
+      real :: e_btm                   !              |
+      real :: sumtime                 !              |
+      real :: vc                      !m/s           |flow velocity in reach
+      real :: pr_ratio                !              |
+      real  :: tw                     !              |
+      real :: tave                    !              |
+      real :: shear_btm_cr            !              |
+      real :: shear_btm_adj           !none          |take out bedld_cap adjustment
+      real :: shear_btm               !              |
+      real :: shear_bank_cr           !              | 
+      real :: qmm                     !              | 
+      real :: qh                      !              | 
+      real :: hc                      !m/yr          |head cut advance
+      integer :: max                  !              |
+      real :: chns                    !              |
+      integer :: ihval                !none          |counter 
+      real :: bedld_cap               !              |
+      real :: perim_bed               !              |
+      !real :: e_bim
+      real :: perim_bank              !              |
+      real :: s_bank                  !              |
+      real :: shear_bank              !              |
+      real :: shear_bank_adj          !              | 
+      real :: e_bank                  !              |
+      real :: perc                    !              |
       
       ich = isdch
       isd_db = ob(icmd)%props

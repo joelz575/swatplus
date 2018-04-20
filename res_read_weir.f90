@@ -9,11 +9,16 @@
 !!    This file contains data related to initial pesticide and nutrient levels
 !!    in the lake/reservoir and transformation processes occuring within the 
 !!    lake/reservoir. Data in the lake water quality input file is assumed to
-!!    apply to all reservoirs in the watershed.          
+!!    apply to all reservoirs in the watershed.  
 
-      integer :: eof, i, imax
-      character (len=80) :: titldum
-      character (len=80) :: header
+      implicit none
+
+      character (len=80) :: titldum     !             |title of file
+      character (len=80) :: header      !             |header of file
+      integer :: eof                    !             |end of file
+      integer :: imax                   !             |determine max number for array (imax) and total number in file
+      integer :: i_exist                !none         |check to determine if file exists
+      integer :: ires                   !none         |counter
 
       eof = 0
       imax = 0

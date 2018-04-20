@@ -27,15 +27,11 @@
 !!    bsprev      |mm H2O        |surface runoff lagged from prior day of
 !!                               |simulation
 !!    canev       |mm H2O        |amount of water evaporated from canopy storage
-!!    crk         |mm H2O        |percolation due to crack flow
-!!    enratio     |none          |enrichment ratio calculated for day in HRU
 !!    ep_day      |mm H2O        |actual amount of transpiration that occurs on
 !!                               |day in HRU
 !!    ep_max      |mm H2O        |maximum amount of transpiration (plant et)
 !!                               |that can occur on day in HRU
 !!    es_day      |mm H2O        |actual amount of evaporation (from soil) that
-!!                               |occurs on day in HRU
-!!    etday       |mm H2O        |actual amount of evapotranspiration that 
 !!                               |occurs on day in HRU
 !!    gwseep      |mm H2O        |amount of water recharging deep aquifer on 
 !!                               |current day
@@ -68,8 +64,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    j           |none          |HRU number
-!!    ly          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 
@@ -81,9 +75,20 @@
         hhsedy, hmntl, hmptl, inflpcp, latqrunon, ls_overq, lyrtile, no3pcp, peakr,  &
         pet_day, qday, qtile, rmn2tl, rmp1tl, rmptl, roctl, rwntl, sepday, snoev, snofall, snomlt,             &
         sol_rd, sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, wdntl, fixn  
+      
+      implicit none
 
-      integer :: j, ly
-
+      integer :: j              !none          |HRU number
+      integer :: ly             !none          |counter
+      real :: crk               !mm H2O        |percolation due to crack flow
+      real :: enratio           !none          |enrichment ratio calculated for day in HRU
+      real :: etday             !mm H2O        |actual amount of evapotranspiration that 
+                                !              |occurs on day in HRU
+      real :: over_flow         !              |
+      real :: sedprev           !              | 
+      integer :: irmmdt         !              | 
+      real :: yield             !t/ha or t     |crop yield
+      
       j = ihru
 
       !! initialize hru variables - modular code

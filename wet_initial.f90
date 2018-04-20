@@ -5,6 +5,19 @@
       use reservoir_data_module
       use hydrograph_module
       use hru_module, only : hru, ihru
+      
+      implicit none
+      
+      integer :: iprop          !              | 
+      integer :: ihyd           !none          |counter 
+      integer :: init           !              |
+      real :: cnv               !none          |conversion factor (mm => m^3)
+      real :: x1                !              |
+      integer :: ires           !none          |counter 
+      real :: res_h             !              |
+      real :: res_h1            !              |
+      real :: wet_h             !              |
+      real :: wet_h1            !              | 
   
       do ihru = 1, sp_ob%hru
         !! set initial volumes and convert units

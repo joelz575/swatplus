@@ -1,4 +1,6 @@
       module maximum_data_module
+    
+      implicit none
       
       !integer :: msoils, mpl
       
@@ -95,6 +97,17 @@
         integer :: ch_pst
         integer :: bac
         integer :: exco
+        integer :: exco_om
+        integer :: exco_pest
+        integer :: exco_path
+        integer :: exco_hmet
+        integer :: exco_salt
+        integer :: dr
+        integer :: dr_om
+        integer :: dr_pest
+        integer :: dr_path
+        integer :: dr_hmet
+        integer :: dr_salt
         integer :: sep
         integer :: ch_lte
       end type data_files_max_elements

@@ -3,29 +3,19 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this function calculates the plant stress factor caused by limited
 !!    supply of nitrogen or phosphorus
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    u1          |kg/ha         |actual amount of element in plant
-!!    u2          |kg/ha         |optimal amount of element in plant
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    uu          |none          |fraction of optimal plant growth achieved
-!!                               |where reduction is caused by plant element
-!!                               |deficiency
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      real, intent (in) :: u1, u2
-      real, intent (out) :: uu
+      implicit none 
+
+      real, intent (in) :: u1      !kg/ha         |actual amount of element in plant
+      real, intent (in) :: u2      !kg/ha         |optimal amount of element in plant
+      real, intent (out) :: uu     !none          |fraction of optimal plant growth achieved
+                                   !              |where reduction is caused by plant element
+                                   !              |deficiency
 
       uu = 0.
 

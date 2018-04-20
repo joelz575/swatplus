@@ -82,7 +82,7 @@
       real :: sorpesto   !mg pst/m^3    |sorbed pesticide concentration in outflow
                          !              |on day 
       real :: volatpst   !mg pst        |amount of pesticide lost from reach by
-                         !                |volatilization
+                         !                volatilization
 
 !! initialize daily variables
       rchwtr = ch(jrch)%rchstor

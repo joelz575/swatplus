@@ -1,4 +1,6 @@
       subroutine wind_ero_veg
+    
+      implicit none
 
       !sc_fac = pldb(idp)%wind_stl * hru(j)%stl + pldb(idp)%wind_std * hru(j)%std + pldb(idp)%wind_flat * soil(j)%ly(1)%rsd
       

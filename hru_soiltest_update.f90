@@ -3,6 +3,13 @@
       use hru_module, only : soil  
       use soil_data_module
       use organic_mineral_mass_module
+      
+      implicit none
+
+      integer :: ly          !none       |counter
+      integer :: isol        !           |
+      integer :: isolt       !           | 
+      real :: dep_frac       !           |
 
       do ly = 1, soil(isol)%nly
           dep_frac=Exp(-solt_db(isolt)%exp_co * soil(isol)%phys(ly)%d)

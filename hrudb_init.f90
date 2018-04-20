@@ -2,8 +2,14 @@
     
       use hydrograph_module, only : sp_ob, sp_ob1, ob
       use hru_module, only : hru, hru_db
+      
+      implicit none
 
-      integer :: eof
+      integer :: eof                  !           |end of file
+      integer :: imp                  !           |
+      integer :: ihru                 !none       |counter 
+      integer :: iob                  !           |
+      integer :: ihru_db              !           | 
 
       !!Section i
       !!assign database pointers for the hru

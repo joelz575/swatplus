@@ -24,12 +24,6 @@
 !!    prog        |NA            |program name and version
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    i           |none          |counter
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
       use hru_module, only : hru, ihru, prog, soil
       use hydrograph_module
       use ru_module
@@ -46,26 +40,24 @@
       use organic_mineral_mass_module
       use time_module
       use climate_module
+      use constituent_mass_module
       
       implicit none
-      integer :: date_time(8)
-      character*10 b(3)
-      integer :: ob1, ob2, ires, imp, mrch, irch, isdc, imax, iup
-      integer :: ibac, mbac, mbac_db, ii, iob, idfn, isb, ielem, ifld
-      integer :: istr_db, mstr_prac, istr, j, ichan, idat
-      integer :: isched, iauto, ictl
-      integer :: isdh, idb, ihru_s, ical, icvmax
-      real :: rto, sumn, t_ch, ch_slope, ch_n, ch_l, tov
-      character(len=16):: chg_typ
-      real :: chg_val, absmin, absmax, diff, meas
-      integer :: num_db, mx_elem, ireg, ilum, iihru, iter, icn, iesco, iord
-      integer :: i
+      
+      integer :: date_time(8)           !              | 
+      character*10 b(3)                 !              |
+      integer :: irch                   !              |
+      integer :: idat                   !              |
+      integer :: isched                 !              | 
+      integer :: iauto                  !none          |counter
+      integer :: ictl                   !none          |counter
+      integer :: i                      !none          |counter
 
-      prog = " SWAT+ Apr 10 2018    MODULAR Rev 2018.47"
+      prog = " SWAT+ Apr 20 2018    MODULAR Rev 2018.48"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 47          ",/,             &
+     &          "               Revision 48            ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -179,6 +171,10 @@
       call res_read_weir
       call res_read
       
+      ! read wetland data
+      call wet_read_hyd
+      call wet_read
+      
       call header_snutc
       
       !! set the object number for each hru-to point to weather station
@@ -236,12 +232,19 @@
       call ru_allo
             
       !! allocate and initialize reservoir variables
-      call res_allo
-      call res_objects
-      call res_initial
+      if (sp_ob%res > 0) then
+        call res_allo
+        call res_objects
+        call res_initial
+      end if
 
       call aqu_read
       call aqu_initial
+      
+      call pest_soil_init
+      call path_soil_init
+      call hmet_soil_init
+      call salt_soil_init
 
       !read calibration data (if included)
       call cal_read_parms

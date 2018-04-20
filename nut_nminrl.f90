@@ -9,8 +9,6 @@
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ihru          |none          |HRU number
-!!    nactfr        |none          |nitrogen active pool fraction. The fraction
-!!                                 |of organic nitrogen in the active pool.
 !!    rsdco_pl(:)   |none          |plant residue decomposition coefficient. The
 !!                                 |fraction of residue which will decompose in
 !!                                 |a day assuming optimal moisture,
@@ -24,36 +22,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ca          |
-!!    cdg         |none          |soil temperature factor
-!!    cnr         |
-!!    cnrf        |
-!!    cpr         |
-!!    cprf        |
-!!    csf         |none          |combined temperature/soil water factor
-!!    decr        |
-!!    hmn         |kg N/ha       |amount of nitrogen moving from active organic
-!!                               |nitrogen pool to nitrate pool in layer
-!!    hmp         |kg P/ha       |amount of phosphorus moving from the organic
-!!                               |pool to the labile pool in layer
-!!    j           |none          |HRU number
-!!    k           |none          |counter (soil layer)
-!!    kk          |none          |soil layer used to compute soil water and
-!!                               |soil temperature factors
-!!    r4          |
-!!    rdc         |
-!!    rmn1        |kg N/ha       |amount of nitrogen moving from fresh organic
-!!                               |to nitrate(80%) and active organic(20%)
-!!                               |pools in layer
-!!    rmp         |kg P/ha       |amount of phosphorus moving from fresh organic
-!!                               |to labile(80%) and organic(20%) pools in layer
-!!    rwn         |kg N/ha       |amount of nitrogen moving from active organic
-!!                               |to stable organic pool in layer
-!!    sut         |none          |soil water factor
-!!    wdn         |kg N/ha       |amount of nitrogen lost from nitrate pool in
-!!                               |layer due to denitrification
-!!    xx          |varies        |variable to hold intermediate calculation
-!!                               |result
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -67,10 +35,40 @@
       use organic_mineral_mass_module
       use hru_module, only : soil, pcom, rsdco_plcom, i_sep, ihru, ipl, isep  
       use output_landscape_module, only : hnb_d
+      
+      implicit none 
 
-      integer :: j, k, kk, idp
-      real :: rmn1, rmp, xx, csf, rwn, hmn, hmp, r4, cnr, cnrf, cpr
-      real :: cprf, ca, decr, rdc, wdn, cdg, sut, nactfr
+      integer :: j          !none          |HRU number
+      integer :: k          !none          |counter (soil layer)
+      integer :: kk         !none          |soil layer used to compute soil water and
+                            !              |soil temperature factors
+      integer :: idp
+      real :: rmn1          !kg N/ha       |amount of nitrogen moving from fresh organic
+                            !              |to nitrate(80%) and active organic(20%)
+                            !              |pools in layer
+      real :: rmp           !              |to labile(80%) and organic(20%) pools in layer
+      real :: xx            !varies        |variable to hold intermediate calculation result
+      real :: csf           !none          |combined temperature/soil water factor
+      real :: rwn           !kg N/ha       |amount of nitrogen moving from active organic
+                            !              |to stable organic pool in layer
+      real :: hmn           !kg N/ha       |amount of nitrogen moving from active organic
+                            !              |nitrogen pool to nitrate pool in layer
+      real :: hmp           !kg P/ha       |amount of phosphorus moving from the organic
+                            !              |pool to the labile pool in layer
+      real :: r4            !              |
+      real :: cnr           !              |
+      real :: cnrf          !              | 
+      real :: cpr           !              |
+      real :: cprf          !              | 
+      real :: ca            !              |
+      real :: decr          !              |
+      real :: rdc           !              |
+      real :: wdn           !kg N/ha       |amount of nitrogen lost from nitrate pool in
+                            !              |layer due to denitrification
+      real :: cdg           !cdg         |none          |soil temperature factor
+      real :: sut           !none          |soil water factor
+      real :: nactfr        !none          |nitrogen active pool fraction. The fraction
+                            !              |of organic nitrogen in the active pool. 
 
       j = ihru
       nactfr = .02

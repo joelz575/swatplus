@@ -4,6 +4,11 @@
        use hru_module, only :  uptake
        
        implicit none
+       
+       real :: ubw      !                                        |the uptake distribution for water is hardwired
+       real :: uobw     !(not used in this model) none           |water uptake normalization parameter 
+       real :: uobn     !(not used in this model) none           |nitrogen uptake normalization parameter 
+       real :: uobp     !(not used in this model) none           |phosphorus uptake normalization parameter 
       
          if (bsn_prm%evlai < 1.e-6) bsn_prm%evlai = 3.0           !! leaf area index at which no evap occurs
          if (bsn_prm%ffcb < 1.e-6) bsn_prm%ffcb = 0.              !! intial soil water cont expressed as a fraction of fc 

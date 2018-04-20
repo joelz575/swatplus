@@ -1,4 +1,6 @@
       module wind_data_module
+    
+      implicit none
  
       type wind_erosion_factors
         real :: bare             !!t/d      |erosion from bare soil

@@ -2,11 +2,35 @@
     
       use hydrograph_module
       use input_file_module
- 
-      character (len=80) :: titldum, header
-      character (len=3) :: iobtyp
-      character (len=16) :: namedum
-      integer :: eof, imax, nspu
+      
+      implicit none
+  
+      character (len=3) :: iobtyp     !none       |object type   
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=16) :: namedum   !           |
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: nspu                 !           |
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: i                    !none       |counter
+      integer :: max                  !           | 
+      integer :: isp                  !none       |counter
+      integer :: k                    !           |
+      integer :: iob                  !           |
+      integer :: iob1                 !none       |beginning of loop
+      integer :: iob2                 !none       |ending of loop
+      integer :: isub                 !none       |counter
+      integer :: numb                 !           |
+      integer :: ielem                !none       |counter
+      integer :: ii                   !none       |counter
+      integer :: ie1                  !none       |beginning of loop
+      integer :: ie2                  !none       |ending of loop  
+      integer :: ie                   !none       |counter
+      integer :: isub_tot             !           |
+      
+      
+      
 
       eof = 0
       imax = 0
@@ -177,7 +201,7 @@
               ru_elem(ii)%obj = sp_ob1%chan + ru_elem(ii)%obtypno - 1
             case ("exc")   !export coefficient
               ru_elem(ii)%obj = sp_ob1%exco + ru_elem(ii)%obtypno - 1
-            case ("del")   !delivery ratio
+            case ("dr")   !delivery ratio
               ru_elem(ii)%obj = sp_ob1%dr + ru_elem(ii)%obtypno - 1
             case ("out")   !outlet
               ru_elem(ii)%obj = sp_ob1%outlet + ru_elem(ii)%obtypno - 1

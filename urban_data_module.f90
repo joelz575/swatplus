@@ -1,4 +1,6 @@
       module urban_data_module
+    
+      implicit none
           
       type urban_db
         character(len=16) :: urbnm

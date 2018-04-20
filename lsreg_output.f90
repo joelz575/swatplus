@@ -9,8 +9,24 @@
       use hru_module, only : hru, ihru, ipl, pcom
       use output_landscape_module
       
-      integer, dimension(:), allocatable :: iarea, idp
-             
+      implicit none
+      
+      integer, dimension(:), allocatable :: iarea
+      integer, dimension(:), allocatable :: idp
+      integer :: ireg
+      integer :: ielem
+      real :: area_ha
+      integer :: i
+      integer :: ilum
+      integer :: nlum
+      real :: const
+      integer :: ilum_db
+      real :: constnb
+      integer :: icu
+      integer :: j
+      real :: constwb
+      real :: constpw
+              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!!    PRINT CODES: 'avann' = average annual (always print)lum(
 !!                  'year'  = yearly

@@ -18,19 +18,6 @@
 !!                                  |dormant)
 !!    ihru           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    resnew      |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
 
@@ -45,16 +32,35 @@
          sol_sumno3, sol_sumsolp
       use carbon_module
       use time_module
+      
+      implicit none
 
-      real :: resnew
-      integer :: j, idp
-
+      real :: resnew                !              |
+      integer :: j                  !none          |HRU number
+      integer :: idp                !              |
+      integer :: orgc_f             !fraction      |fraction of organic carbon in fertilizer
+      integer :: iob                !              |
+      integer :: iwgn               !              |
+      real :: dorm_flag             !              |
+      real :: xx                    !varies        |variable to hold calculation results 
+      real :: rln                   !              |  
+      real :: rlr                   !fraction      |fraction of lignin in the added residue
       !!by zhang
       !!====================
-
-      real :: BLG1, BLG2, BLG3,  CLG, sf
-      real :: sol_min_n,  resnew_n, resnew_ne
-      real :: LMF, LSF, LSLF, LSNF,LMNF 
+      real :: BLG1                  !              |LIGNIN FRACTION IN PLANT AT .5 MATURITY
+      real :: BLG2                  !              |LIGNIN FRACTION IN PLANT AT MATURITY 
+      real :: BLG3                  !              |             
+      real :: CLG                   !              | 
+      real :: sf                    !fraction      |fraction of mineral n sorbed to litter: 0.05 for surface litter, 0.1 for belowground litter 
+      real :: sol_min_n             !              |
+      real :: resnew_n              !              |
+      real :: resnew_ne             !              |
+      real :: LMF                   !frac          |fraction of the litter that is metabolic
+      real :: LSF                   !frac          |fraction of the litter that is structural
+      real :: LMNF                  !kg kg-1       |fraction of metabolic litter that is N
+      real :: LSLF                  !kg kg-1       |fraction of structural litter that is lignin 
+      real :: LSNF                  !kg kg-1       |fraction of structural litter that is N	
+      
       orgc_f = 0.
       BLG1 = 0.
       BLG2 = 0.

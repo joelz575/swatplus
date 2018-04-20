@@ -1,36 +1,19 @@
       subroutine mgt_trop_gro
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine ends and initializes tropical plant growth
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name           |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
       use climate_module
       use basin_module
       use hru_module, only : pcom, soil, ihru, ipl
       use plant_data_module
+      
+      implicit none 
 
-      real :: resnew
-      integer :: j, idp
+      real :: resnew           !               |
+      integer :: j             !none           |counter
+      integer :: idp           !               |
+      real :: sol_st2          !               | 
+      real :: sol_fc2          !               |
+      real :: sol_stup2        !               |
+      real :: sol_fcup2        !               |
 
       j = ihru
 

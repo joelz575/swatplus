@@ -26,7 +26,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -40,8 +39,22 @@
       use plant_data_module
       use organic_mineral_mass_module
       use time_module
+      
+      implicit none      
 
-      integer :: j, idp
+      integer :: j              !none          |HRU number
+      integer :: idp            !              | 
+      integer :: npl_gro        !              | 
+      integer :: ip 
+      integer :: jpl            !none          |counter
+      real :: x1                !              |
+      real :: sum               !              |
+      real :: sumf              !              |
+      real :: sumle             !              |
+      real :: fi                !              |
+      real :: delg              !              |
+      integer :: nly            !none          |counter
+      
 
       j = ihru  
       par = 0.

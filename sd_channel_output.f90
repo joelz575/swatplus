@@ -5,8 +5,13 @@
       use time_module
       use hydrograph_module
       
-      integer, intent (in) :: ichan
+      implicit none
       
+      integer, intent (in) :: ichan         !             |
+      integer :: iob                        !             |
+      real :: csvout                        !none         |code to print .csv files n=no print; y=print; 
+      real :: yrs                           !             |
+       
       iob = sp_ob1%chandeg + ichan - 1
 
       chsd_m(ichan) = chsd_m(ichan) + chsd_d(ichan)

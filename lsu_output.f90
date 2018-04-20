@@ -6,7 +6,15 @@
       use calibration_data_module
       use hydrograph_module
       use output_landscape_module
-                      
+      
+      implicit none
+      
+      integer :: isub          !none        |counter
+      integer :: ielem         !none        |counter
+      integer :: ihru          !none        |counter 
+      integer :: iob           !none        |counter 
+      real :: const            !            |  
+                            
       do isub = 1, db_mx%lsu_out
         ! summing HRU output for the subbasin
         do ielem = 1, lsu_out(isub)%num_tot

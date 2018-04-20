@@ -3,9 +3,15 @@
       use hru_module, only : soil, ihru, isep_ly, ly1
       use organic_mineral_mass_module
       
-      integer nly, nly1, lyn
-      real :: dif
-	  real, intent(in):: dep_new
+      implicit none
+      
+      integer :: nly               !none         |end of loop
+      integer :: nly1              !             |
+      integer :: lyn               !none         |counter
+      integer :: j                 !             |
+      integer :: ly                !none         |counter
+      real :: dif                  !             |
+	  real, intent(in):: dep_new   !             |
       
 	  nly = soil(j)%nly
 

@@ -32,7 +32,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    j           |none          |counter
 !!    l           |none          |counter
 !!    scmx        |mm/hr         |maximum soil hydraulic conductivity
 !!    t_ch        |hr            |time for flow entering the farthest upstream 
@@ -52,7 +51,21 @@
       use channel_module
       use time_module
       use hydrograph_module, only : sp_ob
-
+      
+      implicit none
+      
+      integer :: j             !none          |counter
+      real :: ql               !              | 
+      real :: sumq             !              |
+      real :: tb               !              |
+      real :: tp               !              |
+      integer :: int           !              |
+      integer :: i             !none          |counter
+      real :: xi               !              |
+      real :: q                !              |
+      integer :: max           !              |
+      integer :: ij            !              |
+ 
 !!    compute unit hydrograph for computing subbasin hydrograph from direct runoff
       do j = 1, sp_ob%hru
         ql = 0.

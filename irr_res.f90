@@ -47,18 +47,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cnv         |none          |conversion factor (mm => m^3)
-!!    flag        |none          |irrigation flag:
-!!                               |0 no irrigation operation on current day
-!!                               |1 scheduled irrigation
-!!                               |2 auto irrigation
-!!    jres        |none          |reservoir number
-!!    k           |none          |HRU number
-!!    vmm         |mm H2O        |depth of irrigation water over HRU
-!!    vmxi        |mm H2O        |amount of water specified in irrigation
-!!                               |operation
-!!    vol         |m^3 H2O       |volume of water applied in irrigation 
-!!                               |operation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -72,10 +60,29 @@
       use tiles_data_module
       use reservoir_module
       use hydrograph_module, only : res
+      
+      implicit none
 
-      integer :: k, flag
-      real :: cnv, vmm, vol, vmxi, sq_rto
+      integer :: k             !none          |HRU number          
+      integer ::flag           !none          |irrigation flag:
+                               !              |0 no irrigation operation on current day
+                               !              |1 scheduled irrigation
+                               !              |2 auto irrigation
 
+      real :: cnv              !none          |conversion factor (mm => m^3)
+      real :: vmm              !mm H2O        |depth of irrigation water over HRU
+      real :: vmxi             !mm H2O        |amount of water specified in irrigation
+                               !              |operation
+      real :: vol              !m^3 H2O       |volume of water applied in irrigation 
+                               !              |operation
+      integer :: jres          !none          |reservoir number
+      integer :: ipot          !none          |number of HRU (in subbasin) that is ponding
+                               !              |water--the HRU that the surface runoff from
+                               !              |current HRU drains into. This variable is
+                               !              |used only for rice paddys or closed
+                               !              |depressional areas 
+      real :: sq_rto           !              |
+      
       do k = 1, nhru
         if (irrsc(k) == 2 .and. irrno(k) == jres) then
 

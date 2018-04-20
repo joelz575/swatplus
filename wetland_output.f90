@@ -3,6 +3,11 @@
       use time_module
       use basin_module
       use reservoir_module
+      
+      implicit none
+      
+      integer :: j             !none          |hru number
+      real :: const            !              |constant used for rate, days, etc
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs reservoir output variables    

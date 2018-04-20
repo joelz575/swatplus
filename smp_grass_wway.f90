@@ -22,19 +22,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    peakr       |m^3/s         |peak runoff rate for the day 
-!!	chflow_m3   |m^3/s         |Runoff in CMS
-!!	chflow_day	|m^3/day	   |Runoff
-!!	K           |m^3/s         |Total number of HRUs plus this HRU number
 !!	rcharea     |m^2           |cross-sectional area of flow
-!!    rchdep      |m             |depth of flow on day
-!!    sf_area     |m^2           |area of waterway sides in sheetflow
-!!    sf_sed      |kg/m^2        |sediment loads on sides of waterway
-!!    surq_remove |%             |percent of surface runoff capture in VFS
-!!    sed_remove  |%             |percent of sediment capture in VFS
-!!    vc          |m/s           |flow velocity in reach
-!!	Sedin		|mg			   | Sediment in waterway 
-!!	Sedint   	|mg			   | Sediment into waterway channel
-!!	Sedout		|mg			   | Sediment out of waterway channel
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 
@@ -45,9 +33,39 @@
         bactrop, bactsedlp, bactsedp, npmx, peakr, rcharea, sdti
       use constituent_mass_module
       use channel_velocity_module
+      
+      implicit none
 
-      real :: chflow_m3, sf_area, surq_remove, sf_sed, sed_remove, vc,      &
-            chflow_day
+      real :: chflow_m3              !m^3/s         |Runoff in CMS
+      real :: sf_area                !m^2           |area of waterway sides in sheetflow
+      real :: surq_remove            !%             |percent of surface runoff capture in VFS
+      real :: sed_remove             !%             |percent of sediment capture in VFS
+      real :: sf_sed                 !kg/m^2        |sediment loads on sides of waterway
+      real :: vc                     !m/s           |flow velocity in reach
+      real :: chflow_day             !m^3/day	    |Runoff
+      integer :: j                   !none          |HRU number
+      real :: rchdep                 !m             |depth of flow on day
+      real :: p                      !              |
+      real :: rh                     !m             |hydraulic radius
+      real :: qman                   !m^3/s or m/s  |flow rate or flow velocity 
+      real :: sedin                  !mg		    |Sediment in waterway 
+      real :: sf_depth               !              |
+      real :: sedint                 !mg		    |Sediment into waterway channel
+      real :: cyin                   !              |
+      real :: cych                   !              |
+      real :: depnet                 !metric tons   |
+      real :: deg                    !metric tons   |sediment reentrained in water by channel
+                                     !              |degradation
+      real :: dep                    !              |
+      real :: sedout                 !mg	        | Sediment out of waterway channel
+      real :: sed_frac               !              |
+      real :: surq_frac              !              |
+      real :: sedtrap                !              | 
+      real :: xrem                   !              | 
+      integer :: k                   !m^3/s         |Total number of HRUs plus this HRU number
+      integer :: icmd                !              |
+      
+      
 !!	set variables
       j = ihru
 

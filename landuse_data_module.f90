@@ -1,4 +1,6 @@
       module landuse_data_module
+    
+      implicit none
      
       type land_use_management
         character (len=16) :: name = " "

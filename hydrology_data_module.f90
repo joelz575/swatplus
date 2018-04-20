@@ -1,4 +1,6 @@
       module hydrology_data_module
+    
+      implicit none
      
       type hydrology_db
          character(len=16) :: name

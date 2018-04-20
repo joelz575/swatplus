@@ -31,14 +31,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ii          |none          |variable to hold calculated value
-!!    j           |none          |counter
-!!    k           |none          |counter, and variable
-!!    rn          |none          |random number between 0.0 and 1.0
-!!    rndseed10   |none          |seed for random number generator that is 
-!!                               |used to reset other random number seeds
-!!    xx          |none          |dummy variable to accept function value
-!!                               |which is then discarded
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
@@ -50,9 +42,20 @@
       use climate_module
       use basin_module
       use maximum_data_module
+      
+      implicit none 
 
-      real :: xx, rn
-      integer :: ii, j, k, rndseed10
+      real :: xx           !none          |dummy variable to accept function value
+                           !              |which is then discarded
+      real :: rn           !none          |random number between 0.0 and 1.0
+      integer :: ii        !none          |variable to hold calculated value 
+      integer :: j         !none          |counter
+      integer :: k         !none          |counter, and variable
+      integer :: rndseed10 !none          |seed for random number generator that is 
+                           !              |used to reset other random number seeds 
+      integer :: iwgn      !none          |counter 
+      real :: aunif        !              |
+      
       
 !!    initialize random number array locator
       idg = (/1,2,3,4,5,6,7,8,9/)

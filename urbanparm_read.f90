@@ -4,14 +4,15 @@
       use maximum_data_module
       use urban_data_module
       
-      character (len=80) :: titldum
-      character (len=80) :: header
-      character (len=13) :: urbandb
-      integer :: eof, imax
+      implicit none
       
-      eof = 0
-      imax = 0
-      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: iu                   !none       |counter 
+           
       inquire (file=in_parmdb%urban_urb, exist=i_exist)
       if (i_exist == 0 .or. in_parmdb%urban_urb == 'null') then
           allocate (urbdb(0:0))

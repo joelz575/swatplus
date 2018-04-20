@@ -1,19 +1,24 @@
       module climate_module
+    
+      implicit none
       
-      integer :: ifirsts, ifirsth, ifirstw, ifirstpet
- !     real, dimension (:), allocatable :: rmeas
- !    real, dimension (:), allocatable :: txmeas
- !     real, dimension (:), allocatable :: tnmeas
- !     real, dimension (:), allocatable :: slrmeas
- !     real, dimension (:), allocatable :: rhmeas
- !     real, dimension (:), allocatable :: wndmeas
-      real, dimension (:,:), allocatable :: frad
-      real, dimension (:,:), allocatable :: wgncur,wgnold
-      integer, dimension (:), allocatable :: elevp,elevt
-      integer, dimension (:), allocatable :: idg
-      integer, dimension (:,:), allocatable :: rndseed
-      real, dimension (:), allocatable :: rnd2,rnd3,rnd8,rnd9
-      integer, dimension (:), allocatable :: ifirstt,ifirstpcp
+      real, dimension (:,:), allocatable :: frad                   !none          |fraction of solar radiation occuring 
+                                                                   !              |during hour in day in HRU
+      real, dimension (:,:), allocatable :: wgncur                 !none          |parameter to predict the impact of precip on
+                                                                   !              |other weather attributes
+      real, dimension (:,:), allocatable :: wgnold                 !none          |previous value of wgncur(:,:)
+      integer, dimension (:), allocatable :: elevp                 !m             |elevation of precipitation gage station
+      integer, dimension (:), allocatable :: elevt                 !m             |elevation of temperature gage station
+      integer, dimension (:), allocatable :: idg                   !none          |array location of random number seed
+                                                                   !              |used for a given process
+      integer, dimension (:,:), allocatable :: rndseed             !none          |random number generator seeds
+      real, dimension (:), allocatable :: rnd2                     !none          |random number between 0.0 and 1.0
+      real, dimension (:), allocatable :: rnd3                     !none          |random number between 0.0 and 1.0
+      real, dimension (:), allocatable :: rnd8                     !none          |random number between 0.0 and 1.0
+      real, dimension (:), allocatable :: rnd9                     !none          |random number between 0.0 and 1.0
+      !integer, dimension (:), allocatable :: ifirstt
+      !integer, dimension (:), allocatable :: ifirstpcp
+          
       !! this should go in the weather module
 
       type weather_generator_db      

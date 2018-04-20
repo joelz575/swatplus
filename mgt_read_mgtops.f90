@@ -4,10 +4,20 @@
       use maximum_data_module
       use mgt_operations_module
       
-      character (len=80) :: titldum
-      character (len=80) :: header
-      character (len=13) :: file
-      integer :: eof, nops, m_auto
+      implicit none       
+            
+      character (len=13) :: file      !           |
+      integer nops                    !           |end of loop
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: iops                 !none       |counter   
+      integer :: nauto                !           |end of loop
+      integer :: iauto                !none       |counter
+      integer :: isched               !none       |counter
+      integer :: m_autos              !           |end of loop
 
       eof = 0
       imax = 0

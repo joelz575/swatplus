@@ -6,6 +6,21 @@
       use topography_data_module
       use time_module
       use basin_module
+      
+      implicit none 
+      
+      integer :: ii                !none         |counter
+      integer :: ielem             !none         |counter
+      integer :: iob               !             | 
+      integer :: ith               !             | 
+      integer :: ifld              !             |
+      real :: tov                  !             |
+      real :: ch_slope             !             |
+      real :: ch_n                 !             |
+      real :: ch_l                 !             | 
+      real :: t_ch                 !hr           |time for flow entering the farthest upstream 
+                                   !             |channel to reach the subbasin outlet
+      real :: sumn                 !kg N/ha      |total amount of nitrate stored in soil profile
           
      ! compute weighted Mannings n for each subbasin
       do isub = 1, sp_ob%sub

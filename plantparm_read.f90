@@ -3,11 +3,17 @@
       use input_file_module
       use maximum_data_module
       use plant_data_module
+      
+      implicit none 
 
-      integer :: ic
-      character (len=80) :: titldum
-      character (len=80) :: header
-      integer :: eof, i, imax
+      integer :: ic                   !none       |counter
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: mpl                  !           | 
+      integer :: i_exist              !none       |check to determine if file exists
+      
       
       eof = 0
       imax = 0

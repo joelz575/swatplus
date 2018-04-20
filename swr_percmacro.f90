@@ -13,19 +13,8 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    crk         |mm H2O        |percolation due to crack flow
 !!    sepbtm(:)   |mm H2O        |percolation from bottom of soil profile for
 !!                               |the day in HRU
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    crklch      |none          |
-!!    j           |none          |HRU number
-!!    ly          |none          |counter (soil layer)
-!!    sepcrk      |mm H2O        |water entering cracks in soil
-!!    xx          |mm H2O        |water deficiency in soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -34,9 +23,14 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : soil, sepbtm, voltot, inflpcp, ihru, sepcrk, sepcrktot, volcrmin
+      
+      implicit none
 
-      integer :: j, ly
-      real :: crklch = 0.5, xx
+      integer :: j              !none          |HRU number
+      integer :: ly             !none          |counter (soil layer)
+      real :: crklch = 0.5      !none          | 
+      real :: xx                !mm H2O        |water deficiency in soil layer
+      real :: crk               !mm H2O        |percolation due to crack flow
 
       j = ihru
 

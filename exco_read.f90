@@ -4,10 +4,21 @@
       use input_file_module
       use organic_mineral_mass_module
       use maximum_data_module
+      
+      implicit none
  
-      character (len=80) :: titldum, header
-      character (len=16) :: namedum
-      integer :: eof, imax, ob1, ob2
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=16) :: namedum   !           |
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: ob1                  !none       |beginning of loop
+      integer :: ob2                  !none       |ending of loop
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: ii                   !none       |counter
+      integer :: iob                  !none       |counter
+      integer :: iexco                !           |
+      
 
       eof = 0
       imax = 0

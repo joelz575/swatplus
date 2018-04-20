@@ -1,14 +1,22 @@
-      subroutine sd_channel_surf_link (isdc, ics)
+        subroutine sd_channel_surf_link (isdc, ics)
                  
-      use hydrograph_module
-      use sd_channel_module
-      use ru_module
-      use hru_module, only : hru, ihru 
-      use topography_data_module
+        use hydrograph_module
+        use sd_channel_module
+        use ru_module
+        use hru_module, only : hru, ihru 
+        use topography_data_module
       
-      character (len=3) :: iobtyp
-      integer :: isdc, ics
-
+        implicit none 
+      
+        character (len=3) :: iobtyp   !none          |object type
+        integer :: isdc               !none          |counter
+        integer :: ics                !none          |counter 
+        integer :: ii                 !none          |counter 
+        integer :: i                  !              |
+        integer :: iob                !              |   
+        integer :: ith                !              |   
+        integer :: ifld               !              | 
+ 
         ii = 0
         ch_sur(ics)%dep(ii) = sd_chd(isdc)%chd
         ch_sur(ics)%wid(ii) = sd_chd(isdc)%chw

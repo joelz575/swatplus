@@ -105,14 +105,6 @@
 !!    surf_bs(12,:) |# colonies/ha|amount of persistent bacteria
 !!                                |sorbed lagged over one day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
 
@@ -124,9 +116,14 @@
       use constituent_mass_module
       use hru_module, only : hru, pst_lag, sedyld, surf_bs, ihru, hhsurf_bs, hhsedy, sanyld, silyld,     &
          clayld, sagyld, lagyld, sedorgn, sedorgp, surqno3, surqsolp, sedminpa, sedminps, brt,     &
-         hrupest, bactrolp, bactrop, bactsedlp, bactsedp, npmx  
-   
-      integer :: j, k
+         hrupest, bactrolp, bactrop, bactsedlp, bactsedp, npmx 
+      
+      implicit none
+ 
+      integer :: j         !none          |HRU number
+      integer :: k         !none          |counter
+      integer :: icmd      !              |
+      real :: sedprev      !              | 
 
       j = ihru
 

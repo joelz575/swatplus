@@ -55,21 +55,7 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    beadj       |(kg/ha)/(MJ/m**2)|radiation-use efficiency for a given CO2
-!!                                  |concentration
-!!    delg        |
-!!    deltalai    |
-!!    f           |none             |fraction of plant's maximum leaf area index
-!!                                  |corresponding to a given fraction of
-!!                                  |potential heat units for plant
-!!    ff          |
-!!    j           |none             |HRU number
-!!    laimax      |none             |maximum leaf area index
 !!    par         |MJ/m^2           |photosynthetically active radiation
-!!    reg         |none             |stress factor that most limits plant growth
-!!                                  |on current day
-!!    ruedecl     |none             |decline in radiation use efficiency for the
-!!                                  |plant
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -84,10 +70,30 @@
          ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, sumlai, uapd_tot, uno3d_tot, vpd
       use carbon_module
       
-      integer :: j, idp
-      real :: delg, ruedecl, beadj, reg, f, ff, deltalai
-      real :: laimax, lai_exp
-
+      implicit none 
+      
+      integer :: j       !none             |HRU number
+      integer :: idp     !                 |
+      real :: delg       !                 |
+      real :: ruedecl    !none             |decline in radiation use efficiency for the
+                         !                 |plant
+      real :: beadj      !(kg/ha)/(MJ/m**2)|radiation-use efficiency for a given CO2
+                         !                 |concentration
+      real :: reg        !none             |stress factor that most limits plant growth
+                         !                 |on current day
+      real :: f          !none             |fraction of plant's maximum leaf area index
+                         !                 |corresponding to a given fraction of
+                         !                 |potential heat units for plant 
+      real :: ff         !                 |
+      real :: deltalai   !                 |
+      real :: laimax     !none             |maximum leaf area index
+      real :: lai_exp    !                 |
+      real :: rto        !none             |cloud cover factor
+      integer :: min     !                 |
+      real :: biomxyr    !                 |
+      real :: sumlaiht   !                 |
+      integer :: jpl     !none             |counter
+  
       j = ihru
       rto = 1.
 

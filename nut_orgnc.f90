@@ -12,30 +12,20 @@
 !!                                |the model will calculate for every event
 !!    ihru          |none         |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units        |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    conc        |              |concentration of organic N in soil
-!!    er          |none          |enrichment ratio
-!!    j           |none          |HRU number
-!!    wt1         |none          |conversion factor (mg/kg => kg/ha)
-!!    xx          |kg N/ha       |amount of organic N in first soil layer
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use organic_mineral_mass_module
       use hru_module, only : soil, hru, ihru, sedorgn, sedyld, enratio 
+      
+      implicit none
 
-      integer :: j
-      real :: xx, wt1, er, conc
-
+      integer :: j        !none          |HRU number
+      real :: xx          !kg N/ha       |amount of organic N in first soil layer
+      real :: wt1         !none          |conversion factor (mg/kg => kg/ha)
+      real :: er          !none          |enrichment ratio
+      real :: conc        !              |concentration of organic N in soil
+      real :: xx1         !              |
+ 
       j = ihru
 
       !! HRU calculations

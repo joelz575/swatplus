@@ -2,9 +2,23 @@
 
       use time_module
       use hydrograph_module
+      
+      implicit none  
 
-      real, dimension(7) :: val = 0.
-      integer :: iyr
+      real, dimension(7) :: val = 0.      !             |
+      real :: sum                         !             |
+      integer :: iyr                      !none         |number of years
+      integer :: next                     !             |
+      integer :: npts                     !             |
+      integer :: ipts                     !             |
+      integer :: iprv                     !             |
+      integer :: mle                      !             |
+      integer :: nprob                    !             |
+      integer :: iday                     !             |
+      integer :: mfe                      !             |
+      integer :: iyr_ch                   !             | 
+      
+      
 
         !set linked list for daily flow duration curves
         ob(icmd)%fdc_ll(time%day)%val = ob(icmd)%hd(1)%flo

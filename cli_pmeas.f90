@@ -5,12 +5,24 @@
       use basin_module
       use input_file_module
       use time_module
+      
+      implicit none
             
-      character (len=80) :: header
-      character (len=80) :: titldum
-      character (len=5) :: hr_min
-      integer :: eof, imax, iyr
-       
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=5) :: hr_min     !           |
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: iyr                  !none       |number of years 
+      integer :: i_exist              !none       |check to determine if file exists 
+      integer :: mpcp                 !           |
+      integer :: i                    !none       |counter
+      integer :: istep                !           |
+      integer :: iyr_prev             !none       |previous year
+      integer :: iyrs                 !           |
+      integer :: iss                  !none       |counter
+      
+      
        mpcp = 0
        eof = 0
        imax = 0

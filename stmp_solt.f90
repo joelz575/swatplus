@@ -20,27 +20,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    b           |none          |variable to hold intermediate calculation
-!!    bcv         |none          |lagging factor for cover
-!!    dd          |mm            |damping depth for day
-!!    df          |none          |depth factor
-!!    dp          |mm            |maximum damping depth
-!!    f           |none          |variable to hold intermediate calculation 
-!!                               |result
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    st0         |MJ/m^2        |radiation hitting soil surface on day
-!!    tbare       |deg C         |temperature of bare soil surface
-!!    tcov        |deg C         |temperature of soil surface corrected for
-!!                               |cover
-!!    tlag        |none          |lag coefficient for soil temperature
-!!    tmp_srf     |deg C         |temperature of soil surface
-!!    wc          |none          |scaling factor for soil water impact on daily
-!!                               |damping depth
-!!    ww          |none          |variable to hold intermediate calculation
-!!    xx          |none          |variable to hold intermediate calculation
-!!    zd          |none          |ratio of depth at center of layer to
-!!                               |damping depth
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -53,10 +32,30 @@
       use hru_module, only : soil, sno_hru, hru_ra, iseptic, ihru, sol_cov, tmpav, tmx, tmn, i_sep, iwgen,  &
          albday, isep 
       use time_module
+      
+      implicit none
 
-      integer :: j, k
-      real :: f, dp, ww, b, wc, dd, xx, st0
-      real :: tlag, df, zd, bcv, tbare, tcov, tmp_srf
+      integer :: j               !none          |HRU number
+      integer :: k               !none          |counter
+      real :: f                  !none          |variable to hold intermediate calculation 
+                                 !              |result
+      real :: dp                 !mm            |maximum damping depth
+      real :: ww                 !none          |variable to hold intermediate calculation
+      real :: b                  !none          |variable to hold intermediate calculation
+      real :: wc                 !none          |scaling factor for soil water impact on daily
+                                 !              |damping depth
+      real :: dd                 !mm            |damping depth for day
+      real :: xx                 !none          |variable to hold intermediate calculation
+      real :: st0                !MJ/m^2        |radiation hitting soil surface on day
+      real :: tlag               !none          |lag coefficient for soil temperature
+      real :: df                 !none          |depth factor
+      real :: zd                 !none          |ratio of depth at center of layer to
+                                 !              |damping depth 
+      real :: bcv                !none          |lagging factor for cover
+      real :: tbare              !deg C         |temperature of bare soil surface
+      real :: tcov               !deg C         |temperature of soil surface corrected for
+                                 !              |cover
+      real :: tmp_srf            !deg C         |temperature of soil surface
 
       j = 0
       j = ihru

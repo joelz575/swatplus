@@ -3,40 +3,22 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    erfc is the complementary error function; 
 !!    erf(B) is the error function for B
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    xx          |              |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    erfc        |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    c1          |              |
-!!    c2          |              |
-!!    c3          |              |
-!!    c4          |              |
-!!    erf         |              |
-!!    x           |none          |variable to hold intermediate 
-!!                               |calculation result
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Abs
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      real, parameter :: c1 = .19684, c2 = .115194 
-      real, parameter :: c3 = .00034, c4 = .019527
-      real, intent (in) :: xx
-      real :: x, erf, hru_erfc
+      implicit none
+
+      real, parameter :: c1 = .19684             !              |
+      real, parameter :: c2 = .115194            !              |
+      real, parameter :: c3 = .00034             !              |
+      real, parameter :: c4 = .019527            !              |
+      real, intent (in) :: xx                    !              |
+      real :: x                                  !none          |variable to hold intermediate 
+                                                 !              |calculation result
+      real :: erf                                !              |
+      real :: hru_erfc                           !              |
 
       x = 0.
       erf = 0.

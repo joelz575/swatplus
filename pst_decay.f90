@@ -27,19 +27,6 @@
 !!    plt_pst(:,:)  |kg/ha         |pesticide on plant foliage
 !!    sol_pst(:,:,:)|kg/ha         |pesticide in soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    kk          |none          |pesticide number from pest.dat
-!!    l           |none          |counter (soil layers)
-!!    x1          |kg/ha         |amount of pesticide present at beginning of 
-!!                               |day
-!!    xx          |kg/ha         |amount of pesticide present at end of day
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -48,8 +35,16 @@
       use hru_module, only : soil, hru, hrupest, ihru, npmx
       use constituent_mass_module
       
-      integer :: j, k, kk, l
-      real :: x1, xx
+      implicit none 
+      
+      integer :: j               !none     |counter
+      integer :: k               !         |
+      integer :: kk              !         |  
+      integer :: l               !none     |counter 
+      real :: x1                 !kg/ha    |amount of pesticide present at beginning of 
+                                 !         |day
+      real :: xx                 !kg/ha    |amount of pesticide present at end of day
+      integer :: icmd            !         |  
    
       j = 0
       j = ihru

@@ -4,6 +4,8 @@
       use basin_module
       use hydrograph_module, only : sp_ob
       use hru_module, only : prog
+      
+      implicit none 
             
 !!!  CHANNEL
       !if (sp_ob%chan > 0) then !subdaily main channel output, Jaehak 2017

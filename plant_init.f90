@@ -14,9 +14,36 @@
       use conditional_module
       use organic_mineral_mass_module
       
-      integer, intent (in) :: init
-      integer :: icom, idp
-  
+      implicit none
+      
+      integer, intent (in) :: init   !           |
+      integer :: icom                !           |
+      integer :: idp                 !           |
+      integer :: j                   !none       |counter
+      integer :: ilug                !none       |counter 
+      integer :: iob                 !           |
+      integer :: iwgn                !           |
+      integer :: mo                  !none       |counter 
+      integer :: imo                 !none       |counter 
+      integer :: iday                !none       |counter 
+      integer :: iplt                !none       |counter 
+      integer :: i                   !none       |counter  
+      integer :: icn                 !none       |counter 
+      integer :: icp                 !none       |counter 
+      integer :: ilum                !none       |counter 
+      integer :: idb                 !none       |counter 
+      integer :: isched              !           |
+      real :: phutot                 !heat unit  |total potential heat units for year (used
+                                     !           |when no crop is growing)
+      real :: grow_start             !           |
+      real :: grow_end               !           | 
+      real :: tave                   !           |
+      real :: phuday                 !           |
+      real :: xx                     !           |
+      real :: xm                     !           |
+      real :: sin_sl                 !           |
+      real :: sl_len                 !           | 
+     
       j = ihru
       
       !!assign land use pointers for the hru

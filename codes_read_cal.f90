@@ -8,9 +8,19 @@
        use hru_lte_module
        use sd_channel_module
        use organic_mineral_mass_module
+       
+       implicit none
       
-       character (len=80) :: titldum, header
-       integer :: eof, icom
+       character (len=80) :: titldum   !           |title of file
+       character (len=80) :: header    !           |header of file
+       integer :: eof                  !           |end of file
+       integer :: icom                 !           | 
+       integer :: i_exist              !none       |check to determine if file exists
+       integer :: ical                 !           |
+       integer :: j                    !none       |counter
+       integer :: nplt                 !           |
+       integer :: nly1                 !           |
+       
        
        eof = 0
 

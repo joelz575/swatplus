@@ -7,6 +7,12 @@
       !!  1 = yearly
       !!  2 = monthly
       !!  3 = daily  
+      
+      implicit none
+      
+      integer :: ii             !              |
+      integer :: i              !              | 
+      real :: csvout            !              |
      
       ii = 0
       icmd = sp_ob1%objs

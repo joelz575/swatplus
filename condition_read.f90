@@ -9,10 +9,22 @@
       use input_file_module
       use conditional_module
       
-      character (len=80) :: titldum
-      character (len=80) :: header
+      implicit none
+                  
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
       character (len=13) :: file
-      integer :: eof, i, mdtbl, ic, ial, iac
+      integer :: eof                  !           |end of file
+      integer :: i                    !none       |counter 
+      integer :: mdtbl                !none       |ending of loop
+      integer :: ic                   !none       |counter 
+      integer :: ial                  !none       |counter 
+      integer :: iac                  !none       !counter 
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: idb                  !none       |counter
+      integer :: ilum                 !none       |counter
+      integer :: iburn                !none       |counter
+      
       
       mdtbl = 0
       eof = 0

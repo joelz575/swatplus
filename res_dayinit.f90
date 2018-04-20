@@ -7,6 +7,13 @@
       use basin_module
       use hru_module, only : resclao, resgrao, reslago, ressago, ressano
       use reservoir_module
+      
+      implicit none
+      
+      real :: ressedc                  !              |
+      real :: ressilo                  !              |
+      real :: solpesti                 !              |soluble pesticide 
+      real :: sorpesti                 !              |
 
 !! initialize daily variables
       bury = 0.

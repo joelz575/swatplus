@@ -16,12 +16,25 @@
 
 	use hru_module, only : soil
     
-	integer, intent (in) :: jj
-      real, intent (in) :: bmix
-      integer :: l, m1, m2
-      real :: emix, dtil
-	real :: sol_thick(soil(jj)%nly)
-	
+    implicit none
+    
+	integer, intent (in) :: jj        !none           |HRU number
+    real, intent (in) :: bmix         !none           |biological mixing efficiency: this 
+                                      !               |number is zero for tillage operations
+    integer :: l                      !none           |counter 
+    integer ::m1                      !none           |array location (see definition of ndays)
+    integer :: m2                     !               |
+    real :: emix                      !none           |mixing efficiency
+    real :: dtil                      !mm             |depth of mixing
+    real :: XX                        !varies         |variable to hold calculation results
+	real :: sol_thick(soil(jj)%nly)   !               | 
+    integer :: j                      !none           |counter
+    real :: zz                        !               |
+    real :: yy                        !               |
+    real :: xx1                       !               | 
+    real :: xx2                       !               | 
+    real :: csdr                      !               | 
+      
 	emix = emix - bmix ! this is to avoid affecting tillage factor with biological mixing
 	
 	if (emix > 0.) then

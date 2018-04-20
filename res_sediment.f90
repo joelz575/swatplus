@@ -7,15 +7,36 @@
       use time_module
       use hru_module, only : resclai, resclao, resgrai, resgrao, ressagi, ressago, ressani, ressano, ressili, ressilo
       use hydrograph_module, only : res
-
-	real :: sed,san,sil,cla,sag,lag,gra
-	real :: inised, finsed, setsed, remsetsed
-
+      
+      implicit none
+            
+	  real :: sed                 !              |
+      real :: san                 !              |
+      real :: sil                 !              |
+      real :: cla                 !              |
+      real :: sag                 !              |
+      real :: lag                 !              |
+      real :: gra                 !              |
+	  real :: inised              !              |
+      real :: finsed              !              |
+      real :: setsed              !              |
+      real :: remsetsed           !              |
+      integer :: jres             !none          |reservoir number
+      real :: velofl              !              |  
+      integer :: ised             !none          |counter
+      real :: trapres             !              |
+      real :: susp                !              |
+      real :: vol                 !m^3 H2O       |volume of water applied in irrigation 
+      real :: reslagi             !              | 
+      real :: reslago             !              |
+      real :: ressedc             !              |
+      integer :: ihyd             !none          |counter 
+  
       !! store initial values
-	inised = 0.
-	finsed = 0.
-	setsed = 0.
-	remsetsed = 0.
+	  inised = 0.
+	  finsed = 0.
+	  setsed = 0.
+	  remsetsed = 0.
 
       if (res(jres)%flo < 1.e-6) then
         !reservoir is empty

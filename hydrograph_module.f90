@@ -3,13 +3,29 @@
       use time_module
       use basin_module
       
-      integer :: mhyd, mcmd,inum2,jrch,jrchq,mrte,ihout,iwst,isdch
-      integer :: icmd, ich, mobj_out, isd_chsur
-      integer, dimension (:), allocatable :: rcv_sum, dfn_sum, elem_cnt, ru_seq
-      real, dimension (:), allocatable :: hyd_km2
-      integer, dimension (:), allocatable :: ob_order
-      real, dimension(:,:,:), allocatable:: rchhr
-      integer, dimension (8) :: fdc_p = (/18,36,91,182,274,328,347,366/)
+      implicit none
+      
+      integer :: mhyd                                                    !none          |max number of hydrographs
+      integer :: mcmd                                                    !              |
+      integer :: inum2                                                   !none          |inflow hydrograph storage location number
+      integer :: jrch                                                    !none          |reach number
+      integer :: jrchq                                                   !              |
+      integer :: mrte                                                    !              |
+      integer :: ihout                                                   !none          |outflow hydrograph storage location number
+      integer :: iwst                                                    !              | 
+      integer :: isdch                                                   !              |
+      integer :: icmd                                                    !              |
+      integer :: ich                                                     !none          |object number 
+      integer :: mobj_out                                                !none          |end of loop
+      integer :: isd_chsur                                               !              | 
+      integer, dimension (:), allocatable :: rcv_sum                     !              |
+      integer, dimension (:), allocatable :: dfn_sum                     !              |
+      integer, dimension (:), allocatable :: elem_cnt                    !              |
+      integer, dimension (:), allocatable :: ru_seq                      !              |
+      real, dimension (:), allocatable :: hyd_km2                        !              |  
+      integer, dimension (:), allocatable :: ob_order                    !              |
+      real, dimension(:,:,:), allocatable:: rchhr                        !              |
+      integer, dimension (8) :: fdc_p = (/18,36,91,182,274,328,347,366/) !              |
       
       type hyd_output
         real :: flo = 0.               !! m^3          |volume of water

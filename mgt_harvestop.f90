@@ -6,15 +6,11 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cnyld(:)    |kg N/kg yield  |fraction of nitrogen in yield
-!!    cpyld(:)    |kg P/kg yield  |fraction of phosphorus in yield
 !!    curyr       |none           |current year in simulation
 !!    harveff       |none         |harvest efficiency: fraction of harvested 
 !!                                |yield that is removed from HRU; the 
 !!                                |remainder becomes residue on the soil
 !!                                |surface
-!!    hi_ovr      |(kg/ha)/(kg/ha)|harvest index target specified at
-!!                                |harvest
 !!    hru_dafr(:) |km2/km2        |fraction of watershed area in HRU
 !!    hrupest(:)  |none           |pesticide use flag:
 !!                                | 0: no pesticides used in HRU
@@ -43,18 +39,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    clip        |kg/ha          |yield lost during harvesting
-!!    clipn       |kg N/ha        |nitrogen in clippings
-!!    clipp       |kg P/ha        |phosphorus in clippings
-!!    clippst     |kg pst/ha      |pesticide in clippings
-!!    hiad1       |none           |actual harvest index (adj for water/growth)
-!!    j           |none           |HRU number
-!!    k           |none           |counter
-!!    wur         |none           |water deficiency factor
-!!    yield       |kg             |yield (dry weight)
-!!    yieldn      |kg N/ha        |nitrogen removed in yield
-!!    yieldp      |kg P/ha        |phosphorus removed in yield
-!!    yldpst      |kg pst/ha      |pesticide removed in yield
 !!    xx          |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -71,19 +55,61 @@
       use constituent_mass_module
       use carbon_module
       
-      integer :: j, k, idp
-      integer, intent (in) :: jj, iplant, iharvop 
-
-!!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f
-!!    real :: hiad1, wur, yield, clip, yieldn, yieldp, clipn, clipp
-      real :: hiad1, wur, clip, yieldn, yieldp, clipn, clipp
-      real :: yldpst, clippst, rtresnew
+      implicit none
+     
+      integer :: j                     !none           |HRU number
+      integer :: k                     !none           |counter
+      integer :: idp                   !               |
+      integer, intent (in) :: jj       !none           |counter
+      integer, intent (in) :: iplant   !               |plant number xwalked from hlt_db()%plant and plants.plt
+      integer, intent (in) :: iharvop  !               |harvest operation type
+      integer :: ipl                   !none           |counter
+      integer :: orgc_f                !fraction       |fraction of organic carbon in fertilizer
+      integer :: l                     !               |
+      integer :: icmd                  !               |
+      integer :: nssr                  !none           |the new mass of roots
+      real :: hiad1                    !none           |actual harvest index (adj for water/growth)
+      real :: wur                      !none           |water deficiency factor
+      real :: clip                     !kg/ha          |yield lost during harvesting
+      real :: clipn                    !kg N/ha        |nitrogen in clippings
+      real :: clipp                    !kg P/ha        |phosphorus in clippings
+      real :: clippst                  !kg pst/ha      |pesticide in clippings
+      real :: yieldn                   !               |
+      real :: yieldp                   !               |
+      real :: yldpst                   !kg pst/ha      |pesticide removed in yield
+      real :: rtresnew                 !               |
+      real :: rtfr                     !none           |root fraction
+      real :: rtres                    !               | 
+      real :: rtresn                   !               |           
+      real :: rtresp                   !               | 
+      real :: ff3                      !               | 
+      real :: ff4                      !               | 
+      real :: xx                       !none           |variable to hold calculation value  
+      real :: yield                    !kg             |yield (dry weight)
+      real :: ssb                      !               |
+      real :: ssp                      !               | 
+      real :: ssn                      !               | 
+      real :: ssr                      !               | 
+      real :: ssabg                    !               | 
+      real :: hi_ovr                   !!kg/ha)/(kg/ha)|harvest index target specified at harvest
       !!add by zhang
       !!===================
-      real :: BLG1, BLG2, BLG3,  CLG, sf
-      real :: sol_min_n, resnew, resnew_n, resnew_ne
-      real :: LMF, LSF, LSLF, LSNF,LMNF 
-      real ::  RLN, RLR
+      real :: RLN                      !               |  
+      real :: rlr                      !fraction       |fraction of lignin in the added residue
+      real :: BLG1                     !               |LIGNIN FRACTION IN PLANT AT .5 MATURITY
+      real :: BLG2                     !               |LIGNIN FRACTION IN PLANT AT MATURITY 
+      real :: BLG3                     !               |             
+      real :: CLG                      !               | 
+      real :: sf                       !fraction       |fraction of mineral n sorbed to litter: 0.05 for surface litter, 0.1 for belowground litter 
+      real :: sol_min_n                !               |
+      real :: resnew                   !               |
+      real :: resnew_n                 !               |
+      real :: resnew_ne                !               |
+      real :: LMF                      !frac           |fraction of the litter that is metabolic
+      real :: LSF                      !frac           |fraction of the litter that is structural
+      real :: LMNF                     !kg kg-1        |fraction of metabolic litter that is N
+      real :: LSLF                     !kg kg-1        |fraction of structural litter that is lignin 
+      real :: LSNF                     !kg kg-1        |fraction of structural litter that is N	
 
       orgc_f = 0.
       BLG1 = 0.

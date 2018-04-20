@@ -4,7 +4,21 @@
       use time_module
       use ru_module
       use hydrograph_module, only : sp_ob
-
+      
+      implicit none       
+      
+      integer :: isb        !none        |counter
+      real :: ql            !            |  
+      real :: sumq          !            |
+      real :: tb            !            |
+      real :: tp            !none        !time to peak flow 
+      integer :: i          !none        |counter
+      integer :: int        !            |
+      real :: xi            !            | 
+      real :: q             !            |
+      integer :: max        !            |maximum 
+      real :: uhalpha       !none        !alpha coeff for est unit hydrograph using gamma func
+ 
       if (time%step > 0) then
 !!    compute unit hydrograph for computing subbasin hydrograph from direct runoff
       do isb = 1, sp_ob%sub

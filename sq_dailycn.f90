@@ -22,16 +22,6 @@
 !!    cnday(:)    |none          |curve number for current day, HRU and at 
 !!                               |current soil moisture
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    r2          |none          |retention parameter in CN equation
-!!    xx          |none          |variable used to store intermediate
-!!                               |calculation result
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp
 
@@ -41,10 +31,14 @@
       use basin_module
       use hru_module, only : soil, cnday, wrt, smx, sci, ihru
       
-      integer :: j   
-
-      real :: xx, r2
-
+      implicit none
+ 
+      integer :: icn     !none          |counter
+      integer :: j       !none          |HRU number
+      real :: r2         !none          |retention parameter in CN equation
+      real :: xx         !none          |variable used to store intermediate
+                         !              |calculation result
+                         
       j = ihru
 
       xx = wrt(1,j) - wrt(2,j) * soil(j)%sw

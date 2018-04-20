@@ -78,57 +78,55 @@
 !!    sedminps(:) |kg P/ha       |amount of stable mineral phosphorus sorbed to
 !!                               |sediment in surface runoff in HRU for day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    drain_vfs1  |ha	           |drainage area of vfs section 1
-!!    drain_vfs2  |ha	           |drainage area of vfs section 2
-!!    area_vfs1   |ha	           |Area of vfs section 1
-!!    area_vfs2   |ha	           |Area of vfs section 2
-!!    vfs_depth1  |mm	           |Runoff Loading for vfs section 1
-!!    vfs_depth2  |mm	           |Runoff Loading for vfs section 2
-!!    vfs_sed1    |kg/m^2        |sediment loading for vfs section 1
-!!    vfs_sed2    |kg/m^2        |sediment loading for vfs section 2
-!!    surq_remove1|%             |Surface runoff removal for for vfs section 1
-!!    surq_remove2|%             |Surface runoff removal for for vfs section 2
-!!    surq_remove |%             |Average surface runoff removal for for entire vfs
-!!    sed_remove1 |%             |sediment removal for for vfs section 1
-!!    sed_remove2 |%             |sediment removal for for vfs section 2
-!!    sed_remove  |%             |Average sediment removal for for entire vfs 
-!!        remove1 |%             |Generic removal for for vfs section 1 
-!!                               |(recycled for constituants)
-!!        remove2 |%             |Generic removal for for vfs section 2 
-!!                               |(recycled for constituants)
-!!    orgn_remove |%	           |Average organic N removal from surface 
-!!                               |runoff for for entire vfs
-!! surqno3_remove |%	           |Average nitrate removal from surface 
-!!                               |runoff for for entire vfs
-!!   partp_remove |%	           |Average particulate P removal from surface
-!!                               | runoff for for entire vfs
-!!   solP_remove	|%	           |Average soluble P removal from surface 
-!!                               |runoff for for entire vfs				
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use basin_module
-      use hru_module, only : hru, soil, surfq, ihru, sagyld, silyld, clayld, lagyld, sedorgn, surqno3, sedminpa,  &
-        sedminps, sedorgp, surqsolp, sedyld, sanyld, hrupest, hru_dafr, bactrolp, bactrop, bactsedlp,       &
-        bactsedp, npmx, sbactrolp, sbactrop, sbactsedlp, sbactsedp
-      use constituent_mass_module
-      use time_module
+    use basin_module
+    use hru_module, only : hru, soil, surfq, ihru, sagyld, silyld, clayld, lagyld, sedorgn, surqno3, sedminpa,  &
+      sedminps, sedorgp, surqsolp, sedyld, sanyld, hrupest, hru_dafr, bactrolp, bactrop, bactsedlp,             &
+      bactsedp, npmx, sbactrolp, sbactrop, sbactsedlp, sbactsedp
+    use constituent_mass_module
+    use time_module
+      
+    implicit none
 
-      integer :: j, k
-      real :: sdrain_vfs1, drain_vfs2, area_vfs1, area_vfs2, vfs_depth1,     &
-        vfs_depth2, vfs_sed1, vfs_sed2, surq_remove1, surq_remove2,          &
-        surq_remove, sed_remove1, sed_remove2, sed_remove, remove1,          &
-        remove2, orgn_remove, surqno3_remove, partp_remove, solP_remove,     &
-        sedtrap, xrem
-
-      j = ihru
+    integer :: i              !                |
+    integer :: j              !none            |hru number
+    integer :: k              !none            |counter
+    real :: drain_vfs1        !ha	           |drainage area of vfs section 1
+    real :: drain_vfs2        !ha	           |drainage area of vfs section 2
+    real :: drain_vfs3        !	           |
+    real :: area_vfs1         !ha	           |Area of vfs section 1
+    real :: area_vfs2         !ha	           |Area of vfs section 2
+    real :: vfs_depth1        !mm	           |Runoff Loading for vfs section 1
+    real :: vfs_depth2        !mm	           |Runoff Loading for vfs section 2
+    real :: vfs_sed1          !kg/m^2          |sediment loading for vfs section 1
+    real :: vfs_sed2          !kg/m^2          |sediment loading for vfs section 2
+    real :: surq_remove1      !%               |Surface runoff removal for for vfs section 1
+    real :: surq_remove2      !%               |Surface runoff removal for for vfs section 2
+    real :: surq_remove       !%               |Average surface runoff removal for for entire vfs
+    real :: sed_remove1       !%               |sediment removal for for vfs section 1
+    real :: sed_remove2       !%               |sediment removal for for vfs section 2
+    real :: sed_remove        !%               |Average sediment removal for for entire vfs 
+    real :: remove1           !%               |Generic removal for for vfs section 1 
+                              !                |(recycled for constituants)
+    real :: remove2           !%               |Generic removal for for vfs section 2 
+                              !                |(recycled for constituants)
+    real :: sedtrap           !                | 
+    real :: xrem              !                ! 
+    real :: vfs_ratio1        !                !
+    real :: vfs_ratio2        !                !
+    real :: orgn_remove       !%	           |Average organic N removal from surface 
+                              !                |runoff for for entire vfs
+    real :: surqno3_remove    !%	           |Average nitrate removal from surface 
+                              !                |runoff for for entire vfs
+    real :: partp_remove      !%	           |Average particulate P removal from surface
+                              !                | runoff for for entire vfs
+    real :: solP_remove       !%	           |Average soluble P removal from surface 
+                              !                |runoff for for entire vfs	
+    real :: remove21          !                |
+    integer :: icmd           !                |
+   
+    j = ihru
 
 	if (i == 100) then 
 	remove2=0

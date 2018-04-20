@@ -7,18 +7,47 @@
       use hru_module, only : pcom, soil, igrz, ndeat, bio_min, bio_eat,  &
         bio_trmp, manure_id, manure_kg, grz_days, ihru, grazn, grazp  
       use carbon_module
+      
+      implicit none 
 
-      integer :: j         !!none        |HRU number
-      integer :: l         !!none        |number of soil layer that manure applied
-      integer :: it        !!none        |manure/fertilizer id from fertilizer.frt
-      real :: gc           !!
-      real :: gc1          !!
-      real :: swf          !!
-      real :: frt_t        !!
-      real :: xx           !!
-      real :: dmi          !!kg/ha       |biomass in HRU prior to grazing
-      real :: dmii         !!kg/ha       |biomass prior to trampling
-
+      integer :: j         !none        |HRU number
+      integer :: l         !none        |number of soil layer that manure applied
+      integer :: it        !none        |manure/fertilizer id from fertilizer.frt
+      real :: gc           !            |
+      real :: gc1          !            |
+      real :: swf          !            |
+      real :: frt_t        !            |
+      real :: xx           !none        |variable to hold intermediate calculation
+                           !            |result
+      real :: dmi          !kg/ha       |biomass in HRU prior to grazing
+      real :: dmii         !kg/ha       |biomass prior to trampling
+      real :: zz           !none        |variable to hold intermediate calculation
+                           !            |result
+      real :: yz
+      real :: yy           !none        |variable to hold intermediate calculation
+                           !            |result
+      real :: xz           !            |the amount of organic carbon allocated to structural litter C pool  
+      real :: xxx          !            |the amount of organic carbon allocated to metabolic litter C pool
+      real :: x8           !            |organic carbon applied (kg C/ha)   
+      real :: x10          !frac        |the fraction of carbon in fertilizer that is allocated to metabolic litter C pool
+      real :: x1           !            |fertlizer applied to layer (kg/ha)
+      real :: sol_min_n    !            |
+      real :: sf           !frac        |fraction of mineral n sorbed to litter: 0.05 for surface litter, 0.1 for belowground litter 
+      real :: rlr          !frac        |fraction of lignin in the added residue
+      real :: rln          !            |
+      real :: resnew_ne    !            |
+      real :: resnew_n     !            |
+      real :: resnew       !            |  
+      real :: orgc_f       !frac        |fraction of organic carbon in fertilizer
+      real :: lsf          !frac        |fraction of the litter that is structural
+      real :: lmf          !frac        |fraction of the litter that is metabolic 
+      integer :: ipl       !none        |counter
+      real :: clg          !            |
+      real :: blg1         !            |LIGNIN FRACTION IN PLANT AT .5 MATURITY
+      real :: blg2         !            |LIGNIN FRACTION IN PLANT AT MATURITY 
+      real :: blg3         !            |     
+      real :: bioms_tot    !            |  
+  
       j = ihru
       
       bioms_tot = 0.

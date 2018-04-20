@@ -11,8 +11,15 @@
 !!
       use hru_module, only : soil, ihru, latqrunon
       use hydrograph_module
+      
+      implicit none
 
-      real :: latqlyr, xslat
+      real :: latqlyr       !           |
+      real :: xslat         !           | 
+      integer :: j          !           |
+      integer :: iob        !           | 
+      integer :: dep        !           |  
+      integer :: lyr        !none       |counter
 
       j = ihru
       

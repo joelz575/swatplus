@@ -7,7 +7,19 @@
       use reservoir_module
       use hydrograph_module, only : res
       
-      real :: tpest1, tpest2, fd1, fp1, fd2, dlake, fp2
+      implicit none      
+      
+      real :: tpest1                !              |
+      real :: tpest2                !              |
+      real :: fd1                   !              |
+      real :: fd2                   !              |
+      real :: fp1                   !              |
+      real :: fp2                   !              |
+      real :: dlake                 !              |
+      integer :: jres               !none          |reservoir number  
+      integer :: ipst               !none          |counter
+      real :: solpesti              !              |soluble pesticide
+      real :: sorpesti              !              |
 
       tpest1 = res(jres)%psor
       tpest2 = res(jres)%psor

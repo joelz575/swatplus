@@ -7,9 +7,14 @@
       use output_landscape_module
       use hydrograph_module, only : sp_ob1, ob
       
-      integer, intent (in) :: ihru
-      integer :: idp
-             
+      implicit none
+      
+      integer, intent (in) :: ihru             !            |
+      integer :: idp                           !            |
+      integer :: j
+      integer :: iob
+      real :: const
+                         
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs HRU variables on daily, monthly and annual time steps
 

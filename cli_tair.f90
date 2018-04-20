@@ -4,24 +4,10 @@
 !!    this function approximates hourly air temperature from daily max and
 !!    min temperatures as documented by Campbell (1985)
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    tmp_hi(:)   |deg C         |last maximum temperature in HRU
-!!    tmp_lo(:)   |deg C         |last minimum temperature in HRU
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    tair        |deg C         |air temperature for hour in HRU
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hr          |none          |hour if the day
-!!    jj          |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -34,10 +20,15 @@
 !!    subroutine modified by SLN
 
       use climate_module
+      
+      implicit none
        
-      integer, intent (in) ::  jj
-      real, intent(in) :: hr
-      real :: cli_tair, tmp_lo, tmp_hi
+      integer, intent (in) ::  jj     !none          |HRU number
+      real, intent(in) :: hr          !none          |hour if the day
+      real :: cli_tair                !              |
+      real :: tmp_lo                  !deg C         |last minimum temperature in HRU
+      real :: tmp_hi                  !deg C         |last maximum temperature in HRU
+      integer :: iwst                 !none          |counter
 
 !! update hi or lo temperature depending on hour of day
       if (hr == 3) tmp_lo = wst(iwst)%weat%tmax

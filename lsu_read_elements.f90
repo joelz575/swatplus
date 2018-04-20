@@ -6,10 +6,26 @@
       use hydrograph_module
       use hru_module, only : ihru
       use output_landscape_module
-
-      character (len=80) :: titldum, header
-      integer :: eof
       
+      implicit none
+
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: nspu                 !           |
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: mcal                 !           |
+      integer :: mlsu                 !none       |counter
+      integer :: i                    !none       |counter
+      integer :: k                    !           |
+      integer :: isp                  !           |
+      integer :: ielem                !none       |counter
+      integer :: ii                   !none       |counter
+      integer :: ie1                  !none       |counter
+      integer :: ie2                  !none       |counter
+      integer :: ie                   !none       |counter
+            
       imax = 0
       mcal = 0
             

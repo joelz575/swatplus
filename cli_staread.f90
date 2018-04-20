@@ -5,9 +5,17 @@
     use climate_module
     use time_module
 
-    character (len=500) :: header
-    character (len=80) :: titldum
-    integer :: eof, imax
+    implicit none
+          
+    character (len=80) :: titldum   !           |title of file
+    character (len=80) :: header    !           |header of file
+    integer :: eof                  !           |end of file
+    integer :: imax                 !none       |determine max number for array (imax) and total number in file
+    integer :: iwgn                 !           |
+    integer :: i_exist              !none       |check to determine if file exists
+    integer :: iwst                 !none       |counter
+    integer :: i                    !none       |counter
+    
     eof = 0
     imax = 0
 

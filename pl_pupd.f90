@@ -43,8 +43,16 @@
       use plant_data_module
       use hru_module, only : pcom, up2, uapd, ihru, ipl, uptake
 
-      integer :: j, icrop, l, ir, idp 
-      real :: uapl, gx
+      implicit none
+
+      integer :: idp
+      integer :: icrop       !none      |land cover code
+      integer :: j           !none      |hru number
+      integer :: l           !none      |counter (soil layer)
+      integer :: ir          !none      |flag to denote bottom of root zone reached
+      real :: uapl           !kg P/ha   |amount of phosphorus removed from layer
+      real :: gx             !mm        |lowest depth in layer from which nitrogen
+                             !          |may be removed
 
       j = ihru
 

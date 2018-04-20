@@ -25,12 +25,8 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none        |HRU number
-!!    pkrf        |none        |intermediate calculation
-!!    pkrf30      |mm/hr       |maximum 30-min. storm intensity
 !!    xa          |none        |fraction of daily rainfall occuring during
 !!                             |half-hour of max intensity rain
-!!    xb          |none        |intermediate calculation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -43,9 +39,15 @@
       use hydrograph_module
       use hru_module, only : hru, usle_ei, usle_eifac, ovrlnd, ihru, iwgen, peakr, precipday, snomlt,  &
         usle_ei, usle_eifac
+      
+      implicit none
 
-      integer :: j
-      real :: xb, pkrf, pkrf30
+      integer :: j         !none        |HRU number
+      real :: xb           !none        |intermediate calculation
+      real ::pkrf          !none        |intermediate calculation
+      real ::pkrf30        !mm/hr       |maximum 30-min. storm intensity
+      integer :: iob       !            |
+     
 
       j = ihru
       iob = hru(j)%obj_no

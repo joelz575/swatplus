@@ -5,7 +5,11 @@
       use reservoir_module
       use hydrograph_module
       
-      integer, intent (in) :: j
+      implicit none
+      
+      integer, intent (in) :: j   !                |
+      integer :: iob              !                |
+      real :: const               !                |
       
       iob = sp_ob1%res + j - 1
 

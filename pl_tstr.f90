@@ -19,7 +19,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    rto         |
 !!    tgx         |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -33,8 +32,12 @@
       use plant_data_module
       use hru_module, only : pcom, tmpav, tmn, ihru, ipl, iwgen, tmn, tmpav
       
-      integer :: j, idp
-      real :: tgx, rto
+      implicit none 
+      
+      integer :: j             !none        |HRU number
+      integer :: idp           !            | 
+      real :: tgx              !            |
+      real :: rto              !none        |cloud cover factor
 
       j = ihru
 

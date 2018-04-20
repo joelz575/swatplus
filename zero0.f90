@@ -13,6 +13,58 @@
        wstrs_id,wt_shall,wtab,yr_skip
 
       use bacteria_module
+      
+      implicit none
+      
+      real :: ammonian                    !mg N/L             |ammonia concentration in reach
+      real :: bactkddb                    !none               |frac of bacteria in solution (remaining is sorbed to soil part)
+      real :: bactlpdb                    !# bact/kg frt      |conc of less persistent bacteria in fert
+      real :: bactpdb                     !# bact/kg frt      |conc of persistent bacteria in fert
+      real :: cbodcnst                    !                   |
+      real :: cbodmon                     !                   |
+      real :: cbodyr                      !                   |
+      real :: chlacnst                    !                   |
+      real :: chlayr                      !                   |
+      real :: chlamon                     !                   |
+      real :: dc                          !                   |
+      real :: curbden                     !km/ha              |curb length density 
+      real :: deptil                      !mm                 |depth of mixing caused by tillage operation
+      real :: dirtmx                      !kg/curb km         |maximum amount of solids allowed t
+                                          !                   |build up on impervious surfaces
+      real :: dorm_flag                   !                   |
+      real :: dtwt                        !                   |
+      real :: dz                          !                   |
+      real :: effmix                      !none               |mixing efficiency of tillage operation
+      real :: evrsv                       !none               |lake evap coeff
+      real :: fimp                        !fraction           |fraction of HRU area that is
+                                          !                   |impervious (both directly and
+                                          !                   |indirectly connected)
+      real :: fminn                       !kg minN/kg frt     |fract of fert which is mineral nit (NO3+NH3)
+      real :: fminp                       !kg minN/kg frt     |frac of fert which is mineral phos 
+      real :: fnh3n                       !kg NH3-N/kg N      |frac of mineral N content of fert which is NH3
+      real :: forgn = 0.                  !kg orgN/kg frt     |frac of fert which is org n
+      real :: forgp = 0.                  !kg orgP/kg frt     |frac of fert which is org p
+      real :: gee                         !none               |factor -g- in Kirkham equation
+      real :: gw_delaye                   !                   |
+      real :: hdrain                      !mm                 |equivalent depth from water surface in drain tube to
+                                          !                   |impermeable layer
+      real :: hqd                         !                   |
+      integer :: iop                      !none               !counter
+      integer :: ipest                    !none               !counter
+      integer :: irreff                   !                   |
+      integer :: irr_sq                   !                   |
+      integer :: idum                     !                   |
+      real :: pltnfr                      !kg N/kg biomass    |nitrogen uptake parameter normal fraction
+                                          !                   |of N in crop biomass at emergence 
+      real :: pltpfr                      !kg P/kg biomass    |phosphorus uptake parameter normal
+                                          !                   |fraction of P in crop biomass at emergence
+      real :: ranrns                      !mm                 |random roughness of a given tillage operation
+      real :: rchrg_n                     !                   |amount of nitrate getting to the shallow aquifer 
+      real :: sol_sumn03                  !                   |
+      real :: gw_qdeep                    !                   | 
+      real :: tile_no3                    !                   |
+      real :: eo_30d                      !                   |
+ 
 
       wtab = 0.8
 !    Drainmod tile equations  01/2006 

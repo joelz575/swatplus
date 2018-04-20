@@ -17,6 +17,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : lai_yrmx
+      
+      implicit none
 
       !! initialize variables/arrays at beginning of every year
       lai_yrmx = 0.

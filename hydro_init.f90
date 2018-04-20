@@ -27,18 +27,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    lat_ttime(:)|none          |Exponential of the lateral flow travel time
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    j           |none          |counter
-!!    l           |none          |counter
-!!    scmx        |mm/hr         |maximum soil hydraulic conductivity
-!!    t_ch        |hr            |time for flow entering the farthest upstream 
-!!                               |channel to reach the subbasin outlet
-!!    xx          |none          |variable to hold calculation result
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~  
 !!    SWAT: Ttcoef
 
@@ -56,9 +44,35 @@
       use time_module
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob, ob
+      
+      implicit none
 
-      integer :: j, l, idp
-      real :: t_ch, scmx, xx, tsoil
+      integer :: j              !none          |counter            
+      integer :: l              !none          |counter
+      integer :: idp            !              | 
+      real :: t_ch              !hr            |time for flow entering the farthest upstream 
+                                !              |channel to reach the subbasin outlet
+      real :: scmx              !mm/hr         |maximum soil hydraulic conductivity
+      real :: xx                !none          |variable to hold calculation result
+      real :: tsoil             !              | 
+      integer :: iob            !              | 
+      integer :: iwst           !              | 
+      integer :: iwgn           !              | 
+      real :: sffc              !              | 
+      integer :: nly            !none          |end of loop
+      integer :: k              !none          |counter
+      real :: plt_zmx           !              |
+      integer :: ipl            !none          |counter
+      real :: plt_zmxp          !              | 
+      integer :: max            !              |
+      integer :: min            !              |
+      real :: dep_new           !              |
+      integer :: jj             !none          |counter
+      real :: solpst            !              |
+      integer :: n              !              |
+      real :: wt1               !none          |conversion factor to convert kg/ha to g/t(ppm) 
+      integer :: ly             !none          |counter   
+      integer :: isdr           !none          |conversion factor to convert kg/ha to g/t(ppm)
 
       do j = 1, sp_ob%hru
        iob = hru(j)%obj_no

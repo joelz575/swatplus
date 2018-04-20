@@ -2,10 +2,14 @@
 
    !!	This program estimates orifice dimensions based on 
    !!	design discharge at different stages
+   
+       implicit none
 
-	   real, intent(in) :: cd,desdis
-	   real, intent(out) :: dia
-	   real :: tempvar,pi
+	   real, intent(in) :: cd            !          |
+       real, intent(in) :: desdis        !          | 
+	   real, intent(out) :: dia          !          | 
+	   real :: tempvar                   !          |
+       real :: pi                        !          |
 
 	   pi = 3.14159
 	   tempvar = 0.6 * cd * pi * sqrt(9.81)

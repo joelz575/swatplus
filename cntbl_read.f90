@@ -3,10 +3,17 @@
       use input_file_module
       use maximum_data_module
       use landuse_data_module
-      character (len=80) :: titldum
-      character (len=80) :: header
-      integer :: eof, i, imax
       
+      implicit none
+            
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: i                    !           | 
+      integer :: imax                 !           |
+      integer :: icno                 !none       |counter
+      integer :: i_exist              !none       |check to determine if file exists
+                
       eof = 0
       imax = 0
       

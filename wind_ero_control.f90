@@ -1,4 +1,6 @@
       subroutine wind_ero_control
+    
+      implicit none
  
       call wind_ero_bare
       

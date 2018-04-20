@@ -21,17 +21,8 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    gx          |mm            |lowest depth in layer from which phosphorus
-!!                               |may be removed
-!!    icrop       |none          |land cover code
-!!    ir          |none          |flag for bottom of root zone
-!!    j           |none          |HRU number
-!!    l           |none          |counter (soil layers)
 !!    uapd        |kg P/ha       |plant demand of phosphorus
-!!    uapl        |kg P/ha       |amount of phosphorus removed from layer
 !!    up2         |kg P/ha       |optimal plant phosphorus content
-!!    upmx        |kg P/ha       |maximum amount of phosphorus that can be
-!!                               |removed from the soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -44,8 +35,23 @@
       use organic_mineral_mass_module
       use hru_module, only : pcom, soil, uapd, up2, pplnt, ihru, ipl, rto_solp, sol_rd, uptake
 
-      integer :: j, icrop, l, ir
-      real :: uapl, gx
+      implicit none
+
+      integer :: icrop       !none      |land cover code
+      integer :: j           !none      |hru number
+      integer :: l           !none      |counter (soil layer)
+      integer :: ir          !none      |flag to denote bottom of root zone reached
+      real :: uapl           !kg P/ha   |amount of phosphorus removed from layer
+      real :: gx             !mm        |lowest depth in layer from which nitrogen
+                             !          |may be removed
+      real :: upmx           !kg P/ha   |maximum amount of phosphorus that can be
+                             !          |removed from the soil layer
+      real :: uobp           !none      |phosphorus uptake normalization parameter
+                             !          |This variable normalizes the phosphorus
+                             !          |uptake so that the model can easily verify
+                             !          |that uptake from the different soil layers
+                             !          |sums to 1.0
+      
 
       j = 0
       j = ihru

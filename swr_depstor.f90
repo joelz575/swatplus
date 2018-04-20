@@ -26,14 +26,6 @@
 !!	cumei(:)	|Mj*mm/ha*hr   |cumulative USLE rainfall erosion index since last 
 !!							   |tillage operation
 !!	cumrt(:)	|mm H2O		   |cumulative rainfall since last tillage operation
-!!	df  		|none		   |oriented and random roughness decay factor - based
-!!                               |on cumulative EI and cumulative precip_eff
-!!    ei          |Mj*mm/ha*hr   |USLE rainfall erosion index
-!!	hru_slpp    |%	           |average percent slope steepness
-!!	sol_orgm    |%      	   |percent organic matter content in soil material
-!!	sol_rrr     |cm			   |random roughness after a rain event
-!!	sol_orr     |cm			   |oriented roughness (ridges) after a rain event
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -45,9 +37,19 @@
       use hru_module, only : soil, hru, cumeira, cumei, cumrt, cumrai, ranrns_hru, stmaxd, itill, ihru,  &
          itill, precip_eff, usle_ei
       use organic_mineral_mass_module
+      
+      implicit none
 
-      integer ::j
-	  real:: df, hru_slpp, sol_orgm, sol_orr, sol_rrr, ei 
+      integer ::j               !none          |HRU number
+	  real:: df                 !none		   |oriented and random roughness decay factor - based
+                                !              |on cumulative EI and cumulative precip_eff
+      real:: hru_slpp           !%	           |average percent slope steepness
+      real:: sol_orgm           !%      	   |percent organic matter content in soil material
+      real:: sol_orr            !cm			   |oriented roughness (ridges) after a rain event 
+      real:: sol_rrr            !cm			   |random roughness after a rain event
+      real:: ei                 !Mj*mm/ha*hr   |USLE rainfall erosion index
+      real :: xx                !              |
+      
       j = ihru
 
 !! Calculate current cummulative erosivity and rainfall

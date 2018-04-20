@@ -9,20 +9,6 @@
 !!    watab       |mm            |water table based on 30 day antecedent
 !!                               | climate (precip,et)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    j1          |none          |counter
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
 !!    SWAT: percmacro, percmicro
@@ -31,9 +17,19 @@
 
       use hru_module, only : rfqeo_30d,eo_30d, wtab, wtab_mx, wtab_mn, nd_30, ihru, pet_day, precip_eff,  &
         qday 
+      
+      implicit none
 
-      integer :: j, j1
-
+      integer :: j               !none          |HRU number
+      integer :: j1              !none          |counter
+      real :: rfqeo_sum          !              | 
+      real :: eo_sum             !              |
+      integer :: i30             !none          |counter  
+      real :: w2                 !              |
+      real :: w1                 !              |
+      real :: amin1              !              |
+      real :: wtl                !              |
+    
       j = 0
       j = ihru
       wtab_mn(j) = 0.

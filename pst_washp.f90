@@ -26,24 +26,19 @@
 !!    plt_pst(:,:)  |kg/ha         |pesticide on plant foliage
 !!    sol_pst(:,:,1)|kg/ha         |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    kk          |none          |pesticide number from pest.dat
-!!    xx          |kg/ha         |amount of pesticide washed off foliage
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use pesticide_data_module
       use hru_module, only : hru, soil, hrupest, ihru, npmx
       use constituent_mass_module
       
-      integer :: j, k, kk
-      real :: xx
+      implicit none       
+      
+      integer :: j        !none          |HRU number
+      integer :: k        !none          |counter
+      integer :: kk       !none          |pesticide number from pest.dat
+      real :: xx          !kg/ha         |amount of pesticide in soil   
+      integer :: icmd     !              |
 
       j = ihru
 

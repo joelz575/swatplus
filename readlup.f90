@@ -31,9 +31,16 @@
 
       use hru_module, only : ida_lup, iyr_lup, no_up 
       use time_module
-      character*13 fnam
-      integer :: eof
+      
+      implicit none
 
+      character*13 fnam
+      integer :: eof                  !           |end of file
+      integer :: mo                   !           |
+      integer :: iday                 !           |
+      integer :: iyear                !           |
+      integer :: jdt                  !none       |
+      
 !!    read lup file     
       do               
        read (122,100,iostat=eof) no_up, mo, iday, iyear, fnam 

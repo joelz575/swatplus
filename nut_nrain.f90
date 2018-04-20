@@ -26,9 +26,15 @@
       use hru_module, only : hru, ihru, no3pcp, precipday, timest 
       use climate_module
       use output_landscape_module
+      
+      implicit none
 
-      real :: nh3pcp
-      integer :: iadep
+      real :: nh3pcp              !            |
+      integer :: iadep            !            |
+      integer :: j                !none        |counter
+      integer :: iob              !            |
+      integer :: ist              !            |
+      real :: const               !            |constant used for rate, days, etc
 
       j = ihru
       iob = hru(j)%obj_no

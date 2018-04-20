@@ -1,6 +1,8 @@
      subroutine header_yield
     
      use basin_module
+     
+     implicit none 
     
 !!  yield biomass file
       if (pco%mgtout == 'y') then

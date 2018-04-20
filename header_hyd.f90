@@ -3,6 +3,10 @@
      use basin_module   
      use hydrograph_module
    
+     implicit none 
+     
+     real :: prog                !            |
+           
       !! HYDCON (no headers)    
       if (pco%hydcon == 'y') then
         open (7000,file="hydcon.out")

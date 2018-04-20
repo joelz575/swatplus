@@ -15,6 +15,8 @@
 
       use basin_module
       use time_module
+      
+      implicit none
 
 !! Compute surface runoff for day
       if (time%step == 0) then

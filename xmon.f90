@@ -21,15 +21,17 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    m1          |none          |array location (see definition of ndays)
-!!    nda         |julian date   |julian date of last day in the month
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use time_module
+      
+      implicit none
 
-      integer :: m1, nda, i_mo
+      integer :: m1                !none          |array location (see definition of ndays)
+      integer :: nda               !julian date   |julian date of last day in the month
+      integer :: i_mo              !none          |counter
 
         do i_mo = 1, 12
           m1 = i_mo + 1

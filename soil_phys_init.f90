@@ -21,17 +21,6 @@
 !!    sol_st(:,:)   |mm H2O        |amount of water stored in the soil layer
 !!                                 |on any given day (less wp water)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |counter
-!!    nly         |none          |number of soil layers
-!!    pormm       |mm            |porosity in mm depth
-!!    sumpor      |mm            |porosity of profile
-!!    xx          |none          |variable to hold value
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp, Sqrt
 !!    SWAT: Curno
@@ -41,9 +30,27 @@
       use hru_module, only : sol
       use basin_module
       use time_module
+      
+      implicit none
 
-      integer :: nly, j
-      real :: xx, sumpor, pormm, nota, a,b,c,d
+      integer :: j            !none          |counter
+      integer :: nly          !none          |number of soil layers
+      real :: xx              !none          |variable to hold value
+      real :: sumpor          !mm            |porosity of profile
+      real :: pormm           !mm            |porosity in mm depth
+      real :: nota            !              |
+      real :: a               !m^2           |cross-sectional area of channel
+      real :: b               !m             |bottom width of channel
+      real :: c               !none          |inverse of channel side slope
+      real :: d               !m             |depth of flow
+      integer :: isol         !              |
+      real :: anion_excl_bsn  !              |      
+      real :: drpor           !              |
+      real :: sa              !ha            |surface area of impounded water body
+      real :: cl              !              |
+      real :: si              !m/n           |slope of main channel
+      real :: depth_prev      !              |
+      
 
       if (sol(isol)%s%alb < 0.1) sol(isol)%s%alb  = 0.1
       if (sol(isol)%s%anion_excl<=1.e-6) sol(isol)%s%anion_excl =      &      

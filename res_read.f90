@@ -5,11 +5,28 @@
       use maximum_data_module
       use reservoir_data_module
       use conditional_module
+      
+      implicit none
 
-      character (len=80) :: titldum, header
-      integer :: eof, mon, i, imax
+      integer :: mon
+      integer :: i
       real :: lnvol
       
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=16) :: namedum   !           |
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: ires                 !none       |counter 
+      integer :: k                    !           |
+      integer :: iinit                !none       |counter 
+      integer :: ihyd                 !none       |counter
+      integer :: irel                 !none       |counter 
+      integer :: ised                 !none       |counter
+      integer :: inut                 !none       |counter
+      integer :: ipst                 !none       |counter
+       
       eof = 0
       imax = 0
             

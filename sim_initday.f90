@@ -21,7 +21,6 @@
 !!    wst(:)%weat%ts(:)  |mm H2O        |precipitation for the time step during the
 !!                               |day in HRU
 !!    rhd(:)      |none          |relative humidity for the day in HRU
-!!    hrupstd(:,:,:)|varies      |HRU daily pesticide output array
 !!    u10(:)      |m/s           |wind speed for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -38,6 +37,14 @@
       use organic_mineral_mass_module
       use carbon_module
       use hydrograph_module, only : sp_ob
+      
+      implicit none
+      
+      real :: drift             !kg               |amount of pesticide drifting onto main 
+                                !                 |channel in subbasin
+      real :: hrupstd           !varies           |HRU daily pesticide output array
+      integer :: j             !none             |HRU number 
+      integer :: ly             !none             |counter 
 
       !!initialize variables at beginning of day
       cbodu = 0.

@@ -1,5 +1,7 @@
       module soil_data_module
     
+      implicit none
+    
        type soiltest_db
         character(len=16) :: name = 'default'
         real :: exp_co = .001         !	     |depth coefficient to adjust concentrations for depth

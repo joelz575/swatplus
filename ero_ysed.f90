@@ -14,7 +14,6 @@
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
 !!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
-!!    usle_ei     |100(ft-tn in)/(acre-hr)|USLE rainfall erosion index
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -26,14 +25,11 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    c           |
-!!    j           |none          |HRU number
 !!    bio_frcov   |              |fraction of cover by biomass - adjusted for
 !!                                  canopy height
 !!    grcov_fr    |              |fraction of cover by biomass as function of lai
 !!    rsd_frcov   |              |fraction of cover by residue
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp
 
@@ -41,9 +37,13 @@
 
       use hru_module, only : hru, soil, usle_cfac, cklsp, surfq, sedyld, sanyld, silyld, clayld, lagyld, sagyld,  &
          sno_hru, ihru, peakr
+      
+      implicit none
 
-      integer :: j
-      real :: c
+      integer :: j           !none                   |HRU number
+      real :: c              !                       |
+      real :: usle           !!metric tons/ha        | daily soil loss predicted with USLE equation
+      real :: usle_ei        !100(ft-tn in)/(acre-hr)|USLE rainfall erosion index 
 
       j = ihru
       

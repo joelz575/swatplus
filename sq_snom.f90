@@ -29,23 +29,6 @@
 !!                                |HRU
 !!    snotmp(:)    |deg C         |temperature of snow pack in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ib          |none          |counter
-!!    j           |none          |HRU number
-!!    smfac       |
-!!    smleb       |mm H2O        |amount of snow melt in elevation band on 
-!!                               |current day
-!!    smp         |mm H2O        |precipitation on current day for HRU
-!!    snocov      |none          |fraction of HRU area covered with snow
-!!    sum         |mm H2O        |snow water content in HRU on current day
-!!    xx          |none          |ratio of amount of current day's snow water
-!!                               |content to the minimum amount needed to
-!!                               |cover ground completely
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Real, Sin, Exp
 
@@ -58,10 +41,21 @@
       use hydrology_data_module
       use climate_module, only: wst
       
+      implicit none
 
-      integer :: j, ib
-      real :: sum, smp, smfac, smleb
-      real :: xx, snocov 
+      integer :: ib      !none          |counter
+      integer :: j       !none          |HRU number
+      real :: sum        !mm H2O        |snow water content in HRU on current day 
+      real :: smp        !mm H2O        |precipitation on current day for HRU
+      real :: smfac      !              |
+      real :: smleb      !mm H2O        |amount of snow melt in elevation band on 
+                         !              |current day
+      real :: xx         !none          |ratio of amount of current day's snow water
+                         !              |content to the minimum amount needed to
+                         !              |cover ground completely 
+      real :: snocov     !none          |fraction of HRU area covered with snow
+      integer :: isno    !none          |counter
+      integer :: ii      !none          |counter
 
       j = ihru
       sum = 0.

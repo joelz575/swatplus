@@ -44,21 +44,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cod         |kg            |carbonaceous biological oxygen demand of 
-!!                               |surface runoff from urban area
-!!    dirt        |kg/curb km    |amount of solids built up on impervious
-!!                               |surfaces
-!!    dirto       |kg/ha         |amount of solids built up on impervious
-!!                               |surfaces at the beginning of time step
-!!    j           |none          |HRU number
-!!    sus_sol     |kg            |suspended solid loading in surface runoff
-!!                               |from urban area
-!!    tn          |kg            |total nitrogen in surface runoff from
-!!                               |urban area
-!!    tp          |kg            |total phosphorus in surface runoff from 
-!!                               |urban area
-!!    urbk        |1/hr          |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp, Max, Log
@@ -71,10 +56,27 @@
       use urban_data_module
       use climate_module
       use time_module
+      
+      implicit none
 
-      real :: cod, sus_sol, tn, tp, urbk, dirto, qdt
-	  real*8 :: dirt
-      integer :: j, k 
+      real :: cod          !kg            |carbonaceous biological oxygen demand of 
+                           !              |surface runoff from urban area
+      real :: sus_sol      !kg            |suspended solid loading in surface runoff
+                           !              |from urban area
+      real :: tn           !kg            |total nitrogen in surface runoff from
+                           !              |urban area
+
+      real :: tp           !kg            |total phosphorus in surface runoff from 
+                           !              |urban area
+      real :: urbk         !1/hr          | 
+      real :: dirto        !kg/ha         |amount of solids built up on impervious
+                           !              |surfaces at the beginning of time step
+      integer :: j         !none          |HRU number
+      real :: qdt          !              |
+	  real*8 :: dirt       !kg/curb km    |amount of solids built up on impervious
+                           !              |surfaces
+      integer :: k         !none          |counter 
+      integer :: tno3      !              |
 
       j = ihru
       ulu = hru(j)%luse%urb_lu

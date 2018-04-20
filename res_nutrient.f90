@@ -5,8 +5,22 @@
       use reservoir_module
       use hydrograph_module, only : res
       
-      integer :: iseas
-      real :: nitrok, phosk, tpco, chlaco
+      implicit none      
+      
+      !integer :: iseas
+      real :: nitrok             !              |
+      real :: phosk              !              |
+      real :: tpco               !              |
+      real :: chlaco             !              |
+      integer :: jres            !none          |reservoir number
+      integer :: inut            !none          |counter
+      integer :: nsetlr          !              |
+      real :: psetlr             !              |
+      real :: conc_n             !              |
+      real :: conc_p             !              |
+      real :: pstlr              !              | 
+      real :: theta              !              |
+      
 
       !! if reservoir volume less than 1 m^3, set all nutrient levels to
       !! zero and perform no nutrient calculations

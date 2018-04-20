@@ -12,29 +12,11 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    chsslope(:)   |none          |change in horizontal distance per unit
-!!                               |change in vertical distance on channel side
-!!                               |slopes; always set to 2 (slope=1/2)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    aa          |none          |area/area=1 (used to calculate velocity with
-!!                               |Manning's equation)
-!!    a           |m^2           |cross-sectional area of channel
-!!    b           |m             |bottom width of channel
-!!    d           |m             |depth of flow 
-!!    fps         |none          |change in horizontal distance per unit
-!!                               |change in vertical distance on floodplain side
-!!                               |slopes; always set to 4 (slope=1/4)
-!!    jj          |none          |counter
-!!    k           |none          |dummy argument (HRU number)
-!!    p           |m             |wetting perimeter
-!!    qq1         |m^3/s         |flow rate for a specified depth
-!!    rh          |m             |hydraulic radius of channel
-!!    tt1         |km s/m        |time coefficient for specified depth
-!!    tt2         |km s/m        |time coefficient for bankfull depth
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -44,9 +26,29 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       use hru_module, only : hru, ihru
       use channel_velocity_module
+      
+      implicit none
        
-      integer :: jj, k
-      real :: fps, d, b, p, a, qq1, rh, tt1, tt2, aa
+      integer :: jj             !none          |counter
+      integer :: k              !none          |dummy argument (HRU number)
+      real :: fps               !none          |change in horizontal distance per unit
+                                !              |change in vertical distance on floodplain side
+                                !              |slopes; always set to 4 (slope=1/4)
+      real :: b                 !m             |bottom width of channel
+      real :: d                 !m             |depth of flow 
+      real :: p                 !m             |wetting perimeter
+      real :: a                 !m^2           |cross-sectional area of channel
+      real :: qq1               !m^3/s         |flow rate for a specified depth
+      real :: rh                !m             |hydraulic radius of channel
+      real :: tt1               !km s/m        |time coefficient for specified depth
+      real :: tt2               !km s/m        |time coefficient for bankfull depth
+      real :: aa                !none          |area/area=1 (used to calculate velocity with
+                                !              |Manning's equation)
+      real :: chsslope          !none          |change in horizontal distance per unit
+                                !              |change in vertical distance on channel side
+                                !              |slopes; always set to 2 (slope=1/2) 
+      real :: qman              !m^3/s or m/s  |flow rate or flow velocity
+      integer :: j              !none          |hru number
       
       k = ihru
 

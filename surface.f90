@@ -12,18 +12,6 @@
 !!    surfq(:)    |mm H2O        |surface runoff generated in HRU during
 !!                               |the day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
 !!    SWAT: canopyint, snom, crackvol, dailycn, volq, crackflow, surfst_h2o,
@@ -38,10 +26,14 @@
       use hru_module, only : soil, hru, surfq, qird, ovrlnd_dt, ihru, &
         peakr, precipday, precip_eff, qday
       use urban_data_module
+      
+      implicit none
 
-      integer :: j,kk
-      real :: precip_fr
-      real :: irfr,hruvirr
+      integer :: j                !none          |HRU number 
+      real :: ulu                 !              |
+      real :: hruirrday           !              |
+      integer :: irmmdt           !              |
+      integer :: ii               !none          |counter
 
       j = ihru
       ulu = hru(j)%luse%urb_lu

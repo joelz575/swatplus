@@ -1,5 +1,7 @@
       module organic_mineral_mass_module
     
+      implicit none 
+    
       type organic_mass
         real :: m = 0.              !kg or kg/ha      |total object mass
         real :: c = 0.              !kg or kg/ha      |carbon mass

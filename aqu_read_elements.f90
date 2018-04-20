@@ -13,7 +13,7 @@
       integer :: eof                    !             |end of file
       integer :: imax                   !             |determine max number for array (imax) and total number in file
       integer :: mcal                   !             |
-      integer :: i_exist                !             |check to determine if file exists
+      integer :: i_exist                !none         |check to determine if file exists
       integer :: mreg                   !             |
       integer :: i                      !none         |counter
       integer :: k                      !             |

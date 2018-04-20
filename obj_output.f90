@@ -2,8 +2,13 @@
       
       use time_module
       use hydrograph_module
+      
+      implicit none
         
-      integer :: ihd, iob, iunit
+      integer :: ihd           !            |
+      integer :: iob           !            | 
+      integer :: iunit         !            |
+      integer :: itot          !none        |counter
       
       do
         do itot = 1, mobj_out

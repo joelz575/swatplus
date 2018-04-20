@@ -4,6 +4,10 @@
       use maximum_data_module
       use soil_data_module
       use hydrograph_module, only : sp_ob
+      
+      implicit none 
+      
+      integer :: isolt            !           | 
 
       do ihru = 1, sp_ob%hru
         isolt = hru(ihru)%dbs%soil_nutr_init

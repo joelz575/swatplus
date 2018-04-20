@@ -1,4 +1,6 @@
     module sd_channel_module
+    
+      implicit none
 
       integer :: maxint                           !number of intervals in hydrograph for degredation
       real :: peakrate, sed_reduc_t, no3_reduc_kg, tp_reduc_kg, tp_reduc, srp_reduc_kg

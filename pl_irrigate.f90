@@ -20,11 +20,9 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    fcx         |mm H2O        |amount of water stored in soil layer when
 !!                               |moisture content is at field capacity
-!!    jj          |none          |HRU number
 !!    k           |none          |counter (soil layers)
 !!    stx         |mm H2O        |amount of water stored in soil layer on 
 !!                               |current day
-!!    volmm       |mm H2O        |depth irrigation water applied to HRU
 !!    yy          |mm H2O        |amount of water added to soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -33,8 +31,12 @@
       use mgt_operations_module
       use hru_module, only : hru, aird, qird
       
-      integer, intent (in) :: jj, irrop
-      real, intent (in out) :: volmm
+      implicit none      
+      
+      integer, intent (in) :: jj              !none          |HRU number
+      integer, intent (in) :: irrop           !              |irrigation operations
+      real, intent (in out) :: volmm          !mm H2O        |depth irrigation water applied to HRU
+      integer :: ir                           !              |
 
       !! if unlimited source, store volume and runoff to send to swr_percmain and surface
       if (hru(jj)%irrsrc == 0) then

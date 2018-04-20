@@ -8,22 +8,9 @@
 !!    the default method is to make them a function of soil water, the 
 !!    alternative method (labeled new) is to make them a function of 
 !!    accumulated PET, precipitation and surface runoff.
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cnn         |none          |SCS runoff curve number for moisture
-!!                               |condition II
-!!    h           |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cn1         |none          |SCS runoff curve number for moisture
-!!                               |condition I
-!!    cn3         |none          |SCS runoff curve number for moisture
-!!                               |condition III
 !!    sci(:)      |none          |retention coefficient for cn method based on
 !!                               |plant ET
 !!    smx(:)      |none          |retention coefficient for cn method based on
@@ -37,12 +24,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition   
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    c2          |none          |variable used to hold calculated value
-!!    rto3        |none          |fraction difference between CN3 and CN1 
-!!                               |retention parameters
-!!    rtos        |none          |fraction difference between CN=99 and CN1 
-!!                               |retention parameters
-!!    s3          |none          |retention parameter for CN3
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -53,11 +34,28 @@
 
       use time_module
       use hru_module, only : cn2, hru, sci, smx, soil, wrt
-
-      integer, intent (in) :: h
-      real, intent (in) :: cnn
-      real :: c2, cn1, cn3, s3, rto3, rtos
+      
+      implicit none
    
+      integer, intent (in) :: h            !none          |HRU number
+      real, intent (in) :: cnn             !cnn           |none          |SCS runoff curve number for moisture
+                                           !              |condition II
+      real :: c2                           !none          |variable used to hold calculated value 
+      real :: cn1                          !none          |SCS runoff curve number for moisture
+                                           !              |condition I
+      real :: cn3                          !none          |SCS runoff curve number for moisture
+                                           !              |condition III
+      real :: s3                           !none          |retention parameter for CN3
+      real :: rto3                         !none          |fraction difference between CN3 and CN1 
+                                           !              |retention parameters
+      real :: rtos                         !none          |fraction difference between CN=99 and CN1 
+                                           !              |retention parameters
+      real :: smxold                       !              | 
+      real :: sumul                        !mm H2O        |amount of water held in soil profile at saturation
+      real :: sumfc                        !mm H2O        |amount of water held in the soil profile at field capacity
+      real :: amax1                        !              |
+      real :: amin1                        !              |
+      
       cn2(h) = cnn
       if (cn1 > 1.e-6) smxold = 254.* (100. / cn1 - 1.)
 

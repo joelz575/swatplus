@@ -24,14 +24,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    adjf         |none          |adjustment factor for lateral flow
-!!    dg           |mm            |depth of soil layer
-!!    ho           |none          |variable to hold intermediate calculation
-!!                                |result
-!!    j            |none          |HRU number
-!!    ly1          |none          |soil layer number
-!!    ratio        |none          |ratio of seepage to (latq + sepday)
-!!    yy           |mm            |depth to top of soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -42,9 +34,18 @@
       use septic_data_module
       use hru_module, only : soil, hru, ihru, bz_perc, i_sep, isep, latlyr, lyrtile, sepday, sw_excess
       
-      integer, intent (in) :: ly1
-      integer :: j
-      real :: adjf, yy, dg, ho, ratio, sol_k_sep
+      implicit none
+      
+      integer, intent (in) :: ly1     !none          |soil layer number
+      integer :: j                    !none          |HRU number
+      real :: adjf                    !none          |adjustment factor for lateral flow
+      real :: yy                      !mm            |depth to top of soil layer
+      real :: dg                      !mm            |depth of soil layer
+      real :: ho                      !none          |variable to hold intermediate calculation
+                                      !              |result
+      real :: ratio                   !none          |ratio of seepage to (latq + sepday)
+      real :: sol_k_sep               !              |
+      real :: adj_lin                 !              |
 
       j = ihru
       adjf = 1.

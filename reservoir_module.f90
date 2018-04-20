@@ -1,11 +1,47 @@
       module reservoir_module
 
-      real :: resflwi, resflwo, ressedi, ressedo, sedcon, respesti
-      real :: reactw, volatpst, setlpst, resuspst, difus, reactb, bury
-      real :: solpesto, sorpesto, resev, ressep, respcp, resorgno
-      real :: resorgpo, resno3o, resno2o, resnh3o, ressolpo, reschlao
-      real :: resorgpc, ressolpc,resornc, resno3c, resno2c, resnh3c
-      real :: tair_mx, tair_mn, tair_av
+      real :: resflwi                 !              |
+      real :: resflwo                 !              |  
+      real :: ressedi                 !              |
+      real :: ressedo                 !              |
+      real :: sedcon                  !g/m^3         |sediment concentration
+      real :: respesti                !              |
+      real :: reactw                  !mg pst        |amount of pesticide in reach that is lost
+                                      !              |through reactions
+      real :: volatpst                !mg pst        |amount of pesticide lost from reach by
+                                      !              |volatilization
+      real :: setlpst                 !mg pst        |amount of pesticide moving from water to
+                                      !              |sediment due to settling
+      real :: resuspst                !mg pst        |amount of pesticide moving from sediment to
+                                      !              |reach due to resuspension
+      real :: difus                   !mg pst        |diffusion of pesticide from sediment to reach
+      real :: reactb                  !mg pst        |amount of pesticide in sediment that is lost
+                                      !              |through reactions
+                                      !              |up by plant roots in the bank storage zone
+      real :: bury                    !mg pst        |loss of pesticide from active sediment layer
+                                      !              |by burial
+      real :: solpesto                !mg pst/m^3    |soluble pesticide concentration in outflow
+                                      !              |on day
+      real :: sorpesto                !mg pst/m^3    |sorbed pesticide concentration in outflow
+                                      !              |on day 
+      real :: resev                   !              |
+      real :: ressep                  !              |
+      real :: respcp                  !              |
+      real :: resorgno                !              |
+      real :: resorgpo                !              |
+      real :: resno3o                 !              |
+      real :: resno2o                 !              | 
+      real :: resnh3o                 !              |
+      real :: ressolpo                !              |
+      real :: reschlao                !              |
+      real :: resorgpc                !              |
+      real :: ressolpc                !              |
+      real :: resno3c                 !              | 
+      real :: resno2c                 !              |
+      real :: resnh3c                 !              | 
+      real :: tair_mx                 !              |
+      real :: tair_mn                 !              |
+      real :: tair_av                 !              |
 
       type reservoir
         character(len=13) :: name = "default"

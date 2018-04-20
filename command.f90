@@ -4,25 +4,6 @@
 !!    for every day of simulation, this subroutine steps through the command
 !!    lines in the watershed configuration (.fig) file. Depending on the 
 !!    command code on the .fig file line, a command loop is accessed
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!! 
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!                |none          |counter
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    SWAT: subbasin, route, routres, transfer, recmon
 !!    SWAT: recepic, save, recday, recyear
@@ -38,12 +19,33 @@
       use sd_channel_module
       use reservoir_module
       use organic_mineral_mass_module
-      use hru_module, only : ihru, hru
+      use constituent_mass_module
+      use hru_module, only : ihru
       use basin_module
       use maximum_data_module
       use output_landscape_module, only : hnb_d
+      
+      implicit none
     
-      real, dimension(7) :: val = 0.
+      integer :: isur_in              !              |
+      integer :: in                   !              |
+      integer :: ielem                !              |  
+      integer :: iob                  !              |
+      integer :: kk                   !none          |counter
+      integer :: iday                 !              |
+      real :: conv                    !              |
+      real :: hin_s                   !none          |inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+      real :: hin                     !none          |inflow hydrograph for surface runon - sum of all inflow hyds
+      integer :: isd                  !none          |counter
+      integer :: jres                 !none          |reservoir number
+      integer :: irec                 !              |
+      integer :: iout                 !none          |counter
+      integer :: ihtyp                !              |
+      integer :: iaq                  !none          |counter
+      integer :: j                    !none          |counter
+      integer :: isub_in              !              |
+      integer :: ihyd                 !              |
+      integer :: idr                  !              |
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
@@ -61,6 +63,10 @@
           ob(icmd)%hin = hz
           ob(icmd)%hin_s = hz
           ht1 = hz
+          obcs(icmd)%hin = hin_csz
+          obcs(icmd)%hin_s = hin_csz
+          hcs1 = hin_csz
+          hcs2 = hin_csz
           if (time%step > 0) ob(icmd)%tsin(:) = hz
           ob(icmd)%peakrate = 0.
           do in = 1, ob(icmd)%rcv_tot
@@ -77,11 +83,19 @@
                 ihyd = ob(isub)%ihtyp_in(in)
                 ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)   !fraction of hydrograph
                 ht1 = ru_elem(ielem)%frac * ht1                 !fraction of hru in subbasin
+                !fraction of hru in subbasin for constituents
+                if (cs_db%num_tot_con > 0) then
+                  call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
+                end if
                 ob(isub)%hin_d(in) = ob(isub)%hin_d(in) + ht1
               else
                 iob = ob(icmd)%obj_in(in)
                 ihyd = ob(icmd)%ihtyp_in(in)
                 ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
+                !fraction of constituents
+                if (cs_db%num_tot_con > 0) then
+                  call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
+                end if
                 ob(icmd)%peakrate = ob(iob)%peakrate
               end if
             else
@@ -89,14 +103,30 @@
               ihyd = ob(icmd)%ihtyp_in(in)
               ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
               ob(icmd)%peakrate = ob(iob)%peakrate
+              !fraction of constituents
+              if (cs_db%num_tot_con > 0) then
+                call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
+              end if
             end if
             ob(icmd)%hin_d(in) = ht1
+            !obcs(icmd)%hin_d(in) = hcs1    !for constituent hydrograph output
 
             if (ihyd == 4) then  !route lat flow through soil
               ob(icmd)%hin_s = ob(icmd)%hin_s + ht1
+              !add constituents
+              if (cs_db%num_tot_con > 0) then
+                hcs2 = obcs(icmd)%hin_s
+                call constit_hyd_add
+              end if
               isub_in = 1
             else
               ob(icmd)%hin = ob(icmd)%hin + ht1
+              !add constituents
+              if (cs_db%num_tot_con > 0) then
+                hcs2 = obcs(icmd)%hin
+                call constit_hyd_add
+                obcs(icmd)%hin = hcs2
+              end if
               isur_in = 1
             end if
 
@@ -190,7 +220,12 @@
           !case ("exco")   ! export coefficient hyds are set at start
 
           case ("dr")   ! delivery ratios
-            ob(icmd)%hd(1) = ob(icmd)%hin ** dr(ob(icmd)%props)
+            ob(icmd)%hd(1) = ob(icmd)%hin ** dr(ob(icmd)%props) ! ** is an intrinsic function to multiply 
+            if (cs_db%num_tot_con > 0) then
+              idr = ob(iob)%props
+              
+              call constit_hyd_mult (icmd, idr)
+            end if
             
           case ("outlet")  !outlet
             ob(icmd)%hd(1) = ob(icmd)%hin

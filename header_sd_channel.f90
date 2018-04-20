@@ -4,6 +4,8 @@
       use basin_module
       use hydrograph_module
       use hru_module, only : prog
+      
+      implicit none 
 
 !!!  SWAT-DEG CHANNEL
       if (sp_ob%chandeg > 0) then

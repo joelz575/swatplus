@@ -3,6 +3,10 @@
       use output_landscape_module
       use hydrograph_module
       
+      implicit none
+      
+      integer :: mhru           !               |
+      
       mhru = sp_ob%hru
      
       !!Section 3

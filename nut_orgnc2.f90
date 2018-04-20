@@ -18,33 +18,42 @@
 !!     
 !!                                |pools 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units        |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    conc        |              |concentration of organic N in soil
-!!    er          |none          |enrichment ratio
-!!    j           |none          |HRU number
-!!    wt1         |none          |conversion factor (mg/kg => kg/ha)
-!!    xx          |kg N/ha       |amount of organic N in first soil layer
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : enratio, hru, ihru, sedorgn, soil, sedyld, surfq
       use organic_mineral_mass_module
       use carbon_module
+      
+      implicit none
 
-      integer :: j
-      real :: xx, wt1, er, conc
-      real :: sol_mass, QBC, VBC, YBC, YOC, YW, TOT, YEW, X1, PRMT_21, PRMT_44
-      real :: DK,  V, X3, CO, CS, perc_clyr, latc_clyr  
-      integer :: k
+      integer :: j           !none          |HRU number
+      real :: xx             !kg N/ha       |amount of organic N in first soil layer
+      real :: wt1            !none          |conversion factor (mg/kg => kg/ha)
+      real :: er             !none          |enrichment ratio
+      real :: conc           !              |concentration of organic N in soil
+      real :: sol_mass       !              |  
+      real :: QBC                   !              |c loss with runoff or lateral flow
+      real :: VBC                   !              |c los with vertical flow
+      real :: YBC                   !              |BMC LOSS WITH SEDIMENT
+      real :: YOC                   !              |Organic C loss with sediment
+      real :: YW                    !              |YW = WIND EROSION (T/HA)
+      real :: TOT                   !              |Total organic carbon in layer 1
+      real :: YEW                   !frac          |fraction of soil erosion of total soil mass
+      real :: X1                    !              |
+      real :: PRMT_21               !              |KOC FOR CARBON LOSS IN WATER AND SEDIMENT(500._1500.) KD = KOC * C
+      real :: PRMT_44               !              |RATIO OF SOLUBLE C CONCENTRATION IN RUNOFF TO PERCOLATE(0.1_1.)
+      real :: DK                    !              |
+      real :: V                     !              |
+      real :: X3                    !              | 
+      real :: CO                    !              | 
+      real :: CS                    !              | 
+      real :: perc_clyr             !              | 
+      real :: latc_clyr             !              | 
+      integer :: k                  !none          |counter 
+      real :: xx1                   !              |
+      real :: sol_thick             !              |
+      real :: y1                    !              |
+      
       latc_clyr = 0.
         
       j = 0

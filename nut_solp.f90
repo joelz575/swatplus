@@ -11,21 +11,6 @@
 !!    ihru          |none         |HRU number
 !!    surfq(:)      |mm H2O       |surface runoff generated on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    vap         |kg P/ha       |amount of P leached from soil layer
-!!    xx          |none          |variable to hold intermediate calculation
-!!                               |result
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Min, Max
 
@@ -34,9 +19,14 @@
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : soil, hru, surqsolp, percp, surfq, i_sep, ihru, qtile 
+      
+      implicit none 
 
-      integer :: j
-      real :: xx, vap
+      integer :: j           !none          |HRU number
+      real :: xx             !none          |variable to hold intermediate calculation
+                             !              |result
+      real :: vap            !kg P/ha       |amount of P leached from soil layer 
+      integer :: ii          !none          |counter 
 
       j = ihru
 

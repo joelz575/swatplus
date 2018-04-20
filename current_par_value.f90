@@ -15,7 +15,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    chg_par     |variable      |new parameter value
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -30,10 +29,26 @@
       use hru_lte_module
       use organic_mineral_mass_module
       use hydrograph_module
+      
+      implicit none
 
-      character(len=16), intent (in) :: chg_parm, chg_typ
-      real, intent (in) :: chg_val, absmin, absmax
-      integer, intent (in) :: ielem, num_db, ly
+      character(len=16), intent (in) :: chg_parm              !                |               
+      character(len=16), intent (in) :: chg_typ               !variable        |type of change (absval, abschg, pctchg)
+      real, intent (in) :: chg_val                            !                |      
+      real, intent (in) :: absmin                             !                |minimum range for variable 
+      real, intent (in) :: absmax                             !                |maximum change for variable
+      integer, intent (in) :: ielem                           !                | 
+      integer, intent (in) :: num_db                          !                | 
+      integer, intent (in) :: ly                              !                |
+      integer :: nly                                          !                |
+      real :: dep_below_soil                                  !                |
+      real :: alpha                                           !                | 
+      real :: exp                                             !                | 
+      real :: delay                                           !                | 
+      real :: c_val                                           !                | 
+      real :: abmax                                           !                | 
+      real :: chg_par                                         !variable        |new parameter value
+      
 
       select case (chg_parm)
           

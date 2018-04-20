@@ -8,9 +8,46 @@
       use climate_module
       use hydrograph_module, only : ob, res, hd, icmd, iwst
       
-      integer :: k, ii, jres
-      real :: sepmm, resorgnc
-
+      implicit none
+      
+      integer :: k                    !              | 
+      integer :: ii                   !none          |counter 
+      integer :: jres                 !none          |reservoir number
+      real :: resorgnc                !              | 
+      real :: solpesti                !              |soluble pesticide 
+      integer :: idat                 !              |
+      integer :: ihyd                 !none          |counter
+      integer :: ised                 !none          |counter
+      integer :: irel                 !              |
+      integer :: inut                 !none          |counter
+      integer :: ipst                 !none          |counter
+      integer :: inum2                !none          |inflow hydrograph storage location number 
+      real :: pesti                   !              |
+      real :: pesto                   !              |
+      real :: pstcon                  !mg pst/m^3    |pest conc in res water
+      real :: spstcon                 !mg pst/m^3    |pest conc in res sed layer 
+      real :: sorpesti                !              |
+      real :: orgni = 0.              !kg N          |org N entering res
+      real :: orgno = 0.              !kg N          |org N leaving res
+      real :: orgpi = 0.              !kg P          |org P entering res
+      real :: orgpo = 0.              !kg P          |org P leaving res
+      real :: no3i = 0.               !kg N          |nitrate N entering res
+      real :: no3o = 0.               !kg N          |nitrate N leaving res
+      real :: no2i = 0.               !kg N          |nitrite entering res
+      real :: no2o = 0.               !kg N          |nitrite leaving res
+      real :: nh3i = 0.               !kg N          |ammonia entering res
+      real :: nh3o = 0.               !kg N          |ammonia leaving res
+      real :: solpi = 0.              !kg P          |mineral P entering res
+      real :: solpo = 0.              !kg P          |mineral P leaving res
+      real :: chlai = 0.              !kg chla       |chlorophyll-a entering res 
+      real :: chlao = 0.              !kg chla       |chlorophyll-a leaving res 
+      real :: orgpc = 0.              !mg P/L        |ave org P conc in res
+      real :: solpc = 0.              !mg P/L        |ave sol P conc in res
+      real :: orgnc = 0.              !mg N/L        |ave org N in res
+      real :: no3c = 0.               !mg N/L        |ave nitrate conc in res
+      real :: no2c = 0.               !mg N/L        |ave nitrite conc in res
+      real :: nh3c = 0.               !mg N/L        |ave ammonia conc in res
+   
       !! initialize variables for reservoir daily simulation
       call res_dayinit
 

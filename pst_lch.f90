@@ -29,22 +29,6 @@
 !!                                |runoff on current day in HRU
 !!    zdb(:,:)     |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    co          |kg/mm-ha      |concentration of pesticide in water
-!!    cocalc      |kg/mm-ha      |calc concentration of pesticide in water
-!!    csurf       |kg/mm-ha      |concentration of pesticide in surq and latq
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    kk          |none          |pesticide number from pest.dat
-!!    ly          |none          |counter (soil layers)
-!!    qsurf       |mm H2O        |surface runoff for layer
-!!    vf          |
-!!    xx          |kg/ha         |amount of pesticide removed from soil layer
-!!    yy          |
-!!    zdb1        |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp, Min
@@ -56,8 +40,21 @@
       use hru_module, only : soil, hru, hrupest, surfq, ihru, npmx
       use constituent_mass_module
       
-      integer :: j, ly, k, kk
-      real :: yy, qsurf, vf, zdb1, xx, co, csurf, cocalc
+      implicit none        
+      
+      integer :: j         !none          |HRU number
+      integer :: k         !none          |counter
+      integer :: kk        !none          |pesticide number from pest.dat
+      integer :: ly        !none          |counter (soil layers)
+      real :: yy           !              |
+      real :: qsurf        !mm H2O        |surface runoff for layer
+      real :: vf           !              |
+      real :: xx           !kg/ha         |amount of pesticide removed from soil layer
+      real :: zdb1         !              |
+      real :: co           !kg/mm-ha      |concentration of pesticide in water
+      real :: cocalc       !kg/mm-ha      |calc concentration of pesticide in water
+      real :: csurf        !kg/mm-ha      |concentration of pesticide in surq and latq
+      integer :: icmd      !              | 
 
       j = ihru
 

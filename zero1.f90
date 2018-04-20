@@ -7,6 +7,77 @@
        plqm,pst_dep,pst_lag,qstemm,rbiom,sep_tsincefail,sno_hru,        &
        sol_cov,sweepeff,swtrg,t_ov,tconc,trapeff,usle,usle_cfac,   &
        usle_ei,usle_eifac,wfsh
+      
+      implicit none
+      
+      real :: bio_fecal                 !                |
+      real :: sep_opt                   !                |
+      real :: cont_cn                   !                |
+      real :: cont_p                    !                | 
+      real :: filt_w                    !                |
+      real :: grwat_veg                 !                |
+      real :: phu_op                    !                |
+      real :: plq_rt                    !                |
+      real :: pr_w                      !none            |probability of wet day after dry day in month 
+      real :: pst_kg                    !kg/ha           |amount of pesticide applied to HRU
+      real :: rchrg                     !mm              |recharge
+      real :: resouty                   !                | 
+      real :: rk1                       !1/day or 1/hr   |CBOD deoxygenation rate coeff in reach at 20 deg C
+      real :: rk2                       !1/day or 1/hr   |reaeration rate in accordance with Fickian diffusion in reach at 20 deg C
+      real :: rk3                       !1/day or 1/hr   |rate of loss of CBOD due to settling in reach at 20 deg C
+      real :: rk4                       !mg O2/          |sed oxygen demand rate in reach ((m**2)*day)|at 20 deg C or mg O2/((m**2)*hr)
+      real :: rk5                       !1/day           |coliform die-off rate in reach
+      real :: rk6                       !1/day           |decay rate for arbitrary non-conservative constituent in reach
+      real :: rsp_rt                    !                | 
+      real :: slg_rt                    !                | 
+      real :: sedst                     !metric tons     |amount of sediment stored in reach
+                                        !                |reentrained in channel sediment routing
+      real :: silt                      !%               |percent silt content in soil material
+      real :: sol_pst                   !kg/ha           |pesticide in first layer of soil
+      real :: sol_wp                    !                |
+      real :: solarav                   !MJ/m^2/day      |average daily solar radiation for the month
+      real :: solpstcnst                !                |
+      real :: solpstmon                 !                |
+      real :: solpstyr                  !                |
+      real :: srbpstcnst                !                | 
+      real :: srbpstmon                 !                | 
+      real :: srbpstyr                  !                | 
+      real :: strip_n                   !                | 
+      real :: strip_cn                  !                | 
+      real :: strip_c                   !                |  
+      real :: strip_p                   !                | 
+      real :: thalf                     !days            |time for the amount of solids on
+                                        !                |impervious areas to build up to 1/2
+                                        !                |the maximum level
+      real :: tnconc                    !mg N/kg sed     |concentration of total nitrogen in
+                                        !                |suspended solid load from impervious
+                                        !                |areas
+      real :: tno3conc                  !mg NO3-N/kg sed |concentration of NO3-N in suspended
+                                        !                |solid load from impervious areas
+      real :: tpconc                    !mg P/kg sed     |concentration of total phosphorus in
+                                        !                |suspended solid load from impervious
+                                        !                |areas 
+      real :: urbcoef                   !1/mm            |wash-off coefficient for removal of
+                                        !                |constituents from an impervious surface
+      real :: urbcn2                    ! none           |moisture condiction II curve number for imp areas
+      real :: vp                        !                |  
+      real :: depsilfp                  !                |
+      real :: depsagfp                  !                |
+      real :: deplagfp                  !                |
+      real :: depgrafp                  !                |
+      real :: depsanch                  !                |
+      real :: depsilch                  !                |
+      real :: depclach                  !                |
+      real :: depsagch                  !                |
+      real :: deplagch                  !                |
+      real :: depgrach                  !                |
+      real :: sanst                     !                | 
+      real :: silst                     !                |
+      real :: clast                     !                |
+      real :: sagst                     !                |
+      real :: lagst                     !                |
+      real :: grast                     !                | 
+
      
 !!  septic changes 6/07/10  jaehak
       bio_bod = 0.

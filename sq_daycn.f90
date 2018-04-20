@@ -12,33 +12,22 @@
 !!    fcimp(:)    |fraction      |fraction of HRU area that is classified
 !!                               |as directly connected impervious
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bb          |none          |variable used to store intermediate 
-!!                               |calculation result
-!!    cnimp       |none          |curve number for impervious areas
-!!    j           |none          |HRU number
-!!    pb          |none          |variable used to store intermediate
-!!                               |calculation result
-!!    r2          |none          |retention parameter in CN equation
-!!    surfqimp    |mm H2O        |surface runoff from impervious area
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use urban_data_module
       use hru_module, only : hru, cnday, surfq, ihru, precip_eff
       
-      integer :: j
-      real :: r2, bb, pb, cnimp, surfqimp
+      implicit none
+       
+      real :: bb        !none          |variable used to store intermediate 
+                        !              |calculation result
+      real :: cnimp     !none          |curve number for impervious areas
+      integer :: j      !none          |HRU number
+      real :: pb        !none          |variable used to store intermediate
+                        !              |calculation result
+      real :: r2        !none          |retention parameter in CN equation
+      real :: surfqimp  !mm H2O        |surface runoff from impervious area
+      real :: ulu       !              |
 
       j = ihru
 

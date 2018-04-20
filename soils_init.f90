@@ -7,7 +7,16 @@
       use hydrograph_module, only : sp_ob
       use time_module
       use basin_module
-     
+      
+      implicit none  
+      
+      integer :: msoils           !none          !ending of loop
+      integer :: isol             !none          |counter
+      integer :: mlyr             !none          |max number of soil layers
+      integer :: j                !none          |counter
+      integer :: nly              !              |end of loop
+      integer :: ly               !none          |counter
+      
       !!Section 1
       !!this section sets, allocates, and initializes the original soil database
        msoils = Max(0,db_mx%soil)

@@ -8,10 +8,88 @@
       use time_module
       use plant_data_module
       
-      integer :: isd
-      real :: timeint(1000)
-      real :: a1 = .2,  a2 = .8 
-
+      implicit none
+      
+      integer :: isd                    !             |
+      !real :: timeint(1000)
+      real :: a1 = .2                   !             |
+      real :: a2 = .8                   !             | 
+      integer :: ihlt_db                !             |
+      integer :: iwgn                   !             |
+      integer :: iplt                   !none         |counter
+      real :: precip                    !mm           |precipitation
+      real :: tmax                      !deg C        |maximum average monthly temperature
+      real :: tmin                      !deg C        |minimum average monthly temperature
+      real :: raobs                     !             | 
+      real :: rmx                       !             | 
+      real :: tave                      !             |  
+      real :: yield                     !             | 
+      real :: ws                        !             | 
+      real :: strsair                   !             | 
+      real :: snowfall                  !             |
+      real :: snowmelt                  !             | 
+      real :: runoff                    !             | 
+      real :: xx                        !             | 
+      real :: exp                       !             |  
+      real :: r2                        !             | 
+      real :: amax1                     !             | 
+      real :: cn_sd                     !             | 
+      real :: precipeff                 !             | 
+      real :: xxi                       !             | 
+      real :: xsd                       !             | 
+      real :: ch                        !             | 
+      real :: tan                       !             | 
+      real :: h                         !             | 
+      real :: acos                      !             | 
+      real :: ramm                      !MJ/m2        |extraterrestrial radiation  
+      real :: pet                       !             | 
+      real :: tstress                   !             |sum of temperature stress
+      real :: tk                        !deg C        |mean air temperature
+      real :: alb                       !none         |albedo when soil is moist
+      real :: d                         !cm           |displacement height for plant type
+      real :: gma                       !kPa/deg C    |psychrometric constant
+      real :: ho                        !none         |variable to hold intermediate calculation
+                                        !             |result
+      real :: aph                       !             | 
+      real :: aet                       !mm            |sum of actual et during growing season (for hi water stress)
+      real :: b1                        !             |
+      real :: delg                      !             |
+      real :: parad                     !             |
+      real :: drymat                    !             |
+      real :: satco                     !             |
+      real :: pl_aerfac                 !             |
+      integer :: iend                   !             |points to rule set in d_table
+      integer :: istart                 !none         |points to rule set in d_table  
+      real :: scparm                    !             |
+      real :: air                       !             |
+      real :: amin1                     !             |
+      real :: tgx                       !             |
+      real :: rto                       !none         |cloud cover factor
+      real :: reg                       !             |
+      real :: deltalai                  !             |
+      real :: sw_excess                 !mm H2O       |amount of water in excess of field capacity
+                                        !             |stored in soil layer on the current day
+      real :: swf                       !cfu          |fraction of manure containing active colony forming units
+      real :: flowlat                   !             |
+      real :: f                         !             |
+      real :: ff                        !             |
+      real :: flow_tile                 !             |
+      real :: perc                      !             |
+      real :: revap                     !mm           |revap
+      real :: percdeep                  !             |
+      real :: chflow                    !             |
+      real :: chflow_m3                 !m^3/s        |Runoff in CMS
+      real :: runoff_m3                 !             |
+      real :: bf_m3                     !             | 
+      real :: peakr                     !m^3/s        |peak runoff rate in channel
+      real :: peakrbf                   !             |
+      real :: sedin                     !             | 
+      real :: qssubconc                 !             |
+      real :: qssub                     !             |
+      real :: cnv                       !none         |conversion factor (mm => m^3)
+      real :: wndspd                    !none         |windspeed 
+      real :: rhum                      !none         |relative humidity
+        
       ihlt_db = ob(icmd)%props
       iwst = ob(icmd)%wst
       iwgn = wst(iwst)%wco%wgn

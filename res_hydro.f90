@@ -7,8 +7,24 @@
       use time_module
       use hydrograph_module, only : res, recall, ob
       
-      real :: vol, vvr, targ, xx, flw, ndespill
-      character(len=1) :: action
+      implicit none
+      
+      integer :: jres             !none      |hru number
+      integer :: nstep            !none      |counter
+      integer :: tstep            !none      |hru number
+      integer :: iac              !none      |counter 
+      integer :: id               !none      |hru number
+      integer :: ial              !none      |counter
+      integer :: irel             !          |
+      integer :: iob              !          |
+      integer :: iwst             !none      |hru number
+      integer :: ised             !none      |counter
+      integer :: ihyd             !          |
+      real :: vol                 !          |
+      real :: b_lo                !          |
+      character(len=1) :: action  !          |
+      real :: res_h               !          |
+
       
       !! store initial values
       vol = res(jres)%flo

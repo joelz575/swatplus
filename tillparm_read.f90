@@ -3,12 +3,17 @@
       use input_file_module
       use maximum_data_module
       use tillage_data_module
+      
+      implicit none      
 
-      integer :: it     
-      character (len=80) :: titldum
-      character (len=80) :: header
-      character (len=13) :: tilldbase
-      integer :: eof, i, imax
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=16) :: namedum   !           |
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: itl                  !none       |counter
+      integer :: mtl                  !           |
       
       eof = 0
       imax = 0

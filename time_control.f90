@@ -27,7 +27,6 @@
 !!    iix         |none          |sequence number of current year in rotation
 !!    iiz         |none          |sequence number of current crop grown
 !!                               |within the current year
-!!    j           |none          |counter
 !!    xx          |none          |current year in simulation sequence
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -52,10 +51,18 @@
       use hydrograph_module, only : sp_ob
       use output_landscape_module
       
-      integer :: j, iix, iiz, ic, mon, ii, idp
-      integer :: isce = 1
-      real :: xx
-      character(len=16):: chg_parm, chg_typ
+      implicit none
+      
+      integer :: j                   !none          |counter
+      integer :: julian_day          !none          |counter
+      integer :: id                  !              |
+      real :: dtot                   !              |
+      real :: dorm_flag              !              |
+      integer :: isched              !              |
+      integer :: iwst                !              |
+      integer :: ich                 !none          |counter
+      integer :: idp                 !              |
+      integer :: iupd                !none          |counter
 
       time%yrc = time%yrc_start
 

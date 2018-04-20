@@ -4,10 +4,25 @@
       use topography_data_module
       use hydrograph_module
       use sd_channel_module
-
-      integer :: nb_overb = 0
-      real :: no3_conc
       
+      implicit none
+
+      real :: no3_conc              !              |
+      integer :: inut               !none          |counter
+      integer :: ifld               !              |
+      integer :: istop              !              |
+      real :: ch_len_inc            !              |
+      real :: ch_len                !              |
+      real :: denit                 !              |
+      real :: sed_reduc             !              |
+      real :: srp_reduc             !              |
+      real :: sed_conc              !mg/L
+      real :: tp_conc               !              |
+      real :: nd_overb              !              | 
+      real :: area_m2               !              | 
+      real :: tss_conc              !              |
+      real :: sedp_reduc            !              |
+     
       inut = 0
       ifld = 0
       istop = 0

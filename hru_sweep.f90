@@ -6,8 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fr_curb        |none          |availability factor, the fraction of the 
-!!                                  |curb length that is sweepable
 !!    dirtmx(:)      |kg/curb km    |maximum amount of solids allowed t
 !!                                  |build up on impervious surfaces
 !!    ihru           |none          |HRU number
@@ -23,22 +21,18 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    twash(:)     |days          |time that solids have built-up on streets
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name         |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    dirt         |kg/curb km    |amount of solids built up on impervious
-!!                                |surfaces
-!!    j            |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
  
       use hru_module, only : ihru, sweepeff, twash, ulu
       use urban_data_module
+      
+      implicit none
 
-      integer :: j
-      real :: dirt
+      integer :: j             !j             |none          |HRU number 
+      real :: dirt             !kg/curb km    |amount of solids built up on impervious
+                               !              |surfaces
+      real :: fr_curb          !none          |availability factor, the fraction of the 
+                               !              |curb length that is sweepable
 
       j = 0
       j = ihru

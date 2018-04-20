@@ -4,6 +4,8 @@
       use basin_module
       use hydrograph_module, only : sp_ob, ob
       use hru_module, only : prog
+      
+      implicit none 
          
 !!!  AQUIFER
        if (sp_ob%aqu > 0) then

@@ -1,4 +1,6 @@
       module fertilizer_data_module
+     
+      implicit none
           
       type fertilizer_db
         character(len=16) :: fertnm = ' '

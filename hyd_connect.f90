@@ -12,12 +12,62 @@
       use constituent_mass_module
       use ru_module
       
-      character (len=80) :: titldum, header
-      character (len=16) :: namedum
-      character (len=3) :: iob_out, iobtyp, ihtyp
-      integer :: nspu, isp, cmdno, idone, hydno, cmd_prev, ob1, ob2
-      integer :: iobj_tot
-      integer :: eof, imax  !, i
+      implicit none
+      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=16) :: namedum   !           |
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      character (len=3) :: iob_out    !           !object type out
+      character (len=3) :: iobtyp     !none       |object type
+      character (len=3) :: ihtyp      !           |
+      integer :: nspu                 !           |
+      !integer :: isp
+      integer :: cmdno                !           |
+      integer :: idone                !           | 
+      !integer :: hydno
+      integer :: cmd_prev             !           |
+      integer :: ob1                  !none       |beginning of loop
+      integer :: ob2                  !none       |ending of loop
+      integer :: iobj_tot             !           |
+      real ::mexco_sp                 !           |
+      integer :: i                    !none       |counter
+      integer :: ii                   !none       |counter
+      integer :: ielem                !none       |counter 
+      integer :: k                    !none       |counter
+      integer :: iob                  !           |
+      integer :: kk                   !none       |counter
+      integer :: iph                  !           |
+      integer :: iphl                 !           |
+      integer :: ipsub                !           |
+      integer :: ipmf                 !           |
+      integer :: ipaqu                !           |
+      integer :: ipcha                !           | 
+      integer :: ipres                !           | 
+      integer :: ipec                 !           |
+      integer :: ipdr                 !           |
+      integer :: ipo                  !           |
+      integer :: ipsdc                !           |
+      integer :: j                    !           |
+      integer :: ielem_db             !           |
+      integer :: jj                   !none       |counter
+      integer :: iord                 !none       |counter
+      integer :: isrc_tot             !           |
+      integer :: iprev                !           |
+      integer :: iorder               !           |
+      integer :: ircv                 !none       |counter
+      integer :: ircv_ob              !           |
+      integer :: max                  !           |
+      integer :: ipest
+      integer :: ipath
+      integer :: ihmet
+      integer :: isalt
+      integer :: npests
+      integer :: npaths
+      integer :: nmetals
+      integer :: nsalts
+      
       
       eof = 0
       imax = 0
@@ -96,8 +146,7 @@
       
       !read constituent data base that all objects (except subbasin) point to
       call constit_db_read
-      !call pestcom_db_read
-      
+
       !read connect file for hrus
       if (sp_ob%hru > 0) then
         call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, 5, 2)     
@@ -270,7 +319,7 @@
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
               if (j /= ipec) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
               ipec = j
-            case ("del")   !delivery ratio
+            case ("dr")   !delivery ratio
               ob(i)%obj_out(ii) = sp_ob1%dr + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
@@ -305,6 +354,39 @@
           end do
         end do
 
+      !! allocate zero arrays for constituents
+      allocate (hin_csz%pest(cs_db%num_pests))
+      allocate (hin_csz%path(cs_db%num_paths))
+      allocate (hin_csz%hmet(cs_db%num_metals))
+      allocate (hin_csz%salt(cs_db%num_salts))
+          
+      allocate (hcs1%pest(cs_db%num_pests))
+      allocate (hcs1%path(cs_db%num_paths))
+      allocate (hcs1%hmet(cs_db%num_metals))
+      allocate (hcs1%salt(cs_db%num_salts))
+        
+      allocate (hcs2%pest(cs_db%num_pests))
+      allocate (hcs2%path(cs_db%num_paths))
+      allocate (hcs2%hmet(cs_db%num_metals))
+      allocate (hcs2%salt(cs_db%num_salts))
+      
+      do ipest = 1, npests
+        hin_csz%pest%sol = 0.
+        hin_csz%pest%sol = 0.
+      end do
+      do ipath = 1, npaths
+        hin_csz%path%sol = 0.
+        hin_csz%path%sol = 0.
+      end do
+      do ihmet = 1, nmetals
+        hin_csz%hmet%sol = 0.
+        hin_csz%hmet%sol = 0.
+      end do
+      do isalt = 1, nsalts
+        hin_csz%salt%sol = 0.
+        hin_csz%salt%sol = 0.
+      end do           
+      
       !! allocate receiving arrays
       do i = 1, sp_ob%objs
         if (ob(i)%rcv_tot > 0) then

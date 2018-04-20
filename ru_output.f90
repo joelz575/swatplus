@@ -4,7 +4,9 @@
       use basin_module
       use hydrograph_module
       
-      integer, intent (in) :: iru
+      implicit none
+      
+      integer, intent (in) :: iru             !             |
              
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine outputs ROUTING UNIT variables on daily, monthly and annual time steps

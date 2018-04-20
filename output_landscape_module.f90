@@ -1,4 +1,6 @@
       module output_landscape_module
+    
+      implicit none 
       
       type output_waterbal
         real :: precip = 0.           !mm H2O        |prec falling on they HRU during timestep

@@ -3,8 +3,14 @@
       use basin_module
       use maximum_data_module
       use plant_data_module
+      
+      implicit none 
 
-      integer :: ic
+      integer :: ic           !none        |counter
+      real :: c1              !            |
+      real :: b1              !            | 
+      real :: b2              !            |
+      real :: b3              !            |
       
       do ic = 1, db_mx%plantparm
         if (pldb(ic)%bm_dieoff <= 1.e-6) pldb(ic)%bm_dieoff = 1.00

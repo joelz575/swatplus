@@ -12,9 +12,24 @@
       use organic_mineral_mass_module
       use carbon_module
       
-      character (len=500) :: header
-      character (len=80) :: titldum
-      integer :: eof, imax
+      implicit none
+      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      character (len=16) :: namedum   !           |
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: i                    !           |
+      integer :: max                  !           |
+      integer :: k                    !           |
+      integer :: ilum                 !none       |counter
+      integer :: ith                  !none       |counter 
+      integer :: ithyd                !none       |counter
+      integer :: isol                 !none       |counter
+      integer :: isstor               !none       |counter
+      integer :: isno                 !none       |counter
+      integer :: ifld                 !none       |counter
       
       eof = 0
       imax = 0

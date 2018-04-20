@@ -1,4 +1,14 @@
     function fcgd(xx)
+    
+      implicit none
+      
+      real :: fcgd          !             |
+      real :: tn            !             |
+      real :: top           !             |
+      real :: tx            !             |
+      real :: qq            !             |
+      real :: xx            !             |
+      
       tn = -5.
 	  top = 35.
       tx = 50.

@@ -6,10 +6,18 @@
       use time_module
       use maximum_data_module
       
-      character (len=80) :: titldum, header
-      character (len=80) :: file      
-      integer :: eof, iadep, imo, iyr
-      integer :: imo_atmo
+      implicit none
+      
+      character (len=80) :: file      !           |filename
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: iadep                !           |counter
+      integer :: imo                  !           |counter
+      integer :: iyr                  !           |counter
+      integer :: imo_atmo             !           |
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: iyrc_atmo            !           |
       
       eof = 0
 

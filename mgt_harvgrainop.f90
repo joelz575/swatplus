@@ -60,10 +60,22 @@
       use plant_data_module
       use mgt_operations_module
       use carbon_module
+      
+      implicit none
  
-      integer :: j, k, idp
-      integer, intent (in) :: jj, iplant, iharvop 
-      real :: wur, hiad1, resnew,  yieldn, yieldp, yldpst
+      integer :: j                     !none           |HRU number
+      integer :: k                     !none           |counter
+      integer :: idp                   !               |
+      integer, intent (in) :: jj       !none           |counter
+      integer, intent (in) :: iplant   !               |plant number xwalked from hlt_db()%plant and plants.plt
+      integer, intent (in) :: iharvop  !               |harvest operation type
+      real :: xx                       !varies         |variable to hold calculation results 
+      real :: hiad1                    !none           |actual harvest index (adj for water/growth)
+      real :: wur                      !none           |water deficiency factor
+      real :: resnew                   !               |
+      real :: yieldn                   !               |
+      real :: yieldp                   !               |
+      real :: yldpst                   !kg pst/ha      |pesticide removed in yield
       type (plant_mass) :: plant
 
       j = jj

@@ -24,10 +24,18 @@
       use maximum_data_module
       use calibration_data_module
       use conditional_module
+      
+      implicit none
 
-      integer, dimension (:), allocatable :: elem_cnt
-      character (len=80) :: titldum, header
-      integer :: eof
+      integer, dimension (:), allocatable :: elem_cnt    !           |
+      character (len=80) :: titldum                      !           |title of file
+      character (len=80) :: header                       !           |header of file
+      integer :: eof                                     !           |end of file
+      integer :: imax                                    !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist                                 !none       |check to determine if file exists
+      integer :: mchg_sched                              !none       |end of loop
+      integer :: i                                       !none       |counter
+      integer :: icond                                   !none       |counter
       
       imax = 0
       mchg_sched = 0

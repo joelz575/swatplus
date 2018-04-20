@@ -4,11 +4,17 @@
       use input_file_module
       use constituent_mass_module
       use maximum_data_module
-         
-      character (len=80) :: titldum
-      character (len=80) :: header
-      integer :: eof, i, imax
       
+      implicit none
+         
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: eof                  !           |end of file
+      integer :: i                    !           |
+      integer :: imax                 !           |
+      integer :: ip                   !none       |counter
+       
       eof = 0
       imax = 0
       
@@ -50,6 +56,8 @@
       end do
       end if
 
+      cs_db%num_tot_con = cs_db%num_pests + cs_db%num_paths + cs_db%num_metals + cs_db%num_salts
+      
       close (106)
       return
       end subroutine constit_db_read

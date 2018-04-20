@@ -3,21 +3,6 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine applies N and P specified by date and
 !!    amount in the management file (.mgt)
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name          |units         |definition                  
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units        |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name         |units        |definition                  
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -32,12 +17,23 @@
       use hru_module, only : ihru, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
         fertsolp  
       
+      implicit none 
       
-      real, parameter :: rtof=0.5
-      integer :: j, l
-      integer, intent (in) :: jj, ifrt, fertop
-      real, intent (in) :: frt_kg
-      real :: xx, gc, gc1, swf, frt_t
+      real, parameter :: rtof=0.5         !none          |weighting factor used to partition the 
+                                          !              |organic N & P concentration of septic effluent
+                                          !              |between the fresh organic and the stable 
+                                          !              |organic pools
+      integer :: j                        !none          |counter
+      integer :: l                        !none          |counter 
+      integer, intent (in) :: jj          !none          |counter
+      integer, intent (in) :: ifrt        !              |fertilizer type from fert data base
+      integer, intent (in) :: fertop      !              | 
+      real, intent (in) :: frt_kg         !kg/ha         |amount of fertilizer applied
+      real :: xx                          !              |
+      real :: gc                          !none          |fraction of ground covered by plant foliage
+      real :: gc1                         !              |
+      real :: swf                         !cfu           |fraction of manure containing active colony forming units 
+      real :: frt_t                       !              |
       
 
       !!added by zhang

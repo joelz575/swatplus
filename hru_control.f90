@@ -25,10 +25,39 @@
       use reservoir_module
       use output_landscape_module
       use time_module
+      
+      implicit none
 
-      integer :: j, sb, kk, idp
-      real :: tmpk, d, gma, ho, pet_alpha, aphu, phuop, sumbm, sumrwt
-
+      integer :: j                  !none          |same as ihru (hru number)
+      integer :: sb                 !              |  
+      integer :: idp                !              |
+      real :: sumbm                 !              |
+      real :: sumrwt                !              |
+      real :: ulu                   !              | 
+      integer :: iob                !              |
+      integer :: ith                !              |
+      integer :: iwgn               !              |
+      integer :: jres               !none          |reservoir number
+      integer :: isched             !              |
+      integer :: idat               !              |
+      integer :: ihyd               !              |
+      integer :: ics                !              |
+      integer :: iauto              !none          |counter
+      integer :: id                 !              |
+      integer :: jj                 !              |
+      real :: strsa_av              !              |
+      real :: runoff_m3             !              |
+      real :: bf_m3                 !              |
+      real :: peakrbf               !              |
+      integer :: icn                !              |
+      real :: qdfr                  !              |
+      real :: xx                    !              |
+      integer :: iob_out            !              |object type out 
+      integer :: isub               !              | 
+      integer :: iout               !none          |counter
+      real :: over_flow             !              |
+      real :: yield                 !              |
+  
       j = ihru
       !if (pcom(j)%npl > 0) idp = pcom(ihru)%plcur(1)%idplt
       ulu = hru(j)%luse%urb_lu

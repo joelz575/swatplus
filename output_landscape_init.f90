@@ -10,6 +10,8 @@
       use output_landscape_module
       use time_module
       use hru_module, only : prog
+      
+      implicit none 
 
       if (sp_ob%hru > 0) then
 !!!  HRU - Water balance

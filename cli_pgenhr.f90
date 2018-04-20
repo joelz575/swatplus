@@ -22,33 +22,7 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    blm          |none          |lowest random number value allowed
-!!    dur          |hours         |duration of storm during day
-!!    ihour        |none          |counter
-!!    itime        |none          |time step during day
 !!    j            |none          |HRU number
-!!    k            |none          |random number seed, counter
-!!    nhour        |none          |number of time steps per hour
-!!    pkrain       |mm H2O        |volume of rain at time of peak rainfall
-!!    pkrr         |mm/hr         |peak rainfall rate
-!!    pt           |min           |time during day
-!!    qmn          |none          |mean random number value
-!!    rtp          |min           |time of peak rainfall rate
-!!    rx           |mm H2O        |total rainfall at end of time step
-!!    sumrain      |mm H2O        |total amount of daily rainfall prior to
-!!                                |time step
-!!    uplm         |none          |highest random number value
-!!    vv           |none          |random number between 0.0 and 1.0 that 
-!!                                |represents time to peak rainfall rate
-!!                                |expressed as a fraction of storm duration
-!!    xk1          |none          |1st constant in dimensionless exponential
-!!                                |rainfall distribution
-!!    xk2          |none          |2nd constant in dimensionless exponential
-!!                                |rainfall distribution
-!!    xkp1         |hr            |1st constant in exponential rainfall
-!!                                |distribution
-!!    xkp2         |hr            |2nd constant in exponential rainfall
-!!                                |distribution
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -60,11 +34,37 @@
       use climate_module
       use time_module
       use hydrograph_module
+      
+      implicit none
 
-      integer, intent (in) :: iwgn
-      integer :: itime, pt, ihour, nhour, k
-      real :: vv, blm, qmn, uplm, dur, pkrain, rtp
-      real :: xk1, xk2, xkp1, xkp2, rx, pkrr, sumrain
+      integer, intent (in) :: iwgn          !              |
+      integer :: itime                      !none          |time step during day
+      integer :: pt                         !min           |time during day
+      integer :: ihour                      !none          |counter
+      integer :: nhour                      !none          |number of time steps per hour
+      integer :: k                          !none          |random number seed, counter
+      real :: vv                            !none          |random number between 0.0 and 1.0 that 
+                                            !              |represents time to peak rainfall rate
+                                            !              |expressed as a fraction of storm duration
+      real ::  blm                          !none          |lowest random number value allowed
+      real :: qmn                           !none          |mean random number value
+      real :: uplm                          !none          |highest random number value
+      real :: dur                           !hours         |duration of storm during day
+      real :: pkrain                        !mm H2O        |volume of rain at time of peak rainfall
+      real :: rtp                           !min           |time of peak rainfall rate
+      real :: xk1                           !none          |1st constant in dimensionless exponential
+                                            !              |rainfall distribution
+      real :: xk2                           !none          |2nd constant in dimensionless exponential
+                                            !              |rainfall distribution
+      real :: xkp1                          !hr            |1st constant in exponential rainfall
+                                            !              |distribution
+      real :: xkp2                          !hr            |2nd constant in exponential rainfall
+                                            !              |distribution
+      real :: rx                            !mm H2O        |total rainfall at end of time step
+      real :: pkrr                          !mm/hr         |peak rainfall rate
+      real :: sumrain                       !mm H2O        |total amount of daily rainfall prior to
+                                            !              |time step
+      real :: atri                          !none          |daily value generated for distribution                     
 
       !! zero subdaily precip array
       wst(iwst)%weat%ts = 0.

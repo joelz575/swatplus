@@ -29,46 +29,9 @@
 !!    es_day       |mm H2O        |actual amount of evaporation (soil et) that
 !!                                |occurs on day in HRU
 !!    sno_hru(:)   |mm H2O        |amount of water in snow in HRU on current day
-!!    sno3up       |kg N/ha       |amount of nitrate moving upward in the soil
-!!                                |profile in watershed
 !!    snoev        |mm H2O        |amount of water in snow lost through
 !!                                |sublimation on current day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name         |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cej          |
-!!    dep          |mm            |soil depth from which evaporation will occur
-!!                                |in current soil layer
-!!    eaj          |none          |weighting factor to adjust PET for impact of
-!!                                |plant cover
-!!    effnup       |
-!!    eos1         |none          |variable to hold intermediate calculation
-!!                                |result
-!!    eosl         |mm H2O        |maximum amount of evaporation that can occur
-!!                                |from soil profile
-!!    es_max       |mm H2O        |maximum amount of evaporation (soil et)
-!!                                |that can occur on current day in HRU
-!!    esd          |mm            |maximum soil depth from which evaporation
-!!                                |is allowed to occur
-!!    esleft       |mm H2O        |potenial soil evap that is still available
-!!    etco         |
-!!    evz          |
-!!    evzp         |
-!!    ib           |none          |counter
-!!    j            |none          |HRU number
-!!    ly           |none          |counter
-!!    no3up        |kg N/ha       |amount of nitrate moving upward in profile
-!!    pet          |mm H2O        |amount of PET remaining after water stored
-!!                                |in canopy is evaporated
-!!    sev          |mm H2O        |amount of evaporation from soil layer
-!!    sumsnoeb     |mm H2O        |amount of snow in elevation bands whose air
-!!                                |temperature is greater than 0 degrees C
-!!    xx           |none          |variable to hold intermediate calculation 
-!!                                |result
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp, Min, Max
 !!    SWAT: Expo
@@ -79,12 +42,43 @@
       use organic_mineral_mass_module
       use hru_module, only : hru, soil, tmpav, canstor, sno_hru, sol_cov, hru_dafr, ihru, canev, ep_max,  &
          es_day, pet_day, snoev, sumlai
+      
+      implicit none
 
-      integer :: j, ib, ly
+      integer :: j               !none          |HRU number
+      integer :: ib              !none          |counter
+      integer :: lym             !none          |counter
 !!    real, parameter :: esd = 500., etco = 0.80, effnup = 0.1
-      real :: esd, etco, effnup
-      real :: no3up, es_max, eos1, xx, cej, eaj, pet, esleft
-      real :: sumsnoeb, evzp, eosl, dep, evz, sev
+      real :: esd                !mm            |maximum soil depth from which evaporation
+                                 !              |is allowed to occur
+      real :: etco               !              |
+      real :: effnup             !              ! 
+      real :: no3up              !kg N/ha       |amount of nitrate moving upward in profile 
+      real :: es_max             !mm H2O        |maximum amount of evaporation (soil et)
+                                 !              |that can occur on current day in HRU
+      real :: eos1               !none          |variable to hold intermediate calculation
+                                 !              |result
+      real :: xx                 !none          |variable to hold intermediate calculation 
+                                 !              |result
+      real :: cej                !              |
+      real :: eaj                !none          |weighting factor to adjust PET for impact of
+                                 !              |plant cover    
+      real :: pet                !mm H2O        |amount of PET remaining after water stored
+                                 !              |in canopy is evaporated
+      real :: esleft             !mm H2O        |potenial soil evap that is still available
+      real :: sumsnoeb           !mm H2O        |amount of snow in elevation bands whose air
+                                 !              |temperature is greater than 0 degrees C
+      real :: evzp               !              |
+      real :: eosl               !mm H2O        |maximum amount of evaporation that can occur
+                                 !              |from soil profile
+      real :: dep                !mm            |soil depth from which evaporation will occur
+                                 !              |in current soil layer
+      real :: evz                !              | 
+      real :: sev                !mm H2O        |amount of evaporation from soil layer
+      real :: expo               !              |
+      real :: sno3up             !kg N/ha       |amount of nitrate moving upward in the soil
+                                 !              |profile in watershed
+      integer :: ly              !none          |counter                               
 
       j = ihru
       pet = pet_day

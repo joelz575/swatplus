@@ -27,27 +27,6 @@
 !!                               |  1: rainfall event over midnight
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    adj_hc      |mm/hr         |adjusted hydraulic conductivity
-!!    cuminf(:)   |mm H2O        |cumulative infiltration for day
-!!    cumr(:)     |mm H2O        |cumulative rainfall for day
-!!    dthet       |mm/mm         |initial moisture deficit
-!!    excum(:)    |mm H2O        |cumulative runoff for day
-!!    exinc(:)    |mm H2O        |runoff for time step
-!!    f1          |mm H2O        |test value for cumulative infiltration
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    kk          |hour          |hour of day in which runoff is generated
-!!    psidt       |mm            |suction at wetting front*initial moisture 
-!!                               |deficit
-!!    rateinf(:)  |mm/hr         |infiltration rate for time step
-!!    rintns(:)   |mm/hr         |rainfall intensity
-!!    soilw       |mm H2O        |amount of water in soil profile
-!!    tst         |mm H2O        |test value for cumulative infiltration
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Sum, Exp, Real, Mod
 
@@ -60,11 +39,28 @@
       use hru_module, only : hru, soil, swtrg, hhqday, ubnrunoff, hhsurfq, surfq, cnday, wfsh, ihru
       use time_module
       
-      integer :: j, k, kk
-      real :: adj_hc, dthet, soilw, psidt, tst, f1
-      real, dimension (time%step+1) :: cumr, cuminf, excum, exinc, rateinf
-      real, dimension (time%step+1) :: rintns
-        !! array location #1 is for last time step of prev day
+      implicit none
+      
+      integer :: j                               !none          |HRU number
+      integer :: k                               !none          |counter
+      integer :: kk                              !hour          |hour of day in which runoff is generated
+      real :: adj_hc                             !mm/hr         |adjusted hydraulic conductivity
+      real :: dthet                              !mm/mm         |initial moisture deficit
+      real :: soilw                              !mm H2O        |amount of water in soil profile
+      real :: psidt                              !mm            |suction at wetting front*initial moisture 
+                                                 !              |deficit
+      real :: tst                                !mm H2O        |test value for cumulative infiltration
+      real :: f1                                 !mm H2O        |test value for cumulative infiltration
+      real :: ulu
+      real :: abstinit
+      real, dimension (time%step+1) :: cuminf    !mm H2O        |cumulative infiltration for day
+      real, dimension (time%step+1) :: cumr      !mm H2O        |cumulative rainfall for day
+      real, dimension (time%step+1) :: excum     !mm H2O        |cumulative runoff for day
+      real, dimension (time%step+1) :: exinc     !mm H2O        |runoff for time step
+      real, dimension (time%step+1) :: rateinf   !mm/hr         |infiltration rate for time step
+      real, dimension (time%step+1) :: rintns    !mm/hr         |rainfall intensity
+
+      !! array location #1 is for last time step of prev day
 
        j = ihru
        ulu = hru(j)%luse%urb_lu

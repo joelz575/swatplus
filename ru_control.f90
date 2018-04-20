@@ -16,7 +16,36 @@
       use hydrograph_module
       use time_module
       
-      character (len=3) :: ihtyp
+      implicit none 
+      
+      character (len=3) :: ihtyp         !            |
+      integer :: iday                    !            |
+      integer :: ihdmx                   !            |
+      real :: sumfrac                    !            |
+      real :: sumarea                    !            |
+      integer :: ielem                   !none        |counter
+      integer :: ise                     !none        |counter
+      integer :: iob                     !            |
+      integer :: idr                     !none        |points to dr's in delratio.dat 
+      integer :: ihtypno                 !            |
+      real :: ef                         !            | 
+      real :: cnv_m3                     !            |
+      integer :: ii                      !none        |counter
+      integer :: iday_prev               !            | 
+      real :: ssq                        !            |
+      integer :: kk                      !            |
+      real :: sumflo                     !            |
+      integer :: itot                    !            |
+      integer :: ib                      !none        |counter
+      real :: rto                        !none        |cloud cover factor
+      integer :: iadj                    !            | 
+      integer :: istep                   !            |
+      real :: sumflo_day                 !            |
+      real :: ratio!none                 !frac        |fraction change in precipitation due to 
+                                         !            |elevation changes
+      real :: wtmp                       !deg C       |temperature of water in reach
+      
+      
       
       iday = 1
       ihdmx = 2

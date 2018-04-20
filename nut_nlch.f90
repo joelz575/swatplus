@@ -23,16 +23,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    co          |kg N/mm       |concentration of nitrate in solution
-!!    cosurf      |kg N/mm       |concentration of nitrate in surface runoff
-!!    j           |none          |HRU number
-!!    jj          |none          |counter (soil layers)
-!!    percnlyr    |kg N/ha       |nitrate leached to next lower layer with
-!!                               |percolation
-!!    sro         |mm H2O        |surface runoff
-!!    ssfnlyr     |kg N/ha       |nitrate transported in lateral flow from layer
-!!    vno3        |
-!!    vv          |mm H2O        |water mixing with nutrient in layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -43,10 +33,22 @@
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : soil, hru, latno3, percn, surqno3, tileno3, surfq, ihru, qtile  
+      
+      implicit none 
 
-      integer :: j, jj
-      real :: sro, ssfnlyr, percnlyr, vv, vno3, co
-      real :: cosurf, nloss
+      integer :: j         !none          |HRU number
+      integer :: jj        !none          |counter   
+      real :: sro          !mm H2O        |surface runoff 
+      real :: ssfnlyr      !kg N/ha       |nitrate transported in lateral flow from layer
+      real :: percnlyr     !kg N/ha       |nitrate leached to next lower layer with
+                           !              |percolation
+      real :: vv           !mm H2O        |water mixing with nutrient in layer
+      real :: vno3         !              |
+      real :: co           !kg N/mm       |concentration of nitrate in solution
+      real :: cosurf       !kg N/mm       |concentration of nitrate in surface runoff 
+      real :: nloss        !frac          |nloss based on half life
+      real :: ww           !varies        |variable to hold intermediate calculation
+                           !              |result
 
       j = ihru
 

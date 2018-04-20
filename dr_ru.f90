@@ -4,6 +4,15 @@
       use hru_lte_module
       use ru_module
       use hru_module, only : ihru, tconc
+      
+      implicit none
+      
+      real :: sumn                  !kg N/ha       |total amount of nitrate stored in soil profile
+      integer :: ii                 !none          |counter
+      integer :: ielem              !none          |counter
+      real :: rto                   !none          |cloud cover factor
+      
+      
     
      ! compute delivery ratio for each hru in the sub
       sumn = 0.

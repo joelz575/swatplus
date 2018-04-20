@@ -26,8 +26,10 @@
 
       use hru_module, only : hru, soil, ihru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, sedorgn,  &
          sedorgp, latq 
+      
+      implicit none
 
-      integer :: j
+      integer :: j              !none          |HRU number
 
       j = 0
       j = ihru

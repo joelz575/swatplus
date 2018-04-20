@@ -4,10 +4,16 @@
       use maximum_data_module
       use tiles_data_module
       
-      character (len=80) :: titldum
-      character (len=80) :: header
-      character (len=13) :: file
-      integer :: eof, i, imax
+      implicit none 
+      
+      character (len=13) :: file      !           |
+      integer :: i                    !           |
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: isdr                 !none       |counter
       
       eof = 0
       imax = 0

@@ -20,7 +20,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -31,8 +30,13 @@
 
       use tiles_data_module
       use hru_module, only : hru, soil, ihru, qtile, sw_excess, wt_shall
+      
+      implicit none
 
-      integer :: j
+      integer :: j             !none          |HRU number
+      integer :: isdr          !              |
+      real :: dmod_m           !              |
+      real :: d                !m             |depth of flow
 
       j = ihru
       isdr = hru(j)%tiledrain

@@ -16,23 +16,17 @@
 !!    hhqday(:)   |mm H2O        |surface runoff for the hour in HRU
 !!    surfq(:)    |mm H2O        |surface runoff in the HRU for the day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ii          |none          |counter
-!!    j           |none          |HRU number
-!!    voli        |none          |volume available for crack flow
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
       use hru_module, only : surfq, hhqday, ihru, voltot 
       use time_module
+      
+      implicit none
 
-      integer :: j, ii
-      real :: voli
+      integer :: j      !none          |HRU number
+      real :: voli      !none          |volume available for crack flow
+      integer :: ii     !none          |counter
 
       j = ihru
 

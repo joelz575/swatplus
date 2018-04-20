@@ -31,17 +31,7 @@
 !!                               |profile in watershed on day
 !!    wpstaao(:,4)|mg pst/ha     |amount of pesticide type in lateral flow
 !!                               |contribution to stream in watershed on day
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |counter (HRU number)
-!!    k           |none          |counter
-!!    kk          |none          |pesticide identification number from database
-!!    l           |none          |counter (soil layer)
-!!    pfp         |mg/ha         |pesticide on plants at end of simulation
-!!    pfg         |mg/ha         |pesticide in soil at end of simulation
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Maxval
 
@@ -49,9 +39,16 @@
 
       use hru_module, only : hru, hru_dafr, hrupest, ihru, iscen, nhru, npmx, soil, wpstaao
       use constituent_mass_module
+      
+      implicit none 
 
-      integer :: k, kk, j, l
-      real :: pfp, pfg
+      integer :: l
+      integer :: j         !none          |HRU number
+      integer :: k         !none          |counter
+      integer :: kk        !none          |pesticide number from pest.dat
+      real :: pfp          !mg/ha         |pesticide on plants at end of simulation
+      real :: pfg          !mg/ha         |pesticide in soil at end of simulation
+      integer :: icmd      !              | 
           
       j = ihru
       npmx = cs_db%num_pests

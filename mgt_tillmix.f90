@@ -47,20 +47,9 @@
 !!    bmix        |none          |biological mixing efficiency: this 
 !!                               |number is zero for tillage operations
 !!    dg          |mm            |depth of soil layer
-!!    dtil        |mm            |depth of mixing
-!!    emix        |none          |mixing efficiency
-!!    rrns        |mm            |random roughness
-!!    jj          |none          |HRU number
-!!    k           |none          |counter
-!!    l           |none          |counter
-!!    nl          |none          |number of layers being mixed
 !	  Drainmod  07/2006
 !!	  ranrns_hru(:)|mm           |random roughness at time of a given tillage operation in HRU
 !	  Drainmod  07/2006
-!!    smix(:)     |varies        |amount of substance in soil profile
-!!                               |that is being redistributed between 
-!!                               |mixed layers
-!!    thtill(:)   |none          |fraction of soil layer that is mixed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -74,12 +63,23 @@
       use organic_mineral_mass_module
       use hru_module, only : soil, cumei, cumeira, cumrt, cumrai, ranrns_hru, bactpq, bactps, bactlpq, bactlps,   &
         mlyr, npmx, itill, hrupest, cnop
+      
+      implicit none      
 
-      integer, intent (in) :: jj, idtill
-      real, intent (in) :: bmix
-      integer :: l, k, nl
-      real :: emix, dtil, rrns 
-      real :: thtill(mlyr), smix(11+npmx)
+      integer, intent (in) :: jj         !none           |HRU number
+      integer, intent (in) :: idtill     !none           |tillage type
+      integer :: j                       !none           |counter
+      real, intent (in) :: bmix          !               |
+      integer :: l                       !none           |counter  
+      integer :: k                       !none           |counter
+      integer :: nl                      !none           |number of layers being mixed
+      real :: emix                       !none           |mixing efficiency
+      real :: dtil                       !mm             |depth of mixing
+      real :: rrns                       !mm             |random roughness
+      real :: thtill(mlyr)               !none           |fraction of soil layer that is mixed
+      real :: smix(11+npmx)              !varies         |amount of substance in soil profile
+                                         !               |that is being redistributed between 
+                                         !               |mixed layers
 
       emix = 0.
       dtil = 0.

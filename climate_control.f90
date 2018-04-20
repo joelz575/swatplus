@@ -12,11 +12,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    elevp(:)    |m             |elevation of precipitation gage station
 !!    elevt(:)    |m             |elevation of temperature gage station
-!!    ifirstpet   |none          |potential ET data search code
-!!                               |0 first day of potential ET data located in
-!!                               |  file
-!!                               |1 first day of potential ET data not located
-!!                               |  in file
 !!    nstep       |none          |number of lines of rainfall data for each
 !!                               |day
 !!    welev(:)    |m             |elevation of weather station used to compile
@@ -26,16 +21,8 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    frad(:,:)   |none          |fraction of solar radiation occuring during
-!!                               |hour in day in HRU
 !!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
 !!    hru_rmx(:)  |MJ/m^2        |maximum solar radiation for the day in HRU
-!!    ifirstpet   |none          |potential ET data search code
-!!                               |0 first day of potential ET data located in
-!!                               |  file
-!!                               |1 first day of potential ET data not located
-!!                               |  in file
-!!    petmeas     |mm H2O        |potential ET value read in for day
 !!    wst(:)%weat%ts(:) |mm H2O        |precipitation for the time step during the
 !!                               |day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -43,18 +30,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ib          |none          |counter
-!!    idap        |julain date   |day currently being simulated
-!!    ii          |none          |counter
-!!    inum3sprev  |none          |subbasin number of previous HRU
-!!    iyp         |none          |year currently being simulated
-!!    k           |none          |counter
-!!    pdif        |mm H2O        |difference in precipitation for station and
-!!                               |precipitation for elevation band
-!!    ratio       |none          |fraction change in precipitation due to 
-!!                               |elevation changes
-!!    tdif        |deg C         |difference in temperature for station and
-!!                               |temperature for elevation band
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -69,11 +44,38 @@
       use time_module
       use hydrograph_module
       use maximum_data_module
+      
+      implicit none
            
-      integer :: k, inum3sprev, ii, iyp, idap, ib
-      real :: daylbsb, tdif, pdif, ratio, petmeas
-      real :: half_hr_mn        !! mm H2O        |lowest value half hour precip fraction can have
-      real :: half_hr_mx        !! mm H2O        |highest value half hour precip fraction can have
+      integer :: k                !none          |counter
+      integer :: inum3sprev       !none          |subbasin number of previous HRU
+      integer :: ii               !none          |counter       
+      integer :: iyp              !none          |year currently being simulated
+      integer :: idap             !julain date   |day currently being simulated
+      integer :: ib               !none          |counter
+      real :: tdif                !deg C         |difference in temperature for station and
+                                  !              |temperature for elevation band
+      real :: pdif                !mm H2O        |difference in precipitation for station and
+                                  !              |precipitation for elevation band
+      real :: ratio               !none          |fraction change in precipitation due to 
+                                  !              |elevation changes
+      real :: petmeas             !mm H2O        |potential ET value read in for day 
+      real :: half_hr_mn          !mm H2O        |lowest value half hour precip fraction can have
+      real :: half_hr_mx          !mm H2O        |highest value half hour precip fraction can have
+      integer :: iwgn             !              |
+      integer :: ipg              !              | 
+      integer :: ist              !none          |counter
+      integer :: ig               !              |
+      real :: ramm                !MJ/m2         |extraterrestrial radiation
+      real :: xl                  !MJ/kg         |latent heat of vaporization
+      real :: expo                !              | 
+      real :: atri                !none          |daily value generated for distribution
+      real :: ifirstpet           !none          |potential ET data search code
+                                  !              |0 first day of potential ET data located in
+                                  !              |file
+                                  !              |1 first day of potential ET data not located
+                                  !              |in file
+      
       
       !! Precipitation:
       do iwst = 1, db_mx%wst

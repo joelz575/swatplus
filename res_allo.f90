@@ -2,7 +2,11 @@
       
       use reservoir_module
       use hydrograph_module
+      
+      implicit none     
 
+      integer :: mres           !             |
+      
       mres = sp_ob%res
       allocate (res(0:mres))
       allocate (res_ob(0:mres))

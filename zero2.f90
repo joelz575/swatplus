@@ -8,6 +8,54 @@
        sedyld,silyld,smx,snotmp,surf_bs,twash,wpstaao,wrt
       
       use bacteria_module
+      
+      implicit none
+      
+      real :: bactlpcnst            !                 |                   
+      real :: bactlpmon             !                 |  
+      real :: bactlpyr              !                 |  
+      real :: bactpcnst             !                 | 
+      real :: bactpmon              !                 |  
+      real :: bactpyr               !                 | 
+      real :: cht                   !m                |canopy height
+      real :: cklsp                 !                 |
+      real :: cmtl1cnst             !                 |
+      real :: cmtl1mon              !                 |
+      real :: cmtl1yr               !                 |
+      real :: cmtl2cnst             !                 |
+      real :: cmtl2mon              !                 |
+      real :: cmtl2yr               !                 | 
+      real :: cmtl3cnst             !                 |
+      real :: cmtl3mon              !                 |
+      real :: fcimp                 !fraction         |fraction of HRU area that is classified
+                                    !                 |as directly connected impervious
+      integer :: irelease           !                 |
+      integer :: minpcnst           !                 |
+      integer :: minpmon            !                 |
+      integer :: minpyr             !                 | 
+      integer :: nh3cnst            !                 |
+      integer :: nh3mon             !                 |
+      integer :: nh3yr              !                 |
+      integer :: no2cnst            !                 |
+      integer :: no2mon             !                 | 
+      integer :: no2yr              !                 |
+      integer :: no3cnst            !                 |
+      integer :: no3mon             !                 |
+      real :: fr_curb               !none             |availability factor, the fraction of the 
+                                    !                 |curb length that is sweepable
+      integer :: no3yr              !                 |
+      real :: orgncnst              !                 |
+      real :: orgnmon               !                 |
+      real :: orgnyr                !                 |
+      real :: orgpcnst              !                 |
+      real :: orgpmon               !                 |
+      real :: orgpyr                !                 |  
+      real :: rchstor               !m^3 H2O          |water stored in reach 
+      real :: res_out               !none             |max number of reservoir regions for output
+      real :: sedmon                !                 |
+      real :: sedyr                 !                 |
+      real :: yldn                  !                 |
+      real :: zdb                   !mm               |division term from net pesticide equation
 
       fr_curb = 0.
       bactlpcnst = 0.

@@ -1,9 +1,16 @@
       module hru_module
-   
-      integer :: isep, isolt
-      integer :: ith, ilu, ulu, ipot, iwgen
-      character (len=1) :: timest
+    
+      implicit none
       
+      integer :: isep                !          |
+      integer :: isolt               !          |
+      integer :: ith                 !          |
+      integer :: ilu                 !          | 
+      integer :: ulu                 !          |
+      integer :: ipot                !          |
+      integer :: iwgen               !          |
+      character (len=1) :: timest    !          |
+     
       type uptake_parameters
        real :: water_dis = 10.        !               |the uptake distribution for water is hardwired
        real :: water_norm             !none           |water uptake normalization parameter 
@@ -418,24 +425,8 @@
           real :: lagi = 0.
       end type pothole_dynamic
       type (pothole_dynamic), dimension (:), allocatable :: pot
-       
-      type pestinit
-        character(len=13) :: name
-        integer :: num_db     !!          |pesticide number in pesticide.pst
-        real :: plt           !! kg/ha    |amount of pesticide on plant at start of simulation
-        real :: soil          !! kg/ha    |amount of pesticide in soil at start of simulation
-        real :: enr           !!          | pesticide enrichment ratio
-      end type pestinit
+
       
-      type pestinit_db
-        character(len=16) :: name        !!      |name of pesticide community
-        integer :: num                   !!      |number of pesticides in community
-        character (len=16) :: exco_df    !!      |name of export coefficient file for pesticide community
-        character (len=16) :: dr_df      !!      |name of delivery ratio file for pesticide community
-        type (pestinit), dimension (:), allocatable :: pesti
-      end type pestinit_db
-      type (pestinit_db), dimension (:), allocatable :: pesti_db
-     
       real :: precipday         !! mm   |daily precip for the hru
       real :: precip_eff        !! mm   |daily effective precip for runoff calculations = precipday + ls_overq + snomlt - canstor
                                 !!      |precip_eff = precipday + ls_overq - snofall + snomlt - canstor

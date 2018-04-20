@@ -8,10 +8,20 @@
       use hru_lte_module
       use output_landscape_module
       use basin_module
-
-      character (len=80) :: titldum, header
-      integer :: eof
       
+      implicit none
+      
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: imax                 !none       |determine max number for array (imax) and total number in file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: mcal                 !           |
+      integer :: mreg                 !none       |end of loop
+      integer :: ireg                 !none       |counter 
+      integer :: mlug                 !none       |end of loop
+      integer :: ilum                 !none       |counter
+       
       imax = 0
       mcal = 0
 	  

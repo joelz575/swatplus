@@ -4,17 +4,6 @@
 !!    this subroutine reads the input and output names
 !!    and converts all capital letters to lowercase letters.
 
-!!    ~ ~ ~ LOCAL VARIABLES ~ ~ ~
-!!    name        |units       |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    file_name   |NA        |dummy argument, file name character string
-!!    ii          |none      |counter in loop
-!!    j           |none      |counter in loop
-!!    low_case    |NA        |string containing all the lowercase letters
-!!    temp_name   |NA        |string with all capitals switched to lowercase
-!!    up_case     |NA        |string containing all the uppercase letters
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Len, Index, AdjustL
 

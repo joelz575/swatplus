@@ -3,8 +3,10 @@
       use hru_module, only : hru, hru_init, soil, soil_init, pcom, pcom_init, sno_hru, sno_init, nop, bss
 
       use organic_mineral_mass_module
+      
+      implicit none
 
-      integer, intent (in) :: iihru
+      integer, intent (in) :: iihru              !           |
       
       hru(iihru) = hru_init(iihru)
       soil(iihru) = soil_init(iihru)

@@ -26,16 +26,7 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    gx          |mm            |lowest depth in layer from which nitrogen
-!!                               |may be removed
-!!    icrop       |none          |land cover code
-!!    ir          |none          |flag to denote bottom of root zone reached
-!!    j           |none          |HRU number
-!!    l           |none          |counter (soil layer)
 !!    un2         |kg N/ha       |ideal plant nitrogen content
-!!    unmx        |kg N/ha       |maximum amount of nitrogen that can be 
-!!                               |removed from soil layer
-!!    uno3l       |kg N/ha       |amount of nitrogen removed from soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -49,9 +40,25 @@
       use organic_mineral_mass_module
       use hru_module, only : pcom, soil, uno3d, un2, nplnt, fixn, ihru, ipl, rto_no3, sol_rd, uptake  
 
-      integer :: j, icrop, l, ir, idp
-      real :: unmx, uno3l, gx
+      implicit none
 
+      integer :: icrop       !none      |land cover code
+      integer :: j           !none      |hru number
+      integer :: l           !none      |counter (soil layer)
+      real :: uno3l          !kg N/ha   |plant nitrogen demand
+      integer :: ir          !none      |flag to denote bottom of root zone reached
+      integer :: idp         !          |       
+      real :: unmx           !kg N/ha   |maximum amount of nitrogen that can be 
+                             !          |removed from soil layer
+      real :: gx             !mm        |lowest depth in layer from which nitrogen
+                             !          |may be removed
+      real :: uobn           !none      |nitrogen uptake normalization parameter
+                             !          |This variable normalizes the nitrogen uptake
+                             !          |so that the model can easily verify that
+                             !          |upake from the different soil layers sums to 1.0
+      real :: xx             !          |  
+      integer :: max         !          |
+  
       j = ihru
 
       idp = pcom(j)%plcur(ipl)%idplt

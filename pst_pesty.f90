@@ -30,22 +30,23 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    conc        |              |concentration of pesticide in soil
-!!    er          |none          |enrichment ratio for pesticides
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    kk          |none          |pesticide number from database
-!!    xx          |kg/ha         |amount of pesticide in soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, soil, hrupest, sedyld, ihru, enratio, npmx
       use constituent_mass_module
+      
+      implicit none 
 
-      integer :: j, k, kk
-      real :: xx, conc, er
-
+      real :: conc        !              |concentration of pesticide in soil
+      real :: er          !none          |enrichment ratio for pesticides
+      integer :: j        !none          |HRU number
+      integer :: k        !none          |counter
+      integer :: kk       !none          |pesticide number from database
+      real :: xx          !kg/ha         |amount of pesticide in soil
+      integer :: icmd     !              | 
+      
       j = 0
       j = ihru
 
@@ -58,11 +59,7 @@
           xx = 0.
           
           if (xx >= .0001) then
-            conc = 0.
-            er = 0.
-!!            conc = 100. * sol_kp(k,j,1) * xx / (zdb(k,j)+1.e-10)
-            conc = 100. * soil(j)%ly(1)%kp(k) * xx /                     &  
-                                       (hru(j)%pst(k)%zdb + 1.e-10)
+            conc = 100. * soil(j)%ly(1)%kp(k) * xx / (hru(j)%pst(k)%zdb + 1.e-10)
             if (hru(j)%pst(k)%enr > 0.) then
               er = hru(j)%pst(k)%enr
             else

@@ -2,6 +2,8 @@
     
       use hru_module, only : hru, ihru, isol, ilu
       use hydrograph_module, only : sp_ob
+      
+      implicit none
 
       !!assign land use pointers for the hru
       !!allocate and initialize land use and management

@@ -12,26 +12,29 @@
 !!    rndseed(:,:)|none          |random number seeds
 !!    wndav(:,:)  |m/s           |average wind speed for the month in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    v6          |none          |random number between 0.0 and 1.0
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Log
 !!    SWAT: Aunif
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hydrograph_module
       use climate_module
       use time_module
       
-      real :: v6, v7, rdir2, pi2
-      integer :: idir, idir1, idir2, mo
+      implicit none
+      
+      real :: v6                  !none          |random number between 0.0 and 1.0
+      real :: v7                  !              |
+      real :: rdir2               !              |
+      real :: pi2                 !              |
+      integer :: idir             !none          |counter
+      integer :: idir1            !              |
+      integer :: idir2            !              |
+      integer :: mo               !              |
+      integer :: iwgn             !              | 
+      integer :: iwndir           !              |
+      real :: aunif               !              |
+      real :: g                   !              |
 
       pi2 = 6.283185
       mo = time%mo

@@ -15,6 +15,14 @@
       use hru_module, only : hru, ihru, usle_cfac, ls_overq, precip_eff
       use hydrograph_module
       use topography_data_module
+      
+      implicit none
+      
+      integer :: j              !            |
+      integer :: iob            !            |
+      integer :: ifield         !            |
+      real :: sed               !            |
+      real :: trancap           !            |
 
       j = ihru
 

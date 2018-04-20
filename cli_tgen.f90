@@ -21,23 +21,6 @@
 !!    wgncur(2,:) |none          |parameter which predicts impact of precip on
 !!                               |daily minimum air temperature
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    tamp        |deg C         |difference between mean monthly air temperature
-!!                               |and monthly max or min temperature
-!!    tmng        |deg C         |generated minimum temperature for the day
-!!    tmxg        |deg C         |generated maximum temperature for the day
-!!    txxm        |deg C         |modified monthly maximum temperature
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Abs
 
@@ -46,8 +29,15 @@
       use climate_module
       use hydrograph_module
       use time_module
+      
+      implicit none
 
-      real :: tmxg, tmng, tamp, txxm
+      real :: tmxg               !deg C         |generated maximum temperature for the day
+      real :: tmng               !deg C         |generated minimum temperature for the day
+      real :: tamp               !deg C         |difference between mean monthly air temperature
+                                 !              |and monthly max or min temperature
+      real :: txxm               !deg C         |modified monthly maximum temperature
+      integer :: iwgn            !              |
 
       tamp = .5 * (wgn(iwgn)%tmpmx(time%mo) - wgn(iwgn)%tmpmn(time%mo))
       txxm = wgn(iwgn)%tmpmx(time%mo) + tamp * wgn_pms(iwgn)%pr_wdays(time%mo)

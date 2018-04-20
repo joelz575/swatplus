@@ -45,8 +45,31 @@
       use basin_module
       use hru_module, only : soil, pcom, hru, ihru, stsol_rd, epmax, ipl, ep_day, sol_rd, uptake  
       
-      integer :: j, k, ir, idp
-      real :: sum, xx, gx, reduc, sump
+      implicit none
+      
+      integer :: j           !none      |hru number
+      integer :: k           !none      |counter 
+      integer :: ir          !none      |flag to denote bottom of root zone reached
+      integer :: idp         !          |   
+      real :: sum            !          |
+      real :: xx             !mm H2O    |water uptake by plants from all layers          |
+      real :: reduc          !none      |fraction of water uptake by plants achieved
+                             !          |where the reduction is caused by low water
+                             !          |content
+      real :: sump           !          |
+      real :: gx             !mm        |lowest depth in layer from which nitrogen
+                             !          |may be removed
+      real :: wuse           !mm H2O    |water uptake by plants in each soil layer
+      real :: satco          !          | 
+      real :: pl_aerfac      !          |
+      real :: scparm         !          |  
+      real :: uobw           !none      |water uptake normalization parameter
+                             !          |This variable normalizes the water uptake so
+                             !          |that the model can easily verify that uptake
+                             !          |from the different soil layers sums to 1.0
+      real :: ubw            !          |the uptake distribution for water is hardwired
+      real :: yy             !          | 
+      
 
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt

@@ -3,9 +3,12 @@
        use time_module
        use input_file_module
        
-       character (len=500) :: header
-       character (len=80) :: titldum
-       integer :: eof
+       implicit none
+       
+       character (len=80) :: titldum    !           |title of file
+       character (len=500) :: header    !           |header of file       
+       integer :: eof                   !           |end of file
+       integer :: i_exist              !none       |check to determine if file exists
        
        eof = 0
 

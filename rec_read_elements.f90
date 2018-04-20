@@ -5,9 +5,34 @@
       use calibration_data_module
       use hydrograph_module
       use hru_module, only : ihru
+      
+      implicit none
 
-      character (len=80) :: titldum, header
-      integer :: eof
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: eof                  !           |end of file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: imax                 !none       |end of loop
+      integer :: isp                  !none       |counter
+      integer :: mcal                 !           |           
+      integer :: mreg                 !none       |end of loop
+      integer :: i                    !none       |counter
+      integer :: k                    !           |  
+      integer :: nspu                 !none       |end of loop
+      integer :: ielem                !           | 
+      integer :: ii                   !none       |counter
+      integer :: ie1                  !none       |beginning of loop
+      integer :: max                  !           |
+      integer :: msub_elems           !           | 
+      integer :: ie                   !none       |counter
+      integer :: ireg                 !none       |counter
+      integer :: ires                 !none       |counter
+      
+      
+      integer :: ie2
+      integer :: irec
+      
+      
       
       imax = 0
       mcal = 0

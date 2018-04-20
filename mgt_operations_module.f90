@@ -1,4 +1,6 @@
       module mgt_operations_module
+    
+      implicit none
       
      type irrigation_operation
         character (len=13) :: name

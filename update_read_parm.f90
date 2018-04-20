@@ -24,10 +24,30 @@
       use maximum_data_module
       use calibration_data_module
       use hydrograph_module
+      
+      implicit none
 
-      integer, dimension (:), allocatable :: elem_cnt1
-      character (len=80) :: titldum, header
-      integer :: eof
+      integer, dimension (:), allocatable :: elem_cnt1    !           |  
+      character (len=80) :: titldum                       !           |title of file
+      character (len=80) :: header                        !           |header of file
+      integer :: eof                                      !           |end of file
+      integer :: imax                                     !none       |determine max number for array (imax) and total number in file
+      integer :: nspu                                     !           |
+      integer :: i_exist                                  !none       |check to determine if file exists
+      integer :: i                                        !none       |counter
+      integer :: mcal                                     !           |
+      integer :: isp                                      !none       |counter
+      integer :: ical                                     !none       |counter
+      integer :: ipar                                     !           |
+      integer :: ie                                       !none       |counter
+      integer :: ielem                                    !none       |counter
+      integer :: ii                                       !none       |counter 
+      integer :: ie1                                      !none       |counter
+      integer :: ie2                                      !none       |counter 
+      integer :: nconds                                   !none       |counter
+      integer :: icond                                    !none       |counter
+      
+      
       
       imax = 0
       mcal = 0

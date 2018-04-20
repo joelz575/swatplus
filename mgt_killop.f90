@@ -24,13 +24,7 @@
 !!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    resnew      |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
@@ -41,10 +35,27 @@
       use organic_mineral_mass_module
       use hru_module, only : pcom, soil, hru, plgz, plmz, plstrz, hrupest, ihru, ipl, npmx
       use constituent_mass_module
-  
-      integer :: j, k
-      integer, intent (in) :: jj, iplant
-      real :: resnew
+      
+      implicit none
+   
+      integer :: j                     !none           |HRU number
+      integer :: k                     !none           |counter
+      integer, intent (in) :: jj       !none           |counter
+      integer, intent (in) :: iplant   !               |plant number xwalked from hlt_db()%plant and plants.plt
+      real :: resnew                   !               | 
+      integer :: orgc_f                !fraction       |fraction of organic carbon in fertilizer
+      real :: rtresnew                 !               |
+      real :: ff1                      !               |
+      real :: ff2                      !               |
+      real :: yieldn                   !               |
+      real :: yieldp                   !               |  
+      real :: xx                       !varies         |variable to hold calculation results 
+      real :: rln                      !               | 
+      real :: rlr                      !fraction       |fraction of lignin in the added residue
+      real :: l                        !none           |counter  
+      real :: rtfr                     !none           |root fraction
+      integer :: hiad1                 !none           |actual harvest index (adj for water/growth)
+      integer :: icmd                  !               |
       
       !!by zhang
       !!====================

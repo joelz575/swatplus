@@ -3,10 +3,15 @@
        use maximum_data_module
        use calibration_data_module
        use input_file_module
+       
+       implicit none
       
-       character (len=80) :: titldum
-       character (len=80) :: header
-       integer :: eof
+       character (len=80) :: titldum   !           |title of file
+       character (len=80) :: header    !           |header of file
+       integer :: eof                  !           |end of file
+       integer :: i_exist              !none       |check to determine if file exists
+       integer :: mlsp                 !none       |end of loop
+       integer :: i                    !none       |counter
        
        eof = 0
 

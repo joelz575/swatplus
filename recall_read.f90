@@ -6,10 +6,24 @@
       use constituent_mass_module
       use maximum_data_module
       use time_module
+      
+      implicit none      
  
-      character (len=80) :: titldum, header
-      character (len=16) :: namedum
-      integer :: eof, imax, iyr
+      character (len=80) :: titldum   !           |title of file
+      character (len=80) :: header    !           |header of file
+      integer :: imax                 !none       |end of loop
+      integer :: iyr                  !           |
+      integer :: eof                  !           |end of file
+      integer :: i_exist              !none       |check to determine if file exists
+      integer :: nbyr                 !none       !number of years the land use occurred 
+      integer :: k                    !           |
+      integer :: iyrs                 !           | 
+      integer :: iyr_prev             !none       |previous year
+      integer :: istep                !           | 
+      integer :: ipestcom_db          !none       !pointer to pestcom_db - fix*** ?? 
+      integer :: ipc                  !none       |counter
+      integer :: ii                   !none       |counter
+      integer :: i                    !           |
 
       eof = 0
       imax = 0
@@ -128,8 +142,7 @@
       
       do ipc = 1, db_mx%pestcom
         read (107,*,iostat=eof) ipestcom_db   !pointer to pestcom_db - fix***
-        if (pestcom_db(i)%recall_df /= 'null') then
-   
+
          do ii = 1, imax
            read (107,*,iostat=eof) i
            backspace (107)
@@ -176,7 +189,6 @@
        end do
        close (108)
          end do 
-         end if 
         end do
         close (107)
       end do

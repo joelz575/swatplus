@@ -3,33 +3,7 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes p flux between the labile, active mineral
 !!    and stable mineral p pools.     
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name         |units         |definition  
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru         |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name         |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bk          |
-!!    j           |none          |HRU number
-!!    l           |none          |counter (soil layer)
-!!    rmp1        |kg P/ha       |amount of phosphorus moving from the solution
-!!                               |mineral to the active mineral pool in the
-!!                               |soil layer
-!!    roc         |kg P/ha       |amount of phosphorus moving from the active
-!!                               |mineral to the stable mineral pool in the 
-!!                               |soil layer
-!!    rto         |
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Min
 
@@ -39,10 +13,19 @@
       use organic_mineral_mass_module
       use hru_module, only : soil, ihru
       use output_landscape_module, only : hnb_d
+      
+      implicit none
 
-      real, parameter :: bk = .0006
-      integer :: j, l
-      real :: rto, rmp1, roc
+      real, parameter :: bk = .0006     !              |
+      integer :: j                      !none          |HRU number
+      integer :: l                      !none          |counter 
+      real :: rto                       !              |
+      real :: rmp1                      !kg P/ha       |amount of phosphorus moving from the solution
+                                        !              |mineral to the active mineral pool in the
+                                        !              |soil layer
+      real :: roc                       !kg P/ha       |amount of phosphorus moving from the active
+                                        !              |mineral to the stable mineral pool in the 
+                                        !              |soil layer
 
       j = ihru
 

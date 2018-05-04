@@ -85,8 +85,8 @@
       type aqu_header
           character (len=6) :: yrs =       ' time '
           character (len=6) :: yrc =       ' year '
-          character (len=8) :: isd =       '   unit '
-          character (len=8) :: id =         '     id '           
+          character (len=8) :: isd =       '   unit '                                            
+          character (len=8) :: id =        ' gis_id '           
           character (len=16) :: name =     ' name              '          
           character(len=15) :: flo =       '         flo_mm'          ! (mm)
           character(len=15) :: stor =      '        stor_mm'          ! (mm)
@@ -107,6 +107,7 @@
           character(len=15) :: flo_ls =    '     flo_ls_m^3'          ! (m^3)
       end type aqu_header
       type (aqu_header) :: aqu_hdr
+      
       interface operator (+)
         module procedure aqu_add
       end interface

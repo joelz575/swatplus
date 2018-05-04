@@ -44,7 +44,7 @@
          if (bsn_prm%bact_swf < 1.e-6) bsn_prm%bact_swf = 0.15    !! frac of manure containing active colony forming units
          if (bsn_prm%tb_adj < 1.e-6) bsn_prm%tb_adj = 0.          !! adjustment factor for subdaily unit hydrograph basetime
          if (bsn_prm%cn_froz < 1.e-6) bsn_prm%cn_froz = 0.000862  !! 
-         if (bsn_prm%dorm_hr < 1.e-6) bsn_prm%dorm_hr = -1.       !! time threshold used to define dormant (hrs)
+         !if (bsn_prm%dorm_hr < 1.e-6) bsn_prm%dorm_hr = -1.        !! time threshold used to define dormant (hrs)
          if (bsn_prm%smxco < 1.e-6) bsn_prm%smxco = 1.0           !! 
          if (bsn_prm%fixco < 1.e-6) bsn_prm%fixco = 0.50          !! nitrogen fixation coeff
          if (bsn_prm%nfixmx < 1.e-6) bsn_prm%nfixmx = 20.0        !! max daily n-fixation (kg/ha)

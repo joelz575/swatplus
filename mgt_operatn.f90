@@ -40,7 +40,7 @@
       isched = hru(j)%mgt_ops
       if (sched(isched)%num_ops < 1) return
       
-      mgt = sched(isched)%mgt_ops(nop(j))
+        mgt = sched(isched)%mgt_ops(nop(j))
 
         do while(mgt%jday > 0 .and. time%day == mgt%jday)
           call mgt_sched (isched)
@@ -49,7 +49,7 @@
         end do
 
         ipl = Max(mgt%op2, 1)
-        if (pcom(j)%plcur(ipl)%gro == 0) then
+        if (pcom(j)%plcur(ipl)%gro == "n") then
           aphu = phubase(j)
         else
           aphu = pcom(j)%plcur(ipl)%phuacc
@@ -58,7 +58,7 @@
         do while (mgt%husc > 0. .and. aphu > mgt%husc)
           call mgt_sched (isched)
           ipl = Max(mgt%op2, 1)
-          if (pcom(j)%plcur(ipl)%gro == 0) then
+          if (pcom(j)%plcur(ipl)%gro == "n") then
             aphu = phubase(j)
           else
             aphu = pcom(j)%plcur(ipl)%phuacc

@@ -61,42 +61,7 @@
       type (regional_output_waterbal), dimension (:), allocatable :: rwb_y
       type (regional_output_waterbal), dimension (:), allocatable :: rwb_a
       
-      type output_waterbal_header
-        character (len=6) :: yrs =          ' time '
-        character (len=6) :: yrc =          ' year '
-        character (len=8) :: isd =          '   unit '
-        character (len=8) :: id =           '     id '        
-        character (len=16) :: name =        ' name              '        
-        character (len=12) :: precip =      '     prec_mm'
-        character (len=12) :: snofall =     '     snow_mm'
-        character (len=12) :: snomlt =      '   snomlt_mm'        
-        character (len=12) :: surq_gen =    '   sq_gen_mm'      
-        character (len=12) :: latq =        '     latq_mm' 
-        character (len=12) :: wateryld =    '   wtryld_mm'
-        character (len=12) :: perc =        '     perc_mm'   
-        character (len=12) :: et =          '       et_mm'
-        character (len=12) :: tloss =       '    tloss_mm'
-        character (len=12) :: eplant =      '   eplant_mm'
-        character (len=12) :: esoil =       '    esoil_mm'
-        character (len=12) :: surq_cont =   '  sq_cont_mm'
-        character (len=12) :: cn =          '          cn'
-        character (len=12) :: sw =          '       sw_mm'
-        character (len=12) :: snopack =     '  snopack_mm'   
-        character (len=12) :: pet =         '      pet_mm'
-        character (len=12) :: qtile =       '    qtile_mm'
-        character (len=12) :: irr =         '      irr_mm'
-        character (len=12) :: surq_runon =  '   sq_run_mm'
-        character (len=12) :: latq_runon =  '   lq_run_mm'
-        character (len=12) :: overbank =    '   ovbank_mm'
-        character (len=12) :: surq_cha =    '  surqcha_mm'
-        character (len=12) :: surq_res =    '  surqres_mm'
-        character (len=12) :: surq_ls =     '  surq_ls_mm'
-        character (len=12) :: latq_cha =    ' latq_cha_mm'
-        character (len=12) :: latq_res =    ' latq_res_mm'
-        character (len=12) :: latq_ls =     '  latq_ls_mm'
-      end type output_waterbal_header      
-      type (output_waterbal_header) :: wb_hdr
-      
+            
       type output_nutbal
         real :: cfertn = 0.               !kg N/ha       |total amount of nitrogen applied to soil
 !!                                                         during continuous fertilizer operation 
@@ -158,35 +123,6 @@
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_y
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_a
       
-      type output_nutbal_header
-         character (len=6) :: yrs =        ' time '
-         character (len=6) :: yrc =        ' year '
-         character (len=8) :: isd =        '   unit ' 
-         character (len=8) :: id =         '     id '        
-         character (len=16) :: name =      ' name              '         
-         character(len=18) :: cfertn =     '        cfrtn_kgha'
-         character(len=18) :: cfertp =     '        cfrtp_kgha' 
-         character(len=18) :: grazn =      '         grzn_kgha'
-         character(len=18) :: grazp =      '         grzp_kgha'     
-         character(len=18) :: auton =      '         autn_kgha'    
-         character(len=18) :: autop =      '         autp_kgha'      
-         character(len=18) :: rmp1tl =     '  lab_actminp_kgha'     
-         character(len=18) :: roctl =      '    actp_stap_kgha'
-         character(len=18) :: fertn =      '         frtn_kgha'       
-         character(len=18) :: fertp =      '         frtp_kgha'       
-         character(len=18) :: fixn =       '         fixn_kgha'       
-         character(len=18) :: wdntl =      '        denit_kgha'
-         character(len=18) :: hmntl =      '    aorgn_no3_kgha'
-         character(len=18) :: rwntl =      '    actn_stan_kgha'
-         character(len=18) :: hmptl =      '     orgp_lab_kgha'
-         character(len=18) :: rmn2tl =     '  nrsd_no3act_kgha'      
-         character(len=18) :: rmptl =      '  prsd_laborg_kgha'      
-         character(len=18) :: no3atmo =    '     no3_atmo_kgha' 
-         character(len=18) :: nh4atmo =    '     nh4_atmo_kgha'
-      end type output_nutbal_header
-          
-      type (output_nutbal_header) :: nb_hdr
-      
       type output_losses
         real :: sedyld = 0.               !metric tons    | daily soil loss caused by water erosion
         real :: sedorgn = 0.              !kg N/ha        | amt of org nit in surf runoff in HRU for the day
@@ -229,28 +165,7 @@
       type (regional_output_losses), dimension (:), allocatable :: rls_m
       type (regional_output_losses), dimension (:), allocatable :: rls_y
       type (regional_output_losses), dimension (:), allocatable :: rls_a
-      
-      type output_losses_header
-        character (len=6) :: yrs =        ' time '
-        character (len=6) :: yrc =        ' year '
-        character (len=8) :: isd =        '   unit '
-        character (len=8) :: id =         '     id '        
-        character (len=16) :: name =      ' name              '        
-        character (len=12) :: sedyld =    '    sedy_tha'
-        character (len=12)  :: sedorgn =  '   sedn_kgha'
-        character (len=12)  :: sedorgp =  '   sedp_kgha'
-        character (len=12)  :: surqno3 =  '    sq3_kgha'
-        character (len=12)  :: latno3 =   '   lat3_kgha'            
-        character (len=12)  :: surqsolp = '   sqsp_kgha'
-        character (len=12)  :: usle =     '   usle_tons'  
-        character (len=12)  :: bactp =    '   bacp_tons'
-        character (len=12)  :: bactlp =   '    blp_tons'     
-        character (len=12)  :: sedmin =   '       sedmn'
-        character (len=12)  :: tileno3 =  '     tileno3'
-      end type output_losses_header
-      
-      type (output_losses_header) :: ls_hdr
-   
+         
       type output_plantweather
         real :: lai = 0.                   !m**2/m**2     |leaf area index
         real :: bioms = 0.                 !kg/ha         |land cover/crop biomass 
@@ -303,11 +218,95 @@
       type (regional_output_plantweather), dimension (:), allocatable :: rpw_y
       type (regional_output_plantweather), dimension (:), allocatable :: rpw_a
       
+      type output_waterbal_header
+        character (len=6) :: yrs =          ' time '
+        character (len=6) :: yrc =          ' year '
+        character (len=8) :: isd =          '   unit '
+        character (len=8) :: id =           ' gis_id '        
+        character (len=16) :: name =        ' name              '        
+        character (len=12) :: precip =      '     prec_mm'
+        character (len=12) :: snofall =     '     snow_mm'
+        character (len=12) :: snomlt =      '   snomlt_mm'        
+        character (len=12) :: surq_gen =    '   sq_gen_mm'      
+        character (len=12) :: latq =        '     latq_mm' 
+        character (len=12) :: wateryld =    '   wtryld_mm'
+        character (len=12) :: perc =        '     perc_mm'   
+        character (len=12) :: et =          '       et_mm'
+        character (len=12) :: tloss =       '    tloss_mm'
+        character (len=12) :: eplant =      '   eplant_mm'
+        character (len=12) :: esoil =       '    esoil_mm'
+        character (len=12) :: surq_cont =   '  sq_cont_mm'
+        character (len=12) :: cn =          '          cn'
+        character (len=12) :: sw =          '       sw_mm'
+        character (len=12) :: snopack =     '  snopack_mm'   
+        character (len=12) :: pet =         '      pet_mm'
+        character (len=12) :: qtile =       '    qtile_mm'
+        character (len=12) :: irr =         '      irr_mm'
+        character (len=12) :: surq_runon =  '   sq_run_mm'
+        character (len=12) :: latq_runon =  '   lq_run_mm'
+        character (len=12) :: overbank =    '   ovbank_mm'
+        character (len=12) :: surq_cha =    '  surqcha_mm'
+        character (len=12) :: surq_res =    '  surqres_mm'
+        character (len=12) :: surq_ls =     '  surq_ls_mm'
+        character (len=12) :: latq_cha =    ' latq_cha_mm'
+        character (len=12) :: latq_res =    ' latq_res_mm'
+        character (len=12) :: latq_ls =     '  latq_ls_mm'
+      end type output_waterbal_header      
+      type (output_waterbal_header) :: wb_hdr
+      
+      type output_nutbal_header
+         character (len=6) :: yrs =        ' time '
+         character (len=6) :: yrc =        ' year '
+         character (len=8) :: isd =        '   unit ' 
+         character (len=8) :: id =         ' gis_id '        
+         character (len=16) :: name =      ' name              '         
+         character(len=18) :: cfertn =     '        cfrtn_kgha'
+         character(len=18) :: cfertp =     '        cfrtp_kgha' 
+         character(len=18) :: grazn =      '         grzn_kgha'
+         character(len=18) :: grazp =      '         grzp_kgha'     
+         character(len=18) :: auton =      '         autn_kgha'    
+         character(len=18) :: autop =      '         autp_kgha'      
+         character(len=18) :: rmp1tl =     '  lab_actminp_kgha'     
+         character(len=18) :: roctl =      '    actp_stap_kgha'
+         character(len=18) :: fertn =      '         frtn_kgha'       
+         character(len=18) :: fertp =      '         frtp_kgha'       
+         character(len=18) :: fixn =       '         fixn_kgha'       
+         character(len=18) :: wdntl =      '        denit_kgha'
+         character(len=18) :: hmntl =      '    aorgn_no3_kgha'
+         character(len=18) :: rwntl =      '    actn_stan_kgha'
+         character(len=18) :: hmptl =      '     orgp_lab_kgha'
+         character(len=18) :: rmn2tl =     '  nrsd_no3act_kgha'      
+         character(len=18) :: rmptl =      '  prsd_laborg_kgha'      
+         character(len=18) :: no3atmo =    '     no3_atmo_kgha' 
+         character(len=18) :: nh4atmo =    '     nh4_atmo_kgha'
+      end type output_nutbal_header         
+      type (output_nutbal_header) :: nb_hdr
+      
+      type output_losses_header
+        character (len=6) :: yrs =        ' time '
+        character (len=6) :: yrc =        ' year '
+        character (len=8) :: isd =        '   unit '
+        character (len=8) :: id =         ' gis_id '        
+        character (len=16) :: name =      ' name              '        
+        character (len=12) :: sedyld =    '    sedy_tha'
+        character (len=12)  :: sedorgn =  '   sedn_kgha'
+        character (len=12)  :: sedorgp =  '   sedp_kgha'
+        character (len=12)  :: surqno3 =  '    sq3_kgha'
+        character (len=12)  :: latno3 =   '   lat3_kgha'            
+        character (len=12)  :: surqsolp = '   sqsp_kgha'
+        character (len=12)  :: usle =     '   usle_tons'  
+        character (len=12)  :: bactp =    '   bacp_tons'
+        character (len=12)  :: bactlp =   '    blp_tons'     
+        character (len=12)  :: sedmin =   '       sedmn'
+        character (len=12)  :: tileno3 =  '     tileno3'
+      end type output_losses_header      
+      type (output_losses_header) :: ls_hdr
+     
       type output_plantweather_header
         character (len=6) :: yrs =        ' time '
         character (len=6) :: yrc =        ' year '
         character (len=8) :: isd =        '   unit '
-        character (len=8) :: id =         '     id '        
+        character (len=8) :: id =         ' gis_id '        
         character (len=16) :: name =      ' name              '        
         character (len=12) :: lai =       '         lai'
         character (len=12) :: bioms =     '       bioms'

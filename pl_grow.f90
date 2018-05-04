@@ -69,6 +69,7 @@
       use hru_module, only : pcom, hru, uapd, uno3d, lai_yrmx, par, bioday, ep_day, es_day,  &
          ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, sumlai, uapd_tot, uno3d_tot, vpd
       use carbon_module
+      use organic_mineral_mass_module
       
       implicit none 
       
@@ -99,7 +100,7 @@
 
       do ipl = 1, pcom(j)%npl
         !! plant will not undergo stress if dormant
-        if (pcom(j)%plcur(ipl)%idorm == 0 .and. pcom(j)%plcur(ipl)%gro == 1) then
+        if (pcom(j)%plcur(ipl)%idorm == 0 .and. pcom(j)%plcur(ipl)%gro == "y") then
         idp = pcom(j)%plcur(ipl)%idplt
  
         !! if plant hasn't reached maturity
@@ -166,21 +167,21 @@
           pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass + bioday * reg
 
           !!maximum lai and bioimass for perrenials
-          !select case (pldb(idp)%idc)
-          !case (3, 6, 7)  ! all perennials
-            if (pldb(idp)%idc == 'perennial_legume' .or. pldb(idp)%idc == 'perennial' .or.   &
+          if (pldb(idp)%idc == 'perennial_legume' .or. pldb(idp)%idc == 'perennial' .or.   &
                 pldb(idp)%idc == 'trees') then 
-              if (pldb(idp)%mat_yrs > 0) then
-                rto = float(pcom(j)%plcur(ipl)%curyr_mat + 1) / float(pldb(idp)%mat_yrs)
-                rto = Min(rto, 1.)
+            if (pldb(idp)%mat_yrs > 0) then
+              rto = float(pcom(j)%plcur(ipl)%curyr_mat + 1) / float(pldb(idp)%mat_yrs)
+              rto = Min(rto, 1.)
             else
-                rto = 1.
+              rto = 1.
             end if
+            !keep biomass below maximum - excess to residue (need to include c, n and p adjustments)
             biomxyr = rto * pldb(idp)%bmx_peren * 1000.  !t/ha -> kg/ha
             if (biomxyr > 1.e-6 .and. pcom(j)%plm(ipl)%mass > biomxyr) then
+              rsd1(j)%tot(ipl)%m = pcom(j)%plm(ipl)%mass - biomxyr
               pcom(j)%plm(ipl)%mass = biomxyr
             end if
-           end if !case end)
+          end if
 
           pcom(j)%plm(ipl)%mass = Max(pcom(j)%plm(ipl)%mass,0.)
 
@@ -245,7 +246,7 @@
             if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
             pcom(j)%plg(ipl)%olai = pcom(j)%plg(ipl)%lai
             if (sumlai > lai_yrmx(j)) lai_yrmx(j) = sumlai
-          end if
+          end if    ! phu < 1.
           
           !! if phuacc > 1. then start lai decline. if 0.7 < phuacc < 1 then don't change lai.
           if (pcom(j)%plcur(ipl)%phuacc > 1.) then
@@ -268,9 +269,7 @@
 
           pcom(j)%plg(ipl)%hvstiadj = pldb(idp)%hvsti * 100. * pcom(j)%plcur(ipl)%phuacc /          &
                 (100. * pcom(j)%plcur(ipl)%phuacc + Exp(11.1 - 10. * pcom(j)%plcur(ipl)%phuacc))
-          
 
-!!  added per JGA for Srini by gsm 9/8/2011
           pcom(j)%plstr(ipl)%sum_w = pcom(j)%plstr(ipl)%sum_w + (1. - pcom(j)%plstr(ipl)%strsw)
           pcom(j)%plstr(ipl)%sum_tmp = pcom(j)%plstr(ipl)%sum_tmp + (1.-pcom(j)%plstr(ipl)%strst)
           pcom(j)%plstr(ipl)%sum_n = pcom(j)%plstr(ipl)%sum_n + (1. - pcom(j)%plstr(ipl)%strsn)

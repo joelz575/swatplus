@@ -53,11 +53,11 @@
       integer :: ictl                   !none          |counter
       integer :: i                      !none          |counter
 
-      prog = " SWAT+ Apr 20 2018    MODULAR Rev 2018.48"
+      prog = " SWAT+ May 3 2018    MODULAR Rev 2018.49"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 48            ",/,             &
+     &          "               Revision 49            ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)

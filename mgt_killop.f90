@@ -330,7 +330,7 @@
       pcom(j)%plm(ipl) = plmz
       pcom(j)%plstr(ipl) = plstrz
       !! can't reset entire plcur - harv_num can't be zero'd
-      pcom(j)%plcur(ipl)%gro = 0
+      pcom(j)%plcur(ipl)%gro = "n"
       pcom(j)%plcur(ipl)%idorm = 0
       pcom(j)%plcur(ipl)%phuacc = 0.
       pcom(j)%plcur(ipl)%curyr_mat = 1

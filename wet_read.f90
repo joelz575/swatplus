@@ -67,9 +67,9 @@
              exit
            end if
          end do
-       
-         do ihyd = 1, db_mx%res_hyd
-           if (wet_hyd(ihyd)%name == wet_dat_c(ires)%hyd) then
+                         
+         do ihyd = 1, db_mx%wet_hyd
+             if (wet_hyd(ihyd)%name == wet_dat_c(ires)%hyd) then
              wet_dat(ires)%hyd = ihyd
              exit
            end if

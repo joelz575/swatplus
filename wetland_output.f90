@@ -7,10 +7,7 @@
       implicit none
       
       integer :: j             !none          |hru number
-      real :: const            !              |constant used for rate, days, etc
-             
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine outputs reservoir output variables    
+      real :: const            !              |constant used for rate, days, etc 
 
 !!!!! daily print
          if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
@@ -50,7 +47,7 @@
                 write (2554,'(*(G0.3,:","))') time%day, time%yrs, j, wet_y(j)
               end if
           end if
-          res_y(j) = resmz
+          wet_y(j) = resmz
        end if
 
 !!!!! average annual print

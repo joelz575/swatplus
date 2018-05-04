@@ -79,44 +79,6 @@
       type (hyd_output), dimension(:),allocatable :: res
       type (hyd_output), dimension(:),allocatable :: wet
   
-      type hyd_header                                       
-        character (len=8) :: yrs =        '    time'
-        character (len=8) :: yrc =        '    year'
-        character (len=8) :: icmd =       '    icmd'
-        character (len=8) :: otype =      '    type'
-        character (len=8) :: oprops =     '   props' 
-        character (len=8) :: iotyp =      ' objtyp_out'
-        character (len=8) :: iotypno =    '  typ_no'
-        character (len=8) :: hydio =      ' hyd_typ'
-        character (len=8) :: objno =      '  obj_no'
-        character (len=18) :: flo =    '           flo_m^3'        !! m^3          |volume of water
-        character (len=18) :: sed =    '         sed_mtons'        !! metric tons  |sediment
-        character (len=18) :: orgn =   '          orgn_kgN'        !! kg N         |organic N
-        character (len=18) :: sedp =   '          sedp_kgP'        !! kg P         |organic P
-        character (len=18) :: no3 =    '           no3_kgN'        !! kg N         |NO3-N
-        character (len=18) :: solp =   '          solp_kgP'        !! kg P         |mineral (soluble P)
-        character (len=18) :: psol =   '        psol_mgpst'        !! mg pst       |pesticide in solution
-        character (len=18) :: psor =   '        psor_mgpst'        !! mg pst       |pestitice sorbed to sediment
-        character (len=18) :: chla =   '           chla_kg'        !! kg           |chlorophyll-a
-        character (len=18) :: nh3 =    '           nh3_kgN'        !! kg N         |NH3
-        character (len=18) :: no2 =    '           no2_kgN'        !! kg N         |NO2
-        character (len=18) :: cbod =   '           cbod_kg'        !! kg           |carbonaceous biological oxygen demand
-        character (len=18) :: dox =    '            dox_kg'        !! kg           |dissolved oxygen
-        character (len=18) :: bacp =   '   bacp_#cfu/100ml'        !! # cfu/100ml  |persistent bacteria
-        character (len=18) :: baclp =  '  baclp_#cfu/100ml'        !! # cfu/100ml  |less persistent bacteria
-        character (len=18) :: met1 =   '           met1_kg'        !! kg           |conservative metal #1
-        character (len=18) :: met2 =   '           met2_kg'        !! kg           |conservative metal #2
-        character (len=18) :: met3 =   '           met3_kg'        !! kg           |conservative metal #3
-        character (len=18) :: san =    '          san_tons'        !! tons         |detached sand
-        character (len=18) :: sil =    '          sil_tons'        !! tons         |detached silt
-        character (len=18) :: cla =    '          cla_tons'        !! tons         |detached clay
-        character (len=18) :: sag =    '          sag_tons'        !! tons         |detached small ag
-        character (len=18) :: lag =    '          lag_tons'        !! tons         |detached large ag
-        character (len=18) :: grv =    '          grv_tons'        !! tons         |gravel
-        character (len=18) :: temp =   '         temp_degc'        !! deg c        |temperature
-      end type hyd_header
-      type (hyd_header) :: hyd_hdr
-      
       type object_output
         character (len=3) :: name
         character (len=3) :: obtyp     !! object type: hru,hlt,hs,rxc,dr,out,sdc
@@ -159,114 +121,7 @@
         type (duration_curve_points) :: p_md                            !median of all years
         type (duration_curve_points), dimension(:),allocatable :: p     !dimension to number of years
       end type flow_duration_curve
-      
-      type output_flow_duration_header
-        character (len=12) :: obtyp =   ' ob_typ '
-        character (len=12) :: props =   '  props '
-        character (len=12) :: min =     '    min '
-        character (len=12) :: p5  =     '     p5 '
-        character (len=12) :: p10 =     '    p10 '     
-        character (len=12) :: p25 =     '    p25 '
-        character (len=12) :: p50 =     '    p50 '
-        character (len=12) :: p75 =     '    p75 '
-        character (len=12) :: p90 =     '    p90 '
-        character (len=12) :: p95 =     '    p95 '
-        character (len=12) :: max =     '    max '
-        character (len=12) :: mean =    '   mean '
-      end type output_flow_duration_header    
-      type (output_flow_duration_header) :: fdc_hdr
-	  
-      type calibration_header          
-        character (len=16) :: name        =   '     name      '        
-        character (len=12) :: ha          =   '     ha     '                                             
-        character (len=12) :: nbyr        =   '   nbyr     '
-        character (len=12) :: prec        =   '   precip   '
-		character (len=16) :: meas        =   '     name      '
-		character (len=12) :: srr         =   '    srr     '
-		character (len=12) :: lfr         =   '    lfr     '
-		character (len=12) :: pcr         =   '    pcr     '
-		character (len=12) :: etr         =   '    etr     '
-		character (len=12) :: tfr         =   '    tfr     '
-		character (len=12) :: sed         =   '    sed     '
-		character (len=12) :: orgn        =   '   orgn     '
-		character (len=12) :: orgp        =   '   orgp     '
-		character (len=12) :: no3         =   '    no3     '
-		character (len=12) :: solp        =   '   solp     '
-		character (len=16) :: aa          =   '   name     '
-		character (len=12) :: srr_aa      =   '    srr     '
-		character (len=12) :: lfr_aa      =   '    lfr     '
-		character (len=12) :: pcr_aa      =   '    pcr     '
-		character (len=12) :: etr_aa      =   '    etr     '
-		character (len=12) :: tfr_aa      =   '    tfr     '
-		character (len=12) :: sed_aa      =   '    sed     '
-		character (len=12) :: orgn_aa     =   '   orgn     '
-		character (len=12) :: orgp_aa     =   '   orgp     '
-		character (len=12) :: no3_aa      =   '    no3     '
-		character (len=12) :: solp_aa     =   '   solp     '
-		character (len=12) :: cn_prm_aa   =   '     cn     '
-		character (len=12) :: esco        =   '   esco     '
-		character (len=12) :: lat_len     =   'lat_len     '
-		character (len=12) :: k_lo        =   '   k_lo     '
-		character (len=12) :: slope       =   '  slope     '
-		character (len=12) :: tconc       =   '  tconc     '
-		character (len=12) :: etco        =   '   etco     '
-		character (len=12) :: perco       =   '  perco     '
-		character (len=12) :: revapc      =   '  revapc    '
-		character (len=12) :: cn3_swf     =   ' cn3_swf    '	
-      end type calibration_header    
-      type (calibration_header) :: calb_hdr	 
-	  
-      type calibration2_header         
-        character (len=16) :: name     =   '       name '
-        character (len=12) :: dakm2    =   '     da_km2 '                                            
-        character (len=12) :: cn2      =   '        cn2 '
-        character (len=12) :: tc       =   '     tc_min '
-        character (len=12) :: soildep  =   ' soildep_mm '
-        character (len=12) :: dep_imp  =   '  depimp_mm '
-        character (len=12) :: slope    =   '  slope_m/m '
-        character (len=12) :: slopelen =   '   slplen_m '
-        character (len=12) :: etco     =   '       etco '
-        character (len=12) :: sy       =   '      sy_mm '
-        character (len=12) :: abf      =   '        abf '
-        character (len=12) :: revapc   =   '     revapc '
-        character (len=12) :: percc    =   '      percc '
-        character (len=12) :: sw       =   '    sw_frac '
-        character (len=12) :: gw       =   '      gw_mm '
-        character (len=12) :: gwflow   =   '  gwflow_mm '        
-        character (len=12) :: gwdeep   =   '  gwdeep_mm '
-        character (len=12) :: snow     =   '    snow_mm '
-        character (len=12) :: xlat     =   '       xlat '
-        character (len=12) :: itext    =   '      itext '
-        character (len=12) :: tropical =   '   tropical '
-        character (len=12) :: igrow1   =   '  igrow1_jd '
-        character (len=12) :: igrow2   =   '  igrow2_jd '
-        character (len=12) :: plant    =   '      plant '
-        character (len=12) :: ipet     =   '       ipet '
-        character (len=12) :: irr      =   '        irr '
-        character (len=12) :: irrsrc   =   '     irrsrc '
-        character (len=12) :: tdrain   =   '  tdrain_hr '
-        character (len=12) :: uslek    =   '      uslek '
-        character (len=12) :: uslec    =   '      uslec '
-        character (len=12) :: uslep    =   '      uslep '
-        character (len=12) :: uslels   =   '     uslels '
-      end type calibration2_header    
-      type (calibration2_header) :: calb2_hdr	
-      
-      type calibration3_header         
-        character (len=16) :: name     =   '       name '
-        character (len=12) :: chgtyp   =   '    chg_typ '                                            
-        character (len=12) :: val      =   '        val '
-        character (len=12) :: conds    =   '      conds '
-        character (len=12) :: lyr1     =   '       lyr1 '
-        character (len=12) :: lyr2     =   '       lyr2 '
-        character (len=12) :: year1    =   '      year1 '
-        character (len=12) :: year2    =   '      year2 '
-        character (len=12) :: day1     =   '       day1 '
-        character (len=12) :: day2     =   '       day2 '
-        character (len=12) :: objtot   =   '    obj_tot '
-      end type calibration3_header    
-      type (calibration3_header) :: calb3_hdr	     
-         
+               
       type object_connectivity
         character(len=16) :: name = "default"
         character(len=8) :: typ = " "   !object type - ie hru, hru_lte, sub, chan, res, recall
@@ -282,6 +137,7 @@
         integer :: ruleset              !ruleset pointer for flow fraction of hydrograph
         integer :: num = 1              !spatial object number- ie hru number corresponding to sequential command number
                                         !this is the first column in hru_dat (doesn't have to be sequential)
+        integer :: gis_id               !gis number for database purposes
         integer :: fired = 0            !0=not fired; 1=fired off as a command
         integer :: cmd_next = 0         !next command (object) number
         integer :: cmd_prev = 0         !previous command (object) number
@@ -466,6 +322,151 @@
       !delevery ratio is hyd_output type but not part of an object 
       type (hyd_output), dimension(:), allocatable :: exco        !export coefficient
 
+      type hyd_header                                       
+        character (len=8) :: yrs =        '    time'
+        character (len=8) :: yrc =        '    year'
+        character (len=8) :: icmd =       '    icmd'
+        character (len=8) :: otype =      '    type'
+        character (len=8) :: oprops =     '   props' 
+        character (len=8) :: iotyp =      ' objtyp_out'
+        character (len=8) :: iotypno =    '  typ_no'
+        character (len=8) :: hydio =      ' hyd_typ'
+        character (len=8) :: objno =      '  obj_no'
+        character (len=18) :: flo =    '           flo_m^3'        !! m^3          |volume of water
+        character (len=18) :: sed =    '         sed_mtons'        !! metric tons  |sediment
+        character (len=18) :: orgn =   '          orgn_kgN'        !! kg N         |organic N
+        character (len=18) :: sedp =   '          sedp_kgP'        !! kg P         |organic P
+        character (len=18) :: no3 =    '           no3_kgN'        !! kg N         |NO3-N
+        character (len=18) :: solp =   '          solp_kgP'        !! kg P         |mineral (soluble P)
+        character (len=18) :: psol =   '        psol_mgpst'        !! mg pst       |pesticide in solution
+        character (len=18) :: psor =   '        psor_mgpst'        !! mg pst       |pestitice sorbed to sediment
+        character (len=18) :: chla =   '           chla_kg'        !! kg           |chlorophyll-a
+        character (len=18) :: nh3 =    '           nh3_kgN'        !! kg N         |NH3
+        character (len=18) :: no2 =    '           no2_kgN'        !! kg N         |NO2
+        character (len=18) :: cbod =   '           cbod_kg'        !! kg           |carbonaceous biological oxygen demand
+        character (len=18) :: dox =    '            dox_kg'        !! kg           |dissolved oxygen
+        character (len=18) :: bacp =   '   bacp_#cfu/100ml'        !! # cfu/100ml  |persistent bacteria
+        character (len=18) :: baclp =  '  baclp_#cfu/100ml'        !! # cfu/100ml  |less persistent bacteria
+        character (len=18) :: met1 =   '           met1_kg'        !! kg           |conservative metal #1
+        character (len=18) :: met2 =   '           met2_kg'        !! kg           |conservative metal #2
+        character (len=18) :: met3 =   '           met3_kg'        !! kg           |conservative metal #3
+        character (len=18) :: san =    '          san_tons'        !! tons         |detached sand
+        character (len=18) :: sil =    '          sil_tons'        !! tons         |detached silt
+        character (len=18) :: cla =    '          cla_tons'        !! tons         |detached clay
+        character (len=18) :: sag =    '          sag_tons'        !! tons         |detached small ag
+        character (len=18) :: lag =    '          lag_tons'        !! tons         |detached large ag
+        character (len=18) :: grv =    '          grv_tons'        !! tons         |gravel
+        character (len=18) :: temp =   '         temp_degc'        !! deg c        |temperature
+      end type hyd_header
+      type (hyd_header) :: hyd_hdr
+      
+      type output_flow_duration_header
+        character (len=12) :: obtyp =   ' ob_typ '
+        character (len=12) :: props =   '  props '
+        character (len=12) :: min =     '    min '
+        character (len=12) :: p5  =     '     p5 '
+        character (len=12) :: p10 =     '    p10 '     
+        character (len=12) :: p25 =     '    p25 '
+        character (len=12) :: p50 =     '    p50 '
+        character (len=12) :: p75 =     '    p75 '
+        character (len=12) :: p90 =     '    p90 '
+        character (len=12) :: p95 =     '    p95 '
+        character (len=12) :: max =     '    max '
+        character (len=12) :: mean =    '   mean '
+      end type output_flow_duration_header    
+      type (output_flow_duration_header) :: fdc_hdr
+	  
+      type calibration_header          
+        character (len=16) :: name        =   '     name      '        
+        character (len=12) :: ha          =   '     ha     '                                             
+        character (len=12) :: nbyr        =   '   nbyr     '
+        character (len=12) :: prec        =   '   precip   '
+		character (len=16) :: meas        =   '     name      '
+		character (len=12) :: srr         =   '    srr     '
+		character (len=12) :: lfr         =   '    lfr     '
+		character (len=12) :: pcr         =   '    pcr     '
+		character (len=12) :: etr         =   '    etr     '
+		character (len=12) :: tfr         =   '    tfr     '
+		character (len=12) :: sed         =   '    sed     '
+		character (len=12) :: orgn        =   '   orgn     '
+		character (len=12) :: orgp        =   '   orgp     '
+		character (len=12) :: no3         =   '    no3     '
+		character (len=12) :: solp        =   '   solp     '
+		character (len=16) :: aa          =   '   name     '
+		character (len=12) :: srr_aa      =   '    srr     '
+		character (len=12) :: lfr_aa      =   '    lfr     '
+		character (len=12) :: pcr_aa      =   '    pcr     '
+		character (len=12) :: etr_aa      =   '    etr     '
+		character (len=12) :: tfr_aa      =   '    tfr     '
+		character (len=12) :: sed_aa      =   '    sed     '
+		character (len=12) :: orgn_aa     =   '   orgn     '
+		character (len=12) :: orgp_aa     =   '   orgp     '
+		character (len=12) :: no3_aa      =   '    no3     '
+		character (len=12) :: solp_aa     =   '   solp     '
+		character (len=12) :: cn_prm_aa   =   '     cn     '
+		character (len=12) :: esco        =   '   esco     '
+		character (len=12) :: lat_len     =   'lat_len     '
+		character (len=12) :: k_lo        =   '   k_lo     '
+		character (len=12) :: slope       =   '  slope     '
+		character (len=12) :: tconc       =   '  tconc     '
+		character (len=12) :: etco        =   '   etco     '
+		character (len=12) :: perco       =   '  perco     '
+		character (len=12) :: revapc      =   '  revapc    '
+		character (len=12) :: cn3_swf     =   ' cn3_swf    '	
+      end type calibration_header    
+      type (calibration_header) :: calb_hdr	 
+	  
+      type calibration2_header         
+        character (len=16) :: name     =   '       name '
+        character (len=12) :: dakm2    =   '     da_km2 '                                            
+        character (len=12) :: cn2      =   '        cn2 '
+        character (len=12) :: tc       =   '     tc_min '
+        character (len=12) :: soildep  =   ' soildep_mm '
+        character (len=12) :: dep_imp  =   '  depimp_mm '
+        character (len=12) :: slope    =   '  slope_m/m '
+        character (len=12) :: slopelen =   '   slplen_m '
+        character (len=12) :: etco     =   '       etco '
+        character (len=12) :: sy       =   '      sy_mm '
+        character (len=12) :: abf      =   '        abf '
+        character (len=12) :: revapc   =   '     revapc '
+        character (len=12) :: percc    =   '      percc '
+        character (len=12) :: sw       =   '    sw_frac '
+        character (len=12) :: gw       =   '      gw_mm '
+        character (len=12) :: gwflow   =   '  gwflow_mm '        
+        character (len=12) :: gwdeep   =   '  gwdeep_mm '
+        character (len=12) :: snow     =   '    snow_mm '
+        character (len=12) :: xlat     =   '       xlat '
+        character (len=12) :: itext    =   '      itext '
+        character (len=12) :: tropical =   '   tropical '
+        character (len=12) :: igrow1   =   '  igrow1_jd '
+        character (len=12) :: igrow2   =   '  igrow2_jd '
+        character (len=12) :: plant    =   '      plant '
+        character (len=12) :: ipet     =   '       ipet '
+        character (len=12) :: irr      =   '        irr '
+        character (len=12) :: irrsrc   =   '     irrsrc '
+        character (len=12) :: tdrain   =   '  tdrain_hr '
+        character (len=12) :: uslek    =   '      uslek '
+        character (len=12) :: uslec    =   '      uslec '
+        character (len=12) :: uslep    =   '      uslep '
+        character (len=12) :: uslels   =   '     uslels '
+      end type calibration2_header    
+      type (calibration2_header) :: calb2_hdr	
+      
+      type calibration3_header         
+        character (len=16) :: name     =   '       name '
+        character (len=12) :: chgtyp   =   '    chg_typ '                                            
+        character (len=12) :: val      =   '        val '
+        character (len=12) :: conds    =   '      conds '
+        character (len=12) :: lyr1     =   '       lyr1 '
+        character (len=12) :: lyr2     =   '       lyr2 '
+        character (len=12) :: year1    =   '      year1 '
+        character (len=12) :: year2    =   '      year2 '
+        character (len=12) :: day1     =   '       day1 '
+        character (len=12) :: day2     =   '       day2 '
+        character (len=12) :: objtot   =   '    obj_tot '
+      end type calibration3_header    
+      type (calibration3_header) :: calb3_hdr	
+      
       interface operator (+)
         module procedure hydout_add
       end interface

@@ -80,7 +80,7 @@
 
       npl_gro = 0
       do ipl = 1, pcom(j)%npl
-        if (pcom(j)%plcur(ipl)%gro == 1) then
+        if (pcom(j)%plcur(ipl)%gro == "y") then
           call pl_waterup
           npl_gro = npl_gro + 1
           ip = ipl  !used for only one plant growing
@@ -91,7 +91,7 @@
       if (npl_gro == 1) then
         !! calculate photosynthetically active radiation for one plant
         if (pcom(j)%plcur(ip)%idorm == 0 .and. pcom(j)%plcur(ip)%gro        & 
-                                                              == 1)then
+                                                              == "y")then
           idp = pcom(j)%plcur(ip)%idplt
           pl_db => pldb(idp)
           par(ip) = .5 * hru_ra(j) * (1. - Exp(-pldb(idp)%ext_coef *        &    
@@ -149,7 +149,7 @@
       uapd_tot = 0.
       do ipl = 1, pcom(j)%npl
         idp = pcom(j)%plcur(ipl)%idplt
-        if (pcom(j)%plcur(ipl)%idorm == 0.and.pcom(j)%plcur(ipl)%gro==1)    &
+        if (pcom(j)%plcur(ipl)%idorm == 0.and.pcom(j)%plcur(ipl)%gro=="y")    &
                                                                    then
         !! update accumulated heat units for the plant
         delg = 0.

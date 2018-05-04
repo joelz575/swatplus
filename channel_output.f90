@@ -12,7 +12,6 @@
       integer :: iob                  !              |
       
       iob = sp_ob1%chan + jrch - 1
-
              
       ch_m(jrch) = ch_m(jrch) + ch_d(jrch)
       
@@ -27,9 +26,9 @@
 !!!!! daily print
        if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
         if (pco%chan%d == 'y') then
-          write (2480,100) time%day, time%yrc, jrch, ob(iob)%num, ob(iob)%name, ch_d(jrch)
+          write (2480,100) time%day, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_d(jrch)
           if (pco%csvout == 'y') then
-            write (2484,'(*(g0.3,:","))') time%day, time%yrc, jrch, ob(iob)%num, ob(iob)%name, ch_d(jrch)
+            write (2484,'(*(g0.3,:","))') time%day, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_d(jrch)
           end if 
         end if 
       end if
@@ -38,9 +37,9 @@
       if (time%end_mo == 1) then
         ch_y(jrch) = ch_y(jrch) + ch_m(jrch)
         if (pco%chan%m == 'y') then
-          write (2481,100) time%mo, time%yrc, jrch, ob(iob)%num, ob(iob)%name, ch_m(jrch)
+          write (2481,100) time%mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_m(jrch)
           if (pco%csvout == 'y') then
-            write (2485,'(*(g0.3,:","))') time%mo, time%yrc, jrch, ob(iob)%num, ob(iob)%name, ch_m(jrch)
+            write (2485,'(*(g0.3,:","))') time%mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_m(jrch)
           end if
         end if
         ch_m(jrch) = chz
@@ -50,9 +49,9 @@
       if (time%end_yr == 1) then
         ch_a(jrch) = ch_a(jrch) + ch_y(jrch)
         if (pco%chan%y == 'y') then 
-          write (2482,100) time%day, time%yrs, jrch, ob(iob)%num, ob(iob)%name, ch_y(jrch)
+          write (2482,100) time%day, time%yrs, jrch, ob(iob)%gis_id, ob(iob)%name, ch_y(jrch)
           if (pco%csvout == 'y') then
-            write (2486,'(*(g0.3,:","))') time%day, time%yrs, jrch, ob(iob)%num, ob(iob)%name, ch_y(jrch)
+            write (2486,'(*(g0.3,:","))') time%day, time%yrs, jrch, ob(iob)%gis_id, ob(iob)%name, ch_y(jrch)
           end if
         end if
         
@@ -62,9 +61,9 @@
 !!!!! average annual print
       if (time%end_sim == 1 .and. pco%chan%a == 'y') then
         ch_a(jrch) = ch_a(jrch) / time%yrs_prt
-        write (2483,100) time%day, time%yrs, jrch, ob(iob)%num, ob(iob)%name, ch_a(jrch)
+        write (2483,100) time%day, time%yrs, jrch, ob(iob)%gis_id, ob(iob)%name, ch_a(jrch)
         if (pco%csvout == 'y') then
-          write (2487,'(*(g0.3,:","))') time%day, time%yrs, jrch, ob(iob)%num, ob(iob)%name, ch_a(jrch)
+          write (2487,'(*(g0.3,:","))') time%day, time%yrs, jrch, ob(iob)%gis_id, ob(iob)%name, ch_a(jrch)
         end if
       end if
 

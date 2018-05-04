@@ -101,9 +101,9 @@
       type plant_init_db
         character(len=16) :: cpnm = "frsd"
         integer :: db_num = 1      !             |plant object
-        integer :: igro = 1        !             |land cover status
-                                   !               0 = no land cover growing
-                                   !               1 = land cover growing
+        character(len=1) :: igro = 'y'    !      |land cover status
+                                          !      |n = no land cover growing
+                                          !      |y = land cover growing
         real :: lai = 0.           !m**2/m**2    |leaf area index
         real :: bioms = 0.         !kg/ha        |land cover/crop biomass
         real :: phuacc = 0.        !             |frac of plant heat unit acc.

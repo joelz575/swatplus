@@ -15,9 +15,6 @@
 !!    ihru           |none          |HRU number
 !!    lai_init       |none          |initial leaf area index of transplants
 !!    pcom%plcur     
-!!         gro       |none          |land cover status code 
-!!                                      0 = no land cover currently growing 
-!!                                      1 = land cover growing
 !!         idorm     |none          |dormancy status code; 0=land cover growing 1=land cover dormant
 !!         phuacc    |fraction      |fraction of plant heat unit accumulated
 !!    pcom%plm 
@@ -61,7 +58,7 @@
       j = ihru
       !idp = pcom(j)%plcur(1)%idplt
 
-      pcom(j)%plcur(ipl)%gro = 1
+      pcom(j)%plcur(ipl)%gro = "y"
       pcom(j)%plcur(ipl)%idorm = 0
       pcom(j)%plcur(ipl)%phuacc = 0.
       pcom(j)%plm(ipl)%nmass = 0.

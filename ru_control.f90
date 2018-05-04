@@ -45,8 +45,7 @@
                                          !            |elevation changes
       real :: wtmp                       !deg C       |temperature of water in reach
       
-      
-      
+           
       iday = 1
       ihdmx = 2
       cnv_m3 = 1000. * ru(isub)%da_km2

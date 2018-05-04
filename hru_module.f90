@@ -52,9 +52,9 @@
       
       type plant_status
         integer :: idplt = 0           !! none         land cover code from plants.plt
-        integer :: gro = 0             !! none         land cover status code 
-                                       !!                0 = no land cover currently growing 
-                                       !!                1 = land cover growing
+        character(len=1) :: gro = 'y'  !               |land cover status
+                                       !               |n = no land cover growing
+                                       !               |y = land cover growing
         integer :: idorm = 0           !! none         dormancy status code; 0=land cover growing 1=land cover dormant
         real :: phumat = 0.            !! C            heat units to maturity
         real :: phuacc = 0.            !! fraction     fraction of plant heatunit accumulated

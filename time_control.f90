@@ -263,10 +263,10 @@
                 call mgt_operatn
                 dorm_flag = 0
               end if
-              nop(j) = nop(j) + 1
-              if (nop(j) > sched(isched)%num_ops) then
-                nop(j) = 1
-              end if
+              !nop(j) = nop(j) + 1
+              !if (nop(j) > sched(isched)%num_ops) then
+              !  nop(j) = 1
+              !end if
             
               phubase(j) = 0.
               yr_skip(j) = 0

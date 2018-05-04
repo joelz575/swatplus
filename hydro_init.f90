@@ -73,6 +73,11 @@
       real :: wt1               !none          |conversion factor to convert kg/ha to g/t(ppm) 
       integer :: ly             !none          |counter   
       integer :: isdr           !none          |conversion factor to convert kg/ha to g/t(ppm)
+      real :: sd
+      real :: dd
+      real :: sdlat
+      real :: h 
+      real :: daylength
 
       do j = 1, sp_ob%hru
        iob = hru(j)%obj_no
@@ -103,8 +108,26 @@
         soil(j)%sw = soil(j)%sw + soil(j)%phys(k)%st
       end do
       
-      !! set day length threshold for dormancy
+      !! set day length threshold for dormancy and initial dormancy
       dormhr(j) = wgn_pms(iwgn)%daylth
+      sd = Asin(.4 * Sin((Real(time%day) - 82.) / 58.09))  !!365/2pi = 58.09
+      dd = 1.0 + 0.033 * Cos(Real(time%day) / 58.09)
+      sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
+      if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
+        h = 0.
+      elseif (sdlat >= -1.) then
+        h = Acos(sdlat)
+      else
+        h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
+      endif 
+      daylength = 7.6394 * h
+      do ipl = 1, pcom(j)%npl
+        if (pcom(j)%plcur(ipl)%gro == 'y' .and. daylength - dormhr(j) < wgn_pms(iwgn)%daylmn) then
+          pcom(j)%plcur(ipl)%idorm = 1
+        else
+          pcom(j)%plcur(ipl)%idorm = 0
+        end if
+      end do
 
 !!    compare maximum rooting depth in soil to maximum rooting depth of plant
       if (soil(j)%zmx<= 0.001) soil(j)%zmx = soil(j)%phys(nly)%d

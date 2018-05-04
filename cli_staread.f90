@@ -68,7 +68,7 @@
                if (db_mx%wndfiles > 0) call search (wnd_n, db_mx%wndfiles, wst(i)%wco_c%wgage, wst(i)%wco%wgage)  
                if (wst(i)%wco%wgage == 0 .and. wst(i)%wco_c%wgage /= 'sim' ) write (9001,*) wst(i)%wco_c%wgage, 'file not found (wgage)'
                if (db_mx%atmodep > 0) call search (atmo_n, db_mx%atmodep, wst(i)%wco_c%atmodep, wst(i)%wco%atmodep)  
-               if (wst(i)%wco%atmodep == 0 .and. wst(i)%wco_c%atmodep /= 'sim' ) write (9001,*) wst(i)%wco_c%atmodep, 'file not found (atmodep)'
+               if (wst(i)%wco%atmodep == 0 .and. wst(i)%wco_c%atmodep /= 'null' ) write (9001,*) wst(i)%wco_c%atmodep, 'file not found (atmodep)'
                
                 if (eof < 0) exit  
             end do

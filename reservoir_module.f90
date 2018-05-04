@@ -137,7 +137,7 @@
           character (len=6) :: yrs =          ' time '
           character (len=6) :: yrc =          ' year '
           character (len=8) :: j =            ' resnum '
-          character (len=8) :: id =           '     id '        
+          character (len=8) :: id =           ' gis_id '        
           character (len=16) :: name =     ' name              ' 
           character (len=10) :: vol =      '      vol'        !ha-m                 |flow volume res
           character (len=10) :: area =     '     area'        !ha                   |surface area res

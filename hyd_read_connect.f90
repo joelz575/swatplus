@@ -31,6 +31,7 @@
       integer :: cmd_prev             !none       |previous command (object) number
       integer :: ob1                  !none       |beginning of loop
       integer :: ob2                  !none       |ending of loop
+      integer :: iob
       integer :: i                    !none       |counter
       integer :: nout                 !           |       
       integer :: k                    !           |
@@ -66,6 +67,7 @@
             !  id_max = Max (id_max, k)
             !end do
                 
+
             do i = ob1, ob2
               ob(i)%typ = obtyp
               allocate (ob(i)%hd(nhyds))
@@ -105,7 +107,8 @@
                 allocate (ob(i)%ts(ob(i)%day_max,time%step))
                 allocate (ob(i)%tsin(time%step))
               end if
-              read (107,*,iostat=eof) k, ob(i)%name, ob(i)%num, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,   &
+              read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,   &
+              !read (107,*,iostat=eof) k, ob(i)%name, ob(i)%num, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,   &
                 ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
               if (eof < 0) exit
 
@@ -121,7 +124,8 @@
                 allocate (ob(i)%hout_y(nout))
                 allocate (ob(i)%hout_a(nout))
                 backspace (107)
-                read (107,*,iostat=eof) k, ob(i)%name, ob(i)%num, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &
+                read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &
+                !read (107,*,iostat=eof)  k, ob(i)%name, ob(i)%num, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &
                   ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot,      &
                   (ob(i)%obtyp_out(isp), ob(i)%obtypno_out(isp), ob(i)%htyp_out(isp),                       &
                   ob(i)%frac_out(isp), isp = 1, nout)

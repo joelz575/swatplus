@@ -231,7 +231,7 @@
           character (len=6) :: yrs =          ' time '
           character (len=6) :: yrc =          ' year '
           character (len=8) :: isd =        '   unit '
-          character (len=8) :: id =         '     id '           
+          character (len=8) :: id =         ' gis_id '           
           character (len=16) :: name =     ' name              '           
           character(len=15) :: flo_in =    '     floin_ha-m'        ! (ha-m)
           character(len=15) :: flo_out =   '    floout_ha-m'        ! (ha-m)
@@ -308,36 +308,7 @@
       end interface 
              
       contains
-!! routines for channel module
-      !include 'channel_control.f90'
-      !include 'channel_output.f90'
-      !include 'channel_allo.f90'
-      !include 'ch_rchinit.f90'                  
-      !include 'ch_rtday.f90'                    
-      !include 'ch_rtmusk.f90'                   
-      !include 'ch_rthr.f90'                     
-      !include 'ch_rthmusk.f90'                  
-      !include 'ch_rtsed.f90'                    
-      !include 'ch_rtsed_bagnold.f90'            
-      !include 'ch_rtsed_kodatie.f90'            
-      !include 'ch_rtsed_yangsand.f90'          
-      !include 'ch_rtsed_Molinas_Wu.f90'        
-      !include 'ch_hhnoqual.f90'                  
-      !include 'ch_hhwatqual.f90'                 
-      !include 'ch_rthsed.f90'                    
-      !include 'ch_noqual.f90'                    
-      !include 'ch_watqual2.f90'                  
-      !include 'ch_watqual.f90'                   
-      !include 'ch_rtpest.f90'                    
-      !include 'ch_rthpest.f90'                   
-      !include 'ch_rtbact.f90'                    
-      !include 'ch_irr_rch.f90'                   
-      !include 'ch_rchuse.f90'                    
-      !include 'ch_biofilm.f90'    !!!!! call is commented             
-      !include 'ch_ttcoef.f'
-      !include 'ch_rtout.f90' 
-      !include 'ch_initial.f90'
-
+             
       function ch_add(cho1,cho2) result (cho3)
       type (ch_output),  intent (in) :: cho1
       type (ch_output),  intent (in) :: cho2

@@ -279,7 +279,7 @@
       end type mgt_header_unit1
       type(mgt_header_unit1) :: mgt_hdr_unt1
       
-     type snutc_header                              
+      type snutc_header                              
           character (len=12) :: day =          '         day'
           character (len=12) :: year =         '        year'
           character (len=12) :: hru =          '         hru'                                                       
@@ -325,7 +325,7 @@
           character (len=16) :: soil_water_c =  '   soil_water_c '
           character (len=16) :: soil_water_n =  '   soil_water_n '
           character (len=16) :: soil_water_p  = '   soil_water_p '  
-     end type snutc_header
-     type(snutc_header) :: snutc_hdr
+      end type snutc_header
+      type(snutc_header) :: snutc_hdr
       
       end module basin_module

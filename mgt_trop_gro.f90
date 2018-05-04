@@ -25,7 +25,7 @@
               sol_stup2 = soil(j)%phys(1)%st + soil(j)%phys(2)%st
               sol_fcup2 = soil(j)%phys(1)%fc + soil(j)%phys(2)%fc
               if (sol_st2 >= pldb(idp)%frsw_gro * sol_fc2) then
-                  pcom(j)%plcur(ipl)%gro = 1
+                  pcom(j)%plcur(ipl)%gro = "y"
                   pcom(j)%plcur(ipl)%phuacc = 0. 
                   pcom(j)%plcur(ipl)%idorm = 0
                   pcom(j)%plcur(ipl)%monsoon_init = 0

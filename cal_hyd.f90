@@ -508,7 +508,8 @@
                     if (dep_below_soil > 51.) then
                       dep_below_soil = 50.
                     else
-                      dep_below_soil = 0.8 * chg_val * dep_below_soil
+                      !dep_below_soil = 0.8 * chg_val * dep_below_soil
+                      dep_below_soil = chg_val * dep_below_soil
                     end if
                   end if
                   if (chg_val > 1.1) then
@@ -602,7 +603,8 @@
                 end if
                 if (chg_val > .01) then
                   !perc too low
-                  dep_below_soil = (.05 / chg_val) * dep_below_soil
+                  !dep_below_soil = (.05 / chg_val) * dep_below_soil
+                  dep_below_soil = dep_below_soil / chg_val
                 end if
                 if (chg_val < -.01) then
                   !perc too high
@@ -658,7 +660,8 @@
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
 
                 diff = lscal(ireg)%lum(ilum)%meas%srr * lscal(ireg)%lum(ilum)%precip_aa - lscal(ireg)%lum(ilum)%aa%srr
-                chg_val = - diff / 300.     !assume 10 mm runoff for .3 cn3_swf
+                !chg_val = - diff / 300.     !assume 10 mm runoff for .3 cn3_swf
+                chg_val = - diff / 700.     !assume 10 mm runoff for .7 cn3_swf
                 lscal(ireg)%lum(ilum)%prm_prev%cn3_swf = lscal(ireg)%lum(ilum)%prm%cn3_swf
                 lscal(ireg)%lum(ilum)%prm%cn3_swf = lscal(ireg)%lum(ilum)%prm%cn3_swf + chg_val
                 lscal(ireg)%lum(ilum)%prev%srr = lscal(ireg)%lum(ilum)%aa%srr

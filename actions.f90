@@ -115,7 +115,7 @@
             do ipl = 1, pcom(ob_num)%npl
               idp = pcomdb(icom)%pl(ipl)%db_num
               if (d_tbl(id)%act(iac)%option == pcomdb(icom)%pl(ipl)%cpnm) then
-                pcom(ob_num)%plcur(ipl)%gro = 1
+                pcom(ob_num)%plcur(ipl)%gro = "y"
                 pcom(ob_num)%plcur(ipl)%idorm = 0
               end if
               if (pco%mgtout ==  'year') then

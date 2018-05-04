@@ -138,8 +138,6 @@
            end do
          
          end if
-        
-         !if (eof < 0) exit
          
            if (lum_str(ilu)%plant_cov == 0 .and. lum(ilu)%plant_cov /= 'null') then 
                write (9001,*) lum(ilu)%name, lum(ilu)%plant_cov, ' not found in initial.plt' 

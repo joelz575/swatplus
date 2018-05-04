@@ -243,7 +243,7 @@
      
         !! check for dormancy
         do ipl = 1, pcom(j)%npl
-          if (pcom(j)%plcur(ipl)%gro == 1) call mgt_dormant
+          if (pcom(j)%plcur(ipl)%gro == "y") call mgt_dormant
         end do
                
         !! tropical plants - begin new growing cycle at end of dry season when soil 

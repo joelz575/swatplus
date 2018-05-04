@@ -131,7 +131,7 @@
       wgn_pms(iwgn)%daylmn = 7.6394 * x2
 
       !! calculate day length threshold for dormancy
-      if (bsn_prm%dorm_hr < -1.e-6) then
+      if (bsn_prm%dorm_hr < 1.e-6) then
         dl = 0.
          if (Abs(wgn(iwgn)%lat) > 40.) then
           dl = 1.

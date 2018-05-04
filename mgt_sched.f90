@@ -61,7 +61,7 @@
             do ipl = 1, pcom(j)%npl
               idp = pcomdb(icom)%pl(ipl)%db_num
               if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
-                pcom(j)%plcur(ipl)%gro = 1
+                pcom(j)%plcur(ipl)%gro = "y"
                 pcom(j)%plcur(ipl)%idorm = 0
                 if (pco%mgtout ==  'y') then
                   write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,  "PLANT ",          &
@@ -83,7 +83,7 @@
               pcom(j)%mseas = 0
              do ipl = 1, pcom(j)%npl
                if (pcom(j)%plcur(ipl)%monsoon_init == 1) then             
-                  pcom(j)%plcur(ipl)%gro = 1
+                  pcom(j)%plcur(ipl)%gro = "y"
                   pcom(j)%plcur(ipl)%phuacc = 0. 
                   pcom(j)%plcur(ipl)%idorm = 0
                   pcom(j)%plcur(ipl)%monsoon_init = 0

@@ -132,7 +132,7 @@
           if (isweep(j) > 0 .and. time%day >= isweep(j)) then
             call hru_sweep
           else if (phusw(j) > 0.0001) then
-            if (pcom(j)%plcur(ipl)%gro == 0) then
+            if (pcom(j)%plcur(ipl)%gro == "n") then
               if (phubase(j) > phusw(j)) call hru_sweep
             else 
               if (pcom(j)%plcur(1)%phuacc > phusw(j)) call hru_sweep
@@ -152,7 +152,7 @@
 	  if (isweep(j) > 0 .and. time%day >= isweep(j)) then
                 call hru_sweep
         else if (phusw(j) > 0.0001) then
-          if (pcom(j)%plcur(ipl)%gro == 0) then
+          if (pcom(j)%plcur(ipl)%gro == "n") then
             if (phubase(j) > phusw(j)) then
 		    call hru_sweep
 	      endif

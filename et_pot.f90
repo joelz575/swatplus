@@ -198,7 +198,7 @@
         !! maximum plant ET
           igrocom = 0
           do ipl = 1, pcom(j)%npl
-            if (pcom(j)%plcur(ipl)%gro == 1) igrocom = 1
+            if (pcom(j)%plcur(ipl)%gro == "y") igrocom = 1
           end do
           if (igrocom <= 0) then
             ep_max = 0.0

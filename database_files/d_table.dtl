@@ -1,5 +1,5 @@
 d_table.dtl - Little River Watershed
- 18
+ 19
 
  NAME   	CONDS	ALTS	ACTS
 pl_grow_sum	  2	 2	 1
@@ -57,7 +57,7 @@ fertilize	hru	  0	ammonia_spring	anh-nh3	 160.	inject     		y    	 n
 fertilize	hru	  0	side_dress	urea	  50.	broadcast		n	 y
 
  NAME   	CONDS	ALTS	ACTS
-minimum_till	  2	 1	 
+minimum_till	  2	 1   1	 
  VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST			ALT1
 soil_water 	hru	  0	fcap_fr		  *	  0.9		 		<
 phu_base0 	hru	  0	null		  -	  0.13				>
@@ -65,7 +65,6 @@ phu_base0 	hru	  0	null		  -	  0.13				>
 till		hru	  0	field_cult	fldcult   0	null			y
 
  NAME   	CONDS	ALTS	ACTS
-plant_harv_c-sb
 pl_hv_c-sb	  5	 3	 3
  VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST			ALT1	ALT2   ALT3
 soil_water 	hru	  0	fcap_fr		  *	  0.9		 		<	 <	<
@@ -120,6 +119,13 @@ corps_med_res	  2	 2	 2
  ACT_TYP			NAME		OPTION	CONST	FILE_POINTER		OUTCOME
  release	res	  0	over_prin 	days	 15.	pvol    		y       n	
  release	res	  0	over_emergency	days	  5.	evol			n       y
+ 
+  NAME   	CONDS	ALTS	ACTS
+lrew_sm_res	    1	   1	   1
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST	ALT1
+ vol 		res	     0	   pvol		     *	      1.0	   >
+ ACT_TYP			    NAME		OPTION	CONST	FILE_POINTER	OUTCOME
+ release	res	     0	over_prin 	  days	  1.0	        pvol	y	
  
  NAME   	   CONDS	ALTS	ACTS
 wetland_iowa	   1       2	   2

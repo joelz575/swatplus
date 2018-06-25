@@ -20,7 +20,7 @@
       
       !! read all subsurface drainage data from sdr.dat
       inquire (file=in_str%tiledrain_str, exist=i_exist)
-      if (i_exist == 0 .or. in_str%tiledrain_str == 'null') then
+      if (i_exist == 0 .or. in_str%tiledrain_str == "null") then
         allocate (sdr(0:0))
       else
         do

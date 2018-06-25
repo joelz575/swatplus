@@ -85,7 +85,7 @@
         real :: gw = 0.                      !mm            |initial shallow aquifer storage
         real :: snow = 0.                    !mm            |initial water content of snow
         real :: gwflow = 0.                  !mm            |initial groundwater flow
-        character(len=1) :: gro = 'n'        !              |y=plant growing; n=not growing;
+        character(len=1) :: gro = "n"        !              |y=plant growing; n=not growing;
         real :: dm = 0.                      !t/ha          |plant biomass
         real :: alai = 0.                    !              |leaf area index
         real :: yield = 0.                   !t/ha          |plant yield

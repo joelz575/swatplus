@@ -9,7 +9,7 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~1
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ch_n(1,:)   |none          |Manning's "n" value for the tributary channels
+!!    ch_n(1,:)   |none          |Manning"s "n" value for the tributary channels
 !!    ch_s(1,:)   |m/m           |average slope of tributary channels
 !!    gdrain(:)   |hrs           |drain tile lag time: the amount of time
 !!                               |between the transfer of water from the soil

@@ -37,10 +37,10 @@
 
       do l = 1, soil(j)%nly
         rmp1 = (soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto)
-        !! mike changed/added per isabelle beaudin's email from 01/21/09
+        !! mike changed/added per isabelle beaudin"s email from 01/21/09
         if (rmp1 > 0.) rmp1 = rmp1 * 0.1
         if (rmp1 < 0.) rmp1 = rmp1 * 0.6
-        !! mike changed/added per isabelle beaudin's email from 01/21/09
+        !! mike changed/added per isabelle beaudin"s email from 01/21/09
         rmp1 = Min(rmp1, soil1(j)%mp(l)%lab)
 
         roc = bk * (4. * soil1(j)%mp(l)%act - soil1(j)%mp(l)%sta)

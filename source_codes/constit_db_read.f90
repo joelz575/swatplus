@@ -19,7 +19,7 @@
       imax = 0
       
       inquire (file=in_sim%cs_db, exist=i_exist)
-      if (i_exist == 0 .or. in_sim%cs_db == 'null') then
+      if (i_exist == 0 .or. in_sim%cs_db == "null") then
         allocate (cs_db%pests(0:0))
         allocate (cs_db%paths(0:0))
         allocate (cs_db%metals(0:0))

@@ -123,10 +123,10 @@
       endif 
       daylength = 7.6394 * h
       do ipl = 1, pcom(j)%npl
-        if (pcom(j)%plcur(ipl)%gro == 'y' .and. daylength - dormhr(j) < wgn_pms(iwgn)%daylmn) then
-          pcom(j)%plcur(ipl)%idorm = 'y'
+        if (pcom(j)%plcur(ipl)%gro == "y" .and. daylength - dormhr(j) < wgn_pms(iwgn)%daylmn) then
+          pcom(j)%plcur(ipl)%idorm = "y"
         else
-          pcom(j)%plcur(ipl)%idorm = 'n'
+          pcom(j)%plcur(ipl)%idorm = "n"
         end if
       end do
 
@@ -135,22 +135,12 @@
       plt_zmx = 0.
       do ipl = 1, pcom(j)%npl
         idp = pcom(j)%plcur(ipl)%idplt
-	    if (idp > 0) then
-          if (pldb(idp)%idc == 'warm_annual_legume' .or.                  &
-            pldb(idp)%idc == 'cold_annual_legume' .or.                    &
-            pldb(idp)%idc == 'perennial_legume' .or.                      &
-            pldb(idp)%idc == 'warm_annual' .or.                           &
-            pldb(idp)%idc == 'cold_annual' .or.                           &
-            pldb(idp)%idc == 'perennial' .or.                             &
-            pldb(idp)%idc == 'trees' .or.                                 &
-            pldb(idp)%idc == 'tropical_trees' .or.                        &
-            pldb(idp)%idc == 'tropical_grasses') then          
-              !! set initial residue by summing each plant
-              soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + rsd1(j)%tot(ipl)%m
-              plt_zmxp = plt_zmx
-              plt_zmx = 1000. * pldb(idp)%rdmx
-              plt_zmx = Max(plt_zmx,plt_zmxp)
-          end if
+	    if (idp > 0) then    
+          !! set initial residue by summing each plant
+          rsd1(j)%tot_com%m = rsd1(j)%tot_com%m + rsd1(j)%tot(ipl)%m
+          plt_zmxp = plt_zmx
+          plt_zmx = 1000. * pldb(idp)%rdmx
+          plt_zmx = Max(plt_zmx,plt_zmxp)
         end if
       end do
       if (soil(j)%zmx > 1. .and. plt_zmx > 1.) then
@@ -201,11 +191,6 @@
         end if
       end do
       end if
-
-      do ly = 1, soil(j)%nly
-        if (soil(j)%ly(ly)%pperco_sub <= 1.e-6)                          &
-             soil(j)%ly(ly)%pperco_sub = bsn_prm%pperco
-      end do
 
 !!    compute lateral flow travel time
         if (hru(j)%hyd%lat_ttime <= 0.) then

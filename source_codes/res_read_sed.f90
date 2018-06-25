@@ -25,7 +25,7 @@
       imax = 0
 
       inquire (file=in_res%sed_res,exist=i_exist)
-      if (i_exist == 0 .or. in_res%sed_res == 'null') then
+      if (i_exist == 0 .or. in_res%sed_res == "null") then
         allocate (res_sed(0:0))
       else
       do

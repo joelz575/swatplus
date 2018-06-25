@@ -21,8 +21,9 @@
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
 
 
-      use hru_module, only : sol_cov, sno_hru, ihru, albday, sumlai
+      use hru_module, only : sol_cov, sno_hru, ihru, albday
       use soil_module
+      use plant_module
       
       implicit none
         
@@ -41,7 +42,7 @@
         albday = soil(j)%ly(1)%alb
 
         !! equation 2.2.15 in SWAT manual
-        if (sumlai > 0.) albday = .23 * (1. - eaj) + soil(j)%ly(1)%alb * eaj
+        if (pcom(j)%lai_sum > 0.) albday = .23 * (1. - eaj) + soil(j)%ly(1)%alb * eaj
       else
         !! equation 2.2.13 in SWAT manual
         albday = 0.8

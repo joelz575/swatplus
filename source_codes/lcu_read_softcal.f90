@@ -26,7 +26,7 @@
       mcal = 0
 	  
       inquire (file=in_chg%ls_regions_cal, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%ls_regions_cal == 'null') then
+      if (i_exist == 0 .or. in_chg%ls_regions_cal == "null") then
         allocate (lscal(0:0))
         allocate (region(0:0))
       else  
@@ -77,7 +77,7 @@
             end if 
                
             !! if calibrating the entire region - later we can set up for lsu/regional calibrations
-            if (region(ireg)%name == 'basin') then
+            if (region(ireg)%name == "basin") then
               region(ireg)%num_tot = sp_ob%hru
               allocate (region(ireg)%num(sp_ob%hru))
               allocate (region(ireg)%hru_ha(sp_ob%hru))

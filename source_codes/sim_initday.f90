@@ -38,14 +38,27 @@
       use organic_mineral_mass_module
       use carbon_module
       use hydrograph_module, only : sp_ob
+      use reservoir_module, only : wet_d
+      use maximum_data_module
+
+      !!initialize variables at beginning of day
+      ! initialising wetland by Ann 
+
       
       implicit none
       
       real :: drift             !kg               |amount of pesticide drifting onto main 
                                 !                 |channel in subbasin
       real :: hrupstd           !varies           |HRU daily pesticide output array
-      integer :: j             !none             |HRU number 
+      integer :: j              !none             |HRU number 
       integer :: ly             !none             |counter 
+      integer :: ires           !none             |counter
+        
+      do ires =1, db_mx%wet_dat
+          wet_d(ires)%flowi = 0.
+          wet_d(ires)%flowo = 0.
+          wet_d(ires)%ev = 0.
+      end do
 
       !!initialize variables at beginning of day
       cbodu = 0.

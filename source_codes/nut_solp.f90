@@ -53,7 +53,7 @@
         vap = 0.
 	   if (ii/=i_sep(j)) then
          vap = soil1(j)%mp(ii)%lab * soil(j)%ly(ii)%prk /                &
-          ((soil(j)%phys(ii)%conv_wt / 1000.) * bsn_prm%pperco + .1)  !dont merge
+          ((soil(j)%phys(ii)%conv_wt / 1000.) * bsn_prm%pperco + .1)
 	     vap = Min(vap, .2 * soil1(j)%mp(ii)%lab)
 	     soil1(j)%mp(ii)%lab = soil1(j)%mp(ii)%lab - vap
 	     soil1(j)%mp(ii+1)%lab = soil1(j)%mp(ii+1)%lab + vap

@@ -167,7 +167,7 @@
         integer :: obj_no
         real :: area_ha
         real :: km
-        integer :: surfstor               !!points to res() for surface storage
+        integer :: surf_stor               !!points to res() for surface storage
         type (hru_databases) :: dbs       !!database pointers
         type (hru_databases_char) :: dbsc !!database pointers
         type (hru_parms_db) :: parms      !!calibration parameters
@@ -194,6 +194,9 @@
         type (landuse) :: luse
         type (land_use_mgt_variables) :: lumv
         integer :: irrsrc
+        real :: water_fr
+        real :: water_seep
+        integer :: ich_flood
       end type hydrologic_response_unit
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
@@ -242,10 +245,10 @@
 !!    new/modified arrays for plant competition
       integer :: ipl, isol
 
-      real :: sumlai,strsa_av,strsn_av,strsp_av,strstmp_av
+      real :: strsa_av,strsn_av,strsp_av,strstmp_av
       real :: rto_no3,rto_solp,uno3d_tot,uapd_tot,sum_no3
       real :: sum_solp
-      real, dimension (:), allocatable :: cht_mx,epmax,cvm_com,blai_com
+      real, dimension (:), allocatable :: epmax,cvm_com,blai_com
       real, dimension (:), allocatable :: rsdco_plcom, translt
       real, dimension (:), allocatable :: strsw_av,uno3d,uapd
       real, dimension (:), allocatable :: par,htfac,un2,up2
@@ -258,7 +261,7 @@
       real :: tloss, snomlt, snofall, fixn, qtile
       real :: latlyr                 !!mm            |lateral flow in soil layer for the day
       real :: inflpcp                !!mm            |amount of precipitation that infiltrates
-      real :: fertn, sol_rd, sepday, bioday
+      real :: fertn, sepday, bioday
       real :: sepcrk, sepcrktot, fertno3, fertnh3, fertorgn, fertsolp
       real :: fertorgp
       real :: fertp, grazn, grazp, sdti
@@ -286,7 +289,7 @@
       integer :: npmx, curyr
       integer :: nd_30
       integer :: iscen
-      integer :: msub, mpst, mlyr
+      integer :: mpst, mlyr
       integer, dimension(100) :: ida_lup, iyr_lup
       integer :: no_up
 !  routing 5/3/2010 gsm per jga    
@@ -410,7 +413,6 @@
 ! additional reach variables , added by Ann van Griensven
 ! Modifications to Pesticide and Water routing routines by Balaji Narasimhan
 !Additional buffer and filter strip variables Mike White
-      real, dimension (:), allocatable :: stsol_rd
 
 	real, dimension (:), allocatable :: ubnrunoff,ubntss
 	real, dimension (:,:), allocatable :: ovrlnd_dt,hhsurfq	

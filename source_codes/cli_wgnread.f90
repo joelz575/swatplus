@@ -25,7 +25,7 @@
 
       !! read weather generator data from weather_generator.dat - wgn parameters
       inquire (file=in_cli%weat_wgn, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%weat_wgn == 'null') then              
+      if (i_exist == 0 .or. in_cli%weat_wgn == "null") then              
         allocate (wgn(0:1))
         allocate (wgn_n(1))
         allocate (wgn_orig(0:1))
@@ -110,7 +110,7 @@
 
       !! read wind direction generator data from wind_direction.dat
       inquire (file=in_cli%wind_dir, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%wind_dir == 'null') then
+      if (i_exist == 0 .or. in_cli%wind_dir == "null") then
         allocate (wnd_dir(0:0))
       else
       do 

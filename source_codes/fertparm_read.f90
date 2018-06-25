@@ -22,7 +22,7 @@
       mfrt = 0
       
       inquire (file=in_parmdb%fert_frt, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%fert_frt == 'null') then
+      if (i_exist == 0 .or. in_parmdb%fert_frt == "null") then
          allocate (fertdb(0:0))
       else
       do  

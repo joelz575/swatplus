@@ -31,7 +31,7 @@
       mcal = 0
             
     inquire (file=in_regs%def_res, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_res /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_res /= "null") then
       do
         open (107,file=in_regs%def_res)
         read (107,*,iostat=eof) titldum
@@ -123,7 +123,7 @@
         
     !! setting up regions for reservoir soft cal and/or output by type
     inquire (file=in_regs%def_res_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_res_reg /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_res_reg /= "null") then
       do
         open (107,file=in_regs%def_res_reg)
         read (107,*,iostat=eof) titldum
@@ -210,7 +210,7 @@
       end do 
       end if	  
       
-      !! if no regions are input, don't need elements
+      !! if no regions are input, don"t need elements
       if (mreg > 0) then
         do ireg = 1, mreg
           rcu_cal(ireg)%lum_ha_tot = 0.
@@ -227,7 +227,7 @@
       
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_res, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_res /= 'null') then
+      if (i_exist /= 0 .or. in_regs%ele_res /= "null") then
       do
         open (107,file=in_regs%ele_res)
         read (107,*,iostat=eof) titldum
@@ -251,7 +251,7 @@
           read (107,*,iostat=eof) i
           backspace (107)
           read (107,*,iostat=eof) k, rcu_elem(i)%name, rcu_elem(i)%obtyp, rcu_elem(i)%obtypno,      &
-                                    rcu_elem(i)%bsn_frac, rcu_elem(i)%sub_frac, rcu_elem(i)%reg_frac
+                                    rcu_elem(i)%bsn_frac, rcu_elem(i)%ru_frac, rcu_elem(i)%reg_frac
           if (eof < 0) exit
         end do
         exit

@@ -197,9 +197,9 @@
           end if
 
          ! calc yield, print max lai, dm and yield
-          if (pco%mgtout == 'y') then
+          if (pco%mgtout == "y") then
             write (4700,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, hlt(isd)%alai, hlt(isd)%dm, yield
-            if (pco%csvout == 'y') then
+            if (pco%csvout == "y") then
               write (4701,*) isd, time%day, time%yrc, pldb(iplt)%plantnm, hlt(isd)%alai, hlt(isd)%dm, yield
             end if
           end if

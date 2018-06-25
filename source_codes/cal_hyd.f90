@@ -144,7 +144,7 @@
                   lscal(ireg)%lum(ilum)%prm_lim%cn = 1.
                 end if
             
-            !check all hru's for proper lum
+            !check all hru"s for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
@@ -254,7 +254,7 @@
           isim = 0
           do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
-            !check all hru's for proper lum
+            !check all hru"s for proper lum
             soft = lscal(ireg)%lum(ilum)%meas%etr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
             if (soft > 1.e-6) diff = abs((soft - lscal(ireg)%lum(ilum)%aa%etr) / soft)
@@ -333,7 +333,7 @@
         isim = 0
         do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
-            !check all hru's for proper lum
+            !check all hru"s for proper lum
             soft = lscal(ireg)%lum(ilum)%meas%lfr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
             if (soft > 1.e-6) diff = abs((soft - lscal(ireg)%lum(ilum)%aa%lfr) / soft)
@@ -429,7 +429,7 @@
                   lscal(ireg)%lum(ilum)%prm_lim%lat_len = 1.
                 end if
                 
-            !check all hru's for proper lum
+            !check all hru"s for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
@@ -470,7 +470,7 @@
         isim = 0
         do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
-            !check all hru's for proper lum
+            !check all hru"s for proper lum
             soft = lscal(ireg)%lum(ilum)%meas%pcr * lscal(ireg)%lum(ilum)%precip_aa
             diff = 0.
             if (soft > 1.e-6) diff = abs((soft - lscal(ireg)%lum(ilum)%aa%pcr) / soft)
@@ -593,7 +593,7 @@
                 !  lscal(ireg)%lum(ilum)%prm_lim%perco = 1.
                 !end if
 
-            !check all hru's for proper lum
+            !check all hru"s for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
@@ -750,7 +750,7 @@
                   lscal(ireg)%lum(ilum)%prm_lim%cn3_swf = 1.
                 end if
             
-            !check all hru's for proper lum
+            !check all hru"s for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
@@ -790,7 +790,7 @@
           
       end do    ! iter_all loop
         
-      cal_codes%hyd_hru = 'n'
+      cal_codes%hyd_hru = "n"
       
 	  return
       end subroutine cal_hyd

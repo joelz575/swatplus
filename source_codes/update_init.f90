@@ -45,56 +45,56 @@
           num_db = cal_upd(ichg_par)%num_db
           
           !check to see if conditions are met
-          cond_met = 'y'
+          cond_met = "y"
           do ic = 1, cal_upd(ichg_par)%conds
             select case (cal_upd(ichg_par)%cond(ic)%var)
             case ("hsg")
               if (cal_upd(ichg_par)%cond(ic)%targc /= soil(ielem)%hydgrp) then
-                cond_met = 'n'
+                cond_met = "n"
               end if
             case ("texture")
               if (cal_upd(ichg_par)%cond(ic)%targc /= soil(ielem)%texture) then
-                cond_met = 'n'
+                cond_met = "n"
               end if
             case ("plant")      !for hru-lte
               if (cal_upd(ichg_par)%cond(ic)%targc /= hlt(ielem)%plant) then 
-                cond_met = 'n'
+                cond_met = "n"
                 exit
               end if
             case ("landuse")    !for hru
               if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%land_use_mgt_c) then 
-                cond_met = 'n'
+                cond_met = "n"
                 exit
               end if
             case ("dep_imp")    !for hru
               ! in ceap2 - condition 1 is 3000. and condition 2 is 50. (high and low leaching potentialP
               if (ic == 1) then
                 if (cal_upd(ichg_par)%cond(ic)%targ /= 3000.) then 
-                  cond_met = 'n'
+                  cond_met = "n"
                   exit
                 end if
               end if
               if (ic == 2) then
                 if (cal_upd(ichg_par)%cond(ic)%targ /= 50.) then 
-                  cond_met = 'n'
+                  cond_met = "n"
                   exit
                 end if
               end if
             case ("region")     !for hru    
               if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%region) then 
-                cond_met = 'n'
+                cond_met = "n"
                 exit
               end if
             case ("region_lte")     !for hru    
               if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%region) then 
-                cond_met = 'n'
+                cond_met = "n"
                 exit
               end if
             end select
           end do
 
-          if (cond_met == 'y') then
-            if (cal_parms(num_db)%ob_typ /= 'sol' .and. cal_parms(num_db)%ob_typ /= 'cli') then
+          if (cond_met == "y") then
+            if (cal_parms(num_db)%ob_typ /= "sol" .and. cal_parms(num_db)%ob_typ /= "cli") then
               call current_par_value (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
             end if
             select case (cal_parms(num_db)%ob_typ)

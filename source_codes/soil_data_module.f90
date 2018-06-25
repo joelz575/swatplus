@@ -11,7 +11,7 @@
       type (soil_lte_database), dimension(:), allocatable :: soil_lte
     
        type soiltest_db
-        character(len=16) :: name = 'default'
+        character(len=16) :: name = "default"
         real :: exp_co = .001         !	     |depth coefficient to adjust concentrations for depth
         real :: totaln = 13.          !ppm     |total N in soil
         real :: inorgn = 6.           !ppm     |inorganic N in soil surface

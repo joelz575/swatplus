@@ -28,7 +28,6 @@
 !!         laimxfr   | 
 !!         hvstiadj  |(kg/ha)/(kg/ha)  |optimal harvest index for current time during growing season
 !!         olai      |
-!!         rwt       |none          |fraction of total plant biomass that is in roots
 !!    soil()%zmx     |mm            |maximum rooting depth of soil 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -60,7 +59,7 @@
       !idp = pcom(j)%plcur(1)%idplt
 
       pcom(j)%plcur(ipl)%gro = "y"
-      pcom(j)%plcur(ipl)%idorm = 'n'
+      pcom(j)%plcur(ipl)%idorm = "n"
       pcom(j)%plcur(ipl)%phuacc = 0.
       pcom(j)%plm(ipl)%nmass = 0.
       pcom(ihru)%plm(ipl)%pmass = 0.
@@ -69,7 +68,7 @@
       pcom(j)%plg(ipl)%laimxfr = 0.
       pcom(j)%plg(ipl)%hvstiadj = 0.
       pcom(j)%plg(ipl)%olai = 0.
-      pcom(j)%plg(ipl)%rwt = 0.
+      pcom(j)%root(ipl)%mass = 0.
       pcom(j)%plstr(ipl) = plstrz 
 
       !! initialize transplant variables

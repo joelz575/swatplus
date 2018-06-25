@@ -28,7 +28,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use hru_module, only : usle_cfac, sol_cov, cvm_com, sumlai, cht_mx, ihru 
+      use hru_module, only : usle_cfac, sol_cov, cvm_com, ihru 
       use plant_module
       
       implicit none
@@ -57,8 +57,8 @@
 	    end if
       else
         rsd_frcov = Exp(-bsn_prm%rsd_covco * sol_cov(j))
-        grcov_fr = sumlai / (sumlai + Exp(1.748 - 1.748 * sumlai))
-        bio_frcov = 1. - grcov_fr * Exp(-.01 * cht_mx(j))
+        grcov_fr = pcom(j)%lai_sum / (pcom(j)%lai_sum + Exp(1.748 - 1.748 * pcom(j)%lai_sum))
+        bio_frcov = 1. - grcov_fr * Exp(-.01 * pcom(j)%cht_mx)
         c = Max(1.e-10, rsd_frcov * bio_frcov)
       end if
 

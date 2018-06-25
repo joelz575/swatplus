@@ -34,11 +34,11 @@
         bres_m = bres_m + bres_d
         
         !! daily print - RESERVOIR
-        if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
-          if (pco%res_bsn%d == 'y') then
-            write (2100,100) time%day, time%yrc, ires, '     1', bsn%name, bres_d
-            if (pco%csvout == 'y') then
-              write (2104,'(*(G0.3,:","))') time%day, time%yrc, ires, '     1', bsn%name, bres_d
+        if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
+          if (pco%res_bsn%d == "y") then
+            write (2100,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_d
+            if (pco%csvout == "y") then
+              write (2104,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_d
             end if
           end if
         end if
@@ -46,10 +46,10 @@
         !! monthly print - RESERVOIR
         if (time%end_mo == 1) then
           bres_y = bres_y + bres_m
-          if (pco%res_bsn%m == 'y') then
-            write (2101,100) time%mo, time%yrc, ires, '     1', bsn%name, bres_m
-            if (pco%csvout == 'y') then
-              write (2105,'(*(G0.3,:","))') time%mo, time%yrc, ires, '     1', bsn%name, bres_m
+          if (pco%res_bsn%m == "y") then
+            write (2101,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_m
+            if (pco%csvout == "y") then
+              write (2105,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_m
             endif
           end if
           bres_m = resmz
@@ -58,10 +58,10 @@
         !! yearly print - RESERVOIR
         if (time%end_yr == 1) then
           bres_a = bres_a + bres_y
-          if (pco%res_bsn%y == 'y') then
-            write (2102,102) '     0', time%yrc, ires, '     1', bsn%name, bres_y
-            if (pco%csvout == 'y') then
-              write (2106,'(*(G0.3,:","))') '     0', time%yrc, ires, '     1', bsn%name, bres_y 
+          if (pco%res_bsn%y == "y") then
+            write (2102,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_y
+            if (pco%csvout == "y") then
+              write (2106,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_y 
             end if
           end if
           !! zero yearly variables        
@@ -69,18 +69,16 @@
         end if
         
       !! average annual print - RESERVOIR
-      if (time%end_sim == 1 .and. pco%res_bsn%a == 'y') then
+      if (time%end_sim == 1 .and. pco%res_bsn%a == "y") then
         bres_a = bres_a / time%yrs_prt
-        write (2103,103) '     0', time%yrs, ires, '     1', bsn%name, bres_a
-        if (pco%csvout == 'y') then 
-          write (2107,'(*(G0.3,:","))') '     0', time%yrs, ires, '     1', bsn%name, bres_a 
+        write (2103,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_a
+        if (pco%csvout == "y") then 
+          write (2107,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_a 
         end if 
       end if
       
       return
       
-100   format (2i6,i8,2x,a,2x,a16,43f15.3)
-102   format (a6,i6,i8,2x,a,2x,a16,43f15.3)
-103   format (a6,i6,i8,2x,a,2x,a16,43f15.3)
+100   format (4i6,i8,2x,a,2x,a16,43f15.3)
        
       end subroutine basin_reservoir_output

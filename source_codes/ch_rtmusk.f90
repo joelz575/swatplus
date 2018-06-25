@@ -8,7 +8,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_n(2,:)   |none          |Manning"s "n" value for the main channel
 !!    ch_s(2,:)   |m/m           |average slope of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
@@ -92,7 +92,6 @@
       real :: c2           !units             |description
       real :: c3           !units             |description
       real :: c4           !m^3 H2O           |
-      real :: wtrin        !m^3 H2O           |water flowing into reach on day
       real :: p            !m                 |wetted perimeter
       real :: vol          !m^3 H2O           |volume of water in reach at beginning of
                            !                  |day
@@ -120,9 +119,9 @@
 
       qinday = 0; qoutday = 0
       det = 24.
+      ch(jrch)%chfloodvol=0.
       
 !! Water entering reach on day
-      wtrin = ob(icmd)%hin%flo 
 
 !! Compute storage time constant for reach (msk_co1 + msk_co2 = 1.)
 	msk1 = bsn_prm%msk_co1 / (bsn_prm%msk_co1 + bsn_prm%msk_co2)
@@ -149,7 +148,7 @@
         det = 24; nn = 1
       end if
       
- !! Inflow during a sub time interval     
+ !! Inflow during a subdaily time interval     
       wtrin = wtrin / nn
       
 !! Iterate for the day      
@@ -158,7 +157,7 @@
  !! calculate volume of water in reach
          vol = wtrin + ch(jrch)%rchstor
 
-!! Find average flowrate in a sub time interval
+!! Find average flowrate in a subdaily time interval
          volrt = vol / (86400. / nn)
 
 !! Find maximum flow capacity of the channel at bank full
@@ -198,6 +197,8 @@
 	  rchdep = ch_hyd(jhyd)%d + adddep
 	  p = addp
 	  sdti = volrt
+    ! store floodplain water that can be used by riparian HRU"s [Ann van Griensven]       
+        ch(jrch)%chfloodvol = (volrt - maxrt)* 86400 * rt_delt
 	else
 	!! find the crossectional area and depth for volrt
 	!! by iteration method at 1cm interval depth
@@ -290,7 +291,7 @@
 	  rtevp = 0.
        if (rtwtr > 0.) then
 
-          aaa = bsn_prm%evrch * pet_day / 1000.
+          aaa = bsn_prm%evrch * pet_ch / 1000.
 
 	      if (rchdep <= ch_hyd(jhyd)%d) then
                rtevp = aaa * ch_hyd(jhyd)%l * 1000. * topw

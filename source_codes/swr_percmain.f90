@@ -149,7 +149,7 @@
 			if(wat > hru(j)%hyd%dep_imp) wat = hru(j)%hyd%dep_imp
           end if
         else
-          !compute water table depth using Daniel's modifications
+          !compute water table depth using Daniel"s modifications
           do j1 = 1, soil(j)%nly
             if (soil(j)%wat_tbl < soil(j)%phys(j1)%d) then
               sw_del = soil(j)%swpwt - soil(j)%sw
@@ -169,7 +169,7 @@
           if (wt_shall <= d) then
             qtile = 0.
           else
-            !! Start Daniel's tile equations modifications  01/2006
+            !! Start Daniel"s tile equations modifications  01/2006
             if (bsn_cc%tdrn == 1) then
               call swr_drains     ! compute tile flow using drainmod tile equations 
               !! drainmod tile equations   01/2006
@@ -181,7 +181,7 @@
         end if
         end if
       end if
-      !! End Daniel's tile equations modifications  01/2006
+      !! End Daniel"s tile equations modifications  01/2006
 
       if (qtile > 0.) then
         !! update soil profile water after tile drainage

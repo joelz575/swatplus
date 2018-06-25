@@ -17,7 +17,7 @@
       ii = 0
       icmd = sp_ob1%objs
 
-      if (pco%hydcon == 'y') then
+      if (pco%hydcon == "y") then
         do while (icmd /= 0)
           ii = ii + 1
           write (7000,*) ii, ob(icmd)%name, ob(icmd)%typ,               &  

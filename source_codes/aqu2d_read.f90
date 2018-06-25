@@ -23,7 +23,7 @@
       
     !!read data for aquifer elements for 2-D groundwater model
       inquire (file=in_link%chan_aqu, exist=i_exist)
-      if (i_exist /= 0 .or. in_link%chan_aqu /= 'null' ) then
+      if (i_exist /= 0 .or. in_link%chan_aqu /= "null" ) then
       do
         open (107,file=in_link%chan_aqu)
         read (107,*,iostat=eof) titldum

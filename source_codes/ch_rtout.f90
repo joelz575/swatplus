@@ -112,7 +112,7 @@
       wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
 !! set values for routing variables
       ob(icmd)%hd(1)%temp = wtmp
-      ob(icmd)%hd(1)%flo = rtwtr
+      ob(icmd)%hd(1)%flo = rtwtr_d
       ob(icmd)%hd(1)%sed = sedrch
       ob(icmd)%hd(1)%bacp = ch(jrch)%rch_bactp
       ob(icmd)%hd(1)%baclp = ch(jrch)%rch_bactlp

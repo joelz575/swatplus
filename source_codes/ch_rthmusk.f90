@@ -8,7 +8,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_n(2,:)   |none          |Manning"s "n" value for the main channel
 !!    ch_s(2,:)   |m/m           |average slope of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
@@ -16,7 +16,7 @@
 !!    curyr       |none          |current year of simulation (consecutive)
 !!    flwin(:)    |m^3 H2O       |flow into reach on previous day
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
-!!    pet_day     |mm H2O        |potential evapotranspiration for the day
+!!    pet_ch      |mm H2O        |potential evapotranspiration for the day
 !!    rchstor(:)  |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -100,7 +100,6 @@
       real :: c2           !units         |description 
       real :: c3           !units         |description
       real :: c4           !m^3 H2O       |
-      real :: wtrin        !m^3 H2O       |water entering reach on day
       real :: p            !m             |wetted perimeter
       real :: vol          !m^3 H2O       |volume of water applied in irrigation 
                            !              |operation
@@ -224,10 +223,10 @@
 
           !! calculate evaporation
           if (hhtime(ii) < 1.) then
-            hrtevp(ii) = bsn_prm%evrch * pet_day/time%step *                 &
+            hrtevp(ii) = bsn_prm%evrch * pet_ch/time%step *                 &
           ch_hyd(jhyd)%l * topw * hhtime(ii)
           else
-            hrtevp(ii) = bsn_prm%evrch * pet_day/time%step *                 &              
+            hrtevp(ii) = bsn_prm%evrch * pet_ch/time%step *                 &              
                ch_hyd(jhyd)%l * topw
           end if
           if (hrtevp(ii) < 0.) hrtevp(ii) = 0.

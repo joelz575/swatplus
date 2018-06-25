@@ -8,7 +8,7 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ibtyp        |NA            |bacteria type from 'bact_parms.dat'
+!!    ibtyp        |NA            |bacteria type from "bact_parms.dat"
 !!    pl_bac       |# cfu/m^2     |bacteria on plant
 !!    sol_bacsol   |# cfu/m^2     |soluble bacteria in soil layer
 !!    sol_bacsor   |# cfu/m^2     |sorbed bacteria in soil layer
@@ -19,7 +19,7 @@
       
       implicit none
       
-      integer :: ibtyp         !none          |bacteria type from 'bact_parms.dat'
+      integer :: ibtyp         !none          |bacteria type from "bact_parms.dat"
       real :: bpq              !# cfu/m^2     |bacteria (soluble) in soil at start of timestep 
       real :: bpl              !# cfu/m^2     |bacteria on plant at start of timestep
       real :: bps              !# cfu/m^2     |bacteria (sorbed) in soil at start of timestep

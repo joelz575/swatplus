@@ -97,13 +97,13 @@
         type (organic_mass), dimension(:), allocatable :: tot    !kg/ha            |total biomass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: ab_gr  !kg/ha            |above groound vegetative mass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: leaf   !kg/ha            |leaf mass for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: wood   !kg/ha            |wood mass for individual plant in community
+        type (organic_mass), dimension(:), allocatable :: wood   !kg/ha            |wood/stalk mass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: grain  !kg/ha            |grain mass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: root   !kg/ha            |root mass for individual plant in community (frac by soil layer)
         type (organic_mass) :: tot_com                           !kg/ha            |total biomass for entire plant community
         type (organic_mass) :: ab_gr_com                         !kg/ha            |above ground vegetative mass for entire plant community
         type (organic_mass) :: leaf_com                          !kg/ha            |leaf mass for entire plant community
-        type (organic_mass) :: wood_com                          !kg/ha            |wood mass for entire plant community
+        type (organic_mass) :: wood_com                          !kg/ha            |wood/stalk mass for entire plant community
         type (organic_mass) :: grain_com                         !kg/ha            |grain mass for entire plant community
         type (organic_mass) :: root_com                          !kg/ha            |root mass for entire plant community
       end type plant_community_mass1

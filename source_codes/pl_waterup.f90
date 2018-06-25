@@ -9,7 +9,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    epco(:)     |none          |plant water uptake compensation factor (0-1)
-!!    stsol_rd(:) |mm            |storing last soil root depth for use in harvestkillop/killop
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -17,7 +16,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ep_day      |mm H2O        |actual amount of transpiration that occurs
 !!                               |on day in HRU
-!!    sol_rd      |mm            |current rooting depth
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -43,7 +41,7 @@
 
       use plant_data_module
       use basin_module
-      use hru_module, only : hru, ihru, stsol_rd, epmax, ipl, ep_day, sol_rd, uptake
+      use hru_module, only : hru, ihru, epmax, ipl, ep_day, uptake
       use soil_module
       use plant_module
       
@@ -76,20 +74,6 @@
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
 
-      !select case (pldb(idp)%idc)
-        !case (1, 2, 4, 5)
-      if (pldb(idp)%idc == 'warm_annual_legume' .or. pldb(idp)%idc == 'cold_annual_legume' .or.  &
-          pldb(idp)%idc == 'warm_annual' .or. pldb(idp)%idc == 'cold_annual') then
-            sol_rd = 2.5 * pcom(j)%plcur(ipl)%phuacc * soil(j)%zmx
-            if (sol_rd > soil(j)%zmx) sol_rd = soil(j)%zmx
-            if (sol_rd < 10.) sol_rd = 10.
-        !case default
-      else
-          sol_rd = soil(j)%zmx
-      end if
-
-	  stsol_rd(j) = sol_rd ! cole armen 26 Feb
-
       if (epmax(ipl) <= 0.01) then
         pcom(j)%plstr(ipl)%strsw = 1.
       else
@@ -117,17 +101,17 @@
         do k = 1, soil(j)%nly
           if (ir > 0) exit
 
-          if (sol_rd <= soil(j)%phys(k)%d) then
-            gx = sol_rd
+          if (pcom(j)%plg(ipl)%root_dep <= soil(j)%phys(k)%d) then
+            gx = pcom(j)%plg(ipl)%root_dep
             ir = k
           else
             gx = soil(j)%phys(k)%d
           end if
 
-          if (sol_rd <= 0.01) then
+          if (pcom(j)%plg(ipl)%root_dep <= 0.01) then
             sum = epmax(ipl) / uptake%water_norm
           else
-            sum = epmax(ipl) * (1. - Exp(-uptake%water_dis * gx / sol_rd)) / uptake%water_norm
+            sum = epmax(ipl) * (1. - Exp(-uptake%water_dis * gx / pcom(j)%plg(ipl)%root_dep)) / uptake%water_norm
           end if
 
           wuse = sum - sump + yy * hru(j)%hyd%epco

@@ -2,8 +2,8 @@
     
       implicit none
       
-      integer :: ppet_ndays = 30                                !none          |number of days for precip-pet sum
-      integer :: ppet_mce                                       !none          |current element in precip-pet linked list
+      integer :: ppet_ndays = 30                                !none          |number of days for precip/pet sum
+      integer :: ppet_mce = 0                                   !none          |current element in precip/pet linked list
       real, dimension (:,:), allocatable :: frad                !none          |fraction of solar radiation occuring 
                                                                 !              |during hour in day in HRU
       real, dimension (:,:), allocatable :: wgncur              !none          |parameter to predict the impact of precip on
@@ -53,19 +53,20 @@
         real :: pcpdays = 0.                    !!               |days of precip in year
         real :: tmp_an = 0.                     !!               |average annual air temperature
         real :: pcp_an = 0.                     !!               |average annual precipitation
-        real :: p_minus_pet_sum = 0.            !!               |30 day sum of PRECIP - PET (mm)
+        real :: precip_sum = 0.                 !!               |30 day sum of PET (mm)
+        real :: pet_sum = 0.                    !!               |30 day sum of PRECIP (mm)
         real, dimension (12) :: pcf = 0.        !!               |normalization factor for precipitation
         real, dimension (12) :: amp_r = 0.      !!               |alpha factor for rain(mo max 0.5h rain)
         real, dimension (12) :: pet             !!               |average monthly PET (mm)
-        real, dimension (12) :: precip_pet      !!               |average monthly PRECIP - PET (mm)
         integer, dimension (:), allocatable :: mne_ppet          !!none          |next element in precip-pet linked list
-        real, dimension (:), allocatable :: p_minus_pet          !!mm            |precip minus pet
+        real, dimension (:), allocatable :: precip_mce           !!mm            |precip on current day of 30 day list 
+        real, dimension (:), allocatable :: pet_mce              !!mm            |pet on current day of 30 day list 
         integer :: ireg = 0                     !!               |annual precip category-1 <= 508 mm; 2 > 508 and <= 1016 mm; 3 > 1016 mm/yr
       end type wgn_parms
       type (wgn_parms), dimension(:),allocatable :: wgn_pms
           
       type wind_direction_db
-        character(len=16) :: name = 'default-uniform'
+        character(len=16) :: name = "default-uniform"
         real, dimension (12,16) :: dir = 1.     !! 1-16         |avg monthly wind direstion
       end type wind_direction_db
       type (wind_direction_db), dimension(:),allocatable :: wnd_dir
@@ -86,7 +87,7 @@
         real :: daylength                                   !! hr           |day length
         real :: precip_half_hr                              !! frac         |fraction of total rainfall on day that occurs
                                                             !!              |during 0.5h highest intensity rainfall
-        character(len=3) :: precip_prior_day = 'dry'        !!              |'dry' or 'wet'
+        character(len=3) :: precip_prior_day = "dry"        !!              |"dry" or "wet"
         real, dimension(:), allocatable :: ts               !! mm           |subdaily precip
       end type weather_daily
             
@@ -128,11 +129,20 @@
          
       type climate_measured_data
         character (len=50) :: filename
-        real :: lat                   !! latitude of raingage         
-        real :: long                  !! longitude of raingage
-        real :: elev                  !! elevation of raingage
-        integer :: nbyr               !! number of years of daily rainfall
-        integer :: tstep              !! timestep of precipitation
+        real :: lat                     !! latitude of raingage         
+        real :: long                    !! longitude of raingage
+        real :: elev                    !! elevation of raingage
+        integer :: nbyr                 !! number of years of daily rainfall
+        integer :: tstep                !! timestep of precipitation  
+        
+        integer :: days_gen = 0         !! number of missing days - generated 
+        integer :: yrs_start = 1        !! number of years of simulation before record starts
+        
+        integer :: start_day            !! daily precip start julian day
+        integer :: start_yr             !! daily precip start year
+        integer :: end_day              !! daily precip end julian day
+        integer :: end_yr               !! daily precip end year
+        
         real, dimension (:,:), allocatable :: ts
         real, dimension (:,:), allocatable :: ts2
         real, dimension (:,:,:), allocatable :: tss

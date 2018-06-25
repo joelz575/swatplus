@@ -2,8 +2,8 @@
     
       implicit none 
 
-      integer :: isub                              !none            |counter
-      integer :: msub_db                           !                |
+      integer :: iru                               !none            |counter
+      integer :: mru_db                            !                |
       real, dimension (:), allocatable :: ru_tc    !                |    
       real, dimension (:), allocatable :: ru_n     !                | 
       real, dimension (:), allocatable :: hyd_flo  !                |

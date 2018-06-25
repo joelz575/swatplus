@@ -19,7 +19,7 @@
       
       !! allocate and initialize bacteria in soil and plant
       inquire (file=in_init%path_soil,exist=i_exist)
-      if (i_exist == 0 .or. in_init%path_soil == 'null') then
+      if (i_exist == 0 .or. in_init%path_soil == "null") then
          allocate (bact(0:0))
          db_mx%bactdb = 0
       else

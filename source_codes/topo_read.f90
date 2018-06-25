@@ -22,7 +22,7 @@
       
       !! read all data from topo.dat
       inquire (file=in_hyd%topogr_hyd, exist=i_exist)
-      if (i_exist == 0 .or. in_hyd%topogr_hyd == 'null') then
+      if (i_exist == 0 .or. in_hyd%topogr_hyd == "null") then
         allocate (topo_db(0:0))
       else
         do

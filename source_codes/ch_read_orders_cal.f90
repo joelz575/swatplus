@@ -32,7 +32,7 @@
       mcal = 0
  
       inquire (file=in_chg%ch_orders_cal, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%ch_orders_cal == 'null') then
+      if (i_exist == 0 .or. in_chg%ch_orders_cal == "null") then
            allocate (chcal(0:0))	      
       else 
       do
@@ -127,7 +127,7 @@
                 ielem = ccu_reg(i)%num(ihru)
                 !switch %num from element number to hru number
                 ccu_cal(i)%num(ihru) = ccu_elem(ielem)%obtypno
-                ccu_cal(i)%hru_ha(ihru) = ccu_elem(ielem)%sub_frac * ccu_cal(i)%area_ha
+                ccu_cal(i)%hru_ha(ihru) = ccu_elem(ielem)%ru_frac * ccu_cal(i)%area_ha
               end do
             end if
         

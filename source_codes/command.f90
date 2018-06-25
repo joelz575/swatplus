@@ -37,20 +37,20 @@
       real :: hin_s                   !none          |inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
       real :: hin                     !none          |inflow hydrograph for surface runon - sum of all inflow hyds
       integer :: isd                  !none          |counter
-      integer :: jres                 !none          |reservoir number
+      integer :: ires                 !none          |reservoir number
       integer :: irec                 !              |
       integer :: iout                 !none          |counter
       integer :: ihtyp                !              |
       integer :: iaq                  !none          |counter
       integer :: j                    !none          |counter
-      integer :: isub_in              !              |
+      integer :: iru_in               !              |
       integer :: ihyd                 !              |
       integer :: idr                  !              |
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
         isur_in = 0
-        isub_in = 0
+        iru_in = 0
         !subdaily - set current day of hydrograph
         if (time%step > 0) then
           !update current day of hydrograph for the object
@@ -74,20 +74,20 @@
             !if routing over an hru, it can only be in one subbasin
             !element type should be an hru if routing over - if element is a channel use incoming directly
             !CEAP uses representative 1st order streams as elements to define upland sub
-            if (ob(icmd)%subs_tot > 0) then
+            if (ob(icmd)%ru_tot > 0) then
               if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "hru_lte") then
                 ielem = ob(icmd)%elem
-                isub = ob(icmd)%sub(1)                          !can only be in one subbasin if routing over
-                isub = sp_ob1%sub + isub - 1                    !object number of the subbasin
-                iob = ob(isub)%obj_in(in)
-                ihyd = ob(isub)%ihtyp_in(in)
-                ht1 = ob(isub)%frac_in(in) * ob(iob)%hd(ihyd)   !fraction of hydrograph
+                iru = ob(icmd)%ru(1)                          !can only be in one subbasin if routing over
+                iru = sp_ob1%ru + iru - 1                    !object number of the subbasin
+                iob = ob(iru)%obj_in(in)
+                ihyd = ob(iru)%ihtyp_in(in)
+                ht1 = ob(iru)%frac_in(in) * ob(iob)%hd(ihyd)   !fraction of hydrograph
                 ht1 = ru_elem(ielem)%frac * ht1                 !fraction of hru in subbasin
                 !fraction of hru in subbasin for constituents
                 if (cs_db%num_tot_con > 0) then
                   call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
                 end if
-                ob(isub)%hin_d(in) = ob(isub)%hin_d(in) + ht1
+                ob(iru)%hin_d(in) = ob(iru)%hin_d(in) + ht1
               else
                 iob = ob(icmd)%obj_in(in)
                 ihyd = ob(icmd)%ihtyp_in(in)
@@ -118,7 +118,7 @@
                 hcs2 = obcs(icmd)%hin_s
                 call constit_hyd_add
               end if
-              isub_in = 1
+              iru_in = 1
             else
               ob(icmd)%hin = ob(icmd)%hin + ht1
               !add constituents
@@ -142,7 +142,7 @@
             !  ht1 = ob(icmd)%hin
             !  call hydin_output (in)
             !end if
-            !if (isub_in == 1) then
+            !if (iru_in == 1) then
             !  ht1 = ob(icmd)%hin_s
             !  call hydin_output (in)
             !end if
@@ -150,12 +150,12 @@
           end do    ! in = 1, ob(icmd)%rcv_tot
 
           !convert to per area basis
-          if (ob(icmd)%typ == "sub" .or. ob(icmd)%typ == "hru") then  !only convert hru and subbasin hyds for routing
-            if (ob(icmd)%subs_tot > 0) then
+          if (ob(icmd)%typ == "ru" .or. ob(icmd)%typ == "hru") then  !only convert hru and subbasin hyds for routing
+            if (ob(icmd)%ru_tot > 0) then
               !object is in a subbasin
               ielem = ob(icmd)%elem
-              isub = ob(icmd)%sub(1)  !can only be in one subbasin if routing over
-              conv = 100. * ru(isub)%da_km2 * ru_elem(ielem)%frac
+              iru = ob(icmd)%ru(1)  !can only be in one subbasin if routing over
+              conv = 100. * ru(iru)%da_km2 * ru_elem(ielem)%frac
             else
               conv = ob(icmd)%area_ha
             end if
@@ -178,8 +178,8 @@
             call hru_lte_control (isd)
             !if (ob(icmd)%rcv_tot > 0) call hyddep_output
             
-          case ("sub")   ! subbasin
-            isub = ob(icmd)%num
+          case ("ru")   ! subbasin
+            iru = ob(icmd)%num
             call ru_control
             if (ob(icmd)%rcv_tot > 0) call hyddep_output
 
@@ -199,9 +199,9 @@
             end if
                         
           case ("res")   ! reservoir
-            jres = ob(icmd)%num
+            ires = ob(icmd)%num
             if (ob(icmd)%rcv_tot > 0) then
-              call res_control (jres)
+              call res_control (ires)
             end if 
               
           case ("recall")   ! recall hydrograph
@@ -236,7 +236,7 @@
             call sd_channel_control
             
           end select
-        if (pco%fdcout == 'y') call flow_dur_curve
+        if (pco%fdcout == "y") call flow_dur_curve
         
         !print all outflow hydrographs
         if (ob(icmd)%src_tot > 0) then
@@ -261,11 +261,6 @@
         
         do ihru = 1, sp_ob%hru
           call hru_output (ihru)
-          if (hru(ihru)%surfstor > 0) then
-            if (time%yrs > pco%nyskip) then 
-              call wetland_output(ihru)
-            end if 
-          end if
         end do        
         
         do iaq = 1, sp_ob%aqu
@@ -284,16 +279,20 @@
           call reservoir_output(j)
         end do 
         
-        do j = 1, sp_ob%sub
+        do j = 1, sp_ob%ru
           call ru_output(j)
         end do
         
         do j = 1, sp_ob%recall
           call recall_output (j)
         end do
+        
+        do ires = 1, db_mx%wet_dat
+          call wetland_output(ires)
+        end do
 
         
-        call hydin_output   !if all output is no, then don't call
+        call hydin_output   !if all output is no, then don"t call
         if (db_mx%lsu_elem > 0) call basin_output
         if (db_mx%lsu_out > 0) call lsu_output
         if (db_mx%aqu_elem > 0) call basin_aquifer_output

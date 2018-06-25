@@ -20,7 +20,7 @@
       
       !! read harvest only operations
       inquire (file=in_ops%harv_ops, exist=i_exist)
-      if (i_exist == 0 .or. in_ops%harv_ops == 'null') then
+      if (i_exist == 0 .or. in_ops%harv_ops == "null") then
         allocate (harvop_db(0:0))
       else
       do 

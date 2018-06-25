@@ -24,7 +24,7 @@
 
       !! read all measured daily solar radiation data
       inquire (file=in_cli%slr_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%slr_cli == 'null') then
+      if (i_exist == 0 .or. in_cli%slr_cli == "null") then
         allocate (slr(0:0))
         allocate (slr_n(0))
       else
@@ -60,7 +60,7 @@
         if (eof < 0) exit
         
 !!!!!weather path code
-       if (in_path_slr%slr == 'null') then
+       if (in_path_slr%slr == "null") then
          open (108,file = slr(i)%filename)
        else
         open (108,file = TRIM(ADJUSTL(in_path_slr%slr))//slr(i)%filename)
@@ -77,13 +77,29 @@
        
         ! the precip time step has to be the same as time%step
         allocate (slr(i)%ts(366,slr(i)%nbyr))
+        
+        ! read and save start jd and yr
+        read (108,*,iostat=eof) iyr, istep
+        
+        slr(i)%start_day = istep
+        slr(i)%start_yr = iyr
 
+      if (iyr > time%yrc) then
+        slr(i)%yrs_start = iyr - time%yrc
+      else
         ! read and store entire year
-       do 
+        slr(i)%yrs_start = 0
+      end if
+      
+        do 
          read (108,*,iostat=eof) iyr, istep, solrad
          if (eof < 0) exit
          if (iyr == time%yrc) exit
-       end do
+        end do
+
+       ! save end jd and year
+       slr(i)%end_day = istep
+       slr(i)%end_yr = iyr
        
        backspace (108)
        iyr_prev = iyr

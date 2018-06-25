@@ -17,7 +17,7 @@
       imax = 0
 
       inquire (file=in_parmdb%septic_sep, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%septic_sep == 'null') then
+      if (i_exist == 0 .or. in_parmdb%septic_sep == "null") then
           allocate (sepdb(0:0))
       else
       do

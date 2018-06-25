@@ -18,7 +18,7 @@
         allocate (soil_lte(12))
         
         do
-          open (107,file='soils_lte.sol')
+          open (107,file="soils_lte.sol")
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
           read (107,*,iostat=eof) header

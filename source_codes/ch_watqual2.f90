@@ -208,7 +208,6 @@
       integer :: iwst          !none          |counter
       integer :: iwgn          !units         |description
       real :: soxy             !mg O2/L       |saturation concetration of dissolved oxygen
-      real :: wtrin            !m^3 H2O       |water flowing into reach on day 
       real :: chlin            !mg chl-a/L    |chlorophyll-a concentration in inflow
       real :: algin            !mg alg/L      |algal biomass concentration in inflow
       real :: orgnin           !mg N/L        |organic N concentration in inflow
@@ -329,7 +328,7 @@
          o2con  = ch(jrch)%rch_dox
 	   wtmp = ch(jrch)%wattemp
 
-!	write(104,*) 't',jrch,disoxin, wtrin, rch_dox(jrch)	
+!	write(104,*) "t",jrch,disoxin, wtrin, rch_dox(jrch)	
 !         o2con = (disoxin * wtrin + rch_dox(jrch) * rchwtr) / wtrtot
 
          !! calculate temperature in stream
@@ -361,12 +360,12 @@
         !! calculate nitrification rate correction factor for low
         !! oxygen QUAL2E equation III-21
         cordo = 0.
-!       write(104, *) o2con, 'o'
+!       write(104, *) o2con, "o"
 	o2con2=o2con
 	if (o2con2.le.0.1) o2con2=0.1
 	if (o2con2.gt.30.) o2con2=30.
         cordo = 1.0 - Exp(-0.6 * o2con2)
-!       write(104, *) cordo, 'cordo'
+!       write(104, *) cordo, "cordo"
 	  	if (o2con.le.0.001) o2con=0.001
 	if (o2con.gt.30.) o2con=30.
         cordo = 1.0 - Exp(-0.6 * o2con)

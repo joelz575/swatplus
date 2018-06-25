@@ -107,7 +107,6 @@
                          !              |irrigation from reach
       real :: vol        !m^3 H2O       |volume of water applied in irrigation 
                          !              |operation
-      real :: wtrin      !m^3 H2O       |water outflow from reach prior to subtracting
                          !              |irrigation diversions
       real :: sq_rto     !units         |description 
       real :: flag       !none          |irrigation flag:

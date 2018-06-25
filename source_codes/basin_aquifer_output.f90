@@ -24,11 +24,11 @@
         baqu_m = baqu_m + baqu_d
         
         !! daily print - AQUIFER
-         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
-          if (pco%aqu_bsn%d == 'y') then
-            write (2090,100) time%day, time%yrc, iaq, '     1', bsn%name, baqu_d
-            if (pco%csvout == 'y') then
-              write (2094,'(*(G0.3,:","))') time%day, time%yrc, iaq, '     1', bsn%name, baqu_d
+         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
+          if (pco%aqu_bsn%d == "y") then
+            write (2090,100) time%day, time%mo, time%day_mo, time%yrc, iaq, "     1", bsn%name, baqu_d
+            if (pco%csvout == "y") then
+              write (2094,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, "     1", bsn%name, baqu_d
             end if
           end if
         end if
@@ -40,10 +40,10 @@
           baqu_m%hgt = baqu_m%hgt / const
           baqu_m%no3 = baqu_m%no3 / const
           baqu_y = baqu_y + baqu_m
-          if (pco%aqu_bsn%d == 'y') then
-            write (2091,100) time%mo, time%yrc, iaq, '     1', bsn%name, baqu_m
-            if (pco%csvout == 'y') then
-              write (2095,'(*(G0.3,:","))') time%mo, time%yrc, iaq, '     1', bsn%name, baqu_m
+          if (pco%aqu_bsn%d == "y") then
+            write (2091,100) time%day, time%mo, time%day_mo, time%yrc, iaq, "     1", bsn%name, baqu_m
+            if (pco%csvout == "y") then
+              write (2095,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, "     1", bsn%name, baqu_m
             endif
           end if
           baqu_m = aquz
@@ -55,10 +55,10 @@
           baqu_y%hgt = baqu_y%hgt / 12.
           baqu_y%no3 = baqu_y%no3 / 12.
           baqu_a = baqu_a + baqu_y
-          if (pco%aqu_bsn%y == 'y') then
-            write (2092,102) '     0', time%yrc, iaq, '     1', bsn%name, baqu_y
-            if (pco%csvout == 'y') then
-              write (2096,'(*(G0.3,:","))') '     0', time%yrc, iaq, '     1', bsn%name, baqu_y 
+          if (pco%aqu_bsn%y == "y") then
+            write (2092,102) time%day, time%mo, time%day_mo, time%yrc, iaq, "     1", bsn%name, baqu_y
+            if (pco%csvout == "y") then
+              write (2096,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, "     1", bsn%name, baqu_y 
             end if
           end if
           !! zero yearly variables        
@@ -66,17 +66,17 @@
         end if
         
       !! average annual print - AQUIFER
-      if (time%end_sim == 1 .and. pco%aqu_bsn%a == 'y') then
+      if (time%end_sim == 1 .and. pco%aqu_bsn%a == "y") then
         baqu_a = baqu_a / time%yrs_prt
-        write (2093,102) '     0', time%yrs, iaq, '     1', bsn%name, baqu_a
-        if (pco%csvout == 'y') then 
-          write (2097,'(*(G0.3,:","))') '     0', time%yrs, iaq, '     1', bsn%name, baqu_a 
+        write (2093,102) time%day, time%mo, time%day_mo, time%yrc, iaq, "     1", bsn%name, baqu_a
+        if (pco%csvout == "y") then 
+          write (2097,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, "     1", bsn%name, baqu_a 
         end if 
       end if
       
       return
       
-100   format (2i6,i8,2x,a,2x,a16,17f15.3)
-102   format (a6,i6,i8,2x,a,2x,a16,17f15.3)
+100   format (4i6,i8,2x,a,2x,a16,17f15.3)
+102   format (4i6,i8,2x,a,2x,a16,17f15.3)
        
       end subroutine basin_aquifer_output

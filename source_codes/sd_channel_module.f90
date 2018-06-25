@@ -90,27 +90,29 @@
       type (sd_ch_output) :: chsdz
             
       type sdch_header
-          character (len=6) :: yrs =          ' time '
-          character (len=6) :: yrc =          ' year '
-          character (len=8) :: isd =        '   unit '
-          character (len=8) :: id =         ' gis_id '           
-          character (len=16) :: name =     ' name              '        
-          character(len=15) :: flo =       '    floin_m^3/s'        ! (m^3/s)
-          character(len=15) :: peakr =     '       pr_m^3/s'        ! (m^3/s)
-          character(len=15) :: sed_in =    '     sedin_tons'        ! (tons)
-          character(len=15) :: sed_out=    '    sedout_tons'        ! (tons)
-          character(len=15) :: washld =    '    washld_tons'        ! (tons)
-          character(len=15) :: bedld =     '     bedld_tons'        ! (tons)
-          character(len=15) :: dep =       '       dep_tons'        ! (tons)
-          character(len=15) :: deg_btm =   '   deg_btm_tons'        ! (tons)
-          character(len=15) :: deg_bank =  '  deg_bank_tons'        ! (tons)
-          character(len=15) :: hc_sed =    '     hcsed_tons'        ! (tons)
-          character(len=15) :: width =     '        width_m'        ! (m)
-          character(len=15) :: depth =     '        depth_m'        ! (m)
-          character(len=15) :: slope =     '      slope_m/m'        ! (m/m)
-          character(len=15) :: deg_btm_m = '      deg_btm_m'        ! (m)
-          character(len=15) :: deg_bank_m ='     deg_bank_m'        ! (m)
-          character(len=15) :: hc_len =    '        hclen_m'        ! (m)
+          character (len=6) :: day =      "  jday"
+          character (len=6) :: mo =       "   mon"
+          character (len=6) :: day_mo =   "   day"
+          character (len=6) :: yrc =      "    yr"
+          character (len=8) :: isd =        "   unit "
+          character (len=8) :: id =         " gis_id "           
+          character (len=16) :: name =     " name              "        
+          character(len=15) :: flo =       "    floin_m^3/s"        ! (m^3/s)
+          character(len=15) :: peakr =     "       pr_m^3/s"        ! (m^3/s)
+          character(len=15) :: sed_in =    "     sedin_tons"        ! (tons)
+          character(len=15) :: sed_out=    "    sedout_tons"        ! (tons)
+          character(len=15) :: washld =    "    washld_tons"        ! (tons)
+          character(len=15) :: bedld =     "     bedld_tons"        ! (tons)
+          character(len=15) :: dep =       "       dep_tons"        ! (tons)
+          character(len=15) :: deg_btm =   "   deg_btm_tons"        ! (tons)
+          character(len=15) :: deg_bank =  "  deg_bank_tons"        ! (tons)
+          character(len=15) :: hc_sed =    "     hcsed_tons"        ! (tons)
+          character(len=15) :: width =     "        width_m"        ! (m)
+          character(len=15) :: depth =     "        depth_m"        ! (m)
+          character(len=15) :: slope =     "      slope_m/m"        ! (m/m)
+          character(len=15) :: deg_btm_m = "      deg_btm_m"        ! (m)
+          character(len=15) :: deg_bank_m ="     deg_bank_m"        ! (m)
+          character(len=15) :: hc_len =    "        hclen_m"        ! (m)
       end type sdch_header
       type (sdch_header) :: sdch_hdr
      

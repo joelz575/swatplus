@@ -9,7 +9,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_li(:)    |km            |initial length of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_n(2,:)   |none          |Manning"s "n" value for the main channel
 !!    ch_s(2,:)   |m/m           |average slope of main channel
 !!    ch_si(:)    |m/m           |initial slope of main channel
 !!    ch_wdr(:)   |m/m           |channel width to depth ratio
@@ -51,7 +51,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 !!	Modification to the original SWAT sediment routine
 !!	By Balaji Narasimhan and Peter Allen
-!!    Yang's Sand and gravel equation combined with Einsteins deposition equation
+!!    Yang"s Sand and gravel equation combined with Einsteins deposition equation
 !!    Plus particle size tracking.
 
       use basin_module
@@ -197,7 +197,7 @@
       tbase = ch_hyd(jhyd)%l * 1000. / (3600. * 24. * vc)
       if (tbase > 1.) tbase = 1.
 
-!! JIMMY'S NEW IMPROVED METHOD for sediment transport
+!! JIMMY"S NEW IMPROVED METHOD for sediment transport
       cyin = 0.
       cych = 0.
       depnet = 0.

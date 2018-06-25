@@ -50,7 +50,7 @@
       real :: smfac      !              |
       real :: smleb      !mm H2O        |amount of snow melt in elevation band on 
                          !              |current day
-      real :: xx         !none          |ratio of amount of current day's snow water
+      real :: xx         !none          |ratio of amount of current day"s snow water
                          !              |content to the minimum amount needed to
                          !              |cover ground completely 
       real :: snocov     !none          |fraction of HRU area covered with snow

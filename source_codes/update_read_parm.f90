@@ -54,7 +54,7 @@
         
       !!read parameter change values for calibration
       inquire (file=in_chg%cal_upd, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%cal_upd == 'null') then
+      if (i_exist == 0 .or. in_chg%cal_upd == "null") then
         allocate (cal_upd(0:0))
       else
       do
@@ -95,31 +95,31 @@
           if (cal_upd(i)%num_tot == 0) then
             ipar = cal_upd(i)%num_db
             select case (cal_parms(ipar)%ob_typ)
-            case ('hru')
+            case ("hru")
               cal_upd(i)%num_elem = sp_ob%hru
-            case ('lyr')
+            case ("lyr")
               cal_upd(i)%num_elem = sp_ob%hru
-            case ('sol')
+            case ("sol")
               cal_upd(i)%num_elem = sp_ob%hru
-            case ('hlt')
+            case ("hlt")
               cal_upd(i)%num_elem = sp_ob%hru_lte
-            case ('sub')
-              cal_upd(i)%num_elem = sp_ob%sub
-            case ('gw')
+            case ("ru")
+              cal_upd(i)%num_elem = sp_ob%ru
+            case ("gw")
               cal_upd(i)%num_elem = sp_ob%aqu
-            case ('rte')
+            case ("rte")
               cal_upd(i)%num_elem = sp_ob%chan
-            case ('swq')
+            case ("swq")
               cal_upd(i)%num_elem = sp_ob%chan
-            case ('res')
+            case ("res")
               cal_upd(i)%num_elem = sp_ob%res
-            case ('sdc')
+            case ("sdc")
               cal_upd(i)%num_elem = sp_ob%chandeg
-            case ('bsn')
+            case ("bsn")
               cal_upd(i)%num_elem = 1
-            case ('pcp')
+            case ("pcp")
               cal_upd(i)%num_elem = db_mx%pcpfiles
-            case ('tmp')
+            case ("tmp")
               cal_upd(i)%num_elem = db_mx%tmpfiles
             end select
             

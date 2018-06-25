@@ -3,7 +3,7 @@
       implicit none
    
        type routing_nut_data         ! used for 2-stage ditch in chandeg and overland flow
-        character(len=16) :: name = 'Drainage_Ditch'
+        character(len=16) :: name = "Drainage_Ditch"
         real :: len_inc = 250       ! m               |segment length for reduction
         real :: no3_slp = 0.86      ! (mgN/m2/h)/ppm  |slope of denitrification (y-axis) and inflow no3 (x-axis)
         real :: no3_int = 0.17      ! mgN/m2/h        |intercept of denitrification rate equation
@@ -87,7 +87,7 @@
         real :: d = .5           ! m             |average depth of main channel
         real :: s = .01          ! m/m           |average slope of main channel
         real :: l = 0.1          ! km            |main channel length in subbasin
-        real :: n = .05          ! none          |Manning's "n" value for the main channel
+        real :: n = .05          ! none          |Manning"s "n" value for the main channel
         real :: k = 0.01         ! mm/hr         |effective hydraulic conductivity of main channel alluvium
         real :: wdr = 6.         ! m/m           |channel width to depth ratio
         real :: alpha_bnk = 0.03 ! days          |alpha factor for bank storage recession curve
@@ -99,7 +99,7 @@
         character(len=13) :: name
         integer :: eqn  = 0      !               |sediment routine methods: 
                                    !                   0 = original SWAT method
-                                   !                   1 = Bagnold's
+                                   !                   1 = Bagnold"s
                                    !                   2 = Kodatie
                                    !                   3 = Molinas WU
                                    !                   4 = Yang

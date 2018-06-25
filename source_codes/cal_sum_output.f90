@@ -19,8 +19,8 @@
       
       
         !! sum landscape output for soft data calibration
-        if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hru == 'y') then
-          !calibrate hru's
+        if (cal_codes%hyd_hru == "y" .or. cal_codes%hyd_hru == "y") then
+          !calibrate hru"s
           do ireg = 1, db_mx%lsu_reg
             do ilu = 1, region(ireg)%nlum
               lscal(ireg)%lum(ilu)%ha = 0.
@@ -60,8 +60,8 @@
           end do    !reg
         end if
         
-        if (cal_codes%hyd_hrul == 'y') then
-          !calibrate hru_lte's
+        if (cal_codes%hyd_hrul == "y") then
+          !calibrate hru_lte"s
           do ireg = 1, db_mx%lsu_reg
             do ilu = 1, region(ireg)%nlum
               lscalt(ireg)%lum(ilu)%ha = 0.
@@ -102,7 +102,7 @@
         end if
           
         !! sum landscape output for plant soft data calibration
-        if (cal_codes%plt == 'y') then
+        if (cal_codes%plt == "y") then
           !calibrate plnt growth
           do ireg = 1, db_mx%plcal_reg
             do ilu = 1, plcal(ireg)%lum_num
@@ -143,7 +143,7 @@
         end if
 
         !! sum channel output for soft data calibration
-        if (cal_codes%chsed == 'y' .and. cal_codes%sed == 'n' .and. cal_codes%plt == 'n' .and. cal_codes%hyd_hru == 'n' .and. cal_codes%hyd_hrul == 'n') then
+        if (cal_codes%chsed == "y" .and. cal_codes%sed == "n" .and. cal_codes%plt == "n" .and. cal_codes%hyd_hru == "n" .and. cal_codes%hyd_hrul == "n") then
           do ireg = 1, db_mx%ch_reg
             do iord = 1, chcal(ireg)%ord_num
               chcal(ireg)%ord(iord)%length = 0.

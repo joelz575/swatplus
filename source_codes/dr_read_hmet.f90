@@ -15,7 +15,7 @@
       
       !read all delivery ratio data
       inquire (file=in_delr%hmet, exist=i_exist)
-      if (i_exist /= 0 .or. in_delr%hmet /= 'null') then
+      if (i_exist /= 0 .or. in_delr%hmet /= "null") then
         do
           open (107,file=in_delr%hmet)
           read (107,*,iostat=eof) titldum

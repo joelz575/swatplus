@@ -27,7 +27,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ MODULES USED ~ ~ ~
-!!    bac_ls_parms   |type bacteria_db - contains  'bac_read_lsparms.f'
+!!    bac_ls_parms   |type bacteria_db - contains  "bac_read_lsparms.f"
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -35,7 +35,7 @@
       
       implicit none
       
-      integer :: ibtyp                  !none          |bacteria type from 'bact_parms.dat'
+      integer :: ibtyp                  !none          |bacteria type from "bact_parms.dat"
       real :: sol_bacsol                !# cfu/m^2     |soluble bacteria in soil layer
       real ::sol_bacsor                 !# cfu/m^2     |sorbed bacteria in soil layer
       real ::surf_ro                    !              |

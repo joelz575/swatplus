@@ -41,12 +41,12 @@
       mchg_sched = 0
         
       !!read parameter change values for calibration
-      inquire (file='conditional.upd', exist=i_exist)
-      if (i_exist == 0 .or. 'conditional.upd' == 'null') then
+      inquire (file="conditional.upd", exist=i_exist)
+      if (i_exist == 0 .or. "conditional.upd" == "null") then
         allocate (upd_cond(0:0))
       else
       do
-        open (107,file='conditional.upd')
+        open (107,file="conditional.upd")
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mchg_sched

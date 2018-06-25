@@ -21,7 +21,7 @@
 
        !! read shallow aquifer property data from aquifer.aqu
        inquire (file=in_aqu%aqu, exist=i_exist)
-       if (i_exist == 0 .or. in_aqu%aqu == 'null') then
+       if (i_exist == 0 .or. in_aqu%aqu == "null") then
             allocate (aqudb(0:0))
             allocate (aqu_prm(0:0))
           else

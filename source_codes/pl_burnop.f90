@@ -41,7 +41,7 @@
       pburn = pcom(ihru)%plm(ipl)%pmass * fr_burn
       soil1(j)%hp(1)%p = soil1(j)%hp(1)%p + pburn
       pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - pburn
-      soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd * fr_burn
+      rsd1(j)%tot_com%m = rsd1(j)%tot_com%m * fr_burn
       rsd1(j)%tot(1)%n = rsd1(j)%tot(1)%n * fr_burn
       soil1(jj)%hs(1)%n = soil1(jj)%hs(1)%n * fr_burn
       soil1(j)%hp(1)%n = soil1(j)%hp(1)%n* fr_burn
@@ -58,7 +58,7 @@
           rsd1(j)%lig%m = rsd1(j)%lig%m * fr_burn  
 
           cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + pcom(j)%plm(ipl)%mass * (1. - fr_burn)
-          cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + soil(j)%ly(1)%rsd * (1. - fr_burn)  
+          cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + rsd1(j)%tot_com%m * (1. - fr_burn)  
       end if 
       !!insert new biomss by zhang
       !!=================================

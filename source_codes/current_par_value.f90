@@ -323,10 +323,6 @@
       case ("smxco")
         bsn_prm%smxco = chg_par(bsn_prm%smxco,                          &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-      case ("fixco")
-        bsn_prm%fixco = chg_par(bsn_prm%fixco,                          &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
 
 !!     SWQ
       case ("rs1")

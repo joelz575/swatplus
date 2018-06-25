@@ -33,7 +33,7 @@
       type grwaterway_operation
         character (len=13) :: name
         real :: grwat_i = 0.       !none          |On/off Flag for waterway simulation
-        real :: grwat_n = 0.       !none          |Mannings's n for grassed waterway
+        real :: grwat_n = 0.       !none          |Mannings"s n for grassed waterway
         real :: grwat_spcon = 0.   !none          |sediment transport coefficant defined by user
         real :: grwat_d = 0.       !m             |depth of Grassed waterway
         real :: grwat_w = 0.       !none          |width of grass waterway
@@ -82,8 +82,8 @@
       
       type chemical_application_operation
         character (len=16) :: name
-        character (len=16) :: form = ' '        !           |solid; liquid
-        character (len=16) :: op_typ = ' '      !           |operation type-spread; spray; inject; direct
+        character (len=16) :: form = " "        !           |solid; liquid
+        character (len=16) :: op_typ = " "      !           |operation type-spread; spray; inject; direct
         real :: app_eff = 0.                    !           |application efficiency
         real :: foliar_eff = 0.                 !           |foliar efficiency
         real :: inject_dep = 0.                 !mm         |injection depth
@@ -107,7 +107,7 @@
       
       type grazing_operation
         character (len=13) :: name
-        character (len=13) :: fertnm = ' '
+        character (len=13) :: fertnm = " "
         real :: eat = 0.              !!(kg/ha)/day      |dry weight of biomass removed 
                                       !!                    by grazing daily
         real :: tramp = 0.            !!(kg/ha)/day      |dry weight of biomass removed

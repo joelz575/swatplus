@@ -21,7 +21,7 @@
       imax = 0
       
       inquire (file=in_parmdb%pest, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%pest == 'null') then
+      if (i_exist == 0 .or. in_parmdb%pest == "null") then
         allocate (pestdb(0:0))
         allocate (pstcp(0:0))
       else

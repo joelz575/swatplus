@@ -103,11 +103,11 @@
       aqu(iaq)%flo_ls = 0.
       do iout = 1, ob(iob_out)%src_tot
         select case (ob(iob_out)%obtyp_out(iout))
-        case ('cha')
+        case ("cha")
           aqu(iaq)%flo_cha = aqu(iaq)%flo_cha + aqu(iaq)%flo * ob(iob_out)%frac_out(iout)
-        case ('res')
+        case ("res")
           aqu(iaq)%flo_res = aqu(iaq)%flo_res + aqu(iaq)%flo * ob(iob_out)%frac_out(iout)
-        case ('aqu')
+        case ("aqu")
           aqu(iaq)%flo_ls = aqu(iaq)%flo_ls + aqu(iaq)%flo * ob(iob_out)%frac_out(iout)
         end select
       end do

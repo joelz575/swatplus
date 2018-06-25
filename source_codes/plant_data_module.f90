@@ -3,18 +3,16 @@
       implicit none    
      
       type plant_db
-        character(len=16) :: plantnm = 'frsd ' !N/A  |4 letter char code represents crop name
-        character(len=18) :: idc    !none               |crop/landcoover category
-                                    !                   |warm_annual_legume
-                                    !                   |cold_annual_legume
-                                    !                   |perennial_legume
-                                    !                   |warm_annual
-                                    !                   |cold_annual
-                                    !                   |perennial
-                                    !                   |trees
-                                    !                   |tropical_trees
-                                    !                   |tropical_grasses
-        real :: phu = 2500.        !heat units   |total number of heat units to bring crop to maturity
+        character(len=16) :: plantnm     !none              |4 letter char code represents crop name
+        character(len=18) :: typ         !none              |plant category
+                                         !                  |warm_annual
+                                         !                  |cold_annual
+                                         !                  |perennial
+        character(len=18) :: trig        !none              |phenology trigger
+                                         !                  |moisture_gro
+                                         !                  |temp_gro
+        real :: nfix_co                  !none              |n fixation coefficient (0.5 legume; 0 non-legume)
+        real :: phu = 2500.              !heat units        |total number of heat units to bring crop to maturity
         real :: bio_e = 15.0             !(kg/ha/(MJ/m**2)  |biomass-energy ratio
         real :: hvsti = 0.76             !(kg/ha)/(kg/ha)   |harvest index: crop yield/aboveground biomass
         real :: blai = 5.0               !none              |max (potential) leaf area index
@@ -27,6 +25,7 @@
         real :: laimx2 = 0.95            !none              |fraction of max leaf area index corresponding to the
                                          !                  |  2nd point on optimal leaf area development curve
         real :: dlai = 0.99              !none              |frac of growing season when leaf are declines
+        real :: dlai_rate = 1.           !none              |exponent that governs lai decline rate
         real :: chtmx = 6.0              !m                 |maximum canopy height
         real :: rdmx = 3.5               !m                 |maximum root depth
         real :: t_opt = 30.              !deg C             |optimal temp for plant growth
@@ -101,7 +100,7 @@
       type plant_init_db
         character(len=16) :: cpnm = "frsd"
         integer :: db_num = 1      !             |plant object
-        character(len=1) :: igro = 'y'    !      |land cover status
+        character(len=1) :: igro = "y"    !      |land cover status
                                           !      |n = no land cover growing
                                           !      |y = land cover growing
         real :: lai = 0.           !m**2/m**2    |leaf area index

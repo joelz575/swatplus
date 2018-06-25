@@ -76,7 +76,12 @@
         else
           if (init > 0) then
             deallocate (pcom(j)%plg) 
-            deallocate (pcom(j)%plm) 
+            deallocate (pcom(j)%plm)
+            deallocate (pcom(j)%ab_gr)
+            deallocate (pcom(j)%leaf)
+            deallocate (pcom(j)%stem)
+            deallocate (pcom(j)%seed)
+            deallocate (pcom(j)%root)
             deallocate (pcom(j)%plstr) 
             deallocate (pcom(j)%plcur) 
             deallocate (rsd1(j)%tot)
@@ -87,6 +92,11 @@
         ipl = pcom(j)%npl
         allocate (pcom(j)%plg(ipl)) 
         allocate (pcom(j)%plm(ipl)) 
+        allocate (pcom(j)%ab_gr(ipl))
+        allocate (pcom(j)%leaf(ipl))
+        allocate (pcom(j)%stem(ipl))
+        allocate (pcom(j)%seed(ipl))
+        allocate (pcom(j)%root(ipl))
         allocate (pcom(j)%plstr(ipl)) 
         allocate (pcom(j)%plcur(ipl)) 
         allocate (rsd1(j)%tot(ipl))
@@ -98,14 +108,14 @@
         do ipl = 1, pcom(j)%npl
           pcom(j)%plg(ipl)%cpnm = pcomdb(icom)%pl(ipl)%cpnm
           pcom(j)%plcur(ipl)%gro = pcomdb(icom)%pl(ipl)%igro
-          pcom(j)%plcur(ipl)%idorm = 'y'
+          pcom(j)%plcur(ipl)%idorm = "y"
           idp = pcomdb(icom)%pl(ipl)%db_num
           rsd1(j)%tot(ipl)%m = pcomdb(icom)%pl(ipl)%rsdin
           !set fresh organic pools--assume cn ratio = 57 and cp ratio = 300
           rsd1(j)%tot(ipl)%n = 0.43 * rsd1(j)%tot(ipl)%m / 57.
           rsd1(j)%tot(ipl)%p = 0.43 * rsd1(j)%tot(ipl)%m / 300.
           
-          ! set hu to maturity
+          ! set heat units to maturity
           if (pldb(idp)%phu > 1.e-6) then
             pcom(j)%plcur(ipl)%phumat = pldb(idp)%phu
           else
@@ -126,16 +136,16 @@
                 end if
               end if
             end do
-            ! set initial heat units and heat units to maturity
-            pcom(j)%plcur(ipl)%phuacc = pcomdb(icom)%pl(ipl)%phuacc * phutot
             pcom(j)%plcur(ipl)%phumat = .9 * phutot
             pcom(j)%plcur(ipl)%phumat = Max(500., pcom(j)%plcur(ipl)%phumat)
             
-         if (pldb(iplt)%idc == 'warm_annual_legume' .or. pldb(iplt)%idc == 'cold_annual_legume' .or.   &
-             pldb(iplt)%idc == 'warm_annual' .or. pldb(iplt)%idc == 'cold_annual') then
+         if (pldb(iplt)%typ == "warm_annual_legume" .or. pldb(iplt)%typ == "cold_annual_legume" .or.   &
+             pldb(iplt)%typ == "warm_annual" .or. pldb(iplt)%typ == "cold_annual") then
               pcom(j)%plcur(ipl)%phumat = Min(2000., pcom(j)%plcur(ipl)%phumat)
             end if
           end if
+          ! set initial heat units
+          pcom(j)%plcur(ipl)%phuacc = pcomdb(icom)%pl(ipl)%phuacc
           
           pcom(j)%plg(ipl)%lai = pcomdb(icom)%pl(ipl)%lai
           pcom(j)%plm(ipl)%mass = pcomdb(icom)%pl(ipl)%bioms
@@ -164,20 +174,26 @@
             pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai * xx / (xx +     &
                     exp(pldb(idp)%pop1 - pldb(idp)%pop2 * xx))
           end if
-        end do
-        end if
+          
+          !! initialize plant mass
+          call pl_root_gro
+          call pl_seed_gro
+          call pl_partition
+
+        end do   ! ipl loop
+        end if   ! icom > 0
 
         ilum = hru(ihru)%land_use_mgt
         !! set initial curve number parameters
         icn = lum_str(ilum)%cn_lu
         select case (sol(isol)%s%hydgrp)
-        case ('A')
+        case ("A")
           cn2(j) = cn(icn)%cn(1)
-        case ('B')
+        case ("B")
           cn2(j) = cn(icn)%cn(2)
-        case ('C')
+        case ("C")
           cn2(j) = cn(icn)%cn(3)
-        case ('D')
+        case ("D")
           cn2(j) = cn(icn)%cn(4)
         end select
  
@@ -210,24 +226,24 @@
         end do
         
         !! set parameters for structural land use/managment
-        if (lum(ilum)%tiledrain /= 'null') then
-          call structure_set_parms('tiledrain       ', lum_str(ilum)%tiledrain, j)
+        if (lum(ilum)%tiledrain /= "null") then
+          call structure_set_parms("tiledrain       ", lum_str(ilum)%tiledrain, j)
         end if
       
-        if (lum(ilum)%septic /= 'null') then
-          call structure_set_parms('septic          ', lum_str(ilum)%septic, j)
+        if (lum(ilum)%septic /= "null") then
+          call structure_set_parms("septic          ", lum_str(ilum)%septic, j)
         end if
         
-        if (lum(ilum)%fstrip /= 'null') then
-          call structure_set_parms('fstrip          ', lum_str(ilum)%fstrip, j)
+        if (lum(ilum)%fstrip /= "null") then
+          call structure_set_parms("fstrip          ", lum_str(ilum)%fstrip, j)
         end if
         
-        if (lum(ilum)%grassww /= 'null') then
-          call structure_set_parms('grassww         ', lum_str(ilum)%grassww, j)
+        if (lum(ilum)%grassww /= "null") then
+          call structure_set_parms("grassww         ", lum_str(ilum)%grassww, j)
         end if
 
-        if (lum(ilum)%bmpuser /= 'null') then
-          call structure_set_parms('bmpuser         ', lum_str(ilum)%bmpuser, j)
+        if (lum(ilum)%bmpuser /= "null") then
+          call structure_set_parms("bmpuser         ", lum_str(ilum)%bmpuser, j)
         end if
 
         !! set linked-list array for all hru's with unlimited source irrigation (hru_irr_nosrc)

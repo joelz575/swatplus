@@ -3,7 +3,7 @@
       implicit none
           
       type fertilizer_db
-        character(len=16) :: fertnm = ' '
+        character(len=16) :: fertnm = " "
         real :: fminn = 1.            !! kg minN/kg frt     |fract of fert which is mineral nit (NO3+NH3)
         real :: fminp = 0.            !! kg minN/kg frt     |frac of fert which is mineral phos
         real :: forgn = 0.            !! kg orgN/kg frt     |frac of fert which is org n

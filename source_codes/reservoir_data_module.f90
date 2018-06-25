@@ -73,9 +73,9 @@
       type wetland_hyd_data
         character(len=16) :: name = "default"
         real :: psa = 0.          !frac          |fraction of hru area at principal spillway (ie: when surface inlet riser flow starts)
-        real :: pvol = 0.         !mm            |average depth of water at principal spillway
+        real :: pdep = 0.         !mm            |average depth of water at principal spillway
         real :: esa = 0.          !frac          |fraction of hru area at emergency spillway (ie: when starts to spill into ditch)
-        real :: evol = 0.         !mm            |average depth of water at emergency spillway
+        real :: edep = 0.         !mm            |average depth of water at emergency spillway
         real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom
         real :: evrsv = .7        !none          |lake evap coeff
         real :: acoef = 1.        !none          |vol-surface area coefficient for hru impoundment
@@ -131,7 +131,7 @@
         character(len=16) :: name
         real :: num_steps = 24        !              |number of time steps in day for weir routing
         real :: c = 1.                !              |weir discharge coefficient 
-        real :: k = 150000.           !m^1/2 d^-1    |energy coefficient (broad_crested=147,000' sharp crested=153,000)
+        real :: k = 150000.           !m^1/2 d^-1    |energy coefficient (broad_crested=147,000" sharp crested=153,000)
         real :: w = 2.                !(m)           |width
         real :: bcoef = 1.75          !              |velocity exponent coefficient for bedding material
         real :: ccoef = 1.            !              |depth exponent coefficient for bedding material

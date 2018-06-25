@@ -97,7 +97,7 @@
       if (pldb(idp)%hvsti > 1.001) then
         yield = pcom(j)%plm(ipl)%mass * (1. - 1. / (1. + hiad1))
       else
-        yield = (1. - pcom(j)%plg(ipl)%rwt) * pcom(j)%plm(ipl)%mass * hiad1
+        yield = pcom(j)%ab_gr(ipl)%mass * hiad1
       endif
        if (yield < 0.) yield = 0.
       yield = yield * harveff
@@ -112,8 +112,6 @@
       !!====================      
       
 !! calculate nutrients removed with yield
-      yieldn = 0.
-      yieldp = 0.
       yieldn = yield * pldb(idp)%cnyld
       yieldp = yield * pldb(idp)%cpyld
       yieldn = Min(yieldn, 0.85 * pcom(j)%plm(ipl)%nmass)
@@ -126,7 +124,7 @@
 !! summary calculations
        xx = pcom(j)%plm(ipl)%mass
        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - yield
-       pcom(j)%plg(ipl)%rwt = pcom(j)%plg(ipl)%rwt * xx /                &
+       pcom(j)%root(ipl)%mass = pcom(j)%root(ipl)%mass * xx /                &
          (pcom(j)%plm(ipl)%mass + 1.e-6)
 
 !! update curve number

@@ -23,7 +23,7 @@
       real :: bacsor_out       !          |
       integer :: mbac          !          |
       integer :: ib            !none      |counter
-      integer :: ibtyp         !none      |bacteria type from 'bact_parms.dat' 
+      integer :: ibtyp         !none      |bacteria type from "bact_parms.dat" 
       integer :: ibacdb        !          |
       real :: bacdiegrosol_out !# cfu/m^2 |regrowth and dieoff of soluble bacteria in soil 
       real :: bacdiegrosor_out !          |

@@ -29,7 +29,7 @@
       
       !! read all landuse data from landuse.dat
       inquire (file=in_lum%landuse_lum, exist=i_exist)
-      if (i_exist == 0 .or. in_lum%landuse_lum == 'null') then
+      if (i_exist == 0 .or. in_lum%landuse_lum == "null") then
         allocate (lum(0:0))
         allocate (lum_str(0:0))
       else
@@ -57,7 +57,7 @@
        end do
        
        do ilu = 1, imax    
-         if (lum(ilu)%plant_cov /= 'null') then
+         if (lum(ilu)%plant_cov /= "null") then
            do ipcom = 1, db_mx%plantcom
               if (lum(ilu)%plant_cov == pcomdb(ipcom)%name) then
                  lum_str(ilu)%plant_cov = ipcom
@@ -66,7 +66,7 @@
            end do
          end if
          
-         if (lum(ilu)%mgt_ops /= 'null') then 
+         if (lum(ilu)%mgt_ops /= "null") then 
            do isched = 1, db_mx%mgt_ops
              if (lum(ilu)%mgt_ops == sched(isched)%name) then
                lum_str(ilu)%mgt_ops = isched
@@ -75,7 +75,7 @@
            end do
          end if
          
-         if (lum(ilu)%cn_lu /= 'null') then
+         if (lum(ilu)%cn_lu /= "null") then
            do ipr = 1, db_mx%cn_lu
              if (lum(ilu)%cn_lu == cn(ipr)%name) then
                lum_str(ilu)%cn_lu = ipr
@@ -84,7 +84,7 @@
            end do
          end if
                   
-         if (lum(ilu)%cons_prac /= 'null') then
+         if (lum(ilu)%cons_prac /= "null") then
            do ipr = 1, db_mx%cons_prac
              if (lum(ilu)%cons_prac == cons_prac(ipr)%name) then
                lum_str(ilu)%cons_prac = ipr
@@ -93,7 +93,7 @@
            end do
          end if
          
-         if (lum(ilu)%tiledrain /= 'null') then
+         if (lum(ilu)%tiledrain /= "null") then
            do ipr = 1, db_mx%sdr
              if (lum(ilu)%tiledrain == sdr(ipr)%name) then
                lum_str(ilu)%tiledrain = ipr
@@ -102,7 +102,7 @@
            end do
          end if
              
-         if (lum(ilu)%septic /= 'null') then
+         if (lum(ilu)%septic /= "null") then
            do ipr = 1, db_mx%septic
              if (lum(ilu)%septic == sep(ipr)%name) then
                lum_str(ilu)%septic = ipr
@@ -111,7 +111,7 @@
            end do
          end if
          
-         if (lum(ilu)%fstrip /= 'null') then
+         if (lum(ilu)%fstrip /= "null") then
            do ipr = 1, db_mx%filtop_db
              if (lum(ilu)%fstrip == filtstrip_db(ipr)%name) then
                lum_str(ilu)%fstrip = ipr
@@ -120,7 +120,7 @@
            end do
          end if
                   
-         if (lum(ilu)%grassww /= 'null') then
+         if (lum(ilu)%grassww /= "null") then
            do ipr = 1, db_mx%grassop_db
              if (lum(ilu)%grassww == grwaterway_db(ipr)%name) then
                lum_str(ilu)%grassww = ipr
@@ -129,7 +129,7 @@
            end do
          end if
                              
-         if (lum(ilu)%bmpuser /= 'null') then
+         if (lum(ilu)%bmpuser /= "null") then
            do ipr = 1, db_mx%bmpuserop_db
              if (lum(ilu)%bmpuser == bmpuser_db(ipr)%name) then
                lum_str(ilu)%bmpuser = ipr
@@ -139,32 +139,32 @@
          
          end if
          
-           if (lum_str(ilu)%plant_cov == 0 .and. lum(ilu)%plant_cov /= 'null') then 
-               write (9001,*) lum(ilu)%name, lum(ilu)%plant_cov, ' not found in initial.plt' 
+           if (lum_str(ilu)%plant_cov == 0 .and. lum(ilu)%plant_cov /= "null") then 
+               write (9001,*) lum(ilu)%name, lum(ilu)%plant_cov, " not found in initial.plt" 
            end if
-           if (lum_str(ilu)%mgt_ops == 0 .and. lum(ilu)%mgt_ops /= 'null') then
-              write (9001,*) lum(ilu)%name, lum(ilu)%mgt_ops, ' not found in management.sch'
+           if (lum_str(ilu)%mgt_ops == 0 .and. lum(ilu)%mgt_ops /= "null") then
+              write (9001,*) lum(ilu)%name, lum(ilu)%mgt_ops, " not found in management.sch"
            end if
-           if (lum_str(ilu)%cn_lu == 0 .and. lum(ilu)%cn_lu /= 'null') then 
-              write (9001,*) lum(ilu)%name, lum(ilu)%cn_lu, ' not found in cntable.lum'
+           if (lum_str(ilu)%cn_lu == 0 .and. lum(ilu)%cn_lu /= "null") then 
+              write (9001,*) lum(ilu)%name, lum(ilu)%cn_lu, " not found in cntable.lum"
            end if
-           if (lum_str(ilu)%cons_prac == 0 .and. lum(ilu)%cons_prac /= 'null') then 
-              write (9001,*) lum(ilu)%name, lum(ilu)%cons_prac, ' not found (landuse-consprac)'
+           if (lum_str(ilu)%cons_prac == 0 .and. lum(ilu)%cons_prac /= "null") then 
+              write (9001,*) lum(ilu)%name, lum(ilu)%cons_prac, " not found (landuse-consprac)"
            end if
-           if (lum_str(ilu)%tiledrain == 0 .and. lum(ilu)%tiledrain /= 'null') then
-              write (9001,*) lum(ilu)%name, lum(ilu)%tiledrain, ' not found (landuse-tiledr)'
+           if (lum_str(ilu)%tiledrain == 0 .and. lum(ilu)%tiledrain /= "null") then
+              write (9001,*) lum(ilu)%name, lum(ilu)%tiledrain, " not found (landuse-tiledr)"
            end if
-           if (lum_str(ilu)%septic == 0 .and. lum(ilu)%septic /= 'null') then 
-              write (9001,*) lum(ilu)%name, lum(ilu)%septic, ' not found (landuse-septic)'
+           if (lum_str(ilu)%septic == 0 .and. lum(ilu)%septic /= "null") then 
+              write (9001,*) lum(ilu)%name, lum(ilu)%septic, " not found (landuse-septic)"
            end if
-           if (lum_str(ilu)%fstrip == 0 .and. lum(ilu)%fstrip /= 'null') then
-              write (9001,*) lum(ilu)%name, lum(ilu)%fstrip, ' not found (landuse-fstrip)'
+           if (lum_str(ilu)%fstrip == 0 .and. lum(ilu)%fstrip /= "null") then
+              write (9001,*) lum(ilu)%name, lum(ilu)%fstrip, " not found (landuse-fstrip)"
            end if
-           if (lum_str(ilu)%grassww == 0 .and. lum(ilu)%grassww /= 'null') then
-              write (9001,*) lum(ilu)%name, lum(ilu)%grassww, ' not found (landuse-grassww)'
+           if (lum_str(ilu)%grassww == 0 .and. lum(ilu)%grassww /= "null") then
+              write (9001,*) lum(ilu)%name, lum(ilu)%grassww, " not found (landuse-grassww)"
            end if
-           if (lum_str(ilu)%bmpuser == 0 .and. lum(ilu)%bmpuser /= 'null') then 
-              write (9001,*) lum(ilu)%name, lum(ilu)%bmpuser, ' not found (landuse-bmpuser)'
+           if (lum_str(ilu)%bmpuser == 0 .and. lum(ilu)%bmpuser /= "null") then 
+              write (9001,*) lum(ilu)%name, lum(ilu)%bmpuser, " not found (landuse-bmpuser)"
            end if           
        end do
        exit

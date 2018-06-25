@@ -1,7 +1,7 @@
       subroutine sq_volq
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    Call subroutines to calculate the current day's CN for the HRU and
+!!    Call subroutines to calculate the current day"s CN for the HRU and
 !!    to calculate surface runoff
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~

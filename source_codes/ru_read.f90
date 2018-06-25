@@ -21,12 +21,12 @@
       integer :: k                    !           |
       integer :: ith                  !none       |counter
       
-      msub_db = 0
+      mru_db = 0
       eof = 0
       imax = 0
       
       inquire (file=in_ru%ru, exist=i_exist)
-      if (i_exist == 0 .or. in_ru%ru == 'null') then
+      if (i_exist == 0 .or. in_ru%ru == "null") then
           allocate (ru(0:0))
       else
       do
@@ -39,21 +39,21 @@
             read (107,*,iostat=eof) i
             if (eof < 0 .or. i == 0) exit
             imax = Max(imax,i)
-            msub_db = msub_db + 1
+            mru_db = mru_db + 1
           end do
           
-        allocate (ru(0:sp_ob%sub))
-        allocate (ru_d(sp_ob%sub))
-        allocate (ru_m(sp_ob%sub))
-        allocate (ru_y(sp_ob%sub))
-        allocate (ru_a(sp_ob%sub))
+        allocate (ru(0:sp_ob%ru))
+        allocate (ru_d(sp_ob%ru))
+        allocate (ru_m(sp_ob%ru))
+        allocate (ru_y(sp_ob%ru))
+        allocate (ru_a(sp_ob%ru))
         
         rewind (107)
         read (107,*) titldum
         read (107,*) header
 
       !! read subbasin parameters
-        do isub = 1, msub_db
+        do iru = 1, mru_db
           read (107,*,iostat=eof) i
           backspace (107)
           read (107,*,iostat=eof) k, ru(i)%name, ru(i)%dbsc
@@ -62,11 +62,11 @@
      
       !! read spatial input to each subbasin (ie hru fractions)
 
-      allocate (ru_tc(0:sp_ob%sub))
-      allocate (ru_n(0:sp_ob%sub))
-      allocate (uhs(0:sp_ob%sub,time%step+1))
+      allocate (ru_tc(0:sp_ob%ru))
+      allocate (ru_n(0:sp_ob%ru))
+      allocate (uhs(0:sp_ob%ru,time%step+1))
       allocate (hyd_flo(time%step+1))
-      allocate (itsb(sp_ob%sub))
+      allocate (itsb(sp_ob%ru))
 
       hyd_flo = 0.
       uhs = 0
@@ -84,7 +84,7 @@
              ru(i)%dbs%toposub_db = ith
         exit
         end if
-        !if (ru(i)%dbs%toposub_db == 0) write (9001,*) ru(i)%dbsc%toposub_db, ' not found (ru-toposub)' 
+        !if (ru(i)%dbs%toposub_db == 0) write (9001,*) ru(i)%dbsc%toposub_db, " not found (ru-toposub)" 
       end do
       
       do ith = 1, db_mx%field
@@ -92,7 +92,7 @@
              ru(i)%dbs%field_db = ith
         exit
         end if
-        !if (ru(i)%dbs%field_db == 0) write (9001,*) ru(i)%dbsc%field_db, ' not found (ru-field_db)'
+        !if (ru(i)%dbs%field_db == 0) write (9001,*) ru(i)%dbsc%field_db, " not found (ru-field_db)"
       end do
 
       

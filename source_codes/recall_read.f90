@@ -30,7 +30,7 @@
 
       !read all recall files
       inquire (file=in_rec%recall_rec, exist=i_exist)
-      if (i_exist /= 0 .or. in_rec%recall_rec /= 'null') then
+      if (i_exist /= 0 .or. in_rec%recall_rec /= "null") then
       do
         open (107,file=in_rec%recall_rec)
         read (107,*,iostat=eof) titldum
@@ -75,7 +75,7 @@
             allocate (recall(i)%hd(366,nbyr))
             
            case (2) !! monthly
-            !allocate (rec_om(i)%hd_om(12,nbyr))  !!!!!!!!!!this didn't seem right added commented and added next line
+            !allocate (rec_om(i)%hd_om(12,nbyr))  !!!!!!!!!!this didn"t seem right added commented and added next line
             allocate (recall(i)%hd(12,nbyr))
             
            case (3) !! annual

@@ -25,7 +25,7 @@
       !!   read mgtops.dat file
       !! calculate number of records in management 
       inquire (file=in_lum%management_sch, exist=i_exist)
-      if (i_exist == 0 .or. in_lum%management_sch == 'null') then
+      if (i_exist == 0 .or. in_lum%management_sch == "null") then
         allocate (sched(0:0))
       else
       do

@@ -66,6 +66,7 @@
       integer :: ipg              !              | 
       integer :: ist              !none          |counter
       integer :: ig               !              |
+      integer :: yrs_to_start     !              |
       real :: ramm                !MJ/m2         |extraterrestrial radiation
       real :: xl                  !MJ/kg         |latent heat of vaporization
       real :: expo                !              | 
@@ -75,8 +76,8 @@
                                   !              |file
                                   !              |1 first day of potential ET data not located
                                   !              |in file
-      
-      
+      character(len=1) :: out_bounds = 'n'
+        
       !! Precipitation:
       do iwst = 1, db_mx%wst
         iwgn = wst(iwst)%wco%wgn
@@ -102,10 +103,20 @@
             end do
           else
 		  !! daily precip
-            wst(iwst)%weat%precip = pcp(ipg)%ts(time%day,time%yrs)
+            out_bounds = "n"
+            call cli_bounds_check (pcp(ipg)%start_day, pcp(ipg)%start_yr,       &
+                                pcp(ipg)%end_day, pcp(ipg)%end_yr, out_bounds)
+            if (out_bounds == "y") then 
+              wst(iwst)%weat%precip = -98.
+            else
+              yrs_to_start = time%yrs - pcp(ipg)%yrs_start
+              wst(iwst)%weat%precip = pcp(ipg)%ts(time%day,yrs_to_start)
+            end if
+
             !! simulate missing data
             if (wst(iwst)%weat%precip <= -97.) then
               call cli_pgen(iwgn)
+              pcp(ipg)%days_gen = pcp(ipg)%days_gen + 1
 			end if
           end if
         end if
@@ -119,11 +130,21 @@
           call cli_tgen(iwgn)
         else
           ig = wst(iwst)%wco%tgage
-          wst(iwst)%weat%tmax = tmp(ig)%ts(time%day,time%yrs)
-          wst(iwst)%weat%tmin = tmp(ig)%ts2(time%day,time%yrs)
+          out_bounds = "n"
+          call cli_bounds_check (tmp(ipg)%start_day, tmp(ipg)%start_yr,       &
+                                tmp(ipg)%end_day, tmp(ipg)%end_yr, out_bounds)
+          if (out_bounds == "y") then
+            wst(iwst)%weat%tmax = -98.
+            wst(iwst)%weat%tmin = -98.
+          else
+              yrs_to_start = time%yrs - tmp(ipg)%yrs_start
+              wst(iwst)%weat%tmax = tmp(ig)%ts(time%day,yrs_to_start)
+              wst(iwst)%weat%tmin = tmp(ig)%ts2(time%day,yrs_to_start)
+          end if
           if (wst(iwst)%weat%tmax <= -97. .or. wst(iwst)%weat%tmin <= -97.) then
             call cli_weatgn(iwgn)
             call cli_tgen(iwgn)
+            tmp(ipg)%days_gen = tmp(ipg)%days_gen + 1
           end if
         end if
         wst(iwst)%weat%tave = (wst(iwst)%weat%tmax + wst(iwst)%weat%tmin) / 2.
@@ -137,9 +158,18 @@
           call cli_slrgen(iwgn)
         else
           ig = wst(iwst)%wco%sgage
-          wst(iwst)%weat%solrad = slr(ig)%ts(time%day,time%yrs)
+          out_bounds = "n"
+          call cli_bounds_check (slr(ipg)%start_day, slr(ipg)%start_yr,       &
+                                slr(ipg)%end_day, slr(ipg)%end_yr, out_bounds)
+          if (out_bounds == "y") then 
+            wst(iwst)%weat%solrad = -98.
+          else
+            yrs_to_start = time%yrs - slr(ipg)%yrs_start
+            wst(iwst)%weat%solrad = slr(ig)%ts(time%day,yrs_to_start)
+          end if
           if (wst(iwst)%weat%solrad <= -97.) then
             call cli_slrgen(iwgn)
+            slr(ipg)%days_gen = slr(ipg)%days_gen + 1
           end if
         end if
       end do
@@ -151,9 +181,18 @@
           call cli_rhgen(iwgn)
         else
           ig = wst(iwst)%wco%hgage
-          wst(iwst)%weat%rhum = hmd(ig)%ts(time%day,time%yrs)
+          out_bounds = "n"
+          call cli_bounds_check (hmd(ipg)%start_day, hmd(ipg)%start_yr,       &
+                                hmd(ipg)%end_day, hmd(ipg)%end_yr, out_bounds)
+          if (out_bounds == "y") then 
+            wst(iwst)%weat%rhum = -98.
+          else
+            yrs_to_start = time%yrs - hmd(ipg)%yrs_start
+            wst(iwst)%weat%rhum = hmd(ig)%ts(time%day,yrs_to_start)
+          end if
           if (wst(iwst)%weat%rhum <= -97.) then
             call cli_rhgen(iwgn)
+            hmd(ipg)%days_gen = hmd(ipg)%days_gen + 1
           end if
         end if
         !! simple dewpoint eqn from Lawrence 2005. Bull. Amer. Meteor. Soc.
@@ -167,9 +206,18 @@
           call cli_wndgen(iwgn)
         else
           ig = wst(iwst)%wco%wgage
-          wst(iwst)%weat%windsp = wnd(ig)%ts(time%day,time%yrs)
+          out_bounds = "n"
+          call cli_bounds_check (wnd(ipg)%start_day, wnd(ipg)%start_yr,       &
+                                wnd(ipg)%end_day, wnd(ipg)%end_yr, out_bounds)
+          if (out_bounds == "y") then 
+            wst(iwst)%weat%windsp = -98.
+          else
+            yrs_to_start = time%yrs - wnd(ipg)%yrs_start
+            wst(iwst)%weat%windsp = wnd(ig)%ts(time%day,yrs_to_start)
+          end if
           if (wst(iwst)%weat%windsp <= -97.) then
             call cli_wndgen(iwgn)
+            wnd(ipg)%days_gen = wnd(ipg)%days_gen + 1
           end if
         end if
       end do 
@@ -212,10 +260,12 @@
       ppet_mce = ppet_mce + 1
       if (ppet_mce > ppet_ndays) ppet_mce = 1
       do iwst = 1, db_mx%wst
-        !! subract the 30 day previous and add the current day precip-pet
-        wgn_pms(iwgn)%p_minus_pet_sum = wgn_pms(iwgn)%p_minus_pet_sum + (wst(iwst)%weat%precip - wst(iwst)%weat%pet)  &
-                                                                      - wgn_pms(iwgn)%p_minus_pet(ppet_mce)
-        wgn_pms(iwgn)%p_minus_pet(ppet_mce) = wst(iwst)%weat%precip - wst(iwst)%weat%pet
+        !! subract the 30 day previous and add the current day precip/pet
+        iwgn = wst(iwst)%wco%wgn
+        wgn_pms(iwgn)%precip_sum = wgn_pms(iwgn)%precip_sum + wst(iwst)%weat%precip - wgn_pms(iwgn)%precip_mce(ppet_mce)
+        wgn_pms(iwgn)%pet_sum = wgn_pms(iwgn)%pet_sum + wst(iwst)%weat%pet - wgn_pms(iwgn)%pet_mce(ppet_mce)
+        wgn_pms(iwgn)%precip_mce(ppet_mce) = wst(iwst)%weat%precip
+        wgn_pms(iwgn)%pet_mce(ppet_mce) = wst(iwst)%weat%pet
       end do
             
 !! Calculate maximum half-hour rainfall fraction

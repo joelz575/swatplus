@@ -14,7 +14,7 @@
 
        !! read weather codes
        inquire (file=in_sim%time, exist=i_exist)
-       if (i_exist /= 0 .or. in_sim%time /= 'null') then   
+       if (i_exist /= 0 .or. in_sim%time /= "null") then   
        do
          open (107,file=in_sim%time)
          read (107,*,iostat=eof) titldum

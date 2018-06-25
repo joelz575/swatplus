@@ -24,10 +24,10 @@
       real :: cond2          !          |   
       
       pco = pco_init
-      pco%wb_bsn%a = 'y'
+      pco%wb_bsn%a = "y"
         
       !calibrate hydrology for hru
-      if (cal_codes%hyd_hru == 'y') then
+      if (cal_codes%hyd_hru == "y") then
         call cal_hyd
         !print calibrated hydrology for hru_lte
 		do ireg = 1, db_mx%lsu_reg
@@ -60,43 +60,43 @@
             if (abs(lscal(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) icvmax = icvmax + 1
 	      end do
 	    end do
-        write (5000,*) ' calibration.upd developed from soft data calibration'
+        write (5000,*) " calibration.upd developed from soft data calibration"
         write (5000,501) icvmax
 501     format (i6)
-        write (5000,*) 'NAME           CHG_TYP                  VAL   CONDS  LYR1  LYR2   YEAR1  YEAR2   DAY1   DAY2  OBJ_TOT'
+        write (5000,*) "NAME           CHG_TYP                  VAL   CONDS  LYR1  LYR2   YEAR1  YEAR2   DAY1   DAY2  OBJ_TOT"
     
         !write to calibration.upd and use region and land use as conditions
 	    do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
             if (abs(lscal(ireg)%lum(ilum)%prm%cn) > 1.e-6) then
               write (5000,503) ls_prms(1)%name, ls_prms(1)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn,        & 
-              '     0      0      0      0      0      0      0      0      0'
+              "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%esco) > 1.e-6) then
               write (5000,503) ls_prms(2)%name, ls_prms(2)%chg_typ, lscal(ireg)%lum(ilum)%prm%esco,      &
-              '     0      0      0      0      0      0      0      0      0'
+              "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%lat_len) > 1.e-6) then
               write (5000,503) ls_prms(3)%name, ls_prms(3)%chg_typ, lscal(ireg)%lum(ilum)%prm%lat_len,   &
-              '     0      0      0      0      0      0      0      0      0'
+              "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%k_lo) > 1.e-6) then
               write (5000,503) ls_prms(4)%name, ls_prms(4)%chg_typ, lscal(ireg)%lum(ilum)%prm%k_lo,     &
-              '     0      0      0      0      0      0      0      0      0'
+              "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%slope) > 1.e-6) then
               write (5000,503) ls_prms(5)%name, ls_prms(5)%chg_typ, lscal(ireg)%lum(ilum)%prm%slope,    &
-              '     0      0      0      0      0      0      0      0      0'
+              "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%tconc) > 1.e-6) then
               write (5000,503) ls_prms(6)%name, ls_prms(6)%chg_typ, lscal(ireg)%lum(ilum)%prm%tconc,    &
-              '     0      0      0      0      0      0      0      0      0'
+              "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) then                                
-              write (5000,503) 'esco            ', ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,  &
-              '     0      0      0      0      0      0      0      0      0'
-              write (5000,503) 'epco            ', ls_prms(7)%chg_typ, -lscal(ireg)%lum(ilum)%prm%etco, &
-              '     0      0      0      0      0      0      0      0      0'
+              write (5000,503) "esco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,  &
+              "     0      0      0      0      0      0      0      0      0"
+              write (5000,503) "epco            ", ls_prms(7)%chg_typ, -lscal(ireg)%lum(ilum)%prm%etco, &
+              "     0      0      0      0      0      0      0      0      0"
             end if
             
             !write dep_imp conditions for percolation adjustment
@@ -118,26 +118,26 @@
             if (cond1 > 0.) icond_sum = icond_sum + 1
             if (cond2 > 0.) icond_sum = icond_sum + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) then 
-              write (5000,504) ls_prms(8)%name, ls_prms(8)%chg_typ, '       0    ', icond_sum,      &
-              '      0      0      0      0      0      0      0      0'
+              write (5000,504) ls_prms(8)%name, ls_prms(8)%chg_typ, "       0    ", icond_sum,      &
+              "      0      0      0      0      0      0      0      0"
             end if
-            if (cond1 > 0.) write (5000,505) '     dep_imp   =    ', cond1, '  null'
-            if (cond2 > 0.) write (5000,505) '     dep_imp   =    ', cond2, '  null'
+            if (cond1 > 0.) write (5000,505) "     dep_imp   =    ", cond1, "  null"
+            if (cond2 > 0.) write (5000,505) "     dep_imp   =    ", cond2, "  null"
 
             if (abs(lscal(ireg)%lum(ilum)%prm%revapc) > 1.e-6) then
               write (5000,503) ls_prms(9)%name, ls_prms(9)%chg_typ, lscal(ireg)%lum(ilum)%prm%revapc,   &
-              '     0      0      0      0      0      0      0      0      0'
+              "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) then
               write (5000,503) ls_prms(10)%name, ls_prms(10)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn3_swf, &
-              '     0      0      0      0      0      0      0      0      0'
+              "     0      0      0      0      0      0      0      0      0"
             end if
 	      end do
 	    end do
       end if
 
       !calibrate hydrology for hru_lte
-      if (cal_codes%hyd_hrul == 'y') then
+      if (cal_codes%hyd_hrul == "y") then
         call calt_hyd
         !print calibrated hydrology for hru_lte
 		do ireg = 1, db_mx%lsu_reg
@@ -168,12 +168,12 @@
       end if
         
       !calibrate plant growth
-      if (cal_codes%plt == 'y') then
+      if (cal_codes%plt == "y") then
         call cal_plant
       end if
       
-      !calibrate sediment yield from uplands (hru's)
-      if (cal_codes%sed == 'y') then
+      !calibrate sediment yield from uplands (hru"s)
+      if (cal_codes%sed == "y") then
         call cal_sed
         !print calibrated hydrology for hru_lte
 		do ireg = 1, db_mx%ch_reg
@@ -194,7 +194,7 @@
       end if
 
       !calibrate channel sediment 
-      if (cal_codes%chsed == 'y') then
+      if (cal_codes%chsed == "y") then
         call cal_chsed
       end if
       

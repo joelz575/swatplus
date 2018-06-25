@@ -123,7 +123,7 @@
                   plcal(ireg)%lum(ilum)%prm_lim%stress = 1.
                 end if
             
-            !check all hru's for proper lum
+            !check all hru"s for proper lum
             do ihru_s = 1, plcal(ireg)%num_tot
               iihru = plcal(ireg)%num(ihru_s)
               if (plcal(ireg)%lum(ilum)%meas%name == hlt(ihru)%plant) then
@@ -152,7 +152,7 @@
           
       end do    ! iter_all loop
         
-      cal_codes%plt = 'n'
+      cal_codes%plt = "n"
       
 	  return
       end subroutine cal_plant

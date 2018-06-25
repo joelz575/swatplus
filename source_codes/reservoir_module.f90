@@ -137,102 +137,106 @@
       type (res_output) :: resmz
       
       type res_header
-          character (len=6) :: yrs =          ' time '
-          character (len=6) :: yrc =          ' year '
-          character (len=8) :: j =            ' resnum '
-          character (len=8) :: id =           ' gis_id '        
-          character (len=16) :: name =     ' name              ' 
-          character (len=10) :: vol =      '      vol'        !ha-m                 |flow volume res
-          character (len=10) :: area =     '     area'        !ha                   |surface area res
-          character (len=10) :: flowi =    '    flowi'        !ha-m                 |flow into res
-          character (len=10) :: flowo =    '    flowo'        !ha-m                 |flow out of res
-          character (len=10) :: ev =       '       ev'        !ha-m                 |evap from res 
-          character (len=10) :: sep =      '      sep'        !ha-m                 |seepage from res
-          character (len=10) :: pcp =      '      pcp'        !ha-m                 |precipitation on res 
-          character (len=10) :: sedi =     '     sedi'        !metric tons          |sed entering res
-          character (len=10) :: sedo =     '     sedo'        !metric tons          |sed leaving res            
-          character (len=10) :: sedcon =   '   sedcon'        !mg/L                 |sed conc in res
-          character (len=10) :: pesti =    '    pesti'        !mg pst               |pest entering res
-          character (len=10) :: reactw =   '   reactw'        !mg pst               |pest lost from res through reactions
-          character (len=10) :: volatpst = ' volatpst'        !mg pst               |pest lost from res through volatilization
-          character (len=10) :: setlpst =  '  setlpst'        !mg pst               |pest moving from water to sed through settling
-          character (len=10) :: resuspst = ' resuspst'        !mg pst               |pest moving from sed to water through resuspension
-          character (len=10) :: difus =    '    difus'        !mg pst               |pest moving from water to sed through diffusion
-          character (len=10) :: reactb =   '   reactb'        !mg pst               |pest lost from res sed layer through reactions
-          character (len=10) :: bury  =    '     bury'        !mg pst               |pest lost from res sed layer through burial
-          character (len=10) :: pesto =    '    pesto'        !mg pst               |pest transported out of res
-          character (len=10) :: pstcon =   '   pstcon'        !mg pst/m^3           |pest conc in res water
-          character (len=10) :: spstcon=   '  spstcon'        !mg pst/m^3           |pest conc in res sed layer 
-          character (len=10) :: orgni =    '    orgni'        !kg N                 |org N entering res
-          character (len=10) :: orgno =    '    orgno'        !kg N                 |org N leaving res
-          character (len=10) :: orgpi =    '    orgpi'        !kg P                 |org P entering res
-          character (len=10) :: orgpo =    '    orgpo'        !kg P                 |org P leaving res
-          character (len=10) :: no3i =     '     no3i'        !kg N                 |nitrate N entering res
-          character (len=10) :: no3o =     '     no3o'        !kg N                 |nitrate N leaving res
-          character (len=10) :: no2i =     '     no2i'        !kg N                 |nitrite entering res
-          character (len=10) :: no2o =     '     no2o'        !kg N                 |nitrite leaving res
-          character (len=10) :: nh3i =     '     nh3i'        !kg N                 |ammonia entering res
-          character (len=10) :: nh3o =     '     nh3o'        !kg N                 |ammonia leaving res
-          character (len=10) :: solpi =    '    solpi'        !kg P                 |mineral P entering res
-          character (len=10) :: solpo =    '    solpo'        !kg P                 |mineral P leaving res
-          character (len=10) :: chlai =    '    chali'        !kg chla              |chlorophyll-a entering res 
-          character (len=10) :: chlao =    '    chlao'        !kg chla              |chlorophyll-a leaving res 
-          character (len=10) :: orgpc =    '    orgpc'        !mg P/L               |ave org P conc in res
-          character (len=10) :: solpc =    '    solpc'        !mg P/L               |ave sol P conc in res
-          character (len=10) :: orgnc =    '    orgnc'        !mg N/L               |ave org N in res
-          character (len=10) :: no3c =     '     no3c'        !mg N/L               |ave nitrate conc in res
-          character (len=10) :: no2c =     '     no2c'        !mg N/L               |ave nitrite conc in res
-          character (len=10) :: nh3c =     '     nh3c'        !mg N/L               |ave ammonia conc in res
+          character (len=5) :: day =      " jday"
+          character (len=6) :: mo =       "   mon"
+          character (len=6) :: day_mo =   "   day"
+          character (len=6) :: yrc =      "    yr"
+          character (len=8) :: j =            "  resnum "
+          character (len=9) :: id =           "  gis_id "        
+          character (len=16) :: name =     " name              " 
+          character (len=11) :: vol =      "        vol"       !ha-m                 |flow volume res
+          character (len=10) :: area =     "      area"        !ha                   |surface area res
+          character (len=10) :: flowi =    "     flowi"        !ha-m                 |flow into res
+          character (len=10) :: flowo =    "     flowo"        !ha-m                 |flow out of res
+          character (len=10) :: ev =       "        ev"        !ha-m                 |evap from res 
+          character (len=10) :: sep =      "       sep"        !ha-m                 |seepage from res
+          character (len=10) :: pcp =      "       pcp"        !ha-m                 |precipitation on res 
+          character (len=10) :: sedi =     "      sedi"        !metric tons          |sed entering res
+          character (len=10) :: sedo =     "      sedo"        !metric tons          |sed leaving res            
+          character (len=10) :: sedcon =   "    sedcon"        !mg/L                 |sed conc in res
+          character (len=10) :: pesti =    "     pesti"        !mg pst               |pest entering res
+          character (len=10) :: reactw =   "    reactw"        !mg pst               |pest lost from res through reactions
+          character (len=10) :: volatpst = "  volatpst"        !mg pst               |pest lost from res through volatilization
+          character (len=10) :: setlpst =  "   setlpst"        !mg pst               |pest moving from water to sed through settling
+          character (len=10) :: resuspst = "  resuspst"        !mg pst               |pest moving from sed to water through resuspension
+          character (len=10) :: difus =    "     difus"        !mg pst               |pest moving from water to sed through diffusion
+          character (len=10) :: reactb =   "    reactb"        !mg pst               |pest lost from res sed layer through reactions
+          character (len=10) :: bury  =    "      bury"        !mg pst               |pest lost from res sed layer through burial
+          character (len=10) :: pesto =    "     pesto"        !mg pst               |pest transported out of res
+          character (len=10) :: pstcon =   "    pstcon"        !mg pst/m^3           |pest conc in res water
+          character (len=10) :: spstcon=   "   spstcon"        !mg pst/m^3           |pest conc in res sed layer 
+          character (len=10) :: orgni =    "     orgni"        !kg N                 |org N entering res
+          character (len=10) :: orgno =    "     orgno"        !kg N                 |org N leaving res
+          character (len=10) :: orgpi =    "     orgpi"        !kg P                 |org P entering res
+          character (len=10) :: orgpo =    "     orgpo"        !kg P                 |org P leaving res
+          character (len=10) :: no3i =     "      no3i"        !kg N                 |nitrate N entering res
+          character (len=10) :: no3o =     "      no3o"        !kg N                 |nitrate N leaving res
+          character (len=10) :: no2i =     "      no2i"        !kg N                 |nitrite entering res
+          character (len=10) :: no2o =     "      no2o"        !kg N                 |nitrite leaving res
+          character (len=10) :: nh3i =     "      nh3i"        !kg N                 |ammonia entering res
+          character (len=10) :: nh3o =     "      nh3o"        !kg N                 |ammonia leaving res
+          character (len=10) :: solpi =    "     solpi"        !kg P                 |mineral P entering res
+          character (len=10) :: solpo =    "     solpo"        !kg P                 |mineral P leaving res
+          character (len=10) :: chlai =    "     chali"        !kg chla              |chlorophyll-a entering res 
+          character (len=10) :: chlao =    "     chlao"        !kg chla              |chlorophyll-a leaving res 
+          character (len=10) :: orgpc =    "     orgpc"        !mg P/L               |ave org P conc in res
+          character (len=10) :: solpc =    "     solpc"        !mg P/L               |ave sol P conc in res
+          character (len=10) :: orgnc =    "     orgnc"        !mg N/L               |ave org N in res
+          character (len=10) :: no3c =     "      no3c"        !mg N/L               |ave nitrate conc in res
+          character (len=10) :: no2c =     "      no2c"        !mg N/L               |ave nitrite conc in res
+          character (len=10) :: nh3c =     "      nh3c"        !mg N/L               |ave ammonia conc in res
        end type res_header
        type (res_header) :: res_hdr
 
       type res_header_unit
-          character (len=6) :: yrs =       '      '
-          character (len=6) :: yrc =       '      '
-          character (len=8) :: isd =       '         '         
-          character (len=8) :: id =           '        '         
-          character (len=16) :: name =     '                '          
-          character (len=10) :: vol =      '     ha_m'        !ha-m                 |volume res
-          character (len=10) :: area =     '       ha'        !ha                   |surface area res
-          character (len=10) :: flowi =    '     ha_m'        !ha-m                 |flow into res
-          character (len=10) :: flowo =    '     ha_m'        !ha-m                 |flow out of res
-          character (len=10) :: ev =       '     ha_m'        !ha-m                 |evap from res  
-          character (len=10) :: sep =      '     ha_m'        !ha-m                 |seepage from res
-          character (len=10) :: pcp =      '     ha_m'        !ha-m                 |precipitation on res 
-          character (len=10) :: sedi =     ' met_tons'        !metric tons          |sed entering res
-          character (len=10) :: sedo =     ' met_tons'        !metric tons          |sed leaving res            
-          character (len=10) :: sedcon =   '     mg/L'        !mg/L                 |sed conc in res
-          character (len=10) :: pesti =    '   mg_pst'        !mg pst               |pest entering res
-          character (len=10) :: reactw =   '   mg_pst'        !mg pst               |pest lost from res through reactions
-          character (len=10) :: volatpst = '   mg_pst'        !mg pst               |pest lost from res through volatilization
-          character (len=10) :: setlpst =  '   mg_pst'        !mg pst               |pest moving from water to sed through settling
-          character (len=10) :: resuspst = '   mg_pst'        !mg pst               |pest moving from sed to water through resuspension
-          character (len=10) :: difus =    '   mg_pst'        !mg pst               |pest moving from water to sed through diffusion
-          character (len=10) :: reactb =   '   mg_pst'        !mg pst               |pest lost from res sed layer through reactions
-          character (len=10) :: bury  =    '   mg_pst'        !mg pst               |pest lost from res sed layer through burial
-          character (len=10) :: pesto =    '   mg_pst'        !mg pst               |pest transported out of res
-          character (len=10) :: pstcon =   'mg_pst/m3'        !mg pst/m^3           |pest conc in res water
-          character (len=10) :: spstcon=   'mg_pst/m3'        !mg pst/m^3           |pest conc in res sed layer
-          character (len=10) :: orgni =    '     kg_N'        !kg N                 |org N entering res
-          character (len=10) :: orgno =    '     kg_N'        !kg N                 |org N leaving res
-          character (len=10) :: orgpi =    '     kg_P'        !kg P                 |org P entering res
-          character (len=10) :: orgpo =    '     kg_P'        !kg P                 |org P leaving res
-          character (len=10) :: no3i =     '     kg_N'        !kg N                 |nitrate N entering res
-          character (len=10) :: no3o =     '     kg_N'        !kg N                 |nitrate N leaving res
-          character (len=10) :: no2i =     '     kg_N'        !kg N                 |nitrite entering res
-          character (len=10) :: no2o =     '     kg_N'        !kg N                 |nitrite leaving res
-          character (len=10) :: nh3i =     '     kg_N'        !kg N                 |ammonia entering res
-          character (len=10) :: nh3o =     '     kg_N'        !kg N                 |ammonia leaving res
-          character (len=10) :: solpi =    '     kg_p'        !kg P                 |mineral P entering res
-          character (len=10) :: solpo =    '     kg_P'        !kg P                 |mineral P leaving res
-          character (len=10) :: chlai =    '  kg_chla'        !kg chla              |chlorophyll-a entering res 
-          character (len=10) :: chlao =    '  kg_chla'        !kg chla              |chlorophyll-a leaving res 
-          character (len=10) :: orgpc =    '   mg_P/L'        !mg P/L               |ave org P conc in res
-          character (len=10) :: solpc =    '   mg_P/L'        !mg P/L               |ave sol P conc in res
-          character (len=10) :: orgnc =    '   mg_N/L'        !mg N/L               |ave org N in res
-          character (len=10) :: no3c =     '   mg_N/L'        !mg N/L               |ave nitrate conc in res
-          character (len=10) :: no2c =     '   mg_N/L'        !mg N/L               |ave nitrite conc in res
-          character (len=10) :: nh3c =     '   mg_N/L'        !mg N/L               |ave ammonia conc in res
+          character (len=6) :: day =       "      "
+          character (len=6) :: mo =        "      "
+          character (len=6) :: day_mo =    "      "
+          character (len=6) :: yrc =       "      "
+          character (len=8) :: isd =       "         "         
+          character (len=8) :: id =           "        "         
+          character (len=16) :: name =     "                "          
+          character (len=12) :: vol =      "       ha_m"       !ha-m                 |volume res
+          character (len=9) :: area =      "       ha"         !ha                   |surface area res
+          character (len=10) :: flowi =    "      ha_m"        !ha-m                 |flow into res
+          character (len=10) :: flowo =    "      ha_m"        !ha-m                 |flow out of res
+          character (len=10) :: ev =       "      ha_m"        !ha-m                 |evap from res  
+          character (len=10) :: sep =      "      ha_m"        !ha-m                 |seepage from res
+          character (len=10) :: pcp =      "      ha_m"        !ha-m                 |precipitation on res 
+          character (len=10) :: sedi =     "  met_tons"        !metric tons          |sed entering res
+          character (len=10) :: sedo =     "  met_tons"        !metric tons          |sed leaving res            
+          character (len=10) :: sedcon =   "      mg/L"        !mg/L                 |sed conc in res
+          character (len=10) :: pesti =    "    mg_pst"        !mg pst               |pest entering res
+          character (len=10) :: reactw =   "    mg_pst"        !mg pst               |pest lost from res through reactions
+          character (len=10) :: volatpst = "    mg_pst"        !mg pst               |pest lost from res through volatilization
+          character (len=10) :: setlpst =  "    mg_pst"        !mg pst               |pest moving from water to sed through settling
+          character (len=10) :: resuspst = "    mg_pst"        !mg pst               |pest moving from sed to water through resuspension
+          character (len=10) :: difus =    "    mg_pst"        !mg pst               |pest moving from water to sed through diffusion
+          character (len=10) :: reactb =   "    mg_pst"        !mg pst               |pest lost from res sed layer through reactions
+          character (len=10) :: bury  =    "    mg_pst"        !mg pst               |pest lost from res sed layer through burial
+          character (len=10) :: pesto =    "    mg_pst"        !mg pst               |pest transported out of res
+          character (len=10) :: pstcon =   " mg_pst/m3"        !mg pst/m^3           |pest conc in res water
+          character (len=10) :: spstcon=   " mg_pst/m3"        !mg pst/m^3           |pest conc in res sed layer
+          character (len=10) :: orgni =    "      kg_N"        !kg N                 |org N entering res
+          character (len=10) :: orgno =    "      kg_N"        !kg N                 |org N leaving res
+          character (len=10) :: orgpi =    "      kg_P"        !kg P                 |org P entering res
+          character (len=10) :: orgpo =    "      kg_P"        !kg P                 |org P leaving res
+          character (len=10) :: no3i =     "      kg_N"        !kg N                 |nitrate N entering res
+          character (len=10) :: no3o =     "      kg_N"        !kg N                 |nitrate N leaving res
+          character (len=10) :: no2i =     "      kg_N"        !kg N                 |nitrite entering res
+          character (len=10) :: no2o =     "      kg_N"        !kg N                 |nitrite leaving res
+          character (len=10) :: nh3i =     "      kg_N"        !kg N                 |ammonia entering res
+          character (len=10) :: nh3o =     "      kg_N"        !kg N                 |ammonia leaving res
+          character (len=10) :: solpi =    "      kg_p"        !kg P                 |mineral P entering res
+          character (len=10) :: solpo =    "      kg_P"        !kg P                 |mineral P leaving res
+          character (len=10) :: chlai =    "   kg_chla"        !kg chla              |chlorophyll-a entering res 
+          character (len=10) :: chlao =    "   kg_chla"        !kg chla              |chlorophyll-a leaving res 
+          character (len=10) :: orgpc =    "    mg_P/L"        !mg P/L               |ave org P conc in res
+          character (len=10) :: solpc =    "    mg_P/L"        !mg P/L               |ave sol P conc in res
+          character (len=10) :: orgnc =    "    mg_N/L"        !mg N/L               |ave org N in res
+          character (len=10) :: no3c =     "    mg_N/L"        !mg N/L               |ave nitrate conc in res
+          character (len=10) :: no2c =     "    mg_N/L"        !mg N/L               |ave nitrite conc in res
+          character (len=10) :: nh3c =     "    mg_N/L"        !mg N/L               |ave ammonia conc in res
        end type res_header_unit
        type (res_header_unit) :: res_hdr_unt
 !!           
@@ -246,13 +250,6 @@
       
       contains
 !!    routines for reservoir module
-      !include 'res_control.f90'
-      !include 'res_hourly.f'
-      !include 'res_hydsed.f'
-      !include 'res_nutrient.f90'
-      !include 'res_pest.f90'
-      !include 'res_dayinit.f90'
-      !include 'reservoir_output.f90'
 
       function resout_add(reso1,reso2) result (reso3)
           type (res_output),  intent (in) :: reso1

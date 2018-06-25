@@ -51,7 +51,7 @@
 
       pcpgen = 0.
       vv = Aunif(rndseed(idg(1),iwgn))
-      if (wst(iwst)%weat%precip_prior_day == 'dry')  then
+      if (wst(iwst)%weat%precip_prior_day == "dry")  then
         xx = wgn(iwgn)%pr_wd(time%mo)
       else
         xx = wgn(iwgn)%pr_ww(time%mo)

@@ -20,14 +20,14 @@
       integer :: iob                  !           |
       integer :: iob1                 !none       |beginning of loop
       integer :: iob2                 !none       |ending of loop
-      integer :: isub                 !none       |counter
+      integer :: iru                  !none       |counter
       integer :: numb                 !           |
       integer :: ielem                !none       |counter
       integer :: ii                   !none       |counter
       integer :: ie1                  !none       |beginning of loop
       integer :: ie2                  !none       |ending of loop  
       integer :: ie                   !none       |counter
-      integer :: isub_tot             !           |
+      integer :: iru_tot             !           |
       
       
       
@@ -37,7 +37,7 @@
       
       !!read data for each element in all subbasins
       inquire (file=in_ru%ru_ele, exist=i_exist)
-      if (i_exist /= 0 .or. in_ru%ru_ele /= 'null') then
+      if (i_exist /= 0 .or. in_ru%ru_ele /= "null") then
       do
         open (107,file=in_ru%ru_ele)
         read (107,*,iostat=eof) titldum
@@ -53,13 +53,13 @@
 
         allocate (ru_def(imax))
         allocate (ru_elem(imax))
-        allocate (ielem_sub(imax))
+        allocate (ielem_ru(imax))
         
         rewind (107)
         read (107,*) titldum
         read (107,*) header
         
-        ielem_sub = 0
+        ielem_ru = 0
    
         do isp = 1, imax
           read (107,*,iostat=eof) i
@@ -74,7 +74,7 @@
               
       !read all delivery ratio data for subbasin deliveries
       inquire (file=in_ru%ru_dr, exist=i_exist)
-      if (i_exist /= 0 .or. in_ru%ru_dr /= 'null') then
+      if (i_exist /= 0 .or. in_ru%ru_dr /= "null") then
       do
         open (107,file=in_ru%ru_dr)
         read (107,*,iostat=eof) titldum
@@ -102,9 +102,9 @@
       endif
       end if
       
-      !!read subbasin definition data -ie. hru's in the subbasin
+      !!read subbasin definition data -ie. hru"s in the subbasin
       inquire (file=in_ru%ru_def, exist=i_exist)
-      if (i_exist /= 0 .or. in_ru%ru_def /= 'null') then
+      if (i_exist /= 0 .or. in_ru%ru_def /= "null") then
       do
         open (107,file=in_ru%ru_def)
         read (107,*,iostat=eof) titldum
@@ -122,18 +122,18 @@
         read (107,*) titldum
         read (107,*) header
 
-      iob1 = sp_ob1%sub
-      iob2 = sp_ob1%sub + sp_ob%sub - 1
-      do isub = 1, sp_ob%sub
-        iob = sp_ob1%sub + isub - 1
-        ob(iob)%subs_tot = 0
+      iob1 = sp_ob1%ru
+      iob2 = sp_ob1%ru + sp_ob%ru - 1
+      do iru = 1, sp_ob%ru
+        iob = sp_ob1%ru + iru - 1
+        ob(iob)%ru_tot = 0
         read (107,*,iostat=eof) numb, namedum, nspu
         allocate (elem_cnt(nspu))
         
         if (eof < 0) exit
         if (nspu > 0) then
           backspace (107)
-          read (107,*,iostat=eof) numb, ru_def(isub)%name, nspu, (elem_cnt(isp), isp = 1, nspu)
+          read (107,*,iostat=eof) numb, ru_def(iru)%name, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
           
           !!save the object number of each defining unit
@@ -156,10 +156,10 @@
             if (nspu == 1) ie2 = ie1
             if (ii == nspu .and. elem_cnt(ii) < 0) exit
           end do
-          allocate (ru_def(isub)%num(ielem))
-          ru_def(isub)%num_tot = ielem
-          iob = sp_ob1%sub + isub - 1
-          ob(iob)%dfn_tot = ru_def(isub)%num_tot
+          allocate (ru_def(iru)%num(ielem))
+          ru_def(iru)%num_tot = ielem
+          iob = sp_ob1%ru + iru - 1
+          ob(iob)%dfn_tot = ru_def(iru)%num_tot
           
           ielem = 0
           ii = 1
@@ -168,19 +168,19 @@
             if (ii == nspu) then
               ielem = ielem + 1
               ii = ii + 1
-              ru_def(isub)%num(ielem) = ie1
+              ru_def(iru)%num(ielem) = ie1
             else
               ie2 = elem_cnt(ii+1)
               if (ie2 > 0) then
                 ielem = ielem + 1
-                ru_def(isub)%num(ielem) = ie1
+                ru_def(iru)%num(ielem) = ie1
                 ielem = ielem + 1
-                ru_def(isub)%num(ielem) = ie2
+                ru_def(iru)%num(ielem) = ie2
               else
                 ie2 = abs(ie2)
                 do ie = ie1, ie2
                   ielem = ielem + 1
-                  ru_def(isub)%num(ielem) = ie
+                  ru_def(iru)%num(ielem) = ie
                 end do
               end if
               ii = ii + 2
@@ -195,8 +195,8 @@
               ru_elem(ii)%obj = sp_ob1%hru + ru_elem(ii)%obtypno - 1
             case ("hlt")   !hru_lte
               ru_elem(ii)%obj = sp_ob1%hru_lte + ru_elem(ii)%obtypno - 1
-            case ("sub")   !ru
-              ru_elem(ii)%obj = sp_ob1%sub + ru_elem(ii)%obtypno - 1
+            case ("ru")   !ru
+              ru_elem(ii)%obj = sp_ob1%ru + ru_elem(ii)%obtypno - 1
             case ("cha")   !channel
               ru_elem(ii)%obj = sp_ob1%chan + ru_elem(ii)%obtypno - 1
             case ("exc")   !export coefficient
@@ -209,7 +209,7 @@
               ru_elem(ii)%obj = sp_ob1%chandeg + ru_elem(ii)%obtypno - 1
             end select
             k = ru_elem(ii)%obj
-            ob(k)%subs_tot = ob(k)%subs_tot + 1
+            ob(k)%ru_tot = ob(k)%ru_tot + 1
           end do
           
           do ii = ie1, ie2
@@ -235,19 +235,19 @@
       endif
       
         ! set all subbasins that each element is in
-        do isub = 1, sp_ob%sub
-          do ielem = 1, ru_def(isub)%num_tot
-            ie = ru_def(isub)%num(ielem)
+        do iru = 1, sp_ob%ru
+          do ielem = 1, ru_def(iru)%num_tot
+            ie = ru_def(iru)%num(ielem)
             iob = ru_elem(ie)%obj
-            isub_tot = ob(iob)%subs_tot
-            allocate (ob(iob)%sub(isub_tot))
+            iru_tot = ob(iob)%ru_tot
+            allocate (ob(iob)%ru(iru_tot))
           end do
 
-          do ielem = 1, ru_def(isub)%num_tot
-            ie = ru_def(isub)%num(ielem)
-            ielem_sub(ie) = ielem_sub(ie) + 1
+          do ielem = 1, ru_def(iru)%num_tot
+            ie = ru_def(iru)%num(ielem)
+            ielem_ru(ie) = ielem_ru(ie) + 1
             iob = ru_elem(ie)%obj
-            ob(iob)%sub(ielem_sub(ie)) = isub
+            ob(iob)%ru(ielem_ru(ie)) = iru
             ob(iob)%elem = ielem
           end do
         end do

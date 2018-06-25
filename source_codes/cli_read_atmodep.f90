@@ -22,7 +22,7 @@
       eof = 0
 
       inquire (file=in_cli%atmo_cli,exist=i_exist)
-      if (i_exist == 0 .or. in_cli%atmo_cli == 'null') then
+      if (i_exist == 0 .or. in_cli%atmo_cli == "null") then
         !!no filename 
         allocate (atmodep(0:0))
         allocate (atmo_n(0:0))
@@ -40,7 +40,7 @@
           ! set array pointer to first year and month
           iyrc_atmo = atmodep_cont%yr_init
           imo_atmo = atmodep_cont%mo_init
-          if (atmodep_cont%timestep == 'yr') then
+          if (atmodep_cont%timestep == "yr") then
             do iyr = 1, atmodep_cont%num
               if (iyrc_atmo == time%yrc_start) then
                 atmodep_cont%ts = iyr
@@ -51,7 +51,7 @@
             end do
           end if
           
-          if (atmodep_cont%timestep == 'mo') then
+          if (atmodep_cont%timestep == "mo") then
             do imo = 1, atmodep_cont%num
               if (iyrc_atmo == time%yrc_start .and. imo_atmo == time%mo_start) then
                 atmodep_cont%ts = 12 * (time%yrc_start - atmodep_cont%yr_init) + imo_atmo
@@ -70,7 +70,7 @@
           allocate (atmo_n(atmodep_cont%num_sta))
 
           do iadep = 1, atmodep_cont%num_sta
-            if (atmodep_cont%timestep == 'aa') then
+            if (atmodep_cont%timestep == "aa") then
               read (127,*,iostat=eof) atmodep(iadep)%name
               if (eof < 0) exit
               atmo_n(iadep) = atmodep(iadep)%name
@@ -84,7 +84,7 @@
               if (eof < 0) exit
             end if 
           
-            if (atmodep_cont%timestep == 'mo') then
+            if (atmodep_cont%timestep == "mo") then
               allocate (atmodep(iadep)%nh4_rfmo(atmodep_cont%num))
               allocate (atmodep(iadep)%no3_rfmo(atmodep_cont%num))
               allocate (atmodep(iadep)%nh4_drymo(atmodep_cont%num))
@@ -97,7 +97,7 @@
               read (127,*) (atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num)
             end if
               
-            if (atmodep_cont%timestep == 'yr') then
+            if (atmodep_cont%timestep == "yr") then
               allocate (atmodep(iadep)%nh4_rfyr(atmodep_cont%num))
               allocate (atmodep(iadep)%no3_rfyr(atmodep_cont%num))
               allocate (atmodep(iadep)%nh4_dryyr(atmodep_cont%num))

@@ -121,7 +121,7 @@
         ! 1st slope adjustment
         do ireg = 1, db_mx%cha_reg
           do ilum = 1, region(ireg)%nlum
-              !check all hru's for proper lum
+              !check all hru"s for proper lum
               do iihru = 1, sp_ob%hru
                 !set parms for 1st slope calibration and rerun
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
@@ -161,7 +161,7 @@
         do isl = 1, 2
           do ireg = 1, db_mx%cha_reg
           do ilum = 1, region(ireg)%nlum
-              !check all hru's for proper lum
+              !check all hru"s for proper lum
               do iihru = 1, sp_ob%hru
                 !set parms for 1st slope calibration and rerun
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then

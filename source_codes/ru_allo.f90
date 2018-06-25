@@ -21,7 +21,7 @@
  
       if (time%step > 0) then
 !!    compute unit hydrograph for computing subbasin hydrograph from direct runoff
-      do isb = 1, sp_ob%sub
+      do isb = 1, sp_ob%ru
         ql = 0.
         sumq = 0.
         tb = .5 + .6 * ru_tc(isb) + bsn_prm%tb_adj  !baseflow time, hr

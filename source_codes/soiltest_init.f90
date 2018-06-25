@@ -14,7 +14,7 @@
       do ly = 1, soil(isol)%nly
           dep_frac=Exp(-solt_db(isolt)%exp_co * soil(isol)%phys(ly)%d)
           soil1(isol)%mn(ly)%no3 = solt_db(isolt)%inorgn * dep_frac
-          soil1(isol)%mp(ly)%lab = solt_db(isolt)%inorgp * dep_frac
+          !soil1(isol)%mp(ly)%lab = solt_db(isolt)%inorgp * dep_frac
           !soil1(isol)%hp(ly)%n = solt_db(isolt)%orgn * dep_frac
           !soil1(isol)%hp(ly)%p = solt_db(isolt)%orgp * dep_frac
           !soil(j)%ly(ly)%watersol_p = solt_db(isolt)%watersol_p* dep_frac

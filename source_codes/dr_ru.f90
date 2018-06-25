@@ -16,21 +16,21 @@
     
      ! compute delivery ratio for each hru in the sub
       sumn = 0.
-      do isub = 1, sp_ob%sub
-        do ii = 1, ru_def(isub)%num_tot
-          ielem = ru_def(isub)%num(ii)
+      do iru = 1, sp_ob%ru
+        do ii = 1, ru_def(iru)%num_tot
+          ielem = ru_def(iru)%num(ii)
           ihru = ru_elem(ielem)%obtypno
 
           if (ru_elem(ielem)%idr == 0) then
             allocate (ru_elem(ielem)%dr(0:0))
             select case (ru_elem(ielem)%obtyp)
             case ("hru")
-              rto = tconc(ihru) / ru_tc(isub)
+              rto = tconc(ihru) / ru_tc(iru)
             case ("hlt")
-              rto = (hlt_db(ihru)%tc / 3600.) / ru_tc(isub)
+              rto = (hlt_db(ihru)%tc / 3600.) / ru_tc(iru)
             case ("sdc")
               rto = 1.
-            case ("sub")
+            case ("ru")
               rto = 1.
             end select
             
@@ -38,7 +38,7 @@
             ru_elem(ielem)%dr(0) = rto .add. hz
           end if
         end do
-        ru_n(isub) = sumn / ru(isub)%da_km2
+        ru_n(iru) = sumn / ru(iru)%da_km2
       end do
       return
       end subroutine dr_ru

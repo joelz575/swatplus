@@ -20,7 +20,7 @@
       
       !! read bacteria properties
       inquire (file=in_parmdb%pathcom_db,exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%pathcom_db == 'null') then
+      if (i_exist == 0 .or. in_parmdb%pathcom_db == "null") then
          allocate (bac_db(0:0))
       else
       do

@@ -43,7 +43,7 @@
       real :: tt1               !km s/m        |time coefficient for specified depth
       real :: tt2               !km s/m        |time coefficient for bankfull depth
       real :: aa                !none          |area/area=1 (used to calculate velocity with
-                                !              |Manning's equation)
+                                !              |Manning"s equation)
       real :: chsslope          !none          |change in horizontal distance per unit
                                 !              |change in vertical distance on channel side
                                 !              |slopes; always set to 2 (slope=1/2) 

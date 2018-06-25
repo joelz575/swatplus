@@ -17,7 +17,7 @@
       imax = 0
       
       inquire (file=in_lum%ovn_lum, exist=i_exist)
-      if (i_exist == 0 .or. in_lum%ovn_lum == 'null') then
+      if (i_exist == 0 .or. in_lum%ovn_lum == "null") then
           allocate (overland_n(0:0))
       else
       do

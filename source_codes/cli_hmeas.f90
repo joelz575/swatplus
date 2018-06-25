@@ -23,7 +23,7 @@
 
       !! read all measured daily relative humidity data
       inquire (file=in_cli%hmd_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%hmd_cli == 'null') then
+      if (i_exist == 0 .or. in_cli%hmd_cli == "null") then
          allocate (hmd(0:0))
          allocate (hmd_n(0))
       else
@@ -59,7 +59,7 @@
         if (eof < 0) exit
         
 !!!!!weather path code
-       if (in_path_hmd%hmd == 'null') then
+       if (in_path_hmd%hmd == "null") then
          open (108,file = hmd(i)%filename)
        else
         open (108,file = TRIM(ADJUSTL(in_path_hmd%hmd))//hmd(i)%filename)
@@ -76,13 +76,31 @@
         
        ! the precip time step has to be the same as time%step
        allocate (hmd(i)%ts(366,hmd(i)%nbyr))
-    
+       
+       ! read and save start jd and yr
+       read (108,*,iostat=eof) iyr, istep
+       hmd(i)%start_day = istep
+       hmd(i)%start_yr = iyr
+       
+       backspace (108)
+         
+      if (iyr > time%yrc) then
+        hmd(i)%yrs_start = iyr - time%yrc
+      else
+        ! read and store entire year
+        hmd(i)%yrs_start = 0
+      end if
+      
         ! read and store entire year
        do 
          read (108,*,iostat=eof) iyr, istep
          if (eof < 0) exit
          if (iyr == time%yrc .and. istep == time%day_start) exit
        end do
+       
+       ! save end jd and year
+       hmd(i)%end_day = istep
+       hmd(i)%end_yr = iyr
        
        backspace (108)
        iyr_prev = iyr

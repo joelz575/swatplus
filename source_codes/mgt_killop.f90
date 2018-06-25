@@ -67,12 +67,12 @@
       ipl = iplant
 
 	  !! 22 January 2008	
-      resnew = pcom(j)%plm(ipl)%mass * (1. - pcom(j)%plg(ipl)%rwt)
-	  rtresnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%rwt
+      resnew = pcom(j)%plm(ipl)%mass * (1. - pcom(j)%plg(ipl)%root_frac)
+	  rtresnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%root_frac
 	  call pl_rootfr
 
 	  !! update residue, N, P on soil surface
-      ff1 = (1 - hiad1) / (1 - hiad1 + pcom(j)%plg(ipl)%rwt)
+      ff1 = (1 - hiad1) / (1 - hiad1 + pcom(j)%root(ipl)%mass)
       rsd1(j)%tot(ipl)%m = resnew + rsd1(j)%tot(ipl)%m
       
       rsd1(j)%tot(ipl)%n = rsd1(j)%tot(ipl)%n + ff1 *     &
@@ -85,19 +85,19 @@
       
       resnew = resnew
       resnew_n = ff1 * (pcom(j)%plm(ipl)%nmass- yieldn)
-      call mgt_bio_drop (resnew, resnew_n)
+      call pl_leaf_drop (resnew, resnew_n)
 
 	!! allocate dead roots, N, P to soil layers
 	do l = 1, soil(j)%nly
 	 soil(j)%ly(l)%rsd = soil(j)%ly(l)%rsd + soil(j)%ly(l)%rtfr * rtresnew
 	 soil1(j)%tot(l)%n = soil1(j)%tot(l)%n + soil(j)%ly(l)%rtfr *            &
-          pcom(j)%plm(ipl)%nmass * pcom(j)%plg(ipl)%rwt
+          pcom(j)%plm(ipl)%nmass * pcom(j)%root(ipl)%mass
 	 soil1(j)%tot(l)%p = soil1(j)%tot(l)%p + soil(j)%ly(l)%rtfr *          &
-          pcom(ihru)%plm(ipl)%pmass * pcom(j)%plg(ipl)%rwt
+          pcom(ihru)%plm(ipl)%pmass * pcom(j)%root(ipl)%mass
      
      resnew = soil(j)%ly(l)%rtfr * rtresnew 
      resnew_n = soil(j)%ly(l)%rtfr * ff2 * (pcom(j)%plm(ipl)%nmass - yieldn)
-     call mgt_bio_drop (resnew, resnew_n)
+     call pl_leaf_drop (resnew, resnew_n)
 	end do
 
       if (hrupest(j) == 1) then
@@ -114,7 +114,7 @@
       pcom(j)%plstr(ipl) = plstrz
       !! can't reset entire plcur - harv_num can't be zero'd
       pcom(j)%plcur(ipl)%gro = "n"
-      pcom(j)%plcur(ipl)%idorm = 'n'
+      pcom(j)%plcur(ipl)%idorm = "n"
       pcom(j)%plcur(ipl)%phuacc = 0.
       pcom(j)%plcur(ipl)%curyr_mat = 1
 

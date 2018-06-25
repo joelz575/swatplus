@@ -19,7 +19,7 @@
       
        !! read filter strip operations
        inquire (file=in_str%fstrip_str, exist=i_exist)
-       if (i_exist == 0 .or. in_str%fstrip_str == 'null') then
+       if (i_exist == 0 .or. in_str%fstrip_str == "null") then
          allocate (filtstrip_db(0:0))
        else
        do

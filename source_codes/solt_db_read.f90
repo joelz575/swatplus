@@ -22,7 +22,7 @@
       
       !! read all soil test operations data from soiltest.dat
       inquire (file=in_sol%nut_sol,exist=i_exist)
-      if (i_exist == 0 .or. in_sol%nut_sol == 'null') then
+      if (i_exist == 0 .or. in_sol%nut_sol == "null") then
         allocate (solt_db(0:0))
       else
         do

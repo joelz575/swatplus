@@ -6,7 +6,7 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ibtyp        |NA            |bacteria type from 'bact_parms.dat'
+!!    ibtyp        |NA            |bacteria type from "bact_parms.dat"
 !!    sol_bacsol   |# cfu/m^2     |soluble bacteria in soil layer
 !!    sol_prk      |mm            |water percolating through the soil layer
 !!    sol_wt       |mm            |soil weight
@@ -23,7 +23,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
 !!    ~ ~ ~ MODULES USED ~ ~ ~
-!!    bac_ls_parms   |type bacteria_db - contains  'bac_read_lsparms.f'
+!!    bac_ls_parms   |type bacteria_db - contains  "bac_read_lsparms.f"
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -37,7 +37,7 @@
       real :: sol_bacsol     !# cfu/m^2 |soluble bacteria in soil layer
       real :: bac_kd         !          |
       real :: sol_bacsor     !# cfu/m^2 |sorbed bacteria in soil layer
-      integer :: ibtyp       !NA        |bacteria type from 'bact_parms.dat' 
+      integer :: ibtyp       !NA        |bacteria type from "bact_parms.dat" 
       integer :: ibacdb      !          | 
       integer :: ibac        !none      |counter
       

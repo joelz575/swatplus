@@ -136,7 +136,7 @@
         integer :: props2               !overbank connectivity pointer to landscape units - change props2 to overbank
         integer :: ruleset              !ruleset pointer for flow fraction of hydrograph
         integer :: num = 1              !spatial object number- ie hru number corresponding to sequential command number
-                                        !this is the first column in hru_dat (doesn't have to be sequential)
+                                        !this is the first column in hru_dat (doesn"t have to be sequential)
         integer :: gis_id               !gis number for database purposes
         integer :: fired = 0            !0=not fired; 1=fired off as a command
         integer :: cmd_next = 0         !next command (object) number
@@ -145,9 +145,9 @@
         integer :: src_tot = 0          !total number of outgoing (source) objects
         integer :: rcv_tot = 0          !total number of incoming (receiving) hydrographs
         integer :: rcvob_tot = 0        !total number of incoming (receiving) objects
-        integer :: dfn_tot = 0          !total number of defining objects (ie hru's within a subbasin)
-        integer :: subs_tot             !number of subbasins that contain this object
-        integer,  dimension(:), allocatable :: sub                  !subbasin the element is in
+        integer :: dfn_tot = 0          !total number of defining objects (ie hru"s within a subbasin)
+        integer :: ru_tot               !number of routing units that contain this object
+        integer,  dimension(:), allocatable :: ru                  !subbasin the element is in
         integer :: elem                 !subbasins element number for this object- used for routing over (can only have one)
         integer :: flood_ch_lnk = 0     !channel the landscape unit is linked to
         integer :: flood_ch_elem = 0    !landscape unit number - 1 is nearest to stream
@@ -165,7 +165,7 @@
         character (len=3), dimension(:), allocatable :: htyp_in     !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
         integer, dimension(:), allocatable :: ihtyp_in
         real, dimension(:), allocatable :: frac_in
-        type (flow_duration_curve) :: fdc                                   !use for daily flows and then use to get median of annual fdc's
+        type (flow_duration_curve) :: fdc                                   !use for daily flows and then use to get median of annual fdc"s
         type (sorted_duration_curve), dimension(:),allocatable :: fdc_ll    !linked list of daily flow for year - dimensioned to 366
         type (sorted_duration_curve), dimension(:),allocatable :: fdc_lla   !linked list of annual flow for simulation - dimensioned to nbyr
         type (hyd_output) :: hin                                            !inflow hydrograph for surface runon - sum of all inflow hyds
@@ -250,22 +250,22 @@
       
       type spatial_objects
         integer :: objs = 0      !number of objects or 1st object command
-        integer :: hru = 0       !1-number of hru's or 1st hru command
-        integer :: hru_lte = 0   !2-number of hru_lte's or 1st hru_lte command
+        integer :: hru = 0       !1-number of hru"s or 1st hru command
+        integer :: hru_lte = 0   !2-number of hru_lte"s or 1st hru_lte command
         
-        integer :: sub = 0       !3-number of sub's or 1st sub command
-        integer :: modflow = 0   !4-number of modparm's or 1st modparm command
-        integer :: aqu = 0       !5-number of aquifer's or 1st aquifer command
-        integer :: chan = 0      !6-number of chan's or 1st chan command
-        integer :: res = 0       !7-number of res's or 1st res command
-        integer :: recall = 0    !8-number of recdays's or 1st recday command
-        integer :: exco = 0      !11-number of exco's or 1st export coeff command
-        integer :: dr = 0        !12-number of dr's or 1st del ratio command
-        integer :: canal = 0     !13-number of canal's or 1st canal command
-        integer :: pump = 0      !14-number of pump's or 1st pump command
-        integer :: outlet = 0    !15-number of outlet's or 1st outlet command
-        integer :: chandeg = 0   !16-number of swat-deg channel's or 1st swat-deg channel command
-        integer :: aqu2d = 0     !17-number of 2D aquifer's or 1st 2D aquifer command
+        integer :: ru = 0        !3-number of ru"s or 1st ru command
+        integer :: modflow = 0   !4-number of modparm"s or 1st modparm command
+        integer :: aqu = 0       !5-number of aquifer"s or 1st aquifer command
+        integer :: chan = 0      !6-number of chan"s or 1st chan command
+        integer :: res = 0       !7-number of res"s or 1st res command
+        integer :: recall = 0    !8-number of recdays"s or 1st recday command
+        integer :: exco = 0      !11-number of exco"s or 1st export coeff command
+        integer :: dr = 0        !12-number of dr"s or 1st del ratio command
+        integer :: canal = 0     !13-number of canal"s or 1st canal command
+        integer :: pump = 0      !14-number of pump"s or 1st pump command
+        integer :: outlet = 0    !15-number of outlet"s or 1st outlet command
+        integer :: chandeg = 0   !16-number of swat-deg channel"s or 1st swat-deg channel command
+        integer :: aqu2d = 0     !17-number of 2D aquifer"s or 1st 2D aquifer command
         integer :: herd = 0      !18-number of herds
         integer :: wro = 0       !19-number of water rights
       end type spatial_objects
@@ -283,23 +283,26 @@
         character(len=16) :: name
         integer :: obj = 1              !object number
         character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
-        integer :: obtypno = 0          !2-number of hru_lte's or 1st hru_lte command
+        integer :: obtypno = 0          !2-number of hru_lte"s or 1st hru_lte command
         character (len=3) :: htyp       !hydrograph type (1=total, 2=surface, etc)
         integer :: htypno               !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
-        real :: frac = 0                !fraction of element in sub (expansion factor)
-        integer :: idr = 0               !points to dr's in delratio.dat
+        real :: frac = 0                !fraction of element in ru (expansion factor)
+        integer :: idr = 0               !points to dr"s in delratio.dat
         type (hyd_output), dimension (:), allocatable :: dr    !calculated del ratios for element
       end type routing_unit_elements
       type (routing_unit_elements), dimension(:), allocatable :: ru_elem
       
-      integer,  dimension(:), allocatable :: ielem_sub   !sequential counter for subbasin the hru is in
+      integer,  dimension(:), allocatable :: ielem_ru   !sequential counter for ru the hru is in
             
       !channel-surface element linkage for overbank flooding
       type channel_surface_elements
         character(len=16) :: name
         integer :: num = 0                                      !number of elements
+        integer :: chnum = 0                                    !channel number
+        integer :: resnum = 0
         character (len=3), dimension(:), allocatable :: obtyp   !object type- 1=hru, 2=hru_lte, 11=export coef, etc
-        integer, dimension(:), allocatable :: obtypno           !2-number of hru_lte's or 1st hru_lte command
+        integer, dimension(:), allocatable :: obtypno           !2-number of hru_lte"s or 1st hru_lte command
+        
         real, dimension(:), allocatable :: wid                  !maxflood plain width for each element
         real, dimension(:), allocatable :: dep                  !max flood depth for each element
         real, dimension(:), allocatable :: flood_volmx          !max flood volume for each landscape unit
@@ -323,147 +326,149 @@
       type (hyd_output), dimension(:), allocatable :: exco        !export coefficient
 
       type hyd_header                                       
-        character (len=8) :: yrs =        '    time'
-        character (len=8) :: yrc =        '    year'
-        character (len=8) :: icmd =       '    icmd'
-        character (len=8) :: otype =      '    type'
-        character (len=8) :: oprops =     '   props' 
-        character (len=8) :: iotyp =      ' objtyp_out'
-        character (len=8) :: iotypno =    '  typ_no'
-        character (len=8) :: hydio =      ' hyd_typ'
-        character (len=8) :: objno =      '  obj_no'
-        character (len=18) :: flo =    '           flo_m^3'        !! m^3          |volume of water
-        character (len=18) :: sed =    '         sed_mtons'        !! metric tons  |sediment
-        character (len=18) :: orgn =   '          orgn_kgN'        !! kg N         |organic N
-        character (len=18) :: sedp =   '          sedp_kgP'        !! kg P         |organic P
-        character (len=18) :: no3 =    '           no3_kgN'        !! kg N         |NO3-N
-        character (len=18) :: solp =   '          solp_kgP'        !! kg P         |mineral (soluble P)
-        character (len=18) :: psol =   '        psol_mgpst'        !! mg pst       |pesticide in solution
-        character (len=18) :: psor =   '        psor_mgpst'        !! mg pst       |pestitice sorbed to sediment
-        character (len=18) :: chla =   '           chla_kg'        !! kg           |chlorophyll-a
-        character (len=18) :: nh3 =    '           nh3_kgN'        !! kg N         |NH3
-        character (len=18) :: no2 =    '           no2_kgN'        !! kg N         |NO2
-        character (len=18) :: cbod =   '           cbod_kg'        !! kg           |carbonaceous biological oxygen demand
-        character (len=18) :: dox =    '            dox_kg'        !! kg           |dissolved oxygen
-        character (len=18) :: bacp =   '   bacp_#cfu/100ml'        !! # cfu/100ml  |persistent bacteria
-        character (len=18) :: baclp =  '  baclp_#cfu/100ml'        !! # cfu/100ml  |less persistent bacteria
-        character (len=18) :: met1 =   '           met1_kg'        !! kg           |conservative metal #1
-        character (len=18) :: met2 =   '           met2_kg'        !! kg           |conservative metal #2
-        character (len=18) :: met3 =   '           met3_kg'        !! kg           |conservative metal #3
-        character (len=18) :: san =    '          san_tons'        !! tons         |detached sand
-        character (len=18) :: sil =    '          sil_tons'        !! tons         |detached silt
-        character (len=18) :: cla =    '          cla_tons'        !! tons         |detached clay
-        character (len=18) :: sag =    '          sag_tons'        !! tons         |detached small ag
-        character (len=18) :: lag =    '          lag_tons'        !! tons         |detached large ag
-        character (len=18) :: grv =    '          grv_tons'        !! tons         |gravel
-        character (len=18) :: temp =   '         temp_degc'        !! deg c        |temperature
+        character (len=6) :: day =      "  jday"
+        character (len=6) :: mo =       "   mon"
+        character (len=6) :: day_mo =   "   day"
+        character (len=6) :: yrc =      "    yr"
+        character (len=8) :: icmd =       "    icmd"
+        character (len=8) :: otype =      "    type"
+        character (len=17) :: oprops =     "         props" 
+        character (len=12) :: iotyp =      "  objtyp_out"
+        character (len=15) :: iotypno =    "         typ_no"
+        character (len=16) :: hydio =      "        hyd_typ"
+        character (len=14) :: objno =      "        obj_no"
+        character (len=15) :: flo =    "        flo_m^3"        !! m^3          |volume of water
+        character (len=15) :: sed =    "      sed_mtons"        !! metric tons  |sediment
+        character (len=15) :: orgn =   "       orgn_kgN"        !! kg N         |organic N
+        character (len=15) :: sedp =   "       sedp_kgP"        !! kg P         |organic P
+        character (len=15) :: no3 =    "        no3_kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp =   "       solp_kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: psol =   "     psol_mgpst"        !! mg pst       |pesticide in solution
+        character (len=15) :: psor =   "     psor_mgpst"        !! mg pst       |pestitice sorbed to sediment
+        character (len=15) :: chla =   "        chla_kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3 =    "        nh3_kgN"        !! kg N         |NH3
+        character (len=15) :: no2 =    "        no2_kgN"        !! kg N         |NO2
+        character (len=15) :: cbod =   "        cbod_kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=16) :: dox =    "         dox_kg "        !! kg           |dissolved oxygen
+        character (len=16) :: bacp =   "bacp_#cfu/100ml "        !! # cfu/100ml  |persistent bacteria
+        character (len=15) :: baclp =  "baclp_#cfu/100ml"        !! # cfu/100ml  |less persistent bacteria
+        character (len=13) :: met1 =   "      met1_kg"        !! kg           |conservative metal #1
+        character (len=15) :: met2 =   "        met2_kg"        !! kg           |conservative metal #2
+        character (len=15) :: met3 =   "        met3_kg"        !! kg           |conservative metal #3
+        character (len=15) :: san =    "       san_tons"        !! tons         |detached sand
+        character (len=15) :: sil =    "       sil_tons"        !! tons         |detached silt
+        character (len=15) :: cla =    "       cla_tons"        !! tons         |detached clay
+        character (len=15) :: sag =    "       sag_tons"        !! tons         |detached small ag
+        character (len=15) :: lag =    "       lag_tons"        !! tons         |detached large ag
+        character (len=15) :: grv =    "       grv_tons"        !! tons         |gravel
+        character (len=15) :: temp =   "      temp_degc"        !! deg c        |temperature
       end type hyd_header
       type (hyd_header) :: hyd_hdr
       
       type output_flow_duration_header
-        character (len=12) :: obtyp =   ' ob_typ '
-        character (len=12) :: props =   '  props '
-        character (len=12) :: min =     '    min '
-        character (len=12) :: p5  =     '     p5 '
-        character (len=12) :: p10 =     '    p10 '     
-        character (len=12) :: p25 =     '    p25 '
-        character (len=12) :: p50 =     '    p50 '
-        character (len=12) :: p75 =     '    p75 '
-        character (len=12) :: p90 =     '    p90 '
-        character (len=12) :: p95 =     '    p95 '
-        character (len=12) :: max =     '    max '
-        character (len=12) :: mean =    '   mean '
+        character (len=12) :: obtyp =   " ob_typ "
+        character (len=12) :: props =   "  props "
+        character (len=12) :: min =     "    min "
+        character (len=12) :: p5  =     "     p5 "
+        character (len=12) :: p10 =     "    p10 "     
+        character (len=12) :: p25 =     "    p25 "
+        character (len=12) :: p50 =     "    p50 "
+        character (len=12) :: p75 =     "    p75 "
+        character (len=12) :: p90 =     "    p90 "
+        character (len=12) :: p95 =     "    p95 "
+        character (len=12) :: max =     "    max "
+        character (len=12) :: mean =    "   mean "
       end type output_flow_duration_header    
       type (output_flow_duration_header) :: fdc_hdr
 	  
       type calibration_header          
-        character (len=16) :: name        =   '     name      '        
-        character (len=12) :: ha          =   '     ha     '                                             
-        character (len=12) :: nbyr        =   '   nbyr     '
-        character (len=12) :: prec        =   '   precip   '
-		character (len=16) :: meas        =   '     name      '
-		character (len=12) :: srr         =   '    srr     '
-		character (len=12) :: lfr         =   '    lfr     '
-		character (len=12) :: pcr         =   '    pcr     '
-		character (len=12) :: etr         =   '    etr     '
-		character (len=12) :: tfr         =   '    tfr     '
-		character (len=12) :: sed         =   '    sed     '
-		character (len=12) :: orgn        =   '   orgn     '
-		character (len=12) :: orgp        =   '   orgp     '
-		character (len=12) :: no3         =   '    no3     '
-		character (len=12) :: solp        =   '   solp     '
-		character (len=16) :: aa          =   '   name     '
-		character (len=12) :: srr_aa      =   '    srr     '
-		character (len=12) :: lfr_aa      =   '    lfr     '
-		character (len=12) :: pcr_aa      =   '    pcr     '
-		character (len=12) :: etr_aa      =   '    etr     '
-		character (len=12) :: tfr_aa      =   '    tfr     '
-		character (len=12) :: sed_aa      =   '    sed     '
-		character (len=12) :: orgn_aa     =   '   orgn     '
-		character (len=12) :: orgp_aa     =   '   orgp     '
-		character (len=12) :: no3_aa      =   '    no3     '
-		character (len=12) :: solp_aa     =   '   solp     '
-		character (len=12) :: cn_prm_aa   =   '     cn     '
-		character (len=12) :: esco        =   '   esco     '
-		character (len=12) :: lat_len     =   'lat_len     '
-		character (len=12) :: k_lo        =   '   k_lo     '
-		character (len=12) :: slope       =   '  slope     '
-		character (len=12) :: tconc       =   '  tconc     '
-		character (len=12) :: etco        =   '   etco     '
-		character (len=12) :: perco       =   '  perco     '
-		character (len=12) :: revapc      =   '  revapc    '
-		character (len=12) :: cn3_swf     =   ' cn3_swf    '	
+        character (len=16) :: name        =   "     name      "        
+        character (len=12) :: ha          =   "     ha     "                                             
+        character (len=12) :: nbyr        =   "   nbyr     "
+        character (len=12) :: prec        =   "   precip   "
+		character (len=16) :: meas        =   "     name      "
+		character (len=12) :: srr         =   "    srr     "
+		character (len=12) :: lfr         =   "    lfr     "
+		character (len=12) :: pcr         =   "    pcr     "
+		character (len=12) :: etr         =   "    etr     "
+		character (len=12) :: tfr         =   "    tfr     "
+		character (len=12) :: sed         =   "    sed     "
+		character (len=12) :: orgn        =   "   orgn     "
+		character (len=12) :: orgp        =   "   orgp     "
+		character (len=12) :: no3         =   "    no3     "
+		character (len=12) :: solp        =   "   solp     "
+		character (len=16) :: aa          =   "   name     "
+		character (len=12) :: srr_aa      =   "    srr     "
+		character (len=12) :: lfr_aa      =   "    lfr     "
+		character (len=12) :: pcr_aa      =   "    pcr     "
+		character (len=12) :: etr_aa      =   "    etr     "
+		character (len=12) :: tfr_aa      =   "    tfr     "
+		character (len=12) :: sed_aa      =   "    sed     "
+		character (len=12) :: orgn_aa     =   "   orgn     "
+		character (len=12) :: orgp_aa     =   "   orgp     "
+		character (len=12) :: no3_aa      =   "    no3     "
+		character (len=12) :: solp_aa     =   "   solp     "
+		character (len=12) :: cn_prm_aa   =   "     cn     "
+		character (len=12) :: esco        =   "   esco     "
+		character (len=12) :: lat_len     =   "lat_len     "
+		character (len=12) :: k_lo        =   "   k_lo     "
+		character (len=12) :: slope       =   "  slope     "
+		character (len=12) :: tconc       =   "  tconc     "
+		character (len=12) :: etco        =   "   etco     "
+		character (len=12) :: perco       =   "  perco     "
+		character (len=12) :: revapc      =   "  revapc    "
+		character (len=12) :: cn3_swf     =   " cn3_swf    "	
       end type calibration_header    
       type (calibration_header) :: calb_hdr	 
 	  
       type calibration2_header         
-        character (len=16) :: name     =   '       name '
-        character (len=12) :: dakm2    =   '     da_km2 '                                            
-        character (len=12) :: cn2      =   '        cn2 '
-        character (len=12) :: tc       =   '     tc_min '
-        character (len=12) :: soildep  =   ' soildep_mm '
-        character (len=12) :: dep_imp  =   '  depimp_mm '
-        character (len=12) :: slope    =   '  slope_m/m '
-        character (len=12) :: slopelen =   '   slplen_m '
-        character (len=12) :: etco     =   '       etco '
-        character (len=12) :: sy       =   '      sy_mm '
-        character (len=12) :: abf      =   '        abf '
-        character (len=12) :: revapc   =   '     revapc '
-        character (len=12) :: percc    =   '      percc '
-        character (len=12) :: sw       =   '    sw_frac '
-        character (len=12) :: gw       =   '      gw_mm '
-        character (len=12) :: gwflow   =   '  gwflow_mm '        
-        character (len=12) :: gwdeep   =   '  gwdeep_mm '
-        character (len=12) :: snow     =   '    snow_mm '
-        character (len=12) :: xlat     =   '       xlat '
-        character (len=12) :: itext    =   '      itext '
-        character (len=12) :: tropical =   '   tropical '
-        character (len=12) :: igrow1   =   '  igrow1_jd '
-        character (len=12) :: igrow2   =   '  igrow2_jd '
-        character (len=12) :: plant    =   '      plant '
-        character (len=12) :: ipet     =   '       ipet '
-        character (len=12) :: irr      =   '        irr '
-        character (len=12) :: irrsrc   =   '     irrsrc '
-        character (len=12) :: tdrain   =   '  tdrain_hr '
-        character (len=12) :: uslek    =   '      uslek '
-        character (len=12) :: uslec    =   '      uslec '
-        character (len=12) :: uslep    =   '      uslep '
-        character (len=12) :: uslels   =   '     uslels '
+        character (len=16) :: name     =   "       name "
+        character (len=12) :: dakm2    =   "     da_km2 "                                            
+        character (len=12) :: cn2      =   "        cn2 "
+        character (len=12) :: tc       =   "     tc_min "
+        character (len=12) :: soildep  =   " soildep_mm "
+        character (len=12) :: dep_imp  =   "  depimp_mm "
+        character (len=12) :: slope    =   "  slope_m/m "
+        character (len=12) :: slopelen =   "   slplen_m "
+        character (len=12) :: etco     =   "       etco "
+        character (len=12) :: sy       =   "      sy_mm "
+        character (len=12) :: abf      =   "        abf "
+        character (len=12) :: revapc   =   "     revapc "
+        character (len=12) :: percc    =   "      percc "
+        character (len=12) :: sw       =   "    sw_frac "
+        character (len=12) :: gw       =   "      gw_mm "
+        character (len=12) :: gwflow   =   "  gwflow_mm "        
+        character (len=12) :: gwdeep   =   "  gwdeep_mm "
+        character (len=12) :: snow     =   "    snow_mm "
+        character (len=12) :: xlat     =   "       xlat "
+        character (len=12) :: itext    =   "      itext "
+        character (len=12) :: tropical =   "   tropical "
+        character (len=12) :: igrow1   =   "  igrow1_jd "
+        character (len=12) :: igrow2   =   "  igrow2_jd "
+        character (len=12) :: plant    =   "      plant "
+        character (len=12) :: ipet     =   "       ipet "
+        character (len=12) :: irr      =   "        irr "
+        character (len=12) :: irrsrc   =   "     irrsrc "
+        character (len=12) :: tdrain   =   "  tdrain_hr "
+        character (len=12) :: uslek    =   "      uslek "
+        character (len=12) :: uslec    =   "      uslec "
+        character (len=12) :: uslep    =   "      uslep "
+        character (len=12) :: uslels   =   "     uslels "
       end type calibration2_header    
       type (calibration2_header) :: calb2_hdr	
       
       type calibration3_header         
-        character (len=16) :: name     =   '       name '
-        character (len=12) :: chgtyp   =   '    chg_typ '                                            
-        character (len=12) :: val      =   '        val '
-        character (len=12) :: conds    =   '      conds '
-        character (len=12) :: lyr1     =   '       lyr1 '
-        character (len=12) :: lyr2     =   '       lyr2 '
-        character (len=12) :: year1    =   '      year1 '
-        character (len=12) :: year2    =   '      year2 '
-        character (len=12) :: day1     =   '       day1 '
-        character (len=12) :: day2     =   '       day2 '
-        character (len=12) :: objtot   =   '    obj_tot '
+        character (len=16) :: name     =   "       name "
+        character (len=12) :: chgtyp   =   "    chg_typ "                                            
+        character (len=12) :: val      =   "        val "
+        character (len=12) :: conds    =   "      conds "
+        character (len=12) :: lyr1     =   "       lyr1 "
+        character (len=12) :: lyr2     =   "       lyr2 "
+        character (len=12) :: year1    =   "      year1 "
+        character (len=12) :: year2    =   "      year2 "
+        character (len=12) :: day1     =   "       day1 "
+        character (len=12) :: day2     =   "       day2 "
+        character (len=12) :: objtot   =   "    obj_tot "
       end type calibration3_header    
       type (calibration3_header) :: calb3_hdr	
       
@@ -492,12 +497,12 @@
       end interface   
              
       contains
-      !include 'hyd_connect_out.f90'
-      !include 'hydin_output.f90'
-      !include 'hydout_output.f90'
-      !include 'obj_output.f90'
-      !include 'object_read_output.f90'
-      !include 'hyddep_output.f90'
+      !include "hyd_connect_out.f90"
+      !include "hydin_output.f90"
+      !include "hydout_output.f90"
+      !include "obj_output.f90"
+      !include "object_read_output.f90"
+      !include "hyddep_output.f90"
             
       !! function to convert concentration to mass
       subroutine hyd_convert_mass (hyd1)

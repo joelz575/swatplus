@@ -61,7 +61,7 @@
           Exp(plcp(idp)%nup1 - plcp(idp)%nup2 *                          &
           pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
 
-      un2(ipl) = pcom(j)%plm(ipl)%n_fr * (1. - pcom(j)%plg(ipl)%rwt) * pcom(j)%plm(ipl)%mass
+      un2(ipl) = pcom(j)%plm(ipl)%n_fr * (1. - pcom(j)%root(ipl)%mass) * pcom(j)%plm(ipl)%mass
       if (un2(ipl) < pcom(j)%plm(ipl)%nmass) un2(ipl) = pcom(j)%plm(ipl)%nmass
       uno3d(ipl) = un2(ipl) - pcom(j)%plm(ipl)%nmass
       

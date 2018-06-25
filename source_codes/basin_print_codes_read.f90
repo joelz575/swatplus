@@ -17,7 +17,7 @@
 
       !! read time codes
       inquire (file=in_sim%prt, exist=i_exist)
-      if (i_exist /= 0 .or. in_sim%prt /= 'null') then
+      if (i_exist /= 0 .or. in_sim%prt /= "null") then
       do
         open (107,file=in_sim%prt)
         read (107,*,iostat=eof) titldum
@@ -91,14 +91,14 @@
         if (eof < 0) exit 
         read (107,*,iostat=eof) name, pco%recall_reg
         if (eof < 0) exit 
-    !! subbasin
-        read (107,*,iostat=eof) name, pco%wb_sub
+    !! lsu
+        read (107,*,iostat=eof) name, pco%wb_lsu
         if (eof < 0) exit     
-        read (107,*,iostat=eof) name, pco%nb_sub
+        read (107,*,iostat=eof) name, pco%nb_lsu
         if (eof < 0) exit       
-        read (107,*,iostat=eof) name, pco%ls_sub
+        read (107,*,iostat=eof) name, pco%ls_lsu
         if (eof < 0) exit
-        read (107,*,iostat=eof) name, pco%pw_sub
+        read (107,*,iostat=eof) name, pco%pw_lsu
         if (eof < 0) exit                
      !! hru
         read (107,*,iostat=eof) name, pco%wb_hru

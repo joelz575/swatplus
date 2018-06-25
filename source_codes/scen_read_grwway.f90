@@ -19,7 +19,7 @@
       
        !! read grass waterways operations
        inquire (file=in_str%grassww_str, exist=i_exist)
-       if (i_exist == 0 .or. in_str%grassww_str == 'null') then
+       if (i_exist == 0 .or. in_str%grassww_str == "null") then
          allocate (grwaterway_db(0:0))
        else
        do

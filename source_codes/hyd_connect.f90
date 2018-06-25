@@ -40,7 +40,7 @@
       integer :: kk                   !none       |counter
       integer :: iph                  !           |
       integer :: iphl                 !           |
-      integer :: ipsub                !           |
+      integer :: ipru                 !           |
       integer :: ipmf                 !           |
       integer :: ipaqu                !           |
       integer :: ipcha                !           | 
@@ -91,9 +91,9 @@
         sp_ob1%hru_lte = nspu
         nspu = sp_ob%hru_lte + nspu
       end if
-      if (sp_ob%sub > 0) then         ! 3==subbasin
-        sp_ob1%sub = nspu
-        nspu = sp_ob%sub + nspu
+      if (sp_ob%ru > 0) then         ! 3==subbasin
+        sp_ob1%ru = nspu
+        nspu = sp_ob%ru + nspu
       end if
       if (sp_ob%modflow > 0) then     ! 4==modflow
         sp_ob1%modflow = nspu
@@ -152,14 +152,14 @@
         call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, 5, 2)     
       end if
       
-      !read connect file for hru_lte's
+      !read connect file for hru_lte"s
       if (sp_ob%hru_lte > 0) then
         call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, 1, 2) 
       end if
       
       !read connect file for subbasins
-      if (sp_ob%sub > 0) then
-        call hyd_read_connect(in_con%ru_con, "sub     ", sp_ob1%sub, sp_ob%sub, 5, 2)
+      if (sp_ob%ru > 0) then
+        call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, 5, 2)
         call ru_read
         call ru_read_elements
       end if
@@ -179,6 +179,7 @@
       if (sp_ob%chan > 0) then
         call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, 3, 3) 
         call overbank_read
+        call channel_surf_link
       end if
                                   
       !read connect file for reservoirs
@@ -218,19 +219,19 @@
     
       !! for each hru or defining unit, set all subbasins that contain it 
         do i = 1, sp_ob%objs
-          nspu = ob(i)%subs_tot
+          nspu = ob(i)%ru_tot
           if (nspu > 0) then
             allocate (ob(i)%obj_subs(nspu))
           end if
         end do
 
-        do isub = 1, sp_ob%sub
+        do iru = 1, sp_ob%ru
           !! determine subbasin the hrus are in and add subbasin area to basin area
-          do ii = 1, ru_def(isub)%num_tot
+          do ii = 1, ru_def(iru)%num_tot
             !!only have hrus set up - need to add other objects
-            ielem = ru_def(isub)%num(ii)        !points to element in sub_element
+            ielem = ru_def(iru)%num(ii)        !points to element in sub_element
             k = ru_elem(ielem)%obj              !object type number of element (ie hru)
-            iob = sp_ob1%sub + isub - 1         !object number of the routing unit
+            iob = sp_ob1%ru + iru - 1         !object number of the routing unit
             ru_seq(k) = ru_seq(k) + 1           !sequential number of routing unit the element is in
             kk = ru_seq(k)
             ob(k)%obj_subs(kk) = iob            !routing unit the element is in
@@ -242,7 +243,7 @@
         do i = 1, sp_ob%objs
           iph = 0
           iphl = 0
-          ipsub = 0
+          ipru = 0
           ipmf = 0
           ipaqu = 0
           ipcha = 0
@@ -266,19 +267,19 @@
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
               if (j /= iphl) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
               iphl = j
-            case ("sub")   !subbasin
-              ob(i)%obj_out(ii) = sp_ob1%sub + ob(i)%obtypno_out(ii) - 1
-              isub = ob(i)%obtypno_out(ii)
+            case ("ru")   !routing unit
+              ob(i)%obj_out(ii) = sp_ob1%ru + ob(i)%obtypno_out(ii) - 1
+              iru = ob(i)%obtypno_out(ii)
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipsub) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              do kk = 1, ru_def(isub)%num_tot
-                ielem = ru_def(isub)%num(kk)
+              if (j /= ipru) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
+              do kk = 1, ru_def(iru)%num_tot
+                ielem = ru_def(iru)%num(kk)
                 iob = ru_elem(ielem)%obj
                 ob(iob)%rcv_tot = ob(iob)%rcv_tot + 1
-                if (j /= ipsub) ob(iob)%rcvob_tot = ob(iob)%rcvob_tot + 1
+                if (j /= ipru) ob(iob)%rcvob_tot = ob(iob)%rcvob_tot + 1
               end do
-              ipsub = j
+              ipru = j
             case ("mfl")   !modflow
               ob(i)%obj_out(ii) = sp_ob1%modflow+ob(i)%obtypno_out(ii)-1
               j = ob(i)%obj_out(ii)
@@ -432,10 +433,10 @@
             ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
             ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
             !for subbasins, set receiving objects for each element (need for parallelization order)
-            if (ob(kk)%typ == "sub") then
-              isub = ob(kk)%num
-              do ielem = 1, ru_def(isub)%num_tot
-                ielem_db = ru_def(isub)%num(ielem)
+            if (ob(kk)%typ == "ru") then
+              iru = ob(kk)%num
+              do ielem = 1, ru_def(iru)%num_tot
+                ielem_db = ru_def(iru)%num(ielem)
                 kk = ru_elem(ielem_db)%obj
                 ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
                 ob(kk)%obtyp_in(jj) = ob(i)%typ
@@ -468,7 +469,7 @@
             iobj_tot = iobj_tot + 1    ! check to see if all objects are done
             if (iobj_tot == sp_ob%objs) idone = 1
             !sum defining units for each subbasin
-            do k = 1, ob(i)%subs_tot
+            do k = 1, ob(i)%ru_tot
               dfn_sum(ob(i)%obj_subs(k)) = dfn_sum(ob(i)%obj_subs(k)) + 1
               !kk = ob(i)%obj_subs(k)       !ob number of subbasin
               !dfn_sum(kk) = dfn_sum(kk) + 1
@@ -484,10 +485,10 @@
                   if (iprev /= k) then
                     rcv_sum(k) = rcv_sum(k) + 1
                     !! add subbasin elements
-                    if (ob(k)%typ == "sub") then
-                      isub = ob(k)%props
-                      do jj = 1, ru_def(isub)%num_tot
-                        ielem = ru_def(isub)%num(jj)
+                    if (ob(k)%typ == "ru") then
+                      iru = ob(k)%props
+                      do jj = 1, ru_def(iru)%num_tot
+                        ielem = ru_def(iru)%num(jj)
                         iob = ru_elem(ielem)%obj
                         rcv_sum(iob) = rcv_sum(iob) + 1
                       end do
@@ -511,7 +512,7 @@
               end if
               
               !! compute object order for parallelization (similar to stream order)
-              if (ob(i)%rcvob_tot == 0 .and. ob(i)%typ /= "sub") then
+              if (ob(i)%rcvob_tot == 0 .and. ob(i)%typ /= "ru") then
                 ob(i)%cmd_order = 1
               else
                 iorder = 0
@@ -521,13 +522,13 @@
                   iorder = Max (iorder, ob(ircv_ob)%cmd_order)
                 end do
                 !! subbasin has to be in parallel order after elements in the subbasin 
-                if (ob(i)%typ == "sub" .and. ob(i)%rcvob_tot == 0) then
+                if (ob(i)%typ == "ru" .and. ob(i)%rcvob_tot == 0) then
                   iorder = 1
                 end if
                 ob(i)%cmd_order = iorder + 1
               end if
               
-              if (ob(i)%typ /= "exco") then   !exco's are not commands
+              if (ob(i)%typ /= "exco") then   !exco"s are not commands
                 ob(i)%cmd_prev = cmd_prev
                 if (cmd_prev > 0) then
                   ob(cmd_prev)%cmd_next = i
@@ -537,7 +538,7 @@
                 cmd_prev = i
                 rcv_sum(i) = rcv_sum(i) + 1
                 ob(i)%cmd_order = iord
-              end if  !exco's are not commands
+              end if  !exco"s are not commands
             
             end do
             end if

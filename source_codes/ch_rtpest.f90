@@ -102,7 +102,6 @@
       real :: sedpstmass        !mg pst        |mass of pesticide in bed sediment
       real :: bedvol            !m^3           |volume of river bed sediment
       real :: fd2               !units         |description
-      real :: wtrin             !m^3 H2O       |water flowing into reach on day
       real :: solmax            !units         |description
       real :: sedcon            !g/m^3         |sediment concentration 
       real :: tday              !none          |flow duration (fraction of 24 hr)

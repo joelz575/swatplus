@@ -8,12 +8,12 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_n(2,:)   |none          |Manning"s "n" value for the main channel
 !!    ch_s(2,:)   |m/m           |average slope of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
-!!    pet_day     |mm H2O        |potential evapotranspiration
+!!    pet_ch       |mm H2O        |potential evapotranspiration
 !!    rchstor(:)   |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -56,12 +56,15 @@
       use basin_module
       use channel_data_module
       use channel_module
-      use hydrograph_module, only : ob, icmd, jrch
+      use hydrograph_module, only : ob, icmd, jrch, wet, ch_sur, sp_ob
+      use hru_module, only : hru
       use channel_velocity_module
+      use maximum_data_module
+      use reservoir_module
+      use reservoir_data_module
 
       implicit none
       
-      real :: wtrin         !m^3 H2O       |amount of water flowing into reach on day
       real :: scoef         !none          |Storage coefficient (fraction of water in
       real :: p             !m             |wetted perimeter
       !real :: tbase        !not used in this subroutine
@@ -84,17 +87,15 @@
       real :: det           !hr            |time step (24 hours)
       real :: qman          !m^3/s or m/s  |flow rate or flow velocity
       real :: adddep        !units         |description  
-      real :: rchvol        !m^3           | volume storage when travel time < cal time
       integer :: itermx     !units         |description 
-      
-      
-      wtrin = ob(icmd)%hin%flo
+      integer :: ihr, ires, ichan, iobhr
+      real :: depst, depstmax, rchvol
 
       !! calculate volume of water in reach
-      vol = wtrin
+      vol = wtrin 
 
       !! Find average flowrate in a day
-      volrt = vol / 86400
+      volrt = wtrin  / (86400 * rt_delt)
 
       !! Find maximum flow capacity of the channel at bank full
       c = ch_hyd(jhyd)%side
@@ -108,8 +109,33 @@
 	  rh = 0.
 	  vc = 0.
 
+      ch(jrch)%chfloodvol = 0.
       !! If average flowrate is greater than than the channel capacity at bank full
       !! then simulate flood plain flow else simulate the regular channel flow
+      !! taking floodwater to wetlands    
+      if (volrt > maxrt) then   
+      ch(jrch)%chfloodvol = (volrt - maxrt)* 86400 * rt_delt
+        do ihr = 1, sp_ob%hru
+             iobhr = hru(ihr)%obj_no
+             ichan = ob(iobhr)%flood_ch_lnk
+                 if (ichan == jrch) then
+                 ires =  hru(ihr)%dbs%surf_stor
+                 depstmax=wet_ob(ires)%pvol
+                 depst=wet_ob(ires)%pvol-wet(ires)%flo
+                 depst= max(0., depst)
+                 depst= min(depst,ch(jrch)%chfloodvol)
+
+                 if (depst > 0.) then
+                 wet(ires)%flo =wet(ires)%flo + depst 
+                 wet_d(ires)%flowi = wet_d(ires)%flowi + depst /10000.
+                 volrt = volrt- depst / (86400 * rt_delt)
+                 ch(jrch)%chfloodvol = ch(jrch)%chfloodvol - depst
+                 vol = vol - depst
+                 end if
+             end if
+        end do    
+      end if
+      
       if (volrt > maxrt) then
 	    rcharea = ch_vel(jrch)%area
 	    rchdep = ch_hyd(jhyd)%d
@@ -134,6 +160,8 @@
 	    rchdep = ch_hyd(jhyd)%d + adddep
 	    p = addp
 	    sdti = volrt
+! store floodplain water that can be used by riparian HRU"s        
+
 	  else
 	  !! find the crossectional area and depth for volrt
 	  !! by iteration method at 1cm interval depth
@@ -157,7 +185,9 @@
       end if
 
       !! Time step of simulation (in hour)
-      det = 24.
+      !! adjusted by Ann van Griensven Feb 2018 / losses are independent of residence time.
+      
+      det = 24.* rt_delt
 
       if (sdti > 0.) then
         !! calculate velocity and travel time
@@ -169,21 +199,19 @@
         scoef = 0.
  	    rtwtr = 0.
         scoef = 2. * det / (2. * rttime + det)
-                 
-        !rtwtr = scoef * (wtrin + ch(jrch)%rchstor)
-        rtwtr = scoef * wtrin
-        if (scoef > 1.) then 
-          rchvol = rcharea * ch_hyd(jhyd)%l * 1000.
-          rtwtr = wtrin + ch(jrch)%rchstor - rchvol
-        else 
-          rtwtr = scoef * (wtrin + ch(jrch)%rchstor)    
+        if (scoef > 1.) then
+         rchvol = ch_hyd(jhyd)%l * 1000. * rcharea
+         rtwtr = vol + ch(jrch)%rchstor - rchvol
+        else    
+        rtwtr = scoef * (wtrin + ch(jrch)%rchstor)
         end if
 
+        ch(jrch)%rchstor = ch(jrch)%rchstor + vol - rtwtr
+        
         !! calculate amount of water in channel at end of day
-        ch(jrch)%rchstor = ch(jrch)%rchstor + wtrin - rtwtr
         
         !! Add if statement to keep rchstor from becoming negative
-        if (ch(jrch)%rchstor < 0.0) ch(jrch)%rchstor = rcharea * ch_hyd(jhyd)%l * 1000.
+        if (ch(jrch)%rchstor < 0.0) ch(jrch)%rchstor = 0.0
 
         !! transmission and evaporation losses are proportionally taken from the 
         !! channel storage and from volume flowing out
@@ -194,38 +222,29 @@
 	    if (rtwtr > 0.) then
 
 	      !!  Total time in hours to clear the water
-          det = min(det, rttime)
-          rttlc = det * ch_hyd(jhyd)%k * ch_hyd(jhyd)%l * p
-          rttlc2 = rttlc * ch(jrch)%rchstor / (rtwtr + ch(jrch)%rchstor)
+          rttlc = det * ch_hyd(jhyd)%k * ch_hyd(jhyd)%l * p 
 
-	      if (ch(jrch)%rchstor <= rttlc2) then
-	        rttlc2 = min(rttlc2, ch(jrch)%rchstor)
-	        ch(jrch)%rchstor = ch(jrch)%rchstor - rttlc2
-	        rttlc1 = rttlc - rttlc2
-	        if (rtwtr <= rttlc1) then
-	          rttlc1 = min(rttlc1, rtwtr)
-	          rtwtr = rtwtr - rttlc1
+	      if (ch(jrch)%rchstor <= rttlc) then
+	        rttlc1 = min(rttlc, ch(jrch)%rchstor)
+	        ch(jrch)%rchstor = ch(jrch)%rchstor - rttlc1
+	        rttlc2 = rttlc - rttlc1
+	        if (rtwtr <= rttlc2) then
+	          rttlc2 = min(rttlc2, rtwtr)
+	          rtwtr = rtwtr - rttlc2
 	        else
-	          rtwtr = rtwtr - rttlc1
-	        end if
-	      else
-	        ch(jrch)%rchstor = ch(jrch)%rchstor - rttlc2
-	        rttlc1 = rttlc - rttlc2
-	        if (rtwtr <= rttlc1) then
-	          rttlc1 = min(rttlc1, rtwtr)
-	          rtwtr = rtwtr - rttlc1
-	        else
-	          rtwtr = rtwtr - rttlc1
+	          rtwtr = rtwtr - rttlc2
             end if
-	      end if
-	      rttlc = rttlc1 + rttlc2
+            rttlc = rttlc1 + rttlc2
+	      else
+	        ch(jrch)%rchstor = ch(jrch)%rchstor - rttlc
+	      end if     
         end if
 
 
         !! calculate evaporation
 	    rtevp = 0.
         if (rtwtr > 0.) then
-          aaa = bsn_prm%evrch * pet_day / 1000.
+          aaa = bsn_prm%evrch * pet_ch / 1000. * rt_delt
 	      if (rchdep <= ch_hyd(jhyd)%d) then
             rtevp = aaa * ch_hyd(jhyd)%l * 1000. * topw
 	      else
@@ -282,10 +301,10 @@
       if (rtwtr < 0.) rtwtr = 0.
       if (ch(jrch)%rchstor < 0.) ch(jrch)%rchstor = 0.
 
-      if (ch(jrch)%rchstor < 10.) then
-        rtwtr = rtwtr + ch(jrch)%rchstor
-        ch(jrch)%rchstor = 0.
-      end if
+!      if (ch(jrch)%rchstor < 10.) then
+!        rtwtr = rtwtr + ch(jrch)%rchstor
+!        ch(jrch)%rchstor = 0.
+!      end if
 
       return
       end subroutine ch_rtday

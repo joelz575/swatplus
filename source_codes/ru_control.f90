@@ -26,7 +26,7 @@
       integer :: ielem                   !none        |counter
       integer :: ise                     !none        |counter
       integer :: iob                     !            |
-      integer :: idr                     !none        |points to dr's in delratio.dat 
+      integer :: idr                     !none        |points to dr"s in delratio.dat 
       integer :: ihtypno                 !            |
       real :: ef                         !            | 
       real :: cnv_m3                     !            |
@@ -48,10 +48,10 @@
            
       iday = 1
       ihdmx = 2
-      cnv_m3 = 1000. * ru(isub)%da_km2
+      cnv_m3 = 1000. * ru(iru)%da_km2
       
       hyd_flo = 0.
-      ru_d(isub) = hz
+      ru_d(iru) = hz
       ob(icmd)%hd(1) = hz
       ob(icmd)%hd(2) = hz
       ob(icmd)%hd(3) = hz
@@ -61,8 +61,8 @@
       sumfrac = 0.
       sumarea = 0.
       
-      do ielem = 1, ru_def(isub)%num_tot
-        ise = ru_def(isub)%num(ielem)
+      do ielem = 1, ru_def(iru)%num_tot
+        ise = ru_def(iru)%num(ielem)
         iob = ru_elem(ise)%obj
         ihru = ru_elem(ise)%obtypno
         ihtyp = ru_elem(ise)%htyp
@@ -93,7 +93,7 @@
           ht2 = hz
           if (ob(iob)%area_ha > .01) then
             !per area units - mm, t/ha, kg/ha (ie hru, apex)
-            ef = ru_elem(ise)%frac * ru(isub)%da_km2 /                   &
+            ef = ru_elem(ise)%frac * ru(iru)%da_km2 /                   &
                                                      (ob(iob)%area_ha / 100.)
             ht1 = ef * ht1
             !ht2 = exco(ob(iob)%props2) ** dr(ru_elem(ise)%idr)
@@ -102,14 +102,14 @@
         else
 
         !define expansion factor to surface/soil and recharge
-        ef = ru_elem(ise)%frac * ru(isub)%da_km2 / (ob(iob)%area_ha / 100.)
+        ef = ru_elem(ise)%frac * ru(iru)%da_km2 / (ob(iob)%area_ha / 100.)
         
-        !compute all hyd's needed for routing
+        !compute all hyd"s needed for routing
         select case (ihtypno)
         case (1)   !total hyd
           ht1 = ob(iob)%hd(1) ** delrto
           ht1 = ef * ht1
-          ru_d(isub) = ru_d(isub) + ht1
+          ru_d(iru) = ru_d(iru) + ht1
           if (ob(iob)%typ == "hru") then
             ht3 = ob(iob)%hd(3) ** delrto
             ht3 = ef * ht3
@@ -122,24 +122,24 @@
           ht1 = ef * ht1
           ht3 = ob(iob)%hd(ihtypno) ** delrto
           ht3 = ef * ht3
-          ru_d(isub) = ru_d(isub) + ht3
+          ru_d(iru) = ru_d(iru) + ht3
         case (4)   !soil lateral flow hyd
           ht1 = ob(iob)%hd(ihtypno) ** delrto
           ht1 = ef * ht1
           ht4 = ob(iob)%hd(ihtypno) ** delrto
           ht4 = ef * ht4
-          ru_d(isub) = ru_d(isub) + ht4
+          ru_d(iru) = ru_d(iru) + ht4
         case (5)   !tile flow hyd
           ht1 = ef * ob(iob)%hd(ihtypno)
           ht5 = ef * ob(iob)%hd(ihtypno)  !no dr on tile
-          ru_d(isub) = ru_d(isub) + ht5
+          ru_d(iru) = ru_d(iru) + ht5
         end select
         end if      !ru_elem(ielem)%obtyp == "exc"
         
         !recharge hyd - hru_lte computes gw flow and doesnt need recharge hyd
         if (ru_elem(ielem)%obtyp /= "hlt") then
           ht2 = ef * ob(iob)%hd(2)
-          ru_d(isub) = ru_d(isub) + ht2
+          ru_d(iru) = ru_d(iru) + ht2
         end if
                 
         ! sum subdaily hydrographs for each object
@@ -183,7 +183,7 @@
         
         do ii = 1, time%step !loop for total time steps in a day
           itot = ii
-          do ib = 1, itsb(isub)  !loop for number of steps in the unit hydrograph base time
+          do ib = 1, itsb(iru)  !loop for number of steps in the unit hydrograph base time
             itot = itot + ib - 1
             if (itot > time%step) then
               iday = iday + 1
@@ -193,7 +193,7 @@
 
             !! check to see if day has gone past the max allocated days- uh > 1 day
             if (iday <= ihdmx) then
-              ob(icmd)%ts(iday,itot)%flo = ob(icmd)%ts(iday,itot)%flo + hyd_flo(ii) * uhs(isub,ib)
+              ob(icmd)%ts(iday,itot)%flo = ob(icmd)%ts(iday,itot)%flo + hyd_flo(ii) * uhs(iru,ib)
               sumflo = sumflo + ob(icmd)%ts(iday,itot)%flo
             else
               !! adjust if flow exceeded max days

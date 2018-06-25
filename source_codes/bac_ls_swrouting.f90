@@ -4,7 +4,7 @@
       
       implicit none
             
-      integer :: ibtyp      !none          |bacteria type from 'bact_parms.dat'
+      integer :: ibtyp      !none          |bacteria type from "bact_parms.dat"
       real :: sol_bacsol    !# cfu/m^2     |soluble bacteria in soil layer
       real :: sol_prk       !mm            |water percolating through the soil layer
       real :: sol_wt        !mm            |soil weight

@@ -10,7 +10,7 @@
 !!    da_ha       |ha            |area of watershed in hectares
 !!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
-!!    pet_day     |mm H2O        |potential evapotranspiration on day
+!!    pet_ch      |mm H2O        |potential evapotranspiration on day
 !!    rchdep      |m             |depth of flow on day
 !!    rttlc       |m^3 H2O       |transmission losses from reach on day
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
@@ -71,14 +71,36 @@
       real :: bury        !mg pst        |loss of pesticide from active sediment layer
                           !              |by burial
       real :: sedpest     !mg pst        |pesticide in river bed sediment 
-      
+      real :: soxy             !mg O2/L       |saturation concetration of dissolved oxygen
+      real :: chlin            !mg chl-a/L    |chlorophyll-a concentration in inflow
+      real :: algin            !mg alg/L      |algal biomass concentration in inflow
+      real :: orgnin           !mg N/L        |organic N concentration in inflow
+      real :: ammoin           !mg N/L        |ammonium N concentration in inflow
+      real :: nitratin         !mg N/L        |nitrate concentration in inflow
+      real :: nitritin         !mg N/L        |nitrite concentration in inflow
+      real :: orgpin           !mg P/L        |organic P concentration in inflow 
+      real :: dispin           !mg P/L        |soluble P concentration in inflow
+      real :: cbodin           !mg/L          |carbonaceous biological oxygen demand
+      real :: disoxin          !mg O2/L       |dissolved oxygen concentration in inflow
+      real :: cinn             !mg N/L        |effective available nitrogen concentration
+      real :: solpesto         !mg pst/m^3    |soluble pesticide concentration in outflow
+                               !              |on day
+      real :: sorpesto         !mg pst/m^3    |sorbed pesticide concentration in outflow
+                               !              |on day 
+      real :: rttlc_d
+      real :: rtdelt
+      real :: rtevp_d
+      integer :: inum1
+                         
+      ch_d(jrch)%flo_out = 0.
+      ch_d(jrch)%evap = 0.
       jhyd = ch_dat(jrch)%hyd
       jsed = ch_dat(jrch)%sed
       jnut = ch_dat(jrch)%nut
       jpst = ch_dat(jrch)%pst
 
       iwst = ob(icmd)%wst
-      pet_day = wst(iwst)%weat%pet
+      pet_ch = wst(iwst)%weat%pet
       qdbank = 0.
       revapday = 0.
       
@@ -95,14 +117,163 @@
 
       ch(jrch)%vel_chan = 0.
       ch(jrch)%dep_chan = 0.
+	  sedrch = 0.
+	  rch_san = 0.
+	  rch_sil = 0.
+	  rch_cla = 0.
+	  rch_sag = 0.
+	  rch_lag = 0.
+	  rch_gra = 0.
+      wtrin = 0.
+      chlin = 0.
+         algin = 0.
+         orgnin = 0.
+         ammoin = 0.
+         nitritin = 0.
+         nitratin = 0.
+         orgpin = 0.
+         dispin = 0.
+         cbodin = 0.
+         disoxin = 0.
+         cinn = 0.
+!! route water through reach
+        rtwtr_d=0.
+        rttlc_d=0.
+        rtevp_d =0.
 
 !! route water through reach
       if (time%step == 0) then
+          rt_delt = 1.
+        wtrin = ob(icmd)%hin%flo
+        if ( ob(icmd)%hin%flo > 0.001) then
+         chlin = 1000. * ob(icmd)%hin%chla * rt_delt / wtrin 
+         algin = 1000. * chlin / ch_nut(jnut)%ai0        !! QUAL2E equation III-1
+         orgnin = 1000. * ob(icmd)%hin%orgn  *rt_delt/ wtrin  
+         ammoin = 1000. * ob(icmd)%hin%nh3 * rt_delt / wtrin  
+         nitritin = 1000. * ob(icmd)%hin%no2 * rt_delt / wtrin
+         nitratin = 1000. * ob(icmd)%hin%no3 * rt_delt  / wtrin
+         orgpin = 1000. * ob(icmd)%hin%sedp *rt_delt / wtrin 
+         dispin = 1000. * ob(icmd)%hin%solp* rt_delt  / wtrin
+         cbodin = 1000. * ob(icmd)%hin%cbod * rt_delt / wtrin
+         disoxin = 1000. * ob(icmd)%hin%dox  * rt_delt / wtrin
+        end if            
+
+ 
+
+
+!! concentrations
+         !! initialize inflow concentrations
+
+        
         if (bsn_cc%rte == 0) call ch_rtday
         if (bsn_cc%rte == 1) call ch_rtmusk
+
+        if (bsn_cc%wq == 1)  call ch_watqual3
+        
+        ob(icmd)%hd(1)%orgn = ch(jrch)%organicn * rtwtr /1000.
+        ob(icmd)%hd(1)%sedp = ch(jrch)%organicp * rtwtr /1000.
+       ob(icmd)%hd(1)%no3 = ch(jrch)%nitraten * rtwtr / 1000.
+       ob(icmd)%hd(1)%solp = ch(jrch)%disolvp * rtwtr / 1000.
+       ob(icmd)%hd(1)%psol = solpesto * rtwtr
+       ob(icmd)%hd(1)%psor = sorpesto * rtwtr
+       ob(icmd)%hd(1)%chla = ch(jrch)%chlora * rtwtr / 1000.
+       ob(icmd)%hd(1)%nh3 = ch(jrch)%ammonian * rtwtr / 1000.
+       ob(icmd)%hd(1)%no2 = ch(jrch)%nitriten * rtwtr / 1000.
+       ob(icmd)%hd(1)%cbod = ch(jrch)%rch_cbod *  rtwtr/ 1000.
+       ob(icmd)%hd(1)%dox = ch(jrch)%rch_dox *  rtwtr/ 1000.
+        
+	  if (bsn_cc%i_subhw == 0 .and. inum1 == inum2) then
+           if (rtwtr > 0. .and. rchdep > 0.) then
+              sedrch  = ob(icmd)%hd(1)%flo 
+	        rch_san = ob(icmd)%hd(1)%san 
+	        rch_sil = ob(icmd)%hd(1)%sil 
+	        rch_cla = ob(icmd)%hd(1)%cla 
+	        rch_sag = ob(icmd)%hd(1)%sag 
+	        rch_lag = ob(icmd)%hd(1)%lag 
+	        rch_gra = ob(icmd)%hd(1)%grv 
+            end if
+
+        else
+            if (ch_sed(jsed)%eqn == 0) call ch_rtsed
+            if (ch_sed(jsed)%eqn == 1) call ch_rtsed_bagnold
+            if (ch_sed(jsed)%eqn == 2) call ch_rtsed_kodatie
+            if (ch_sed(jsed)%eqn == 3) call ch_rtsed_Molinas_Wu
+            if (ch_sed(jsed)%eqn == 4) call ch_rtsed_yangsand
+  
+        end if
+        
+        
+        call ch_rtpest   
+        rtwtr_d=rtwtr
+        rttlc_d=rttlc
+        rtevp_d =rtevp
       else
-        if (bsn_cc%rte == 0) call ch_rthr
-        if (bsn_cc%rte == 1) call ch_rthmusk
+        rt_delt = 1./time%step  
+        wtrin = ob(icmd)%hin%flo * rt_delt
+        if ( ob(icmd)%hin%flo > 0.001) then
+         chlin = 1000. * ob(icmd)%hin%chla * rt_delt / wtrin 
+         algin = 1000. * chlin / ch_nut(jnut)%ai0        !! QUAL2E equation III-1
+         orgnin = 1000. * ob(icmd)%hin%orgn  *rt_delt/ wtrin  
+         ammoin = 1000. * ob(icmd)%hin%nh3 * rt_delt / wtrin  
+         nitritin = 1000. * ob(icmd)%hin%no2 * rt_delt / wtrin
+         nitratin = 1000. * ob(icmd)%hin%no3 * rt_delt  / wtrin
+         orgpin = 1000. * ob(icmd)%hin%sedp *rt_delt / wtrin 
+         dispin = 1000. * ob(icmd)%hin%solp* rt_delt  / wtrin
+         cbodin = 1000. * ob(icmd)%hin%cbod * rt_delt / wtrin
+         disoxin = 1000. * ob(icmd)%hin%dox  * rtdelt / wtrin
+        end if
+        
+        rtwtr = 0.
+        do ii = 1, time%step
+
+
+!        wtrin = ob(icmd)%ts(1,ii)%flo  
+        call ch_rtday
+        if (bsn_cc%wq == 1)  call ch_watqual3
+!        call ch_rthpest
+               rtwtr_d=rtwtr_d+rtwtr
+               rttlc_d=rttlc_d+ rttlc
+               rtevp_d =rtevp_d+ rtevp
+
+               
+        ob(icmd)%hd(1)%orgn = ob(icmd)%hd(1)%orgn+ ch(jrch)%organicn  * rtwtr /1000.
+        ob(icmd)%hd(1)%sedp = ob(icmd)%hd(1)%sedp + ch(jrch)%organicp * rtwtr /1000.
+       ob(icmd)%hd(1)%no3 = ob(icmd)%hd(1)%no3+ ch(jrch)%nitraten * rtwtr / 1000.
+       ob(icmd)%hd(1)%solp = ob(icmd)%hd(1)%solp+ ch(jrch)%disolvp * rtwtr / 1000.
+       ob(icmd)%hd(1)%psol = ob(icmd)%hd(1)%psol+ solpesto * rtwtr
+       ob(icmd)%hd(1)%psor = ob(icmd)%hd(1)%psor+ sorpesto * rtwtr
+       ob(icmd)%hd(1)%chla = ob(icmd)%hd(1)%chla + ch(jrch)%chlora * rtwtr / 1000.
+       ob(icmd)%hd(1)%nh3 =  ob(icmd)%hd(1)%nh3+ ch(jrch)%ammonian * rtwtr / 1000.
+       ob(icmd)%hd(1)%no2 = ob(icmd)%hd(1)%no2 + ch(jrch)%nitriten * rtwtr / 1000.
+       ob(icmd)%hd(1)%cbod = ob(icmd)%hd(1)%cbod + ch(jrch)%rch_cbod *  rtwtr/ 1000.
+       ob(icmd)%hd(1)%dox = ob(icmd)%hd(1)%dox + ch(jrch)%rch_dox *  rtwtr/ 1000.    
+               
+               	  if (bsn_cc%i_subhw == 0 .and. inum1 == inum2) then
+           if (rtwtr > 0. .and. rchdep > 0.) then
+              sedrch  = ob(icmd)%hd(1)%flo 
+	        rch_san = ob(icmd)%hd(1)%san 
+	        rch_sil = ob(icmd)%hd(1)%sil 
+	        rch_cla = ob(icmd)%hd(1)%cla 
+	        rch_sag = ob(icmd)%hd(1)%sag 
+	        rch_lag = ob(icmd)%hd(1)%lag 
+	        rch_gra = ob(icmd)%hd(1)%grv 
+            end if
+
+        else
+!                hsedyld(ii) = ob(icmd)%ts(1,ii)%sed 
+!                sedrch = sedrch + hsedyld(ii)
+                rch_san = 0.
+!                rch_sil = rch_sil + hsedyld(ii)  !!All are assumed to be silt type particles
+                rch_cla = 0.
+                rch_sag = 0.
+                rch_lag = 0.
+	            rch_gra = 0.
+                call ch_rthsed
+
+        end if
+
+        end do
+      
       endif
 
 !! average daily water depth for sandi doty 09/26/07
@@ -117,14 +288,14 @@
       end if
  
 !! compute revap from bank storage
-      revapday = 0.6 * pet_day *ch_hyd(jhyd)%l *ch_hyd(jhyd)%w
+      revapday = 0.6 * pet_ch *ch_hyd(jhyd)%l *ch_hyd(jhyd)%w
       revapday = Min(revapday, ch(jrch)%bankst)
       ch(jrch)%bankst = ch(jrch)%bankst - revapday
 
 !! compute contribution of water in bank storage to streamflow
       qdbank = ch(jrch)%bankst * (1. - ch_hyd(jhyd)%alpha_bnk)
       ch(jrch)%bankst = ch(jrch)%bankst - qdbank
-      rtwtr = rtwtr + qdbank
+      rtwtr_d = rtwtr_d + qdbank
       if (time%step > 0) then
         do ii = 1, time%step
           hrtwtr(ii) = hrtwtr(ii) + qdbank / real(time%step)
@@ -133,73 +304,13 @@
 
 
 !! perform in-stream sediment calculations
-	  sedrch = 0.
-	  rch_san = 0.
-	  rch_sil = 0.
-	  rch_cla = 0.
-	  rch_sag = 0.
-	  rch_lag = 0.
-	  rch_gra = 0.
-	  ch(jrch)%orgn = 0.
-	  ch(jrch)%orgp = 0.
 
 !! do not perform sediment routing for headwater subbasins when i_subhw = 0
-	  if (bsn_cc%i_subhw == 0) then
-          if (time%step == 0) then
-            if (rtwtr > 0. .and. rchdep > 0.) then
-              sedrch  = ob(icmd)%hd(1)%flo 
-	        rch_san = ob(icmd)%hd(1)%san 
-	        rch_sil = ob(icmd)%hd(1)%sil 
-	        rch_cla = ob(icmd)%hd(1)%cla 
-	        rch_sag = ob(icmd)%hd(1)%sag 
-	        rch_lag = ob(icmd)%hd(1)%lag 
-	        rch_gra = ob(icmd)%hd(1)%grv 
-            end if
-          else
-            do ii = 1, time%step
-              if (hrtwtr(ii) > 0. .and. hdepth(ii) > 0.) then
-                hsedyld(ii) = ob(icmd)%ts(1,ii)%sed 
-                sedrch = sedrch + hsedyld(ii)
-                rch_san = 0.
-	          rch_sil = rch_sil + hsedyld(ii)  !!All are assumed to be silt type particles
-                rch_cla = 0.
-                rch_sag = 0.
-                rch_lag = 0.
-	          rch_gra = 0.
-              end if
-            end do
-          end if
-        else
-            if (time%step == 0) then
-            if (ch_sed(jsed)%eqn == 0) call ch_rtsed
-            if (ch_sed(jsed)%eqn == 1) call ch_rtsed_bagnold
-            if (ch_sed(jsed)%eqn == 2) call ch_rtsed_kodatie
-            if (ch_sed(jsed)%eqn == 3) call ch_rtsed_Molinas_Wu
-            if (ch_sed(jsed)%eqn == 4) call ch_rtsed_yangsand
-          else
-            call ch_rthsed
-            end if      
-        end if
 
-!! perform in-stream nutrient calculations
-      if (time%step == 0) then
-        if (bsn_cc%wq == 2) call ch_watqual2
-        if (bsn_cc%wq == 1) call ch_watqual
-        if (bsn_cc%wq == 0) call ch_noqual
-      else
-        if (bsn_cc%wq == 1) call ch_hhwatqual
-        if (bsn_cc%wq == 0) call ch_hhnoqual
-      end if
 
 !! perform in-stream pesticide calculations
 !!      call ch_biofilm
       
-!! perform in-stream pesticide calculations
-      if (time%step == 0) then
-        call ch_rtpest
-      else
-        call ch_rthpest
-      end if
 
 !! perform in-stream bacteria calculations
       ! call ch_rtbact  dont merge
@@ -215,9 +326,9 @@
       
 !   output_channel
       ch_d(jrch)%flo_in = ob(icmd)%hin%flo / 10000.     !m^3 -> ha-m
-      ch_d(jrch)%flo_out = rtwtr / 10000.               !m^3 -> ha-m
-      ch_d(jrch)%evap = rtevp / 10000.                  !m^3 -> ha-m
-      ch_d(jrch)%tloss = rttlc / 10000.                 !m^3 -> ha-m
+      ch_d(jrch)%flo_out = rtwtr_d / 10000.               !m^3 -> ha-m
+      ch_d(jrch)%evap =rtevp_d / 10000.                  !m^3 -> ha-m
+      ch_d(jrch)%tloss = rttlc_d / 10000.  
       ch_d(jrch)%sed_in = ob(icmd)%hin%sed   
       ch_d(jrch)%sed_out = sedrch              
       ch_d(jrch)%sed_conc = sedcon             

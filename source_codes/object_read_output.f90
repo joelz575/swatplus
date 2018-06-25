@@ -21,7 +21,7 @@
       
       !! read old saveconc properties
       inquire (file=in_sim%object_prt,exist=i_exist)
-      if (i_exist == 0 .or. in_sim%object_prt == 'null') then         
+      if (i_exist == 0 .or. in_sim%object_prt == "null") then         
         allocate (ob_out(0:0))
       else
       do
@@ -54,8 +54,8 @@
               ob_out(i)%objno = sp_ob1%hru + ob_out(i)%obtypno - 1
             case ("hlt")   !hru_lte
               ob_out(i)%objno = sp_ob1%hru_lte + ob_out(i)%obtypno - 1
-            case ("sub")   !hru
-              ob_out(i)%objno = sp_ob1%sub + ob_out(i)%obtypno - 1
+            case ("ru")   !hru
+              ob_out(i)%objno = sp_ob1%ru + ob_out(i)%obtypno - 1
             case ("res")   !hru_lte
               ob_out(i)%objno = sp_ob1%res + ob_out(i)%obtypno - 1
             case ("cha")   !channel
@@ -85,7 +85,7 @@
          iunit = ob_out(i)%unitno
          
          open (iunit+i,file = ob_out(i)%filename,recl=1500)
-         write (9000,*) 'OBJECT.PRT          ', ob_out(i)%filename
+         write (9000,*) "OBJECT.PRT          ", ob_out(i)%filename
          
          write (iunit+i,100) hyd_hdr  !! write header !H
         enddo    

@@ -9,7 +9,7 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    ibtyp        |NA            |bacteria type from 'bact_parms.dat'
+!!    ibtyp        |NA            |bacteria type from "bact_parms.dat"
 !!    sol_bacsol   |# cfu/m^2     |soluble bacteria in soil layer
 !!    sol_prk      |mm            |water percolating through the soil layer
 !!    sol_wt       |mm            |soil weight

@@ -121,7 +121,7 @@
 !!    previously using minumum causing soil temp to decrease
 !!    in summer due to high biomass
 
-      tmp_srf = 0.5 * (tbare + tcov)  ! following Jimmy's code
+      tmp_srf = 0.5 * (tbare + tcov)  ! following Jimmy"s code
 
 !! calculate temperature for each layer on current day
       xx = 0.

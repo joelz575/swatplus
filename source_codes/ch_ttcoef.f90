@@ -8,7 +8,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_n(2,:)   |none          |Manning"s "n" value for the main channel
 !!    ch_s(2,:)   |m/m           |average slope of main channel
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
@@ -24,7 +24,7 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    aa          |none          |area/area=1 (used to calculate velocity with
-!!                               |Manning's equation)
+!!                               |Manning"s equation)
 !!    a           |m^2           |cross-sectional area of channel
 !!    b           |m             |bottom width of channel
 !!    d           |m             |depth of flow 
@@ -66,7 +66,7 @@
       real :: tt1                !km s/m        |time coefficient for specified depth
       real :: tt2                !km s/m        |time coefficient for bankfull depth
       real :: aa                 !none          |area/area=1 (used to calculate velocity with
-                                 !              |Manning's equation)
+                                 !              |Manning"s equation)
       real :: chsslope           !none          |change in horizontal distance per unit
                                  !              |change in vertical distance on channel side
                                  !              |slopes; always set to 2 (slope=1/2)

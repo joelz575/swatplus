@@ -21,7 +21,7 @@
       imax = 0
 
       inquire (file=in_sol%soils_sol,exist=i_exist)
-      if (i_exist == 0 .or. in_sol%soils_sol == 'null') then
+      if (i_exist == 0 .or. in_sol%soils_sol == "null") then
         allocate (soildb(0:0))
         allocate (soildb(0)%ly(0:0))
       else

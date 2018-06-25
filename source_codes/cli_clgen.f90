@@ -63,9 +63,9 @@
 
       !! Reset prior day category for precipitation     
       if (wst(iwst)%weat%precip >= 0.1) then
-        wst(iwst)%weat%precip_prior_day = 'wet'
+        wst(iwst)%weat%precip_prior_day = "wet"
       else
-        wst(iwst)%weat%precip_prior_day = 'dry'
+        wst(iwst)%weat%precip_prior_day = "dry"
       end if
 
       !! Calculate Daylength !!
@@ -78,7 +78,7 @@
       dd = 1.0 + 0.033 * Cos(Real(time%day) / 58.09)
 
       !!daylength = 2 * Acos(-Tan(sd) * Tan(lat)) / omega
-      !!where the angular velocity of the earth's rotation, omega, is equal
+      !!where the angular velocity of the earth"s rotation, omega, is equal
       !! to 15 deg/hr or 0.2618 rad/hr and 2/0.2618 = 7.6374
       !! equation 2.1.6 in SWAT manual
 
@@ -101,7 +101,7 @@
 
       !! Calculate fraction of radiation recieved during each hour in day
       !! this calculation assumes solar noon (when the angle between the
-      !! observer on the earth to the sun and a line normal to the earth's
+      !! observer on the earth to the sun and a line normal to the earth"s
       !! at that position is at a minimum) falls at 12 noon in day.
       !! equation 2.2.10 in SWAT manual
       

@@ -31,7 +31,7 @@
       
       !! read all data from hydrol.dat
       inquire (file=in_cond%cond_ctl, exist=i_exist)
-      if (i_exist == 0 .or. in_cond%cond_ctl == 'null') then
+      if (i_exist == 0 .or. in_cond%cond_ctl == "null") then
         allocate (d_tbl(0:0)) 
       else
         do
@@ -128,7 +128,7 @@
                   
                 case ("release")
                   do idb = 1, db_mx%res_weir
-                    if (d_tbl(i)%act(iac)%option == 'weir') then
+                    if (d_tbl(i)%act(iac)%option == "weir") then
                     if (d_tbl(i)%act(iac)%file_pointer == res_weir(idb)%name) then
                       d_tbl(i)%act_typ(iac) = idb
                       exit

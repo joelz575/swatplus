@@ -29,7 +29,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : ipl, manure_kg, sumlai
+      use hru_module, only : ipl, manure_kg
       use soil_module
       use plant_module
       use bacteria_module
@@ -43,13 +43,13 @@
       real :: gc1          !          |
       integer :: ibac      !none      |counter
       integer :: ibacdb    !          |
-      integer :: ibtyp     !NA        |bacteria type from 'bact_parms.dat'
+      integer :: ibtyp     !NA        |bacteria type from "bact_parms.dat"
       real :: j            !          |
             
       
       
       if (bioms_tot > bioms_min) then
-        gc = (1.99532 - erfc(1.333 * sumlai - 2.)) / 2.1
+        gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
         if (gc < 0.) gc = 0.
         gc1 = 1. - gc
         do ibac = 1, bact(ibacdb)%num

@@ -3,7 +3,7 @@
       implicit none
            
       type tillage_db
-        character(len=8) :: tillnm = ' '
+        character(len=8) :: tillnm = " "
         real :: effmix = 0.          !! none               |mixing efficiency of tillage operation
         real :: deptil = 0.          !! mm                 |depth of mixing caused by tillage
         real :: ranrns = 0.          !! mm                 |random roughness

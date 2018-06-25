@@ -3,7 +3,7 @@
       implicit none
      
       type topography_db
-        character(len=16) :: name = 'default'
+        character(len=16) :: name = "default"
         real :: slope = .02       !!	hru_slp(:) |m/m           |average slope steepness in HRU
         real :: slope_len = 50.   !! slsubbsn(:)   |m             |average slope length for erosion
         real :: lat_len = 50.     !! slsoil(:)     |m             |slope length for lateral subsurface flow
@@ -13,7 +13,7 @@
       type (topography_db), dimension (:), allocatable :: topo_db
 
       type fields_db
-           character(len=16) :: name = 'default'
+           character(len=16) :: name = "default"
            real :: length = 500. !!               |m             |field length for wind erosion
            real :: wid = 100.    !!               |m             |field width for wind erosion
            real :: ang = 30.     !!               |deg           |field angle for wind erosion

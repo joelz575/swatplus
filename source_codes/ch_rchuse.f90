@@ -35,7 +35,6 @@
          
       implicit none
       
-      real :: wtrin      !m^3 H2O       |water outflow from reach prior to
                          !              |subtracting irrigation diversions
       integer :: ii      !none          |counter 
 

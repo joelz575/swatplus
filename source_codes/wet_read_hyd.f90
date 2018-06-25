@@ -20,7 +20,7 @@
       imax = 0
 
       inquire (file=in_res%hyd_wet, exist=i_exist)
-      if (i_exist == 0 .or. in_res%hyd_wet == 'null') then
+      if (i_exist == 0 .or. in_res%hyd_wet == "null") then
         allocate (wet_hyd(0:0))
       else   
       do
@@ -32,7 +32,7 @@
         do while (eof == 0)
           read (105,*,iostat=eof) titldum
           if (eof < 0) exit
-          imax = Max(imax,i)
+          imax = imax + 1
         end do
         
       db_mx%wet_hyd = imax
@@ -48,13 +48,7 @@
          read (105,*,iostat=eof) wet_hyd(ires)
          if (eof < 0) exit
 
-        if (wet_hyd(ires)%pvol + wet_hyd(ires)%evol > 0.) then
-          if(wet_hyd(ires)%pvol <= 0) wet_hyd(ires)%pvol = 0.9 * wet_hyd(ires)%evol
-        else
-          if (wet_hyd(ires)%pvol <= 0) wet_hyd(ires)%pvol = 60000.0
-        end if
-        if (wet_hyd(ires)%evol <= 0.0) wet_hyd(ires)%evol = 1.11 * wet_hyd(ires)%pvol
-        if (wet_hyd(ires)%psa <= 0.0) wet_hyd(ires)%psa = 0.08 * wet_hyd(ires)%pvol
+        if (wet_hyd(ires)%psa <= 0.0) wet_hyd(ires)%psa = 0.08 * wet_hyd(ires)%pdep
         if (wet_hyd(ires)%esa <= 0.0) wet_hyd(ires)%esa = 1.5 * wet_hyd(ires)%psa
         if (wet_hyd(ires)%evrsv <= 0.) wet_hyd(ires)%evrsv = 0.6
 

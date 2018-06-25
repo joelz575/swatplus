@@ -127,7 +127,7 @@
       rsd1(j)%lig%c = rsd1(j)%lig%c * X1
       rsd1(j)%lig%c = rsd1(j)%str%c - rsd1(j)%lig%c
       if (surfq(j) > 0) then
-        !write(*,*) 'stop'
+        !write(*,*) "stop"
       end if
       IF(soil1(j)%microb(1)%c > .01) THEN
           PRMT_21 = 0.  !KOC FOR CARBON LOSS IN WATER AND SEDIMENT(500._1500.) KD = KOC * C
@@ -171,7 +171,7 @@
       latc_clyr = latc_clyr + soil(j)%ly(1)%latc   
       do k = 2, soil(j)%nly
           if (soil(j)%ly(k)%prk > 0 .and. k == soil(j)%nly) then
-            !write (*,*) 'stop'
+            !write (*,*) "stop"
           end if
           sol_thick = 0.
           sol_thick = soil(j)%phys(k)%d-soil(j)%phys(k-1)%d

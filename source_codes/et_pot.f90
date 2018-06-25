@@ -9,7 +9,6 @@
 !!    name       |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    albday     |none           |albedo for the day in HRU
-!!    cht(:)     |m              |canopy height
 !!    gsi(:)     |m/s            |maximum stomatal conductance
 !!    hru_ra(:)  |MJ/m^2         |solar radiation for the day in HRU
 !!    hru_rmx(:) |MJ/m^2         |maximum possible radiation for the day in HRU
@@ -47,8 +46,8 @@
       use basin_module
       use hydrograph_module
       use climate_module
-      use hru_module, only : hru, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, cht_mx, tmx, tmn,  &
-        albday, epmax, ipl, pet_day, sumlai, vpd, ep_max
+      use hru_module, only : hru, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, tmx, tmn,  &
+        albday, epmax, ipl, pet_day, vpd, ep_max
       use plant_module
       
       implicit none
@@ -206,18 +205,18 @@
           else
             !! determine wind speed and height of wind speed measurement
             !! adjust to 100 cm (1 m) above canopy if necessary
-            if (cht_mx(j) <= 1.0) then
+            if (pcom(j)%cht_mx <= 1.0) then
               zz = 170.0
             else
-              zz = cht_mx(j) * 100. + 100.
+              zz = pcom(j)%cht_mx * 100. + 100.
             end if
             uzz = u10(j) * (zz/1000.)**0.2
 
             !! calculate canopy height in cm
-            if (cht_mx(j) < 0.01) then
+            if (pcom(j)%cht_mx < 0.01) then
               chz = 1.
             else
-              chz = cht_mx(j) * 100.
+              chz = pcom(j)%cht_mx * 100.
             end if
 
             !! calculate roughness length for momentum transfer
@@ -243,7 +242,7 @@
             gsi_wav = 0.
             do ipl = 1, pcom(j)%npl
               idp = pcom(j)%plcur(ipl)%idplt
-              rto = pcom(j)%plg(ipl)%lai / (sumlai + 0.01)
+              rto = pcom(j)%plg(ipl)%lai / (pcom(j)%lai_sum + 0.01)
               xx = vpd - 1.
               if (xx > 0.0) then
                 fvpd = Max(0.1,1.0 - plcp(idp)%vpd2 * xx)
@@ -256,12 +255,10 @@
           
             !! calculate canopy resistance
             rc = 1. / (gsi_adj + 0.01)           !single leaf resistance
-            rc = rc / (0.5 * (sumlai + 0.01)                              &
-                              * (1.4 - 0.4 * hru(j)%parms%co2 / 330.))
+            rc = rc / (0.5 * (pcom(j)%lai_sum + 0.01) * (1.4 - 0.4 * hru(j)%parms%co2 / 330.))
 
             !! calculate maximum plant ET
-            ep_max = (dlt * rn + gma * rho * vpd / rv) /                  &
-                              (xl * (dlt + gma * (1. + rc / rv)))
+            ep_max = (dlt * rn + gma * rho * vpd / rv) / (xl * (dlt + gma * (1. + rc / rv)))
             if (ep_max < 0.) ep_max = 0.
             ep_max = Min(ep_max, pet_day)
           end if

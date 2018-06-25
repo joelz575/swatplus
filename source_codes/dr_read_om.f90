@@ -16,7 +16,7 @@
       
       !read delivery ratio organic-mineral data
       inquire (file=in_delr%om, exist=i_exist)
-      if (i_exist /= 0 .or. in_delr%om /= 'null') then
+      if (i_exist /= 0 .or. in_delr%om /= "null") then
         do
           open (107,file=in_delr%om)
           read (107,*,iostat=eof) titldum

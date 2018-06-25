@@ -28,10 +28,6 @@
       real, intent (out) :: x6     !none          |2nd shape parameter for S curve equation
                                   !              |characterizing the regions close to the
                                   !              |endpoints of the curve
-                
-      xx = 0.0
-      x5 = 0.0
-      x6 = 0.0
 
       xx = Log(x3/x1 - x3)
       x6 = (xx - Log(x4/x2 - x4)) / (x4 - x3)

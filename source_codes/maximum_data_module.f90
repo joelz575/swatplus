@@ -55,7 +55,7 @@
         integer :: sched_up = 0       !! none     |max number of scheduled updates (paramters, structures, land_use_mgt)
         integer :: cond_up = 0        !! none     |max number of conditional updates (paramters, structures, land_use_mgt)
         integer :: wr_ob = 0          !! none     |max number of water rights objects
-        integer :: irr_nosrc = 0      !! none     |max number of hru's with unlimited water source for irrigation
+        integer :: irr_nosrc = 0      !! none     |max number of hru"s with unlimited water source for irrigation
         integer :: d_tbl = 0          !! none     |max number of decision tables
         integer :: cs_db = 0
         integer :: pathcom = 0

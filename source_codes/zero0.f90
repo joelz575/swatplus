@@ -9,7 +9,7 @@
        hru,hru_dafr,hrupest,igrz,      &
        irr_asq,irr_mx,irr_no,irr_noa,irr_sc,irr_sca,irramt,irrno,irrsc,irrsq,isep,isep_ly,iseptic,itb,        &
        lai_init,latno3,manure_id,nop,npno,orgn_con,orgp_con,par,phubase,qird,ranrns_hru,     &
-       sed_con,sepcrk,sol_rd,sol_sumsolp,soln_con,solp_con,sstmaxd,stmaxd,stsol_rd,tileq,tmx,uh,         &
+       sed_con,sepcrk,sol_sumsolp,soln_con,solp_con,sstmaxd,stmaxd,tileq,tmx,uh,         &
        wstrs_id,wt_shall,wtab,yr_skip
 
       use bacteria_module
@@ -182,7 +182,6 @@
 !!   added for Srini in output.mgt nitrogen and phosphorus nutrients per JGA by gsm 9/8/2011
       sol_sumn03 = 0.
       sol_sumsolp = 0.
-      stsol_rd = 0.
       soln_con = 0.
       solp_con = 0.
       gw_qdeep = 0.

@@ -66,7 +66,7 @@
       a2 = .8 
       
       inquire (file=in_hru%hru_ez, exist=i_exist)
-      if (i_exist == 0 .or. in_hru%hru_ez == 'null') then
+      if (i_exist == 0 .or. in_hru%hru_ez == "null") then
         allocate (hlt_db(0:0))
       else
       do
@@ -199,8 +199,8 @@
          hlt(i)%phu = .9 * phutot
          hlt(i)%phu = Max(500., hlt(i)%phu)
          
-         if (pldb(iplt)%idc == 'warm_annual_legume' .or. pldb(iplt)%idc == 'cold_annual_legume' .or.   &
-             pldb(iplt)%idc == 'warm_annual' .or. pldb(iplt)%idc == 'cold_annual') then
+         if (pldb(iplt)%typ == "warm_annual_legume" .or. pldb(iplt)%typ == "cold_annual_legume" .or.   &
+             pldb(iplt)%typ == "warm_annual" .or. pldb(iplt)%typ == "cold_annual") then
            hlt(i)%phu = Min(2000., hlt(i)%phu)
          end if
 

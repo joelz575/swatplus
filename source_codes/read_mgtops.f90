@@ -51,7 +51,7 @@
               endif
           end do
           if (sched(isched)%mgt_ops(iop)%op1 == 0) then
-            write (9001,*) ' mgt schedule', isched, ' op numb', iop, sched(isched)%mgt_ops(iop)%op_char, ' not found in plants.plt database' 
+            write (9001,*) " mgt schedule", isched, " op numb", iop, sched(isched)%mgt_ops(iop)%op_char, " not found in plants.plt database" 
           end if  
          
         case ("harv")

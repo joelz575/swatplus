@@ -21,7 +21,7 @@
       
        !! read user defined upland CP removal operations
        inquire (file=in_str%bmpuser_str, exist=i_exist)
-       if (i_exist == 0 .or. in_str%bmpuser_str == 'null') then
+       if (i_exist == 0 .or. in_str%bmpuser_str == "null") then
          allocate (bmpuser_db(0:0))
        else
        do

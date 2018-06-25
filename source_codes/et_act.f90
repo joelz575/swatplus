@@ -41,8 +41,9 @@
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : hru, tmpav, canstor, sno_hru, sol_cov, hru_dafr, ihru, canev, ep_max,  &
-         es_day, pet_day, snoev, sumlai
+         es_day, pet_day, snoev
       use soil_module
+      use plant_module
       
       implicit none
 
@@ -109,8 +110,8 @@
 
         !! compute potential plant evap for methods other that Penman-Monteith
         if (bsn_cc%pet /= 1) then
-          if (sumlai <= 3.0) then
-            ep_max = sumlai * pet / 3.
+          if (pcom(j)%lai_sum <= 3.0) then
+            ep_max = pcom(j)%lai_sum * pet / 3.
           else
             ep_max = pet
           end if
@@ -127,7 +128,7 @@
         else
           eaj = Exp(cej * (sol_cov(j)+ 0.1))
         end if
-        es_max = pet * eaj
+        es_max = pet * eaj * (1.-hru(j)%water_fr)
         eos1 = pet / (es_max + ep_max + 1.e-10)
         eos1 = es_max * eos1
         es_max = Min(es_max, eos1)

@@ -51,7 +51,6 @@
 !!                               |rain/snow on day in HRU
 !!    snomlt      |mm H2O        |amount of water in snow melt for the day in 
 !!                               |HRU
-!!    sol_rd      |mm            |current rooting depth
 !!    sw_excess   |mm H2O        |amount of water in soil that exceeds field 
 !!                               |capacity (gravity drained water)
 !!    tloss       |mm H2O        |amount of water removed from surface runoff
@@ -74,7 +73,7 @@
         bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp, gwseep,     &
         hhsedy, hmntl, hmptl, inflpcp, latqrunon, ls_overq, lyrtile, no3pcp, peakr,  &
         pet_day, qday, qtile, rmn2tl, rmp1tl, rmptl, roctl, rwntl, sepday, snoev, snofall, snomlt,             &
-        sol_rd, sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, wdntl, fixn 
+        sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, wdntl, fixn 
       use soil_module
       
       implicit none
@@ -143,7 +142,6 @@
         snoev = 0.
         snofall = 0.
         snomlt = 0.
-        sol_rd = 0.
         sw_excess = 0.
         tloss = 0.
         uno3d = 0.

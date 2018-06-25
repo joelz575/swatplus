@@ -44,7 +44,7 @@
           end do
           
           !condition is met - set the release rate
-          if (action == 'y') then
+          if (action == "y") then
             select case (d_tbl(id)%act(iac)%option)
             case ("rate")
               resflwo = d_tbl(id)%act(iac)%const * 86400.

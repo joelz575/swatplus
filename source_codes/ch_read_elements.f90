@@ -32,7 +32,7 @@
       mcal = 0
             
     inquire (file=in_regs%def_cha, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_cha /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_cha /= "null") then
       do
         open (107,file=in_regs%def_cha)
         read (107,*,iostat=eof) titldum
@@ -124,7 +124,7 @@
         
     !! setting up regions for channel soft cal and/or output by order
     inquire (file=in_regs%def_cha_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_cha_reg /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_cha_reg /= "null") then
       do
         open (107,file=in_regs%def_cha_reg)
         read (107,*,iostat=eof) titldum
@@ -211,7 +211,7 @@
       end do 
       end if	  
 
-      !! if no regions are input, don't need elements
+      !! if no regions are input, don"t need elements
       if (mreg > 0) then
       
       do ireg = 1, mreg
@@ -228,10 +228,10 @@
       end if    ! mreg > 0
       
       !!read data for each element in all landscape cataloging units
-      inquire (file='element.ccu', exist=i_exist)
+      inquire (file="element.ccu", exist=i_exist)
       if (i_exist /= 0) then
       do
-        open (107,file='element.ccu')
+        open (107,file="element.ccu")
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header
@@ -253,7 +253,7 @@
           read (107,*,iostat=eof) i
           backspace (107)
           read (107,*,iostat=eof) k, ccu_elem(i)%name, ccu_elem(i)%obtyp, ccu_elem(i)%obtypno,      &
-                                    ccu_elem(i)%bsn_frac, ccu_elem(i)%sub_frac, ccu_elem(i)%reg_frac
+                                    ccu_elem(i)%bsn_frac, ccu_elem(i)%ru_frac, ccu_elem(i)%reg_frac
           if (eof < 0) exit
         end do
         exit
@@ -266,7 +266,7 @@
           ielem = ccu_reg(ireg)%num(icha)
           !switch %num from element number to hru number
           ccu_cal(ireg)%num(icha) = ccu_elem(ielem)%obtypno
-          ccu_cal(ireg)%hru_ha(icha) = ccu_elem(ielem)%sub_frac * ccu_cal(ireg)%area_ha
+          ccu_cal(ireg)%hru_ha(icha) = ccu_elem(ielem)%ru_frac * ccu_cal(ireg)%area_ha
         end do
       end do
       

@@ -5,14 +5,14 @@
 !!    hydrologic cycle
 
       use hru_module, only : hru, ihru, tmx, tmn, tmpav, hru_ra, hru_rmx, rhd, u10, tillage_switch,      &
-         tillage_days, ndeat, qdr, phubase, cht_mx, strsw_av, sedyld, sci, aird, surfq,   &
+         tillage_days, ndeat, qdr, phubase, strsw_av, sedyld, sci, aird, surfq,   &
          yr_skip, latq, tconc, smx, sepbtm, igrz, iseptic, i_sep, filterw, sed_con, soln_con, solp_con, & 
          orgn_con, orgp_con, cnday, nplnt, percn, tileno3, pplnt, sedorgn, sedorgp, surqno3, latno3,    &
          surqsolp, sedminpa, sedminps, auton, autop, bactrop, bactsedlp, bactsedp, bactrolp,     &
          fertn, fertp, fixn, grazn, grazp, hmntl, hmptl, ipl, no3pcp, peakr, qtile, rmn2tl, rmp1tl, rmptl,     &
          roctl, rwntl, snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, wdntl, canev,   &
          ep_day, es_day, etday, inflpcp, ipot, isep, iwgen, ls_overq, nd_30, pet_day,              &
-         pot, precipday, precip_eff, qday, sumlai, sno_hru, latqrunon
+         pot, precipday, precip_eff, qday, sno_hru, latqrunon
       use soil_module 
       use plant_module
       use basin_module
@@ -32,13 +32,11 @@
       integer :: j                  !none          |same as ihru (hru number)
       integer :: sb                 !              |  
       integer :: idp                !              |
-      real :: sumbm                 !              |
-      real :: sumrwt                !              |
       real :: ulu                   !              | 
       integer :: iob                !              |
       integer :: ith                !              |
       integer :: iwgn               !              |
-      integer :: jres               !none          |reservoir number
+      integer :: ires               !none          |reservoir number
       integer :: isched             !              |
       integer :: idat               !              |
       integer :: ihyd               !              |
@@ -54,7 +52,7 @@
       real :: qdfr                  !              |
       real :: xx                    !              |
       integer :: iob_out            !              |object type out 
-      integer :: isub               !              | 
+      integer :: iru               !              | 
       integer :: iout               !none          |counter
       real :: over_flow             !              |
       real :: yield                 !              |
@@ -68,7 +66,7 @@
       ith = hru(j)%dbs%topo
       ipot = hru(ihru)%dbs%surf_stor
       iwgn = wst(iwst)%wco%wgn
-      jres = hru(j)%res
+      ires =  hru(j)%dbs%surf_stor
       isched = hru(j)%mgt_ops
       
       precipday = wst(iwst)%weat%precip
@@ -81,6 +79,7 @@
       rhd(j) = wst(iwst)%weat%rhum
       u10(j) = wst(iwst)%weat%windsp
       
+      hru(ihru)%water_seep = 0.
       !plt => hru(j)%pl(1)
       
       !!by zhang DSSAT tillage
@@ -121,17 +120,6 @@
           call rls_routesurf (icmd)
         end if
         
-        !!add overbank flooding to storage
-        if (ob(icmd)%flood_ch_lnk > 0) then
-          idat = res_ob(jres)%props
-          ihyd = res_dat(idat)%hyd
-          ics = ob(icmd)%props2
-          !if (ch_sur(ics)%hd(1)%flo > 1.e-6) then
-            !res(jres) = res(jres) + ch_sur(ics)%hd
-            call rls_routesurf (icmd)
-          !end if
-        end if
-        
         !!Route incoming overland flow
         !if (ch_sur(ics)%hd()%flo > 1.e-6) then
         !  if (ch_sur(ics)%hd()%flo > 1.e-6) then
@@ -159,20 +147,12 @@
         end if
 
         !! compute total parms for all plants in the community
-        sumlai = 0.
-        cht_mx(j) = 0.
-        sumbm = 0.
-        sumrwt = 0.
         strsw_av = 0.
         strsa_av = 0.
         strsn_av = 0.
         strsp_av = 0.
         strstmp_av = 0.
         do ipl = 1, pcom(j)%npl
-          sumlai = sumlai + pcom(j)%plg(ipl)%lai
-           sumbm = sumbm + pcom(j)%plm(ipl)%mass
-          sumrwt = sumrwt + pcom(j)%plg(ipl)%rwt
-          cht_mx(j) = Max(0., cht_mx(j))
           strsw_av(j) = strsw_av(j) + pcom(j)%plstr(ipl)%strsw / pcom(j)%npl
           strsa_av = strsa_av + pcom(j)%plstr(ipl)%strsa / pcom(j)%npl
           strsn_av = strsn_av + pcom(j)%plstr(ipl)%strsn / pcom(j)%npl
@@ -187,13 +167,16 @@
         call stmp_solt
         
         call surface
-        
+       ! wetland processes
+        hru(j)%water_fr = 0.
+        if (ires > 0) call stor_surf
+ 
         !! ht2%sed==sediment routed across hru from surface runon
         sedyld(j) = sedyld(j) + ht2%sed
 
         !! compute effective rainfall (amount that percs into soil)
         !! add infiltration from surface runon 
-        inflpcp = Max(0., precip_eff - surfq(j))
+        inflpcp = Max(0., precip_eff - surfq(j)) + hru(j)%water_seep /(10.* hru(j)%area_ha)
          
         !! perform management operations
         if (yr_skip(j) == 0) call mgt_operatn   
@@ -210,7 +193,6 @@
           
         !! compute evapotranspiration
         call et_pot
-!        if (pot(j)%vol < 1.e-6) call etact
         call et_act
 
         !! compute water table depth using climate drivers
@@ -225,11 +207,7 @@
            smx(j)) - precip_eff + qday + latq(j) + sepbtm(j) + qtile
         sci(j) = amin1(sci(j), bsn_prm%smxco * smx(j))
         end if 
-        
-        !! apply fertilizer/manure in continuous fert operation
 
-        
-        
         !! remove biomass from grazing and apply manure
         if (igrz(j) == 1) then
           ndeat(j) = ndeat(j) + 1
@@ -239,20 +217,26 @@
           !soil(j)%ly(1)%bacsor(ibac) = sol_bacsor
         end if
        
-        !! compute crop growth
-        call plantmod
-     
-        !! check for dormancy
-        do ipl = 1, pcom(j)%npl
-          if (pcom(j)%plcur(ipl)%gro == "y") call mgt_dormant
-        end do
-               
-        !! tropical plants - begin new growing cycle at end of dry season when soil 
-        !! moisture of upper 2 layers exceeds input fraction of field capacity
+        !! compute plant community partitions
+        call pl_community
+   
+        !! compute plant biomass, leaf, root and seed growth
+        call pl_grow
+      
+        !! moisture growth perennials - start growth
         if (pcom(j)%mseas == 1) then
-          call mgt_trop_gro
+          call pl_moisture_gro
         end if
-
+        !! moisture growth perennials - start senescence
+        if (pcom(j)%mseas == 0) then
+          call pl_moisture_senes
+        end if
+        
+        !! compute total surface residue
+        do ipl = 1, pcom(j)%npl
+          rsd1(j)%tot_com = rsd1(j)%tot_com + rsd1(j)%tot(ipl)
+        end do
+        
         !! compute actual ET for day in HRU
         etday = ep_day + es_day + canev
 
@@ -343,10 +327,6 @@
         !! compute sediment loading in lateral flow and add to sedyld
         call swr_latsed
 
-        !! compute nutrient loading in groundwater flow
-!        call aqu_minp
-!        call aqu_no3
-
         !! lag nutrients and sediment in surface runoff
         call stor_surfstor
 
@@ -382,11 +362,6 @@
           qdfr = 0.
         end if
       
-        !! impounded water - rice paddy, pothole, wetland, etc
-        !! do not call if typ=="fpl" (flood plain and no depressional storage)
-        if (hru(j)%surfstor > 0) then ! .and. res(jres)%flo > 1.e-6) then
-          call stor_surf
-        end if
           
         xx = sed_con(j) + soln_con(j) + solp_con(j) + orgn_con(j) + orgp_con(j)
         if (xx > 1.e-6) then
@@ -403,9 +378,9 @@
       ! if flow from hru is directly routed
       iob_out = iob
       ! if the hru is part of a ru and it is routed
-      if (ob(iob)%subs_tot > 0) then
-        isub = ob(iob)%sub(1)
-        iob_out = sp_ob1%sub + isub - 1
+      if (ob(iob)%ru_tot > 0) then
+        iru = ob(iob)%ru(1)
+        iob_out = sp_ob1%ru + iru - 1
       end if
       
       hwb_d(j)%surq_cha = 0.
@@ -417,39 +392,39 @@
       
       do iout = 1, ob(iob_out)%src_tot
         select case (ob(iob_out)%obtyp_out(iout))
-        case ('cha')
-          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+        case ("cha")
+          if (ob(iob_out)%htyp_out(iout) == "sur" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%surq_cha = hwb_d(j)%surq_cha + surfq(j) * ob(iob_out)%frac_out(iout)
           end if
-          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+          if (ob(iob_out)%htyp_out(iout) == "lat" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%latq_cha = hwb_d(j)%latq_cha + latq(j) * ob(iob_out)%frac_out(iout)
           end if
-        case ('res')
-          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+        case ("res")
+          if (ob(iob_out)%htyp_out(iout) == "sur" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%surq_res = hwb_d(j)%surq_res + surfq(j) * ob(iob_out)%frac_out(iout)
           end if
-          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+          if (ob(iob_out)%htyp_out(iout) == "lat" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%latq_res = hwb_d(j)%latq_res + latq(j) * ob(iob_out)%frac_out(iout)
           end if
-        case ('hru')
-          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+        case ("hru")
+          if (ob(iob_out)%htyp_out(iout) == "sur" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%surq_ls = hwb_d(j)%surq_ls + surfq(j) * ob(iob_out)%frac_out(iout)
           end if
-          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+          if (ob(iob_out)%htyp_out(iout) == "lat" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%latq_ls = hwb_d(j)%latq_ls + latq(j) * ob(iob_out)%frac_out(iout)
           end if
-        case ('sub')
-          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+        case ("ru")
+          if (ob(iob_out)%htyp_out(iout) == "sur" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%surq_ls = hwb_d(j)%surq_ls + surfq(j) * ob(iob_out)%frac_out(iout)
           end if
-          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+          if (ob(iob_out)%htyp_out(iout) == "lat" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%latq_ls = hwb_d(j)%latq_ls + latq(j) * ob(iob_out)%frac_out(iout)
           end if
-        case ('hlt')
-          if (ob(iob_out)%htyp_out(iout) == 'sur' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+        case ("hlt")
+          if (ob(iob_out)%htyp_out(iout) == "sur" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%surq_ls = hwb_d(j)%surq_ls + surfq(j) * ob(iob_out)%frac_out(iout)
           end if
-          if (ob(iob_out)%htyp_out(iout) == 'lat' .or. ob(iob_out)%htyp_out(iout) == 'tot') then
+          if (ob(iob_out)%htyp_out(iout) == "lat" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%latq_ls = hwb_d(j)%latq_ls + latq(j) * ob(iob_out)%frac_out(iout)
           end if
         end select
@@ -500,9 +475,9 @@
         !hnb_d(j)%no3pcp = no3pcp
 
       ! output_plantweather
-        hpw_d(j)%lai = sumlai
-        hpw_d(j)%bioms = sumbm
-        hpw_d(j)%residue = soil(j)%ly(1)%rsd
+        hpw_d(j)%lai = pcom(j)%lai_sum
+        hpw_d(j)%bioms = pcom(j)%tot_com%mass
+        hpw_d(j)%residue = rsd1(j)%tot_com%m
         hpw_d(j)%yield = yield
         yield = 0.
         hpw_d(j)%sol_tmp =  soil(j)%phys(2)%tmp

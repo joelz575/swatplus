@@ -81,11 +81,10 @@
         if (pcom(ihru)%plm(ipl)%pmass < 0.) pcom(ihru)%plm(ipl)%pmass = 0.
 
         !! remove trampled biomass and add to residue
-        dmii = 0.
         dmii = pcom(j)%plm(ipl)%mass
-        pcom(j)%plm(ipl)%mass=pcom(j)%plm(ipl)%mass - bio_trmp(j)/pcom(j)%npl
+        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - bio_trmp(j)/pcom(j)%npl
         if (pcom(j)%plm(ipl)%mass < bio_min(j))  then
-          soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + dmii - bio_min(j)
+          rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m + dmii - bio_min(j)
           pcom(j)%plm(ipl)%mass = bio_min(j)
             !!add by zhang
             !!=================
@@ -95,7 +94,7 @@
             !!add by zhang
             !!=================          
         else
-          soil(j)%ly(1)%rsd = soil(j)%ly(1)%rsd + bio_trmp(j)   
+          rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m + bio_trmp(j)   
             !!add by zhang
             !!=================
             if (bsn_cc%cswat == 2) then
@@ -104,8 +103,8 @@
             !!add by zhang
             !!=================                           
         endif
-        soil(j)%ly(1)%rsd = Max(soil(j)%ly(1)%rsd,0.)
-        pcom(j)%plm(ipl)%mass = Max(pcom(j)%plm(ipl)%mass,0.)
+        rsd1(j)%tot(ipl)%m = Max(rsd1(j)%tot(ipl)%m, 0.)
+        pcom(j)%plm(ipl)%mass = Max(pcom(j)%plm(ipl)%mass, 0.)
 
         !! adjust nutrient content of residue and biomass for
         !! trampling
@@ -121,7 +120,7 @@
 
           resnew = (dmii - pcom(j)%plm(ipl)%mass) 
           resnew_n = (dmii - pcom(j)%plm(ipl)%mass) * pcom(j)%plm(ipl)%n_fr
-          call mgt_bio_drop (resnew, resnew_n)
+          call pl_leaf_drop (resnew, resnew_n)
 
           rsd1(j)%tot(1)%p = (dmii - pcom(j)%plm(ipl)%mass) *            &
              pcom(j)%plm(ipl)%p_fr + rsd1(j)%tot(1)%p 

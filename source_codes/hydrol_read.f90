@@ -22,7 +22,7 @@
       
       !! read all data from hydrol.dat
       inquire (file=in_hyd%hydrol_hyd, exist=i_exist)
-      if (i_exist == 0.or. in_hyd%hydrol_hyd == 'null') then
+      if (i_exist == 0.or. in_hyd%hydrol_hyd == "null") then
         allocate (hyd_db(0:0))
       else
         do

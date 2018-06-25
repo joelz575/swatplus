@@ -17,11 +17,11 @@
         aqu_m(iaq) = aqu_m(iaq) + aqu(iaq)
         
         !! daily print - AQUIFER
-         if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
-          if (pco%aqu%d == 'y') then
-            write (2520,100) time%day, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu(iaq)
-            if (pco%csvout == 'y') then
-              write (2524,'(*(G0.3,:","))') time%day, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu(iaq)
+         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
+          if (pco%aqu%d == "y") then
+            write (2520,100) time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu(iaq)
+            if (pco%csvout == "y") then
+              write (2524,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu(iaq)
             end if
           end if
         end if
@@ -33,10 +33,10 @@
           aqu_m(iaq)%hgt = aqu_m(iaq)%hgt / const
           aqu_m(iaq)%no3 = aqu_m(iaq)%no3 / const
           aqu_y(iaq) = aqu_y(iaq) + aqu_m(iaq)
-          if (pco%aqu%m == 'y') then
-            write (2521,100) time%mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_m(iaq)
-            if (pco%csvout == 'y') then
-              write (2525,'(*(G0.3,:","))') time%mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_m(iaq)
+          if (pco%aqu%m == "y") then
+            write (2521,100)  time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_m(iaq)
+            if (pco%csvout == "y") then
+              write (2525,'(*(G0.3,:","))')  time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_m(iaq)
             endif
           end if
           aqu_m(iaq) = aquz
@@ -48,10 +48,10 @@
           aqu_y(iaq)%hgt = aqu_y(iaq)%hgt / 12.
           aqu_y(iaq)%no3 = aqu_y(iaq)%no3 / 12.
           aqu_a(iaq) = aqu_a(iaq) + aqu_y(iaq)
-          if (pco%aqu%y == 'y') then
-            write (2522,102) '     0', time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_y(iaq)
-            if (pco%csvout == 'y') then
-              write (2526,'(*(G0.3,:","))') '     0', time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_y(iaq) 
+          if (pco%aqu%y == "y") then
+            write (2522,102) time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_y(iaq)
+            if (pco%csvout == "y") then
+              write (2526,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_y(iaq) 
             end if
           end if
           !! zero yearly variables        
@@ -59,17 +59,17 @@
         end if
         
       !! average annual print - AQUIFER
-      if (time%end_sim == 1 .and. pco%aqu%a == 'y') then
+      if (time%end_sim == 1 .and. pco%aqu%a == "y") then
         aqu_a(iaq) = aqu_a(iaq) / time%yrs_prt
-        write (2523,102) '     0', time%yrs, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_a(iaq)
-        if (pco%csvout == 'y') then 
-          write (2527,'(*(G0.3,:","))') '     0', time%yrs, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_a(iaq)  
+        write (2523,102) time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_a(iaq)
+        if (pco%csvout == "y") then 
+          write (2527,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_a(iaq)  
         end if 
       end if
       
       return
       
-100   format (2i6,2i8,2x,a,20f15.3)
-102   format (a6,i6,2i8,2x,a,20f15.3)
+100   format (4i6,2i8,2x,a,20f15.3)
+102   format (4i6,2i8,2x,a,20f15.3)
        
       end subroutine aquifer_output

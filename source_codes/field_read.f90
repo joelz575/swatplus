@@ -21,7 +21,7 @@
         
       !! read all data from topo.dat
       inquire (file=in_hyd%field_fld, exist=i_exist)
-      if (i_exist == 0 .or. in_hyd%field_fld == 'null') then
+      if (i_exist == 0 .or. in_hyd%field_fld == "null") then
         allocate (field_db(0:0))
       else
         do

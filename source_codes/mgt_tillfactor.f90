@@ -3,7 +3,7 @@
 	! Armen 16 January 2008
 	! This procedure increases tillage factor (tillagef(l,jj) per layer for each operation
 	! The tillage factor settling will depend of soil moisture (tentatively) and must be called every day
-	! For simplicity the settling is calculated now at the soil carbon sub because soil water content is available
+	! For simplicity the settling is calculated now at the soil carbon subroutine because soil water content is available
 
 	! The tillage factor depends on the cumulative soil disturbance rating = csdr
 	! For simplicity, csdr is a function of emix

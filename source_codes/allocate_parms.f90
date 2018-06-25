@@ -6,13 +6,9 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    mhyd        |none          |max number of hydrographs
-!!    mlyr        |none          |max number of soil layers
 !!    mpst        |none          |max number of pesticides used in wshed
 !!    nstep       |none          |max number of time steps per day
-!!    msub        |none          |max number of subbasins
-!!    myr         |none          |max number of years of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 
       use hru_module      
       use time_module
@@ -42,7 +38,6 @@
        epmax = 0.
 
 !!    arrays for plant communities
-      allocate (cht_mx(mhru))
       allocate (cvm_com(mhru))
       allocate (blai_com(mhru))
       allocate (rsdco_plcom(mhru))
@@ -60,16 +55,13 @@
       allocate (rbiom(mhru))
       allocate (fcoli(mhru))
       allocate (bz_perc(mhru))
-!!    carbon outputs for .hru file
-!!    carbon outputs for .hru file
       allocate (plqm(mhru))
-
       allocate (itb(mhru))
       
 !! septic changes added 1/28/09 gsm
       allocate (qird(mhru))      
       if (time%step > 0) allocate (hhqday(mhru,time%step))
-      allocate (uh(mhru,time%step+1))         !! was 49 changed to nstep  OCt22, 2007
+      allocate (uh(mhru,time%step+1))
 
  !!  added per JGA for Srini by gsm 9/8/2011
  !! arrays for mangement output (output.mgt)  
@@ -183,9 +175,8 @@
       allocate (solp_con(mhru))
       allocate (sol_cov(mhru))
 !!    Drainmod tile equations  01/2006 
-	allocate (stmaxd(mhru))
+	  allocate (stmaxd(mhru))
       allocate (itill(mhru))
-      allocate (stsol_rd(mhru))
       allocate (surfq(mhru))
       allocate (surqno3(mhru))
       allocate (surqsolp(mhru))
@@ -202,20 +193,16 @@
       allocate (u10(mhru))
       allocate (usle_cfac(mhru))
       allocate (usle_eifac(mhru))
-!      allocate (usle_mult(mhru))
-!      allocate (usle_ls(mhru))
       allocate (wtab(mhru))
       allocate (wtab_mn(mhru))
       allocate (wtab_mx(mhru))
       allocate (wfsh(mhru))
-
 
       allocate (bss(4,mhru))
       allocate (wrt(2,mhru))
       allocate (surf_bs(17,mhru))  
       allocate (rfqeo_30d(30,mhru))
       allocate (eo_30d(30,mhru))
-
 
 !!    arrays which contain data related to pesticides, HRUs
       allocate (pst_lag(mpst,3,mhru))
@@ -225,22 +212,24 @@
       allocate (wpstaao(mpst,5))
 
 !! sj aug 09 end
-	allocate (hhsurf_bs(2,mhru,time%step))  !! nstep changed to nstep  OCt. 18,2007
+	  allocate (hhsurf_bs(2,mhru,time%step))  !! nstep changed to nstep  OCt. 18,2007
       allocate (ubnrunoff(time%step),ubntss(time%step))
 
 !! Arrays for subdaily erosion modeling by Jaehak Jeong
-	allocate (hhsedy(mhru,time%step),ovrlnd_dt(mhru,time%step))  
-	allocate (init_abstrc(mhru),hhsurfq(mhru,time%step))
+	  allocate (hhsedy(mhru,time%step),ovrlnd_dt(mhru,time%step))  
+	  allocate (init_abstrc(mhru),hhsurfq(mhru,time%step))
 
        !Tillage factor on SOM decomposition
        allocate(tillage_switch(mhru))
        allocate(tillage_depth(mhru))
        allocate(tillage_days(mhru))
        allocate(tillage_factor(mhru))
+       
        tillage_switch = 0
        tillage_depth = 0.
        tillage_days = 0
        tillage_factor = 0.
+       
       !! By Zhang for C/N cycling
       !! ============================
       	  

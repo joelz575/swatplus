@@ -32,8 +32,9 @@
 
       use mgt_operations_module
       use basin_module
-      use hru_module, only : hru, driftco, pst_dep, sumlai
+      use hru_module, only : hru, driftco, pst_dep
       use soil_module
+      use plant_module
       
       implicit none
       
@@ -86,7 +87,7 @@
 
       !! calculate ground cover
       gc = 0.
-      gc = (1.99532 - erfc(1.333 * sumlai - 2.)) / 2.1
+      gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
       if (gc < 0.) gc = 0.
 
       !! update pesticide levels on ground and foliage

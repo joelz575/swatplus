@@ -17,7 +17,6 @@
       real :: bactpcnst             !                 | 
       real :: bactpmon              !                 |  
       real :: bactpyr               !                 | 
-      real :: cht                   !m                |canopy height
       real :: cklsp                 !                 |
       real :: cmtl1cnst             !                 |
       real :: cmtl1mon              !                 |
@@ -68,7 +67,6 @@
       bactpq = 0.
       bactps = 0.
       bactpyr = 0.
-      cht = 0.
       cklsp = 0.
       cmtl1cnst = 0.
       cmtl1mon = 0.

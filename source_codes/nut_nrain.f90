@@ -45,21 +45,21 @@
       !! calculate nitrogen in precipitation - mg/l *mm -> kg/ha
       !! (mg/l*mm) * kg/1,000,000 mg *1,00 l/m3 * m3/1,000 mm * 10,000 m2/ha = 0.01
       if (ist > 0 .and. ist <= atmodep_cont%num) then
-        if (atmodep_cont%timestep == 'mo') then
+        if (atmodep_cont%timestep == "mo") then
           const = float (ndays(time%mo + 1) - ndays(time%mo))
           hnb_d(j)%no3atmo = .01 * atmodep(iadep)%no3_rfmo(ist) * precipday + atmodep(iadep)%no3_drymo(ist) / const
           soil1(j)%mn(1)%no3 = nh3pcp + soil1(j)%mn(1)%no3
           hnb_d(j)%nh4atmo = .01 * atmodep(iadep)%nh4_rfmo(ist) * precipday + atmodep(iadep)%nh4_drymo(ist) / const
           soil1(j)%mn(1)%nh4 = soil1(j)%mn(1)%nh4 + hnb_d(j)%nh4atmo
         end if 
-        if (atmodep_cont%timestep == 'yr') then
+        if (atmodep_cont%timestep == "yr") then
           hnb_d(j)%no3atmo = .01 * atmodep(iadep)%no3_rfyr(ist) * precipday + atmodep(iadep)%no3_dryyr(ist) / 365.
           soil1(j)%mn(1)%no3 = nh3pcp + soil1(j)%mn(1)%no3
           hnb_d(j)%nh4atmo = .01 * atmodep(iadep)%nh4_rfyr(ist) * precipday + atmodep(iadep)%nh4_dryyr(ist) / 365.
           soil1(j)%mn(1)%nh4 = soil1(j)%mn(1)%nh4 + hnb_d(j)%nh4atmo
         endif
       end if
-      if (atmodep_cont%timestep == 'aa') then
+      if (atmodep_cont%timestep == "aa") then
         hnb_d(j)%no3atmo = .01 * atmodep(iadep)%no3_rf * precipday + atmodep(iadep)%no3_dry / 365.
         soil1(j)%mn(1)%no3 = nh3pcp + soil1(j)%mn(1)%no3
         hnb_d(j)%nh4atmo = .01 * atmodep(iadep)%nh4_rf * precipday + atmodep(iadep)%nh4_dry / 365.

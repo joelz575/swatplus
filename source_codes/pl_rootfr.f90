@@ -3,7 +3,7 @@
 	!! code developed by Armen R. Kemanian in 2008 
 	!! March, 2009 further adjustments expected
     
-    use hru_module, only : ihru, stsol_rd
+    use hru_module, only : ihru
     use soil_module
     use plant_module
     
@@ -29,7 +29,7 @@
 	
 	jj = ihru
       
-      if (stsol_rd(jj) < 1.e-6) then
+      if (pcom(jj)%plg(1)%root_dep < 1.e-6) then
          soil(jj)%ly(1)%rtfr = 1
          return
       endif
@@ -57,10 +57,10 @@
 	  end if
 		
 	  cum_d = cum_d + sol_thick(l)
-	  if (cum_d >= stsol_rd(jj)) cum_rd = stsol_rd(jj)
-	  if (cum_d < stsol_rd(jj)) cum_rd = cum_d
-	  x1 = (cum_rd - sol_thick(l)) / stsol_rd(jj)
-	  x2 = cum_rd / stsol_rd(jj)
+	  if (cum_d >= pcom(jj)%plg(1)%root_dep) cum_rd = pcom(jj)%plg(1)%root_dep
+	  if (cum_d < pcom(jj)%plg(1)%root_dep) cum_rd = cum_d
+	  x1 = (cum_rd - sol_thick(l)) / pcom(jj)%plg(1)%root_dep
+	  x2 = cum_rd / pcom(jj)%plg(1)%root_dep
            xx1 = -b * x1
 	  if (xx1 > 20.) xx1 = 20.
            xx2 = -b * x2
@@ -73,7 +73,7 @@
              cum_rf = 1.0
            end if
 	  k = l
-	  if (cum_rd >= stsol_rd(jj)) Exit
+	  if (cum_rd >= pcom(jj)%plg(1)%root_dep) Exit
 		 
 	end do
 

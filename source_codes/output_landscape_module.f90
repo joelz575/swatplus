@@ -219,115 +219,123 @@
       type (regional_output_plantweather), dimension (:), allocatable :: rpw_a
       
       type output_waterbal_header
-        character (len=6) :: yrs =          ' time '
-        character (len=6) :: yrc =          ' year '
-        character (len=8) :: isd =          '   unit '
-        character (len=8) :: id =           ' gis_id '        
-        character (len=16) :: name =        ' name              '        
-        character (len=12) :: precip =      '     prec_mm'
-        character (len=12) :: snofall =     '     snow_mm'
-        character (len=12) :: snomlt =      '   snomlt_mm'        
-        character (len=12) :: surq_gen =    '   sq_gen_mm'      
-        character (len=12) :: latq =        '     latq_mm' 
-        character (len=12) :: wateryld =    '   wtryld_mm'
-        character (len=12) :: perc =        '     perc_mm'   
-        character (len=12) :: et =          '       et_mm'
-        character (len=12) :: tloss =       '    tloss_mm'
-        character (len=12) :: eplant =      '   eplant_mm'
-        character (len=12) :: esoil =       '    esoil_mm'
-        character (len=12) :: surq_cont =   '  sq_cont_mm'
-        character (len=12) :: cn =          '          cn'
-        character (len=12) :: sw =          '       sw_mm'
-        character (len=12) :: snopack =     '  snopack_mm'   
-        character (len=12) :: pet =         '      pet_mm'
-        character (len=12) :: qtile =       '    qtile_mm'
-        character (len=12) :: irr =         '      irr_mm'
-        character (len=12) :: surq_runon =  '   sq_run_mm'
-        character (len=12) :: latq_runon =  '   lq_run_mm'
-        character (len=12) :: overbank =    '   ovbank_mm'
-        character (len=12) :: surq_cha =    '  surqcha_mm'
-        character (len=12) :: surq_res =    '  surqres_mm'
-        character (len=12) :: surq_ls =     '  surq_ls_mm'
-        character (len=12) :: latq_cha =    ' latq_cha_mm'
-        character (len=12) :: latq_res =    ' latq_res_mm'
-        character (len=12) :: latq_ls =     '  latq_ls_mm'
+        character (len=5) :: day =      " jday"
+        character (len=6) :: mo =       "   mon"
+        character (len=6) :: day_mo =   "   day"
+        character (len=6) :: yrc =      "    yr"
+        character (len=8) :: isd =          "    unit"
+        character (len=8) :: id =           "  gis_id"        
+        character (len=16) :: name =        "  name          "        
+        character (len=14) :: precip =      "       prec_mm"
+        character (len=12) :: snofall =     "     snow_mm"
+        character (len=12) :: snomlt =      "   snomlt_mm"        
+        character (len=12) :: surq_gen =    "   sq_gen_mm"      
+        character (len=12) :: latq =        "     latq_mm" 
+        character (len=12) :: wateryld =    "   wtryld_mm"
+        character (len=12) :: perc =        "     perc_mm"   
+        character (len=12) :: et =          "       et_mm"
+        character (len=12) :: tloss =       "    tloss_mm"
+        character (len=12) :: eplant =      "   eplant_mm"
+        character (len=12) :: esoil =       "    esoil_mm"
+        character (len=12) :: surq_cont =   "  sq_cont_mm"
+        character (len=12) :: cn =          "          cn"
+        character (len=12) :: sw =          "       sw_mm"
+        character (len=12) :: snopack =     "  snopack_mm"   
+        character (len=12) :: pet =         "      pet_mm"
+        character (len=12) :: qtile =       "    qtile_mm"
+        character (len=12) :: irr =         "      irr_mm"
+        character (len=12) :: surq_runon =  "   sq_run_mm"
+        character (len=12) :: latq_runon =  "   lq_run_mm"
+        character (len=12) :: overbank =    "   ovbank_mm"
+        character (len=12) :: surq_cha =    "  surqcha_mm"
+        character (len=12) :: surq_res =    "  surqres_mm"
+        character (len=12) :: surq_ls =     "  surq_ls_mm"
+        character (len=12) :: latq_cha =    "  latq_cha_mm"
+        character (len=12) :: latq_res =    "  latq_res_mm"
+        character (len=12) :: latq_ls =     "  latq_ls_mm"
       end type output_waterbal_header      
       type (output_waterbal_header) :: wb_hdr
       
       type output_nutbal_header
-         character (len=6) :: yrs =        ' time '
-         character (len=6) :: yrc =        ' year '
-         character (len=8) :: isd =        '   unit ' 
-         character (len=8) :: id =         ' gis_id '        
-         character (len=16) :: name =      ' name              '         
-         character(len=18) :: cfertn =     '        cfrtn_kgha'
-         character(len=18) :: cfertp =     '        cfrtp_kgha' 
-         character(len=18) :: grazn =      '         grzn_kgha'
-         character(len=18) :: grazp =      '         grzp_kgha'     
-         character(len=18) :: auton =      '         autn_kgha'    
-         character(len=18) :: autop =      '         autp_kgha'      
-         character(len=18) :: rmp1tl =     '  lab_actminp_kgha'     
-         character(len=18) :: roctl =      '    actp_stap_kgha'
-         character(len=18) :: fertn =      '         frtn_kgha'       
-         character(len=18) :: fertp =      '         frtp_kgha'       
-         character(len=18) :: fixn =       '         fixn_kgha'       
-         character(len=18) :: wdntl =      '        denit_kgha'
-         character(len=18) :: hmntl =      '    aorgn_no3_kgha'
-         character(len=18) :: rwntl =      '    actn_stan_kgha'
-         character(len=18) :: hmptl =      '     orgp_lab_kgha'
-         character(len=18) :: rmn2tl =     '  nrsd_no3act_kgha'      
-         character(len=18) :: rmptl =      '  prsd_laborg_kgha'      
-         character(len=18) :: no3atmo =    '     no3_atmo_kgha' 
-         character(len=18) :: nh4atmo =    '     nh4_atmo_kgha'
+         character (len=5) :: day =      " jday"
+         character (len=6) :: mo =       "   mon"
+         character (len=6) :: day_mo =   "   day"
+         character (len=6) :: yrc =      "    yr"
+         character (len=9) :: isd =      "    unit " 
+         character (len=8) :: id =         " gis_id "        
+         character (len=9) :: name =      "    name "         
+         character(len=20) :: cfertn =     "          cfrtn_kgha"
+         character(len=12) :: cfertp =     "  cfrtp_kgha" 
+         character(len=12) :: grazn =      "   grzn_kgha"
+         character(len=12) :: grazp =      "   grzp_kgha"     
+         character(len=12) :: auton =      "   autn_kgha"    
+         character(len=12) :: autop =      "   autp_kgha"      
+         character(len=17) :: rmp1tl =     " lab_actminp_kgha"     
+         character(len=17) :: roctl =      "   actp_stap_kgha"
+         character(len=17) :: fertn =      "        frtn_kgha"       
+         character(len=17) :: fertp =      "        frtp_kgha"       
+         character(len=17) :: fixn =       "        fixn_kgha"       
+         character(len=17) :: wdntl =      "       denit_kgha"
+         character(len=17) :: hmntl =      "   aorgn_no3_kgha"
+         character(len=17) :: rwntl =      "   actn_stan_kgha"
+         character(len=17) :: hmptl =      "    orgp_lab_kgha"
+         character(len=17) :: rmn2tl =     " nrsd_no3act_kgha"      
+         character(len=17) :: rmptl =      " prsd_laborg_kgha"      
+         character(len=17) :: no3atmo =    "    no3_atmo_kgha" 
+         character(len=17) :: nh4atmo =    "    nh4_atmo_kgha"
       end type output_nutbal_header         
       type (output_nutbal_header) :: nb_hdr
       
       type output_losses_header
-        character (len=6) :: yrs =        ' time '
-        character (len=6) :: yrc =        ' year '
-        character (len=8) :: isd =        '   unit '
-        character (len=8) :: id =         ' gis_id '        
-        character (len=16) :: name =      ' name              '        
-        character (len=12) :: sedyld =    '    sedy_tha'
-        character (len=12)  :: sedorgn =  '   sedn_kgha'
-        character (len=12)  :: sedorgp =  '   sedp_kgha'
-        character (len=12)  :: surqno3 =  '    sq3_kgha'
-        character (len=12)  :: latno3 =   '   lat3_kgha'            
-        character (len=12)  :: surqsolp = '   sqsp_kgha'
-        character (len=12)  :: usle =     '   usle_tons'  
-        character (len=12)  :: bactp =    '   bacp_tons'
-        character (len=12)  :: bactlp =   '    blp_tons'     
-        character (len=12)  :: sedmin =   '       sedmn'
-        character (len=12)  :: tileno3 =  '     tileno3'
+        character (len=6) :: day =      "  jday"
+        character (len=6) :: mo =       "   mon"
+        character (len=6) :: day_mo =   "   day"
+        character (len=6) :: yrc =      "    yr"
+        character (len=8) :: isd =        "   unit "
+        character (len=8) :: id =         " gis_id "        
+        character (len=16) :: name =      " name              "        
+        character (len=12) :: sedyld =    "    sedy_tha"
+        character (len=12)  :: sedorgn =  "   sedn_kgha"
+        character (len=12)  :: sedorgp =  "   sedp_kgha"
+        character (len=12)  :: surqno3 =  "    sq3_kgha"
+        character (len=12)  :: latno3 =   "   lat3_kgha"            
+        character (len=12)  :: surqsolp = "   sqsp_kgha"
+        character (len=12)  :: usle =     "   usle_tons"  
+        character (len=12)  :: bactp =    "   bacp_tons"
+        character (len=12)  :: bactlp =   "    blp_tons"     
+        character (len=12)  :: sedmin =   "       sedmn"
+        character (len=12)  :: tileno3 =  "     tileno3"
       end type output_losses_header      
       type (output_losses_header) :: ls_hdr
      
       type output_plantweather_header
-        character (len=6) :: yrs =        ' time '
-        character (len=6) :: yrc =        ' year '
-        character (len=8) :: isd =        '   unit '
-        character (len=8) :: id =         ' gis_id '        
-        character (len=16) :: name =      ' name              '        
-        character (len=12) :: lai =       '         lai'
-        character (len=12) :: bioms =     '       bioms'
-        character (len=12) :: yield =     '       yield'
-        character (len=12) :: residue =   '     residue'
-        character (len=12) :: sol_tmp =   '      soltmp'
-        character (len=12) :: strsw =     '       strsw'
-        character (len=12) :: strsa =     '       strsa'
-        character (len=12) :: strstmp =   '     strstmp'
-        character (len=12) :: strsn =     '       strsn'
-        character (len=12) :: strsp =     '       strsp'
-        character (len=12) :: nplnt =     '   nplt_kgha'
-        character (len=12) :: percn =     '   prcn_kgha'
-        character (len=12) :: pplnt =     '   plnt_kgha'
-        character (len=12) :: tmx =       '    tmx_degc'
-        character (len=12) :: tmn =       '    tmn_degc'
-        character (len=12) :: tmpav =     '   tave_degc'
-        character (len=12) :: solrad =    '   sr_mj/m^2'
-        character (len=12) :: wndspd =    '  wndspd_m/s'
-        character (len=12) :: rhum =      ' relhum_frac'
-        character (len=12) :: phubase0  = ' phubas0/degc'
+        character (len=6) :: day =      "  jday"
+        character (len=6) :: mo =       "   mon"
+        character (len=6) :: day_mo =   "   day"
+        character (len=6) :: yrc =      "    yr"
+        character (len=8) :: isd =        "   unit "
+        character (len=8) :: id =         " gis_id "        
+        character (len=16) :: name =      " name              "        
+        character (len=12) :: lai =       "         lai"
+        character (len=12) :: bioms =     "       bioms"
+        character (len=12) :: yield =     "       yield"
+        character (len=12) :: residue =   "     residue"
+        character (len=12) :: sol_tmp =   "      soltmp"
+        character (len=12) :: strsw =     "       strsw"
+        character (len=12) :: strsa =     "       strsa"
+        character (len=12) :: strstmp =   "     strstmp"
+        character (len=12) :: strsn =     "       strsn"
+        character (len=12) :: strsp =     "       strsp"
+        character (len=12) :: nplnt =     "   nplt_kgha"
+        character (len=12) :: percn =     "   prcn_kgha"
+        character (len=12) :: pplnt =     "   plnt_kgha"
+        character (len=12) :: tmx =       "    tmx_degc"
+        character (len=12) :: tmn =       "    tmn_degc"
+        character (len=12) :: tmpav =     "   tave_degc"
+        character (len=12) :: solrad =    "   sr_mj/m^2"
+        character (len=12) :: wndspd =    "  wndspd_m/s"
+        character (len=12) :: rhum =      " relhum_frac"
+        character (len=12) :: phubase0  = " phubas0/degc"
       end type output_plantweather_header
       
       type (output_plantweather_header) :: pw_hdr
@@ -375,7 +383,6 @@
   
       contains
 
-      !include 'output_landscape_init'
       
       function hruout_waterbal_add (hru1, hru2) result (hru3)
         type (output_waterbal), intent (in) :: hru1

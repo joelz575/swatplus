@@ -20,7 +20,7 @@
       mpl = 0
 
       inquire (file=in_parmdb%plants_plt, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%plants_plt == ' null') then
+      if (i_exist == 0 .or. in_parmdb%plants_plt == " null") then
         allocate (pldb(0:0))
         allocate (plcp(0:0))
       else

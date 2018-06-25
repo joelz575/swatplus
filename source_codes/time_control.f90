@@ -107,6 +107,8 @@
           call xmon
           
           write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc
+          
+          
           !! check for end of month, year and simulation
           time%end_mo = 0
           time%end_yr = 0
@@ -134,15 +136,15 @@
           end if
 
           !! check time interval for daily printing
-          if (pco%day_print_over == 'n') then
-          if (pco%day_print == 'n') then 
+          if (pco%day_print_over == "n") then
+          if (pco%day_print == "n") then 
             if (time%day >= pco%day_start .and. time%yrc >= pco%yrc_start) then
-              pco%day_print = 'y'
+              pco%day_print = "y"
             end if 
           else
             if (time%day > pco%day_end .and. time%yrc == pco%yrc_end) then
-              pco%day_print = 'n'
-              pco%day_print_over = 'y'
+              pco%day_print = "n"
+              pco%day_print_over = "y"
             else
               pco%int_day_cur = pco%int_day_cur + 1
               if (pco%int_day_cur > pco%int_day) pco%int_day_cur = 1
@@ -232,7 +234,7 @@
           do ipl = 1, pcom(j)%npl
             idp = pcom(j)%plcur(ipl)%idplt
             if (idp > 0) then
-              if (pldb(idp)%idc == 'trees') then
+              if (pldb(idp)%typ == "perennial") then
                 pcom(j)%plcur(ipl)%curyr_mat = pcom(j)%plcur(ipl)%curyr_mat + 1
                 pcom(j)%plcur(ipl)%curyr_mat = Min(pcom(j)%plcur(ipl)%curyr_mat,pldb(idp)%mat_yrs)
               end if
@@ -266,7 +268,7 @@
       !! ave annual calibration output and reset time for next simulation
       call cal_ave_output
       time = time_init
-
+      
       return
  1234 format (1x, a, ' Executing month/day/year ', 2i4, 2x,i4)
       end subroutine time_control

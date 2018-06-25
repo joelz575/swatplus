@@ -13,13 +13,13 @@
         character (len=16) :: urb_ro     !! none     | urban runoff model
                                          !!          | "usgs_reg", simulate using USGS regression eqs
                                          !!          | "buildup_washoff", simulate using build up/wash off alg       
-        character (len=16) :: ovn        !! none     | Manning's "n" land use type for overland flow (ovn_table.lum)
+        character (len=16) :: ovn        !! none     | Manning"s "n" land use type for overland flow (ovn_table.lum)
         !integer :: urb_lu = 0           !! none     | urban land type identification number
         !integer :: iurban = 0           !! none     | urban simulation code 
         !                                !!          | 0  no urban sections in HRU
         !                                !!          | 1  urban sections in HRU, simulate using USGS regression eqs
         !                                !!          | 2  urban sections in HRU, simulate using build up/wash off alg
-        !real :: ovn = 0.1               !! none     | Manning's "n" value for overland flow
+        !real :: ovn = 0.1               !! none     | Manning"s "n" value for overland flow
         character (len=25) :: tiledrain
         character (len=25) :: septic
         character (len=25) :: fstrip

@@ -27,25 +27,25 @@
       use hru_module, only : uno3d, nplnt, ihru, fixn, ipl 
       use soil_module
       use plant_module
+      use plant_data_module
       
       implicit none
 
       integer :: j           !none      |hru number
       integer :: l           !none      |counter (soil layer)
+      integer :: idp         !none      |plant number from plants.plt
       real :: uno3l          !kg N/ha   |plant nitrogen demand
       real :: fxw            !          | 
       real :: sumn           !kg N/ha   |total amount of nitrate stored in soil profile
       real :: fxn            !          |
       real :: fxg            !          |
       real :: fxr            !          |
-      real :: fixco
 
-      j = 0
       j = ihru
+      idp = pcom(j)%plcur(ipl)%idplt
  
 !! compute the difference between supply and demand
       if (uno3d(ipl) > nplnt(j)) then
-        uno3l = 0.
         uno3l = uno3d(ipl) - nplnt(j)
       else
         !! if supply is being met, fixation=0 and return
@@ -53,11 +53,9 @@
         return
       endif
 
-
 !! compute fixation as a function of no3, soil water, and growth stage
 
       !! compute soil water factor
-      fxw = 0.
       fxw = soil(j)%sw / (.85 * soil(j)%sumfc)
 
       !! compute no3 factor
@@ -72,14 +70,11 @@
 
       !! compute growth stage factor
       fxg = 0.
-      if (pcom(j)%plcur(ipl)%phuacc>.15.and.                             &
-               pcom(j)%plcur(ipl)%phuacc<=.30) then
+      if (pcom(j)%plcur(ipl)%phuacc > .15 .and. pcom(j)%plcur(ipl)%phuacc <= .30) then
           fxg = 6.67 * pcom(j)%plcur(ipl)%phuacc - 1.
       endif
-      if(pcom(j)%plcur(ipl)%phuacc>.30.and.                              &
-               pcom(j)%plcur(ipl)%phuacc<=.55)fxg=1.
-      if (pcom(j)%plcur(ipl)%phuacc>.55.and.                             &
-               pcom(j)%plcur(ipl)%phuacc<=.75) then
+      if(pcom(j)%plcur(ipl)%phuacc > .30 .and. pcom(j)%plcur(ipl)%phuacc <= .55) fxg = 1.
+      if (pcom(j)%plcur(ipl)%phuacc > .55 .and. pcom(j)%plcur(ipl)%phuacc <= .75) then
          fxg = 3.75 - 5. * pcom(j)%plcur(ipl)%phuacc
       endif
 
@@ -87,7 +82,7 @@
       fxr = Max(0., fxr)
 
       fixn = Min(6., fxr * uno3l)
-      fixn = bsn_prm%fixco * fixn + (1. - fixco) * uno3l
+      fixn = pldb(idp)%nfix_co * fixn + (1. - pldb(idp)%nfix_co) * uno3l
              !! if bsn_prm%fixco = 0 then fix the entire demand
       fixn = Min(fixn, uno3l)
       fixn = Min(bsn_prm%nfixmx, fixn)

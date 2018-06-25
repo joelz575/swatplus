@@ -38,7 +38,7 @@
             
     !! setting up regions for landscape soft cal and/or output by landuse
     inquire (file=in_regs%def_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_reg /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_reg /= "null") then
       do
         open (107,file=in_regs%def_reg)
         read (107,*,iostat=eof) titldum
@@ -66,7 +66,7 @@
         end if
         read (107,*,iostat=eof) header
  
-      !! if no regions are input, don't need elements
+      !! if no regions are input, don"t need elements
       if (mreg > 0) then
 
       !! allocate land use within each region for soft cal and output
@@ -162,7 +162,7 @@
 
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_reg, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_reg /= 'null') then
+      if (i_exist /= 0 .or. in_regs%ele_reg /= "null") then
       do
         open (107,file=in_regs%ele_reg)
         read (107,*,iostat=eof) titldum
@@ -198,9 +198,9 @@
         ihru_tot = 0
         do ielem = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte
           select case (reg_elem(ielem)%obtyp)
-          case ('hru')
+          case ("hru")
             ihru_tot = ihru_tot + 1
-          case ('lsu')
+          case ("lsu")
             ilsu = reg_elem(ielem)%obtypno
             ihru_tot = ihru_tot + lsu_out(ilsu)%num_tot
           end select
@@ -215,17 +215,17 @@
         allocate (region(ireg)%hru_ha(ihru_tot))
         do ielem = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte
           select case (reg_elem(ireg)%obtyp)
-          case ('hru')
+          case ("hru")
             ! xwalk lum groups
             ihru = ihru + 1
             region(ireg)%num(ihru) = reg_elem(ielem)%obtypno
             region(ireg)%hru_ha(ihru) = hru(ihru)%area_ha
-          case ('lsu')
+          case ("lsu")
             ilsu = reg_elem(ielem)%obtypno
             do iihru = 1, lsu_out(ilsu)%num_tot
               ihru = ihru + 1
               region(ireg)%num(ihru) = lsu_elem(iihru)%obtypno
-              region(ireg)%hru_ha(ihru) = lsu_elem(iihru)%sub_frac * lsu_out(ilsu)%area_ha
+              region(ireg)%hru_ha(ihru) = lsu_elem(iihru)%ru_frac * lsu_out(ilsu)%area_ha
             end do
           end select
         end do

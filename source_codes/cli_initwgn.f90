@@ -120,7 +120,7 @@
       real :: aunif                         !              |
       integer :: xrnd                       !              |
       integer :: iwgn                       !              |
-      
+      integer :: mo_ppet                    !              |
 
       !! variables needed for radiation calcs.
       x1 = 0.0
@@ -209,23 +209,34 @@
         gma = d / (d +.68)
         ho = 23.9 * wgn(iwgn)%solarav(mon) * (1. - alb) / 58.3
         aph = 1.28
-        wgn_pms(iwgn)%pet(mon) = aph * ho * gma
-        wgn_pms(iwgn)%precip_pet(mon) = wgn(iwgn)%pcpmm(mon) - wgn_pms(iwgn)%pet(mon)
+        wgn_pms(iwgn)%pet(mon) = aph * ho * gma * (ndays(mon+1) - ndays(mon))
       end do
 
-      !! initialize arrays for precip minus pet moving sum
+      !! initialize arrays for precip divided by pet moving sum
       ppet_ndays = 30
       allocate (wgn_pms(iwgn)%mne_ppet(ppet_ndays))
-      allocate (wgn_pms(iwgn)%p_minus_pet(ppet_ndays))
+      allocate (wgn_pms(iwgn)%precip_mce(ppet_ndays))
+      allocate (wgn_pms(iwgn)%pet_mce(ppet_ndays))
       !! initialize my next element array for the linked list
       do inext = 1, ppet_ndays
         wgn_pms(iwgn)%mne_ppet(inext) = inext
       end do
       !! use average monthly precip and pet from wgn
-      do inext = 1, ppet_ndays
-        wgn_pms(iwgn)%p_minus_pet(inext) = wgn_pms(iwgn)%precip_pet(time%mo)
-      end do
+      if (time%mo == 1) then
+        mo_ppet = 12
+      else
+        mo_ppet = time%mo - 1
+      end if
       
+      wgn_pms(iwgn)%precip_sum = 0.
+      wgn_pms(iwgn)%pet_sum = 0.
+      do inext = 1, ppet_ndays
+        wgn_pms(iwgn)%precip_mce(inext) = wgn(iwgn)%pcpmm(mo_ppet) / (ndays(mo_ppet+1) - ndays(mo_ppet))
+        wgn_pms(iwgn)%pet_mce(inext) = wgn_pms(iwgn)%pet(mo_ppet) / (ndays(mo_ppet+1) - ndays(mo_ppet))
+        wgn_pms(iwgn)%precip_sum = wgn_pms(iwgn)%precip_sum + wgn_pms(iwgn)%precip_mce(inext)
+        wgn_pms(iwgn)%pet_sum = wgn_pms(iwgn)%pet_sum + wgn_pms(iwgn)%pet_mce(inext)
+      end do
+
       wgn_pms(iwgn)%pcp_an = summm_p
       wgn_pms(iwgn)%tmp_an = (summx_t + summn_t) / 24.
 
@@ -247,12 +258,13 @@
       do mon = 1, 12
         !! calculate precipitation correction factor for pcp generator
         r6 = wgn(iwgn)%pcpskw(mon) / 6.
+        sum = 0.
         do j = 1, 1000
           rnm2 = Aunif(xrnd)
-          xlv = (cli_Dstn1(rndm1,rnm2) -r6) * r6 + 1
+          xlv = (cli_Dstn1(rndm1,rnm2) - r6) * r6 + 1
           rndm1 = rnm2
           xlv = (xlv**3 - 1.) * 2 / wgn(iwgn)%pcpskw(mon)
-         pcp_gen = xlv * wgn(iwgn)%pcpstd(mon) + wgn_pms(iwgn)%pcpmean(mon)
+          pcp_gen = xlv * wgn(iwgn)%pcpstd(mon) + wgn_pms(iwgn)%pcpmean(mon)
           if (pcp_gen < 0.01) pcp_gen = 0.01
           sum = sum + pcp_gen
         end do

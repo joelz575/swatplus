@@ -114,7 +114,7 @@
 	qlyr = qstemm(j)
 	qsrf = 0
 	
-	!temperature correctioin factor for bacteria growth/dieoff (Eppley, 1972)
+	!temperature correction factor for bacteria growth/dieoff (Eppley, 1972)
     ibac = 1        !there should be a loop for all pathogens in this hru
 	ctmp = bac_db(ibac)%t_adj ** (soil(j)%phys(bz_lyr)%tmp- 20.) 
 
@@ -123,7 +123,7 @@
                                               bza * 10. !m3
     ! STE volume
 	qin = qstemm(j) * bza * 10. ! m^3
-	! leaching to sub layer
+	! leaching to septic layer
 	qout = bz_perc(j) * bza * 10. !m3/d
 	! final volume
 	hvol = soil(j)%phys(bz_lyr)%st * bza * 10.

@@ -5,6 +5,7 @@
       use maximum_data_module
       use reservoir_data_module
       use conditional_module
+      use reservoir_module
       
       implicit none
 
@@ -28,10 +29,10 @@
       eof = 0
       imax = 0
             
-      !read .res
+      !read reservoir.res
       imax = 0
       inquire (file=in_res%wet, exist=i_exist)
-      if (i_exist == 0 .or. in_res%wet == 'null') then
+      if (i_exist == 0 .or. in_res%wet == "null") then
         allocate (wet_dat_c(0:0))
         allocate (wet_dat(0:0))
       else   
@@ -51,6 +52,11 @@
        
       allocate (wet_dat_c(0:imax))
       allocate (wet_dat(0:imax))
+      allocate (wet_ob(0:imax))
+      allocate (wet_d(0:imax))
+      allocate (wet_m(0:imax))
+      allocate (wet_y(0:imax))
+      allocate (wet_a(0:imax))
       rewind (105)
       read (105,*) titldum
       read (105,*) header
@@ -102,12 +108,12 @@
              exit
            end if
          end do  
-        if (wet_dat(ires)%init == 0) write (9001,*) wet_dat_c(ires)%init, ' not found (wet-init)'
-        if (wet_dat(ires)%hyd == 0) write (9001,*) wet_dat_c(ires)%hyd, ' not found (wet-hyd)'
-        if (wet_dat(ires)%release == 0) write (9001,*) wet_dat_c(ires)%release, ' not found (wet-release)'
-        if (wet_dat(ires)%sed == 0) write (9001,*) wet_dat_c(ires)%sed, ' not found (wet-sed)'
-        if (wet_dat(ires)%nut == 0) write (9001,*) wet_dat_c(ires)%nut, ' not found (wet-nut)'
-        if (wet_dat(ires)%pst == 0) write (9001,*) wet_dat_c(ires)%pst, ' not found (wet-pst)'
+        if (wet_dat(ires)%init == 0) write (9001,*) wet_dat_c(ires)%init, " not found (wet-init)"
+        if (wet_dat(ires)%hyd == 0) write (9001,*) wet_dat_c(ires)%hyd, " not found (wet-hyd)"
+        if (wet_dat(ires)%release == 0) write (9001,*) wet_dat_c(ires)%release, " not found (wet-release)"
+        if (wet_dat(ires)%sed == 0) write (9001,*) wet_dat_c(ires)%sed, " not found (wet-sed)"
+        if (wet_dat(ires)%nut == 0) write (9001,*) wet_dat_c(ires)%nut, " not found (wet-nut)"
+        if (wet_dat(ires)%pst == 0) write (9001,*) wet_dat_c(ires)%pst, " not found (wet-pst)"
        
        end do
        

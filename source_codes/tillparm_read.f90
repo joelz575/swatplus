@@ -20,7 +20,7 @@
       mtl = 0
       
       inquire (file=in_parmdb%till_til, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%till_til == 'null') then
+      if (i_exist == 0 .or. in_parmdb%till_til == "null") then
           allocate (tilldb(0:0))
       else
       do

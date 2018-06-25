@@ -21,15 +21,14 @@
       integer :: iyr_prev             !none       |previous year
       integer :: iyrs                 !           |
       integer :: iss                  !none       |counter
-      
-      
+            
        mpcp = 0
        eof = 0
        imax = 0
 
       !! read all measured daily precipitation data
       inquire (file=in_cli%pcp_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%pcp_cli == 'null') then
+      if (i_exist == 0 .or. in_cli%pcp_cli == "null") then
         allocate (pcp(0:0))
         allocate (pcp_n(0))
       else
@@ -65,7 +64,7 @@
         if (eof < 0) exit
         
 !!!!!weather path code
-      if (in_path_pcp%pcp == 'null') then 
+      if (in_path_pcp%pcp == "null") then 
         open (108,file = pcp(i)%filename)
       else
         open (108,file = TRIM(ADJUSTL(in_path_pcp%pcp))//pcp(i)%filename)
@@ -85,12 +84,30 @@
         else
           allocate (pcp(i)%ts(366,pcp(i)%nbyr))
         end if
-        ! read and store entire year
-       do 
+
+        
+        ! read and save start jd and yr
          read (108,*,iostat=eof) iyr, istep
-         if (eof < 0) exit
-         if (iyr == time%yrc .and. istep == time%day_start) exit
-       end do
+         
+         pcp(i)%start_day = istep
+         pcp(i)%start_yr = iyr
+
+      if (iyr > time%yrc) then
+        pcp(i)%yrs_start = iyr - time%yrc
+      else
+        ! read and store entire year
+        pcp(i)%yrs_start = 0
+      end if
+      
+        do
+          read (108,*,iostat=eof) iyr, istep
+          if (eof < 0) exit
+          if (iyr == time%yrc .and. istep == time%day_start) exit
+        end do
+
+       ! save end jd and year
+       pcp(i)%end_day = istep
+       pcp(i)%end_yr = iyr
        
        backspace (108)
        iyr_prev = iyr

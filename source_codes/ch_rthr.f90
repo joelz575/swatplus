@@ -9,12 +9,12 @@
 !!    name            |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)         |m             |average depth of main channel
-!!    ch_n(2,:)       |none          |Manning's "n" value for the main channel
+!!    ch_n(2,:)       |none          |Manning"s "n" value for the main channel
 !!    ch_s(2,:)       |m/m           |average slope of main channel
 !!    chside(:)       |none          |change in horizontal distance per unit
 !!                                   |change in vertical distance on channel
 !!                                   |side slopes; always set to 2 (slope=1/2)
-!!    pet_day         |mm H2O        |potential evapotranspiration
+!!    pet_ch          |mm H2O        |potential evapotranspiration
 !!    rchstor(:)      |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -80,7 +80,6 @@
       integer :: inum2     !none          |inflow hydrograph storage location number
       integer :: icmd      !units         |description
       integer :: jrch      !none          |reach number
-      real :: wtrin        !m^3 H2O       |water entering reach during hour
       real :: c            !none          |inverse of channel side slope
       real :: p            !m             |wetted perimeter
       real :: scoef        !none          |storage coefficient
@@ -203,10 +202,10 @@
             !! calculate evaporation
 
             if (hhtime(ii) < 1.) then
-              hrtevp(ii) = bsn_prm%evrch * pet_day/time%step *               & 
+              hrtevp(ii) = bsn_prm%evrch * pet_ch/time%step *               & 
                ch_hyd(jhyd)%l * topw * hhtime(ii)
             else
-              hrtevp(ii) = bsn_prm%evrch * pet_day/time%step *               &
+              hrtevp(ii) = bsn_prm%evrch * pet_ch/time%step *               &
                ch_hyd(jhyd)%l * topw
             end if
             if (hrtevp(ii) < 0.) hrtevp(ii) = 0.

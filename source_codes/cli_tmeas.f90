@@ -27,7 +27,7 @@
 
       !! read all measured daily temperature data
       inquire (file=in_cli%tmp_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%tmp_cli == 'null') then
+      if (i_exist == 0 .or. in_cli%tmp_cli == "null") then
          allocate (tmp(0:0))
          allocate (tmp_n(0))
       else
@@ -64,7 +64,7 @@
         if (eof < 0) exit
         
 !!!!!weather path code
-       if (in_path_tmp%tmp == 'null') then
+       if (in_path_tmp%tmp == "null") then
          open (108,file = tmp(i)%filename)
        else
          open (108,file = TRIM(ADJUSTL(in_path_tmp%tmp))//tmp(i)%filename)
@@ -81,13 +81,31 @@
        
         allocate (tmp(i)%ts(366,tmp(i)%nbyr))
         allocate (tmp(i)%ts2(366,tmp(i)%nbyr))
+        
+        ! read and save start jd and yr
+        read (108,*,iostat=eof) iyr, istep
+        
+        tmp(i)%start_day = istep
+        tmp(i)%start_yr = iyr
+        backspace (108)
 
+      if (iyr > time%yrc) then
+        tmp(i)%yrs_start = iyr - time%yrc
+      else
+        ! read and store entire year
+        tmp(i)%yrs_start = 0
+      end if
+      
         ! read and store entire year
        do 
          read (108,*,iostat=eof) iyr, istep, tempx, tempn
          if (eof < 0) exit
          if (iyr == time%yrc) exit
        end do
+       
+       ! save end jd and year
+       tmp(i)%end_day = istep
+       tmp(i)%end_yr = iyr
        
        backspace (108)
        iyr_prev = iyr

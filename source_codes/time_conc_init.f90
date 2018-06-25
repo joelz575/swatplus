@@ -23,34 +23,34 @@
       real :: sumn                 !kg N/ha      |total amount of nitrate stored in soil profile
           
      ! compute weighted Mannings n for each subbasin
-      do isub = 1, sp_ob%sub
-        ru_n(isub) = 0.
-        do ii = 1, ru_def(isub)%num_tot
-          ielem = ru_def(isub)%num(ii)
+      do iru = 1, sp_ob%ru
+        ru_n(iru) = 0.
+        do ii = 1, ru_def(iru)%num_tot
+          ielem = ru_def(iru)%num(ii)
           if (ru_elem(ielem)%obtyp == "hru") then
             ihru = ru_elem(ielem)%obtypno 
-            ru_n(isub) = ru_n(isub) + hru(ihru)%luse%ovn * hru(ihru)%km
+            ru_n(iru) = ru_n(iru) + hru(ihru)%luse%ovn * hru(ihru)%km
           else
-            ru_n(isub) = 0.1
+            ru_n(iru) = 0.1
           end if
         end do
       end do
             
-      do isub = 1, sp_ob%sub
-        iob = sp_ob1%sub + isub - 1
-        ru(isub)%da_km2 = ob(iob)%area_ha / 100.
-        ru_n(isub) = ru_n(isub) / ru(isub)%da_km2
-        ith = ru(isub)%dbs%toposub_db
-        ifld = ru(isub)%dbs%field_db
+      do iru = 1, sp_ob%ru
+        iob = sp_ob1%ru + iru - 1
+        ru(iru)%da_km2 = ob(iob)%area_ha / 100.
+        ru_n(iru) = ru_n(iru) / ru(iru)%da_km2
+        ith = ru(iru)%dbs%toposub_db
+        ifld = ru(iru)%dbs%field_db
         !if (ith > 0 .and. ichan > 0) then                  
         ! compute tc for the subbasin
-          tov = .0556 * (topo_db(ith)%slope_len * ru_n(isub)) ** .6 /     &
+          tov = .0556 * (topo_db(ith)%slope_len * ru_n(iru)) ** .6 /     &
                                               (topo_db(ith)%slope + .0001) ** .3
           ch_slope = .5 * (topo_db(ith)%slope + 0001)
-          ch_n = ru_n(isub)
+          ch_n = ru_n(iru)
           ch_l = field_db(ifld)%length / 1000.
-          t_ch = .62 * ch_l * ch_n**.75 / (ru(isub)%da_km2**.125 * ch_slope**.375)
-          ru_tc(isub) = tov + t_ch
+          t_ch = .62 * ch_l * ch_n**.75 / (ru(iru)%da_km2**.125 * ch_slope**.375)
+          ru_tc(iru) = tov + t_ch
         !end if                                             
       end do
       

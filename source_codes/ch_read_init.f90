@@ -18,7 +18,7 @@
       imax = 0
       
       inquire (file=in_cha%init, exist=i_exist)
-      if (i_exist == 0 .or. in_cha%init == 'null') then
+      if (i_exist == 0 .or. in_cha%init == "null") then
         allocate (ch_init(0:0))
       else   
       do

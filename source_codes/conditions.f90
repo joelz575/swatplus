@@ -93,10 +93,10 @@
           ob_num = d_tbl(id)%cond(ic)%ob_num
           if (ob_num == 0) ob_num = ob_cur
           
-          if (d_tbl(id)%cond(ic)%ob == 'hru') then
+          if (d_tbl(id)%cond(ic)%ob == "hru") then
             iob = sp_ob1%hru + ob_num - 1
           end if
-          if (d_tbl(id)%cond(ic)%ob == 'hlt') then
+          if (d_tbl(id)%cond(ic)%ob == "hlt") then
             iob = sp_ob1%hru_lte + ob_num - 1
           end if
           iwst = ob(iob)%wst

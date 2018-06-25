@@ -27,7 +27,7 @@
       imax = 0
 
       inquire (file=in_cha%sed,exist=i_exist)
-      if (i_exist == 0 .or. in_cha%sed == 'null') then
+      if (i_exist == 0 .or. in_cha%sed == "null") then
         allocate (ch_sed(0:0))
       else
       do

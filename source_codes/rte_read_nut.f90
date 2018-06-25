@@ -22,12 +22,12 @@
       eof = 0
       imax = 0
 
-      inquire (file='nutrients.rte',exist=i_exist)
+      inquire (file="nutrients.rte",exist=i_exist)
       if (i_exist == 0) then
         allocate (rte_nut(0:0))
       else
       do
-        open (105,file='nutrients.rte')
+        open (105,file="nutrients.rte")
         read (105,*,iostat=eof) titldum
         if (eof < 0) exit
         read (105,*,iostat=eof) header

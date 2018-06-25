@@ -23,7 +23,7 @@
 
       !! read all measured daily solar radiation data
       inquire (file=in_cli%wnd_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%wnd_cli == 'null') then
+      if (i_exist == 0 .or. in_cli%wnd_cli == "null") then
          allocate (wnd(0:0))
          allocate (wnd_n(0))
       else
@@ -59,7 +59,7 @@
         if (eof < 0) exit
         
 !!!!!weather path code
-       if (in_path_wnd%wnd == 'null') then
+       if (in_path_wnd%wnd == "null") then
          open (108,file = wnd(i)%filename)
        else
         open (108,file = TRIM(ADJUSTL(in_path_wnd%wnd))//wnd(i)%filename)
@@ -76,13 +76,32 @@
        
         ! the precip time step has to be the same as time%step
         allocate (wnd(i)%ts(366,wnd(i)%nbyr))
+        
+        ! read and save start jd and yr
+        read (108,*,iostat=eof) iyr, istep
+        
+        wnd(i)%start_day = istep
+        wnd(i)%start_yr = iyr
+        
+        backspace (108)
 
+      if (iyr > time%yrc) then
+        wnd(i)%yrs_start = iyr - time%yrc
+      else
+        ! read and store entire year
+        wnd(i)%yrs_start = 0
+      end if
+      
         ! read and store entire year
        do 
          read (108,*,iostat=eof) iyr, istep
          if (eof < 0) exit
          if (iyr == time%yrc .and. istep == time%day_start) exit
        end do
+       
+       !save end jd and year
+       hmd(i)%end_day = istep
+       hmd(i)%end_yr = iyr
        
        backspace (108)
        iyr_prev = iyr

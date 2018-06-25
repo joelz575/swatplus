@@ -25,7 +25,7 @@
 	    if (pldb(ic)%rsr1 <= 0.0) pldb(ic)%rsr1 = 0.4
 	    if (pldb(ic)%rsr2 <= 0.0) pldb(ic)%rsr2 = 0.2
 
-        if (pldb(ic)%bio_e > 0. .and. pldb(ic)%plantnm /= 'WATR') then
+        if (pldb(ic)%bio_e > 0. .and. pldb(ic)%plantnm /= "WATR") then
 
 !!        determine shape parameters for the plant population-lai equation
           if (pldb(ic)%pop1 + pldb(ic)%pop2 > 1.e-6) then

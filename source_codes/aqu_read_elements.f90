@@ -26,7 +26,6 @@
       integer :: ie                     !none         |counter
       integer :: ihru                   !none         |counter
       integer :: iaqu                   !none         |counter
-      integer :: msub_elems             !             |
       integer :: ireg                   !none         |counter
            
       
@@ -35,7 +34,7 @@
       mcal = 0
             
     inquire (file=in_regs%def_aqu, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_aqu /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_aqu /= "null") then
       do
         open (107,file=in_regs%def_aqu)
         read (107,*,iostat=eof) titldum
@@ -128,7 +127,7 @@
         
     !! setting up regions for aquifer soft cal and/or output by type
     inquire (file=in_regs%def_aqu_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_aqu_reg /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_aqu_reg /= "null") then
       do
         open (107,file=in_regs%def_aqu)
         read (107,*,iostat=eof) titldum
@@ -216,7 +215,7 @@
       end do 
       end if	  
 
-      !! if no regions are input, don't need elements
+      !! if no regions are input, don"t need elements
       if (mreg > 0) then
       
       do ireg = 1, mreg
@@ -234,7 +233,7 @@
       
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_aqu, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_aqu /= 'null') then
+      if (i_exist /= 0 .or. in_regs%ele_aqu /= "null") then
       do
         open (107,file=in_regs%ele_aqu)
         read (107,*,iostat=eof) titldum
@@ -247,9 +246,7 @@
               if (eof < 0) exit
               imax = Max(i,imax)
           end do
-       
-        msub_elems = imax
-        
+
         allocate (acu_elem(imax))
 
         rewind (107)
@@ -261,7 +258,7 @@
           read (107,*,iostat=eof) i
           backspace (107)
           read (107,*,iostat=eof) k, acu_elem(i)%name, acu_elem(i)%obtyp, acu_elem(i)%obtypno,      &
-                                    acu_elem(i)%bsn_frac, acu_elem(i)%sub_frac, acu_elem(i)%reg_frac
+                                    acu_elem(i)%bsn_frac, acu_elem(i)%ru_frac, acu_elem(i)%reg_frac
           if (eof < 0) exit
         end do
         exit
@@ -274,7 +271,7 @@
           ielem = acu_reg(ireg)%num(iaqu)
           !switch %num from element number to hru number
           acu_cal(ireg)%num(iaqu) = acu_elem(ielem)%obtypno
-          acu_cal(ireg)%hru_ha(iaqu) = acu_elem(ielem)%sub_frac * acu_cal(ireg)%area_ha
+          acu_cal(ireg)%hru_ha(iaqu) = acu_elem(ielem)%ru_frac * acu_cal(ireg)%area_ha
         end do
       end do
       

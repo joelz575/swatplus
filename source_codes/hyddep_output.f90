@@ -16,12 +16,12 @@
       !!  3 = daily  
 
 !!!!! daily print
-       if (pco%day_print == 'y' .and. pco%int_day_cur == pco%int_day) then
-        if (pco%hyd%d == 'y') then
-            write (2700,101) time%day, time%yrs, icmd, ob(icmd)%typ,       &
+       if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
+        if (pco%hyd%d == "y") then
+            write (2700,101) time%day, time%mo, time%day_mo, time%yrc, icmd, ob(icmd)%typ,       &
               ob(icmd)%props, ht1
-          if (pco%csvout == 'y') then
-            write (2704,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,       &
+          if (pco%csvout == "y") then
+            write (2704,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, icmd, ob(icmd)%typ,       &
               ob(icmd)%props, ht1
           end if 
         endif
@@ -31,11 +31,11 @@
 
 !!!!! monthly print
       if (time%end_mo == 1) then
-        if (pco%hyd%m == 'y') then
-            write (2701,101) time%day, time%yrs, icmd, ob(icmd)%typ,     &
+        if (pco%hyd%m == "y") then
+            write (2701,101) time%day, time%mo, time%day_mo, time%yrc, icmd, ob(icmd)%typ,     &
              ob(icmd)%props, ob(icmd)%hdep_m
-          if (pco%csvout == 'y') then
-            write (2705,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,     &
+          if (pco%csvout == "y") then
+            write (2705,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, icmd, ob(icmd)%typ,     &
              ob(icmd)%props, ob(icmd)%hdep_m
           end if
         end if
@@ -45,11 +45,11 @@
         
 !!!!! yearly print
       if (time%end_yr == 1) then
-        if (pco%hyd%y == 'y') then
-            write (2702,101) time%day, time%yrs, icmd, ob(icmd)%typ,     &
+        if (pco%hyd%y == "y") then
+            write (2702,101) time%day, time%mo, time%day_mo, time%yrc, icmd, ob(icmd)%typ,     &
              ob(icmd)%props, ob(icmd)%hin_y
-          if (pco%csvout == 'y') then
-            write (2706,'(*(G0.3,:","))') time%day, time%yrs, icmd, ob(icmd)%typ,     &
+          if (pco%csvout == "y") then
+            write (2706,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, icmd, ob(icmd)%typ,     &
              ob(icmd)%props, ob(icmd)%hin_y
           end if 
         end if
@@ -58,19 +58,18 @@
       endif
         
 !!!!! average annual print
-        if (time%end_sim == 1 .and. pco%hyd%a == 'y') then
+        if (time%end_sim == 1 .and. pco%hyd%a == "y") then
           ob(icmd)%hdep_a = ob(icmd)%hdep_a / time%yrs_prt
-          write (2703,100) ob(icmd)%name, time%day, time%yrs, icmd,      &
+          write (2703,100) time%day, time%mo, time%day_mo, time%yrc,   icmd,      &
              ob(icmd)%typ, ob(icmd)%props, ob(icmd)%hdep_a
-           if (pco%csvout == 'y') then
-             write (2707,'(*(G0.3,:","))') ob(icmd)%name, time%day, time%yrs, icmd,      &
+           if (pco%csvout == "y") then
+             write (2707,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, icmd,      &
               ob(icmd)%typ, ob(icmd)%props, ob(icmd)%hdep_a
            end if 
         end if
         
       return
-
-100   format (a16,3i8,a8,i8,a13,30(1x,e11.4))
-101   format (3i8,a8,i8,a13,30(1x,e11.4))
+100   format (5i8,a8,i8,a13,30(1x,e11.4))
+101   format (5i8,a8,i8,a13,30(1x,e11.4))
        
       end subroutine hyddep_output

@@ -13,7 +13,7 @@
       
 
         !! average output for soft data calibration
-        if (cal_codes%hyd_hru == 'y' .or. cal_codes%sed == 'y') then
+        if (cal_codes%hyd_hru == "y" .or. cal_codes%sed == "y") then
           !average annual for hru calibration
           do ireg = 1, db_mx%lsu_reg
             do ilu = 1, region(ireg)%nlum
@@ -33,7 +33,7 @@
           end do
         end if
         
-        if (cal_codes%hyd_hrul == 'y') then
+        if (cal_codes%hyd_hrul == "y") then
           !average annual for hru_lte calibration
           do ireg = 1, db_mx%lsu_reg
             do ilu = 1, lscalt(ireg)%lum_num
@@ -54,7 +54,7 @@
         end if
             
         !! average output for soft data calibration
-        if (cal_codes%plt == 'y') then
+        if (cal_codes%plt == "y") then
             
           !average annual for plant calibration
           do ireg = 1, db_mx%plcal_reg
@@ -76,7 +76,7 @@
         end if
         
         !! average channel output for soft data calibration
-        if (cal_codes%chsed == 'y' .and. cal_codes%sed == 'n' .and. cal_codes%plt == 'n' .and. cal_codes%hyd_hru == 'n' .and. cal_codes%hyd_hrul == 'n') then
+        if (cal_codes%chsed == "y" .and. cal_codes%sed == "n" .and. cal_codes%plt == "n" .and. cal_codes%hyd_hru == "n" .and. cal_codes%hyd_hrul == "n") then
           do ireg = 1, db_mx%ch_reg
             do ich = 1, chcal(ireg)%ord_num
               if (chcal(ireg)%ord(ich)%nbyr > 0) then

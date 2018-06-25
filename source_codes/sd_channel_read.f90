@@ -20,7 +20,7 @@
       integer :: idb                  !             |
       integer :: i                    !none         |counter  
       real :: aa                      !none         |area/area=1 (used to calculate velocity with
-                                      !             |Manning's equation)
+                                      !             |Manning"s equation)
       real :: a                       !m^2          |cross-sectional area of channel
       real :: b                       !m            |bottom width of channel
       real :: d                       !m            |depth of flow
@@ -52,7 +52,7 @@
       allocate (chsd_a(0:sp_ob%chandeg))
       
       inquire (file=in_cha%chan_ez, exist=i_exist)
-      if (i_exist == 0 .or. in_cha%chan_ez == 'null') then
+      if (i_exist == 0 .or. in_cha%chan_ez == "null") then
         allocate (sd_chd(0:0))
       else
       do

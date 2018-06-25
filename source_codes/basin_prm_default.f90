@@ -46,7 +46,6 @@
          if (bsn_prm%cn_froz < 1.e-6) bsn_prm%cn_froz = 0.000862  !! 
          !if (bsn_prm%dorm_hr < 1.e-6) bsn_prm%dorm_hr = -1.        !! time threshold used to define dormant (hrs)
          if (bsn_prm%smxco < 1.e-6) bsn_prm%smxco = 1.0           !! 
-         if (bsn_prm%fixco < 1.e-6) bsn_prm%fixco = 0.50          !! nitrogen fixation coeff
          if (bsn_prm%nfixmx < 1.e-6) bsn_prm%nfixmx = 20.0        !! max daily n-fixation (kg/ha)
          if (bsn_prm%decr_min < 1.e-6) bsn_prm%decr_min = 0.01    !! 
          if (bsn_prm%rsd_covco < 1.e-6) bsn_prm%rsd_covco = 0.30  !! residue cover factor for computing frac of cover         

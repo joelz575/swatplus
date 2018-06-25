@@ -14,7 +14,7 @@
       integer :: iu                   !none       |counter 
            
       inquire (file=in_parmdb%urban_urb, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%urban_urb == 'null') then
+      if (i_exist == 0 .or. in_parmdb%urban_urb == "null") then
           allocate (urbdb(0:0))
       else
       do

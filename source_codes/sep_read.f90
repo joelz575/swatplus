@@ -18,7 +18,7 @@
       imax = 0
       
       inquire (file=in_str%septic_str,exist=i_exist)                  
-      if (i_exist == 0 .or. in_str%septic_str == 'null') then 
+      if (i_exist == 0 .or. in_str%septic_str == "null") then 
         allocate (sep(0:0)) 
       else
         do 

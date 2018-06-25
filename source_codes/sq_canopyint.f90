@@ -25,7 +25,8 @@
       use basin_module
       use time_module
       use climate_module, only : wst
-      use hru_module, only : hru, canstor, blai_com, ihru, precipday, sumlai
+      use hru_module, only : hru, canstor, blai_com, ihru, precipday
+      use plant_module
       
       implicit none
 
@@ -45,7 +46,7 @@
 
       if (time%step > 0) then
           canstori = canstor(j)
-          canmxl = hru(j)%hyd%canmx * sumlai / blai_com(j)
+          canmxl = hru(j)%hyd%canmx * pcom(j)%lai_sum / blai_com(j)
           do ii = 2, time%step+1
             xx = 0.
             xx = wst(iwst)%weat%ts(ii)
@@ -74,7 +75,7 @@
           end if
 
         else
-          canmxl = hru(j)%hyd%canmx * sumlai / blai_com(j)
+          canmxl = hru(j)%hyd%canmx * pcom(j)%lai_sum / blai_com(j)
           precip_eff = precip_eff - (canmxl - canstor(j))
           if (precipday < 0.) then
             canstor(j) = canstor(j) + precipday

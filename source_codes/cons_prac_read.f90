@@ -19,7 +19,7 @@
       
     !! read all curve number data from cn.tbl
       inquire (file=in_lum%cons_prac_lum, exist=i_exist)
-      if (i_exist == 0 .or. in_lum%cons_prac_lum == 'null') then
+      if (i_exist == 0 .or. in_lum%cons_prac_lum == "null") then
         allocate (cons_prac(0:0))
       else
       do

@@ -64,11 +64,8 @@
         Exp(plcp(idp)%pup1 - plcp(idp)%pup2 *                           &
         pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltpfr3
 
-      up2(ipl) = 0.
-      uapd(ipl) = 0.
       up2(ipl) = pcom(j)%plm(ipl)%p_fr * pcom(j)%plm(ipl)%mass
-      if (up2(ipl)<pcom(ihru)%plm(ipl)%pmass)                            &
-                  up2(ipl)=pcom(ihru)%plm(ipl)%pmass
+      if (up2(ipl)<pcom(ihru)%plm(ipl)%pmass) up2(ipl)=pcom(ihru)%plm(ipl)%pmass
       uapd(ipl) = up2(ipl) - pcom(ihru)%plm(ipl)%pmass
       uapd(ipl) = 1.5 * uapd(ipl)                     !! luxury p uptake
  

@@ -31,7 +31,7 @@
             
     !! read landscape cataloging unit definitions for output (old subbasin output file)
     inquire (file=in_regs%def_lsu, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_lsu /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_lsu /= "null") then
       do
         open (107,file=in_regs%def_lsu)
         read (107,*,iostat=eof) titldum
@@ -130,7 +130,7 @@
 
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_lsu, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_lsu /= 'null') then
+      if (i_exist /= 0 .or. in_regs%ele_lsu /= "null") then
       do
         open (107,file=in_regs%ele_lsu)
         read (107,*,iostat=eof) titldum
@@ -155,7 +155,7 @@
           read (107,*,iostat=eof) i
           backspace (107)
           read (107,*,iostat=eof) k, lsu_elem(i)%name, lsu_elem(i)%obtyp, lsu_elem(i)%obtypno,      &
-                                    lsu_elem(i)%bsn_frac, lsu_elem(i)%sub_frac
+                                    lsu_elem(i)%bsn_frac, lsu_elem(i)%ru_frac
           if (eof < 0) exit
         end do
         exit

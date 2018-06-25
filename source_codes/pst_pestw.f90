@@ -83,20 +83,20 @@
       end do
 
       return
- 5000 format (/,'AVERAGE ANNUAL PESTICIDE SUMMARY DATA, PESTICIDE #',i3,  &
-          ': ',a16,/,t20,'APPLIED = ',f15.4,' mg/ha',/,t20,'DECAYED = ',  &
-          f15.4,' mg/ha',/,t20,                                           &
-          'IN SURFACE RUNOFF ENTERING STREAM (DISSOLVED) = ',f15.4,       &
-          ' mg/ha',/,t20,'IN SURFACE RUNOFF ENTERING STREAM (SORBED) = '  &
-          ,f15.4,' mg/ha',/,t20, 'LEACHED OUT OF SOIL PROFILE = ',f15.4,  &
-          ' mg/ha',/,t20,'IN LATERAL FLOW ENTERING STREAM = ',f15.4,      &
-          ' mg/ha')
- 5100 format (/,t20,'FINAL AMOUNT OF PESTICIDE ON PLANT = ',f15.4,        &
-          ' mg/ha',/,t20,'FINAL AMOUNT OF PESTICIDE IN GROUND = ',f15.4,  &
-          ' mg/ha')
- 5200 format (//,'PESTICIDE RISK BY ROUTING REACH',/,'REACH',t12,         &
-          '4 DAY',t30,'21 DAY',t49,'60 DAY',t69,'90 DAY',/,t6,            &
-          'DAY YEAR CON(PPB)',t24,'DAY YEAR CON(PPB)',t42,                &
-          'DAY YEAR CON(PPB)',t60,'DAY YEAR CON(PPB)',t80,'% FLOW')       
+ 5000 format (/,"AVERAGE ANNUAL PESTICIDE SUMMARY DATA, PESTICIDE #",i3,  &
+          ": ",a16,/,t20,"APPLIED = ",f15.4," mg/ha",/,t20,"DECAYED = ",  &
+          f15.4," mg/ha",/,t20,                                           &
+          "IN SURFACE RUNOFF ENTERING STREAM (DISSOLVED) = ",f15.4,       &
+          " mg/ha",/,t20,"IN SURFACE RUNOFF ENTERING STREAM (SORBED) = "  &
+          ,f15.4," mg/ha",/,t20, "LEACHED OUT OF SOIL PROFILE = ",f15.4,  &
+          " mg/ha",/,t20,"IN LATERAL FLOW ENTERING STREAM = ",f15.4,      &
+          " mg/ha")
+ 5100 format (/,t20,"FINAL AMOUNT OF PESTICIDE ON PLANT = ",f15.4,        &
+          " mg/ha",/,t20,"FINAL AMOUNT OF PESTICIDE IN GROUND = ",f15.4,  &
+          " mg/ha")
+ 5200 format (//,"PESTICIDE RISK BY ROUTING REACH",/,"REACH",t12,         &
+          "4 DAY",t30,"21 DAY",t49,"60 DAY",t69,"90 DAY",/,t6,            &
+          "DAY YEAR CON(PPB)",t24,"DAY YEAR CON(PPB)",t42,                &
+          "DAY YEAR CON(PPB)",t60,"DAY YEAR CON(PPB)",t80,"% FLOW")       
  5300 format (i4,4(2i4,e10.3),f8.2)
       end subroutine pst_pestw

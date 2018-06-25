@@ -20,7 +20,7 @@
       
       !! read street sweeping operations 
       inquire (file=in_ops%sweep_ops, exist=i_exist)
-      if (i_exist == 0 .or. in_ops%sweep_ops == 'null') then 
+      if (i_exist == 0 .or. in_ops%sweep_ops == "null") then 
         allocate (sweepop_db(0:0))
       else
       do

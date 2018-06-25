@@ -40,7 +40,7 @@
       call allocate_parms
 
       inquire (file=in_hru%hru_data, exist=i_exist)
-      if (i_exist == 0 .or. in_hru%hru_data == 'null') then
+      if (i_exist == 0 .or. in_hru%hru_data == "null") then
         allocate (hru_db(0:0))
         allocate (hru(0:0))
         allocate (soil(0:0))
@@ -92,9 +92,9 @@
                hru_db(i)%dbs%land_use_mgt = ilum
             exit
             end if
-           ! write (*,*) 'LUM not found during crosswalk.  Please ensure it is included in landuse.lum'
-           ! write (*,*) 'For LUM not found, the model will default to #1 in the file'
-           ! write (*,*) 'Enter to continue/CNTRL break to cancel simulation'
+           ! write (*,*) "LUM not found during crosswalk.  Please ensure it is included in landuse.lum"
+           ! write (*,*) "For LUM not found, the model will default to #1 in the file"
+           ! write (*,*) "Enter to continue/CNTRL break to cancel simulation"
            ! stop
           end do
           do isolt = 1, db_mx%soiltest

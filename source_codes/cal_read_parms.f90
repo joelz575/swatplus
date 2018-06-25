@@ -24,7 +24,7 @@
         
       !!read parameter change values for calibration
       inquire (file=in_chg%cal_parms, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%cal_parms == 'null') then
+      if (i_exist == 0 .or. in_chg%cal_parms == "null") then
         allocate (cal_parms(0:0))
       else
         do

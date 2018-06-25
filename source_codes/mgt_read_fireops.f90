@@ -19,7 +19,7 @@
       
        !! read contour operations
        inquire (file=in_ops%fire_ops, exist=i_exist)
-       if (i_exist == 0 .or. in_ops%fire_ops == 'null') then
+       if (i_exist == 0 .or. in_ops%fire_ops == "null") then
          allocate (fire_db(0:0))
        else
        do

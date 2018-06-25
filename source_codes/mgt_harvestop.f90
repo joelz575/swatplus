@@ -104,11 +104,11 @@
       hi_ovr = harvop_db(iharvop)%hi_ovr
       harveff = harvop_db(iharvop)%eff
 
-      ssb = pcom(j)%plm(ipl)%mass                       ! Armen 16 Jan 2009 storing info
-      ssabg = pcom(j)%plm(ipl)%mass * (1.- pcom(j)%plg(ipl)%rwt)  ! Armen 16 Jan 2009 storing info
-      ssr = ssb * pcom(j)%plg(ipl)%rwt                           ! Armen 16 Jan 2009 storing info
-      ssn = pcom(j)%plm(ipl)%nmass                             ! Armen 20 May 2006 storing info
-      ssp = pcom(ihru)%plm(ipl)%pmass                              ! Armen 20 May 2006 storing info
+      ssb = pcom(j)%plm(ipl)%mass                                       ! Armen 16 Jan 2009 storing info
+      ssabg = pcom(j)%plm(ipl)%mass * (1.- pcom(j)%plg(ipl)%root_frac)  ! Armen 16 Jan 2009 storing info
+      ssr = ssb * pcom(j)%root(ipl)%mass                                ! Armen 16 Jan 2009 storing info
+      ssn = pcom(j)%plm(ipl)%nmass                                      ! Armen 20 May 2006 storing info
+      ssp = pcom(ihru)%plm(ipl)%pmass                                   ! Armen 20 May 2006 storing info
 
       hiad1 = 0.
       if (hi_ovr > 0.) then
@@ -130,7 +130,7 @@
       if (pldb(idp)%hvsti > 1.001) then
         yield = pcom(j)%plm(ipl)%mass * (1. - 1. / (1. + hiad1))
       else
-        yield = (1.-pcom(j)%plg(ipl)%rwt) * pcom(j)%plm(ipl)%mass * hiad1
+        yield = (1. - pcom(j)%plg(ipl)%root_frac) * pcom(j)%plm(ipl)%mass * hiad1
       endif
       if (yield < 0.) yield = 0.
 
@@ -149,8 +149,8 @@
         !! calculate nutrients removed with clippings
         clipn = clip * pcom(j)%plm(ipl)%n_fr
         clipp = clip * pcom(j)%plm(ipl)%p_fr
-        clipn = Min(clipn,pcom(j)%plm(ipl)%nmass-yieldn)
-        clipp = Min(clipp,pcom(ihru)%plm(ipl)%pmass-yieldp)
+        clipn = Min(clipn, pcom(j)%plm(ipl)%nmass - yieldn)
+        clipp = Min(clipp, pcom(ihru)%plm(ipl)%pmass - yieldp)
       else
         !! calculate nutrients removed with yield
         yieldn = yield * pldb(idp)%cnyld
@@ -171,7 +171,7 @@
       
       resnew = clip 
       resnew_n = clipn
-      call mgt_bio_drop (resnew, resnew_n)
+      call pl_leaf_drop (resnew, resnew_n)
 
 	!! Calculation for dead roots allocations, resetting phenology, updating other pools
       if (ssabg > 1.e-6) then
@@ -182,7 +182,7 @@
       if (ff3 > 1.0) ff3 = 1.0
 
 	  !! nssr is the new mass of roots
-      nssr = pcom(j)%plg(ipl)%rwt * ssabg * (1. - ff3) / (1. - pcom(j)%plg(ipl)%rwt)  
+      nssr = pcom(j)%root(ipl)%mass * ssabg * (1. - ff3) / (1. - pcom(j)%plg(ipl)%root_frac)  
       rtresnew = ssr - nssr
       if (ssr > 1.e-6) then
        ff4 = rtresnew / ssr
@@ -199,7 +199,7 @@
           pcom(j)%plg(ipl)%lai = pldb(idp)%alai_min
         end if
         pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc * (1. - ff3) 
-        pcom(j)%plg(ipl)%rwt = .4 - .2 * pcom(j)%plcur(ipl)%phuacc
+        pcom(j)%root(ipl)%mass = .4 - .2 * pcom(j)%plcur(ipl)%phuacc
       else
         pcom(j)%plm(ipl)%mass = 0.
         pcom(j)%plg(ipl)%lai = 0.
@@ -214,20 +214,6 @@
       if (pcom(j)%plm(ipl)%nmass < 0.) pcom(j)%plm(ipl)%nmass = 0.
       if (pcom(ihru)%plm(ipl)%pmass < 0.) pcom(ihru)%plm(ipl)%pmass = 0.
 
-      !! compute fraction of roots in each layer	! Armen 20 May 2008
-      call pl_rootfr
-
-      !! allocate roots, N, and P to soil pools	! Armen 20 May 2008
-      do l = 1, soil(j)%nly
-       soil(j)%ly(l)%rsd=soil(j)%ly(l)%rsd+soil(j)%ly(l)%rtfr * rtresnew
-       soil1(j)%tot(l)%n = soil1(j)%tot(l)%n + soil(j)%ly(l)%rtfr * rtresn
-       soil1(j)%tot(l)%p = soil1(j)%tot(l)%p + soil(j)%ly(l)%rtfr * rtresp
-       
-       resnew = soil(j)%ly(l)%rtfr * rtresnew
-       resnew_n = soil(j)%ly(l)%rtfr * rtresn
-       call mgt_bio_drop (resnew, resnew_n)
-      end do
-       
 	  !! adjust foliar pesticide for plant removal
       if (hrupest(j) == 1) then
         npmx = cs_db%num_pests

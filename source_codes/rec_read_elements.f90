@@ -21,7 +21,6 @@
       integer :: ii                   !none       |counter
       integer :: ie1                  !none       |beginning of loop
       integer :: max                  !           |
-      integer :: msub_elems           !           | 
       integer :: ie                   !none       |counter
       integer :: ireg                 !none       |counter
       integer :: irec                 !none       |counter
@@ -30,7 +29,7 @@
       mcal = 0
             
     inquire (file=in_regs%def_psc, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_psc /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_psc /= "null") then
       do
         open (107,file=in_regs%def_psc)
         read (107,*,iostat=eof) titldum
@@ -122,7 +121,7 @@
         
     !! setting up regions for recall soft cal and/or output by type
     inquire (file=in_regs%def_psc_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_psc_reg /= 'null') then
+    if (i_exist /= 0 .or. in_regs%def_psc_reg /= "null") then
       do
         open (107,file=in_regs%def_psc_reg)
         read (107,*,iostat=eof) titldum
@@ -209,7 +208,7 @@
       end do 
       end if	  
       
-      !! if no regions are input, don't need elements
+      !! if no regions are input, don"t need elements
       if (mreg > 0) then
         do ireg = 1, mreg
           pcu_cal(ireg)%lum_ha_tot = 0.
@@ -220,7 +219,7 @@
       
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_psc, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_psc /= 'null') then
+      if (i_exist /= 0 .or. in_regs%ele_psc /= "null") then
       do
         open (107,file=in_regs%ele_psc)
         read (107,*,iostat=eof) titldum
@@ -233,22 +232,20 @@
               if (eof < 0) exit
               imax = Max(i,imax)
           end do
-       
-        msub_elems = imax
-        
+
         allocate (pcu_elem(imax))
 
         rewind (107)
         read (107,*) titldum
         read (107,*) header
         
-        ielem_sub = 0
+        ielem_ru = 0
    
         do isp = 1, imax
           read (107,*,iostat=eof) i
           backspace (107)
           read (107,*,iostat=eof) k, pcu_elem(i)%name, pcu_elem(i)%obtyp, pcu_elem(i)%obtypno,      &
-                                    pcu_elem(i)%bsn_frac, pcu_elem(i)%sub_frac, pcu_elem(i)%reg_frac
+                                    pcu_elem(i)%bsn_frac, pcu_elem(i)%ru_frac, pcu_elem(i)%reg_frac
           if (eof < 0) exit
         end do
         exit
@@ -261,7 +258,7 @@
           ielem = pcu_reg(ireg)%num(irec)
           !switch %num from element number to hru number
           pcu_cal(ireg)%num(irec) = pcu_elem(ielem)%obtypno
-          pcu_cal(ireg)%hru_ha(irec) = pcu_elem(ielem)%sub_frac * pcu_cal(ireg)%area_ha
+          pcu_cal(ireg)%hru_ha(irec) = pcu_elem(ielem)%ru_frac * pcu_cal(ireg)%area_ha
         end do
       end do
       

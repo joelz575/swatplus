@@ -15,7 +15,7 @@
        eof = 0
        
       inquire (file=in_chg%ch_parms_cal, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%ch_parms_cal == 'null') then
+      if (i_exist == 0 .or. in_chg%ch_parms_cal == "null") then
            allocate (ch_prms(0:0))         
       else    
        do 

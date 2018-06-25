@@ -31,7 +31,7 @@
       mcal = 0
  
     inquire (file=in_chg%pl_regions_cal, exist=i_exist)
-    if (i_exist == 0 .or. in_chg%pl_regions_cal /= 'null' ) then
+    if (i_exist == 0 .or. in_chg%pl_regions_cal /= "null" ) then
       allocate (plcal(0:0))	
     else
       do

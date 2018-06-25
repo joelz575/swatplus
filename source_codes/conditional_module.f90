@@ -32,8 +32,8 @@
         type (conditions_var), dimension(:), allocatable :: cond        ! conditions
         character(len=16), dimension(:,:), allocatable :: alt           ! condition alternatives
         type (actions_var), dimension(:), allocatable :: act            ! actions
-        character(len=1), dimension(:,:), allocatable :: act_outcomes   ! action outcomes ('y' to perform action; 'n' to not perform)
-        character(len=1), dimension(:), allocatable :: act_hit          ! 'y' if all condition alternatives (rules) are met; 'n' if not
+        character(len=1), dimension(:,:), allocatable :: act_outcomes   ! action outcomes ("y" to perform action; "n" to not perform)
+        character(len=1), dimension(:), allocatable :: act_hit          ! "y" if all condition alternatives (rules) are met; "n" if not
         integer, dimension(:), allocatable :: act_typ                   ! pointer to action type (ie plant, fert type, tillage implement, release type, etc)
         integer, dimension(:), allocatable :: act_app                   ! pointer to operation or application type (ie harvest.ops, chem_app.ops, wier shape, etc)
       end type decision_table

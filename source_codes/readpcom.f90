@@ -28,7 +28,7 @@
 
 !! Open plant community data file
       inquire (file=in_init%plant, exist=i_exist)
-      if (i_exist == 0 .or. in_init%plant == 'null') then
+      if (i_exist == 0 .or. in_init%plant == "null") then
         allocate (pcomdb(0:0))
         allocate (pcomdb(0)%pl(0:0))
         db_mx%plantcom = mcom + 1
@@ -70,7 +70,7 @@
             end if
           end do 
           if (pcomdb(icom)%pl(iplt)%db_num == 0) then
-                 write (9001,*) ' plant com', icom, ' plant numb', iplt, pcomdb(icom)%pl(iplt)%cpnm, ' not found in plants.plt database' 
+                 write (9001,*) " plant com", icom, " plant numb", iplt, pcomdb(icom)%pl(iplt)%cpnm, " not found in plants.plt database" 
           end if
           if (eof < 0) exit
          end do

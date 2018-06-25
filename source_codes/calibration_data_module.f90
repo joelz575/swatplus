@@ -49,14 +49,14 @@
       type (update_conditional), dimension (:), allocatable :: upd_cond
       
       type soft_calibration_codes
-        character (len=1) :: hyd_hru = 'n'      !! if y, calibrate hydrologic balance for hru by land use in each region
-        character (len=1) :: hyd_hrul = 'n'     !! if y, calibrate hydrologic balance for hru_lte by land use in each region
-        character (len=1) :: plt = 'n'          !! if y, calibrate plant growth by land use (by plant) in each region
-        character (len=1) :: sed = 'n'          !! if y, calibrate sediment yield by land use in each region  
-        character (len=1) :: nut = 'n'          !! if y, calibrate nutrient balance by land use in each region
-        character (len=1) :: chsed = 'n'        !! if y, calibrate channel widening and bank accretion by stream order
-        character (len=1) :: chnut = 'n'        !! if y, calibrate channel nutrient balance by stream order
-        character (len=1) :: res = 'n'          !! if y, calibrate reservoir budgets by reservoir
+        character (len=1) :: hyd_hru = "n"      !! if y, calibrate hydrologic balance for hru by land use in each region
+        character (len=1) :: hyd_hrul = "n"     !! if y, calibrate hydrologic balance for hru_lte by land use in each region
+        character (len=1) :: plt = "n"          !! if y, calibrate plant growth by land use (by plant) in each region
+        character (len=1) :: sed = "n"          !! if y, calibrate sediment yield by land use in each region  
+        character (len=1) :: nut = "n"          !! if y, calibrate nutrient balance by land use in each region
+        character (len=1) :: chsed = "n"        !! if y, calibrate channel widening and bank accretion by stream order
+        character (len=1) :: chnut = "n"        !! if y, calibrate channel nutrient balance by stream order
+        character (len=1) :: res = "n"          !! if y, calibrate reservoir budgets by reservoir
       end type soft_calibration_codes
       type (soft_calibration_codes) :: cal_codes
       
@@ -88,7 +88,7 @@
 
       type soft_calib_ls_processes
         !database of soft ave annual landscape calibration values
-        character(len=16) :: name = 'default'
+        character(len=16) :: name = "default"
         ! srr + lfr + pcr + etr + tfr = 1
         real :: srr = 0.    !- or m3        |surface runoff ratio - surface runoff/precip
         real :: lfr = 0.    !- or m3        |lateral flow ratio - soil lat flow/precip 
@@ -104,7 +104,7 @@
       type (soft_calib_ls_processes) :: lscal_z  !to zero values
 
       type ls_calib_regions
-        character(len=16) :: name = 'default'
+        character(len=16) :: name = "default"
         integer :: lum_no                                       !xwalk lum()%name with lscal()%lum()%name
         real :: ha                                              !ha of each land use
         integer :: nbyr = 0                                     !number of years the land use occurred 
@@ -121,10 +121,10 @@
       end type ls_calib_regions
       
       type cataloging_units
-        character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lsu_reg)
+        character(len=16) :: name = "basin"                     !name of region - (number of regions = db_mx%lsu_reg)
         real :: area_ha                                         !area of landscape cataloging unit -hectares
-        integer :: num_tot                                      !number of hru's in each region
-        integer, dimension(:), allocatable :: num               !hru's that are included in the region
+        integer :: num_tot                                      !number of hru"s in each region
+        integer, dimension(:), allocatable :: num               !hru"s that are included in the region
         integer :: nlum                                         !number of land use and mgt in the region
         character(len=16), dimension(:), allocatable :: lumc    !land use groups
         integer, dimension(:), allocatable :: lum_num           !db number of land use in the region - dimensioned by lum in the region
@@ -133,35 +133,35 @@
         real, dimension(:), allocatable :: lum_ha_tot           !sum of area (ha) of land use in the region each year- dimensioned by lum in database
         real, dimension(:), allocatable :: hru_ha               !area (ha) of hrus in the region 
       end type cataloging_units
-      type (cataloging_units), dimension(:), allocatable :: region     !dimension by region for hru's
+      type (cataloging_units), dimension(:), allocatable :: region     !dimension by region for hru"s
       type (cataloging_units), dimension(:), allocatable :: ccu_cal    !channel cataoging unit region
       type (cataloging_units), dimension(:), allocatable :: acu_cal    !aquifer cataoging unit region
       type (cataloging_units), dimension(:), allocatable :: rcu_cal    !reservoir cataoging unit region
       type (cataloging_units), dimension(:), allocatable :: pcu_cal    !point source cataoging unit region
           
       type landscape_units
-        character(len=16) :: name = 'basin'                     !name of region - (number of regions = db_mx%lsu_out)
+        character(len=16) :: name = "basin"                     !name of region - (number of regions = db_mx%lsu_out)
         real :: area_ha                                         !area of landscape cataloging unit -hectares
-        integer :: num_tot                                      !number of hru's in each region
-        integer, dimension(:), allocatable :: num               !hru's that are included in the region
+        integer :: num_tot                                      !number of hru"s in each region
+        integer, dimension(:), allocatable :: num               !hru"s that are included in the region
       end type landscape_units
-      type (landscape_units), dimension(:), allocatable :: lsu_out     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: lsu_out     !dimension by region for hru"s
       type (landscape_units), dimension(:), allocatable :: lsu_reg     !dimension by region for elements (lsu or hru)
-      type (landscape_units), dimension(:), allocatable :: acu_out     !dimension by region for hru's
-      type (landscape_units), dimension(:), allocatable :: acu_reg     !dimension by region for hru's
-      type (landscape_units), dimension(:), allocatable :: ccu_out     !dimension by region for hru's
-      type (landscape_units), dimension(:), allocatable :: ccu_reg     !dimension by region for hru's
-      type (landscape_units), dimension(:), allocatable :: rcu_out     !dimension by region for hru's
-      type (landscape_units), dimension(:), allocatable :: rcu_reg     !dimension by region for hru's
-      type (landscape_units), dimension(:), allocatable :: pcu_out     !dimension by region for hru's
-      type (landscape_units), dimension(:), allocatable :: pcu_reg     !dimension by region for hru's
+      type (landscape_units), dimension(:), allocatable :: acu_out     !dimension by region for hru"s
+      type (landscape_units), dimension(:), allocatable :: acu_reg     !dimension by region for hru"s
+      type (landscape_units), dimension(:), allocatable :: ccu_out     !dimension by region for hru"s
+      type (landscape_units), dimension(:), allocatable :: ccu_reg     !dimension by region for hru"s
+      type (landscape_units), dimension(:), allocatable :: rcu_out     !dimension by region for hru"s
+      type (landscape_units), dimension(:), allocatable :: rcu_reg     !dimension by region for hru"s
+      type (landscape_units), dimension(:), allocatable :: pcu_out     !dimension by region for hru"s
+      type (landscape_units), dimension(:), allocatable :: pcu_reg     !dimension by region for hru"s
       
       type landscape_region_elements
         character(len=16) :: name
         real :: ha                      !area of reegion element -hectares
         integer :: obj = 1              !object number
         character (len=3) :: obtyp      !object type- hru, hru_lte, lsu, etc
-        integer :: obtypno = 0          !2-number of hru_lte's or 1st hru_lte command
+        integer :: obtypno = 0          !2-number of hru_lte"s or 1st hru_lte command
       end type landscape_region_elements
       type (landscape_region_elements), dimension(:), allocatable :: reg_elem       !landscape region elements
       
@@ -169,9 +169,9 @@
         character(len=16) :: name
         integer :: obj = 1              !object number
         character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
-        integer :: obtypno = 0          !2-number of hru_lte's or 1st hru_lte command
+        integer :: obtypno = 0          !2-number of hru_lte"s or 1st hru_lte command
         real :: bsn_frac = 0            !fraction of element in basin (expansion factor)
-        real :: sub_frac = 0            !fraction of element in sub (expansion factor)
+        real :: ru_frac = 0            !fraction of element in ru (expansion factor)
         real :: reg_frac = 0            !fraction of element in calibration region (expansion factor)
       end type landscape_elements
       type (landscape_elements), dimension(:), allocatable :: lsu_elem       !landscape cataoging unit
@@ -181,17 +181,17 @@
       type (landscape_elements), dimension(:), allocatable :: pcu_elem       !point source cataoging unit
       
       type soft_data_calib_landscape
-        character(len=16) :: name = 'default'                               !name of region - (number of regions = db_mx%lsu_reg)
+        character(len=16) :: name = "default"                               !name of region - (number of regions = db_mx%lsu_reg)
         integer :: lum_num                                                  !number of land uses in each region
-        integer :: num_tot                                                  !number of hru's in each region
-        integer, dimension(:), allocatable :: num                           !hru's that are included in the region
+        integer :: num_tot                                                  !number of hru"s in each region
+        integer, dimension(:), allocatable :: num                           !hru"s that are included in the region
         integer :: num_reg                                                  !number of regions the soft data applies to
         character(len=16), dimension(:), allocatable :: reg                 !name of regions the soft data applies to
         integer, dimension(:), allocatable :: ireg                          !name of regions the soft data applies to
         type (ls_calib_regions), dimension(:), allocatable :: lum           !dimension for land uses within a region
       end type soft_data_calib_landscape
-      type (soft_data_calib_landscape), dimension(:), allocatable :: lscal  !dimension by region for hru's
-      type (soft_data_calib_landscape), dimension(:), allocatable :: lscalt !dimension by region for hru_lte's
+      type (soft_data_calib_landscape), dimension(:), allocatable :: lscal  !dimension by region for hru"s
+      type (soft_data_calib_landscape), dimension(:), allocatable :: lscalt !dimension by region for hru_lte"s
 
       type soft_calib_pl_adjust
         real :: stress = 0.     !+/- or 0/1     |plant stress (pest, soil, etc) or at limit
@@ -199,7 +199,7 @@
       
       type soft_calib_pl_processes
         !database of soft ave annual landscape calibration values
-        character(len=16) :: name = 'default'
+        character(len=16) :: name = "default"
         real :: yield = 0.      !t/ha or t      |crop yield
         real :: npp = 0.        !t/ha or t      |net primary productivity (biomass) dry weight
         real :: lai_mx = 0.     !               |maximum leaf area index
@@ -210,7 +210,7 @@
       type (soft_calib_pl_processes) :: plcal_z  !to zero values
 
       type pl_calib_regions
-        character(len=16) :: name = 'default'
+        character(len=16) :: name = "default"
         integer :: lum_no                                       !xwalk lum()%name with lscal()%lum()%name
         real :: ha                                              !ha of each land use
         integer :: nbyr = 0                                     !number of years the land use occurred 
@@ -227,10 +227,10 @@
       end type pl_calib_regions
       
       type soft_data_calib_plant
-        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lsu_reg)
+        character(len=16) :: name = "default"   !name of region - (number of regions = db_mx%lsu_reg)
         integer :: lum_num                                                  !number of land uses in each region
-        integer :: num_tot                                                  !number of hru's in each region
-        integer, dimension(:), allocatable :: num                           !hru's that are included in the region
+        integer :: num_tot                                                  !number of hru"s in each region
+        integer, dimension(:), allocatable :: num                           !hru"s that are included in the region
         type (pl_calib_regions), dimension(:), allocatable :: lum           !dimension for land uses within a region
       end type soft_data_calib_plant
       type (soft_data_calib_plant), dimension(:), allocatable :: plcal      !dimension by region for plants
@@ -253,7 +253,7 @@
       type (soft_calib_chan_processes) :: chcal_z  !to zero values
 
       type chan_calib_regions
-        character(len=16) :: name = 'default'
+        character(len=16) :: name = "default"
         real :: length                                          !ha of each land use
         integer :: nbyr = 0                                     !number of years the land use occurred 
         type (soft_calib_chan_processes) :: meas                !input soft calibration parms of each land use - ratio,t/ha,kg/ha
@@ -266,7 +266,7 @@
       end type chan_calib_regions
       
       type soft_data_calib_channel
-        character(len=16) :: name = 'default'   !name of region - (number of regions = db_mx%lsu_reg)
+        character(len=16) :: name = "default"   !name of region - (number of regions = db_mx%lsu_reg)
         integer :: ord_num                                                  !number of stream orders in each region
         integer :: num_tot                                                  !number of channels in each region
         integer, dimension(:), allocatable :: num                           !channels that are included in the region

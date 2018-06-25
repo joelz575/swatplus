@@ -19,7 +19,7 @@
                                       
       !! read grazing operations
       inquire (file=in_ops%chem_ops, exist=i_exist)
-      if (i_exist == 0 .or. in_ops%chem_ops == 'null') then
+      if (i_exist == 0 .or. in_ops%chem_ops == "null") then
          allocate (chemapp_db(0:0))
       else
       do

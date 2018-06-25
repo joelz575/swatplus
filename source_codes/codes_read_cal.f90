@@ -27,7 +27,7 @@
        eof = 0
 
        inquire (file=in_chg%codes_cal, exist=i_exist)
-       if (i_exist == 0 .or. in_chg%codes_cal == 'null') then
+       if (i_exist == 0 .or. in_chg%codes_cal == "null") then
  !       allocate (cal_codes(0:0))
        else		   
           
@@ -43,10 +43,10 @@
          enddo
     
          ical = 0
-         if (cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hrul == 'y'.or.    &
-             cal_codes%plt == 'y' .or. cal_codes%sed == 'y' .or.            &
-             cal_codes%nut == 'y' .or. cal_codes%chsed == 'y' .or.          &
-             cal_codes%chnut == 'y' .or. cal_codes%res == 'y') ical = 1
+         if (cal_codes%hyd_hru == "y" .or. cal_codes%hyd_hrul == "y".or.    &
+             cal_codes%plt == "y" .or. cal_codes%sed == "y" .or.            &
+             cal_codes%nut == "y" .or. cal_codes%chsed == "y" .or.          &
+             cal_codes%chnut == "y" .or. cal_codes%res == "y") ical = 1
              
          if (ical == 1) then
            allocate (hru_init(0:sp_ob%hru))

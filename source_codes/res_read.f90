@@ -33,7 +33,7 @@
       !read reservoir.res
       imax = 0
       inquire (file=in_res%res, exist=i_exist)
-      if (i_exist == 0 .or. in_res%res == 'null') then
+      if (i_exist == 0 .or. in_res%res == "null") then
         allocate (res_dat_c(0:0))
         allocate (res_dat(0:0))
       else   
@@ -105,12 +105,12 @@
            end if
          end do 
          
-       if (res_dat(ires)%init == 0) write (9001,*) res_dat_c(ires)%init, ' not found (res-init)'
-       if (res_dat(ires)%hyd == 0) write (9001,*) res_dat_c(ires)%hyd, ' not found (res-hyd)'
-       if (res_dat(ires)%release == 0) write (9001,*) res_dat_c(ires)%release, ' not found (res-release)'         
-       if (res_dat(ires)%sed == 0) write (9001,*) res_dat_c(ires)%sed, ' not found (res-sed)'
-       if (res_dat(ires)%nut == 0) write (9001,*) res_dat_c(ires)%nut, ' not found (res-nut)'
-       if (res_dat(ires)%pst == 0) write (9001,*) res_dat_c(ires)%pst, ' not found (res-pst)'
+       if (res_dat(ires)%init == 0) write (9001,*) res_dat_c(ires)%init, " not found (res-init)"
+       if (res_dat(ires)%hyd == 0) write (9001,*) res_dat_c(ires)%hyd, " not found (res-hyd)"
+       if (res_dat(ires)%release == 0) write (9001,*) res_dat_c(ires)%release, " not found (res-release)"         
+       if (res_dat(ires)%sed == 0) write (9001,*) res_dat_c(ires)%sed, " not found (res-sed)"
+       if (res_dat(ires)%nut == 0) write (9001,*) res_dat_c(ires)%nut, " not found (res-nut)"
+       if (res_dat(ires)%pst == 0) write (9001,*) res_dat_c(ires)%pst, " not found (res-pst)"
        end do
        
       db_mx%res = imax

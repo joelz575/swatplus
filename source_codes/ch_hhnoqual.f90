@@ -89,7 +89,6 @@
       integer :: jrch         !none          |reach number
       integer :: iwst         !none          |counter
       real :: algon           !units         |description
-      real :: wtrin           !m^3 H2O       |water flowing into reach on day
       real :: chlin           !mg chl-a/L    |chlorophyll-a concentration in inflow
       real :: algin           !mg alg/L      |algal biomass concentration in inflow
       real :: orgnin          !mg N/L        |organic N concentration in inflow

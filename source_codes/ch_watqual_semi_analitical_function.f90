@@ -25,8 +25,6 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
  
       real :: tres, tdel, prock, term_m, cprev, cint
-
-
       
       help1=1/tres-prock
       help2=exp(-tdel*help1)

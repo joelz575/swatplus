@@ -131,20 +131,20 @@
         else
           ig = wst(iwst)%wco%tgage
           out_bounds = "n"
-          call cli_bounds_check (tmp(ipg)%start_day, tmp(ipg)%start_yr,       &
-                                tmp(ipg)%end_day, tmp(ipg)%end_yr, out_bounds)
+          call cli_bounds_check (tmp(ig)%start_day, tmp(ig)%start_yr,       &
+                                tmp(ig)%end_day, tmp(ig)%end_yr, out_bounds)
           if (out_bounds == "y") then
             wst(iwst)%weat%tmax = -98.
             wst(iwst)%weat%tmin = -98.
           else
-              yrs_to_start = time%yrs - tmp(ipg)%yrs_start
+              yrs_to_start = time%yrs - tmp(ig)%yrs_start
               wst(iwst)%weat%tmax = tmp(ig)%ts(time%day,yrs_to_start)
               wst(iwst)%weat%tmin = tmp(ig)%ts2(time%day,yrs_to_start)
           end if
           if (wst(iwst)%weat%tmax <= -97. .or. wst(iwst)%weat%tmin <= -97.) then
             call cli_weatgn(iwgn)
             call cli_tgen(iwgn)
-            tmp(ipg)%days_gen = tmp(ipg)%days_gen + 1
+            tmp(ig)%days_gen = tmp(ig)%days_gen + 1
           end if
         end if
         wst(iwst)%weat%tave = (wst(iwst)%weat%tmax + wst(iwst)%weat%tmin) / 2.
@@ -159,17 +159,17 @@
         else
           ig = wst(iwst)%wco%sgage
           out_bounds = "n"
-          call cli_bounds_check (slr(ipg)%start_day, slr(ipg)%start_yr,       &
-                                slr(ipg)%end_day, slr(ipg)%end_yr, out_bounds)
+          call cli_bounds_check (slr(ig)%start_day, slr(ig)%start_yr,       &
+                                slr(ig)%end_day, slr(ig)%end_yr, out_bounds)
           if (out_bounds == "y") then 
             wst(iwst)%weat%solrad = -98.
           else
-            yrs_to_start = time%yrs - slr(ipg)%yrs_start
+            yrs_to_start = time%yrs - slr(ig)%yrs_start
             wst(iwst)%weat%solrad = slr(ig)%ts(time%day,yrs_to_start)
           end if
           if (wst(iwst)%weat%solrad <= -97.) then
             call cli_slrgen(iwgn)
-            slr(ipg)%days_gen = slr(ipg)%days_gen + 1
+            slr(ig)%days_gen = slr(ig)%days_gen + 1
           end if
         end if
       end do
@@ -182,17 +182,17 @@
         else
           ig = wst(iwst)%wco%hgage
           out_bounds = "n"
-          call cli_bounds_check (hmd(ipg)%start_day, hmd(ipg)%start_yr,       &
-                                hmd(ipg)%end_day, hmd(ipg)%end_yr, out_bounds)
+          call cli_bounds_check (hmd(ig)%start_day, hmd(ig)%start_yr,       &
+                                hmd(ig)%end_day, hmd(ig)%end_yr, out_bounds)
           if (out_bounds == "y") then 
             wst(iwst)%weat%rhum = -98.
           else
-            yrs_to_start = time%yrs - hmd(ipg)%yrs_start
+            yrs_to_start = time%yrs - hmd(ig)%yrs_start
             wst(iwst)%weat%rhum = hmd(ig)%ts(time%day,yrs_to_start)
           end if
           if (wst(iwst)%weat%rhum <= -97.) then
             call cli_rhgen(iwgn)
-            hmd(ipg)%days_gen = hmd(ipg)%days_gen + 1
+            hmd(ig)%days_gen = hmd(ig)%days_gen + 1
           end if
         end if
         !! simple dewpoint eqn from Lawrence 2005. Bull. Amer. Meteor. Soc.
@@ -207,17 +207,17 @@
         else
           ig = wst(iwst)%wco%wgage
           out_bounds = "n"
-          call cli_bounds_check (wnd(ipg)%start_day, wnd(ipg)%start_yr,       &
-                                wnd(ipg)%end_day, wnd(ipg)%end_yr, out_bounds)
+          call cli_bounds_check (wnd(ig)%start_day, wnd(ig)%start_yr,       &
+                                wnd(ig)%end_day, wnd(ig)%end_yr, out_bounds)
           if (out_bounds == "y") then 
             wst(iwst)%weat%windsp = -98.
           else
-            yrs_to_start = time%yrs - wnd(ipg)%yrs_start
+            yrs_to_start = time%yrs - wnd(ig)%yrs_start
             wst(iwst)%weat%windsp = wnd(ig)%ts(time%day,yrs_to_start)
           end if
           if (wst(iwst)%weat%windsp <= -97.) then
             call cli_wndgen(iwgn)
-            wnd(ipg)%days_gen = wnd(ipg)%days_gen + 1
+            wnd(ig)%days_gen = wnd(ig)%days_gen + 1
           end if
         end if
       end do 

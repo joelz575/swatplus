@@ -9,14 +9,12 @@
       use climate_module
 
       implicit none
-      
-      integer :: ipg
 
-      prog = " SWAT+ June 25 2018    MODULAR Rev 2018.51"
+      prog = " SWAT+ June 26 2018    MODULAR Rev 2018.52"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 51            ",/,             &
+     &          "               Revision 52            ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)

@@ -55,6 +55,8 @@
         integer :: mat_yrs = 10          !years             |year to maturity  
         real :: bmx_peren = 1000.        !metric tons/ha    |max biomass for forest (trees only)
         real :: ext_coef = 0.65          !                  |light extinction coefficient
+        real :: leaf_tov_min = 0.        !months            |perennial leaf turnover rate with minimum stress
+        real :: leaf_tov_max = 0.        !months            |perennial leaf turnover rate with maximum stress
         real :: bm_dieoff = 1.           !frac              |above ground biomass that dies off at dormancy
         real :: rsr1 = 0.                !                  |initial root to shoot ratio at the beg of growing season
         real :: rsr2 = 0.                !                  |root to shoot ratio at the end of the growing season

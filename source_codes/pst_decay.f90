@@ -35,19 +35,19 @@
       use hru_module, only : hru, hrupest, ihru, npmx
       use constituent_mass_module
       use soil_module
+      use plant_module
+      use output_ls_constituent_module
       
       implicit none 
       
-      integer :: j               !none     |counter
-      integer :: k               !         |
-      integer :: kk              !         |  
-      integer :: l               !none     |counter 
-      real :: x1                 !kg/ha    |amount of pesticide present at beginning of 
-                                 !         |day
-      real :: xx                 !kg/ha    |amount of pesticide present at end of day
-      integer :: icmd            !         |  
-   
-      j = 0
+      integer :: j               !none     |hru number
+      integer :: k               !none     |seqential pesticide number being simulated
+      integer :: kk              !none     |pesticide number from pesticide data base
+      integer :: l               !none     |layer number 
+      real :: pest_init          !kg/ha    |amount of pesticide present at beginning of day
+      real :: pest_end           !kg/ha    |amount of pesticide present at end of day
+      real :: pest_decay         !kg/ha    |amount of pesticide decay during day
+
       j = ihru
 
       if (hrupest(j) == 0) return
@@ -56,30 +56,28 @@
       do k = 1, npmx
         kk = hru(j)%pst(k)%num_db
         if (kk > 0) then
-
+          pest_decay = 0.
           !! calculate degradation in soil
           do l = 1, soil(j)%nly
-            x1 = 0.
-            x1 = soil(j)%ly(l)%pst(k)
-            
-            if (x1 >= 0.0001) then
-              xx = 0.
-              xx = x1 * pstcp(kk)%decay_s
-              soil(j)%ly(l)%pst(k) = xx
-              
+            pest_init = soil(j)%ly(l)%pst(k)
+            if (pest_init >= 0.0001) then
+              pest_end = pest_init * pstcp(kk)%decay_s
+              soil(j)%ly(l)%pst(k) = pest_end
+              pest_decay = pest_decay + (pest_init - pest_end)
             end if
           end do
 
           !! calculate degradation off plant foliage
-          x1 = 0.
-          x1 = hru(j)%pst(k)%plt
-          if (x1 >= 0.0001) then
-            xx = 0.
-            xx = x1 * pstcp(kk)%decay_f
-            hru(j)%pst(k)%plt = xx
+          pest_init = pcom(j)%pest(k)
+          if (pest_init >= 0.0001) then
+            pest_end = pest_init * pstcp(kk)%decay_f
+            pcom(j)%pest(k) = pest_end
+            pest_decay = pest_decay + (pest_init - pest_end)
           end if
         end if
       end do
 
+      hpest_bal(j)%pest(k)%decay = pest_decay
+      
       return
       end subroutine pst_decay

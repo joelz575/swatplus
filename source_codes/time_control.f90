@@ -106,7 +106,9 @@
           !! determine month and day of month - time%mo and time%day_mo
           call xmon
           
-          write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc
+         time%yrc_tot = time%yrc_end - time%yrc_start + 1
+          
+          write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc, time%yrs, time%yrc_tot
           
           
           !! check for end of month, year and simulation
@@ -268,7 +270,7 @@
       !! ave annual calibration output and reset time for next simulation
       call cal_ave_output
       time = time_init
-      
+
       return
- 1234 format (1x, a, ' Executing month/day/year ', 2i4, 2x,i4)
+ 1234 format (1x, a, ' Executing mo/day/yr ', 2i4, 2x,i4,' Yr ', i4,' of ', i4)
       end subroutine time_control

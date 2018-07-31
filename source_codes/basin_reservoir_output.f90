@@ -79,6 +79,6 @@
       
       return
       
-100   format (4i6,i8,2x,a,2x,a16,43f15.3)
+100   format (4i6,i8,2x,a,2x,a16,f10.3,2x,42f10.3)
        
       end subroutine basin_reservoir_output

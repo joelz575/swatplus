@@ -37,6 +37,7 @@
       use hru_module, only : hru, hrupest, sedyld, ihru, enratio, npmx
       use soil_module
       use constituent_mass_module
+      use output_ls_constituent_module
       
       implicit none 
 
@@ -45,10 +46,9 @@
       integer :: j        !none          |HRU number
       integer :: k        !none          |counter
       integer :: kk       !none          |pesticide number from database
-      real :: xx          !kg/ha         |amount of pesticide in soil
+      real :: pest_init   !kg/ha         |amount of pesticide in soil
       integer :: icmd     !              | 
-      
-      j = 0
+
       j = ihru
 
       if (hrupest(j) == 0) return
@@ -57,21 +57,20 @@
       do k = 1, npmx
         kk = hru(j)%pst(k)%num_db
         if (kk > 0) then
-          xx = 0.
+          pest_init = soil(j)%ly(1)%pst(k)
           
-          if (xx >= .0001) then
-            conc = 100. * soil(j)%ly(1)%kp(k) * xx / (hru(j)%pst(k)%zdb + 1.e-10)
+          if (pest_init >= .0001) then
+            conc = 100. * soil(j)%ly(1)%kp(k) * pest_init / (hru(j)%pst(k)%zdb + 1.e-10)
             if (hru(j)%pst(k)%enr > 0.) then
               er = hru(j)%pst(k)%enr
             else
               er = enratio
             end if
 
-            hru(j)%pst(k)%sed=.001* sedyld(j) *conc * er/hru(j)%area_ha
-            if (hru(j)%pst(k)%sed < 0.) hru(j)%pst(k)%sed = 0.
-            if (hru(j)%pst(k)%sed > xx) hru(j)%pst(k)%sed = xx
-            soil(j)%ly(1)%pst(k) = xx -hru(j)%pst(k)%sed
-           
+            hpest_bal(j)%pest(k)%sed = .001* sedyld(j) * conc * er / hru(j)%area_ha
+            if (hpest_bal(j)%pest(k)%sed < 0.) hpest_bal(j)%pest(k)%sed = 0.
+            if (hpest_bal(j)%pest(k)%sed > pest_init) hpest_bal(j)%pest(k)%sed = pest_init
+            soil(j)%ly(1)%pst(k) = pest_init - hpest_bal(j)%pest(k)%sed
           end if
         end if
       end do

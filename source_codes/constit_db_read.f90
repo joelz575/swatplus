@@ -56,7 +56,7 @@
       end do
       end if
 
-      cs_db%num_tot_con = cs_db%num_pests + cs_db%num_paths + cs_db%num_metals + cs_db%num_salts
+      cs_db%num_tot = cs_db%num_pests + cs_db%num_paths + cs_db%num_metals + cs_db%num_salts
       
       close (106)
       return

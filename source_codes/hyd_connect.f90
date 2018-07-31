@@ -402,6 +402,10 @@
           allocate (ob(i)%hin_m(nspu))
           allocate (ob(i)%hin_y(nspu))
           allocate (ob(i)%hin_a(nspu))
+          allocate (obcs(i)%hcsin_d(nspu))
+          allocate (obcs(i)%hcsin_m(nspu))
+          allocate (obcs(i)%hcsin_y(nspu))
+          allocate (obcs(i)%hcsin_a(nspu))
         end if
       end do
 

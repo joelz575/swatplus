@@ -71,33 +71,41 @@
             do i = ob1, ob2
               ob(i)%typ = obtyp
               allocate (ob(i)%hd(nhyds))
-              if (cs_db%num_tot_con > 0) then
+              if (cs_db%num_tot > 0) then
                 allocate (obcs(i)%hd(nhyds))
+                npests = cs_db%num_pests
+                if (npests > 0) then
+                  allocate (obcs(i)%hin%pest(npests))
+                  allocate (obcs(i)%hin_s%pest(npests))
+                end if
+                npaths = cs_db%num_paths
+                if (npaths > 0) then
+                  allocate (obcs(i)%hin%path(npaths))
+                  allocate (obcs(i)%hin_s%path(npaths))
+                end if
+                nmetals = cs_db%num_metals
+                if (nmetals > 0) then 
+                  allocate (obcs(i)%hin%hmet(nmetals))
+                  allocate (obcs(i)%hin_s%hmet(nmetals))
+                end if
+                nsalts = cs_db%num_salts
+                if (nsalts > 0) then 
+                  allocate (obcs(i)%hin%salt(nsalts))
+                  allocate (obcs(i)%hin_s%salt(nsalts))
+                end if
                 
                 do ihyd = 1, nhyds
-                  npests = cs_db%num_pests
                   if (npests > 0) then 
                     allocate (obcs(i)%hd(ihyd)%pest(npests))
-                    allocate (obcs(i)%hin%pest(npests))
-                    allocate (obcs(i)%hin_s%pest(npests))
                   end if
-                  npaths = cs_db%num_paths
                   if (npaths > 0) then 
                     allocate (obcs(i)%hd(ihyd)%path(npaths))
-                    allocate (obcs(i)%hin%path(npaths))
-                    allocate (obcs(i)%hin_s%path(npaths))
                   end if
-                  nmetals = cs_db%num_metals
                   if (nmetals > 0) then 
                     allocate (obcs(i)%hd(ihyd)%hmet(nmetals))
-                    allocate (obcs(i)%hin%hmet(nmetals))
-                    allocate (obcs(i)%hin_s%hmet(nmetals))
                   end if
-                  nsalts = cs_db%num_salts
                   if (nsalts > 0) then 
-                    allocate (obcs(i)%hd(ihyd)%salt(nsalts))
-                    allocate (obcs(i)%hin%salt(nsalts))
-                    allocate (obcs(i)%hin_s%salt(nsalts))
+                    allocate (obcs(i)%hd(ihyd)%salt(nmetals))
                   end if
                 end do
               end if
@@ -122,6 +130,9 @@
                 allocate (ob(i)%hout_m(nout))
                 allocate (ob(i)%hout_y(nout))
                 allocate (ob(i)%hout_a(nout))
+                allocate (obcs(i)%hcsout_m(nout))
+                allocate (obcs(i)%hcsout_y(nout))
+                allocate (obcs(i)%hcsout_a(nout))
                 backspace (107)
                 read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &
                   ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot,      &

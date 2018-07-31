@@ -326,58 +326,77 @@
       type (hyd_output), dimension(:), allocatable :: exco        !export coefficient
 
       type hyd_header                                       
-        character (len=6) :: day =      "  jday"
-        character (len=6) :: mo =       "   mon"
-        character (len=6) :: day_mo =   "   day"
-        character (len=6) :: yrc =      "    yr"
-        character (len=8) :: icmd =       "    icmd"
-        character (len=8) :: otype =      "    type"
-        character (len=17) :: oprops =     "         props" 
-        character (len=12) :: iotyp =      "  objtyp_out"
-        character (len=15) :: iotypno =    "         typ_no"
-        character (len=16) :: hydio =      "        hyd_typ"
-        character (len=14) :: objno =      "        obj_no"
-        character (len=15) :: flo =    "        flo_m^3"        !! m^3          |volume of water
-        character (len=15) :: sed =    "      sed_mtons"        !! metric tons  |sediment
-        character (len=15) :: orgn =   "       orgn_kgN"        !! kg N         |organic N
-        character (len=15) :: sedp =   "       sedp_kgP"        !! kg P         |organic P
-        character (len=15) :: no3 =    "        no3_kgN"        !! kg N         |NO3-N
-        character (len=15) :: solp =   "       solp_kgP"        !! kg P         |mineral (soluble P)
-        character (len=15) :: psol =   "     psol_mgpst"        !! mg pst       |pesticide in solution
-        character (len=15) :: psor =   "     psor_mgpst"        !! mg pst       |pestitice sorbed to sediment
-        character (len=15) :: chla =   "        chla_kg"        !! kg           |chlorophyll-a
-        character (len=15) :: nh3 =    "        nh3_kgN"        !! kg N         |NH3
-        character (len=15) :: no2 =    "        no2_kgN"        !! kg N         |NO2
-        character (len=15) :: cbod =   "        cbod_kg"        !! kg           |carbonaceous biological oxygen demand
-        character (len=16) :: dox =    "         dox_kg "        !! kg           |dissolved oxygen
-        character (len=16) :: bacp =   "bacp_#cfu/100ml "        !! # cfu/100ml  |persistent bacteria
-        character (len=15) :: baclp =  "baclp_#cfu/100ml"        !! # cfu/100ml  |less persistent bacteria
-        character (len=13) :: met1 =   "      met1_kg"        !! kg           |conservative metal #1
-        character (len=15) :: met2 =   "        met2_kg"        !! kg           |conservative metal #2
-        character (len=15) :: met3 =   "        met3_kg"        !! kg           |conservative metal #3
-        character (len=15) :: san =    "       san_tons"        !! tons         |detached sand
-        character (len=15) :: sil =    "       sil_tons"        !! tons         |detached silt
-        character (len=15) :: cla =    "       cla_tons"        !! tons         |detached clay
-        character (len=15) :: sag =    "       sag_tons"        !! tons         |detached small ag
-        character (len=15) :: lag =    "       lag_tons"        !! tons         |detached large ag
-        character (len=15) :: grv =    "       grv_tons"        !! tons         |gravel
-        character (len=15) :: temp =   "      temp_degc"        !! deg c        |temperature
+        !character (len=11) :: day =     "       jday"
+        !character (len=12) :: mo =      "         mon"
+        !character (len=12) :: day_mo =  "         day"
+        !character (len=13) :: yrc =     "          yr"
+        !character (len=12) :: name =    "       name"
+        !character (len=16) :: otype =   " type           "
+        !character (len=5) :: oprops =   "props" 
+        !character (len=12) :: iotyp =   " objtyp_out "
+        !character (len=6) :: iotypno =  "typ_no"
+        !character (len=8) :: hydio =   " hyd_typ"
+        !character (len=7) :: objno =    " obj_no"
+        character (len=17) :: flo =     "          flo_m^3"        !! m^3          |volume of water
+        character (len=15) :: sed =     "      sed_mtons"        !! metric tons  |sediment
+        character (len=15) :: orgn =    "       orgn_kgN"        !! kg N         |organic N
+        character (len=15) :: sedp =    "       sedp_kgP"        !! kg P         |organic P
+        character (len=15) :: no3 =     "        no3_kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp =    "       solp_kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: psol =    "     psol_mgpst"        !! mg pst       |pesticide in solution
+        character (len=15) :: psor =    "     psor_mgpst"        !! mg pst       |pestitice sorbed to sediment
+        character (len=15) :: chla =    "        chla_kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3 =     "        nh3_kgN"        !! kg N         |NH3
+        character (len=15) :: no2 =     "        no2_kgN"        !! kg N         |NO2
+        character (len=15) :: cbod =    "        cbod_kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox =     "         dox_kg "        !! kg           |dissolved oxygen
+        character (len=16) :: bacp =    " bacp_#cfu/100ml"        !! # cfu/100ml  |persistent bacteria
+        character (len=16) :: baclp =   " baclp_#cfu/100ml"        !! # cfu/100ml  |less persistent bacteria
+        character (len=15) :: met1 =    "      met1_kg"        !! kg           |conservative metal #1
+        character (len=13) :: met2 =    "      met2_kg"        !! kg           |conservative metal #2
+        character (len=15) :: met3 =    "        met3_kg"        !! kg           |conservative metal #3
+        character (len=15) :: san =     "       san_tons"        !! tons         |detached sand
+        character (len=15) :: sil =     "       sil_tons"        !! tons         |detached silt
+        character (len=15) :: cla =     "       cla_tons"        !! tons         |detached clay
+        character (len=15) :: sag =     "       sag_tons"        !! tons         |detached small ag
+        character (len=15) :: lag =     "       lag_tons"        !! tons         |detached large ag
+        character (len=15) :: grv =     "       grv_tons"        !! tons         |gravel
+        character (len=15) :: temp =    "      temp_degc"        !! deg c        |temperature
       end type hyd_header
       type (hyd_header) :: hyd_hdr
       
+      type hyd_header_time                                       
+        character (len=11) :: day =     "       jday"
+        character (len=12) :: mo =      "         mon"
+        character (len=12) :: day_mo =  "         day"
+        character (len=13) :: yrc =     "          yr"
+        character (len=12) :: name =    "name        "
+        character (len=6) :: otype =   "  type"
+        !character (len=8) :: oprops =   "   props" 
+      end type hyd_header_time
+       type (hyd_header_time) :: hyd_hdr_time
+       
+      type hyd_header_obj
+        character (len=13) :: iotyp =   "   objtyp   "
+        character (len=9) :: iotypno =  "  typ_no "
+        character (len=8) :: hydio =   "hyd_typ "
+        character (len=8) :: objno =    "fraction"
+      end type hyd_header_obj
+      type (hyd_header_obj) :: hyd_hdr_obj
+      
       type output_flow_duration_header
-        character (len=12) :: obtyp =   " ob_typ "
-        character (len=12) :: props =   "  props "
-        character (len=12) :: min =     "    min "
-        character (len=12) :: p5  =     "     p5 "
-        character (len=12) :: p10 =     "    p10 "     
-        character (len=12) :: p25 =     "    p25 "
-        character (len=12) :: p50 =     "    p50 "
-        character (len=12) :: p75 =     "    p75 "
-        character (len=12) :: p90 =     "    p90 "
-        character (len=12) :: p95 =     "    p95 "
-        character (len=12) :: max =     "    max "
-        character (len=12) :: mean =    "   mean "
+        character (len=11) :: obtyp =   "ob_typ     "
+        character (len=12) :: props =   "    props   "
+        character (len=11) :: min =     "       min "!Q
+        character (len=15) :: p5  =     "            p5 "
+        character (len=13) :: p10 =     "         p10 "     
+        character (len=19) :: p25 =     "           p25 "
+        character (len=15) :: p50 =     "       p50 "
+        character (len=15) :: p75 =     "       p75 "
+        character (len=15) :: p90 =     "       p90 "
+        character (len=15) :: p95 =     "       p95 "
+        character (len=11) :: max =     "   max     "
+        character (len=14) :: mean =    "     mean "
       end type output_flow_duration_header    
       type (output_flow_duration_header) :: fdc_hdr
 	  

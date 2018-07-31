@@ -222,12 +222,12 @@
           yldpst = 0.
           clippst = 0.
           if (pldb(idp)%hvsti > 1.001) then
-            yldpst = hru(j)%pst(k)%plt
-            hru(j)%pst(k)%plt = 0.
+            yldpst = pcom(j)%pest(k)
+            pcom(j)%pest(k) = 0.
           else
-            yldpst = hiad1 * hru(j)%pst(k)%plt
-            hru(j)%pst(k)%plt = hru(j)%pst(k)%plt - yldpst
-            if (hru(j)%pst(k)%plt < 0.)hru(j)%pst(k)%plt = 0.
+            yldpst = hiad1 * pcom(j)%pest(k)
+            pcom(j)%pest(k) = pcom(j)%pest(k) - yldpst
+            if (pcom(j)%pest(k) < 0.)pcom(j)%pest(k) = 0.
           endif
           clippst = yldpst * (1. - harveff)
           if (clippst < 0.) clippst = 0.

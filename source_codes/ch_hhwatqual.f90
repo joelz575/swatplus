@@ -327,7 +327,7 @@
          if (ammoin < 1.e-6) ammoin = 0.0
          if (nitritin < 1.e-6) nitritin = 0.0
          if (nitratin < 1.e-6) nitratin = 0.0
-         if (orgpin < 1.e-6) orgnpin = 0.0
+         if (orgnpin < 1.e-6) orgnpin = 0.0
          if (dispin < 1.e-6) dispin = 0.0
          if (cbodin < 1.e-6) cbodin = 0.0
          if (disoxin < 1.e-6) disoxin = 0.0

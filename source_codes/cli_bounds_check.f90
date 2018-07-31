@@ -25,7 +25,7 @@
         end if
       end if
       
-      !! check id climate data starts after simulation
+      !! check if climate data starts after simulation
       if (end_yr < time%yrc) then
         out_bounds = "y"
       else

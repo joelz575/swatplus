@@ -64,6 +64,7 @@
           hwb_m(j)%cn = hwb_m(j)%cn / const
           hwb_m(j)%snopack = hwb_m(j)%snopack / const
           hwb_m(j)%sw = hwb_m(j)%sw / const
+          hwb_m(j)%sw_300 = hwb_m(j)%sw_300 / const
           hwb_y(j) = hwb_y(j) + hwb_m(j)
           hnb_y(j) = hnb_y(j) + hnb_m(j)
           hls_y(j) = hls_y(j) + hls_m(j)
@@ -108,6 +109,7 @@
           hwb_y(j)%cn = hwb_y(j)%cn / 12.
           hwb_y(j)%snopack = hwb_y(j)%snopack / 12.
           hwb_y(j)%sw = hwb_y(j)%sw / 12.
+          hwb_y(j)%sw_300 = hwb_y(j)%sw_300 / 12.
           hwb_a(j) = hwb_a(j) + hwb_y(j)
           hnb_a(j) = hnb_a(j) + hnb_y(j)
           hls_a(j) = hls_a(j) + hls_y(j)
@@ -185,20 +187,20 @@
                pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield /           &
                                          pcom(j)%plcur(ipl)%harv_num
              endif
-            write (4008,103) time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
+            write (4008,103) time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm,   &
                                                  pcom(j)%plcur(ipl)%yield
             if (pco%csvout == "y") then
-              write (4009,'(*(G0.3,:","))') time%end_yr, time%yrs, j,pldb(idp)%plantnm,   &
+              write (4009,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm,   &
                                                  pcom(j)%plcur(ipl)%yield 
             end if
            end do
          end if
       return
       
-100   format (4i6,2i8,2x,a,27f12.3)
+100   format (4i6,2i8,2x,a,28f12.3)
 101   format (4i6,2i8,2x,a,20f12.3)
 102   format (4i6,2i8,2x,a,20f12.3)
-103   format (2i6,i8,4x,a,5x,f12.3)
+103   format (4i6,i8,4x,a,5x,f12.3)
 104   format (4i6,2i8,2x,a,27f18.3)
        
       end subroutine hru_output

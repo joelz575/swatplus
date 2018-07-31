@@ -83,6 +83,7 @@
           rupw_m(ilsu) = rupw_m(ilsu) // const
           ruwb_m(ilsu)%cn = ruwb_m(ilsu)%cn / const 
           ruwb_m(ilsu)%sw = ruwb_m(ilsu)%sw / const
+          ruwb_m(ilsu)%sw_300 = ruwb_m(ilsu)%sw_300 / const
           ruwb_y(ilsu) = ruwb_y(ilsu) + ruwb_m(ilsu)
           runb_y(ilsu) = runb_y(ilsu) + runb_m(ilsu)
           ruls_y(ilsu) = ruls_y(ilsu) + ruls_m(ilsu)
@@ -124,6 +125,7 @@
            rupw_y(ilsu) = rupw_y(ilsu) // 12.
            ruwb_y(ilsu)%cn = ruwb_y(ilsu)%cn / 12. 
            ruwb_y(ilsu)%sw = ruwb_y(ilsu)%sw / 12.
+           ruwb_y(ilsu)%sw_300 = ruwb_y(ilsu)%sw_300 / 12.
            ruwb_a(ilsu) = ruwb_a(ilsu) + ruwb_y(ilsu)
            runb_a(ilsu) = runb_a(ilsu) + runb_y(ilsu)
            ruls_a(ilsu) = ruls_a(ilsu) + ruls_y(ilsu)
@@ -194,9 +196,9 @@
       
       return
       
-100   format (4i6,2i8,2x,a,27f12.3)
-102   format (4i6,2i8,2x,a,27f12.3)
-103   format (4i6,2i8,2x,a,27(6x,f12.3))
-104   format (4i6,2i8,2x,a,27(6x,f12.3))
+100   format (1x,4i6,i7,i8,2x,a,28f12.3)
+102   format (1x,4i6,i7,i8,2x,a,28f12.3)
+103   format (4i6,i8,i8,2x,a,6f12.3,22f17.3)
+104   format (4i6,i8,i8,2x,a,6f12.3,22f17.3)
        
       end subroutine lsu_output

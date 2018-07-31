@@ -16,7 +16,8 @@
         real :: esoil = 0.            !mm H2O        |actual amt of evap (from soil) that occurs during mon in HRU
         real :: surq_cont = 0.        !mm H2O        |amt of surf runoff gen during mon in HRU
         real :: cn = 0.               !none          |CN values during mon in HRU
-        real :: sw = 0.               !mm H2O        |sum of daily soil water values used to calc the curve number
+        real :: sw = 0.               !mm H2O        |soil water content of entire profile
+        real :: sw_300 = 0.           !mm H2O        |soil water content of upper 300 mm
         real :: snopack = 0.          !mm            |snow pack
         real :: pet = 0.              !mm H2O        |pot et on current day in HRU
         real :: qtile = 0.            !mm H2O        |drainage tile flow contrib to main channel from HRU in mon
@@ -240,6 +241,7 @@
         character (len=12) :: surq_cont =   "  sq_cont_mm"
         character (len=12) :: cn =          "          cn"
         character (len=12) :: sw =          "       sw_mm"
+        character (len=12) :: sw_300 =      "   sw_300_mm"
         character (len=12) :: snopack =     "  snopack_mm"   
         character (len=12) :: pet =         "      pet_mm"
         character (len=12) :: qtile =       "    qtile_mm"
@@ -316,7 +318,7 @@
         character (len=8) :: isd =        "   unit "
         character (len=8) :: id =         " gis_id "        
         character (len=16) :: name =      " name              "        
-        character (len=12) :: lai =       "         lai"
+        character (len=13) :: lai =       "          lai"
         character (len=12) :: bioms =     "       bioms"
         character (len=12) :: yield =     "       yield"
         character (len=12) :: residue =   "     residue"
@@ -402,6 +404,7 @@
         hru3%surq_cont = hru1%surq_cont + hru2%surq_cont
         hru3%cn = hru1%cn + hru2%cn
         hru3%sw = hru1%sw + hru2%sw
+        hru3%sw_300 = hru1%sw_300 + hru2%sw_300
         hru3%snopack = hru1%snopack + hru2%snopack
         hru3%pet = hru1%pet + hru2%pet
         hru3%qtile = hru1%qtile + hru2%qtile
@@ -502,6 +505,7 @@
         hru2%surq_cont = hru1%surq_cont / const 
         hru2%cn = hru1%cn / const 
         hru2%sw = hru1%sw / const
+        hru2%sw_300 = hru1%sw_300 / const
         hru2%snopack = hru1%snopack / const
         hru2%pet = hru1%pet / const 
         hru2%qtile = hru1%qtile / const 
@@ -523,6 +527,7 @@
         type (output_waterbal) :: hru2   
         hru2%cn = hru1%cn / const 
         hru2%sw = hru1%sw / const
+        hru2%sw_300 = hru1%sw_300 / const
         hru2%snopack = hru1%snopack / const
         hru2%pet = hru1%pet / const
       end function hruout_waterbal_ave

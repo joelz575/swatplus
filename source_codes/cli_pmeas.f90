@@ -63,13 +63,13 @@
         read (107,*,iostat = eof) pcp(i)%filename
         if (eof < 0) exit
         
-!!!!!weather path code
+      ! weather path code
       if (in_path_pcp%pcp == "null") then 
         open (108,file = pcp(i)%filename)
       else
         open (108,file = TRIM(ADJUSTL(in_path_pcp%pcp))//pcp(i)%filename)
       endif
-!!!!!weather path code       
+        ! weather path code       
         read (108,*,iostat=eof) titldum
         if (eof < 0) exit
         read (108,*,iostat=eof) header
@@ -99,22 +99,19 @@
         pcp(i)%yrs_start = 0
       end if
       
+      backspace (108)
+      
         do
           read (108,*,iostat=eof) iyr, istep
           if (eof < 0) exit
           if (iyr == time%yrc .and. istep == time%day_start) exit
         end do
 
-       ! save end jd and year
-       pcp(i)%end_day = istep
-       pcp(i)%end_yr = iyr
-       
-       backspace (108)
        iyr_prev = iyr
        iyrs = 1
        
        do 
-         if (pcp(i)%tstep > 0.) then
+         if (pcp(i)%tstep > 0) then
            do iss = 1, time%step
              read (108,*,iostat=eof)iyr, istep, hr_min, pcp(i)%tss(iss,istep,iyrs)
              if (eof < 0) exit
@@ -135,8 +132,13 @@
          end if
        end do
        close (108)
+             
+       ! save end jd and year
+       pcp(i)%end_day = istep
+       pcp(i)%end_yr = iyr
        
       end do
+
       close (107)
       exit
       end do

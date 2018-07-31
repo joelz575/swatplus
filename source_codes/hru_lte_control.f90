@@ -380,6 +380,7 @@
         hltwb_d(isd)%surq_cont = 0.
         hltwb_d(isd)%cn = cn_sd
         hltwb_d(isd)%sw = hlt(isd)%sw
+        hltwb_d(isd)%sw_300 = hlt(isd)%sw / 300.
         hltwb_d(isd)%snopack = hlt(isd)%snow       
         hltwb_d(isd)%pet = pet             
         hltwb_d(isd)%qtile = flow_tile

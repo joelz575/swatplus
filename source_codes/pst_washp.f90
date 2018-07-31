@@ -32,13 +32,14 @@
       use hru_module, only : hru, hrupest, ihru, npmx
       use soil_module
       use constituent_mass_module
+      use plant_module
       
       implicit none       
       
       integer :: j        !none          |HRU number
       integer :: k        !none          |counter
       integer :: kk       !none          |pesticide number from pest.dat
-      real :: xx          !kg/ha         |amount of pesticide in soil   
+      real :: pest_soil   !kg/ha         |amount of pesticide in soil   
       integer :: icmd     !              |
 
       j = ihru
@@ -48,13 +49,12 @@
       npmx = cs_db%num_pests
       do k = 1, npmx
         kk = hru(j)%pst(k)%num_db
-        if (hru(j)%pst(k)%plt >= 0.0001) then
+        if (pcom(j)%pest(k) >= 0.0001) then
           if (kk > 0) then
-            xx = 0.
-            xx = pestdb(kk)%pst_wof * hru(j)%pst(k)%plt
-            if (xx > hru(j)%pst(k)%plt) xx = hru(j)%pst(k)%plt
-            soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + xx
-            hru(j)%pst(k)%plt = hru(j)%pst(k)%plt - xx
+            pest_soil = pestdb(kk)%pst_wof * pcom(j)%pest(k)
+            if (pest_soil > pcom(j)%pest(k)) pest_soil = pcom(j)%pest(k)
+            soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + pest_soil
+            pcom(j)%pest(k) = pcom(j)%pest(k) - pest_soil
           end if
         end if
       end do

@@ -33,6 +33,7 @@
         bactrop, bactsedlp, bactsedp, npmx, peakr, rcharea, sdti
       use constituent_mass_module
       use channel_velocity_module
+      use output_ls_constituent_module
       
       implicit none
 
@@ -222,9 +223,8 @@
       if (hrupest(j) == 1) then
         npmx = cs_db%num_pests
         do k = 1, npmx
-          hru(j)%pst(k)%surq = hru(j)%pst(k)%surq * surq_frac
-          hru(j)%pst(k)%sed = hru(j)%pst(k)%sed *                       &                      
-                                           (1. - sed_remove / 100.)
+          hpest_bal(j)%pest(k)%surq = hpest_bal(j)%pest(k)%surq * surq_frac
+          hpest_bal(j)%pest(k)%sed = hpest_bal(j)%pest(k)%sed * (1. - sed_remove / 100.)
         end do
       end if
 !! compute bacteria reductions

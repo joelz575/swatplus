@@ -98,9 +98,7 @@
           !! allocate bacteria associated with plant
           mbac = cs_db%num_paths
           if (mbac > 0) then
-            do ipl = 1, pcom(j)%npl
-              allocate (pcom(ihru)%plg(ipl)%bac(mbac))
-            end do
+            allocate (pcom(ihru)%path(mbac))
           end if
         end if
         end do

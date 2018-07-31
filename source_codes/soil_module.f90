@@ -64,6 +64,7 @@
         integer ::  nly  = 0               !! none          number of soil layers 
         type (soil_physical_properties),dimension (:), allocatable::phys
         type (soilayer), dimension (:), allocatable :: ly
+        real, dimension(:),allocatable :: pest              !! kg/ha    total pesticide in the soil profile
         real :: zmx = 0.
         real :: anion_excl = 0.            !! none          fraction of porosity from which anions are excluded
         real :: crk = 0.                   !! none          crack volume potential of soil
@@ -76,7 +77,8 @@
         real :: det_lag = 0.
         real :: sumul = 0.                 !! mm H2O         amount of water held in soil profile at saturation
         real :: sumfc = 0.                 !! mm H2O         amount of water held in the soil profile at field capacity                  
-        real :: sw = 0.                    !! mm H2O         amount of water stored in soil profile on any given day
+        real :: sw = 0.                    !! mm H2O         amount of water stored in soil profile
+        real :: sw_300 = 0.                !! mm H2O         amount of water stored to 300 mm
         real :: sumwp = 0.                 !!
         real :: swpwt = 0.                 !!
         real :: ffc = 0.                   !! none           initial HRU soil water content expressed as fraction of field capacity

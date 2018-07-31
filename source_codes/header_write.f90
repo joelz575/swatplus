@@ -275,12 +275,12 @@
         if (pco%recall_bsn%d == "y") then
           open (4500,file="pts_day_bsn.txt", recl = 1500)
           write (4500,*) bsn%name, prog
-          write (4500,*) hyd_hdr            !!!!!!! needs to addressed
+          write (4500,*) hyd_hdr_time, hyd_hdr             !!!!!!! needs to addressed
           write (9000,*) "BASIN RECALL        pts_day_bsn.txt"
           if (pco%csvout == "y") then 
             open (4504,file="pts_day_bsn.csv", recl = 1500)
             write (4504,*) bsn%name, prog
-            write (4504,'(*(G0.3,:","))') hyd_hdr
+            write (4504,'(*(G0.3,:","))') hyd_hdr_time, hyd_hdr 
             write (9000,*) "BASIN RECALL        pts_day_bsn.csv"
           end if
         endif
@@ -288,12 +288,12 @@
         if (pco%recall_bsn%m == "y") then
         open (4501,file="pts_mon_bsn.txt",recl = 1500)
         write (4501,*) bsn%name, prog
-        write (4501,*) hyd_hdr              !!!!!!! needs to addressed
+        write (4501,*) hyd_hdr_time, hyd_hdr              !!!!!!! needs to addressed
         write (9000,*) "BASIN RECALL        pts_mon_bsn.txt"
          if (pco%csvout == "y") then 
             open (4505,file="pts_mon_bsn.csv",recl = 1500)
             write (4505,*) bsn%name, prog
-            write (4505,'(*(G0.3,:","))') hyd_hdr 
+            write (4505,'(*(G0.3,:","))') hyd_hdr_time, hyd_hdr  
             write (9000,*) "BASIN RECALL        pts_mon_bsn.csv"
          end if
        end if
@@ -301,12 +301,12 @@
         if (pco%recall_bsn%y == "y") then
           open (4502,file="pts_yr_bsn.txt", recl = 1500)
           write (4502,*) bsn%name, prog
-          write (4502,*) hyd_hdr            !!!!!!! needs to addressed
+          write (4502,*) hyd_hdr_time, hyd_hdr            !!!!!!! needs to addressed
           write (9000,*) "BASIN RECALL        pts_yr_bsn.txt"
           if (pco%csvout == "y") then 
             open (4506,file="pts_yr_bsn.csv", recl = 1500)
             write (4506,*) bsn%name, prog
-            write (4506,'(*(G0.3,:","))') hyd_hdr
+            write (4506,'(*(G0.3,:","))') hyd_hdr_time, hyd_hdr 
             write (9000,*) "BASIN RECALL        pts_yr_bsn.csv"
           end if
         endif
@@ -314,12 +314,12 @@
         if (pco%recall_bsn%a == "y") then 
         open (4503,file="pts_aa_bsn.txt",recl = 1500) 
         write (4503,*) bsn%name, prog
-        write (4503,*) hyd_hdr              !!!!!!! needs to addressed
+        write (4503,*) hyd_hdr_time, hyd_hdr               !!!!!!! needs to addressed
         write (9000,*) "BASIN RECALL AA     pts_aa_bsn.txt"
          if (pco%csvout == "y") then 
             open (4507,file="pts_aa_bsn.csv",recl = 1500)
             write (4507,*) bsn%name, prog
-            write (4507,'(*(G0.3,:","))') hyd_hdr
+            write (4507,'(*(G0.3,:","))') hyd_hdr_time, hyd_hdr 
             write (9000,*) "BASIN RECALL        pts_aa_bsn.csv"
          end if
         end if
@@ -330,12 +330,12 @@
         if (pco%ru%d == "y") then
           open (2600,file="routing_units_day.txt", recl = 1500)
           write (2600,*) bsn%name, prog
-          write (2600,*) hyd_hdr            
+          write (2600,*) hyd_hdr_time, hyd_hdr            
           write (9000,*) "ROUTING UNITS       routing_units_day.txt"
           if (pco%csvout == "y") then 
             open (2604,file="routing_units_day.csv", recl = 1500)
             write (2604,*) bsn%name, prog
-            write (2604,'(*(G0.3,:","))') hyd_hdr
+            write (2604,'(*(G0.3,:","))') hyd_hdr_time, hyd_hdr
             write (9000,*) "ROUTING UNITS       routing_units_day.csv"
           end if
         endif
@@ -343,12 +343,12 @@
         if (pco%ru%m == "y") then
         open (2601,file="routing_units_mon.txt",recl = 1500)
         write (2601,*) bsn%name, prog
-        write (2601,*) hyd_hdr              
+        write (2601,*) hyd_hdr_time, hyd_hdr              
         write (9000,*) "ROUTING UNITS       routing_units_mon.txt"
          if (pco%csvout == "y") then 
             open (2605,file="routing_units_mon.csv",recl = 1500)
             write (2605,*) bsn%name, prog
-            write (2605,'(*(G0.3,:","))') hyd_hdr 
+            write (2605,'(*(G0.3,:","))') hyd_hdr_time, hyd_hdr
             write (9000,*) "ROUTING UNITS       routing_units_mon.csv"
          end if
        end if
@@ -356,12 +356,12 @@
         if (pco%ru%y == "y") then
           open (2602,file="routing_units_yr.txt", recl = 1500)
           write (2602,*) bsn%name, prog
-          write (2602,*) hyd_hdr            
+          write (2602,*) hyd_hdr_time, hyd_hdr         
           write (9000,*) "ROUTING UNITS       routing_units_yr.txt"
           if (pco%csvout == "y") then 
             open (2606,file="routing_units_yr.csv", recl = 1500)
             write (2606,*) bsn%name, prog
-            write (2606,'(*(G0.3,:","))') hyd_hdr
+            write (2606,'(*(G0.3,:","))') hyd_hdr_time, hyd_hdr
             write (9000,*) "ROUTING UNITS       routing_units_yr.csv"
           end if
         endif
@@ -369,12 +369,12 @@
         if (pco%ru%a == "y") then 
         open (2603,file="routing_units_aa.txt",recl = 1500) 
         write (2603,*) bsn%name, prog
-        write (2603,*) hyd_hdr              
+        write (2603,*) hyd_hdr_time, hyd_hdr             
         write (9000,*) "ROUTING UNITS AA    routing_units_aa.txt"
          if (pco%csvout == "y") then 
             open (2607,file="routing_units_aa.csv",recl = 1500)
             write (2607,*) bsn%name, prog
-            write (2607,'(*(G0.3,:","))') hyd_hdr
+            write (2607,'(*(G0.3,:","))') hyd_hdr_time, hyd_hdr
             write (9000,*) "ROUTING UNITS AA    routing_units_aa.csv"
          end if
         end if

@@ -64,7 +64,8 @@
         end if
       end if
 
-100   format (4i6,i8,2x,a,2x,a16,60(1x,e15.4))
+!100   format (4i6,i8,2x,a,2x,a16,60(1x,e15.4))
+ 100   format (4i6,i8,2x,a,2x,a17,f14.4,59(1x,e14.4))
       return
       
       end subroutine basin_channel_output

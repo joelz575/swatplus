@@ -91,17 +91,14 @@
         slr(i)%yrs_start = 0
       end if
       
+       backspace (108)
+      
         do 
          read (108,*,iostat=eof) iyr, istep, solrad
          if (eof < 0) exit
          if (iyr == time%yrc) exit
         end do
 
-       ! save end jd and year
-       slr(i)%end_day = istep
-       slr(i)%end_yr = iyr
-       
-       backspace (108)
        iyr_prev = iyr
        iyrs = 1
        
@@ -119,6 +116,10 @@
          end if
        end do
        close (108)
+       
+       ! save end jd and year
+       slr(i)%end_day = istep
+       slr(i)%end_yr = iyr
        
       end do
       close (107)

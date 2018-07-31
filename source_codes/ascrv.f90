@@ -25,7 +25,7 @@
           
       real, intent (out) :: x5    !none          |1st shape parameter for S curve equation
                                   !              |characterizing the midpoint of the curve
-      real, intent (out) :: x6     !none          |2nd shape parameter for S curve equation
+      real, intent (out) :: x6    !none          |2nd shape parameter for S curve equation
                                   !              |characterizing the regions close to the
                                   !              |endpoints of the curve
 

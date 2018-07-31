@@ -44,7 +44,7 @@
       integer :: ibac      !none      |counter
       integer :: ibacdb    !          |
       integer :: ibtyp     !NA        |bacteria type from "bact_parms.dat"
-      real :: j            !          |
+      integer :: j            !          |
             
       
       
@@ -57,7 +57,7 @@
           !frt_t = bac_db(ibtyp)%swf * manure_kg / 1000.
           do ipl = 1, pcom(j)%npl
             call bac_apply_plant (ibacdb, ibac, gc,frt_t,            &
-                bac_db(ibtyp)%kd, pcom(j)%plg(ipl)%bac(ibac),        &
+                bac_db(ibtyp)%kd, pcom(j)%path(ibac),        &
                 soil(j)%ly(1)%bacsol(ibac), soil(j)%ly(1)%bacsor(ibac))
           end do
           call bac_apply_soil (ibacdb, ibac, gc, frt_t,              &             

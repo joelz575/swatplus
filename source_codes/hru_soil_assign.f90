@@ -38,9 +38,7 @@
             soil(ihru)%ly(1)%bacsor(ibac) = 0.
           end if
         end do
-        do ipl = 1, mpl
-          pcom(ihru)%plg(ipl)%bac(ibac) = bact(ibacdb)%bac(ibac)%plt
-        end do
+        pcom(ihru)%path(ibac) = bact(ibacdb)%bac(ibac)%plt
         end if
       
         !! allocate pesticides
@@ -56,7 +54,7 @@
         
         npmx = cs_db%num_pests
         do ipest = 1, npmx
-          hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt
+          pcom(ihru)%pest(ibac) = pesti_db(ipest_db)%pesti(ipest)%plt
           soil(ihru)%ly(1)%pst(ipest) = pesti_db(ipest_db)%pesti(ipest)%soil
         end do
 

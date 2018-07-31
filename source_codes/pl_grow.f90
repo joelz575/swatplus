@@ -12,6 +12,8 @@
       
       integer :: j              !none               |HRU number
       integer :: idp            !none               |plant number from plants.plt
+      real :: resnew_n          !                   |
+      real :: resnew            !                   |  
 
       j = ihru
 
@@ -21,13 +23,7 @@
         if (pldb(idp)%trig == "temp_gro") then
           call pl_dormant
         end if
-        
-        !! 
-        !if (pldb(idp)%trig == "moisture_gro") then
-        !  resnew = 
-        !  call pl_leaf_drop
-        !end if
-          
+       
         !! plant will not undergo stress if dormant
         if (pcom(j)%plcur(ipl)%idorm == "n" .and. pcom(j)%plcur(ipl)%gro == "y") then
 
@@ -37,7 +33,14 @@
 
           call pl_leaf_gro
           call pl_leaf_senes         
-     
+             
+          !! leaf drop for moisture based growth plants - any time of year
+          if (pldb(idp)%trig == "moisture_gro") then
+            resnew = pcom(j)%plcur(ipl)%leaf_tov * pcom(j)%leaf(ipl)%mass
+            resnew_n = pcom(j)%plcur(ipl)%leaf_tov * pcom(j)%leaf(ipl)%nmass
+            call pl_leaf_drop (resnew, resnew_n)
+          end if
+   
           call pl_seed_gro
           
           call pl_partition

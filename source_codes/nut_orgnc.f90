@@ -40,8 +40,6 @@
       end if
 
       conc = xx * er / wt1
-
-      !! HRU calculations
       sedorgn(j) = .001 * conc * sedyld(j) / hru(j)%area_ha
 
 	  !! update soil nitrogen pools only for HRU calculations

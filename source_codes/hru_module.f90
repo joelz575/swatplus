@@ -21,11 +21,7 @@
       type pesticide
         character(len=10) :: name
         integer :: num_db
-        real :: plt = 0.         !! |kg/ha        |pesticide on plant foliage
         real :: enr = 0.         !! |none         |pesticide enrichment ratio
-        real :: sed = 0.         !! |kg/ha        |pesticide loading from HRU sorbed onto sediment
-        real :: surq = 0.        !! |kg/ha        |amount of pesticide type lost in surface runoff on current day in HRU
-        real :: latq = 0.        !! |kg pst/ha    |amount of pesticide in lateral flow in HRU for the day
         real :: zdb = 0.         !! |mm           |division term from net pesticide equation
       end type pesticide
 

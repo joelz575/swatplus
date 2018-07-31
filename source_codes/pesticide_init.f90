@@ -30,6 +30,7 @@
         use hru_module, only : hru, sol_cov
         use soil_module
         use constituent_mass_module
+        use output_ls_constituent_module
         use hydrograph_module, only : sp_ob, icmd
       
         implicit none 
@@ -55,7 +56,7 @@
 
         npmx = cs_db%num_pests
         do ipest = 1, npmx
-         hru(ihru)%pst(ipest)%plt = pesti_db(ipest_db)%pesti(ipest)%plt
+         hpest_bal(ihru)%pest(ipest)%plant = pesti_db(ipest_db)%pesti(ipest)%plt
          soil(ihru)%ly(1)%pst(ipest) = pesti_db(ipest_db)%pesti(ipest)%soil
         end do
         

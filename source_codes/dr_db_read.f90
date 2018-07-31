@@ -19,11 +19,11 @@
           open (107,file=in_delr%del_ratio)
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
           imax = 0
           do while (eof == 0)
             read (107,*,iostat=eof) titldum
-            if (eof < 0) exit
-            read (107,*,iostat=eof) header
             if (eof < 0) exit
             imax = imax + 1
           end do
@@ -31,6 +31,8 @@
           allocate (dr_db(imax))
           rewind (107)
           read (107,*) titldum
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
           
         do ii = 1, imax
           read (107,*,iostat=eof) dr_db(ii)

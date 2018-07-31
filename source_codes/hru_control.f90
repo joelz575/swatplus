@@ -44,6 +44,7 @@
       integer :: iauto              !none          |counter
       integer :: id                 !              |
       integer :: jj                 !              |
+      integer :: ly                 !none          |soil layer
       real :: strsa_av              !              |
       real :: runoff_m3             !              |
       real :: bf_m3                 !              |
@@ -52,10 +53,11 @@
       real :: qdfr                  !              |
       real :: xx                    !              |
       integer :: iob_out            !              |object type out 
-      integer :: iru               !              | 
+      integer :: iru                !              | 
       integer :: iout               !none          |counter
       real :: over_flow             !              |
       real :: yield                 !              |
+      real :: dep                   !              |
   
       j = ihru
       !if (pcom(j)%npl > 0) idp = pcom(ihru)%plcur(1)%idplt
@@ -225,12 +227,29 @@
       
         !! moisture growth perennials - start growth
         if (pcom(j)%mseas == 1) then
-          call pl_moisture_gro
+          call pl_moisture_gro_init
         end if
         !! moisture growth perennials - start senescence
         if (pcom(j)%mseas == 0) then
-          call pl_moisture_senes
+          call pl_moisture_senes_init
         end if
+        
+        !! compute aoil water content to 300 mm depth
+        soil(j)%sw_300 = 0.
+        do ly = 1, soil(j)%nly
+          if (ly == 1) then
+            dep = 0.
+          else
+            dep = soil(j)%phys(ly-1)%d
+          end if
+          if (soil(j)%phys(ly)%d >= 300.) then
+            soil(j)%sw_300 = soil(j)%sw_300 + soil(j)%phys(ly)%st *         &
+                                   (300. - dep) / soil(j)%phys(ly)%thick
+            exit
+          else
+            soil(j)%sw_300 = soil(j)%sw_300 + soil(j)%phys(ly)%st
+          end if
+        end do
         
         !! compute total surface residue
         do ipl = 1, pcom(j)%npl
@@ -300,6 +319,9 @@
           end if
         end if
 
+        !! sum total pesticide in soil
+        call pst_soil_tot
+        
         !! add nitrate in rainfall to soil profile
         call nut_nrain
 
@@ -446,6 +468,7 @@
         hwb_d(j)%surq_cont = surfq(j)
         hwb_d(j)%cn = cnday(j)
         hwb_d(j)%sw = soil(j)%sw
+        hwb_d(j)%sw_300 = soil(j)%sw_300
         hwb_d(j)%snopack = sno_hru(j)
         hwb_d(j)%pet = pet_day
         hwb_d(j)%qtile = qtile

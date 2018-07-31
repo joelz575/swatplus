@@ -144,6 +144,7 @@
           !rwb_m(ireg)%lum(ilum) = rwb_m(ireg)%lum(ilum) // const
           rwb_m(ireg)%lum(ilum)%cn = rwb_m(ireg)%lum(ilum)%cn / const 
           rwb_m(ireg)%lum(ilum)%sw = rwb_m(ireg)%lum(ilum)%sw / const
+          rwb_m(ireg)%lum(ilum)%sw_300 = rwb_m(ireg)%lum(ilum)%sw_300 / const
           rwb_y(ireg)%lum(ilum) = rwb_y(ireg)%lum(ilum) + rwb_m(ireg)%lum(ilum)
           rnb_y(ireg)%lum(ilum) = rnb_y(ireg)%lum(ilum) + rnb_m(ireg)%lum(ilum)
           rls_y(ireg)%lum(ilum) = rls_y(ireg)%lum(ilum) + rls_m(ireg)%lum(ilum)
@@ -195,6 +196,7 @@
           !rwb_y(ireg)%lum(ilum) = rwb_y(ireg)%lum(ilum) // 12.
           rwb_y(ireg)%lum(ilum)%cn = rwb_y(ireg)%lum(ilum)%cn / 12. 
           rwb_y(ireg)%lum(ilum)%sw = rwb_y(ireg)%lum(ilum)%sw / 12.
+          rwb_y(ireg)%lum(ilum)%sw_300 = rwb_y(ireg)%lum(ilum)%sw_300 / 12.
           constwb = 1. / (10. * region(ireg)%lum_ha(ilum))              !10.*mm*ha=m3
           constnb = 1. / (region(ireg)%lum_ha(ilum))                    !kg/ha*ha=kg
           constpw = region(ireg)%area_ha / region(ireg)%lum_ha(ilum)    !weighted ave fro non-dimensional and weather
@@ -342,9 +344,9 @@
       deallocate (iarea)
       return
       
-100   format (4i6,2a16,21f12.3)
-101   format (4i6,2a16,21f12.3)
-102   format (4i6,2a16,21f12.3)
+100   format (4i6,2a16,22f12.3)
+101   format (4i6,2a16,22f12.3)
+102   format (4i6,2a16,22f12.3)
 103   format (4i6,i8,4x,a,5x,f12.3)
        
       end subroutine lsreg_output

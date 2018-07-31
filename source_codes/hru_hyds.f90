@@ -22,6 +22,8 @@
       use hydrograph_module
       use basin_module
       use time_module
+      use constituent_mass_module
+      use output_ls_constituent_module
       
       implicit none
 
@@ -50,6 +52,8 @@
       real :: ratio                  !              |   
       integer :: iadj                !none          |counter
       integer :: istep               !none          |counter 
+      integer :: ipest               !none          |counter
+      integer :: ipath               !none          |counter 
       
 
       j = ihru
@@ -77,37 +81,75 @@
       ob(icmd)%hd(3)%no2 = 0.                         !! NO2
       ob(icmd)%hd(3)%cbod = cbodu(j) * cnv_kg         !!cbodu
       ob(icmd)%hd(3)%dox = doxq(j) *cnv_kg            !!doxq & soxy
-      !if (ob(icmd)%hd(3)%flo > .1) then
-      !  ob(icmd)%hd(3)%bacp = (bactrop + bactsedp) *sub_ha/hd(ihout)%flo
-      !  ob(icmd)%hd(3)%baclp = (bactrolp+bactsedlp)*sub_ha/hd(ihout)%flo
-      !end if
-      ob(icmd)%hd(3)%met1 = 0.                        !! cmetal #1
-      ob(icmd)%hd(3)%met2 = 0.                        !! cmetal #2
-      ob(icmd)%hd(3)%met3 = 0.                        !! cmetal #3
+
       ob(icmd)%hd(3)%san = sanyld(j)                  !! detached sand
       ob(icmd)%hd(3)%sil = silyld(j)                  !! detached silt
       ob(icmd)%hd(3)%cla = clayld(j)                  !! detached clay
-      ob(icmd)%hd(3)%sag = sagyld(j)                  !! detached sml ag
-      ob(icmd)%hd(3)%lag = lagyld(j)                  !! detached lrg ag
+      ob(icmd)%hd(3)%sag = sagyld(j)                  !! detached small aggregates
+      ob(icmd)%hd(3)%lag = lagyld(j)                  !! detached large aggregates
+      !set constituents
+      do ipest = 1, cs_db%num_pests
+        obcs(icmd)%hd(3)%pest(ipest)%sol = hpest_bal(j)%pest(ipest)%surq
+        obcs(icmd)%hd(3)%pest(ipest)%sor = hpest_bal(j)%pest(ipest)%sed
+      end do
+      do ipath = 1, cs_db%num_paths
+        obcs(icmd)%hd(3)%path(ipath)%sol = 0
+        obcs(icmd)%hd(3)%path(ipath)%sor = 0
+      end do
       
       !recharge hydrograph (2)
-      ob(icmd)%hd(2)%flo = sepbtm(j) * cnv_m3          !! recharge flow
-      ob(icmd)%hd(2)%no3 = percn(j) * cnv_kg          !! recharge nitrate
+      ob(icmd)%hd(2)%flo = sepbtm(j) * cnv_m3           !! recharge flow
+      ob(icmd)%hd(2)%no3 = percn(j) * cnv_kg            !! recharge nitrate
+      !set constituents
+      do ipest = 1, cs_db%num_pests
+        obcs(icmd)%hd(2)%pest(ipest)%sol = hpest_bal(j)%pest(ipest)%perc
+        obcs(icmd)%hd(2)%pest(ipest)%sor = 0
+      end do
+      do ipath = 1, cs_db%num_paths
+        obcs(icmd)%hd(2)%path(ipath)%sol = 0
+        obcs(icmd)%hd(2)%path(ipath)%sor = 0
+      end do
       
       !lateral soil flow hydrograph (4)
-      ob(icmd)%hd(4)%flo = latq(j) * cnv_m3          !! lateral flow
+      ob(icmd)%hd(4)%flo = latq(j) * cnv_m3             !! lateral flow
       ob(icmd)%hd(4)%no3 = latno3(j) * cnv_kg
+      !set constituents
+      do ipest = 1, cs_db%num_pests
+        obcs(icmd)%hd(4)%pest(ipest)%sol = hpest_bal(j)%pest(ipest)%latq
+        obcs(icmd)%hd(4)%pest(ipest)%sor = 0
+      end do
+      do ipath = 1, cs_db%num_paths
+        obcs(icmd)%hd(4)%path(ipath)%sol = 0
+        obcs(icmd)%hd(4)%path(ipath)%sor = 0
+      end do
       
       !tile flow hydrograph (5)
-      ob(icmd)%hd(5)%flo = tileq(j) * cnv_m3          !! tile flow
-      ob(icmd)%hd(5)%no3 = tileno3(j) * cnv_kg        !! tile flow nitrate 
+      ob(icmd)%hd(5)%flo = tileq(j) * cnv_m3            !! tile flow
+      ob(icmd)%hd(5)%no3 = tileno3(j) * cnv_kg          !! tile flow nitrate 
+      !set constituents
+      do ipest = 1, cs_db%num_pests
+        obcs(icmd)%hd(5)%pest(ipest)%sol = 0            !! need to add tile pesticides
+        obcs(icmd)%hd(5)%pest(ipest)%sor = 0
+      end do
+      do ipath = 1, cs_db%num_paths
+        obcs(icmd)%hd(5)%path(ipath)%sol = 0
+        obcs(icmd)%hd(5)%path(ipath)%sor = 0
+      end do
       
       !sum to obtain the total outflow hydrograph (1)
       ob(icmd)%hd(1) = hz
       do ihyd = 3, 5
         ob(icmd)%hd(1) = ob(icmd)%hd(1) + ob(icmd)%hd(ihyd)
       end do
-      
+      !set constituents
+      do ipest = 1, cs_db%num_pests
+        obcs(icmd)%hd(1)%pest(ipest)%sol = obcs(icmd)%hd(3)%pest(ipest)%sol + obcs(icmd)%hd(4)%pest(ipest)%sol + obcs(icmd)%hd(5)%pest(ipest)%sol
+        obcs(icmd)%hd(1)%pest(ipest)%sor = obcs(icmd)%hd(3)%pest(ipest)%sor
+      end do
+      do ipath = 1, cs_db%num_paths
+        obcs(icmd)%hd(1)%path(ipath)%sol = 0
+        obcs(icmd)%hd(1)%path(ipath)%sor = 0
+      end do
       
       !! set subdaily hydrographs
       if (time%step > 0) then

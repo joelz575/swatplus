@@ -145,7 +145,7 @@
           character (len=9) :: id =           "  gis_id "        
           character (len=16) :: name =     " name              " 
           character (len=11) :: vol =      "        vol"       !ha-m                 |flow volume res
-          character (len=10) :: area =     "      area"        !ha                   |surface area res
+          character (len=12) :: area =     "        area"        !ha                   |surface area res
           character (len=10) :: flowi =    "     flowi"        !ha-m                 |flow into res
           character (len=10) :: flowo =    "     flowo"        !ha-m                 |flow out of res
           character (len=10) :: ev =       "        ev"        !ha-m                 |evap from res 
@@ -194,10 +194,10 @@
           character (len=6) :: day_mo =    "      "
           character (len=6) :: yrc =       "      "
           character (len=8) :: isd =       "         "         
-          character (len=8) :: id =           "        "         
+          character (len=8) :: id =        "        "         
           character (len=16) :: name =     "                "          
           character (len=12) :: vol =      "       ha_m"       !ha-m                 |volume res
-          character (len=9) :: area =      "       ha"         !ha                   |surface area res
+          character (len=11) :: area =     "         ha"         !ha                   |surface area res
           character (len=10) :: flowi =    "      ha_m"        !ha-m                 |flow into res
           character (len=10) :: flowo =    "      ha_m"        !ha-m                 |flow out of res
           character (len=10) :: ev =       "      ha_m"        !ha-m                 |evap from res  

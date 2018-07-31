@@ -114,6 +114,7 @@
       use basin_module
       use time_module
       use constituent_mass_module
+      use output_ls_constituent_module
       use hru_module, only : hru, pst_lag, sedyld, surf_bs, ihru, hhsurf_bs, hhsedy, sanyld, silyld,     &
          clayld, sagyld, lagyld, sedorgn, sedorgp, surqno3, surqsolp, sedminpa, sedminps, brt,     &
          hrupest, bactrolp, bactrop, bactsedlp, bactsedp, npmx 
@@ -177,11 +178,11 @@
           !MFW, 3/15/12: Modified to account for decay during lag
           !pst_lag(k,1,j) = pst_lag(k,1,j) + pst_surq(k,j)
  !         pst_lag(k,1,j) = (pst_lag(k,1,j) * EXP(-1. *                  
- !    &                      ch_pst(inum1)%pst_rea)) + hru(j)%pst(k)%surq
+ !    &                      ch_pst(inum1)%pst_rea)) + hpest_bal(j)%pest(k)%surq
  !         if (pst_lag(k,1,j) < 1.e-10) pst_lag(k,1,j) = 0.0
           !pst_lag(k,2,j) = pst_lag(k,2,j) + pst_sed(k,j)
  !         pst_lag(k,2,j) = (pst_lag(k,2,j) * EXP(-1. *                  
- !    &                      ch_pst(inum1)%sedpst_rea)) + hru(j)%pst(k)%sed
+ !    &                      ch_pst(inum1)%sedpst_rea)) + hpest_bal(j)%pest(k)%sed
  !         if (pst_lag(k,2,j) < 1.e-10) pst_lag(k,2,j) = 0.0
  !       end do
       end if
@@ -206,8 +207,8 @@
       bactsedp = Max(0.,bactsedp)
       if (hrupest(j) == 1) then
         do k = 1, npmx
-          hru(j)%pst(k)%surq = pst_lag(k,1,j) * brt(j)
-          hru(j)%pst(k)%sed = pst_lag(k,2,j) * brt(j)
+          hpest_bal(j)%pest(k)%surq = pst_lag(k,1,j) * brt(j)
+          hpest_bal(j)%pest(k)%sed = pst_lag(k,2,j) * brt(j)
         end do
       end if
      
@@ -233,8 +234,8 @@
                     
         npmx = cs_db%num_pests
         do k = 1, npmx
-          pst_lag(k,1,j) = pst_lag(k,1,j) - hru(j)%pst(k)%surq
-          pst_lag(k,2,j) = pst_lag(k,2,j) - hru(j)%pst(k)%sed
+          pst_lag(k,1,j) = pst_lag(k,1,j) - hpest_bal(j)%pest(k)%surq
+          pst_lag(k,2,j) = pst_lag(k,2,j) - hpest_bal(j)%pest(k)%sed
         end do
       end if
 

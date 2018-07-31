@@ -112,7 +112,7 @@
                                             !              |dormant)     
       integer :: mon                        !none          |monthly counter
       real :: mdays                         !none          |number of days in the month
-      real :: j                             !none          |counter
+      integer :: j                             !none          |counter
       real :: m1                            !none          |array location (see definition of ndays)
       real ::  nda                          !julian date   |julian date of last day in the month
       real :: cli_dstn1                     !              |

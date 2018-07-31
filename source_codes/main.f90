@@ -10,15 +10,15 @@
 
       implicit none
 
-      prog = " SWAT+ June 26 2018    MODULAR Rev 2018.52"
+      prog = " SWAT+ July 31 2018    MODULAR Rev 2018.53"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 52            ",/,             &
+     &          "               Revision 53            ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
-
+      
       call proc_bsn   
       call proc_date_time
       call proc_read
@@ -27,7 +27,7 @@
       call bac_read_lsinit
      
       call hyd_connect
-      
+           
       call object_read_output
 
       !! read decision table data for conditional management
@@ -40,7 +40,7 @@
       call proc_cal
       call proc_open
       call proc_cond
-         
+      
       ! compute unit hydrograph parameters for subdaily runoff
       if (time%step > 0) call unit_hyd
       
@@ -61,7 +61,7 @@
       end if
 
       call cal_control
-                 
+           
       write (*,1001)
  1001 format (/," Execution successfully completed ")
 

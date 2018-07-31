@@ -42,6 +42,7 @@
       use pesticide_data_module
       use hru_module, only : hru, ihru, latq, latno3, qtile, bss, pst_lag, tileno3, hrupest, npno, npmx
       use constituent_mass_module
+      use output_ls_constituent_module
       
       implicit none      
       
@@ -68,7 +69,7 @@
           if (pst_lag(k,3,j) < 1.e-6) pst_lag(k,3,j) = 0.0
           !MFW, 3/3/12: Modified lagged pesticide to include decay in lag
           pst_lag(k,3,j) = (pst_lag(k,3,j) * pstcp(npno(k))%decay_s)     & 
-                           + hru(j)%pst(k)%latq
+                           + hpest_bal(j)%pest(k)%latq
           ! pst_lag(k,3,j) = pst_lag(k,3,j) + lat_pst(k)
         end do
       end if
@@ -83,8 +84,7 @@
       if (tileno3(j) < 1.e-6) tileno3(j) = 0.
       if (hrupest(j) == 1) then
         do k = 1, npmx
-         hru(j)%pst(k)%latq = hru(j)%pst(k)%latq *           &      
-               hru(j)%hyd%lat_ttime
+          hpest_bal(j)%pest(k)%latq = hpest_bal(j)%pest(k)%latq * hru(j)%hyd%lat_ttime
         end do
       end if
 
@@ -94,7 +94,7 @@
       bss(4,j) = bss(4,j) - tileno3(j)
       if (hrupest(j) == 1) then
         do k = 1, npmx
-          pst_lag(k,3,j) = pst_lag(k,3,j) - hru(j)%pst(k)%latq
+          pst_lag(k,3,j) = pst_lag(k,3,j) - hpest_bal(j)%pest(k)%latq
         end do
       end if
 

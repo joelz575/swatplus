@@ -3,7 +3,7 @@
       implicit none
       
       type constituents
-        integer :: num_tot_con = 0                                  !number of total constituents simulated
+        integer :: num_tot = 0                                  !number of total constituents simulated
         integer :: num_pests = 0                                    !number of pesticides simulated
         character (len=16), dimension(:), allocatable :: pests      !name of the pesticides- points to pesticide database
         !!need to crosswalk pests to get pest_num for database - use sequential for object
@@ -82,10 +82,13 @@
         type (constituent_hydrograph), dimension (:), allocatable :: hd
         type (constituent_hydrograph) :: hin
         type (constituent_hydrograph) :: hin_s
-        type (constituent_hydrograph), dimension(:), allocatable :: hcs_d
-        type (constituent_hydrograph), dimension(:), allocatable :: hcs_m
-        type (constituent_hydrograph), dimension(:), allocatable :: hcs_y
-        type (constituent_hydrograph), dimension(:), allocatable :: hcs_a
+        type (constituent_hydrograph), dimension(:), allocatable :: hcsin_d
+        type (constituent_hydrograph), dimension(:), allocatable :: hcsin_m
+        type (constituent_hydrograph), dimension(:), allocatable :: hcsin_y
+        type (constituent_hydrograph), dimension(:), allocatable :: hcsin_a
+        type (constituent_hydrograph), dimension(:), allocatable :: hcsout_m
+        type (constituent_hydrograph), dimension(:), allocatable :: hcsout_y
+        type (constituent_hydrograph), dimension(:), allocatable :: hcsout_a
       end type all_constituent_hydrograph
       type (all_constituent_hydrograph), dimension (:), allocatable :: obcs
       

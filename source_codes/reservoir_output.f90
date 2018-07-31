@@ -66,6 +66,6 @@
         
       return
         
-100   format (4i6,2i8,2x,a,46e10.3)
+100   format (4i6,2i8,2x,a,e10.3,e12.3,44e10.3)
        
       end subroutine reservoir_output

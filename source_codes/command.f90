@@ -84,7 +84,7 @@
                 ht1 = ob(iru)%frac_in(in) * ob(iob)%hd(ihyd)   !fraction of hydrograph
                 ht1 = ru_elem(ielem)%frac * ht1                 !fraction of hru in subbasin
                 !fraction of hru in subbasin for constituents
-                if (cs_db%num_tot_con > 0) then
+                if (cs_db%num_tot > 0) then
                   call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
                 end if
                 ob(iru)%hin_d(in) = ob(iru)%hin_d(in) + ht1
@@ -93,7 +93,7 @@
                 ihyd = ob(icmd)%ihtyp_in(in)
                 ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
                 !fraction of constituents
-                if (cs_db%num_tot_con > 0) then
+                if (cs_db%num_tot > 0) then
                   call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
                 end if
                 ob(icmd)%peakrate = ob(iob)%peakrate
@@ -104,17 +104,17 @@
               ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
               ob(icmd)%peakrate = ob(iob)%peakrate
               !fraction of constituents
-              if (cs_db%num_tot_con > 0) then
+              if (cs_db%num_tot > 0) then
                 call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
               end if
             end if
             ob(icmd)%hin_d(in) = ht1
-            !obcs(icmd)%hin_d(in) = hcs1    !for constituent hydrograph output
+            obcs(icmd)%hcsin_d(in) = hcs1    !for constituent hydrograph output
 
             if (ihyd == 4) then  !route lat flow through soil
               ob(icmd)%hin_s = ob(icmd)%hin_s + ht1
               !add constituents
-              if (cs_db%num_tot_con > 0) then
+              if (cs_db%num_tot > 0) then
                 hcs2 = obcs(icmd)%hin_s
                 call constit_hyd_add
               end if
@@ -122,7 +122,7 @@
             else
               ob(icmd)%hin = ob(icmd)%hin + ht1
               !add constituents
-              if (cs_db%num_tot_con > 0) then
+              if (cs_db%num_tot > 0) then
                 hcs2 = obcs(icmd)%hin
                 call constit_hyd_add
                 obcs(icmd)%hin = hcs2
@@ -221,7 +221,7 @@
 
           case ("dr")   ! delivery ratios
             ob(icmd)%hd(1) = ob(icmd)%hin ** dr(ob(icmd)%props) ! ** is an intrinsic function to multiply 
-            if (cs_db%num_tot_con > 0) then
+            if (cs_db%num_tot > 0) then
               idr = ob(iob)%props
               
               call constit_hyd_mult (icmd, idr)
@@ -244,6 +244,9 @@
             ihtyp = ob(icmd)%ihtyp_out(iout)
             ht1 = ob(icmd)%frac_out(iout) * ob(icmd)%hd(ihtyp)
             call hydout_output (iout)
+            ! hcs1 is the daily constituent hyd to be printed
+            call constit_hyd_frac (icmd, iout, ob(icmd)%frac_out(iout))
+            !call hcsout_output  !! commented for next revision    
           end do
         end if
   
@@ -261,6 +264,7 @@
         
         do ihru = 1, sp_ob%hru
           call hru_output (ihru)
+          if (cs_db%num_tot > 0) call hru_constituent_output (ihru)
         end do        
         
         do iaq = 1, sp_ob%aqu

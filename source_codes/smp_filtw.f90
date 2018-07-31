@@ -94,6 +94,7 @@
         silyld, clayld, sagyld, lagyld, trapeff, hrupest, hru_dafr, ihru, bactrolp, bactrop, bactsedlp,     &
         bactsedp, npmx, sbactrolp, sbactrop, sbactsedlp, sbactsedp 
       use constituent_mass_module
+      use output_ls_constituent_module
       use time_module
       
       implicit none
@@ -125,8 +126,8 @@
       if (hrupest(j) == 1) then
         npmx = cs_db%num_pests
         do k = 1, npmx
-          hru(j)%pst(k)%surq = hru(j)%pst(k)%surq * (1. - trapeff(j))
-          hru(j)%pst(k)%sed = hru(j)%pst(k)%sed * (1. - trapeff(j))
+          hpest_bal(j)%pest(k)%surq = hpest_bal(j)%pest(k)%surq * (1. - trapeff(j))
+          hpest_bal(j)%pest(k)%sed = hpest_bal(j)%pest(k)%sed * (1. - trapeff(j))
         end do
       end if
 

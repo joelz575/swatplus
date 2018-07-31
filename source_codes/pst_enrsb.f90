@@ -25,8 +25,7 @@
       
       integer :: j           !none          |HRU number
       real :: cy             !              |
- 
-      j = 0
+
       j = ihru
 
       if (sedyld(j) < 1.e-4) then
@@ -40,14 +39,14 @@
 
       !! CREAMS method for calculating enrichment ratio
       cy = 0.       ! sed(t) / flo(m^3)
-
+      !cy = .1 * sedyld(j) / (hru_ha(j) * surfq(j) + 1.e-6)
       if (cy > 1.e-6) then
         enratio = .78 * cy ** (-.2468)
       else
         enratio = 0.
       endif
 
-      if (enratio > 3.5) enratio = 3.5
+      if (enratio > 3.5) enratio = 1.5
 
       return
       end subroutine pst_enrsb

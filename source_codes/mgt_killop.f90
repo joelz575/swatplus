@@ -103,8 +103,8 @@
       if (hrupest(j) == 1) then
         npmx = cs_db%num_pests
         do k = 1, npmx
-           soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + hru(j)%pst(k)%plt
-           hru(j)%pst(k)%plt = 0.
+           soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + pcom(j)%pest(k)
+           pcom(j)%pest(k) = 0.
         end do
       end if
       

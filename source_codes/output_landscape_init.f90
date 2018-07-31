@@ -842,13 +842,13 @@
         open (4008,file="crop_yld_aa.out")
         write (4008,*) bsn%name, prog
           write (4008,1000)
-1000    format (1x," TIME",1x," YEAR",1x,"   UNIT",1x,"   PLANTNM",   &
-                 18x,"   YIELD")
+1000    format (1x," jday",1x,"  mon",1x,"  day",1x,"   yr",1x,"   unit", 1x,"PLANTNM",   &
+                 18x,"      YIELD")
         write (9000,*) "CROP                crop_yld_aa.out"
         if (pco%csvout == "y") then
             open (4009,file="crop_yld_aa.csv")
             write (4009,*) bsn%name, prog
-            write (4009,'(*(G0.3,:,","))') "time","year","unit","plantnm","yield"
+            write (4009,'(*(G0.3,:,","))') "jday","mon","day","year","unit","plantnm","yield"
             write (9000,*) "CROP                crop_yld_aa.csv"
         end if
       end if

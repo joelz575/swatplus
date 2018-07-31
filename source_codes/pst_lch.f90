@@ -40,6 +40,7 @@
       use hru_module, only : hru, hrupest, surfq, ihru, npmx
       use soil_module
       use constituent_mass_module
+      use output_ls_constituent_module
       
       implicit none        
       
@@ -62,19 +63,21 @@
       if (hrupest(j) /= 0) then
 
         do ly = 1, soil(j)%nly
+          hpest_bal(j)%pest(k)%perc = 0.
+          hpest_bal(j)%pest(k)%surq = 0.
+          hpest_bal(j)%pest(k)%latq = 0.
+          
           npmx = cs_db%num_pests
           do k = 1, npmx
             kk = hru(j)%pst(k)%num_db
 
             if (kk > 0) then
-              qsurf = 0.
               if (ly == 1) then
                 qsurf = surfq(j)
               else
                 qsurf = 0.
               endif
 
-!!              zdb1 = soil(j)%phys(ly)%ul + sol_kp(k,j,ly) * soil(j)%phys(1)%bd*soil(j)%phys(1)%thick
               zdb1 = soil(j)%phys(ly)%ul + soil(j)%ly(ly)%kp(k) *          &
                                                    soil(j)%phys(1)%bd*soil(j)%phys(1)%thick
               !! units: mm + (m^3/ton)*(ton/m^3)*mm = mm
@@ -83,25 +86,17 @@
               vf = qsurf + soil(j)%ly(ly)%prk + soil(j)%ly(ly)%flat
 
               if (soil(j)%ly(ly)%pst(k) >= 0.0001 .and. vf > 0.) then
-                xx = 0.
-                xx =  soil(j)%ly(ly)%pst(k) * (1. - Exp(-vf /             &          
-                                                      (zdb1 + 1.e-6)))
-               
-                cocalc = 0.
-                co = 0.
+                xx =  soil(j)%ly(ly)%pst(k) * (1. - Exp(-vf / (zdb1 + 1.e-6)))
                 if (ly == 1) then
-                  cocalc = xx /                                          &                                         
-                 (soil(j)%ly(ly)%prk + bsn_prm%percop *                  &
+                  cocalc = xx / (soil(j)%ly(ly)%prk + bsn_prm%percop *                  &
                    (qsurf + soil(j)%ly(ly)%flat) + 1.e-6)
                 else
-                  cocalc = xx/(soil(j)%ly(ly)%prk+soil(j)%ly(ly)%flat +  &
-                    1.e-6)
+                  cocalc = xx/(soil(j)%ly(ly)%prk+soil(j)%ly(ly)%flat + 1.e-6)
                 end if
                 co = Min(pestdb(kk)%pst_wof / 100., cocalc)
                
                 !! calculate concentration of pesticide in surface
                 !! runoff and lateral flow
-                csurf = 0.
                 if (ly == 1) then
                   csurf = bsn_prm%percop * co
                 else
@@ -109,7 +104,6 @@
                 end if
 
                 !! calculate pesticide leaching
-                xx = 0.
                 xx = co * soil(j)%ly(ly)%prk
                 if (xx > soil(j)%ly(ly)%pst(k)) xx = soil(j)%ly(ly)%pst(k)
                  
@@ -117,26 +111,24 @@
 
                 if (ly < soil(j)%nly) then
                   soil(j)%ly(ly+1)%pst(k) = soil(j)%ly(ly+1)%pst(k) + xx
-                  
                 else
- !                 pstsol(k) = xx
+                  hpest_bal(j)%pest(k)%perc = xx
                 end if
 
                 !! calculate pesticide lost in surface runoff
                 if (ly == 1) then
                   yy = csurf * surfq(j)
                   if (yy >  soil(j)%ly(ly)%pst(k)) yy = soil(j)%ly(ly)%pst(k)
-                   soil(j)%ly(ly)%pst(k) =  soil(j)%ly(ly)%pst(k) - yy
-                  hru(j)%pst(k)%surq = yy 
+                  soil(j)%ly(ly)%pst(k) =  soil(j)%ly(ly)%pst(k) - yy
+                  hpest_bal(j)%pest(k)%surq = yy 
                 endif
-
 
                 !! calculate pesticide lost in lateral flow
                 yy = csurf * soil(j)%ly(ly)%flat
                 if (yy > soil(j)%ly(ly)%pst(k)) yy = soil(j)%ly(ly)%pst(k)
                  
                 soil(j)%ly(ly)%pst(k) = soil(j)%ly(ly)%pst(k) - yy
-                hru(j)%pst(k)%latq = hru(j)%pst(k)%latq + yy 
+                hpest_bal(j)%pest(k)%latq = hpest_bal(j)%pest(k)%latq + yy 
 
               end if
 

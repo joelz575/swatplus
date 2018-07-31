@@ -24,7 +24,6 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) header
         if (eof < 0) exit
-        !read (107,*,iostat=eof) pco%nyskip, pco%day_start, pco%day_end, pco%yrc_start, pco%yrc_end, pco%int_day
         read (107,*,iostat=eof) pco%nyskip, pco%day_start, pco%yrc_start, pco%day_end, pco%yrc_end, pco%int_day        
         if (eof < 0) exit
         read (107,*,iostat=eof) header

@@ -48,6 +48,7 @@
           hltpw_m(isd) = hltpw_m(isd) // const
           hltwb_m(isd)%cn = hltwb_m(isd)%cn / const 
           hltwb_m(isd)%sw = hltwb_m(isd)%sw / const
+          hltwb_m(isd)%sw_300 = hltwb_m(isd)%sw_300 / const
           hltwb_y(isd) = hltwb_y(isd) + hltwb_m(isd)
           hltnb_y(isd) = hltnb_y(isd) + hltnb_m(isd)
           hltls_y(isd) = hltls_y(isd) + hltls_m(isd)
@@ -90,6 +91,7 @@
           hltpw_y(isd) = hltpw_y(isd) // 12.
           hltwb_y(isd)%cn = hltwb_y(isd)%cn / 12. 
           hltwb_y(isd)%sw = hltwb_y(isd)%sw / 12.
+          hltwb_y(isd)%sw_300 = hltwb_y(isd)%sw_300 / 12.
           hltwb_a(isd) = hltwb_a(isd) + hltwb_y(isd)
           hltnb_a(isd) = hltnb_a(isd) + hltnb_y(isd)
           hltls_a(isd) = hltls_a(isd) + hltls_y(isd)
@@ -162,7 +164,7 @@
 
       return
      
-100   format (4i6,2i8,2x,a,27f12.3)
-101   format (4i6,2i8,2x,a,21f12.3)
+100   format (4i6,2i8,2x,a,28f12.3)
+101   format (1x,4i6,i7,i8,2x,a,21f12.3)
  
       end subroutine hru_lte_output

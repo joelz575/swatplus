@@ -89,6 +89,7 @@
           !bwb_m = bwb_m // const
           bwb_m%cn = bwb_m%cn / const 
           bwb_m%sw = bwb_m%sw / const
+          bwb_m%sw_300 = bwb_m%sw_300 / const
           bwb_m%snopack = bwb_m%snopack / const
           bwb_y = bwb_y + bwb_m
           bnb_y = bnb_y + bnb_m
@@ -131,6 +132,7 @@
            !bwb_y = bwb_y // 12.
            bwb_y%cn = bwb_y%cn / 12. 
            bwb_y%sw = bwb_y%sw / 12.
+           bwb_y%sw_300 = bwb_y%sw_300 / 12.
            bwb_y%snopack = bwb_y%snopack / 12.
            bwb_a = bwb_a + bwb_y
            bnb_a = bnb_a + bnb_y
@@ -197,15 +199,14 @@
         bpw_a = bpw_a / time%yrs_prt
         write (2083,100) time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bpw_a
         if (pco%csvout == "y") then 
-          write (2087,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bpw_a
+          write (2087,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iz, "      1", bsn%name, bpw_a
         end if 
         bpw_a = hpwz
       end if
       
       return
 
-100   format (4i6,i8,2x,a,2x,a16,6f12.3,21f17.3)      
-!102   format (4i6,i8,2x,a,2x,a16,6f12.3,21f17.3)
-103   format (4i6,i8,2x,a,2x,a16,27f12.3,a)
+100   format (4i6,i7,3x,a,2x,a16,28f12.3)      
+103   format (4i6,i8,2x,a,2x,a16,28f12.3,a)
        
       end subroutine basin_output

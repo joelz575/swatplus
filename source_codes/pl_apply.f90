@@ -91,7 +91,7 @@
       if (gc < 0.) gc = 0.
 
       !! update pesticide levels on ground and foliage
-      hru(j)%pst(k)%plt = hru(j)%pst(k)%plt + gc * xx
+      pcom(j)%pest(k) = pcom(j)%pest(k) + gc * xx
       soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + (1. - gc) * xx
       
       !! added endif for pesticide incorporation 3/31/08 gsm

@@ -232,14 +232,14 @@
       type (ch_output) :: chz
       
       type ch_header
-          character (len=7) :: day =      "  jday"
+          character (len=6) :: day =      " jday"
           character (len=6) :: mo =       "   mon"
           character (len=6) :: day_mo =   "   day"                                          
-          character (len=6) :: yrc =      "    yr"
-          character (len=8) :: isd =        "   unit "
+          character (len=5) :: yrc =      "   yr"
+          character (len=9) :: isd =        "    unit "
           character (len=8) :: id =         " gis_id "           
           character (len=16) :: name =     " name              "           
-          character(len=17) :: flo_in =    "       floin_ha-m"       ! (ha-m)
+          character(len=16) :: flo_in =    "      floin_ha-m"       ! (ha-m)
           character(len=15) :: flo_out =   "    floout_ha-m"         ! (ha-m)
           character(len=15) :: evap =      "        evap_ha-m"       ! (ha-m)
           character(len=15) :: tloss =     "     tloss_ha-m"         ! (ha-m)

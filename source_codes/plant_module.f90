@@ -14,7 +14,6 @@
          real :: bio_leaf = 0.          !! none         fraction of above ground tree biomass that is leaf
          real :: root_dep = 0.          !! mm           root depth
          real :: root_frac = 0.         !! kg/ha        root fraction of total plant mass
-         real, dimension(:),allocatable :: bac     !!             bacteria concentration on plant
       end type plant_growth
       
       type plant_mass
@@ -39,17 +38,17 @@
         character(len=1) :: gro = "y"   !               |land cover status
                                         !               |n = no land cover growing
                                         !               |y = land cover growing
-        character(len=1) :: idorm = "n" !! none         dormancy status code; 'n'=land cover growing 'y'=land cover dormant
-        real :: phumat = 0.             !! C            heat units to maturity
-        real :: phuacc = 0.             !! fraction     fraction of plant heatunit accumulated
+        character(len=1) :: idorm = "n" !! none         |dormancy status code; 'n'=land cover growing 'y'=land cover dormant
+        real :: phumat = 0.             !! C            |heat units to maturity
+        real :: phuacc = 0.             !! fraction     |fraction of plant heatunit accumulated
         real :: laimx_pop = 0.          !!
-        real :: yield = 0.              !! kg/ha        land cover/crop yield (dry weight)
-        integer :: harv_num = 0         !!              number of harvest operations
+        real :: yield = 0.              !! kg/ha        |land cover/crop yield (dry weight)
+        integer :: harv_num = 0         !!              |number of harvest operations
         integer :: curyr_mat = 1        !! 
         real :: pop_com = 0.            !! none 
-        integer :: monsoon_init = 0     !! julian day   monsoon initiation period
-        integer :: days_senes = 0.      !! mm           days since scenesence began (for moisture growth perennials)
-        real :: p_pet_rto = 0.          !! mm           precip/pet ratio on current day
+        integer :: monsoon_init = 0     !! julian day   |monsoon initiation period
+        integer :: days_senes = 0.      !! mm           |days since scenesence began (for moisture growth perennials)
+        real :: leaf_tov = 0.           !! none         |leaf turnover rate - decline in lai and leaf biomass
       end type plant_status
       
       type plant_stress
@@ -96,6 +95,8 @@
        type (plant_mass) :: stem_com                            !kg/ha            |wood/stalk mass for entire community
        type (plant_mass) :: root_com                            !kg/ha            |root mass for entire community
        type (plant_mass) :: seed_com                            !kg/ha            |seed (grain) mass for entire community
+       real, dimension(:), allocatable :: pest                  !!kg/ha           |amount of pesticide on plants
+       real, dimension(:), allocatable :: path                  !!# cfu/m^2       |amount of pathogens on plants
       end type plant_community
       type (plant_community), dimension (:), allocatable :: pcom
       type (plant_community), dimension (:), allocatable :: pcom_init

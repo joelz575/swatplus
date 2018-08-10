@@ -45,6 +45,7 @@
       xx = wrt(1,j) - wrt(2,j) * soil(j)%sw
       if (xx < -20.) xx = -20.
       if (xx > 20.) xx = 20.
+      icn = 0
 
       if (icn <= 0) then
         !! traditional CN method (function of soil water)

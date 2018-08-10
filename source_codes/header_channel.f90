@@ -3,7 +3,6 @@
       use channel_module
       use basin_module
       use hydrograph_module, only : sp_ob
-      use hru_module, only : prog
       
       implicit none 
             

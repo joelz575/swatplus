@@ -1,7 +1,7 @@
       subroutine hru_soil_assign
     
       use constituent_mass_module
-      use hru_module, only : hru, pesti_db, ihru, ipl, isol, mpst, npmx
+      use hru_module, only : hru, ihru, ipl, isol, mpst, npmx
       use soil_module
       use plant_module
       use bacteria_module

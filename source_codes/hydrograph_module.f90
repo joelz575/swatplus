@@ -370,7 +370,9 @@
         character (len=12) :: mo =      "         mon"
         character (len=12) :: day_mo =  "         day"
         character (len=13) :: yrc =     "          yr"
-        character (len=12) :: name =    "name        "
+        character (len=11) :: isd =          "       unit"
+        character (len=12) :: id =           "      gis_id"        
+        character (len=14) :: name =    " name       "
         character (len=6) :: otype =   "  type"
         !character (len=8) :: oprops =   "   props" 
       end type hyd_header_time

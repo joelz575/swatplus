@@ -39,13 +39,10 @@
       implicit none
    
       integer, intent (in) :: h            !none          |HRU number
-      real, intent (in) :: cnn             !cnn           |none          |SCS runoff curve number for moisture
-                                           !              |condition II
+      real, intent (in) :: cnn             !cnn           |SCS runoff curve number for moisture condition II
       real :: c2                           !none          |variable used to hold calculated value 
-      real :: cn1                          !none          |SCS runoff curve number for moisture
-                                           !              |condition I
-      real :: cn3                          !none          |SCS runoff curve number for moisture
-                                           !              |condition III
+      real :: cn1                          !none          |SCS runoff curve number for moisture condition I
+      real :: cn3                          !none          |SCS runoff curve number for moisture condition III
       real :: s3                           !none          |retention parameter for CN3
       real :: rto3                         !none          |fraction difference between CN3 and CN1 
                                            !              |retention parameters
@@ -58,12 +55,12 @@
       real :: amin1                        !              |
       
       cn2(h) = cnn
-      if (cn1 > 1.e-6) smxold = 254.* (100. / cn1 - 1.)
 
 !! calculate moisture condition I and III curve numbers
       c2 = 100. - cnn
       cn1 = cnn - 20. * c2 / (c2 + Exp(2.533 - 0.0636 * c2))
       cn1 = Max(cn1, .4 * cnn)
+      smxold = 254.* (100. / cn1 - 1.)
       cn3 = cnn * Exp(.006729 * c2)
 
 !! calculate maximum retention parameter value

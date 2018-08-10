@@ -7,18 +7,20 @@
       use hydrograph_module
       use sd_channel_module
       use maximum_data_module
+      use calibration_data_module
+      
       implicit none
      
       if (pco%fdcout == "y") then
-        open (6000,file="flow_duration_curve.out", recl=800)
-        write (6000,*) bsn%name, prog
+        open (2614,file="flow_duration_curve.out", recl=800)
+        write (2614,*) bsn%name, prog
         write (9000,*) "FDC                 flow_duration_curve.out"
-        write (6000,*) fdc_hdr
+        write (2614,*) fdc_hdr
       end if 
 
 !!!!!! hru-out.cal - hru soft calibration output including soft and predicted budgets and 
 !!!!!! calibration parameter adjustments
-      if (sp_ob%chandeg > 0) then
+      if (sp_ob%chandeg > 0 .and. cal_codes%hyd_hru == 'y' .or. cal_codes%hyd_hrul == 'y') then
 	    open (4999,file="hru-out.cal", recl = 800)
         write (4999,*) bsn%name, prog
 	    write (9000,*) "HRU SOFT CALIB OUT  hru-out.cal"

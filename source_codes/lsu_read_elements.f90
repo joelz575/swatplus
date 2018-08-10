@@ -36,21 +36,32 @@
         open (107,file=in_regs%def_lsu)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
-        read (107,*,iostat=eof) mlsu
-        if (eof < 0) exit
+        !read (107,*,iostat=eof) mlsu
+        !if (eof < 0) exit
         read (107,*,iostat=eof) header
+        do while (eof == 0)
+          read (107,*,iostat=eof) i
+          if (eof < 0) exit
+          imax = Max(imax,i)
+          mlsu = mlsu + 1
+        end do 
         
         !allocate subbasin (landscape unit) inputs and outputs
-        allocate (lsu_out(0:mlsu))
+        allocate (lsu_out(0:imax))
                 
         !allocate subbasin (landscape unit) inputs and outputs
-        allocate (ruwb_d(0:mlsu)); allocate (ruwb_m(0:mlsu)); allocate (ruwb_y(0:mlsu)); allocate (ruwb_a(0:mlsu))
-        allocate (runb_d(0:mlsu)); allocate (runb_m(0:mlsu)); allocate (runb_y(0:mlsu)); allocate (runb_a(0:mlsu))
-        allocate (ruls_d(0:mlsu)); allocate (ruls_m(0:mlsu)); allocate (ruls_y(0:mlsu)); allocate (ruls_a(0:mlsu))
-        allocate (rupw_d(0:mlsu)); allocate (rupw_m(0:mlsu)); allocate (rupw_y(0:mlsu)); allocate (rupw_a(0:mlsu))
+        allocate (ruwb_d(0:imax)); allocate (ruwb_m(0:imax)); allocate (ruwb_y(0:imax)); allocate (ruwb_a(0:imax))
+        allocate (runb_d(0:imax)); allocate (runb_m(0:imax)); allocate (runb_y(0:imax)); allocate (runb_a(0:imax))
+        allocate (ruls_d(0:imax)); allocate (ruls_m(0:imax)); allocate (ruls_y(0:imax)); allocate (ruls_a(0:imax))
+        allocate (rupw_d(0:imax)); allocate (rupw_m(0:imax)); allocate (rupw_y(0:imax)); allocate (rupw_a(0:imax))
+        
+        rewind (107)
+        read (107,*) titldum
+        read (107,*) header
         
       do i = 1, mlsu
-
+        read (107,*,iostat=eof) ii
+        backspace (107)
         read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu
         
         if (eof < 0) exit

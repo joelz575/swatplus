@@ -54,9 +54,9 @@
               ob_out(i)%objno = sp_ob1%hru + ob_out(i)%obtypno - 1
             case ("hlt")   !hru_lte
               ob_out(i)%objno = sp_ob1%hru_lte + ob_out(i)%obtypno - 1
-            case ("ru")   !hru
+            case ("ru")    !routing unit
               ob_out(i)%objno = sp_ob1%ru + ob_out(i)%obtypno - 1
-            case ("res")   !hru_lte
+            case ("res")   !reservoir
               ob_out(i)%objno = sp_ob1%res + ob_out(i)%obtypno - 1
             case ("cha")   !channel
               ob_out(i)%objno = sp_ob1%chan + ob_out(i)%obtypno - 1

@@ -221,7 +221,7 @@
           end do    !iyr
 
           end do    !nprob
-         write (2614,*) ob(icmd)%typ, ob(icmd)%props, ob(icmd)%fdc%p_md
+         write (2614,*) time%day, time%mo, time%day_mo, time%yrc, icmd, ob(icmd)%gis_id, ob(icmd)%name, ob(icmd)%typ, ob(icmd)%props, ob(icmd)%fdc%p_md
         end if
                
         !master duration curve from annual curves (median)

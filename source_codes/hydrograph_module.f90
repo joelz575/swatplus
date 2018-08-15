@@ -387,18 +387,25 @@
       type (hyd_header_obj) :: hyd_hdr_obj
       
       type output_flow_duration_header
-        character (len=11) :: obtyp =   "ob_typ     "
-        character (len=12) :: props =   "    props   "
-        character (len=11) :: min =     "       min "!Q
-        character (len=15) :: p5  =     "            p5 "
-        character (len=13) :: p10 =     "         p10 "     
-        character (len=19) :: p25 =     "           p25 "
-        character (len=15) :: p50 =     "       p50 "
-        character (len=15) :: p75 =     "       p75 "
-        character (len=15) :: p90 =     "       p90 "
-        character (len=15) :: p95 =     "       p95 "
-        character (len=11) :: max =     "   max     "
-        character (len=14) :: mean =    "     mean "
+        character (len=11) :: day =      "       jday"
+        character (len=12) :: mo =       "         mon"
+        character (len=12) :: day_mo =   "         day"                                          
+        character (len=12) :: yrc =      "          yr"
+        character (len=12) :: isd =      "        unit"
+        character (len=12) :: id =       "      gis_id"           
+        character (len=16) :: name =     " name              "           
+        character (len=11) :: obtyp =    "ob_typ     "
+        character (len=10) :: props =    "     props"
+        character (len=11) :: min =      "       min "!Q
+        character (len=15) :: p5  =      "            p5 "
+        character (len=13) :: p10 =      "          p10"     
+        character (len=15) :: p25 =      "            p25"
+        character (len=15) :: p50 =      "            p50"
+        character (len=15) :: p75 =      "            p75"
+        character (len=15) :: p90 =      "            p90"
+        character (len=15) :: p95 =      "            p95"
+        character (len=15) :: max =      "            max"
+        character (len=15) :: mean =     "           mean"
       end type output_flow_duration_header    
       type (output_flow_duration_header) :: fdc_hdr
 	  

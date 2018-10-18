@@ -87,6 +87,7 @@
         
         tmp(i)%start_day = istep
         tmp(i)%start_yr = iyr
+        
         backspace (108)
 
       if (iyr > time%yrc) then
@@ -96,14 +97,14 @@
         tmp(i)%yrs_start = 0
       end if
       
-      backspace (108)
-      
         ! read and store entire year
        do 
          read (108,*,iostat=eof) iyr, istep, tempx, tempn
          if (eof < 0) exit
-         if (iyr == time%yrc) exit
+         if (iyr == time%yrc .and. istep == time%day_start) exit
        end do
+	   
+	   backspace (108)
        iyr_prev = iyr
        iyrs = 1
        

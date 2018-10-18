@@ -44,15 +44,14 @@
 
         !! check end of month
         if (time%end_mo == 1) then
-          const = float (ndays(time%mo + 1) - ndays(time%mo))
-          hltpw_m(isd) = hltpw_m(isd) // const
-          hltwb_m(isd)%cn = hltwb_m(isd)%cn / const 
-          hltwb_m(isd)%sw = hltwb_m(isd)%sw / const
-          hltwb_m(isd)%sw_300 = hltwb_m(isd)%sw_300 / const
           hltwb_y(isd) = hltwb_y(isd) + hltwb_m(isd)
           hltnb_y(isd) = hltnb_y(isd) + hltnb_m(isd)
           hltls_y(isd) = hltls_y(isd) + hltls_m(isd)
           hltpw_y(isd) = hltpw_y(isd) + hltpw_m(isd)
+          
+          const = float (ndays(time%mo + 1) - ndays(time%mo))
+          hltpw_m(isd) = hltpw_m(isd) // const
+          hltwb_m(isd) = hltwb_m(isd) // const
           
           !! monthly print
            if (pco%wb_sd%m == "y") then
@@ -88,14 +87,14 @@
         
         !! check end of year
         if (time%end_yr == 1) then
-          hltpw_y(isd) = hltpw_y(isd) // 12.
-          hltwb_y(isd)%cn = hltwb_y(isd)%cn / 12. 
-          hltwb_y(isd)%sw = hltwb_y(isd)%sw / 12.
-          hltwb_y(isd)%sw_300 = hltwb_y(isd)%sw_300 / 12.
           hltwb_a(isd) = hltwb_a(isd) + hltwb_y(isd)
           hltnb_a(isd) = hltnb_a(isd) + hltnb_y(isd)
           hltls_a(isd) = hltls_a(isd) + hltls_y(isd)
           hltpw_a(isd) = hltpw_a(isd) + hltpw_y(isd)
+          
+          const = time%day_end_yr
+          hltwb_y(isd) = hltwb_y(isd) // const
+          hltpw_y(isd) = hltpw_y(isd) // const
 
           !! yearly print
            if (time%end_yr == 1 .and. pco%wb_sd%y == "y") then
@@ -128,6 +127,7 @@
 !!!!! average annual print
          if (time%end_sim == 1 .and. pco%wb_sd%a == "y") then
            hltwb_a(isd) = hltwb_a(isd) / time%yrs_prt
+           hltwb_a(isd) = hltwb_a(isd) // time%days_prt          
            write (2303,100) time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, hltwb_a(isd)
            if (pco%csvout == "y") then 
              write (2307,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, hltwb_a(isd)
@@ -154,7 +154,8 @@
          hltls_a(isd) = hlsz
         
          if (time%end_sim == 1 .and. pco%pw_sd%a == "y") then   
-           hltpw_a(isd) = hltpw_a(isd) / time%yrs_prt      
+           hltpw_a(isd) = hltpw_a(isd) / time%yrs_prt 
+           hltpw_a(isd) = hltpw_a(isd) // time%days_prt
            write (2463,101) time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, hltpw_a(isd)
            if (pco%csvout == "y") then 
              write (2467,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, hltpw_a(isd)

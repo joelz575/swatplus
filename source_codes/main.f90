@@ -10,11 +10,11 @@
 
       implicit none
 
-      prog = " SWAT+ Aug 14 2018    MODULAR Rev 2018.55"
+      prog = " SWAT+ Oct 15 2018    MODULAR Rev 2018.55.1"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 55            ",/,             &
+     &          "               Revision 55.1          ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)

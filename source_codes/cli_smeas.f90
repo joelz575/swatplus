@@ -83,6 +83,8 @@
         
         slr(i)%start_day = istep
         slr(i)%start_yr = iyr
+        
+        backspace (108)
 
       if (iyr > time%yrc) then
         slr(i)%yrs_start = iyr - time%yrc
@@ -91,14 +93,13 @@
         slr(i)%yrs_start = 0
       end if
       
-       backspace (108)
-      
         do 
          read (108,*,iostat=eof) iyr, istep, solrad
          if (eof < 0) exit
-         if (iyr == time%yrc) exit
+         if (iyr == time%yrc .and. istep == time%day_start) exit
         end do
-
+		
+       backspace (108)
        iyr_prev = iyr
        iyrs = 1
        

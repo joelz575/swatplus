@@ -19,21 +19,21 @@
         ! summing HRU output for the landscape unit
         do ielem = 1, lsu_out(ilsu)%num_tot
           ihru = lsu_out(ilsu)%num(ielem)
-          iob = sp_ob1%ru + ilsu - 1                          !!! double check for placement and "ilsu"
+          iob = sp_ob1%ru + ilsu - 1
           if (lsu_elem(ihru)%ru_frac > 1.e-9) then
-            const = 1. / lsu_elem(ihru)%ru_frac   !only have / operator set up
+            const = lsu_elem(ihru)%ru_frac
             if (lsu_elem(ihru)%obtyp == "hru") then
-              ruwb_d(ilsu) = ruwb_d(ilsu) + hwb_d(ihru) / const
-              runb_d(ilsu) = runb_d(ilsu) + hnb_d(ihru) / const
-              ruls_d(ilsu) = ruls_d(ilsu) + hls_d(ihru) / const
-              rupw_d(ilsu) = rupw_d(ilsu) + hpw_d(ihru) / const
+              ruwb_d(ilsu) = ruwb_d(ilsu) + hwb_d(ihru) * const
+              runb_d(ilsu) = runb_d(ilsu) + hnb_d(ihru) * const
+              ruls_d(ilsu) = ruls_d(ilsu) + hls_d(ihru) * const
+              rupw_d(ilsu) = rupw_d(ilsu) + hpw_d(ihru) * const
             end if
             ! summing HRU_LTE output
             if (lsu_elem(ihru)%obtyp == "hlt") then
-              ruwb_d(ilsu) = ruwb_d(ilsu) + hltwb_d(ihru) / const
-              runb_d(ilsu) = runb_d(ilsu) + hltnb_d(ihru) / const
-              ruls_d(ilsu) = ruls_d(ilsu) + hltls_d(ihru) / const
-              rupw_d(ilsu) = rupw_d(ilsu) + hltpw_d(ihru) / const
+              ruwb_d(ilsu) = ruwb_d(ilsu) + hltwb_d(ihru) * const
+              runb_d(ilsu) = runb_d(ilsu) + hltnb_d(ihru) * const
+              ruls_d(ilsu) = ruls_d(ilsu) + hltls_d(ihru) * const
+              rupw_d(ilsu) = rupw_d(ilsu) + hltpw_d(ihru) * const
             end if
           end if
         end do    !ielem
@@ -44,7 +44,7 @@
         ruls_m(ilsu) = ruls_m(ilsu) + ruls_d(ilsu)
         rupw_m(ilsu) = rupw_m(ilsu) + rupw_d(ilsu)
         
-!!!!! daily print - LANDSCAPE UNIT
+        !! daily print - LANDSCAPE UNIT
          if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%wb_lsu%d == "y") then
             write (2140,100) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, ruwb_d(ilsu)  !! waterbal
@@ -70,24 +70,23 @@
               write (2175,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, rupw_d(ilsu)  !! plant weather 
             end if
           end if 
-       end if
+        end if
 
         ruwb_d(ilsu) = hwbz
         runb_d(ilsu) = hnbz
         ruls_d(ilsu) = hlsz
         rupw_d(ilsu) = hpwz
         
-!! check end of month
+        !! check end of month
         if (time%end_mo == 1) then
-          const = float (ndays(time%mo + 1) - ndays(time%mo)) 
-          rupw_m(ilsu) = rupw_m(ilsu) // const
-          ruwb_m(ilsu)%cn = ruwb_m(ilsu)%cn / const 
-          ruwb_m(ilsu)%sw = ruwb_m(ilsu)%sw / const
-          ruwb_m(ilsu)%sw_300 = ruwb_m(ilsu)%sw_300 / const
           ruwb_y(ilsu) = ruwb_y(ilsu) + ruwb_m(ilsu)
           runb_y(ilsu) = runb_y(ilsu) + runb_m(ilsu)
           ruls_y(ilsu) = ruls_y(ilsu) + ruls_m(ilsu)
           rupw_y(ilsu) = rupw_y(ilsu) + rupw_m(ilsu)
+          
+          const = float (ndays(time%mo + 1) - ndays(time%mo)) 
+          rupw_m(ilsu) = rupw_m(ilsu) // const
+          ruwb_m(ilsu) = ruwb_m(ilsu) // const 
           
           if (pco%wb_lsu%m == "y") then
             write (2141,100) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, ruwb_m(ilsu)
@@ -120,17 +119,16 @@
           rupw_m(ilsu) = hpwz
         end if
 
-!!  check end of year
+        !!  check end of year
         if (time%end_yr == 1) then
-           rupw_y(ilsu) = rupw_y(ilsu) // 12.
-           ruwb_y(ilsu)%cn = ruwb_y(ilsu)%cn / 12. 
-           ruwb_y(ilsu)%sw = ruwb_y(ilsu)%sw / 12.
-           ruwb_y(ilsu)%sw_300 = ruwb_y(ilsu)%sw_300 / 12.
            ruwb_a(ilsu) = ruwb_a(ilsu) + ruwb_y(ilsu)
            runb_a(ilsu) = runb_a(ilsu) + runb_y(ilsu)
            ruls_a(ilsu) = ruls_a(ilsu) + ruls_y(ilsu)
            rupw_a(ilsu) = rupw_a(ilsu) + rupw_y(ilsu)
-           
+           const = time%day_end_yr
+           ruwb_y(ilsu) = ruwb_y(ilsu) // const
+           rupw_y(ilsu) = rupw_y(ilsu) // const
+
            if (pco%wb_lsu%y == "y") then
              write (2142,102) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, ruwb_y(ilsu)
              if (pco%csvout == "y") then 
@@ -156,16 +154,17 @@
              end if 
            end if
  
-!!!!! zero yearly variables        
+          !! zero yearly variables        
           ruwb_y(ilsu) = hwbz
           runb_y(ilsu) = hnbz
           ruls_y(ilsu) = hlsz
           rupw_y(ilsu) = hpwz
         end if
         
-!!!!! average annual print - LANDSCAPE UNIT
+      !! average annual print - LANDSCAPE UNIT
       if (time%end_sim == 1 .and. pco%wb_lsu%a == "y") then
         ruwb_a(ilsu) = ruwb_a(ilsu) / time%yrs_prt
+        ruwb_a(ilsu) = ruwb_a(ilsu) // time%days_prt
         write (2143,102) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, ruwb_a(ilsu)
         if (pco%csvout == "y") then 
           write (2147,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, ruwb_a(ilsu)
@@ -187,6 +186,7 @@
       end if
       if (time%end_sim == 1 .and. pco%pw_lsu%a == "y") then    
         rupw_a(ilsu) = rupw_a(ilsu) / time%yrs_prt
+        rupw_a(ilsu) = rupw_a(ilsu) // time%days_prt
         write (2173,102) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, rupw_a(ilsu) 
         if (pco%csvout == "y") then 
           write (2177,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, rupw_a(ilsu)

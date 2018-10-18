@@ -58,17 +58,15 @@
 
         !! check end of month
         if (time%end_mo == 1) then
-          const = float (ndays(time%mo + 1) - ndays(time%mo))
-          hpw_m(j) = hpw_m(j) // const
-          !hwb_m(j) = hwb_m(j) // const
-          hwb_m(j)%cn = hwb_m(j)%cn / const
-          hwb_m(j)%snopack = hwb_m(j)%snopack / const
-          hwb_m(j)%sw = hwb_m(j)%sw / const
-          hwb_m(j)%sw_300 = hwb_m(j)%sw_300 / const
           hwb_y(j) = hwb_y(j) + hwb_m(j)
           hnb_y(j) = hnb_y(j) + hnb_m(j)
           hls_y(j) = hls_y(j) + hls_m(j)
           hpw_y(j) = hpw_y(j) + hpw_m(j)
+          
+          const = float (ndays(time%mo + 1) - ndays(time%mo))
+          hpw_m(j) = hpw_m(j) // const
+          hwb_m(j) = hwb_m(j) // const
+          
           
           !! monthly print
            if (pco%wb_hru%m == "y") then
@@ -104,16 +102,14 @@
         
         !! check end of year
         if (time%end_yr == 1) then
-          hpw_y(j) = hpw_y(j) // 12.
-          !hwb_y(j) = hwb_y(j) // 12.
-          hwb_y(j)%cn = hwb_y(j)%cn / 12.
-          hwb_y(j)%snopack = hwb_y(j)%snopack / 12.
-          hwb_y(j)%sw = hwb_y(j)%sw / 12.
-          hwb_y(j)%sw_300 = hwb_y(j)%sw_300 / 12.
           hwb_a(j) = hwb_a(j) + hwb_y(j)
           hnb_a(j) = hnb_a(j) + hnb_y(j)
           hls_a(j) = hls_a(j) + hls_y(j)
           hpw_a(j) = hpw_a(j) + hpw_y(j)
+          
+          const = time%day_end_yr
+          hwb_y(j) = hwb_y(j) // const
+          hpw_y(j) = hpw_y(j) // const
           
           !! yearly print
            if (time%end_yr == 1 .and. pco%wb_hru%y == "y") then
@@ -146,6 +142,7 @@
 !!!!! average annual print
          if (time%end_sim == 1 .and. pco%wb_hru%a == "y") then
            hwb_a(j) = hwb_a(j) / time%yrs_prt
+           hwb_a(j) = hwb_a(j) // time%days_prt
            write (2003,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hwb_a(j)
            if (pco%csvout == "y") then
              write (2007,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hwb_a(j)
@@ -172,7 +169,8 @@
          end if
         
          if (time%end_sim == 1 .and. pco%pw_hru%a == "y") then     
-           hpw_a(j) = hpw_a(j) / time%yrs_prt      
+           hpw_a(j) = hpw_a(j) / time%yrs_prt
+           hpw_a(j) = hpw_a(j) / time%days_prt
            write (2043,102) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpw_a(j)
              if (pco%csvout == "y") then 
                write (2047,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpw_a(j)

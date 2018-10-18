@@ -18,12 +18,12 @@
         do ihru = 1, sp_ob%hru
           iihru = lsu_elem(ihru)%obtypno
           if (lsu_elem(iihru)%bsn_frac > 1.e-12) then
+              const = lsu_elem(iihru)%bsn_frac    !only have / operator set up
             if (lsu_elem(iihru)%obtyp == "hru") then
-              const = 1. / lsu_elem(iihru)%bsn_frac    !only have / operator set up
-              bwb_d = bwb_d + hwb_d(iihru) / const
-              bnb_d = bnb_d + hnb_d(iihru) / const
-              bls_d = bls_d + hls_d(iihru) / const
-              bpw_d = bpw_d + hpw_d(iihru) / const
+              bwb_d = bwb_d + hwb_d(iihru) * const
+              bnb_d = bnb_d + hnb_d(iihru) * const
+              bls_d = bls_d + hls_d(iihru) * const
+              bpw_d = bpw_d + hpw_d(iihru) * const
             end if
            end if
           end do
@@ -33,11 +33,11 @@
           iihru = lsu_elem(ihru)%obtypno
           if (lsu_elem(iihru)%bsn_frac > 1.e-12) then
             if (lsu_elem(iihru)%obtyp == "hlt") then
-              const = 1. / lsu_elem(iihru)%bsn_frac
-              bwb_d = bwb_d + hltwb_d(iihru) / const
-              bnb_d = bnb_d + hltnb_d(iihru) / const
-              bls_d = bls_d + hltls_d(iihru) / const
-              bpw_d = bpw_d + hltpw_d(iihru) / const
+              !const = lsu_elem(iihru)%bsn_frac
+              bwb_d = bwb_d + hltwb_d(iihru) * const
+              bnb_d = bnb_d + hltnb_d(iihru) * const
+              bls_d = bls_d + hltls_d(iihru) * const
+              bpw_d = bpw_d + hltpw_d(iihru) * const
             end if 
           end if
         end do
@@ -84,17 +84,14 @@
           
 !!!!! monthly print - BASIN
         if (time%end_mo == 1) then
-          const = float (ndays(time%mo + 1) - ndays(time%mo))
-          bpw_m = bpw_m // const
-          !bwb_m = bwb_m // const
-          bwb_m%cn = bwb_m%cn / const 
-          bwb_m%sw = bwb_m%sw / const
-          bwb_m%sw_300 = bwb_m%sw_300 / const
-          bwb_m%snopack = bwb_m%snopack / const
           bwb_y = bwb_y + bwb_m
           bnb_y = bnb_y + bnb_m
           bls_y = bls_y + bls_m
           bpw_y = bpw_y + bpw_m
+          
+          const = float (ndays(time%mo + 1) - ndays(time%mo))
+          bwb_m = bwb_m // const
+          bpw_m = bpw_m // const
           if (pco%wb_bsn%m == "y") then
             write (2051,100) time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bwb_m
             if (pco%csvout == "y") then 
@@ -128,16 +125,14 @@
 
 !!!!! yearly print - BASIN
         if (time%end_yr == 1) then
-           bpw_y = bpw_y // 12.
-           !bwb_y = bwb_y // 12.
-           bwb_y%cn = bwb_y%cn / 12. 
-           bwb_y%sw = bwb_y%sw / 12.
-           bwb_y%sw_300 = bwb_y%sw_300 / 12.
-           bwb_y%snopack = bwb_y%snopack / 12.
            bwb_a = bwb_a + bwb_y
            bnb_a = bnb_a + bnb_y
            bls_a = bls_a + bls_y
            bpw_a = bpw_a + bpw_y
+           
+           const = time%day_end_yr
+           bwb_y = bwb_y // const
+           bpw_y = bpw_y // const
            if (pco%wb_bsn%y == "y") then
              write (2052,100) time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bwb_y
              if (pco%csvout == "y") then 
@@ -173,6 +168,7 @@
 !!!!! average annual print - BASIN
       if (time%end_sim == 1 .and. pco%wb_bsn%a == "y") then
         bwb_a = bwb_a / time%yrs_prt
+        bwb_a = bwb_a // time%days_prt
         write (2053,103) time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bwb_a, cal_sim
         if (pco%csvout == "y") then 
           write (2057,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bwb_a, cal_sim
@@ -180,7 +176,7 @@
         bwb_a = hwbz
       end if
       if (time%end_sim == 1 .and. pco%nb_bsn%a == "y") then
-        bnb_a = bnb_a / time%yrs_prt
+        bnb_a = bnb_a / time%days_prt
         write (2063,100) time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bnb_a
         if (pco%csvout == "y") then 
           write (2067,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bnb_a
@@ -197,6 +193,7 @@
       end if
       if (time%end_sim == 1 .and. pco%pw_bsn%a == "y") then     
         bpw_a = bpw_a / time%yrs_prt
+        bpw_a = bpw_a // time%days_prt
         write (2083,100) time%day, time%mo, time%day_mo, time%yrc, iz, "     1", bsn%name, bpw_a
         if (pco%csvout == "y") then 
           write (2087,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iz, "      1", bsn%name, bpw_a

@@ -91,9 +91,7 @@
         ! read and store entire year
         wnd(i)%yrs_start = 0
       end if
-      
-       backspace (108)
-      
+          
         ! read and store entire year
        do 
          read (108,*,iostat=eof) iyr, istep
@@ -101,6 +99,7 @@
          if (iyr == time%yrc .and. istep == time%day_start) exit
        end do
  
+       backspace (108)
        iyr_prev = iyr
        iyrs = 1
        

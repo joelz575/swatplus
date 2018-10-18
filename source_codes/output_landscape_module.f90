@@ -362,6 +362,10 @@
       interface operator (/)
         module procedure hruout_waterbal_div
       end interface
+              
+      interface operator (*)
+        module procedure hruout_waterbal_mult
+      end interface
       
       interface operator (//)
         module procedure hruout_waterbal_ave
@@ -370,9 +374,17 @@
       interface operator (/)
         module procedure hruout_nutbal_div
       end interface
+                
+      interface operator (*)
+        module procedure hruout_nutbal_mult
+      end interface
         
       interface operator (/)
         module procedure hruout_losses_div
+      end interface
+                
+      interface operator (*)
+        module procedure hruout_losses_mult
       end interface
         
       interface operator (/)
@@ -381,6 +393,10 @@
           
       interface operator (//)
         module procedure hruout_plantweather_ave
+        end interface
+            
+      interface operator (*)
+        module procedure hruout_plantweather_mult
         end interface
   
       contains
@@ -503,10 +519,10 @@
         hru2%eplant = hru1%eplant / const
         hru2%esoil = hru1%esoil / const
         hru2%surq_cont = hru1%surq_cont / const 
-        hru2%cn = hru1%cn / const 
-        hru2%sw = hru1%sw / const
-        hru2%sw_300 = hru1%sw_300 / const
-        hru2%snopack = hru1%snopack / const
+        hru2%cn = hru1%cn
+        hru2%sw = hru1%sw
+        hru2%sw_300 = hru1%sw_300
+        hru2%snopack = hru1%snopack
         hru2%pet = hru1%pet / const 
         hru2%qtile = hru1%qtile / const 
         hru2%irr = hru1%irr / const
@@ -525,13 +541,70 @@
         type (output_waterbal), intent (in) :: hru1
         real, intent (in) :: const
         type (output_waterbal) :: hru2   
-        hru2%cn = hru1%cn / const 
+        hru2%precip = hru1%precip
+        hru2%snofall = hru1%snofall
+        hru2%snomlt= hru1%snomlt
+        hru2%surq_gen = hru1%surq_gen
+        hru2%latq = hru1%latq
+        hru2%wateryld = hru1%wateryld
+        hru2%perc = hru1%perc
+        hru2%et = hru1%et
+        hru2%tloss = hru1%tloss
+        hru2%eplant = hru1%eplant
+        hru2%esoil = hru1%esoil
+        hru2%surq_cont = hru1%surq_cont
+        hru2%cn = hru1%cn / const
         hru2%sw = hru1%sw / const
         hru2%sw_300 = hru1%sw_300 / const
         hru2%snopack = hru1%snopack / const
-        hru2%pet = hru1%pet / const
+        hru2%pet = hru1%pet
+        hru2%qtile = hru1%qtile
+        hru2%irr = hru1%irr
+        hru2%surq_runon = hru1%surq_runon
+        hru2%latq_runon = hru1%latq_runon
+        hru2%overbank = hru1%overbank
+        hru2%surq_cha = hru1%surq_cha
+        hru2%surq_res = hru1%surq_res
+        hru2%surq_ls = hru1%surq_ls
+        hru2%latq_cha = hru1%latq_cha
+        hru2%latq_res = hru1%latq_res
+        hru2%latq_ls = hru1%latq_ls
       end function hruout_waterbal_ave
 
+      function hruout_waterbal_mult (hru1,const) result (hru2)
+        type (output_waterbal), intent (in) :: hru1
+        real, intent (in) :: const
+        type (output_waterbal) :: hru2
+        hru2%precip = hru1%precip * const
+        hru2%snofall = hru1%snofall * const
+        hru2%snomlt= hru1%snomlt * const
+        hru2%surq_gen = hru1%surq_gen * const
+        hru2%latq = hru1%latq * const
+        hru2%wateryld = hru1%wateryld * const
+        hru2%perc = hru1%perc * const
+        hru2%et = hru1%et * const
+        hru2%tloss = hru1%tloss * const
+        hru2%eplant = hru1%eplant * const
+        hru2%esoil = hru1%esoil * const
+        hru2%surq_cont = hru1%surq_cont * const 
+        hru2%cn = hru1%cn * const 
+        hru2%sw = hru1%sw * const
+        hru2%sw_300 = hru1%sw_300 * const
+        hru2%snopack = hru1%snopack * const
+        hru2%pet = hru1%pet * const 
+        hru2%qtile = hru1%qtile * const 
+        hru2%irr = hru1%irr * const
+        hru2%surq_runon = hru1%surq_runon * const 
+        hru2%latq_runon = hru1%latq_runon * const 
+        hru2%overbank = hru1%overbank * const
+        hru2%surq_cha = hru1%surq_cha * const 
+        hru2%surq_res = hru1%surq_res * const 
+        hru2%surq_ls = hru1%surq_ls * const
+        hru2%latq_cha = hru1%latq_cha * const 
+        hru2%latq_res = hru1%latq_res * const 
+        hru2%latq_ls = hru1%latq_ls * const
+      end function hruout_waterbal_mult
+      
       function hruout_nutbal_div (hru1,const) result (hru2)
         type (output_nutbal), intent (in) :: hru1
         real, intent (in) :: const
@@ -556,6 +629,29 @@
         hru2%no3atmo = hru1%no3atmo / const
         hru2%nh4atmo = hru1%nh4atmo / const
       end function hruout_nutbal_div
+            
+      function hruout_nutbal_mult (hru1,const) result (hru2)
+        type (output_nutbal), intent (in) :: hru1
+        real, intent (in) :: const
+        type (output_nutbal) :: hru2
+        hru2%grazn = hru1%grazn * const
+        hru2%grazp = hru1%grazp * const
+        hru2%auton = hru1%auton * const        
+        hru2%autop = hru1%autop * const
+        hru2%rmp1 = hru1%rmp1 * const
+        hru2%roc = hru1%roc * const
+        hru2%fertn = hru1%fertn * const
+        hru2%fertp = hru1%fertp * const
+        hru2%fixn = hru1%fixn * const
+        hru2%wdn = hru1%wdn * const
+        hru2%hmn = hru1%hmn * const
+        hru2%rwn = hru1%rwn * const
+        hru2%hmp = hru1%hmp * const
+        hru2%rmn1 = hru1%rmn1 * const
+        hru2%rmp = hru1%rmp * const
+        hru2%no3atmo = hru1%no3atmo * const
+        hru2%nh4atmo = hru1%nh4atmo * const
+      end function hruout_nutbal_mult
       
       function hruout_losses_div (hru1,const) result (hru2)
         type (output_losses), intent (in) :: hru1
@@ -573,31 +669,46 @@
         hru2%sedmin = hru1%sedmin / const
         hru2%tileno3 = hru1%tileno3 / const
       end function hruout_losses_div
+            
+      function hruout_losses_mult (hru1,const) result (hru2)
+        type (output_losses), intent (in) :: hru1
+        real, intent (in) :: const
+        type (output_losses) :: hru2
+        hru2%sedyld = hru1%sedyld * const
+        hru2%sedorgn = hru1%sedorgn * const
+        hru2%sedorgp = hru1%sedorgp * const
+        hru2%surqno3 = hru1%surqno3 * const
+        hru2%latno3 = hru1%latno3 * const
+        hru2%surqsolp = hru1%surqsolp * const
+        hru2%usle = hru1%usle * const        
+        hru2%sedmin = hru1%sedmin * const
+        hru2%tileno3 = hru1%tileno3 * const
+      end function hruout_losses_mult
       
       function hruout_plantweather_div (hru1,const) result (hru2)
         type (output_plantweather), intent (in) :: hru1
         real, intent (in) :: const
         type (output_plantweather) :: hru2
-        hru2%lai = hru1%lai / const
-        hru2%bioms = hru1%bioms / const
+        hru2%lai = hru1%lai
+        hru2%bioms = hru1%bioms
         hru2%yield = hru1%yield / const
-        hru2%residue = hru1%residue / const
-        hru2%sol_tmp = hru1%sol_tmp / const
+        hru2%residue = hru1%residue
+        hru2%sol_tmp = hru1%sol_tmp
         hru2%strsw = hru1%strsw / const
         hru2%strsa = hru1%strsa / const
         hru2%strstmp = hru1%strstmp / const
         hru2%strsn = hru1%strsn / const
         hru2%strsp = hru1%strsp / const
-        hru2%nplnt = hru1%nplnt / const
+        hru2%nplnt = hru1%nplnt
         hru2%percn = hru1%percn / const
-        hru2%pplnt = hru1%pplnt / const
-        hru2%tmx = hru1%tmx / const
-        hru2%tmn = hru1%tmn / const
-        hru2%tmpav = hru1%tmpav / const
-        hru2%solrad = hru1%solrad / const
-        hru2%wndspd = hru1%wndspd / const
-        hru2%rhum = hru1%rhum / const
-        hru2%phubase0 = hru1%phubase0 / const
+        hru2%pplnt = hru1%pplnt
+        hru2%tmx = hru1%tmx
+        hru2%tmn = hru1%tmn
+        hru2%tmpav = hru1%tmpav
+        hru2%solrad = hru1%solrad
+        hru2%wndspd = hru1%wndspd
+        hru2%rhum = hru1%rhum
+        hru2%phubase0 = hru1%phubase0
       end function hruout_plantweather_div
                   
       function hruout_plantweather_ave (hru1,const) result (hru2)
@@ -625,5 +736,32 @@
         hru2%solrad = hru1%solrad / const
         hru2%phubase0 = hru1%phubase0 / const
       end function hruout_plantweather_ave
+                          
+      function hruout_plantweather_mult (hru1,const) result (hru2)
+        type (output_plantweather), intent (in) :: hru1
+        real, intent (in) :: const
+        type (output_plantweather) :: hru2
+        hru2%lai = hru1%lai * const
+        hru2%bioms = hru1%bioms * const
+        hru2%yield = hru1%yield * const
+        hru2%residue = hru1%residue * const
+        hru2%sol_tmp = hru1%sol_tmp * const
+        hru2%strsw = hru1%strsw * const
+        hru2%strsa = hru1%strsa * const
+        hru2%strstmp = hru1%strstmp * const
+        hru2%strsn = hru1%strsn * const
+        hru2%strsp = hru1%strsp * const
+        hru2%nplnt = hru1%nplnt * const
+        hru2%percn = hru1%percn * const
+        hru2%pplnt = hru1%pplnt * const
+        hru2%tmx = hru1%tmx * const
+        hru2%tmn = hru1%tmn * const
+        hru2%tmpav = hru1%tmpav * const
+        hru2%solrad = hru1%solrad * const
+        hru2%wndspd = hru1%wndspd * const
+        hru2%rhum = hru1%rhum * const
+        hru2%phubase0 = hru1%phubase0 * const
+      end function hruout_plantweather_mult
+                          
                             
       end module output_landscape_module

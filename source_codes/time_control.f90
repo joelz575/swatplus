@@ -96,6 +96,7 @@
         !! sum years of printing for average annual writes
         if (time%yrs > pco%nyskip) then
           time%yrs_prt = time%yrs_prt + float(time%day_end_yr - time%day_start + 1)
+          time%days_prt = time%days_prt + float(time%day_end_yr - time%day_start + 1)
         else
           !! tell user they are skipping more years than simulating
           time%yrs_prt = time%nbyr
@@ -106,11 +107,10 @@
           !! determine month and day of month - time%mo and time%day_mo
           call xmon
           
-         time%yrc_tot = time%yrc_end - time%yrc_start + 1
+          time%yrc_tot = time%yrc_end - time%yrc_start + 1
           
           write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc, time%yrs, time%yrc_tot
-          
-          
+         
           !! check for end of month, year and simulation
           time%end_mo = 0
           time%end_yr = 0

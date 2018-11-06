@@ -59,6 +59,7 @@
         character (len=1) :: res = "n"          !! if y, calibrate reservoir budgets by reservoir
       end type soft_calibration_codes
       type (soft_calibration_codes) :: cal_codes
+      character (len=1) :: cal_soft = "n"       !! if y, calibrate at least one balance
       
       type soft_calib_parms
         character(len=16) :: name       !! cn2, terrace, land use, mgt, etc.

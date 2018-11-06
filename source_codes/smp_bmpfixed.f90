@@ -14,15 +14,6 @@
 !!                                 |to sediment in surface runoff in HRU for day
 !!    sedminps(:)   |kg P/ha       |amount of stable mineral phosphorus sorbed
 !!                                 |to sediment in surface runoff in HRU for day
-!!    bactrolp      |# cfu/m^2     |less persistent bacteria transported to main
-!!                                 |channel with surface runoff
-!!    bactrop       |# cfu/m^2     |persistent bacteria transported to main
-!!                                 |channel with surface runoff
-!!    bactsedlp     |# cfu/m^2     |less persistent bacteria transported with
-!!                                 |sediment in surface runoff
-!!    bactsedp      |# cfu/m^2     |persistent bacteria transported with
-!!                                 |sediment in surface runoff
-
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -30,14 +21,6 @@
 !!                                 |to sediment in surface runoff in HRU for day
 !!    sedminps(:)   |kg P/ha       |amount of stable mineral phosphorus sorbed
 !!                                 |to sediment in surface runoff in HRU for day\
-!!    bactrolp      |# cfu/m^2     |less persistent bacteria transported to main
-!!                                 |channel with surface runoff
-!!    bactrop       |# cfu/m^2     |persistent bacteria transported to main
-!!                                 |channel with surface runoff
-!!    bactsedlp     |# cfu/m^2     |less persistent bacteria transported with
-!!                                 |sediment in surface runoff
-!!    bactsedp      |# cfu/m^2     |persistent bacteria transported with
-!!                                 |sediment in surface runoff
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
@@ -49,7 +32,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, sedyld, ihru, sedminpa, sedminps, sedorgp, sedorgn, surqsolp, surqno3,   &
-         latno3, bactrolp, bactrop, bactsedlp, bactsedp 
+         latno3
       
       implicit none
       
@@ -78,10 +61,10 @@
 	latno3(j) = latno3(j) * (1 - hru(j)%lumv%bmp_sn/100)
 
 !! Bacteria 
-      bactrop = bactrop * (1 - hru(j)%lumv%bmp_bac/100)
-      bactrolp = bactrolp * (1 - hru(j)%lumv%bmp_bac/100)
-      bactsedp = bactsedp * (1 - hru(j)%lumv%bmp_bac/100)
-      bactsedlp = bactsedlp * (1 - hru(j)%lumv%bmp_bac/100)
+      !bactrop = bactrop * (1 - hru(j)%lumv%bmp_bac/100)
+      !bactrolp = bactrolp * (1 - hru(j)%lumv%bmp_bac/100)
+      !bactsedp = bactsedp * (1 - hru(j)%lumv%bmp_bac/100)
+      !bactsedlp = bactsedlp * (1 - hru(j)%lumv%bmp_bac/100)
 
       return
       end subroutine smp_bmpfixed

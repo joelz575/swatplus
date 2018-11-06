@@ -54,9 +54,9 @@
               ob_out(i)%objno = sp_ob1%hru + ob_out(i)%obtypno - 1
             case ("hlt")   !hru_lte
               ob_out(i)%objno = sp_ob1%hru_lte + ob_out(i)%obtypno - 1
-            case ("ru")    !routing unit
+            case ("ru")   !hru
               ob_out(i)%objno = sp_ob1%ru + ob_out(i)%obtypno - 1
-            case ("res")   !reservoir
+            case ("res")   !hru_lte
               ob_out(i)%objno = sp_ob1%res + ob_out(i)%obtypno - 1
             case ("cha")   !channel
               ob_out(i)%objno = sp_ob1%chan + ob_out(i)%obtypno - 1
@@ -85,7 +85,7 @@
          iunit = ob_out(i)%unitno
          
          open (iunit+i,file = ob_out(i)%filename,recl=1500)
-         write (9000,*) "OBJECT.PRT          ", ob_out(i)%filename
+         write (9000,*) "OBJECT.PRT                ", ob_out(i)%filename
          
          write (iunit+i,*) hyd_hdr_time, hyd_hdr !! write header !H
  !         write (iunit+i,100) hyd_hdr_time, hyd_hdr !! write header !H

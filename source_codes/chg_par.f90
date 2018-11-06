@@ -45,6 +45,9 @@
 
       case ("pctchg")
         chg_par = (1. + chg_val / 100.) * val_cur
+        
+      case ("relchg")
+        chg_par = (1. + chg_val) * val_cur
       
       end select
       

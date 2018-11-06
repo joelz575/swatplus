@@ -32,7 +32,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : dormhr, hru, hrupest, i_sep, isep, isep_ly, iseptic, npmx, npno
+      use hru_module, only : dormhr, hru, i_sep, isep, isep_ly, iseptic
       use soil_module
       use plant_module
       use climate_module
@@ -45,6 +45,7 @@
       use time_module
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob, ob
+      use constituent_mass_module
       
       implicit none
 
@@ -130,26 +131,9 @@
         end if
       end do
 
-!!    compare maximum rooting depth in soil to maximum rooting depth of plant
-      if (soil(j)%zmx<= 0.001) soil(j)%zmx = soil(j)%phys(nly)%d
-      plt_zmx = 0.
-      do ipl = 1, pcom(j)%npl
-        idp = pcom(j)%plcur(ipl)%idplt
-	    if (idp > 0) then    
-          !! set initial residue by summing each plant
-          rsd1(j)%tot_com%m = rsd1(j)%tot_com%m + rsd1(j)%tot(ipl)%m
-          plt_zmxp = plt_zmx
-          plt_zmx = 1000. * pldb(idp)%rdmx
-          plt_zmx = Max(plt_zmx,plt_zmxp)
-        end if
-      end do
-      if (soil(j)%zmx > 1. .and. plt_zmx > 1.) then
-         soil(j)%zmx = Min(soil(j)%zmx,plt_zmx)
-      else
-         !! if one value is missing it will set to the one available
-         soil(j)%zmx = Max(soil(j)%zmx,plt_zmx)
-      end if
-
+!!    set maximum depth in soil to maximum rooting depth of plant
+      soil(j)%zmx = soil(j)%phys(nly)%d
+      
 !! create a biozone layer in septic HRUs
       isep = iseptic(j)
       if (sep(isep)%opt  /= 0) then 
@@ -170,27 +154,15 @@
       endif
           
 !!    calculate sol_kp as function of koc and sol_cbn
-!!    and set initial pesticide in all layers equal to value given for
-!!    upper layer
-      if (hrupest(j) == 1) then
-      do k = 1, npmx
-        jj = 0
-        jj = npno(k)
-        if (jj > 0) then
-          solpst = 0.
-          solpst = soil(j)%ly(1)%pst(k)  !!concentration of pesticide in soil
-
-          do n = 1, nly
-            wt1 = soil(j)%phys(n)%bd * soil(j)%phys(n)%thick / 100.      !! mg/kg => kg/ha
-!!            sol_kp(k,j,n) = pestdb(jj)%skoc * soil1(j)%tot(n)%c / 100.
-            soil(j)%ly(n)%kp(k) = pestdb(jj)%skoc *                         &
-                                             soil1(j)%tot(n)%c / 100.
-            soil(j)%ly(n)%pst(k) = solpst * wt1
-            
-          end do
-        end if
+!!    and set initial pesticide in all layers equal to value given for upper layer
+      do k = 1, cs_db%num_pests
+        solpst = soil(j)%ly(1)%pst(k)  !!concentration of pesticide in soil
+        do n = 1, nly
+          wt1 = soil(j)%phys(n)%bd * soil(j)%phys(n)%thick / 100.      !! mg/kg => kg/ha
+          soil(j)%ly(n)%kp(k) = pestdb(jj)%skoc * soil1(j)%tot(n)%c / 100.
+          soil(j)%ly(n)%pst(k) = solpst * wt1
+        end do
       end do
-      end if
 
 !!    compute lateral flow travel time
         if (hru(j)%hyd%lat_ttime <= 0.) then
@@ -207,8 +179,7 @@
             if (xx < 1.) xx = 1.
             hru(j)%hyd%lat_ttime = 1. - Exp(-1./xx)
         else
-          hru(j)%hyd%lat_ttime = 1. -                                   & 
-                     Exp(-1./hru(j)%hyd%lat_ttime)
+          hru(j)%hyd%lat_ttime = 1. - Exp(-1./hru(j)%hyd%lat_ttime)
         end if
 
         isdr = hru(j)%tiledrain

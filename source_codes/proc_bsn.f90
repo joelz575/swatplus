@@ -6,7 +6,7 @@
       
 !!!  open file to print all output files that are written
       open (9000,file="files_out.out")
-      write (9000,*) "FILES_OUT - OUTPUT FILES WRITTEN"      
+      write (9000,*) "files_out.out - OUTPUT FILES WRITTEN"      
 !!!  open diagnostics.out file to print problems with various files
      open (9001,file="diagnostics.out")
      write (9001,*) "DIAGNOSTICS.OUT FILE" 

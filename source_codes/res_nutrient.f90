@@ -32,7 +32,7 @@
         res(jres)%no2 = 0.
         res(jres)%solp = 0.
         res(jres)%chla = 0.
-        res_ob(jres)%seci = 0.
+        res_om_d(jres)%seci = 0.
       end if
       if (res(jres)%flo < 1.) return
 
@@ -51,9 +51,9 @@
       
       !! new inputs thetn, thetap, conc_pmin, conc_nmin
       !! new equations from Charles Ikenberry for wetlands
-      nitrok = 10000. * res_ob(jres)%area_ha * (conc_n - res_nut(inut)%conc_nmin) * Theta(pstlr, res_nut(inut)%theta_n, tair_av)
+      nitrok = 10000. * res_om_d(jres)%area_ha * (conc_n - res_nut(inut)%conc_nmin) * Theta(pstlr, res_nut(inut)%theta_n, tair_av)
       nitrok = Min(nitrok, 1.)
-      phosk = 10000. * res_ob(jres)%area_ha * (conc_p - res_nut(inut)%conc_pmin) * Theta(pstlr, res_nut(inut)%theta_p, tair_av)
+      phosk = 10000. * res_om_d(jres)%area_ha * (conc_p - res_nut(inut)%conc_pmin) * Theta(pstlr, res_nut(inut)%theta_p, tair_av)
       phosk = Min(phosk, 1.)
 
       !! remove nutrients from reservoir by settling
@@ -66,12 +66,10 @@
       res(jres)%no2 = res(jres)%no2 * (1. - nitrok)
 
       !! calculate chlorophyll-a and water clarity
-      tpco = 0.
       chlaco = 0.
       res(jres)%chla = 0.
-      res_ob(jres)%seci = 0.
-      tpco = 1.e+6 * (res(jres)%solp + res(jres)%sedp) /                &                
-                                              (res(jres)%flo + resflwo)
+      res_om_d(jres)%seci = 0.
+      tpco = 1.e+6 * (res(jres)%solp + res(jres)%sedp) / (res(jres)%flo + resflwo)
       if (tpco > 1.e-4) then
         !! equation 29.1.6 in SWAT manual
         chlaco = res_nut(inut)%chlar * 0.551 * (tpco**0.76)
@@ -79,8 +77,7 @@
       endif
       if (chlaco > 1.e-4) then
         !! equation 29.1.8 in SWAT manual
-        res_ob(jres)%seci = res_nut(inut)%seccir * 6.35 *                &
-                                                 (chlaco ** (-0.473))
+        res_om_d(jres)%seci = res_nut(inut)%seccir * 6.35 * (chlaco ** (-0.473))
       endif
 
       !! calculate amount of nutrients leaving reservoir

@@ -12,14 +12,9 @@
 !!    cpyld(:)    |kg P/kg yield  |fraction of phosphorus in yield
 !!    curyr       |none           |current year in simulation
 !!    hru_dafr(:) |km2/km2        |fraction of watershed in HRU
-!!    hrupest(:)  |none           |pesticide use flag:
-!!                                | 0: no pesticides used in HRU
-!!                                | 1: pesticides used in HRU
 !!    hvsti(:)    |(kg/ha)/(kg/ha)|harvest index: crop yield/aboveground
 !!                                |biomass
 !!    ihru        |none           |HRU number
-!!    npmx        |none           |number of different pesticides used in
-!!                                |the simulation
 !!    plt_pst(:,:)|kg/ha          |pesticide on plant foliage
 !!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
 !!                                |organic (residue) pool0
@@ -104,7 +99,6 @@
 
       !!add by zhang
       !!====================
-      
       if (bsn_cc%cswat == 2) then
         cbn_loss(j)%grainc_d = cbn_loss(j)%grainc_d + yield * 0.42
       end if

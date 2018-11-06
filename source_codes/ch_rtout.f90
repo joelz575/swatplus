@@ -58,18 +58,10 @@
 !!    rtevp         |m^3 H2O    |evaporation from reach on day
 !!    rttlc         |m^3 H2O    |transmission losses from reach on day
 !!    rtwtr         |m^3 H2O    |water leaving reach on day
-!!    sedpst_act(:) |m          |depth of active sediment layer in reach for
-!!                              |pesticide
-!!    sedpst_conc(:)|mg/(m**3)  |inital pesticide concentration in river bed
-!!                              |sediment
 !!    sedrch        |metric tons|sediment transported out of channel
 !!                              |during time step
 !!    setlpst       |mg pst     |amount of pesticide moving from water to
 !!                              |sediment due to settling
-!!    solpesto      |mg pst/m^3 |soluble pesticide concentration in outflow
-!!                              |on day
-!!    sorpesto      |mg pst/m^3 |sorbed pesticide concentration in outflow
-!!                              |on day
 !!    volatpst      |mg pst     |amount of pesticide in reach lost by
 !!                              |volatilization
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -102,11 +94,7 @@
       real :: sedcon       !mg/L          |sediment concentration in outflow
       real :: bedvol       !m^3           |volume of river bed sediment
       real :: sedpest      !mg pst        |pesticide in river bed sediment
-      real :: wtmp         !deg C         |temperature of water in reach
-      real :: solpesto     !mg pst/m^3    |soluble pesticide concentration in outflow
-                           !              |on day
-      real :: sorpesto     !mg pst/m^3    |sorbed pesticide concentration in outflow
-                           !              |on day 
+      real :: wtmp         !deg C         |temperature of water in reach 
       integer :: ii        !none          |counter
 
       wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
@@ -114,11 +102,7 @@
       ob(icmd)%hd(1)%temp = wtmp
       ob(icmd)%hd(1)%flo = rtwtr_d
       ob(icmd)%hd(1)%sed = sedrch
-      ob(icmd)%hd(1)%bacp = ch(jrch)%rch_bactp
-      ob(icmd)%hd(1)%baclp = ch(jrch)%rch_bactlp
-      ob(icmd)%hd(1)%met1 = ob(icmd)%hin%met1 
-      ob(icmd)%hd(1)%met2 = ob(icmd)%hin%met2 
-      ob(icmd)%hd(1)%met3 = ob(icmd)%hin%met3 
+      
 !!    sediment routing
       ob(icmd)%hd(1)%san = rch_san
       ob(icmd)%hd(1)%sil = rch_sil
@@ -127,14 +111,10 @@
       ob(icmd)%hd(1)%lag = rch_lag
       ob(icmd)%hd(1)%grv = rch_gra
       if (time%step == 0) then
-       ob(icmd)%hd(1)%orgn = ch(jrch)%organicn * rtwtr / 1000. +        &       
-                                                         ch(jrch)%orgn
-       ob(icmd)%hd(1)%sedp = ch(jrch)%organicp * rtwtr / 1000. +        &       
-                                                         ch(jrch)%orgp
+       ob(icmd)%hd(1)%orgn = ch(jrch)%organicn * rtwtr / 1000. + ch(jrch)%orgn
+       ob(icmd)%hd(1)%sedp = ch(jrch)%organicp * rtwtr / 1000. + ch(jrch)%orgp
        ob(icmd)%hd(1)%no3 = ch(jrch)%nitraten * rtwtr / 1000.
        ob(icmd)%hd(1)%solp = ch(jrch)%disolvp * rtwtr / 1000.
-       ob(icmd)%hd(1)%psol = solpesto * rtwtr
-       ob(icmd)%hd(1)%psor = sorpesto * rtwtr
        ob(icmd)%hd(1)%chla = ch(jrch)%chlora * rtwtr / 1000.
        ob(icmd)%hd(1)%nh3 = ch(jrch)%ammonian * rtwtr / 1000.
        ob(icmd)%hd(1)%no2 = ch(jrch)%nitriten * rtwtr / 1000.
@@ -151,18 +131,13 @@
           ob(icmd)%ts(1,ii)%sedp = horgp(ii) *  hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%no3 = hno3(ii) * hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%solp = hsolp(ii) * hrtwtr(ii) / 1000.
-          ob(icmd)%ts(1,ii)%psol = hsolpst(ii) * hrtwtr(ii)
-          ob(icmd)%ts(1,ii)%psor = hsorpst(ii) * hrtwtr(ii)
+          !ob(icmd)%ts(1,ii)%psol = hsolpst(ii) * hrtwtr(ii)
+          !ob(icmd)%ts(1,ii)%psor = hsorpst(ii) * hrtwtr(ii)
           ob(icmd)%ts(1,ii)%chla = hchla(ii) * hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%nh3 = hnh4(ii) * hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%no2 = hno2(ii) * hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%cbod = hbod(ii) *  hrtwtr(ii)/ 1000.
           ob(icmd)%ts(1,ii)%dox = hdisox(ii) *  hrtwtr(ii)/ 1000.
-          ob(icmd)%ts(1,ii)%bacp = hbactp(ii)
-          ob(icmd)%ts(1,ii)%baclp = hbactlp(ii)
-          ob(icmd)%ts(1,ii)%met1 = ob(icmd)%ts(1,ii)%met1 
-          ob(icmd)%ts(1,ii)%met2 = ob(icmd)%ts(1,ii)%met2 
-          ob(icmd)%ts(1,ii)%met3 = ob(icmd)%ts(1,ii)%met3 
 
           ob(icmd)%hd(1)%orgn = ob(icmd)%hd(1)%orgn +                   &                 
                                              ob(icmd)%ts(1,ii)%orgn
@@ -172,10 +147,10 @@
                                              ob(icmd)%ts(1,ii)%no3
           ob(icmd)%hd(1)%solp = ob(icmd)%hd(1)%solp +                   &
                                              ob(icmd)%ts(1,ii)%solp
-          ob(icmd)%hd(1)%psol = ob(icmd)%hd(1)%psol +                   &
-                                             ob(icmd)%ts(1,ii)%psol
-          ob(icmd)%hd(1)%psor = ob(icmd)%hd(1)%psor +                   &
-                                             ob(icmd)%ts(1,ii)%psor
+          !ob(icmd)%hd(1)%psol = ob(icmd)%hd(1)%psol +                   &
+          !                                   ob(icmd)%ts(1,ii)%psol
+          !ob(icmd)%hd(1)%psor = ob(icmd)%hd(1)%psor +                   &
+          !                                   ob(icmd)%ts(1,ii)%psor
           ob(icmd)%hd(1)%chla = ob(icmd)%hd(1)%chla +                   &
                                              ob(icmd)%ts(1,ii)%chla
           ob(icmd)%hd(1)%nh3 = ob(icmd)%hd(1)%nh3 +                     &                   
@@ -220,12 +195,5 @@
       end if
       if (sedcon > 200000.) sedcon = 200000.
 
-!! determine amount of pesticide in river bed sediments
-      bedvol = 0.
-      sedpest = 0.
-      bedvol = ch_hyd(jhyd)%w *ch_hyd(jhyd)%l * 1000.*       &
-             ch_pst(jpst)%sedpst_act
-      sedpest = ch_pst(jpst)%sedpst_conc * bedvol
-      
       return
       end subroutine ch_rtout

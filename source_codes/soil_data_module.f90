@@ -12,7 +12,7 @@
     
        type soiltest_db
         character(len=16) :: name = "default"
-        real :: exp_co = .001         !	     |depth coefficient to adjust concentrations for depth
+        real :: exp_co = .001         !	       |depth coefficient to adjust concentrations for depth
         real :: totaln = 13.          !ppm     |total N in soil
         real :: inorgn = 6.           !ppm     |inorganic N in soil surface
         real :: orgn = 3.             !ppm     |organic N in soil surface

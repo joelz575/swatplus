@@ -7,12 +7,13 @@
       use topography_data_module
       use soil_data_module
       use input_file_module
-      use hru_module, only : hru, hru_db, ihru
+      use hru_module, only : hru, hru_db, ihru, sol_plt_ini
       use soil_module
       use plant_module
       use hydrograph_module, only : ob, sp_ob, sp_ob1, wet
       use organic_mineral_mass_module
       use carbon_module
+      use constituent_mass_module
       
       implicit none
       
@@ -33,6 +34,8 @@
       integer :: isstor               !none       |counter
       integer :: isno                 !none       |counter
       integer :: ifld                 !none       |counter
+      integer :: isp_ini              !none       |counter
+      integer :: ics                  !none       |counter
       
       eof = 0
       imax = 0
@@ -70,6 +73,7 @@
         allocate (cbn_loss(0:imax))
         allocate (pcom(0:imax))
         allocate (wet(0:imax))
+        allocate (wet_init(0:imax))
         allocate (rsd1(0:imax))
         
         rewind (113)
@@ -92,14 +96,48 @@
                hru_db(i)%dbs%land_use_mgt = ilum
             exit
             end if
-           ! write (*,*) "LUM not found during crosswalk.  Please ensure it is included in landuse.lum"
-           ! write (*,*) "For LUM not found, the model will default to #1 in the file"
-           ! write (*,*) "Enter to continue/CNTRL break to cancel simulation"
-           ! stop
           end do
-          do isolt = 1, db_mx%soiltest
-            if (hru_db(i)%dbsc%soil_nutr_init == solt_db(isolt)%name) then
-               hru_db(i)%dbs%soil_nutr_init = isolt
+          
+          ! initialize nutrients and constituents in soil and plants
+          do isp_ini = 1, db_mx%sol_plt_ini
+            if (hru_db(i)%dbsc%soil_plant_init == sol_plt_ini(isp_ini)%name) then
+              hru_db(i)%dbs%soil_plant_init = isp_ini
+              ! initial soil nutrients (soil test)
+              do ics = 1, db_mx%soiltest
+                if (sol_plt_ini(isp_ini)%nutc == solt_db(ics)%name) then
+                  sol_plt_ini(isp_ini)%nut = ics
+                  exit
+                end if
+              end do
+              ! initial pesticides
+              do ics = 1, db_mx%pest_ini
+                if (sol_plt_ini(isp_ini)%pestc == pesti_db(ics)%name) then
+                  sol_plt_ini(isp_ini)%pest = ics
+                  exit
+                end if
+              end do
+              ! initial pathogens
+              do ics = 1, db_mx%path_ini
+                if (sol_plt_ini(isp_ini)%pathc == pathi_db(ics)%name) then
+                  sol_plt_ini(isp_ini)%path = ics
+                  exit
+                end if
+              end do
+              ! initial heavy metals
+              do ics = 1, db_mx%hmet_ini
+                if (sol_plt_ini(isp_ini)%hmetc == hmeti_db(ics)%name) then
+                  sol_plt_ini(isp_ini)%hmet = ics
+                  exit
+                end if
+              end do
+              ! initial salts
+              do ics = 1, db_mx%salt_ini
+                if (sol_plt_ini(isp_ini)%saltc == salti_db(ics)%name) then
+                  sol_plt_ini(isp_ini)%salt = ics
+                  exit
+                end if
+              end do
+              
             exit
             end if
           end do

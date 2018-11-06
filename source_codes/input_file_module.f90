@@ -55,7 +55,7 @@
 
 !! channel
       type input_cha 
-        character(len=25) :: init = "initial.cha"
+       character(len=25) :: init = "initial.cha"
        character(len=25) :: dat =  "channel.cha"
        character(len=25) :: hyd =  "hydrology.cha"
        character(len=25) :: sed =  "sediment.cha"
@@ -65,6 +65,8 @@
 	   character(len=25) :: metals = "metals.cha"
 	   character(len=25) :: salt = "salt.cha"
        character(len=25) :: chan_ez = "channel-lte.cha"
+       character(len=25) :: hyd_sed = "hyd-sed-lte.cha"
+       character(len=25) :: temp = "temperature.cha"
       end type input_cha
       type (input_cha) :: in_cha
 
@@ -229,13 +231,15 @@
 !! initial conditions
       type input_init
 	   character(len=25) :: plant = "plant.ini"
-	   character(len=25) :: pest_soil = "pest_soil.ini"
+       character(len=25) :: soil_plant_ini = "soil_plant.ini"
+       character(len=25) :: om_water = "om_water.ini"
+	   character(len=25) :: pest_soil = "pest_hru.ini"
 	   character(len=25) :: pest_water = "pest_water.ini"
-	   character(len=25) :: path_soil = "path_soil.ini"
+	   character(len=25) :: path_soil = "path_hru.ini"
 	   character(len=25) :: path_water = "path_water.ini"
-	   character(len=25) :: hmet_soil = "hmet_soil.ini"
+	   character(len=25) :: hmet_soil = "hmet_hru.ini"
 	   character(len=25) :: hmet_water = "hmet_water.ini"
-	   character(len=25) :: salt_soil = "salt_soil.ini"
+	   character(len=25) :: salt_soil = "salt_hru.ini"
 	   character(len=25) :: salt_water = "salt_water.ini"
        end type input_init
       type (input_init) :: in_init
@@ -249,7 +253,10 @@
 
 !! conditional 
       type input_condition
-       character(len=25) :: cond_ctl = "d_table.dtl"
+       character(len=25) :: dtbl_lum = "lum.dtl"
+       character(len=25) :: dtbl_res = "res_rel.dtl"
+       character(len=25) :: dtbl_scen = "scen_lu.dtl"
+       
       end type input_condition
       type (input_condition) :: in_cond
            

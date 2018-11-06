@@ -28,7 +28,7 @@
 !!         laimxfr   | 
 !!         hvstiadj  |(kg/ha)/(kg/ha)  |optimal harvest index for current time during growing season
 !!         olai      |
-!!    soil()%zmx     |mm            |maximum rooting depth of soil 
+!!    soil()%zmx     |mm            |maximum depth of soil 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -77,11 +77,9 @@
         pcom(j)%plm(ipl)%mass = bio_init
       endif
       
-      !! compare maximum rooting depth in soil to maximum rooting depth of plant
-      nly = soil(j)%nly
-      soil(ihru)%zmx = soil(j)%phys(nly)%d
+      !! compare maximum depth in soil to maximum rooting depth of plant
       plt_zmx = 1000. * pldb(ipl)%rdmx
-      soil(ihru)%zmx = Min(soil(ihru)%zmx,plt_zmx)
+      soil(ihru)%zmx = Min(soil(ihru)%zmx, plt_zmx)
       
       !! reset curve number if given in .mgt file
       if (cnop > 0.) call curno(cnop,j)

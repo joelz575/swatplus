@@ -237,11 +237,7 @@
 !!    rs5(:)       |1/day         |organic phosphorus settling rate in reach at
 !!                                |20 deg C
 
-
-    !!  calculation time to be adjusted later, now equal to 1
-      
          !! calculate flow duration
-         tday = 0.
          tday = rttime / 24.0
 
 !        benthic sources/losses in mg   
@@ -280,62 +276,43 @@
 	   if (solpcon < 1.e-6) solpcon = 0.0
 	   if (cbodcon < 1.e-6) cbodcon = 0.0
 	   if (o2con < 1.e-6) o2con = 0.0
-
          
          if (wtrin> 0.) then
          disoxin = disoxin - rk4_s /wtrin
          disoxin = max(0., disoxin)
          dispin = dispin + rs2_s / wtrin 
          ammoin = ammoin + rs3_s / wtrin
-            
 
-
-
-
-         !! calculate temperature in stream
-         !! Stefan and Preudhomme. 1993.  Stream temperature estimation 
-         !! from air temperature.  Water Res. Bull. p. 27-45
-         !! SWAT manual equation 2.3.13
-         wtmp = 0.
+         !! calculate temperature in stream Stefan and Preudhomme. 1993.  Stream temperature estimation 
+         !! from air temperature.  Water Res. Bull. p. 27-45 SWAT manual equation 2.3.13
          wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
          if (wtmp <= 0.) wtmp = 0.1
 
-         !! calculate effective concentration of available nitrogen
-         !! QUAL2E equation III-15
+         !! calculate effective concentration of available nitrogen QUAL2E equation III-15
          cinn = nh3con + no3con
 
          !! calculate saturation concentration for dissolved oxygen
          !! QUAL2E section 3.6.1 equation III-29
-         ww = 0.
-         xx = 0.
-         yy = 0.
-         zz = 0.
          ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
          xx = 6.642308e07 / ((wtmp + 273.15)**2)
          yy = 1.243800e10 / ((wtmp + 273.15)**3)
          zz = 8.621949e11 / ((wtmp + 273.15)**4)
          soxy = Exp(ww - xx + yy - zz)
          if (soxy < 1.e-6) soxy = 0. 
-!! end initialize concentrations
+         !! end initialize concentrations
 
-!! O2 impact calculations
+         !! O2 impact calculations
 
-!! calculate nitrification rate correction factor for low
+        !! calculate nitrification rate correction factor for low
         !! oxygen QUAL2E equation III-21
-        cordo = 0.
 	if (o2con.le.0.001) o2con=0.001
 	if (o2con.gt.30.) o2con=30.
         cordo = 1.0 - Exp(-0.6 * o2con)
-        !! modify ammonia and nitrite oxidation rates to account for
-        !! low oxygen
-        bc1mod = 0.
-        bc2mod = 0.
+        !! modify ammonia and nitrite oxidation rates to account for low oxygen
         bc1mod = ch_nut(jnut)%bc1 * cordo
         bc2mod = ch_nut(jnut)%bc2 * cordo
 !! end O2 impact calculations
        
-
-
 !! algal growth
          !! calculate light extinction coefficient 
          !! (algal self shading) QUAL2E equation III-12
@@ -348,12 +325,9 @@
            lambda = ch_nut(jnut)%lambda0
          endif
 
-	   If (lambda > ch_nut(jnut)%lambda0) lambda = ch_nut(jnut)%lambda0
-
+	   if (lambda > ch_nut(jnut)%lambda0) lambda = ch_nut(jnut)%lambda0
          !! calculate algal growth limitation factors for nitrogen
          !! and phosphorus QUAL2E equations III-13 & III-14
-         fnn = 0.
-         fpp = 0.
          fnn = cinn / (cinn + ch_nut(jnut)%k_n)
          fpp = solpcon / (solpcon + ch_nut(jnut)%k_p)
 
@@ -362,24 +336,19 @@
          !! Light Averaging Option # 2
          iwgn = wst(iwst)%wco%wgn
          if (wgn_pms(iwgn)%daylth > 0.) then
-           algi = wst(iwst)%weat%solrad * ch_nut(jnut)%tfact /           &
-                 wgn_pms(iwgn)%daylth
+           algi = wst(iwst)%weat%solrad * ch_nut(jnut)%tfact /  wgn_pms(iwgn)%daylth
          else
            algi = 0.00001
          end if
 
          !! calculate growth attenuation factor for light, based on
          !! daylight average light intensity QUAL2E equation III-7b
-         fl_1 = 0.
-         fll = 0.
          fl_1 = (1. / (lambda * rchdep)) *                               &                             
              Log((ch_nut(jnut)%k_l + algi) / (ch_nut(jnut)%k_l + algi *  &
              (Exp(-lambda * rchdep))))
          fll = 0.92 * (wgn_pms(iwgn)%daylth / 24.) * fl_1
 
          !! calculcate local algal growth rate
-         gra = 0.
-
          if (algcon < 5000.) then
          select case (ch_nut(jnut)%igropt)
            case (1)
@@ -391,169 +360,131 @@
            case (3)
              !! harmonic mean QUAL2E equation III-3c
              if (fnn > 1.e-6 .and. fpp > 1.e-6) then
-               gra = ch_nut(jnut)%mumax * fll * 2. /                     &
-                   ((1. / fnn) + (1. / fpp))
+               gra = ch_nut(jnut)%mumax * fll * 2. / ((1. / fnn) + (1. / fpp))
              else
                gra = 0.
              endif
            end select
         end if
 
-      
-         !! calculate algal biomass concentration at end of day
-         !! (phytoplanktonic algae)
+         !! calculate algal biomass concentration at end of day (phytoplanktonic algae)
          !! QUAL2E equation III-2
          ch(jrch)%algae = 0.
-         factm=0.
+         factm = 0.
                   
-         alg_m1= wq_semianalyt(tday,rt_delt,0.,factk,algcon,algin)
+         alg_m1 = wq_semianalyt (tday, rt_delt, 0., factk, algcon, algin)
          
-         factk=Theta(gra,thgra,wtmp) - Theta(ch_nut(jnut)%rhoq,thrho,wtmp)
-         alg_m= wq_semianalyt(tday,rt_delt,0.,factk,algcon,algin)
-         alg_m2=alg_m-alg_m1
-         alg_no3_m= -alg_m*(1. - f1)*ch_nut(jnut)%ai1
-         alg_nh4_m= -alg_m*f1*ch_nut(jnut)%ai1
-         alg_P_m = -alg_m*ch_nut(jnut)%ai2
-         alg_set=0.
-         if (rchdep > 0.001) alg_set=Theta(ch_nut(jnut)%rs1,thrs1,wtmp) / rchdep 
+         factk = Theta(gra,thgra,wtmp) - Theta(ch_nut(jnut)%rhoq, thrho, wtmp)
+         alg_m = wq_semianalyt(tday, rt_delt, 0., factk, algcon, algin)
+         alg_m2 = alg_m-alg_m1
+         alg_no3_m = -alg_m * (1. - f1) * ch_nut(jnut)%ai1
+         alg_nh4_m = -alg_m * f1 * ch_nut(jnut)%ai1
+         alg_P_m = -alg_m * ch_nut(jnut)%ai2
+         alg_set = 0.
+         if (rchdep > 0.001) alg_set = Theta (ch_nut(jnut)%rs1, thrs1, wtmp) / rchdep 
          
-         algcon_out= wq_semianalyt(tday,rt_delt,alg_m,-alg_set,algcon,algin)           
+         algcon_out = wq_semianalyt (tday, rt_delt, alg_m, -alg_set, algcon, algin)           
  
          ch(jrch)%algae = algcon_out
          if (ch(jrch)%algae < 1.e-6) ch(jrch)%algae = 0.
-	!! JGA added to set algae limit *****
-	   if (ch(jrch)%algae > 5000.) ch(jrch)%algae = 5000.
+	     if (ch(jrch)%algae > 5000.) ch(jrch)%algae = 5000.
 
-         !! calculate chlorophyll-a concentration at end of day
-         !! QUAL2E equation III-1
-         ch(jrch)%chlora = 0.
+         !! calculate chlorophyll-a concentration at end of day QUAL2E equation III-1
          ch(jrch)%chlora = ch(jrch)%algae * ch_nut(jnut)%ai0 / 1000.
          !! end algal growth 
 
 !! oxygen calculations
-         !! calculate carbonaceous biological oxygen demand at end
-         !! of day QUAL2E section 3.5 equation III-26
-!        adjust rk1 to m-term and BOD & O2 mass availability
+         !! calculate carbonaceous biological oxygen demand at end of day QUAL2E section 3.5 equation III-26
+         !! adjust rk1 to m-term and BOD & O2 mass availability
          
-         cbodo=min(cbodcon,o2con)
-         cbodoin=min(cbodin,disoxin)
-         rk1_k=-Theta(ch_nut(jnut)%rk1,thrk1,wtmp)
-         rk1_m=wq_k2m(tday,rt_delt,rk1_k,cbodocon,cbodoin)
+         cbodo = min (cbodcon,o2con)
+         cbodoin = min (cbodin,disoxin)
+         rk1_k = -Theta (ch_nut(jnut)%rk1, thrk1,wtmp)
+         rk1_m = wq_k2m (tday, rt_delt, rk1_k, cbodocon, cbodoin)
          ! calculate corresponding m-term
          rk3_k=0.
-         if (rchdep.gt.0.001)  rk3_k=-Theta(ch_nut(jnut)%rk3,thrk3,wtmp)/rchdep
+         if (rchdep > 0.001)  rk3_k = -Theta (ch_nut(jnut)%rk3, thrk3, wtmp) / rchdep
          factm = rk1_m
-         factk=rk3_k
-                  ch(jrch)%rch_cbod =0.
-         ch(jrch)%rch_cbod = wq_semianalyt(tday,rt_delt,factm,factk,cbodcon,cbodin)
-!         write(*,*) "bod",rk1_k, rk1_m, rk3_k, cbodin, cbodcon, ch(jrch)%rch_cbod   
-
+         factk = rk3_k
+         ch(jrch)%rch_cbod = 0.
+         ch(jrch)%rch_cbod = wq_semianalyt (tday, rt_delt, factm, factk, cbodcon, cbodin)
 
 !! nitrogen calculations
          !! calculate organic N concentration at end of day
          !! QUAL2E section 3.3.1 equation III-16
-
-       
-
          bc1_k = Theta(ch_nut(jnut)%bc1,thbc1,wtmp)
          bc3_k = Theta(ch_nut(jnut)%bc3,thbc3,wtmp) 
          rs4_k=0.
-          if (rchept > 0.001)  rs4_k = Theta(ch_nut(jnut)%rs4,thrs4,wtmp) / rchdep   
+         if (rchept > 0.001)  rs4_k = Theta (ch_nut(jnut)%rs4, thrs4, wtmp) / rchdep   
 
-         bc3_m = wq_k2m(tday,rt_delt,-bc3_k,orgncon,orgnin)
-         factk=-rs4_k
-         factm= bc3_m
-         ch(jrch)%organicn =wq_semianalyt(tday,rt_delt,factm,factk,orgncon,orgnin)
+         bc3_m = wq_k2m (tday, rt_delt, -bc3_k, orgncon, orgnin)
+         factk =-rs4_k
+         factm = bc3_m
+         ch(jrch)%organicn = wq_semianalyt (tday, rt_delt, factm, factk, orgncon, orgnin)
 
           if (ch(jrch)%organicn < 1.e-6) ch(jrch)%organicn = 0.
 
          !! calculate dissolved oxygen concentration if reach at 
          !! end of day QUAL2E section 3.6 equation III-28
 
-         rk2_m=Theta(ch_nut(jnut)%rk2,thrk2,wtmp) * soxy
-         rk2_k=Theta(ch_nut(jnut)%rk2,thrk2,wtmp) 
+         rk2_m = Theta (ch_nut(jnut)%rk2, thrk2, wtmp) * soxy
+         rk2_k = Theta (ch_nut(jnut)%rk2, thrk2, wtmp) 
 
-
-         alg_m_o2=ch_nut(jnut)%ai4 *alg_m2 + ch_nut(jnut)%ai3 *alg_m1
+         alg_m_o2 = ch_nut(jnut)%ai4 * alg_m2 + ch_nut(jnut)%ai3 * alg_m1
      
-         factk= - rk2_k
-         factm= rk1_m + rk2_m - rk4_m + bc1_m * ch_nut(jnut)%ai5 + bc2_m * ch_nut(jnut)%ai6
-         ch(jrch)%rch_dox = 0.
-         ch(jrch)%rch_dox = wq_semianalyt(tday,rt_delt,factm,factk,o2con,disoxin)
+         factk = - rk2_k
+         factm = rk1_m + rk2_m - rk4_m + bc1_m * ch_nut(jnut)%ai5 + bc2_m * ch_nut(jnut)%ai6
+         ch(jrch)%rch_dox = wq_semianalyt (tday, rt_delt, factm, factk, o2con, disoxin)
          if (ch(jrch)%rch_dox <0.) ch(jrch)%rch_dox = 0.
 !! end oxygen calculations        
 
-        !! calculate fraction of algal nitrogen uptake from ammonia
-        !! pool QUAL2E equation III-18
-        f1 = 0.
+        !! calculate fraction of algal nitrogen uptake from ammonia pool QUAL2E equation III-18
         f1 = ch_nut(jnut)%p_n * nh3con / (ch_nut(jnut)%p_n * nh3con +     &
             (1. - ch_nut(jnut)%p_n) * no3con + 1.e-6)
 
-        !! calculate ammonia nitrogen concentration at end of day
-        !! QUAL2E section 3.3.2 equation III-17
-        
+        !! calculate ammonia nitrogen concentration at end of day QUAL2E section 3.3.2 equation III-17
          factk=-bc1_k
          bc1_m=wq_k2m(tday,rt_delt,factk,nh3con,ammoin)
          factm=bc1_m-bc3_m 
          ch(jrch)%ammonian= wq_semianalyt(tday,rt_delt,factm,0.,nh3con,ammoin)
-            if (ch(jrch)%ammonian < 1.e-6) ch(jrch)%ammonian = 0.
+         if (ch(jrch)%ammonian < 1.e-6) ch(jrch)%ammonian = 0.
   
-        !! calculate concentration of nitrite at end of day
-        !! QUAL2E section 3.3.3 equation III-19
+        !! calculate concentration of nitrite at end of day QUAL2E section 3.3.3 equation III-19
          bc2_k = -Theta(ch_nut(jnut)%bc2,thbc2,wtmp)
 
         bc2_m= wq_k2m(tday,rt_delt,bc2_k,no2con,nitritin)
-        
-        ch(jrch)%nitriten = 0.  
+ 
         factm=-bc1_m+bc2_m
         ch(jrch)%nitriten = wq_semianalyt(tday,rt_delt,factm,0.,no2con,nitritin)
-        !no2con + (yy - zz) * tday
         if (ch(jrch)%nitriten < 1.e-6) ch(jrch)%nitriten = 0.
 
-!        write(*,*) "nitrit", ch(jrch)%nitriten, nitritin, no2con, factm, -bc1_m, bc2_m
-        !! calculate nitrate concentration at end of day
-        !! QUAL2E section 3.3.4 equation III-20
-
+        !! calculate nitrate concentration at end of day QUAL2E section 3.3.4 equation III-20
+        factk = 0.
+        factm = -bc2_m+alg_m_no3
         
-        ch(jrch)%nitraten = 0.
-        factk=0.
-        factm=-bc2_m+alg_m_no3
-        
-        ch(jrch)%nitraten = wq_semianalyt(tday,rt_delt,factm,0.,no3con,nitratin)
-        !no3con + (yy - zz) * tday
-
+        ch(jrch)%nitraten = wq_semianalyt (tday, rt_delt, factm,0., no3con, nitratin)
         if (ch(jrch)%nitraten < 1.e-6) ch(jrch)%nitraten = 0.
 !! end nitrogen calculations
+
 !! phosphorus calculations
-        !! calculate organic phosphorus concentration at end of
-        !! day QUAL2E section 3.3.6 equation III-24
+        !! calculate organic phosphorus concentration at end of day QUAL2E section 3.3.6 equation III-24
          bc4_k = Theta(ch_nut(jnut)%bc4,thbc4,wtmp)
          ch(jrch)%nitriten = 0. 
          bc4_m = wq_k2m(tday,rt_delt,-bc4_k,orgpcon,orgpin) 
          rs5_k=0.
-          if (rchept > 0.001) rs5_k = Theta(ch_nut(jnut)%rs5,thrs5,wtmp) / rchdep 
+         if (rchept > 0.001) rs5_k = Theta(ch_nut(jnut)%rs5,thrs5,wtmp) / rchdep 
 
         factk=-rs5_k
         factm =bc4_m 
 
-        ch(jrch)%organicp = 0.
-        ch(jrch)%organicp =wq_semianalyt(tday,rt_delt,factm,factk,orgpcon,orgpin)
-
+        ch(jrch)%organicp = wq_semianalyt (tday, rt_delt, factm, factk, orgpcon, orgpin)
         if (ch(jrch)%organicp < 1.e-6) ch(jrch)%organicp = 0.
     
-        !! calculate dissolved phosphorus concentration at end
-        !! of day QUAL2E section 3.4.2 equation III-25
-
-  
-        factk=0.
-
-        factm=-bc4_m+ch_nut(jnut)%ai2 *alg 
-        ch(jrch)%disolvp = 0.
-        ch(jrch)%disolvp = wq_semianalyt(tday,rt_delt,factm,0.,solpcon,dispin)
-
+        !! calculate dissolved phosphorus concentration at end of day QUAL2E section 3.4.2 equation III-25
+        factk = 0.
+        factm = -bc4_m+ch_nut(jnut)%ai2 *alg 
+        ch(jrch)%disolvp = wq_semianalyt (tday, rt_delt, factm, 0., solpcon, dispin)
         if (ch(jrch)%disolvp < 1.e-6) ch(jrch)%disolvp = 0.
-        
-      
 !! end phosphorus calculations
 
       else

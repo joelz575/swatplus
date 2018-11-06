@@ -28,7 +28,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : etday, ihru, tillage_factor, wdntl
+      use hru_module, only : etday, ihru, tillage_factor
       use soil_module
       use time_module
       use basin_module
@@ -59,7 +59,7 @@
         end do
         
         ! write all carbon, organic n and p, and mineral n and p for the soil profile
-        write (2610,*) time%day, time%mo, time%day_mo, time%yrc, ihru, ob(ihru)%gis_id, ob(ihru)%name, soil_prof_mn, soil_prof_mp, soil_prof_tot, soil_prof_str,  &
+        write (2610,*) time%day, time%yrc, ihru, soil_prof_mn, soil_prof_mp, soil_prof_tot, soil_prof_str,  &
           soil_prof_lig, soil_prof_meta, soil_prof_man, soil_prof_hs, soil_prof_hp, soil_prof_microb,       &
           soil_prof_water
       end do

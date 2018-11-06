@@ -56,7 +56,7 @@
       use basin_module
       use channel_data_module
       use channel_module
-      use hydrograph_module, only : ob, icmd, jrch, wet, ch_sur, sp_ob
+      use hydrograph_module
       use hru_module, only : hru
       use channel_velocity_module
       use maximum_data_module
@@ -114,25 +114,25 @@
       !! then simulate flood plain flow else simulate the regular channel flow
       !! taking floodwater to wetlands    
       if (volrt > maxrt) then   
-      ch(jrch)%chfloodvol = (volrt - maxrt)* 86400 * rt_delt
-        do ihr = 1, sp_ob%hru
-             iobhr = hru(ihr)%obj_no
-             ichan = ob(iobhr)%flood_ch_lnk
-                 if (ichan == jrch) then
-                 ires =  hru(ihr)%dbs%surf_stor
-                 depstmax=wet_ob(ires)%pvol
-                 depst=wet_ob(ires)%pvol-wet(ires)%flo
-                 depst= max(0., depst)
-                 depst= min(depst,ch(jrch)%chfloodvol)
+      ch(jrch)%chfloodvol = (volrt - maxrt) * 86400 * rt_delt
+      do ihr = 1, sp_ob%hru
+        iobhr = hru(ihr)%obj_no
+        ichan = ob(iobhr)%flood_ch_lnk
+        if (ichan == jrch) then
+          ires = hru(ihr)%dbs%surf_stor
+          depstmax = wet_ob(ires)%pvol
+          depst = wet_ob(ires)%pvol - wet(ires)%flo
+          depst = max(0., depst)
+          depst = min(depst, ch(jrch)%chfloodvol)
 
-                 if (depst > 0.) then
-                 wet(ires)%flo =wet(ires)%flo + depst 
-                 wet_d(ires)%flowi = wet_d(ires)%flowi + depst /10000.
-                 volrt = volrt- depst / (86400 * rt_delt)
-                 ch(jrch)%chfloodvol = ch(jrch)%chfloodvol - depst
-                 vol = vol - depst
-                 end if
-             end if
+          if (depst > 0.) then
+            wet(ires)%flo = wet(ires)%flo + depst 
+            wet_in_d(ires)%flo = wet_in_d(ires)%flo + depst / 10000.
+            volrt = volrt- depst / (86400 * rt_delt)
+            ch(jrch)%chfloodvol = ch(jrch)%chfloodvol - depst
+            vol = vol - depst
+            end if
+          end if
         end do    
       end if
       
@@ -196,14 +196,12 @@
 	    rttime = ch_hyd(jhyd)%l * 1000. / (3600. * vc)
 
         !! calculate volume of water leaving reach on day
-        scoef = 0.
- 	    rtwtr = 0.
         scoef = 2. * det / (2. * rttime + det)
         if (scoef > 1.) then
-         rchvol = ch_hyd(jhyd)%l * 1000. * rcharea
-         rtwtr = vol + ch(jrch)%rchstor - rchvol
+          rchvol = ch_hyd(jhyd)%l * 1000. * rcharea
+          rtwtr = vol + ch(jrch)%rchstor - rchvol
         else    
-        rtwtr = scoef * (wtrin + ch(jrch)%rchstor)
+          rtwtr = scoef * (wtrin + ch(jrch)%rchstor)
         end if
 
         ch(jrch)%rchstor = ch(jrch)%rchstor + vol - rtwtr
@@ -292,19 +290,8 @@
         ch(jrch)%flwout = 0.
       end if
 
-      !! precipitation on reach is not calculated because area of HRUs 
-      !! in subbasin sums up to entire subbasin area (including channel
-      !! area) so precipitation is accounted for in subbasin loop
-
-      !! volinprev(jrch) = wtrin; qoutprev(jrch) = rtwtr
-
       if (rtwtr < 0.) rtwtr = 0.
       if (ch(jrch)%rchstor < 0.) ch(jrch)%rchstor = 0.
-
-!      if (ch(jrch)%rchstor < 10.) then
-!        rtwtr = rtwtr + ch(jrch)%rchstor
-!        ch(jrch)%rchstor = 0.
-!      end if
 
       return
       end subroutine ch_rtday

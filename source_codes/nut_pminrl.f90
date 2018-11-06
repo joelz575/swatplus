@@ -30,8 +30,8 @@
 
       j = ihru
 
-      hnb_d(j)%rmp1 = 0.
-      hnb_d(j)%roc = 0.
+      hnb_d(j)%lab_min_p = 0.
+      hnb_d(j)%act_sta_p = 0.
 
       rto = bsn_prm%psp / (1.-bsn_prm%psp)
 
@@ -56,8 +56,8 @@
         soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - rmp1
         if (soil1(j)%mp(l)%lab < 0.) soil1(j)%mp(l)%lab = 0.
 
-        hnb_d(j)%rmp1 = hnb_d(j)%rmp1 + rmp1
-        hnb_d(j)%roc = hnb_d(j)%roc + roc
+        hnb_d(j)%lab_min_p = hnb_d(j)%lab_min_p + rmp1
+        hnb_d(j)%act_sta_p = hnb_d(j)%act_sta_p + roc
       end do
 
       return

@@ -4,7 +4,9 @@
       use input_file_module
       use constituent_mass_module
       use maximum_data_module
-      
+      use pesticide_data_module
+      use pathogen_data_module
+
       implicit none
          
       character (len=80) :: titldum   !           |title of file
@@ -14,6 +16,14 @@
       integer :: i                    !           |
       integer :: imax                 !           |
       integer :: ip                   !none       |counter
+      integer :: ipest                !none       |counter
+      integer :: ipestdb              !none       |counter
+      integer :: ipath                !none       |counter
+      integer :: ipathdb              !none       |counter
+      integer :: ihmet                !none       |counter
+      integer :: ihmetdb              !none       |counter
+      integer :: isalt                !none       |counter
+      integer :: isaltdb              !none       |counter
        
       eof = 0
       imax = 0
@@ -56,6 +66,42 @@
       end do
       end if
 
+      do ipest = 1, cs_db%num_pests
+        do ipestdb = 1, db_mx%pestparm
+          if (pestdb(ipestdb)%pestnm == cs_db%pests(ipest)) then
+            cs_db%pest_num(ipest) = ipestdb
+            exit
+          end if
+        end do
+      end do  
+      
+      do ipath = 1, cs_db%num_paths
+        do ipathdb = 1, db_mx%path
+          if (path_db(ipathdb)%pathnm == cs_db%paths(ipath)) then
+            cs_db%path_num(ipath) = ipathdb
+            exit
+          end if
+        end do
+      end do
+          
+!      do ihmet = 1, cs_db%num_hmets
+!        do ihmetdb = 1, db_mx%pestparm
+!          if (pestdb(ihmetdb)%pestnm == cs_db%hmets(ihmet)) then
+!            cs_db%hmet_num(ihmet) = ihmetdb
+!            exit
+!          end if
+!        end do
+!      end do  
+      
+!      do isalt = 1, cs_db%num_salts
+!        do isaltdb = 1, db_mx%salt
+!          if (path_db(isaltdb)%saltnm == cs_db%salts(isalt)) then
+!            cs_db%salt_num(isalt) = isaltdb
+!            exit
+!          end if
+!        end do
+!      end do
+          
       cs_db%num_tot = cs_db%num_pests + cs_db%num_paths + cs_db%num_metals + cs_db%num_salts
       
       close (106)

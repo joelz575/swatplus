@@ -9,7 +9,7 @@
       call pestparm_read                              !! read the pesticide database
       call fertparm_read                              !! read the fertilizer/nutrient database
       call urbanparm_read                             !! read the urban land types database
-      call bac_read_lsparms                           !! read the bacteria data parameters
+      call pathparm_read                              !! read the pathogen data parameters
       call septicparm_read 
       
       !! read management scheduling and data files      
@@ -22,6 +22,8 @@
       call mgt_read_mgtops
       
       !! read structural operations files
+      call sdr_read
+      call sep_read
       call scen_read_grwway
       call scen_read_filtstrip
       call scen_read_bmpuser

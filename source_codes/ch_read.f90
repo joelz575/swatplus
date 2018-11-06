@@ -4,6 +4,7 @@
       use input_file_module
       use channel_data_module
       use maximum_data_module
+      use hydrograph_module
 
       implicit none
       
@@ -13,7 +14,7 @@
       integer :: i                      !units         |description
       integer :: imax                   !units         |description
       integer :: i_exist                !              |check to determine if file exists
-      integer :: ich                    !none          |counter
+      integer :: ichi                   !none          |counter
       integer :: k                      !units         |description
       integer :: iinit                  !none          |counter
       integer :: ihyd                   !none          |counter
@@ -51,55 +52,54 @@
       read (105,*) titldum
       read (105,*) header
      
-       do ich = 1, db_mx%ch_dat
+       do ichi = 1, db_mx%ch_dat
          read (105,*,iostat=eof) i
          backspace (105)
-         read (105,*,iostat=eof) k, ch_dat_c(ich)
+         read (105,*,iostat=eof) k, ch_dat_c(ichi)
          if (eof < 0) exit
 
          
          do iinit = 1, db_mx%ch_init
-           if (ch_init(iinit)%name == ch_dat_c(ich)%init) then
-             ch_dat(ich)%init = iinit
+           if (ch_init(iinit)%name == ch_dat_c(ichi)%init) then
+             ch_dat(ichi)%init = iinit
              exit
            end if
          end do
          
        
          do ihyd = 1, db_mx%ch_hyd
-           if (ch_hyd(ihyd)%name == ch_dat_c(ich)%hyd) then
-             ch_dat(ich)%hyd = ihyd
+           if (ch_hyd(ihyd)%name == ch_dat_c(ichi)%hyd) then
+             ch_dat(ichi)%hyd = ihyd
              exit
            end if
          end do
        
-         
          do ised = 1, db_mx%ch_sed
-           if (ch_sed(ised)%name == ch_dat_c(ich)%sed) then
-             ch_dat(ich)%sed = ised
+           if (ch_sed(ised)%name == ch_dat_c(ichi)%sed) then
+             ch_dat(ichi)%sed = ised
              exit
            end if
          end do      
 
          do inut = 1, db_mx%ch_nut
-           if (ch_nut(inut)%name == ch_dat_c(ich)%nut) then
-             ch_dat(ich)%nut = inut
+           if (ch_nut(inut)%name == ch_dat_c(ichi)%nut) then
+             ch_dat(ichi)%nut = inut
              exit
            end if
          end do   
  
          do ipst = 1, db_mx%ch_pst
-           if (ch_pst(ipst)%name == ch_dat_c(ich)%pst) then
-             ch_dat(ich)%pst = ipst
+           if (ch_pst(ipst)%name == ch_dat_c(ichi)%pst) then
+             ch_dat(ichi)%pst = ipst
              exit
            end if
          end do
          
-       if (ch_dat(ich)%init == 0) write (9001,*) ch_dat_c(ich)%init, " not found (chan)"
-       if (ch_dat(ich)%hyd == 0) write (9001,*) ch_dat_c(ich)%hyd, " not found (chan)"
-       if (ch_dat(ich)%sed == 0) write (9001,*) ch_dat_c(ich)%sed, " not found (chan)"
-       if (ch_dat(ich)%nut == 0) write (9001,*) ch_dat_c(ich)%nut, " not found (chan)"
-       if (ch_dat(ich)%pst == 0) write (9001,*) ch_dat_c(ich)%pst, " not found (chan)"         
+       if (ch_dat(ichi)%init == 0) write (9001,*) ch_dat_c(ichi)%init, " not found (chan)"
+       if (ch_dat(ichi)%hyd == 0) write (9001,*) ch_dat_c(ichi)%hyd, " not found (chan)"
+       if (ch_dat(ichi)%sed == 0) write (9001,*) ch_dat_c(ichi)%sed, " not found (chan)"
+       if (ch_dat(ichi)%nut == 0) write (9001,*) ch_dat_c(ichi)%nut, " not found (chan)"
+       if (ch_dat(ichi)%pst == 0) write (9001,*) ch_dat_c(ichi)%pst, " not found (chan)"         
        
        end do
               

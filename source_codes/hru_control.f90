@@ -5,13 +5,13 @@
 !!    hydrologic cycle
 
       use hru_module, only : hru, ihru, tmx, tmn, tmpav, hru_ra, hru_rmx, rhd, u10, tillage_switch,      &
-         tillage_days, ndeat, qdr, phubase, strsw_av, sedyld, sci, aird, surfq,   &
+         tillage_days, ndeat, qdr, phubase, strsw_av, sedyld, aird, surfq,   &
          yr_skip, latq, tconc, smx, sepbtm, igrz, iseptic, i_sep, filterw, sed_con, soln_con, solp_con, & 
          orgn_con, orgp_con, cnday, nplnt, percn, tileno3, pplnt, sedorgn, sedorgp, surqno3, latno3,    &
-         surqsolp, sedminpa, sedminps, auton, autop, bactrop, bactsedlp, bactsedp, bactrolp,     &
-         fertn, fertp, fixn, grazn, grazp, hmntl, hmptl, ipl, no3pcp, peakr, qtile, rmn2tl, rmp1tl, rmptl,     &
-         roctl, rwntl, snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, wdntl, canev,   &
-         ep_day, es_day, etday, inflpcp, ipot, isep, iwgen, ls_overq, nd_30, pet_day,              &
+         surqsolp, sedminpa, sedminps,       &
+         fertn, fertp, fixn, grazn, grazp, ipl, no3pcp, peakr, qtile,      &
+         snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, canev,   &
+         ep_day, es_day, etday, inflpcp, isep, iwgen, ls_overq, nd_30, pet_day,              &
          pot, precipday, precip_eff, qday, sno_hru, latqrunon
       use soil_module 
       use plant_module
@@ -26,6 +26,8 @@
       use reservoir_module
       use output_landscape_module
       use time_module
+      use conditional_module
+      use constituent_mass_module
       
       implicit none
 
@@ -55,6 +57,7 @@
       integer :: iob_out            !              |object type out 
       integer :: iru                !              | 
       integer :: iout               !none          |counter
+      integer :: iac
       real :: over_flow             !              |
       real :: yield                 !              |
       real :: dep                   !              |
@@ -66,7 +69,6 @@
       iwst = ob(iob)%wst
       iwgen = wst(iwst)%wco%wgn
       ith = hru(j)%dbs%topo
-      ipot = hru(ihru)%dbs%surf_stor
       iwgn = wst(iwst)%wco%wgn
       ires =  hru(j)%dbs%surf_stor
       isched = hru(j)%mgt_ops
@@ -138,8 +140,15 @@
           do iauto = 1, sched(isched)%num_autos
             id = sched(isched)%num_db(iauto)
             jj = j
-            call conditions (id, jj)
-            call actions (id, jj)
+            d_tbl => dtbl_lum(id)
+            call conditions (jj)
+            call actions (jj)
+            !! if end of year, reset the one time fert application per year
+            if (time%end_yr == 1) then
+              do iac = 1, d_tbl%acts
+                pcom(j)%fert_apps(iac) = 1
+              end do
+            end if
           end do
         end if
         
@@ -200,23 +209,10 @@
         !! compute water table depth using climate drivers
         call wattable
 
-        !! new CN method
-        if (icn == 1) then 
-        sci(j) = sci(j) + pet_day * exp(-hru(j)%hyd%cncoef * sci(j) /      &
-           smx(j)) - precip_eff + qday + qtile + latq(j) + sepbtm(j)
-        else if (icn == 2) then 
-        sci(j) = sci(j) + pet_day * exp(-hru(j)%hyd%cncoef * sci(j) /      &
-           smx(j)) - precip_eff + qday + latq(j) + sepbtm(j) + qtile
-        sci(j) = amin1(sci(j), bsn_prm%smxco * smx(j))
-        end if 
-
         !! remove biomass from grazing and apply manure
         if (igrz(j) == 1) then
           ndeat(j) = ndeat(j) + 1
           call pl_graze
-          !call bac_apply_hrucon
-          !soil(j)%ly(1)%bacsol(ibac) = sol_bacsol
-          !soil(j)%ly(1)%bacsor(ibac) = sol_bacsor
         end if
        
         !! compute plant community partitions
@@ -334,8 +330,12 @@
         !! compute chl-a, CBOD and dissolved oxygen loadings
         call swr_subwq
 
-        !! compute bacteria transport
-        call bac_hrucontrol
+        !! compute pathogen transport
+        if (cs_db%num_paths > 0.) then
+          call path_ls_swrouting
+          call path_ls_runoff
+          call path_ls_process
+        end if
 
         !! compute loadings from urban areas
         if (hru(j)%luse%urb_lu > 0) then
@@ -478,24 +478,11 @@
         hwb_d(j)%overbank = over_flow
 
       ! output_nutbal
-        !hnb_d(j)%cfertn = cfertn
-        !hnb_d(j)%cfertp =  cfertp
         hnb_d(j)%grazn = grazn
         hnb_d(j)%grazp = grazp
-        hnb_d(j)%auton = auton
-        hnb_d(j)%autop = autop
-        !hnb_d(j)%rmp1 = rmp1
-        !hnb_d(j)%roc = roc
         hnb_d(j)%fertn = fertn
         hnb_d(j)%fertp = fertp
         hnb_d(j)%fixn = fixn
-        !hnb_d(j)%wdn = wdn
-        !hnb_d(j)%hmn = hmn
-        !hnb_d(j)%rwn = rwn
-        !hnb_d(j)%hmp = hmp
-        !hnb_d(j)%rmn1 = rmn1
-        !hnb_d(j)%rmp = rmp
-        !hnb_d(j)%no3pcp = no3pcp
 
       ! output_plantweather
         hpw_d(j)%lai = pcom(j)%lai_sum
@@ -526,8 +513,6 @@
         hls_d(j)%latno3 = latno3(j)
         hls_d(j)%surqsolp = surqsolp(j)
         hls_d(j)%usle = usle
-        hls_d(j)%bactp = bactrop + bactsedp
-        hls_d(j)%bactlp = bactrolp + bactsedlp
         hls_d(j)%sedmin = sedminpa(j) + sedminps(j)
         hls_d(j)%tileno3 = tileno3(j)
 

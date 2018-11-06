@@ -11,9 +11,6 @@
 
 !!    bss(3,:)      |mm           |amount of tile flow lagged
 !!    bss(4,:)      |kg N/ha      |amount of nitrate in tile flow lagged
-!!    hrupest(:)    |none         |pesticide use flag:
-!!                                | 0: no pesticides used in HRU
-!!                                | 1: pesticides used in HRU
 !!    ihru          |none         |HRU number
 !!    lat_pst(:)    |kg pst/ha    |amount of pesticide in lateral flow in HRU
 !!                                |for the day
@@ -40,39 +37,36 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use pesticide_data_module
-      use hru_module, only : hru, ihru, latq, latno3, qtile, bss, pst_lag, tileno3, hrupest, npno, npmx
+      use hru_module, only : hru, ihru, latq, latno3, qtile, bss, pst_lag, tileno3
       use constituent_mass_module
-      use output_ls_constituent_module
+      use output_ls_pesticide_module
       
       implicit none      
       
       integer :: j           !none          |HRU number
       integer :: k           !none          |counter
       integer :: icmd        !              |  
+      integer :: ipst_db     !              |  
 
-      j = 0
+
       j = ihru
 
       bss(1,j) = bss(1,j) + latq(j)
       bss(2,j) = bss(2,j) + latno3(j)
       bss(3,j) = bss(3,j) + qtile
       bss(4,j) = bss(4,j) + tileno3(j)
-        if (bss(1,j) < 1.e-6) bss(1,j) = 0.0
-        if (bss(2,j) < 1.e-6) bss(2,j) = 0.0
-        if (bss(3,j) < 1.e-6) bss(3,j) = 0.0
-        if (bss(4,j) < 1.e-6) bss(4,j) = 0.0
+      if (bss(1,j) < 1.e-6) bss(1,j) = 0.0
+      if (bss(2,j) < 1.e-6) bss(2,j) = 0.0
+      if (bss(3,j) < 1.e-6) bss(3,j) = 0.0
+      if (bss(4,j) < 1.e-6) bss(4,j) = 0.0
 
-      if (hrupest(j) == 1) then
-                    
-        npmx = cs_db%num_pests
-        do k = 1, npmx
-          if (pst_lag(k,3,j) < 1.e-6) pst_lag(k,3,j) = 0.0
-          !MFW, 3/3/12: Modified lagged pesticide to include decay in lag
-          pst_lag(k,3,j) = (pst_lag(k,3,j) * pstcp(npno(k))%decay_s)     & 
-                           + hpest_bal(j)%pest(k)%latq
-          ! pst_lag(k,3,j) = pst_lag(k,3,j) + lat_pst(k)
-        end do
-      end if
+      do k = 1, cs_db%num_pests
+        if (pst_lag(k,3,j) < 1.e-6) pst_lag(k,3,j) = 0.0
+        pst_lag(k,3,j) = pst_lag(k,3,j) + hpest_bal(j)%pest(k)%latq
+        !MFW, 3/3/12: Modified lagged pesticide to include decay in lag
+        ipst_db = cs_db%pest_num(k)
+        pst_lag(k,3,j) = (pst_lag(k,3,j) * pstcp(ipst_db)%decay_s) + hpest_bal(j)%pest(k)%latq
+      end do
 
       latq(j) = bss(1,j) * hru(j)%hyd%lat_ttime
       latno3(j) = bss(2,j) * hru(j)%hyd%lat_ttime
@@ -82,21 +76,19 @@
       if (latno3(j) < 1.e-6) latno3(j) = 0.
       if (qtile < 1.e-6) qtile = 0.
       if (tileno3(j) < 1.e-6) tileno3(j) = 0.
-      if (hrupest(j) == 1) then
-        do k = 1, npmx
+
+        do k = 1, cs_db%num_pests
           hpest_bal(j)%pest(k)%latq = hpest_bal(j)%pest(k)%latq * hru(j)%hyd%lat_ttime
         end do
-      end if
 
       bss(1,j) = bss(1,j) - latq(j)
       bss(2,j) = bss(2,j) - latno3(j)
       bss(3,j) = bss(3,j) - qtile
       bss(4,j) = bss(4,j) - tileno3(j)
-      if (hrupest(j) == 1) then
-        do k = 1, npmx
+
+        do k = 1, cs_db%num_pests
           pst_lag(k,3,j) = pst_lag(k,3,j) - hpest_bal(j)%pest(k)%latq
         end do
-      end if
 
       return
       end subroutine swr_substor

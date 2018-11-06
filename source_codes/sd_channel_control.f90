@@ -4,12 +4,20 @@
       use channel_velocity_module
       use basin_module
       use hydrograph_module
+      use constituent_mass_module
+      use channel_data_module
+      use channel_module
+      use ch_pesticide_module
     
       implicit none     
     
-      real :: rcharea                 !m^2           |cross-sectional area of flow
-      real :: sdti                    !m^3/s         |flow rate in reach for day
+      !real :: rcharea                !m^2           |cross-sectional area of flow
+      !real :: sdti                   !m^3/s         |flow rate in reach for day
       integer :: isd_db               !              |
+      integer :: iob                  !              |
+      integer :: idb                  !none          |channel data pointer
+      integer :: ihyd                 !              |
+      integer :: ipest                !              |
       real :: erode_btm               !              |
       real :: erode_bank              !              |
       real :: deg_btm                 !tons          |bottom erosion
@@ -19,8 +27,6 @@
       real :: bedld                   !tons          |bed load
       real :: dep                     !tons          |deposition
       real :: hc_sed                  !tons          |headcut erosion
-      real :: chflow_m3               !m^3/s         |Runoff in CMS
-      real :: sedin                   !              |
       real :: chside                  !none          |change in horizontal distance per unit
                                       !              |change in vertical distance on channel side
                                       !              |slopes; always set to 2 (slope=1/2)
@@ -31,7 +37,7 @@
 
       real :: rh                      !m             |hydraulic radius
       real :: qman                    !m^3/s or m/s  |flow rate or flow velocity
-      real :: rchdep                  !m             |depth of flow on day 
+      real :: frac                    !0-1           |fraction of hydrograph 
       real :: valint                  !              | 
       integer :: ivalint              !              |
       real :: tbase                   !none          |flow duration (fraction of 24 hr)
@@ -67,13 +73,20 @@
       integer :: ihval                !none          |counter 
       real :: bedld_cap               !              |
       real :: perim_bed               !              |
-      !real :: e_bim
+      real :: vol
       real :: perim_bank              !              |
       real :: s_bank                  !              |
       real :: shear_bank              !              |
       real :: shear_bank_adj          !              | 
       real :: e_bank                  !              |
       real :: perc                    !              |
+      
+      !real :: rttime                  !hr            |reach travel time
+      !integer :: jhyd                 !units         |description 
+      real :: det                     !hr            |time step
+      !real :: rt_delt                 !calc time step |days
+      real :: scoef                   !none          |Storage coefficient
+      real :: rchvol
       
       ich = isdch
       isd_db = ob(icmd)%props
@@ -87,19 +100,20 @@
       dep = 0.
       hc_sed = 0.
       
+      !! set ht1 to incoming hydrograph
+      ht1 = ob(icmd)%hin
+      hcs1 = obcs(icmd)%hin
+      
       !! set incoming flow and sediment
-      chflow_m3 = ob(icmd)%hin%flo
-      if (chflow_m3 < 1.e-6) then
-        ob(icmd)%hd(1) = hz
-        sedin = 0.
+      if (ht1%flo < 1.e-6) then
+        ht2 = hz
         peakrate = 0.
       else
-      sedin = ob(icmd)%hin%sed
       hyd_rad = 0.
       timeint = 0.
 
       !assume triangular hydrograph
-      peakrate = 2. * chflow_m3 / (1.5 * sd_chd(isd_db)%tc)
+      peakrate = 2. * ht1%flo / (1.5 * sd_chd(isd_db)%tc)
       peakrate = peakrate / 60.   !convert min to sec
       
          !! compute changes in channel dimensions
@@ -147,7 +161,7 @@
             !! estimate overbank flow - assume a triangular hyd
             tbase = 1.5 * sd_chd(isd_db)%tc * 60.  !seconds
             vol_ovb = 0.5 * (peakrate - sd_ch_vel(ich)%vel_bf) * sd_ch_vel(ich)%vel_bf / peakrate * tbase
-            vol_ovb = amin1(vol_ovb, chflow_m3)
+            vol_ovb = amin1(vol_ovb, ht1%flo)
             vol_ovb = peakrate - sd_ch_vel(ich)%vel_bf
             const = vol_ovb / peakrate
             ob(icmd)%hd(3) = const * ob(icmd)%hin
@@ -250,22 +264,15 @@
             timeint = timeint / sumtime
           END IF
 
-         !! calculate flow velocity
-          vc = 0.001
-          if (rcharea > 1.e-4) then
-            vc = peakrate / rcharea
-            if (vc > sd_ch_vel(ich)%celerity_bf) vc = sd_ch_vel(ich)%celerity_bf
-          end if
-
         !! adjust peak rate for headcut advance -also adjusts CEAP gully from
         !! edge-of-field to trib (assuming rectangular shape and constant tc)
         pr_ratio = (sd_ch(ich)%chl - sd_ch(ich)%hc_len / 1000.) / sd_ch(ich)%chl
         pr_ratio = Max(pr_ratio, 0.)
         
         !new q*qp (m3 * m3/s) equation for entire runoff event
-        qmm = chflow_m3 / (10. * ob(icmd)%area_ha)
+        qmm = ht1%flo / (10. * ob(icmd)%area_ha)
         if (qmm > 3.) then
-          qh = (chflow_m3 / 86400.) ** .5 * sd_chd(isd_db)%hc_hgt ** .225
+          qh = (ht1%flo / 86400.) ** .5 * sd_chd(isd_db)%hc_hgt ** .225
           hc = sd_ch(ich)%hc_co * qh            !m per event
           hc = Max(hc, 0.)
           sd_ch(ich)%hc_len = sd_ch(ich)%hc_len + hc
@@ -329,7 +336,7 @@
           end do
           
           !! adjust for incoming bedload
-          bedld = sd_chd(isd_db)%bedldcoef * sedin
+          bedld = sd_chd(isd_db)%bedldcoef * ht1%sed
           erode_btm = (deg_btm - bedld) / (10. * perim_bed * sd_ch(ich)%chl * sd_chd(isd_db)%bd)
           erode_bank = MAX(0., erode_bank)
           sd_ch(ich)%chd = sd_ch(ich)%chd + erode_btm / 100.
@@ -343,23 +350,34 @@
 
         end if
         
-        if (bsn_cc%wq == 1) then 
+        if (bsn_cc%wq == 1) then
+         !! use modified qual-2e routines
+         ht3 = ht1
+         call hyd_convert_mass_to_conc (ht3)
+         call ch_watqual4
+         !! convert mass to concentration
+         call hyd_convert_conc_to_mass (ht2)
+         
          !! compute nutrient losses using 2-stage ditch model
-         !! calculate nutrient concentrations
-         ht1 = hz
-         ht1 = ob(icmd)%hin
-         ht2 = ht1
-         !convert mass to concentration
-         call hyd_convert_conc (ht1)
-         call sd_channel_nutrients
+         !call sd_channel_nutrients
         end if
+        !! convert concentrations from qual-2e back to mass
+        !call hyd_convert_mass (ht3)
+        
+        !! route constituents
+        idb = ob(icmd)%props
+        jpst = sd_dat(idb)%pest
+        jrch = ich
+        call ch_rtpest
+        call ch_rtpath
 
       END IF
           
       !! compute sediment leaving the channel
-	  washld = (1. - sd_chd(isd_db)%bedldcoef) * sedin
+	  washld = (1. - sd_chd(isd_db)%bedldcoef) * ht1%sed
 	  sedout = washld + hc_sed + deg_btm + deg_bank
       dep = bedld - deg_btm - deg_bank
+      ht2%sed = sedout
       
       !! output_channel
       chsd_d(ich)%flo = ob(icmd)%hin%flo  / 86400.  !adjust if overbank flooding is moved to landscape
@@ -380,15 +398,64 @@
       chsd_d(ich)%hc_m = hc
       
       !! set values for outflow hydrograph
-      !! set flow and sediment out for routing to next unit
-      ht2%flo = ob(icmd)%hin%flo      !no water losses
-      ht2%sed = sedout
-      ob(icmd)%hd(1) = ht2
-      ob(icmd)%hd(1)%temp = 5. + .75 * tave        !!wtmp
-      !ob(icmd)%hd(1)%flo = chflow_m3               !!qdr m3/d
+      !! calculate flow velocity
+      vc = 0.001
+      if (rcharea > 1.e-4 .and. ht1%flo > 1.e-4) then
+        vc = peakrate / rcharea
+        if (vc > sd_ch_vel(ich)%celerity_bf) vc = sd_ch_vel(ich)%celerity_bf
+      end if
 
-      !! set values for recharge hydrograph
-      ob(icmd)%hd(2)%flo = perc  
+      !! calculate velocity and travel time
+      !vc = sdti / rcharea
+      rttime = sd_ch(jhyd)%chl * 1000. / (3600. * vc)
+
+      !! calculate hydrograph leaving reach and storage in channel
+      if (time%step == 0) rt_delt = 1.
+      det = 24.* rt_delt
+      scoef = det / (rttime + det)
+      frac = 1. - scoef
+      if (rttime > det) then      ! ht1 = incoming + storage
+        !! travel time > timestep -- then all incoming is stored and frac of stored is routed
+        ht2 = scoef * ch_stor(ich)
+        ch_stor(ich) = frac * ch_stor(ich) + ht1
+        hcs2 = scoef * ch_water(ich)
+        ch_water(ich) = frac * ch_water(ich) + hcs1
+      else
+        !! travel time < timestep -- route all stored and frac of incoming
+        ht2 = scoef * ht1
+        ht2 = ht2 + ch_stor(ich)
+        ch_stor(ich) = frac * ht1
+        hcs2 = scoef * hcs1
+        hcs2 = hcs2 + ch_water(ich)
+        ch_water(ich) = frac * hcs1
+      end if
+
+      ob(icmd)%hd(1) = ht2
+      ob(icmd)%hd(1)%temp = 5. + .75 * tave
+      
+      if (cs_db%num_pests > 0) then
+        obcs(icmd)%hd(1)%pest = hcs2%pest
+      end if
+
+      !! set pesticide output variables
+      do ipest = 1, cs_db%num_pests
+        chpst_d(ich)%pest(ipest)%sol_in = obcs(icmd)%hin%pest(ipest)%sol
+        chpst_d(ich)%pest(ipest)%sol_out = obcs(icmd)%hd(1)%pest(ipest)%sol
+        chpst_d(ich)%pest(ipest)%sor_in = obcs(icmd)%hin%pest(ipest)%sor
+        chpst_d(ich)%pest(ipest)%sor_out = obcs(icmd)%hd(1)%pest(ipest)%sor
+        chpst_d(ich)%pest(ipest)%react = chpst%pest(ipest)%react
+        chpst_d(ich)%pest(ipest)%volat = chpst%pest(ipest)%volat
+        chpst_d(ich)%pest(ipest)%settle = chpst%pest(ipest)%settle
+        chpst_d(ich)%pest(ipest)%resus = chpst%pest(ipest)%resus
+        chpst_d(ich)%pest(ipest)%difus = chpst%pest(ipest)%difus
+        chpst_d(ich)%pest(ipest)%react_bot = chpst%pest(ipest)%react_bot
+        chpst_d(ich)%pest(ipest)%bury = chpst%pest(ipest)%bury 
+        chpst_d(ich)%pest(ipest)%water = ch_water(ich)%pest(ipest)%sol + ch_water(ich)%pest(ipest)%sol
+        chpst_d(ich)%pest(ipest)%benthic = ch_benthic(ich)%pest(ipest)%sol + ch_benthic(ich)%pest(ipest)%sol
+      end do
+        
+      !! set values for recharge hydrograph - should be trans losses
+      !ob(icmd)%hd(2)%flo = perc  
 
       return
       

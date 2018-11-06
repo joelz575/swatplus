@@ -38,14 +38,14 @@
       db_mx%res_init = imax
       
       allocate (res_init(0:imax))
+      allocate (res_init_dat_c(0:imax))
+      
       rewind (105)
       read (105,*) titldum
       read (105,*) header
            
-       do ires = 1, imax
-         read (105,*,iostat=eof) titldum
-         backspace (105)
-         read (105,*,iostat=eof) res_init(ires)
+       do ires = 1, db_mx%res_init
+         read (105,*,iostat=eof) res_init_dat_c(ires)
          if (eof < 0) exit
        end do
        close (105)

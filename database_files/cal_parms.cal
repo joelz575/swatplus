@@ -1,5 +1,5 @@
 cal_parms.upd
-       187
+       185
 NAME        OBJ_TYP     ABSMIN    ABSMAX                   UNITS
 cn2             hru         25        98                    null
 usle_p          hru          0         1                    null
@@ -17,7 +17,7 @@ erorgn          hru          0         5                    null
 erorgp          hru          0         5                    null
 dis_stream      hru          0    100000                       m
 biomix          hru          0         1                    null
-dep_imp         hru          0      6000                      mm
+perco           hru          0         1                fraction
 lat_orgn        hru          0       200                    mg/l
 lat_orgp        hru          0       200                    mg/l
 field_len       hru       0.01         2                      km
@@ -57,7 +57,6 @@ percop          bsn          0         1                    null
 msk_co1         bsn          0        10                    null
 msk_co2         bsn          0        10                    null
 msk_x           bsn          0       0.3                    null
-cncoef          bsn        0.5         2                    null
 trnsrch         bsn          0         1                fraction
 cdn             bsn          0         3                    null
 tb_adj          bsn          0         1                    null
@@ -65,7 +64,6 @@ sdnco           bsn          0         1                    null
 n_updis         bsn          0       100                    null
 p_updis         bsn          0       100                    null
 dorm_hr         bsn          0        24                   hours
-smxco           bsn          0        10                    null
 fixco           bsn          0         1                    null
 rs1             swq       0.15      1.82                    m/hr
 rs2             swq      0.001       0.1 (mg_disP-P)/((m**2)*hr)

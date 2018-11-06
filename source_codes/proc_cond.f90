@@ -19,8 +19,8 @@
            sched(isched)%irr = 1
            !! crosswalk with conditional.ctl
            do iauto = 1, sched(isched)%num_autos
-             do ictl = 1, db_mx%d_tbl
-               if (sched(isched)%auto_name(iauto) == d_tbl(ictl)%name) then
+             do ictl = 1, db_mx%dtbl_lum
+               if (sched(isched)%auto_name(iauto) == dtbl_lum(ictl)%name) then
                  sched(isched)%num_db(iauto) = ictl
                end if
              end do

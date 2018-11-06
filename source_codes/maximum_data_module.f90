@@ -25,8 +25,6 @@
         integer :: pestcom = 0        !! none     !number of total pesticides communities in pesticide.com
         integer :: plantcom = 0       !! none     |number of plant communities
         integer :: soiltest = 0       !! none     |number of soiltest 
-        integer :: pestdb = 0         !! none     |number of pesticide ops
-        integer :: bactdb = 0         !! none     |number of bacteria props
         integer :: sno = 0            !! none     |number of snow props
         integer :: field = 0          !! none     |number of field props
         integer :: atmodep = 0        !! none     |atmospheric deposition props
@@ -57,6 +55,9 @@
         integer :: wr_ob = 0          !! none     |max number of water rights objects
         integer :: irr_nosrc = 0      !! none     |max number of hru"s with unlimited water source for irrigation
         integer :: d_tbl = 0          !! none     |max number of decision tables
+        integer :: dtbl_lum = 0       !! none     |max number of decision tables
+        integer :: dtbl_res = 0       !! none     |max number of decision tables
+        integer :: dtbl_scen = 0      !! none     |max number of decision tables
         integer :: cs_db = 0
         integer :: pathcom = 0
         integer :: hmetcom = 0
@@ -95,7 +96,8 @@
         integer :: ch_sed
         integer :: ch_nut
         integer :: ch_pst
-        integer :: bac
+        integer :: ch_temp
+        integer :: path
         integer :: exco
         integer :: exco_om
         integer :: exco_pest
@@ -108,8 +110,19 @@
         integer :: dr_path
         integer :: dr_hmet
         integer :: dr_salt
+        integer :: sol_plt_ini
+        integer :: pest_ini
+        integer :: path_ini
+        integer :: hmet_ini
+        integer :: salt_ini
+        integer :: pestw_ini
+        integer :: pathw_ini
+        integer :: hmetw_ini
+        integer :: saltw_ini
         integer :: sep
         integer :: ch_lte
+        integer :: om_water_init
+        integer :: sdc_dat
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
                                  

@@ -34,18 +34,11 @@
         real :: sedp = 0.              !! kg P         |organic P
         real :: no3 = 0.               !! kg N         |NO3-N
         real :: solp = 0.              !! kg P         |mineral (soluble P)
-        real :: psol = 0.              !! mg pst       |pesticide in solution
-        real :: psor = 0.              !! mg pst       |pestitice sorbed to sediment
         real :: chla = 0.              !! kg           |chlorophyll-a
         real :: nh3 = 0.               !! kg N         |NH3
         real :: no2 = 0.               !! kg N         |NO2
         real :: cbod = 0.              !! kg           |carbonaceous biological oxygen demand
         real :: dox = 0.               !! kg           |dissolved oxygen
-        real :: bacp = 0.              !! # cfu/100ml  |persistent bacteria
-        real :: baclp = 0.             !! # cfu/100ml  |less persistent bacteria
-        real :: met1 = 0.              !! kg           |conservative metal #1
-        real :: met2 = 0.              !! kg           |conservative metal #2
-        real :: met3 = 0.              !! kg           |conservative metal #3
         real :: san = 0.               !! tons         |detached sand
         real :: sil = 0.               !! tons         |detached silt
         real :: cla = 0.               !! tons         |detached clay
@@ -76,9 +69,68 @@
       type (hyd_output), dimension(:),allocatable :: hhr
       type (hyd_output) :: ht1, ht2, ht3, ht4, ht5, delrto
       
+      character(len=16), dimension(:), allocatable :: om_init_name
+      
       type (hyd_output), dimension(:),allocatable :: res
       type (hyd_output), dimension(:),allocatable :: wet
-  
+      type (hyd_output) :: resz
+      
+      type (hyd_output), dimension(:),allocatable :: om_init_water
+      type (hyd_output), dimension(:),allocatable :: ch_stor
+      
+      type (hyd_output), dimension(:), allocatable, save :: res_in_d
+      type (hyd_output), dimension(:), allocatable, save :: res_in_m
+      type (hyd_output), dimension(:), allocatable, save :: res_in_y
+      type (hyd_output), dimension(:), allocatable, save :: res_in_a
+      type (hyd_output) :: bres_in_d
+      type (hyd_output) :: bres_in_m
+      type (hyd_output) :: bres_in_y
+      type (hyd_output) :: bres_in_a
+      type (hyd_output), dimension(:), allocatable, save :: res_out_d
+      type (hyd_output), dimension(:), allocatable, save :: res_out_m
+      type (hyd_output), dimension(:), allocatable, save :: res_out_y
+      type (hyd_output), dimension(:), allocatable, save :: res_out_a
+      type (hyd_output) :: bres_out_d
+      type (hyd_output) :: bres_out_m
+      type (hyd_output) :: bres_out_y
+      type (hyd_output) :: bres_out_a
+      type (hyd_output) :: resmz
+            
+      type (hyd_output), dimension(:), allocatable, save :: wet_in_d
+      type (hyd_output), dimension(:), allocatable, save :: wet_in_m
+      type (hyd_output), dimension(:), allocatable, save :: wet_in_y
+      type (hyd_output), dimension(:), allocatable, save :: wet_in_a
+      type (hyd_output) :: bwet_in_d
+      type (hyd_output) :: bwet_in_m
+      type (hyd_output) :: bwet_in_y
+      type (hyd_output) :: bwet_in_a
+      type (hyd_output), dimension(:), allocatable, save :: wet_out_d
+      type (hyd_output), dimension(:), allocatable, save :: wet_out_m
+      type (hyd_output), dimension(:), allocatable, save :: wet_out_y
+      type (hyd_output), dimension(:), allocatable, save :: wet_out_a
+      type (hyd_output) :: bwet_out_d
+      type (hyd_output) :: bwet_out_m
+      type (hyd_output) :: bwet_out_y
+      type (hyd_output) :: bwet_out_a
+      
+      type (hyd_output), dimension(:), allocatable, save :: ch_in_d
+      type (hyd_output), dimension(:), allocatable, save :: ch_in_m
+      type (hyd_output), dimension(:), allocatable, save :: ch_in_y
+      type (hyd_output), dimension(:), allocatable, save :: ch_in_a
+      type (hyd_output) :: bch_in_d
+      type (hyd_output) :: bch_in_m
+      type (hyd_output) :: bch_in_y
+      type (hyd_output) :: bch_in_a
+      type (hyd_output), dimension(:), allocatable, save :: ch_out_d
+      type (hyd_output), dimension(:), allocatable, save :: ch_out_m
+      type (hyd_output), dimension(:), allocatable, save :: ch_out_y
+      type (hyd_output), dimension(:), allocatable, save :: ch_out_a
+      type (hyd_output) :: bch_out_d
+      type (hyd_output) :: bch_out_m
+      type (hyd_output) :: bch_out_y
+      type (hyd_output) :: bch_out_a
+      type (hyd_output) :: chomz
+      
       type object_output
         character (len=3) :: name
         character (len=3) :: obtyp     !! object type: hru,hlt,hs,rxc,dr,out,sdc
@@ -326,86 +378,118 @@
       type (hyd_output), dimension(:), allocatable :: exco        !export coefficient
 
       type hyd_header                                       
-        !character (len=11) :: day =     "       jday"
-        !character (len=12) :: mo =      "         mon"
-        !character (len=12) :: day_mo =  "         day"
-        !character (len=13) :: yrc =     "          yr"
-        !character (len=12) :: name =    "       name"
-        !character (len=16) :: otype =   " type           "
-        !character (len=5) :: oprops =   "props" 
-        !character (len=12) :: iotyp =   " objtyp_out "
-        !character (len=6) :: iotypno =  "typ_no"
-        !character (len=8) :: hydio =   " hyd_typ"
-        !character (len=7) :: objno =    " obj_no"
-        character (len=17) :: flo =     "          flo_m^3"        !! m^3          |volume of water
-        character (len=15) :: sed =     "      sed_mtons"        !! metric tons  |sediment
-        character (len=15) :: orgn =    "       orgn_kgN"        !! kg N         |organic N
-        character (len=15) :: sedp =    "       sedp_kgP"        !! kg P         |organic P
-        character (len=15) :: no3 =     "        no3_kgN"        !! kg N         |NO3-N
-        character (len=15) :: solp =    "       solp_kgP"        !! kg P         |mineral (soluble P)
-        character (len=15) :: psol =    "     psol_mgpst"        !! mg pst       |pesticide in solution
-        character (len=15) :: psor =    "     psor_mgpst"        !! mg pst       |pestitice sorbed to sediment
-        character (len=15) :: chla =    "        chla_kg"        !! kg           |chlorophyll-a
-        character (len=15) :: nh3 =     "        nh3_kgN"        !! kg N         |NH3
-        character (len=15) :: no2 =     "        no2_kgN"        !! kg N         |NO2
-        character (len=15) :: cbod =    "        cbod_kg"        !! kg           |carbonaceous biological oxygen demand
-        character (len=15) :: dox =     "         dox_kg "        !! kg           |dissolved oxygen
-        character (len=16) :: bacp =    " bacp_#cfu/100ml"        !! # cfu/100ml  |persistent bacteria
-        character (len=16) :: baclp =   " baclp_#cfu/100ml"        !! # cfu/100ml  |less persistent bacteria
-        character (len=15) :: met1 =    "      met1_kg"        !! kg           |conservative metal #1
-        character (len=13) :: met2 =    "      met2_kg"        !! kg           |conservative metal #2
-        character (len=15) :: met3 =    "        met3_kg"        !! kg           |conservative metal #3
-        character (len=15) :: san =     "       san_tons"        !! tons         |detached sand
-        character (len=15) :: sil =     "       sil_tons"        !! tons         |detached silt
-        character (len=15) :: cla =     "       cla_tons"        !! tons         |detached clay
-        character (len=15) :: sag =     "       sag_tons"        !! tons         |detached small ag
-        character (len=15) :: lag =     "       lag_tons"        !! tons         |detached large ag
-        character (len=15) :: grv =     "       grv_tons"        !! tons         |gravel
-        character (len=15) :: temp =    "      temp_degc"        !! deg c        |temperature
+        character (len=17) :: flo  =    "              flo"      !! ha-m         |volume of water
+        character (len=15) :: sed  =    "            sed"        !! metric tons  |sediment
+        character (len=15) :: orgn =    "           orgn"        !! kg N         |organic N
+        character (len=15) :: sedp =    "           sedp"        !! kg P         |organic P
+        character (len=15) :: no3  =    "            no3"        !! kg N         |NO3-N
+        character (len=15) :: solp =    "           solp"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla =    "           chla"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3  =    "            nh3"        !! kg N         |NH3
+        character (len=15) :: no2  =    "            no2"        !! kg N         |NO2
+        character (len=15) :: cbod =    "           cbod"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox  =    "            dox"        !! kg           |dissolved oxygen
+        character (len=15) :: san  =    "            san"        !! tons         |detached sand
+        character (len=15) :: sil  =    "            sil"        !! tons         |detached silt
+        character (len=15) :: cla  =    "            cla"        !! tons         |detached clay
+        character (len=15) :: sag  =    "            sag"        !! tons         |detached small ag
+        character (len=15) :: lag  =    "            lag"        !! tons         |detached large ag
+        character (len=15) :: grv  =    "            grv"        !! tons         |gravel
+        character (len=15) :: temp =    "           temp"        !! deg c        |temperature
       end type hyd_header
       type (hyd_header) :: hyd_hdr
       
+        type hyd_header_units  !pts (point source)/deposition/ru (routing_unit) files output uses this units header
+        character (len=11) :: day    =  "           "
+        character (len=12) :: mo     =  "            "
+        character (len=12) :: day_mo =  "            "
+        character (len=13) :: yrc    =  "            "
+        character (len=12) :: name   =  "            "
+        character (len=6) :: otype   =  "      "    
+        character (len=17) :: flo    =  "              ha-m"     !! m^3          |volume of water
+        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
+        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
+        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
+        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
+        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
+        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
+        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
+        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
+        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
+        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
+        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
+        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature
+      end type hyd_header_units
+      type (hyd_header_units) :: hyd_hdr_units
+      
+      type hyd_header_units2  !hydin/hydout files uses this units header 
+        character (len=11) :: day    =  "           "
+        character (len=12) :: mo     =  "            "
+        character (len=12) :: day_mo =  "            "
+        character (len=13) :: yrc    =  "            "
+        character (len=12) :: name   =  "            "
+        character (len=6) :: otype   =  "      "    
+        character (len=13) :: iotyp  =  "            "
+        character (len=9) :: iotypno =  "         "
+        character (len=8) :: hydio   =  "        "
+        character (len=8) :: objno   =  "        "
+        character (len=17) :: flo    =  "              ha-m"     !! ha-m         |volume of water
+        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
+        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
+        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
+        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
+        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
+        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
+        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
+        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
+        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
+        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
+        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
+        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature
+      end type hyd_header_units2
+      type (hyd_header_units2) :: hyd_hdr_units2
+            
       type hyd_header_time                                       
-        character (len=11) :: day =     "       jday"
-        character (len=12) :: mo =      "         mon"
+        character (len=11) :: day    =  "       jday"
+        character (len=12) :: mo     =  "         mon"
         character (len=12) :: day_mo =  "         day"
-        character (len=13) :: yrc =     "          yr"
-        character (len=11) :: isd =          "       unit"
-        character (len=12) :: id =           "      gis_id"        
-        character (len=14) :: name =    " name       "
-        character (len=6) :: otype =   "  type"
-        !character (len=8) :: oprops =   "   props" 
+        character (len=13) :: yrc    =  "          yr"
+        character (len=12) :: name   =  "name        "
+        character (len=6) :: otype   =  "  type"
       end type hyd_header_time
        type (hyd_header_time) :: hyd_hdr_time
        
       type hyd_header_obj
-        character (len=13) :: iotyp =   "   objtyp   "
+        character (len=13) :: iotyp  =  "   objtyp   "
         character (len=9) :: iotypno =  "  typ_no "
-        character (len=8) :: hydio =   "hyd_typ "
-        character (len=8) :: objno =    "fraction"
+        character (len=8) :: hydio   =  "hyd_typ "
+        character (len=8) :: objno   =  "fraction"
       end type hyd_header_obj
       type (hyd_header_obj) :: hyd_hdr_obj
       
       type output_flow_duration_header
-        character (len=11) :: day =      "       jday"
-        character (len=12) :: mo =       "         mon"
-        character (len=12) :: day_mo =   "         day"                                          
-        character (len=12) :: yrc =      "          yr"
-        character (len=12) :: isd =      "        unit"
-        character (len=12) :: id =       "      gis_id"           
-        character (len=16) :: name =     " name              "           
-        character (len=11) :: obtyp =    "ob_typ     "
-        character (len=10) :: props =    "     props"
-        character (len=11) :: min =      "       min "!Q
-        character (len=15) :: p5  =      "            p5 "
-        character (len=13) :: p10 =      "          p10"     
-        character (len=15) :: p25 =      "            p25"
-        character (len=15) :: p50 =      "            p50"
-        character (len=15) :: p75 =      "            p75"
-        character (len=15) :: p90 =      "            p90"
-        character (len=15) :: p95 =      "            p95"
-        character (len=15) :: max =      "            max"
-        character (len=15) :: mean =     "           mean"
+        character (len=11) :: obtyp =   "ob_typ     "
+        character (len=12) :: props =   "    props   "
+        character (len=11) :: min   =     "       min "!Q
+        character (len=15) :: p5    =     "            p5 "
+        character (len=13) :: p10   =     "         p10 "     
+        character (len=19) :: p25   =     "           p25 "
+        character (len=15) :: p50   =     "       p50 "
+        character (len=15) :: p75   =     "       p75 "
+        character (len=15) :: p90   =     "       p90 "
+        character (len=15) :: p95   =     "       p95 "
+        character (len=11) :: max   =     "   max     "
+        character (len=14) :: mean  =    "     mean "
       end type output_flow_duration_header    
       type (output_flow_duration_header) :: fdc_hdr
 	  
@@ -455,7 +539,7 @@
         character (len=12) :: cn2      =   "        cn2 "
         character (len=12) :: tc       =   "     tc_min "
         character (len=12) :: soildep  =   " soildep_mm "
-        character (len=12) :: dep_imp  =   "  depimp_mm "
+        character (len=12) :: perco_co =   "   perco_co "
         character (len=12) :: slope    =   "  slope_m/m "
         character (len=12) :: slopelen =   "   slplen_m "
         character (len=12) :: etco     =   "       etco "
@@ -525,15 +609,9 @@
       end interface   
              
       contains
-      !include "hyd_connect_out.f90"
-      !include "hydin_output.f90"
-      !include "hydout_output.f90"
-      !include "obj_output.f90"
-      !include "object_read_output.f90"
-      !include "hyddep_output.f90"
-            
+
       !! function to convert concentration to mass
-      subroutine hyd_convert_mass (hyd1)
+      subroutine hyd_convert_conc_to_mass (hyd1)
         type (hyd_output), intent (inout) :: hyd1
         ! m3/s to m3
         hyd1%flo = hyd1%flo * 86400.
@@ -544,28 +622,45 @@
         hyd1%sedp = hyd1%sedp * hyd1%flo / 1000.
         hyd1%no3 = hyd1%no3 * hyd1%flo / 1000.
         hyd1%solp = hyd1%solp * hyd1%flo / 1000.
-        hyd1%psol = hyd1%psol * hyd1%flo / 1000.
-        hyd1%psor = hyd1%psor * hyd1%flo / 1000.
         hyd1%chla = hyd1%chla * hyd1%flo / 1000.
         hyd1%nh3 = hyd1%nh3 * hyd1%flo / 1000.
         hyd1%no2 = hyd1%no2 * hyd1%flo / 1000.
         hyd1%cbod = hyd1%cbod * hyd1%flo / 1000.
         hyd1%dox = hyd1%dox * hyd1%flo / 1000.
-        hyd1%bacp = hyd1%bacp * hyd1%flo / 1000.
-        hyd1%baclp = hyd1%baclp * hyd1%flo / 1000.
-        hyd1%met1 = hyd1%met1 * hyd1%flo / 1000.
-        hyd1%met2 = hyd1%met2 * hyd1%flo / 1000.
-        hyd1%met3 = hyd1%met3 * hyd1%flo / 1000.
         hyd1%san = hyd1%san * hyd1%flo / 1000000.
         hyd1%sil = hyd1%sil * hyd1%flo / 1000000.
         hyd1%cla = hyd1%cla * hyd1%flo / 1000000.
         hyd1%sag = hyd1%sag * hyd1%flo / 1000000.
         hyd1%lag = hyd1%lag * hyd1%flo / 1000000.
         hyd1%grv = hyd1%grv * hyd1%flo / 1000000.
-      end subroutine hyd_convert_mass
-                     
+      end subroutine hyd_convert_conc_to_mass
+      
+      !! function to convert concentration to mass
+      subroutine res_convert_mass (hyd1, pvol)
+        real, intent (in) :: pvol
+        type (hyd_output), intent (inout) :: hyd1
+        
+        hyd1%flo = hyd1%flo * pvol      ! input as frac of principal
+        hyd1%sed = hyd1%sed * hyd1%flo / 1000000.   ! t = ppm (g/m3) * 1 t/m3 / 1000000. g/t
+        hyd1%orgn = hyd1%orgn * hyd1%flo / 1000.    ! kg = ppm * m3 / 1000.
+        hyd1%sedp = hyd1%sedp * hyd1%flo / 1000.
+        hyd1%no3 = hyd1%no3 * hyd1%flo / 1000.
+        hyd1%solp = hyd1%solp * hyd1%flo / 1000.
+        hyd1%chla = hyd1%chla * hyd1%flo / 1000.
+        hyd1%nh3 = hyd1%nh3 * hyd1%flo / 1000.
+        hyd1%no2 = hyd1%no2 * hyd1%flo / 1000.
+        hyd1%cbod = hyd1%cbod * hyd1%flo / 1000.
+        hyd1%dox = hyd1%dox * hyd1%flo / 1000.
+        hyd1%san = hyd1%san * hyd1%flo / 1000000.
+        hyd1%sil = hyd1%sil * hyd1%flo / 1000000.
+        hyd1%cla = hyd1%cla * hyd1%flo / 1000000.
+        hyd1%sag = hyd1%sag * hyd1%flo / 1000000.
+        hyd1%lag = hyd1%lag * hyd1%flo / 1000000.
+        hyd1%grv = hyd1%grv * hyd1%flo / 1000000.
+      end subroutine res_convert_mass
+      
       !! function to convert mass to concentration
-      subroutine hyd_convert_conc (hyd1)
+      subroutine hyd_convert_mass_to_conc (hyd1)
         type (hyd_output), intent (inout) :: hyd1
         hyd1%flo = hyd1%flo
         ! ppm = 1000000. * t / m3
@@ -575,25 +670,18 @@
         hyd1%sedp = 1000. * hyd1%sedp / hyd1%flo
         hyd1%no3 = 1000. * hyd1%no3 / hyd1%flo
         hyd1%solp = 1000. * hyd1%solp / hyd1%flo
-        hyd1%psol = 1000. * hyd1%psol / hyd1%flo
-        hyd1%psor = 1000. * hyd1%psor / hyd1%flo
         hyd1%chla = 1000. * hyd1%chla / hyd1%flo
         hyd1%nh3 = 1000. * hyd1%nh3 / hyd1%flo
         hyd1%no2 = 1000. * hyd1%no2 / hyd1%flo
         hyd1%cbod = 1000. * hyd1%cbod / hyd1%flo
         hyd1%dox = 1000. * hyd1%dox / hyd1%flo
-        hyd1%bacp = 1000. * hyd1%bacp / hyd1%flo
-        hyd1%baclp = 1000. * hyd1%baclp / hyd1%flo
-        hyd1%met1 = 1000. * hyd1%met1 / hyd1%flo
-        hyd1%met2 = 1000. * hyd1%met2 / hyd1%flo
-        hyd1%met3 = 1000. * hyd1%met3 / hyd1%flo
         hyd1%san = 1000000. * hyd1%san / hyd1%flo
         hyd1%sil = 1000000. * hyd1%sil / hyd1%flo
         hyd1%cla = 1000000. * hyd1%cla / hyd1%flo
         hyd1%sag = 1000000. * hyd1%sag / hyd1%flo
         hyd1%lag = 1000000. * hyd1%lag / hyd1%flo
         hyd1%grv = 1000000. * hyd1%grv / hyd1%flo
-      end subroutine hyd_convert_conc
+      end subroutine hyd_convert_mass_to_conc
          
       !! routines for hydrograph module
       function hydout_add (hyd1, hyd2) result (hyd3)
@@ -606,18 +694,11 @@
         hyd3%sedp = hyd1%sedp + hyd2%sedp   
         hyd3%no3 = hyd1%no3 + hyd2%no3
         hyd3%solp = hyd1%solp + hyd2%solp
-        hyd3%psol = hyd1%psol + hyd2%psol
-        hyd3%psor = hyd1%psor + hyd2%psor
         hyd3%chla = hyd1%chla + hyd2%chla
         hyd3%nh3 = hyd1%nh3 + hyd2%nh3
         hyd3%no2 = hyd1%no2 + hyd2%no2
         hyd3%cbod = hyd1%cbod + hyd2%cbod
         hyd3%dox = hyd1%dox + hyd2%dox
-        hyd3%bacp = hyd1%bacp + hyd2%bacp
-        hyd3%baclp = hyd1%baclp + hyd2%baclp
-        hyd3%met1 = hyd1%met1 + hyd2%met1
-        hyd3%met2 = hyd1%met2 + hyd2%met2
-        hyd3%met3 = hyd1%met3 + hyd2%met3
         hyd3%san = hyd1%san + hyd2%san
         hyd3%sil = hyd1%sil + hyd2%sil
         hyd3%cla = hyd1%cla + hyd2%cla
@@ -637,18 +718,11 @@
         hyd3%sedp = hyd1%sedp * hyd2%sedp   
         hyd3%no3 = hyd1%no3 * hyd2%no3
         hyd3%solp = hyd1%solp * hyd2%solp
-        hyd3%psol = hyd1%psol * hyd2%psol
-        hyd3%psor = hyd1%psor * hyd2%psor
         hyd3%chla = hyd1%chla * hyd2%chla
         hyd3%nh3 = hyd1%nh3 * hyd2%nh3
         hyd3%no2 = hyd1%no2 * hyd2%no2
         hyd3%cbod = hyd1%cbod * hyd2%cbod
         hyd3%dox = hyd1%dox * hyd2%dox
-        hyd3%bacp = hyd1%bacp * hyd2%bacp
-        hyd3%baclp = hyd1%baclp * hyd2%baclp
-        hyd3%met1 = hyd1%met1 * hyd2%met1
-        hyd3%met2 = hyd1%met2 * hyd2%met2
-        hyd3%met3 = hyd1%met3 * hyd2%met3
         hyd3%san = hyd1%san * hyd2%san
         hyd3%sil = hyd1%sil * hyd2%sil
         hyd3%cla = hyd1%cla * hyd2%cla
@@ -668,18 +742,11 @@
         hyd2%sedp = const + hyd1%sedp 
         hyd2%no3 = const + hyd1%no3
         hyd2%solp = const + hyd1%solp
-        hyd2%psol = const + hyd1%psol
-        hyd2%psor = const + hyd1%psor
         hyd2%chla = const + hyd1%chla
         hyd2%nh3 = const + hyd1%nh3
         hyd2%no2 = const + hyd1%no2
         hyd2%cbod = const + hyd1%cbod
         hyd2%dox = const + hyd1%dox
-        hyd2%bacp = const + hyd1%bacp
-        hyd2%baclp = const + hyd1%baclp
-        hyd2%met1 = const + hyd1%met1
-        hyd2%met2 = const + hyd1%met2
-        hyd2%met3 = const + hyd1%met3
         hyd2%san = const + hyd1%san
         hyd2%sil = const + hyd1%sil
         hyd2%cla = const + hyd1%cla
@@ -699,18 +766,11 @@
         hyd2%sedp = const * hyd1%sedp 
         hyd2%no3 = const * hyd1%no3
         hyd2%solp = const * hyd1%solp
-        hyd2%psol = const * hyd1%psol
-        hyd2%psor = const * hyd1%psor
         hyd2%chla = const * hyd1%chla
         hyd2%nh3 = const * hyd1%nh3
         hyd2%no2 = const * hyd1%no2
         hyd2%cbod = const * hyd1%cbod
         hyd2%dox = const * hyd1%dox
-        hyd2%bacp = const * hyd1%bacp
-        hyd2%baclp = const * hyd1%baclp
-        hyd2%met1 = const * hyd1%met1
-        hyd2%met2 = const * hyd1%met2
-        hyd2%met3 = const * hyd1%met3
         hyd2%san = const * hyd1%san
         hyd2%sil = const * hyd1%sil
         hyd2%cla = const * hyd1%cla
@@ -729,18 +789,11 @@
         hyd2%sedp = hyd1%sedp / const
         hyd2%no3 = hyd1%no3 / const
         hyd2%solp = hyd1%solp / const
-        hyd2%psol = hyd1%psol / const
-        hyd2%psor = hyd1%psor / const
         hyd2%chla = hyd1%chla / const
         hyd2%nh3 = hyd1%nh3 / const
         hyd2%no2 = hyd1%no2 / const
         hyd2%cbod = hyd1%cbod / const
         hyd2%dox = hyd1%dox / const
-        hyd2%bacp = hyd1%bacp / const
-        hyd2%baclp = hyd1%baclp / const
-        hyd2%met1 = hyd1%met1 / const
-        hyd2%met2 = hyd1%met2 / const
-        hyd2%met3 = hyd1%met3 / const
         hyd2%san = hyd1%san / const
         hyd2%sil = hyd1%sil / const
         hyd2%cla = hyd1%cla / const
@@ -760,18 +813,11 @@
         hyd2%sedp = hyd1%sedp / const
         hyd2%no3 = hyd1%no3 / const
         hyd2%solp = hyd1%solp / const
-        hyd2%psol = hyd1%psol / const
-        hyd2%psor = hyd1%psor / const
         hyd2%chla = hyd1%chla / const
         hyd2%nh3 = hyd1%nh3 / const
         hyd2%no2 = hyd1%no2 / const
         hyd2%cbod = hyd1%cbod / const
         hyd2%dox = hyd1%dox / const
-        hyd2%bacp = hyd1%bacp / const
-        hyd2%baclp = hyd1%baclp / const
-        hyd2%met1 = hyd1%met1 / const
-        hyd2%met2 = hyd1%met2 / const
-        hyd2%met3 = hyd1%met3 / const
         hyd2%san = hyd1%san / const
         hyd2%sil = hyd1%sil / const
         hyd2%cla = hyd1%cla / const
@@ -797,11 +843,6 @@
 !        dr1%no2 = const
 !        dr1%cbod = const
 !        dr1%dox = const
-!        dr1%bacp = const
-!        dr1%baclp = const
-!        dr1%met1 = const
-!        dr1%met2 = const
-!        dr1%met3 = const
 !        dr1%san = const
 !        dr1%sil = const
 !        dr1%cla = const

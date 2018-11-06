@@ -85,16 +85,18 @@
                 ht1 = ru_elem(ielem)%frac * ht1                 !fraction of hru in subbasin
                 !fraction of hru in subbasin for constituents
                 if (cs_db%num_tot > 0) then
-                  call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
+                  hcs1 = ob(iru)%frac_in(in) * obcs(iob)%hd(ihyd)   !fraction of hydrograph
+                  hcs1 = ru_elem(ielem)%frac * hcs1                 !fraction of hru in subbasin
                 end if
                 ob(iru)%hin_d(in) = ob(iru)%hin_d(in) + ht1
+                obcs(iru)%hcsin_d(in) = obcs(iru)%hcsin_d(in) + hcs1
               else
                 iob = ob(icmd)%obj_in(in)
                 ihyd = ob(icmd)%ihtyp_in(in)
                 ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
                 !fraction of constituents
                 if (cs_db%num_tot > 0) then
-                  call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
+                  hcs1 = ob(icmd)%frac_in(in) * obcs(iob)%hd(ihyd)
                 end if
                 ob(icmd)%peakrate = ob(iob)%peakrate
               end if
@@ -105,7 +107,7 @@
               ob(icmd)%peakrate = ob(iob)%peakrate
               !fraction of constituents
               if (cs_db%num_tot > 0) then
-                call constit_hyd_frac (iob, ihyd, ob(icmd)%frac_in(in))
+                hcs1 = ob(icmd)%frac_in(in) * obcs(iob)%hd(ihyd)
               end if
             end if
             ob(icmd)%hin_d(in) = ht1
@@ -115,17 +117,14 @@
               ob(icmd)%hin_s = ob(icmd)%hin_s + ht1
               !add constituents
               if (cs_db%num_tot > 0) then
-                hcs2 = obcs(icmd)%hin_s
-                call constit_hyd_add
+                obcs(icmd)%hin_s = obcs(icmd)%hin_s + hcs1
               end if
               iru_in = 1
             else
               ob(icmd)%hin = ob(icmd)%hin + ht1
               !add constituents
               if (cs_db%num_tot > 0) then
-                hcs2 = obcs(icmd)%hin
-                call constit_hyd_add
-                obcs(icmd)%hin = hcs2
+                obcs(icmd)%hin = obcs(icmd)%hin + hcs1
               end if
               isur_in = 1
             end if
@@ -244,9 +243,10 @@
             ihtyp = ob(icmd)%ihtyp_out(iout)
             ht1 = ob(icmd)%frac_out(iout) * ob(icmd)%hd(ihtyp)
             call hydout_output (iout)
-            ! hcs1 is the daily constituent hyd to be printed
-            call constit_hyd_frac (icmd, iout, ob(icmd)%frac_out(iout))
-            !call hcsout_output  !! commented for next revision    
+            if (cs_db%num_tot > 0) then
+              ! hcs1 is the daily constituent hyd to be printed
+              hcs1 =  ob(icmd)%frac_out(iout) * obcs(icmd)%hd(ihtyp)
+            end if
           end do
         end if
   
@@ -264,7 +264,10 @@
         
         do ihru = 1, sp_ob%hru
           call hru_output (ihru)
-          if (cs_db%num_tot > 0) call hru_constituent_output (ihru)
+          if (cs_db%num_tot > 0) then 
+              call hru_pesticide_output (ihru)
+              call hru_pathogen_output (ihru)
+          end if
         end do        
         
         do iaq = 1, sp_ob%aqu
@@ -297,6 +300,7 @@
 
         
         call hydin_output   !if all output is no, then don"t call
+        !call hcsin_output  gives allocate error
         if (db_mx%lsu_elem > 0) call basin_output
         if (db_mx%lsu_out > 0) call lsu_output
         if (db_mx%aqu_elem > 0) call basin_aquifer_output

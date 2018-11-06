@@ -38,14 +38,12 @@
          if (bsn_prm%trnsrch < 1.e-6) bsn_prm%trnsrch = 0.        !! fraction of transmission losses from main channel that enter
                                                                   !!  deep aquifer
          if (bsn_prm%evrch < 1.e-6) bsn_prm%evrch = 0.60         !! reach evaporation adjustment factor
-         if (bsn_prm%cncoef < 1.e-6) bsn_prm%cncoef = 1.0         !! plant ET curve number coefficient
          if (bsn_prm%cdn < 1.e-6) bsn_prm%cdn = 1.40              !! denitrification expoential rate coefficient        
          if (bsn_prm%sdnco < 1.e-6) bsn_prm%sdnco = 1.30          !! denitrification threshold frac of field cap
          if (bsn_prm%bact_swf < 1.e-6) bsn_prm%bact_swf = 0.15    !! frac of manure containing active colony forming units
          if (bsn_prm%tb_adj < 1.e-6) bsn_prm%tb_adj = 0.          !! adjustment factor for subdaily unit hydrograph basetime
          if (bsn_prm%cn_froz < 1.e-6) bsn_prm%cn_froz = 0.000862  !! 
          !if (bsn_prm%dorm_hr < 1.e-6) bsn_prm%dorm_hr = -1.        !! time threshold used to define dormant (hrs)
-         if (bsn_prm%smxco < 1.e-6) bsn_prm%smxco = 1.0           !! 
          if (bsn_prm%nfixmx < 1.e-6) bsn_prm%nfixmx = 20.0        !! max daily n-fixation (kg/ha)
          if (bsn_prm%decr_min < 1.e-6) bsn_prm%decr_min = 0.01    !! 
          if (bsn_prm%rsd_covco < 1.e-6) bsn_prm%rsd_covco = 0.30  !! residue cover factor for computing frac of cover         
@@ -58,8 +56,7 @@
          if (bsn_prm%c_factor < 1.e-6) bsn_prm%c_factor = 0.      !!
          if (bsn_prm%ch_d50 < 1.e-6) bsn_prm%ch_d50 = 0.          !! median particle diameter of main channel (mm)
          if (bsn_prm%sig_g < 1.e-6) bsn_prm%sig_g = 0.            !! geometric std dev of part sizes for the main channel
-         if (bsn_prm%r2adj > .95) bsn_prm%r2adj = .95             !! 
-         
+
          !! set additional parameters
          uptake%water_dis = 10.0       !! the uptake distribution for water is hardwired
                                        !! users are not allowed to modify the water

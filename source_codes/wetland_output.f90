@@ -16,50 +16,58 @@
 !!!!! daily print
          if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%res%d == "y") then
-            write (2548,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_d(j)
+            write (2548,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_in_d(j), wet_out_d(j)
              if (pco%csvout == "y") then
-               write (2552,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_d(j) 
+               write (2552,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,wet_in_d(j), wet_out_d(j)
              end if
           end if 
         end if 
                                                     
-        wet_m(j) = wet_m(j) + wet_d(j)
+        wet_in_m(j) = wet_in_m(j) + wet_in_d(j)
+        wet_out_m(j) = wet_out_m(j) + wet_out_d(j)
+        wet_in_d(j) = resmz
+        wet_out_d(j) = resmz
 
 !!!!! monthly print
         if (time%end_mo == 1) then
           const = float (ndays(time%mo + 1) - ndays(time%mo))
-          wet_m(j)%vol = wet_m(j)%vol / const
-          wet_m(j)%area_ha = wet_m(j)%area_ha / const
-          wet_y(j) = wet_y(j) + wet_m(j)
+          wet_in_m(j)%flo = wet_in_m(j)%flo / const
+          wet_in_y(j) = wet_in_y(j) + wet_in_m(j)
+          wet_out_m(j)%flo = wet_out_m(j)%flo / const
+          wet_out_y(j) = wet_out_y(j) + wet_out_m(j)
           if (pco%res%m == "y") then
-            write (2549,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_m(j)
+            write (2549,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_in_m(j), wet_out_m(j)
               if (pco%csvout == "y") then
-                write (2553,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_m(j) 
+                write (2553,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_in_m(j), wet_out_m(j)
               end if 
           end if
-          wet_m(j) = resmz
+          wet_in_m(j) = resmz
+          wet_out_m(j) = resmz
         end if
 
 !!!!! yearly print
        if (time%end_yr == 1) then
-          wet_y(j)%vol = wet_y(j)%vol / 12.
-          wet_y(j)%area_ha = wet_y(j)%area_ha / 12.
-          wet_a(j) = wet_a(j) + wet_y(j)
+          wet_in_y(j)%flo = wet_in_y(j)%flo / 12.
+          wet_in_a(j) = wet_in_a(j) + wet_in_y(j)
+          wet_out_y(j)%flo = wet_out_y(j)%flo / 12.
+          wet_out_a(j) = wet_out_a(j) + wet_out_y(j)
           if (pco%res%y == "y") then
-            write (2550,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_y(j)
+            write (2550,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_in_y(j), wet_out_y(j)
               if (pco%csvout == "y") then
-                write (2554,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_y(j)
+                write (2554,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_in_y(j), wet_out_y(j)
               end if
           end if
-          wet_y(j) = resmz
+          wet_in_y(j) = resmz
+          wet_out_y(j) = resmz
        end if
 
 !!!!! average annual print
         if (time%end_sim == 1 .and. pco%res%a == "y") then
-          wet_a(j) = wet_y(j) / time%yrs_prt
-          write (2551,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_a(j)
+          wet_in_a(j) = wet_in_y(j) / time%yrs_prt
+          wet_out_a(j) = wet_out_y(j) / time%yrs_prt
+          write (2551,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_in_a(j), wet_out_a(j)
           if (pco%csvout == "y") then
-            write (2555,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_a(j)
+            write (2555,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_in_a(j), wet_out_a(j)
           end if 
         end if
         

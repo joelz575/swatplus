@@ -1,6 +1,6 @@
       subroutine soiltest_all_init
       
-      use hru_module, only : hru, wfsh, ihru
+      use hru_module, only : hru, wfsh, ihru, sol_plt_ini
       use soil_module
       use plant_module
       use maximum_data_module
@@ -10,9 +10,11 @@
       implicit none 
       
       integer :: isolt            !           | 
+      integer :: isol_pl          !           |
 
       do ihru = 1, sp_ob%hru
-        isolt = hru(ihru)%dbs%soil_nutr_init
+        isol_pl = hru(ihru)%dbs%soil_plant_init
+        isolt = sol_plt_ini(isol_pl)%nut
         if (isolt > 0) then
           call soiltest_init (ihru, isolt)
         end if

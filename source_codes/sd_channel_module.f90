@@ -7,7 +7,7 @@
       real, dimension(:), allocatable :: hyd_rad  !m^2        |hydraulic radius for each hydrograph time step
       real, dimension(:), allocatable :: timeint  !days       |time spent in each hydrograph time step
       
-      type swatdeg_channel_data
+      type swatdeg_hydsed_data
         character(len=16) :: name
         character(len=16) :: order
         character(len=16) :: route_db = "" ! pointer to routing_nut_data from nutrients.cha
@@ -31,9 +31,42 @@
         real :: hc_kh           !          |headcut erodibility
         real :: hc_hgt          !m         |headcut height
         real :: hc_ini          !km        |initial channel length for gullies
-      end type swatdeg_channel_data
-      type (swatdeg_channel_data), dimension (:), allocatable :: sd_chd
-      
+      end type swatdeg_hydsed_data
+      type (swatdeg_hydsed_data), dimension (:), allocatable :: sd_chd
+
+      type swatdeg_init_datafiles
+        integer :: init = 1                 !initial data-points to initial.cha
+        integer :: org_min = 1              !points to initial organic-mineral input file
+        integer :: pest = 1                 !points to initial pesticide input file
+        integer :: path = 1                 !points to initial pathogen input file
+        integer :: hmet = 1                 !points to initial heavy metals input file
+        integer :: salt = 1                 !points to initial salt input file
+      end type swatdeg_init_datafiles
+      type (swatdeg_init_datafiles), dimension(:), allocatable :: sd_init
+            
+      type swatdeg_datafiles
+        character(len=16) :: name = ""
+        character(len=16) :: initc = ""
+        character(len=16) :: hydc = ""
+        character(len=16) :: sedc = ""
+        character(len=16) :: nutc = ""
+        character(len=16) :: pestc = ""
+        character(len=16) :: pathc = ""
+        character(len=16) :: hmetc = ""
+        character(len=16) :: saltc = ""
+        character(len=16) :: tempc = ""
+        integer :: init = 1
+        integer :: hyd = 1
+        integer :: sed = 1
+        integer :: nut = 1
+        integer :: pest = 1
+        integer :: path = 1
+        integer :: hmet = 1
+        integer :: salt = 1
+        integer :: temp = 1
+      end type swatdeg_datafiles
+      type (swatdeg_datafiles), dimension(:),allocatable :: sd_dat
+
       type swatdeg_channel_dynamic
         character(len=13) :: name = "default"
         integer :: props
@@ -90,31 +123,58 @@
       type (sd_ch_output) :: chsdz
             
       type sdch_header
-          character (len=6) :: day =      "  jday"
-          character (len=6) :: mo =       "   mon"
-          character (len=6) :: day_mo =   "   day"
-          character (len=6) :: yrc =      "    yr"
-          character (len=8) :: isd =        "   unit "
-          character (len=8) :: id =         " gis_id "           
-          character (len=16) :: name =     " name              "        
-          character(len=16) :: flo =       "     floin_m^3/s"        ! (m^3/s)
-          character(len=15) :: peakr =     "       pr_m^3/s"        ! (m^3/s)
-          character(len=15) :: sed_in =    "     sedin_tons"        ! (tons)
-          character(len=15) :: sed_out=    "    sedout_tons"        ! (tons)
-          character(len=15) :: washld =    "    washld_tons"        ! (tons)
-          character(len=15) :: bedld =     "     bedld_tons"        ! (tons)
-          character(len=15) :: dep =       "       dep_tons"        ! (tons)
-          character(len=15) :: deg_btm =   "   deg_btm_tons"        ! (tons)
-          character(len=15) :: deg_bank =  "  deg_bank_tons"        ! (tons)
-          character(len=15) :: hc_sed =    "     hcsed_tons"        ! (tons)
-          character(len=15) :: width =     "        width_m"        ! (m)
-          character(len=15) :: depth =     "        depth_m"        ! (m)
-          character(len=15) :: slope =     "      slope_m/m"        ! (m/m)
-          character(len=15) :: deg_btm_m = "      deg_btm_m"        ! (m)
-          character(len=15) :: deg_bank_m ="     deg_bank_m"        ! (m)
-          character(len=15) :: hc_len =    "        hclen_m"        ! (m)
+          character (len=6) :: day        =  "  jday"
+          character (len=6) :: mo         =  "   mon"
+          character (len=6) :: day_mo     =  "   day"
+          character (len=6) :: yrc        =  "    yr"
+          character (len=8) :: isd        =  "   unit "
+          character (len=8) :: id         =  " gis_id "           
+          character (len=16) :: name      =  " name              "        
+          character(len=16) :: flo        =  "           floin"        ! (m^3/s)
+          character(len=15) :: peakr      =  "          peakr"        ! (m^3/s)
+          character(len=15) :: sed_in     =  "         sed_in"        ! (tons)
+          character(len=15) :: sed_out    =  "        sed_out"        ! (tons)
+          character(len=15) :: washld     =  "         washld"        ! (tons)
+          character(len=15) :: bedld      =  "          bedld"        ! (tons)
+          character(len=15) :: dep        =  "            dep"        ! (tons)
+          character(len=15) :: deg_btm    =  "        deg_btm"        ! (tons)
+          character(len=15) :: deg_bank   =  "       deg_bank"        ! (tons)
+          character(len=15) :: hc_sed     =  "         hc_sed"        ! (tons)
+          character(len=15) :: width      =  "          width"        ! (m)
+          character(len=15) :: depth      =  "          depth"        ! (m)
+          character(len=15) :: slope      =  "          slope"        ! (m/m)
+          character(len=15) :: deg_btm_m  =  "        deg_btm"        ! (m)
+          character(len=15) :: deg_bank_m =  "       deg_bank"        ! (m)
+          character(len=15) :: hc_len     =  "         hc_len"        ! (m)
       end type sdch_header
       type (sdch_header) :: sdch_hdr
+      
+     type sdch_header_units
+          character (len=6) :: day        =  "      "
+          character (len=6) :: mo         =  "      "
+          character (len=6) :: day_mo     =  "      "
+          character (len=6) :: yrc        =  "      "
+          character (len=8) :: isd        =  "        "
+          character (len=8) :: id         =  "        "           
+          character (len=16) :: name      =  "                   "        
+          character(len=16) :: flo        =  "           m^3/s"       ! (m^3/s)
+          character(len=15) :: peakr      =  "          m^3/s"        ! (m^3/s)
+          character(len=15) :: sed_in     =  "           tons"        ! (tons)
+          character(len=15) :: sed_out    =  "           tons"        ! (tons)
+          character(len=15) :: washld     =  "           tons"        ! (tons)
+          character(len=15) :: bedld      =  "           tons"        ! (tons)
+          character(len=15) :: dep        =  "           tons"        ! (tons)
+          character(len=15) :: deg_btm    =  "           tons"        ! (tons)
+          character(len=15) :: deg_bank   =  "           tons"        ! (tons)
+          character(len=15) :: hc_sed     =  "           tons"        ! (tons)
+          character(len=15) :: width      =  "              m"        ! (m)
+          character(len=15) :: depth      =  "              m"        ! (m)
+          character(len=15) :: slope      =  "            m/m"        ! (m/m)
+          character(len=15) :: deg_btm_m  =  "              m"        ! (m)
+          character(len=15) :: deg_bank_m =  "              m"        ! (m)
+          character(len=15) :: hc_len     =  "              m"        ! (m)
+      end type sdch_header_units
+      type (sdch_header_units) :: sdch_hdr_units
      
       interface operator (+)
         module procedure chsd_add

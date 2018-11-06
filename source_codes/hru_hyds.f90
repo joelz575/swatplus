@@ -4,18 +4,6 @@
 !!    this subroutine summarizes data for subbasins with multiple HRUs and
 !!    prints the daily output.hru file
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactrolp      |# cfu/m^2     |less persistent bacteria transported to main
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: hruday, impndday, subday
-!!    SWAT: alph, pkq, ysed, enrsb, pesty, orgn, psed
-!!    SWAT: Tair
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
       use hru_module, only : cbodu, chl_a, clayld, doxq, hhsurfq, hru, ihru, itb, lagyld, latq, peakr, percn, qday,  &
          sagyld, sanyld, silyld, sedminpa, sedminps, sedorgn, sedorgp, sepbtm, surqno3, surqsolp, tileno3,     &
          tileq, tmpav, uh, sedyld, latno3
@@ -23,7 +11,7 @@
       use basin_module
       use time_module
       use constituent_mass_module
-      use output_ls_constituent_module
+      use output_ls_pesticide_module
       
       implicit none
 
@@ -214,18 +202,13 @@
               ob(icmd)%ts(iday,ii)%sedp = ob(icmd)%hd(1)%sedp * ratio         !!sedorgp
               ob(icmd)%ts(iday,ii)%no3 = ob(icmd)%hd(1)%no3 * ratio           !!no3
               ob(icmd)%ts(iday,ii)%solp = ob(icmd)%hd(1)%solp * ratio         !!minp
-              ob(icmd)%ts(iday,ii)%psol = ob(icmd)%hd(1)%psol * ratio         !!sol pst
-              ob(icmd)%ts(iday,ii)%psor = ob(icmd)%hd(1)%psor * ratio         !!sorb pst
+              !ob(icmd)%ts(iday,ii)%psol = ob(icmd)%hd(1)%psol * ratio         !!sol pst
+              !ob(icmd)%ts(iday,ii)%psor = ob(icmd)%hd(1)%psor * ratio         !!sorb pst
               ob(icmd)%ts(iday,ii)%chla = ob(icmd)%hd(1)%chla * ratio         !!chl_a
               ob(icmd)%ts(iday,ii)%nh3 = 0.                                   !! NH3
               ob(icmd)%ts(iday,ii)%no2 = 0.                                   !! NO2
               ob(icmd)%ts(iday,ii)%cbod = ob(icmd)%hd(1)%cbod * ratio         !!cbodu
-              ob(icmd)%ts(iday,ii)%dox = ob(icmd)%hd(1)%dox * ratio           !!doxq & soxy
-              ob(icmd)%ts(iday,ii)%bacp = ob(icmd)%hd(1)%bacp * ratio         !!bactp
-              ob(icmd)%ts(iday,ii)%baclp = ob(icmd)%hd(1)%baclp * ratio       !!bactlp
-              ob(icmd)%ts(iday,ii)%met1 = 0.                                  !!cmetal#1
-              ob(icmd)%ts(iday,ii)%met2 = 0.                                  !!cmetal#2
-              ob(icmd)%ts(iday,ii)%met3 = 0.                                  !!cmetal#3  
+              ob(icmd)%ts(iday,ii)%dox = ob(icmd)%hd(1)%dox * ratio           !!doxq & soxy 
             end if
           end do
         else

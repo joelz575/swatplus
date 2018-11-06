@@ -6,31 +6,15 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactrolp      |# colonies/ha|less persistent bacteria transported to main
-!!                                |channel with surface runoff
-!!    bactrop       |# colonies/ha|persistent bacteria transported to main
-!!                                |channel with surface runoff
-!!    bactsedlp     |# colonies/ha|less persistent bacteria transported with
-!!                                |sediment in surface runoff
-!!    bactsedp      |# colonies/ha|persistent bacteria transported with
-!!                                |sediment in surface runoff
 !!    brt(:)        |none         |fraction of surface runoff that takes
 !!                                |one day or less to reach the subbasin
 !!                                |outlet
-!!    hrupest(:)    |none         |pesticide use flag:
-!!                                | 0: no pesticides used in HRU
-!!                                | 1: pesticides used in HRU
+
 !!    ihru          |none         |HRU number
-!!    npmx          |none         |number of different pesticides used in
-!!                                |the simulation
 !!    pst_lag(:,1,:)|kg pst/ha    |amount of soluble pesticide in surface runoff
 !!                                |lagged
 !!    pst_lag(:,2,:)|kg pst/ha    |amount of sorbed pesticide in surface runoff
 !!                                |lagged
-!!    pst_sed(:,:)  |kg/ha        |pesticide loading from HRU sorbed onto
-!!                                |sediment
-!!    pst_surq(:,:) |kg/ha        |amount of pesticide type lost in surface
-!!                                |runoff on current day in HRU
 !!    sedminpa(:)   |kg P/ha      |amount of active mineral phosphorus sorbed to
 !!                                |sediment in surface runoff in HRU for day
 !!    sedminps(:)   |kg P/ha      |amount of stable mineral phosphorus sorbed to
@@ -62,22 +46,10 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactrolp      |# colonies/ha|less persistent bacteria transported to main
-!!                                |channel with surface runoff
-!!    bactrop       |# colonies/ha|persistent bacteria transported to main
-!!                                |channel with surface runoff
-!!    bactsedlp     |# colonies/ha|less persistent bacteria transported with
-!!                                |sediment in surface runoff
-!!    bactsedp      |# colonies/ha|persistent bacteria transported with
-!!                                |sediment in surface runoff
 !!    pst_lag(:,1,:)|kg pst/ha    |amount of soluble pesticide in surface runoff
 !!                                |lagged
 !!    pst_lag(:,2,:)|kg pst/ha    |amount of sorbed pesticide in surface runoff
 !!                                |lagged
-!!    pst_sed(:,:)  |kg/ha        |pesticide loading from HRU sorbed onto
-!!                                |sediment
-!!    pst_surq(:,:) |kg/ha        |amount of pesticide type lost in surface
-!!                                |runoff on current day in HRU
 !!    sedminpa(:)   |kg P/ha      |amount of active mineral phosphorus sorbed to
 !!                                |sediment in surface runoff in HRU for day
 !!    sedminps(:)   |kg P/ha      |amount of stable mineral phosphorus sorbed to
@@ -114,10 +86,9 @@
       use basin_module
       use time_module
       use constituent_mass_module
-      use output_ls_constituent_module
+      use output_ls_pesticide_module
       use hru_module, only : hru, pst_lag, sedyld, surf_bs, ihru, hhsurf_bs, hhsedy, sanyld, silyld,     &
-         clayld, sagyld, lagyld, sedorgn, sedorgp, surqno3, surqsolp, sedminpa, sedminps, brt,     &
-         hrupest, bactrolp, bactrop, bactsedlp, bactsedp, npmx 
+         clayld, sagyld, lagyld, sedorgn, sedorgp, surqno3, surqsolp, sedminpa, sedminps, brt 
       
       implicit none
  
@@ -167,25 +138,11 @@
       surf_bs(6,j) = Max(1.e-9, surf_bs(6,j) + surqsolp(j))
       surf_bs(7,j) = Max(1.e-9, surf_bs(7,j) + sedminpa(j))
       surf_bs(8,j) = Max(1.e-9, surf_bs(8,j) + sedminps(j))
-      surf_bs(9,j) = Max(0., surf_bs(9,j) + bactrolp)
-      surf_bs(10,j) = Max(0., surf_bs(10,j) + bactrop)
-      surf_bs(11,j) = Max(0., surf_bs(11,j) + bactsedlp)
-      surf_bs(12,j) = Max(0., surf_bs(12,j) + bactsedp)
-      if (hrupest(j) == 1) then
-                    
-        npmx = cs_db%num_pests
- !       do k = 1, npmx
-          !MFW, 3/15/12: Modified to account for decay during lag
-          !pst_lag(k,1,j) = pst_lag(k,1,j) + pst_surq(k,j)
- !         pst_lag(k,1,j) = (pst_lag(k,1,j) * EXP(-1. *                  
- !    &                      ch_pst(inum1)%pst_rea)) + hpest_bal(j)%pest(k)%surq
- !         if (pst_lag(k,1,j) < 1.e-10) pst_lag(k,1,j) = 0.0
-          !pst_lag(k,2,j) = pst_lag(k,2,j) + pst_sed(k,j)
- !         pst_lag(k,2,j) = (pst_lag(k,2,j) * EXP(-1. *                  
- !    &                      ch_pst(inum1)%sedpst_rea)) + hpest_bal(j)%pest(k)%sed
- !         if (pst_lag(k,2,j) < 1.e-10) pst_lag(k,2,j) = 0.0
- !       end do
-      end if
+      
+      !surf_bs(9,j) = Max(0., surf_bs(9,j) + bactrolp)
+      !surf_bs(10,j) = Max(0., surf_bs(10,j) + bactrop)
+      !surf_bs(11,j) = Max(0., surf_bs(11,j) + bactsedlp)
+      !surf_bs(12,j) = Max(0., surf_bs(12,j) + bactsedp)
 
  !!     sedyld(j) = surf_bs(2,j) * brt(j)  <--line of code in x 2. fixes sedyld low prob
 
@@ -201,19 +158,17 @@
       surqsolp(j) = surf_bs(6,j) * brt(j)
       sedminpa(j) = surf_bs(7,j) * brt(j)
       sedminps(j) = surf_bs(8,j) * brt(j)
-      bactrolp = Max(0.,bactrolp)
-      bactrop = Max(0.,bactrop)
-      bactsedlp = Max(0.,bactsedlp)
-      bactsedp = Max(0.,bactsedp)
-      if (hrupest(j) == 1) then
-        do k = 1, npmx
-          hpest_bal(j)%pest(k)%surq = pst_lag(k,1,j) * brt(j)
-          hpest_bal(j)%pest(k)%sed = pst_lag(k,2,j) * brt(j)
-        end do
-      end if
-     
-      surf_bs(2,j) = surf_bs(2,j) - sedyld(j)
+      !bactrolp = Max(0.,bactrolp)
+      !bactrop = Max(0.,bactrop)
+      !bactsedlp = Max(0.,bactsedlp)
+      !bactsedp = Max(0.,bactsedp)
 
+!        do k = 1, cs_db%num_pests
+!          hpest_bal(j)%pest(k)%surq = pst_lag(k,1,j) * brt(j)
+!          hpest_bal(j)%pest(k)%sed = pst_lag(k,2,j) * brt(j)
+!        end do
+
+      surf_bs(2,j) = surf_bs(2,j) - sedyld(j)
       surf_bs(13,j) = surf_bs(13,j) - sanyld(j)
       surf_bs(14,j) = surf_bs(14,j) - silyld(j)
       surf_bs(15,j) = surf_bs(15,j) - clayld(j)
@@ -226,18 +181,15 @@
       surf_bs(6,j) = surf_bs(6,j) - surqsolp(j)
       surf_bs(7,j) = surf_bs(7,j) - sedminpa(j)
       surf_bs(8,j) = surf_bs(8,j) - sedminps(j)
-      surf_bs(9,j) = surf_bs(9,j) - bactrolp
-      surf_bs(10,j) = surf_bs(10,j) - bactrop
-      surf_bs(11,j) = surf_bs(11,j) - bactsedlp
-      surf_bs(12,j) = surf_bs(12,j) - bactsedp
-      if (hrupest(j) == 1) then
-                    
-        npmx = cs_db%num_pests
-        do k = 1, npmx
-          pst_lag(k,1,j) = pst_lag(k,1,j) - hpest_bal(j)%pest(k)%surq
-          pst_lag(k,2,j) = pst_lag(k,2,j) - hpest_bal(j)%pest(k)%sed
-        end do
-      end if
+      !surf_bs(9,j) = surf_bs(9,j) - bactrolp
+      !surf_bs(10,j) = surf_bs(10,j) - bactrop
+      !surf_bs(11,j) = surf_bs(11,j) - bactsedlp
+      !surf_bs(12,j) = surf_bs(12,j) - bactsedp
+
+!        do k = 1, cs_db%num_pests
+!          pst_lag(k,1,j) = pst_lag(k,1,j) - hpest_bal(j)%pest(k)%surq
+!          pst_lag(k,2,j) = pst_lag(k,2,j) - hpest_bal(j)%pest(k)%sed
+!        end do
 
       return
       end subroutine stor_surfstor

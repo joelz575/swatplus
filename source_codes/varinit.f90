@@ -15,14 +15,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!    albday      |none          |albedo for the day in HRU
-!!    bactrolp    |# colonies/ha |less persistent bacteria transported to main
-!!                               |channel with surface runoff
-!!    bactrop     |# colonies/ha |persistent bacteria transported to main
-!!                               |channel with surface runoff
-!!    bactsedlp   |# colonies/ha |less persistent bacteria transported with
-!!                               |sediment in surface runoff
-!!    bactsedp    |# colonies/ha |persistent bacteria transported with
-!!                               |sediment in surface runoff
 !!    bioday      |kg            |biomass generated on current day in HRU
 !!    bsprev      |mm H2O        |surface runoff lagged from prior day of
 !!                               |simulation
@@ -69,11 +61,11 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use time_module
-      use hru_module, only : hhqday, ihru, albday, auton, autop, bactrolp, bactrop, bactsedlp, bactsedp,  &
+      use hru_module, only : hhqday, ihru, albday,    &
         bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp, gwseep,     &
-        hhsedy, hmntl, hmptl, inflpcp, latqrunon, ls_overq, lyrtile, no3pcp, peakr,  &
-        pet_day, qday, qtile, rmn2tl, rmp1tl, rmptl, roctl, rwntl, sepday, snoev, snofall, snomlt,             &
-        sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, wdntl, fixn 
+        hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, no3pcp, peakr,  &
+        pet_day, qday, qtile, sepday, snoev, snofall, snomlt,             &
+        sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, fixn 
       use soil_module
       
       implicit none
@@ -99,12 +91,6 @@
       
       !!initialize variables NUBS - all these need to be checked
         albday = 0.
-        auton = 0.
-        autop = 0.
-        bactrolp = 0.
-        bactrop = 0.
-        bactsedlp = 0.
-        bactsedp = 0.
         bioday = 0.
         bsprev = 0.
         canev = 0.
@@ -121,8 +107,6 @@
         grazp = 0.
         gwseep = 0.
         if (time%step > 0)  hhqday(j,:) = 0.
-        hmntl = 0.
-        hmptl = 0.
         inflpcp = 0.
         lyrtile = 0.
         no3pcp = 0.
@@ -133,11 +117,6 @@
         ls_overq = 0.
         over_flow = 0.
         latqrunon = 0.
-        rmn2tl = 0.
-        rmp1tl = 0.
-        rmptl = 0.
-        roctl = 0.
-        rwntl = 0.
         sepday = 0.
         snoev = 0.
         snofall = 0.
@@ -149,12 +128,11 @@
         usle_ei = 0.
         vpd = 0.
         voltot = 0.
-        wdntl = 0.
-        
+
 	!! urban modeling by J.Jeong
-	  sedprev = 0.
-	  ubnrunoff = 0.
-	  irmmdt = 0.
+	    sedprev = 0.
+	    ubnrunoff = 0.
+	    irmmdt = 0.
         hhsedy = 0.
         ubntss = 0.
         

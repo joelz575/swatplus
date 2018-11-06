@@ -12,32 +12,12 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactlpq(:)    |# colonies/ha |less persistent bacteria in soil solution
-!!    bactlps(:)    |# colonies/ha |less persistent bacteria attached to soil
-!!                                 |particles
-!!    bactpq(:)     |# colonies/ha |persistent bacteria in soil solution
-!!    bactps(:)     |# colonies/ha |persistent bacteria attached to soil 
-!!                                 |particles
-!!    cnop          |none          |SCS runoff curve number for moisture
-!!                                 |condition II
+!!    cnop          |none          |SCS runoff curve number for moisture condition II
 !!    curyr         |none          |current year of simulation
-!!    deptil(:)     |mm            |depth of mixing caused by tillage
-!!                                 |operation
+!!    deptil(:)     |mm            |depth of mixing caused by tillage operation
+!!    npmx          |none          |number of different pesticides used in the simulation
 !!    effmix(:)     |none          |mixing efficiency of tillage operation
-!!    npmx          |none          |number of different pesticides used in
-!!                                 |the simulation
 !!    sol_pst(:,:,:)|kg/ha         |amount of pesticide in layer
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactlpq(:)    |# colonies/ha |less persistent bacteria in soil solution
-!!    bactlps(:)    |# colonies/ha |less persistent bacteria attached to soil
-!!                                 |particles
-!!    bactpq(:)     |# colonies/ha |persistent bacteria in soil solution
-!!    bactps(:)     |# colonies/ha |persistent bacteria attached to soil 
-!!                                 |particles
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -59,9 +39,9 @@
       use tillage_data_module
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only: tillage_days, tillage_depth, tillage_switch, bactpq, bactps, bactlpq, bactlps,   &
-          npmx, cnop
+      use hru_module, only: tillage_days, tillage_depth, tillage_switch, cnop
       use soil_module
+      use constituent_mass_module
       
       implicit none
 
@@ -71,6 +51,7 @@
       integer :: l                     !none           |counter
       integer :: k                     !none           |counter
       integer :: kk                    !               |
+      integer :: npmx                  !               |
       !CB 12/2/09 nl and a are not used.
       real :: emix                     !none           |mixing efficiency
       real :: dtil                     !mm             |depth of mixing
@@ -82,7 +63,7 @@
       real :: maxmix                   !none           | maximum mixing eff to preserve specified minimum residue cover
       !!by zhang
       !!=============   
-      real :: smix(22+npmx+12)         !varies         |amount of substance in soil profile
+      real :: smix(22+cs_db%num_pests+12)         !varies         |amount of substance in soil profile
                                        !               |that is being redistributed between mixed layers
       !CB 12/2/09 thtill is not used. mjw rev 490
       !!changed the dimension from 22 + npmx to 22 + npmx + 12
@@ -93,6 +74,7 @@
       real :: sol_msm(soil(jj)%nly)     !              |sol_mass mixed
       real :: sol_msn(soil(jj)%nly)     !              |sol_mass not mixed 
 
+      npmx = cs_db%num_pests
 
       XX = 0.
       WW1 = 0.
@@ -130,12 +112,9 @@
       sol_msm = 0.
       sol_msn = 0.
 
-	!! incorporate bacteria - no mixing - lost from transport
+	!! incorporate pathogens - no mixing - lost from transport
       if (dtil > 10.) then     
-        bactpq(jj) = bactpq(jj) * (1. - emix)
-        bactps(jj) = bactps(jj) * (1. - emix)
-        bactlpq(jj) = bactlpq(jj) * (1. - emix)
-        bactlps(jj) = bactlps(jj) * (1. - emix)
+        !! incorporate pathogens
 	  end if
 
       do l = 1, soil(jj)%nly
@@ -150,9 +129,6 @@
 
       end do
 
-!       do l=1,20+npmx
-!         smix(l)=0.
-!       end do
       smix = 0.
 
       if (dtil > 0.) then
@@ -198,10 +174,6 @@
           smix(17) = (XX * smix(17) + soil(jj)%phys(l)%clay * sol_msm(l))/WW2
           smix(18) = (XX * smix(18) + soil(jj)%phys(l)%silt * sol_msm(l))/WW2
           smix(19)=(XX*smix(19)+soil(jj)%phys(l)%sand*sol_msm(l))/WW2
-		!! mass based distribution - check later
-          !do k = 1, npmx
-          !  smix(20+k) = smix(20+k) + soil(jj)%ly(1)%pst(k) * WW1
-          !end do
 
             !!by zhang
             !!============== 
@@ -259,14 +231,11 @@
                  * sol_msn(l)+smix(18) * sol_msm(l)) / sol_mass(l)
             soil(jj)%phys(l)%sand = (soil(jj)%phys(l)%sand                  &
                  * sol_msn(l) + smix(19) * sol_msm(l)) / sol_mass(l)
-!pesticide clean up - npmx is number of pest in db - should be in simulation
-!            do k = 1, npmx
-!              soil(jj)%ly(l)%pst(k) = soil(jj)%ly(l)%pst(k) * WW3         
-!     &                                           + smix(20+k) * WW4
-!            end do
 
-             !!by zhang
-             !!=============
+            do k = 1, npmx
+              soil(jj)%ly(l)%pst(k) = soil(jj)%ly(l)%pst(k) * WW3 + smix(20+k) * WW4
+            end do
+
              if (bsn_cc%cswat == 2) then
       soil1(jj)%str(l)%c = soil1(jj)%str(l)%c * WW3+smix(20+npmx+1) * WW4
       soil1(jj)%lig(l)%c = soil1(jj)%lig(l)%c * WW3 + smix(20+npmx+2) * WW4

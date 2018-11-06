@@ -21,6 +21,7 @@
         character(len=16) :: option         ! action option - specific to type of action (ie for reservoir, option to
                                             ! input rate, days of drawdown, weir equation pointer, etc
         real :: const                       ! constant used for rate, days, etc
+        real :: const2 = 1                  ! additional constant used for rate, days, etc
         character(len=16) :: file_pointer   ! pointer for option (ie weir equation pointer)
       end type actions_var
        
@@ -37,6 +38,9 @@
         integer, dimension(:), allocatable :: act_typ                   ! pointer to action type (ie plant, fert type, tillage implement, release type, etc)
         integer, dimension(:), allocatable :: act_app                   ! pointer to operation or application type (ie harvest.ops, chem_app.ops, wier shape, etc)
       end type decision_table
-      type (decision_table), dimension(:), allocatable :: d_tbl
+      type (decision_table), dimension(:), allocatable, target :: dtbl_lum
+      type (decision_table), dimension(:), allocatable, target :: dtbl_res
+      type (decision_table), dimension(:), allocatable, target :: dtbl_scen
+      type (decision_table), pointer :: d_tbl
       
       end module conditional_module   

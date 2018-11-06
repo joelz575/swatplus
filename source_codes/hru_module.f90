@@ -6,7 +6,6 @@
       integer :: ith                 !          |
       integer :: ilu                 !          | 
       integer :: ulu                 !          |
-      integer :: ipot                !          |
       integer :: iwgen               !          |
       character (len=1) :: timest    !          |
      
@@ -17,13 +16,6 @@
        real :: p_norm                 !none           |phosphorus uptake normalization parameter
       end type uptake_parameters
       type (uptake_parameters)  :: uptake
-      
-      type pesticide
-        character(len=10) :: name
-        integer :: num_db
-        real :: enr = 0.         !! |none         |pesticide enrichment ratio
-        real :: zdb = 0.         !! |mm           |division term from net pesticide equation
-      end type pesticide
 
       type irrigation_sources
         integer :: flag = 0   !0= don't irrigate, 1=irrigate
@@ -37,7 +29,7 @@
       type topography
            character(len=13) :: name
            real :: elev = 0.         !!               |m             |elevation of HRU
-           real :: slope = 0.        !!	hru_slp(:)  |m/m           |average slope steepness in HRU
+           real :: slope = 0.        !!	hru_slp(:)    |m/m           |average slope steepness in HRU
            real :: slope_len = 0.    !! slsubbsn(:)   |m             |average slope length for erosion
            real :: dr_den = 0.       !!               |km/km2        |drainage density
            real :: lat_len = 0.      !! slsoil(:)     |m             |slope length for lateral subsurface flow
@@ -70,14 +62,12 @@
                                    !!                              |Mixing of soil due to activity of earthworms
                                    !!                              |and other soil biota. Mixing is performed at
                                    !!                              |the end of every calendar year.
-           real :: dep_imp = 0.    !! dep_imp(:)    |mm            |depth to impervious layer
-           real :: dep_imp_init = 0.    !! dep_imp(:)    |mm       |initial depth to impervious layer- for calibration
+           real :: perco = 0.      !!               |0-1           |percolation coefficient - linear adjustment to daily perc
            real :: lat_orgn = 0.
            real :: lat_orgp = 0.
            real :: harg_pet  = .0023  
            real :: cncoef = 0.3    !!               |              |plant ET curve number coefficient
-           real :: perco = 1.      !!               |              |percolation coefficient-adjusts soil mositure
-                                   !!                              | for perc to occur (1.0 = fc)
+           real :: perco_lim = 1.  !!               |              |percolation coefficient-limits perc from bottom layer
       end type hydrology
       
       type landuse
@@ -92,14 +82,30 @@
           real :: ovn = 0.05            !! none     | Manning's "n" value for overland flow
       end type landuse
       type (landuse), dimension (:), allocatable :: luse
-
+      
+      type soil_plant_initialize
+        character(len=16) :: name = ""
+        real :: sw_frac
+        character(len=16) :: nutc = ""
+        character(len=16) :: pestc = ""
+        character(len=16) :: pathc = ""
+        character(len=16) :: saltc = ""
+        character(len=16) :: hmetc = ""
+        integer :: nut = 1
+        integer :: pest = 1
+        integer :: path = 1
+        integer :: salt = 1
+        integer :: hmet = 1
+      end type soil_plant_initialize
+      type (soil_plant_initialize), dimension (:), allocatable :: sol_plt_ini
+        
       type hru_databases
         character(len=13) :: name = ""
         integer :: topo = 1
         integer :: hyd = 1
         integer :: soil = 1
         integer :: land_use_mgt = 1
-        integer :: soil_nutr_init = 1
+        integer :: soil_plant_init = 1
         integer :: surf_stor = 0
         integer :: snow = 1
         integer :: field = 0
@@ -111,7 +117,7 @@
         character(len=16) :: hyd = ""
         character(len=16) :: soil = ""
         character(len=16) :: land_use_mgt = ""
-        character(len=16) :: soil_nutr_init = ""
+        character(len=16) :: soil_plant_init = ""
         character(len=16) :: surf_stor = ""
         character(len=16) :: snow = ""
         character(len=16) :: field = ""
@@ -181,7 +187,6 @@
         integer :: bmpuser = 0
         !! impunded water - points to res()
         integer :: res
-        type (pesticide), dimension(:), allocatable :: pst  !pest names simulated in the hru
 
         !! other data
         type (topography) :: topo
@@ -218,7 +223,6 @@
           real :: flwi = 0.           !! m^3 H2O      |water entering pothole on day
           real :: sedi = 0.           !! metric tons  |sediment entering pothole on day
           real :: tile = 0.           !! m3/d         |average daily outflow to main channel from tile flow if drainage tiles are installed
-                                                        !! in pothole (needed only if current HRU is  IPOT)
           real :: sed = 0.            !! metric tons  | amount of sediment in pothole water body
           real :: no3 = 0.            !! kg N         | amount of nitrate in pothole water body
           real :: san = 0.
@@ -267,22 +271,21 @@
       real :: bactrop, bactsedp
       real :: enratio
       real :: da_ha, vpd
-      real :: bactrolp, bactsedlp, pet_day, ep_day
+      real :: pet_day, ep_day
       real :: snoev, sno3up
       real :: es_day, ls_overq, latqrunon
-      real :: sbactrop, sbactrolp, sbactsedp, sbactsedlp, ep_max
-      real :: sbactlchlp
+      real :: ep_max
       real :: bsprev
       real :: usle_ei, no3pcp, rcharea
       real :: snocov1, snocov2, lyrtile
 
-      real :: autop, auton, etday, hmntl, rwntl, hmptl, rmn2tl
-      real :: rmptl, wdntl, rmp1tl, roctl, gwseep
+      real :: etday
+      real :: gwseep
       real :: wdlprch
       integer :: myr
       integer :: nhru,  mo, nrch
       integer :: ihru             !!none          |HRU number
-      integer :: npmx, curyr
+      integer :: curyr
       integer :: nd_30
       integer :: iscen
       integer :: mpst, mlyr
@@ -305,10 +308,6 @@
       
  !!   change per JGA 9/8/2011 gsm for output.mgt 
       real, dimension (:), allocatable :: sol_sumno3, sol_sumsolp
-      
-! output files 
-!!  added for binary files 3/25/09 gsm
-      real, dimension (:,:), allocatable :: wpstaao
 
 !     Sediment parameters added by Balaji for the new routines
 
@@ -341,11 +340,9 @@
       real, dimension (:), allocatable :: divmax, cn2
       real, dimension (:), allocatable :: sol_cov
       real, dimension (:), allocatable :: driftco
-      real, dimension (:), allocatable :: smx,sci
-      real, dimension (:), allocatable :: bactpq
+      real, dimension (:), allocatable :: smx
       real, dimension (:), allocatable :: cnday
-      real, dimension (:), allocatable :: bactlpq
-      real, dimension (:), allocatable :: bactps,bactlps,tmpav
+      real, dimension (:), allocatable :: tmpav
       real, dimension (:), allocatable :: sno_hru,sno_init,hru_ra
       real, dimension (:), allocatable :: tmx,tmn
       real, dimension (:), allocatable :: tconc,hru_rmx
@@ -392,7 +389,7 @@
       real, dimension (:,:), allocatable :: wrt
       real, dimension (:,:), allocatable :: bss,surf_bs  
       real, dimension (:,:,:), allocatable :: pst_lag
-      integer, dimension (:), allocatable :: swtrg,hrupest
+      integer, dimension (:), allocatable :: swtrg
       !! burn
       integer, dimension (:), allocatable :: grz_days
       integer, dimension (:), allocatable :: irrno
@@ -403,7 +400,6 @@
 
 !!     gsm added for sdr (drainage) 7/24/08
       integer, dimension (:,:), allocatable :: mgt_ops
-      integer, dimension (:), allocatable :: npno
 
       real, dimension (:,:), allocatable :: hhqday
 ! additional reach variables , added by Ann van Griensven

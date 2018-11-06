@@ -114,12 +114,16 @@
       real :: rtevp1       !units             |description 
       real :: rtevp2       !units             |description 
       real :: qman         !m^3/s or m/s      |flow rate or flow velocity
-      real :: vc           !m/s              |flow velocity in reach
+      real :: vc           !m/s               |flow velocity in reach
       real :: aaa          !units             |description 
+      real :: sum_rttlc    !                  |           !! Van Tam Nguyen 10/2018
+      real :: sum_rtevp    !                  |           !! Van Tam Nguyen 10/2018 
 
       qinday = 0; qoutday = 0
       det = 24.
-      ch(jrch)%chfloodvol=0.
+      sum_rttlc = 0.0   !! Van Tam Nguyen 10/2018
+      sum_rtevp = 0.0   !! Van Tam Nguyen 10/2018
+      ch(jrch)%chfloodvol = 0.
       
 !! Water entering reach on day
 
@@ -284,6 +288,8 @@
 	      end if
 	    end if
 	  rttlc = rttlc1 + rttlc2
+	  
+	  sum_rttlc = sum_rttlc + rttlc    !! Van Tam Nguyen 10/2018
         end if
 
 
@@ -291,7 +297,7 @@
 	  rtevp = 0.
        if (rtwtr > 0.) then
 
-          aaa = bsn_prm%evrch * pet_ch / 1000.
+          aaa = bsn_prm%evrch * pet_ch / (1000. * nn) !! Van Tam Nguyen 10/2018 
 
 	      if (rchdep <= ch_hyd(jhyd)%d) then
                rtevp = aaa * ch_hyd(jhyd)%l * 1000. * topw
@@ -330,7 +336,7 @@
 	      end if
 	      rtevp = rtevp1 + rtevp2
          end if
-
+         sum_rtevp = sum_rtevp + rtevp  !! Van Tam Nguyen 10/2018
 !! define flow parameters for current iteration
          ch(jrch)%flwin = 0.
          ch(jrch)%flwout = 0.
@@ -356,13 +362,9 @@
       
       end do
 
-!! precipitation on reach is not calculated because area of HRUs 
-!! in subbasin sums up to entire subbasin area (including channel
-!! area) so precipitation is accounted for in subbasin loop
-
-!!      volinprev(jrch) = wtrin
-!!	qoutprev(jrch) = rtwtr
-
+      rttlc = sum_rttlc          !! Van Tam Nguyen 10/2018
+      rtevp = sum_rtevp          !! Van Tam Nguyen 10/2018
+      
       if (rtwtr < 0.) rtwtr = 0.
       if (ch(jrch)%rchstor < 0.) ch(jrch)%rchstor = 0.
 

@@ -89,7 +89,7 @@
       soil(j)%phys(ly1)%hk = Max(2., soil(j)%phys(ly1)%hk)
 
       !! compute seepage to the next layer
-      sepday = (soil(j)%phys(ly1)%st - soil(j)%phys(ly1)%fc * hru(j)%hyd%perco) * (1. - Exp(-24. / soil(j)%phys(ly1)%hk))
+      sepday = (soil(j)%phys(ly1)%st - soil(j)%phys(ly1)%fc) * (1. - Exp(-24. / soil(j)%phys(ly1)%hk))
       sepday = Max(0., sepday)
       
       !! limit maximum seepage from biozone layer below potential perc amount
@@ -100,10 +100,7 @@
       
       !! switched to linear relationship for dep_imp and seepage
       if (ly1 == soil(j)%nly) then
-        adj_lin = (hru(j)%hyd%dep_imp - soil(j)%phys(ly1)%d) / 2000.
-        adj_lin = amax1 (0., adj_lin)
-        adj_lin = amin1 (1.0, adj_lin)
-        sepday = sepday * adj_lin
+        sepday = sepday * hru(j)%hyd%perco_lim
       end if
 
       !! check mass balance

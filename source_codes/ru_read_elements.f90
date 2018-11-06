@@ -27,11 +27,8 @@
       integer :: ie1                  !none       |beginning of loop
       integer :: ie2                  !none       |ending of loop  
       integer :: ie                   !none       |counter
-      integer :: iru_tot             !           |
+      integer :: iru_tot              !           |
       
-      
-      
-
       eof = 0
       imax = 0
       

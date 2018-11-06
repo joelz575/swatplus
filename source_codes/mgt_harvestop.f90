@@ -12,14 +12,9 @@
 !!                                |remainder becomes residue on the soil
 !!                                |surface
 !!    hru_dafr(:) |km2/km2        |fraction of watershed area in HRU
-!!    hrupest(:)  |none           |pesticide use flag:
-!!                                | 0: no pesticides used in HRU
-!!                                | 1: pesticides used in HRU
 !!    hvsti(:)    |(kg/ha)/(kg/ha)|harvest index: crop yield/aboveground
 !!                                |biomass
 !!    ihru        |none           |HRU number
-!!    npmx        |none           |number of different pesticides used in
-!!                                |the simulation
 !!    plt_pst(:,:)|kg/ha          |pesticide on plant foliage
 !!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
 !!    wsyf(:)     |(kg/ha)/(kg/ha)|Value of harvest index between 0 and HVSTI
@@ -49,7 +44,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, hrupest, harveff, ihru, npmx
+      use hru_module, only : hru, harveff, ihru
       use soil_module
       use plant_module
       use plant_data_module
@@ -215,9 +210,7 @@
       if (pcom(ihru)%plm(ipl)%pmass < 0.) pcom(ihru)%plm(ipl)%pmass = 0.
 
 	  !! adjust foliar pesticide for plant removal
-      if (hrupest(j) == 1) then
-        npmx = cs_db%num_pests
-        do k = 1, npmx
+        do k = 1, cs_db%num_pests
           !! calculate amount of pesticide removed with yield and clippings
           yldpst = 0.
           clippst = 0.
@@ -233,9 +226,7 @@
           if (clippst < 0.) clippst = 0.
           !! add pesticide in clippings to soil surface
           soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + clippst
-          
         end do   
-      end if
 
       return
       end subroutine mgt_harvestop

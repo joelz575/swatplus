@@ -7,32 +7,37 @@
       use maximum_data_module
       use conditional_module
       use climate_module
+      use calibration_data_module
 
       implicit none
 
-      prog = " SWAT+ Oct 15 2018    MODULAR Rev 2018.55.1"
+      prog = " SWAT+ Nov 6 2018    MODULAR Rev 2018.56"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 55.1          ",/,             &
+     &          "               Revision 56           ",/,              &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
       
       call proc_bsn   
       call proc_date_time
-      call proc_read
       call proc_db
-      
-      call bac_read_lsinit
-     
+      call proc_read
+
       call hyd_connect
            
       call object_read_output
 
       !! read decision table data for conditional management
-      call condition_read     
+      !call condition_read
+      call dtbl_lum_read
+      call dtbl_res_read
+      call dtbl_scen_read
       
+      call om_water_init
+      call pest_water_init
+      call path_water_init
       call proc_res
       call proc_hru
       call proc_cha
@@ -60,7 +65,7 @@
         call time_control
       end if
 
-      call cal_control
+      if (cal_soft == "y") call calsoft_control
            
       write (*,1001)
  1001 format (/," Execution successfully completed ")

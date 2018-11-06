@@ -143,9 +143,6 @@
 !        sp_ob1%a2d = nspu
 !        nspu = sp_ob%a2d + nspu
 !      end if
-      
-      !read constituent data base that all objects (except subbasin) point to
-      call constit_db_read
 
       !read connect file for hrus
       if (sp_ob%hru > 0) then

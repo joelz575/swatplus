@@ -15,7 +15,7 @@
         real :: orgp = 0.          !(kg/ha P) |organic phosphorus
         real :: delay = 0.         !          |
         real :: alpha = 0.         !          |
-        real :: revap = 0.         !mm        |revap
+        real :: revap_co = 0.      !mm        |revap
         real :: seep = 0.          !kg N/ha   |seepage to next object
         real :: spyld = 0.         !          |
         real :: hlife_n = 0.       !          |
@@ -25,6 +25,11 @@
       type (aquifer_database), dimension(:), allocatable :: aqudb 
       
       type aquifer_data_parameters
+        real :: alpha = 0.         !          |
+        real :: delay = 0.         !          |
+        real :: flo_min        !mm        |minimum aquifer storage to allow return flow
+        real :: revap_co       !0-1 frac  |fraction of pet to calculate revap
+        real :: revap_min = 0. !mm H2O    |threshold depth of water in shallow aquifer required to allow revap to occur
         real :: delay_e = 0.   !delay_e     days       |groundwater delay (time required for water leaving the
                                            !bottom of the root zone to reach shallow aquifer
         real :: alpha_e = 0.   !days       |Exp(-alpha_bf(:))
@@ -37,9 +42,6 @@
         character(len=16) :: name
         integer :: props
         integer :: obj_no
-        real :: flo_min        !mm        |minimum aquifer storage to allow return flow
-        real :: revap_co       !0-1 frac  |fraction of pet to calculate revap
-        real :: revap_min = 0. !mm H2O    |threshold depth of water in shallow aquifer required to allow revap to occur
         real :: rchrg_prev = 0.   !m^3        |previous days recharge
         real :: rchrgn_prev = 0.  !m^3        |previous days n recharge
       end type aquifer_state_parameters
@@ -83,32 +85,60 @@
       type (aquifer_dynamic) :: aquz
       
       type aqu_header
-          character (len=6) :: day =      "  jday"
-          character (len=6) :: mo =       "   mon"
-          character (len=6) :: day_mo =   "   day"
-          character (len=6) :: yrc =      "    yr"
-          character (len=8) :: isd =       "   unit "                                            
-          character (len=8) :: id =        " gis_id "           
-          character (len=16) :: name =     " name              "          
-          character(len=16) :: flo =       "          flo_mm"         ! (mm)
-          character(len=15) :: stor =      "        stor_mm"          ! (mm)
-          character(len=15) :: rchrg =     "       rchrg_mm"          ! (mm)
-          character(len=15) :: seep =      "        seep_mm"          ! (mm)
-          character(len=15) :: revap =     "       revap_mm"          ! (mm)
-          character(len=16) :: hgt =       "          hgt_m "         ! (m)
-          character(len=15) :: no3_st =    "no3_stor_kgN/ha"          ! (kg/ha N)
-          character(len=14) :: minp =      "       minp_kg"           ! (kg)
-          character(len=15) :: orgn =      "    orgn_kgN/ha"          ! (kg/ha N)
-          character(len=15) :: orgp =      "    orgp_kgP/ha"          ! (kg/ha P)
-          character(len=15) :: rchrgn =    "  rchrgn_kgN/ha"          ! (kg/ha N)
-          character(len=15) :: nloss =     "   nloss_kgN/ha"          ! (kg/ha N)
-          character(len=15) :: no3gw =     "   no3gw_kgN/ha"          ! (kg N/ha)
-          character(len=15) :: seep_no3 =  "     seepno3_kg"          ! (kg)
-          character(len=15) :: flo_cha =   "    flo_cha_m^3"          ! (m^3)
-          character(len=15) :: flo_res =   "    flo_res_m^3"          ! (m^3)
-          character(len=15) :: flo_ls =    "     flo_ls_m^3"          ! (m^3)
+          character (len=6) :: day      =      "  jday"
+          character (len=6) :: mo       =      "   mon"
+          character (len=6) :: day_mo   =      "   day"
+          character (len=6) :: yrc      =      "    yr"
+          character (len=8) :: isd      =      "   unit "                                            
+          character (len=8) :: id       =      " gis_id "           
+          character (len=16) :: name    =      " name              "          
+          character(len=16) :: flo      =      "            flo"         ! (mm)
+          character(len=15) :: stor     =      "           stor"          ! (mm)
+          character(len=15) :: rchrg    =      "          rchrg"          ! (mm)
+          character(len=15) :: seep     =      "           seep"          ! (mm)
+          character(len=15) :: revap    =      "          revap"          ! (mm)
+          character(len=16) :: hgt      =      "            hgt"         ! (m)
+          character(len=15) :: no3_st   =      "         no3_st"          ! (kg/ha N)
+          character(len=14) :: minp     =      "           minp"           ! (kg)
+          character(len=15) :: orgn     =      "           orgn"          ! (kg/ha N)
+          character(len=15) :: orgp     =      "           orgp"          ! (kg/ha P)
+          character(len=15) :: rchrgn   =      "         rchrgn"          ! (kg/ha N)
+          character(len=15) :: nloss    =      "          nloss"          ! (kg/ha N)
+          character(len=15) :: no3gw    =      "          no3gw"          ! (kg N/ha)
+          character(len=15) :: seep_no3 =      "        seepno3"          ! (kg)
+          character(len=15) :: flo_cha  =      "        flo_cha"          ! (m^3)
+          character(len=15) :: flo_res  =      "        flo_res"          ! (m^3)
+          character(len=15) :: flo_ls   =      "         flo_ls"          ! (m^3)
       end type aqu_header
       type (aqu_header) :: aqu_hdr
+      
+      type aqu_header_units
+          character (len=6) :: day      =  "      "
+          character (len=6) :: mo       =  "      "
+          character (len=6) :: day_mo   =  "      "
+          character (len=6) :: yrc      =  "      "
+          character (len=8) :: isd      =  "        "                                            
+          character (len=8) :: id       =  "        "           
+          character (len=16) :: name    =  "                   "          
+          character(len=16) :: flo      =  "              mm"         ! (mm)
+          character(len=15) :: stor     =  "             mm"          ! (mm)
+          character(len=15) :: rchrg    =  "             mm"          ! (mm)
+          character(len=15) :: seep     =  "             mm"          ! (mm)
+          character(len=15) :: revap    =  "             mm"          ! (mm)
+          character(len=16) :: hgt      =  "              m "         ! (m)
+          character(len=15) :: no3_st   =  "        kg/ha N"          ! (kg/ha N)
+          character(len=14) :: minp     =  "            kg"           ! (kg)
+          character(len=15) :: orgn     =  "        kg/ha N"          ! (kg/ha N)
+          character(len=15) :: orgp     =  "        kg/ha P"          ! (kg/ha P)
+          character(len=15) :: rchrgn   =  "        kg/ha N"          ! (kg/ha N)
+          character(len=15) :: nloss    =  "        kg/ha N"           ! (kg/ha N)
+          character(len=15) :: no3gw    =  "        kg/ha N"          ! (kg N/ha)
+          character(len=15) :: seep_no3 =  "             kg"          ! (kg)
+          character(len=15) :: flo_cha  =  "            m^3"          ! (m^3)
+          character(len=15) :: flo_res  =  "            m^3"           ! (m^3)
+          character(len=15) :: flo_ls   =  "            m^3"           ! (m^3)
+      end type aqu_header_units
+      type (aqu_header_units) :: aqu_hdr_units
       
       interface operator (+)
         module procedure aqu_add

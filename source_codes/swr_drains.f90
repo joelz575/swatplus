@@ -97,8 +97,8 @@
       j = ihru
       isdr = hru(j)%tiledrain
       wnan = 0
-      y1 = hru(j)%hyd%dep_imp - wt_shall 
-      if (y1 > hru(j)%hyd%dep_imp) y1 = hru(j)%hyd%dep_imp
+      y1 = soil(j)%zmx - wt_shall 
+      if (y1 > soil(j)%zmx) y1 = soil(j)%zmx
       above = 0.
       pi = 22./7.
       gee1 =0.
@@ -139,7 +139,7 @@
       end if
 
       !!	calculate parameters hdrain and gee1
-      ad = hru(j)%hyd%dep_imp - hru(j)%lumv%sdr_dep
+      ad = soil(j)%zmx - hru(j)%lumv%sdr_dep
       ad = Max (10., ad)
 	  ap = 3.55 - ((1.6 * ad) / sdr(isdr)%dist) + 2 *                   &
                                            ((2 / sdr(isdr)%dist)**2)
@@ -152,14 +152,12 @@
           !         sdr(isdr)%radius)/ log(e)) - 1.15))
 	  end if
       !! calculate Kirkham G-Factor, gee
-        k2 = tan((pi * ((2. * ad) -sdr(isdr)%radius)) /                 &               
-                           (4. * hru(j)%hyd%dep_imp))
-        k3 = tan((pi * sdr(isdr)%radius) / (4. * hru(j)%hyd%dep_imp))
+        k2 = tan((pi * ((2. * ad) -sdr(isdr)%radius)) / (4. * soil(j)%zmx))
+        k3 = tan((pi * sdr(isdr)%radius) / (4. * soil(j)%zmx))
       do m=1,2
-         k4 = (pi * m * sdr(isdr)%dist) / (2. * hru(j)%hyd%dep_imp)
-         k5 = (pi *sdr(isdr)%radius) / (2. * hru(j)%hyd%dep_imp)
-         k6 = (pi * (2. * ad - sdr(isdr)%radius)) /                     &                   
-                  (2. * hru(j)%hyd%dep_imp)
+         k4 = (pi * m * sdr(isdr)%dist) / (2. * soil(j)%zmx)
+         k5 = (pi *sdr(isdr)%radius) / (2. * soil(j)%zmx)
+         k6 = (pi * (2. * ad - sdr(isdr)%radius)) / (2. * soil(j)%zmx)
          gee2 = (cosh(k4) + cos(k5)) / (cosh(k4) - cos(k5))
          gee3 = (cosh(k4) - cos(k6)) / (cosh(k4) + cos(k6))
          gee1 = gee1 + Log(gee2 * gee3)
@@ -207,7 +205,7 @@
         if(em < -1.0) then
 !!          ddranp=ddrain(j)-1.0
           ddranp = hru(j)%lumv%sdr_dep - 1.0
-          dot = hdrain + hru(j)%hyd%dep_imp - depth
+          dot = hdrain + soil(j)%zmx - depth
           dflux=4.0*24.0*cone*em*hdrain*(2.0+em/dot)/sdr(isdr)%dist**2 
           if((depth-hdrain) >= ddranp) dflux=0.
           if(abs(dflux) > sdr(isdr)%pumpcap) then

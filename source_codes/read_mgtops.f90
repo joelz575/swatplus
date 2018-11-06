@@ -5,6 +5,7 @@
       use mgt_operations_module
       use tillage_data_module
       use fertilizer_data_module
+      use pesticide_data_module
       use time_module
       
       implicit none      
@@ -104,6 +105,13 @@
           end do
 
         case ("pest")
+          !xwalk fert name with fertilizer data base
+          do idb = 1, db_mx%pestparm
+            if (sched(isched)%mgt_ops(iop)%op_char == pestdb(idb)%pestnm) then
+              sched(isched)%mgt_ops(iop)%op1 = idb
+              exit
+            endif
+          end do
           !xwalk application type with chemical application data base
           do idb = 1, db_mx%chemapp_db
             if (sched(isched)%mgt_ops(iop)%op_plant == chemapp_db(idb)%name) then

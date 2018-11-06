@@ -12,11 +12,8 @@
        integer :: imax                 !none       |determine max number for array (imax) and total number in file
        integer :: i_exist              !none       |check to determine if file exists
        integer :: i                    !none       |counter
-       integer :: mbmpops              !           |
-       integer :: ibmpop               !none       |counter 
-       
-       mbmpops = 0
-       eof = 0
+       integer :: ibmpop               !none       |counter
+
        imax = 0
       
        !! read user defined upland CP removal operations

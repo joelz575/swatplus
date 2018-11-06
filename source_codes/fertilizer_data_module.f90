@@ -9,9 +9,7 @@
         real :: forgn = 0.            !! kg orgN/kg frt     |frac of fert which is org n
         real :: forgp = 0.            !! kg orgP/kg frt     |frac of fert which is org p
         real :: fnh3n = 0.            !! kg NH3-N/kg N      |frac of mineral N content of fert which is NH3
-        real :: bactpdb = 0.          !! # bact/kg frt      |conc of persistent bacteria in fert
-        real :: bactlpdb = 0.         !! # bact/kg frt      |conc of less persistent bacteria in fert
-        real :: bactkddb = 0.         !! none               |frac of bacteria in solution (remaining is sorbed to soil part)
+        character(len=16) :: path = " "
       end type fertilizer_db
       type (fertilizer_db), dimension(:),allocatable, save :: fertdb
       

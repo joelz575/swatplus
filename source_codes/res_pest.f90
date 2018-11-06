@@ -1,38 +1,52 @@
-      subroutine res_pest (jres, ipst)
+      subroutine res_pest (jres)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes the lake hydrologic pesticide balance.
 
       use reservoir_data_module
       use reservoir_module
-      use hydrograph_module, only : res
+      use hydrograph_module, only : res, ob
+      use constituent_mass_module
       
       implicit none      
       
-      real :: tpest1                !              |
-      real :: tpest2                !              |
-      real :: fd1                   !              |
-      real :: fd2                   !              |
-      real :: fp1                   !              |
-      real :: fp2                   !              |
-      real :: dlake                 !              |
+      real :: tpest1                !mg pst        |amount of pesticide in water
+      real :: tpest2                !mg pst        |amount of pesticide in benthic sediment
+      real :: fd1                   !              |frac of soluble pesticide in water column
+      real :: fd2                   !              |frac of sorbed pesticide in water column
+      real :: fp1                   !              |frac of soluble pesticide in benthic column
+      real :: fp2                   !              |frac of sorbed pesticide in benthic column
+      real :: depth                 !              |average depth of reservoir
+      real :: bedvol                !m^3           |volume of river bed sediment
       integer :: jres               !none          |reservoir number  
       integer :: ipst               !none          |counter
-      real :: solpesti              !              |soluble pesticide
-      real :: sorpesti              !              |
-
-      tpest1 = res(jres)%psor
-      tpest2 = res(jres)%psor
+      integer :: icmd               !none          |
+      integer :: jpst               !none          |counter
+      integer :: idb                !none          |
 
       if (res(jres)%flo > 1.) then
-        !! calculate depth of lake
-        dlake = 0.
-        dlake = res(jres)%flo / (res_ob(jres)%area_ha * 10000.)
+          
+      do ipst = 1, cs_db%num_pests
+        icmd = res_ob(jres)%ob
+        idb = ob(icmd)%props
+        jpst = res_dat(idb)%pst
+        solpesti = obcs(icmd)%hin%pest(ipst)%sol
+        sorpesti = obcs(icmd)%hin%pest(ipst)%sor
+        tpest1 = solpesti + sorpesti + res_water(jres)%pest(ipst)%sol + res_water(jres)%pest(ipst)%sor
+        bedvol = 1000. * res_om_d(jres)%area_ha * res_pst(jpst)%spst_act + .01
+        tpest2 = (res_benthic(jres)%pest(ipst)%sol + res_benthic(jres)%pest(ipst)%sor) * bedvol
 
-        fd1 = 1. / (1. + res_pst(ipst)%pst_koc * res(jres)%sed * 1.e6)
+        !! calculate average depth of reservoir
+        depth = res(jres)%flo / (res_om_d(jres)%area_ha * 10000.)
+        !! sor conc/sol conc = Koc *frac_oc -> (sor mass/mass sed) / (sol mass/mass water) = Koc * frac_oc
+        !! -> sor mass/sol mass = Koc * frac_oc * sed conc --> sol mass/tot mass = 1 / (1 + Koc * frac_oc)
+        !! assume fraction organic = 1% ; sed conc = kg/L = t/m^3
+        fd1 = 1. / (1. + .01 * res_pst(jpst)%pst_koc * res(jres)%sed)
+        fd1 = amin1 (1., fd1)
         fp1 = 1. - fd1
-        !! ASSUME POR=0.8; DENSITY=2.6E6, then concsed = 5.2e5; KD2=KD1
-        fd2 = 1. / (.8 + 5.2e5 * res_pst(ipst)%pst_koc)
+        !! assume; fraction organic = 1%;\; por=0.8; density=2.6 t/m^3
+        fd2 = 1. / (.8 + .026 * res_pst(jpst)%pst_koc)
+        fd2 = amin1 (1., fd2)
         fp2 = 1. - fd2
 
         !! add incoming pesticide to pesticide in water layer
@@ -40,11 +54,11 @@
         tpest1 = tpest1 + respesti
 
         !! determine pesticide lost through reactions in water layer
-        reactw = res_pst(ipst)%pst_rea * tpest1
+        reactw = res_pst(jpst)%pst_rea * tpest1
         tpest1 = tpest1 - reactw
 
         !! determine pesticide lost through volatilization
-        volatpst = res_pst(ipst)%pst_vol * fd1 * tpest1 / dlake
+        volatpst = res_pst(jpst)%pst_vol * fd1 * tpest1 / depth
         if (volatpst > tpest1) then
           volatpst = tpest1
           tpest1 = 0.
@@ -53,7 +67,7 @@
         end if
 
         !! determine amount of pesticide settling to sediment layer
-        setlpst = res_pst(ipst)%pst_stl * fp1 * tpest1 / dlake
+        setlpst = res_pst(jpst)%pst_stl * fp1 * tpest1 / depth
         if (setlpst > tpest1) then
           setlpst = tpest1
           tpest1 = 0.
@@ -64,7 +78,7 @@
         end if
 
         !! determine pesticide resuspended into lake water
-        resuspst = res_pst(ipst)%pst_rsp * tpest2/res_pst(ipst)%spst_act
+        resuspst = res_pst(jpst)%pst_rsp * tpest2/res_pst(jpst)%spst_act
         if (resuspst > tpest2) then
           resuspst = tpest2
           tpest2 = 0.
@@ -75,8 +89,8 @@
         end if
 
         !! determine pesticide diffusing from sediment to water
-        difus = res_pst(ipst)%pst_mix *                                 &                                
-              (fd2 * tpest2 / res_pst(ipst)%spst_act-fd1*tpest1 / dlake)
+        difus = res_pst(jpst)%pst_mix *                                 &                                
+              (fd2 * tpest2 / res_pst(jpst)%spst_act-fd1*tpest1 / depth)
         if (difus > 0.) then
           if (difus > tpest2) then
             difus = tpest2
@@ -96,7 +110,7 @@
         end if
 
         !! determine pesticide lost from sediment by reactions
-        reactb = res_pst(ipst)%spst_rea * tpest2
+        reactb = res_pst(jpst)%spst_rea * tpest2
         if (reactb > tpest2) then
           reactb = tpest2
           tpest2 = 0.
@@ -105,7 +119,7 @@
         end if
 
         !! determine pesticide lost from sediment by burial
-        bury = res_pst(ipst)%spst_bry * tpest2 / res_pst(ipst)%spst_act
+        bury = res_pst(jpst)%spst_bry * tpest2 / res_pst(jpst)%spst_act
         if (bury > tpest2) then
           bury = tpest2
           tpest2 = 0.
@@ -134,14 +148,12 @@
         !! update concentration of pesticide in lake water and sediment
         if (tpest1 < 1.e-10) tpest1 = 0.0
         if (tpest2 < 1.e-10) tpest2 = 0.0
-        res(jres)%psor = tpest1
-        res(jres)%psor = tpest2
-        res_pst(ipst)%pst_conc = tpest1 / res(jres)%flo
-        res_pst(ipst)%spst_conc = tpest2 /                               &
-                         (res_pst(ipst)%spst_act * res_ob(jres)%area_ha * 10000. + 1.)
-      else
-        solpesto = 0.
-        sorpesto = 0.
+        res_water(jres)%pest(ipst)%sol = fd1 * tpest1 / res(jres)%flo
+        res_water(jres)%pest(ipst)%sol = fp1 * tpest1 / res(jres)%flo
+        res_benthic(jres)%pest(ipst)%sol = fd2 * tpest2 / bedvol
+        res_benthic(jres)%pest(ipst)%sol = fp2 * tpest2 / bedvol
+
+      end do
       end if
 
       return

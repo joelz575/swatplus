@@ -7,38 +7,10 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactrolp    |# colonies/ha |less persistent bacteria transported to main
-!!                               |channel with surface runoff
-!!    bactrop     |# colonies/ha |persistent bacteria transported to main
-!!                               |channel with surface runoff
-!!    bactsedlp   |# colonies/ha |less persistent bacteria transported with 
-!!                               |sediment in surface runoff
-!!    bactsedp    |# colonies/ha |persistent bacteria transported with 
-!!                               |sediment in surface runoff
 !!    curyr       |none          |current year of simulation
 !!    fsred(:)    |none          |reduction in bacteria loading from filter
 !!                               |strip
 !!    hru_dafr(:) |none          |fraction of watershed area in HRU
-!!    hrupest(:)  |none          |pesticide use flag:
-!!                               | 0: no pesticides used in HRU
-!!                               | 1: pesticides used in HRU
-!!    npmx        |none          |number of different pesticides used in
-!!                               |the simulation
-!!    pst_sed(:,:)|kg/ha         |pesticide loading from HRU sorbed onto
-!!                               |sediment
-!!    pst_surq(:,:)|kg/ha        |amount of pesticide type lost in surface
-!!                               |runoff on current day in HRU
-!!    sbactrolp   |# colonies/ha |average annual number of less persistent 
-!!                               |bacteria transported to main channel
-!!                               |with surface runoff in solution
-!!    sbactrop    |# colonies/ha |average annual number of persistent bacteria
-!!                               |transported to main channel with surface
-!!                               |runoff in solution
-!!    sbactsedlp  |# colonies/ha |average annual number of less persistent
-!!                               |bacteria transported with sediment in
-!!                               |surface runoff
-!!    sbactsedp   |# colonies/ha |average annual number of persistent bacteria   
-!!                               |transported with sediment in surface runoff
 !!    sedminpa(:) |kg P/ha       |amount of active mineral phosphorus sorbed to
 !!                               |sediment in surface runoff in HRU for day
 !!    sedminps(:) |kg P/ha       |amount of stable mineral phosphorus sorbed to
@@ -50,29 +22,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactrolp    |# colonies/ha |less persistent bacteria transported to main
-!!                               |channel with surface runoff
-!!    bactrop     |# colonies/ha |persistent bacteria transported to main
-!!                               |channel with surface runoff
-!!    bactsedlp   |# colonies/ha |less persistent bacteria transported with 
-!!                               |sediment in surface runoff
-!!    bactsedp    |# colonies/ha |persistent bacteria transported with 
-!!                               |sediment in surface runoff
-!!    pst_sed(:,:)|kg/ha         |pesticide loading from HRU sorbed onto
-!!                               |sediment
-!!    pst_surq(:,:)|kg/ha        |amount of pesticide type lost in surface
-!!                               |runoff on current day in HRU
-!!    sbactrolp   |# colonies/ha |average annual number of less persistent 
-!!                               |bacteria transported to main channel
-!!                               |with surface runoff in solution
-!!    sbactrop    |# colonies/ha |average annual number of persistent bacteria
-!!                               |transported to main channel with surface 
-!!                               |runoff in solution
-!!    sbactsedlp  |# colonies/ha |average annual number of less persistent
-!!                               |bacteria transported with sediment in
-!!                               |surface runoff
-!!    sbactsedp   |# colonies/ha |average annual number of persistent bacteria
-!!                               |transported with sediment in surface runoff
 !!    sedminpa(:) |kg P/ha       |amount of active mineral phosphorus sorbed to
 !!                               |sediment in surface runoff in HRU for day
 !!    sedminps(:) |kg P/ha       |amount of stable mineral phosphorus sorbed to
@@ -82,12 +31,11 @@
 
     use basin_module
     use hru_module, only : hru, surfq, ihru, sagyld, silyld, clayld, lagyld, sedorgn, surqno3, sedminpa,  &
-      sedminps, sedorgp, surqsolp, sedyld, sanyld, hrupest, hru_dafr, bactrolp, bactrop, bactsedlp,             &
-      bactsedp, npmx, sbactrolp, sbactrop, sbactsedlp, sbactsedp
+      sedminps, sedorgp, surqsolp, sedyld, sanyld, hru_dafr
     use soil_module
     use constituent_mass_module
     use time_module
-    use output_ls_constituent_module
+    use output_ls_pesticide_module
       
     implicit none
 
@@ -298,29 +246,17 @@
 
 !! Calculate pesticide removal 
 !! based on the sediment and runoff removal only
-      if (hrupest(j) == 1) then
-        npmx = cs_db%num_pests
-          
-        do k = 1, npmx
+        do k = 1, cs_db%num_pests
           hpest_bal(j)%pest(k)%surq = hpest_bal(j)%pest(k)%surq * (1. - surq_remove / 100.)
           hpest_bal(j)%pest(k)%sed = hpest_bal(j)%pest(k)%sed * (1. - sed_remove / 100.)
         end do
-      end if
 
 !! compute filter strip reduction
-      bactrop = bactrop * (1. - surq_remove / 100.)
-      bactrolp = bactrolp * (1. - surq_remove / 100.)
-      bactsedp = bactsedp * (1. - sed_remove / 100.)
-      bactsedlp = bactsedlp * (1. - sed_remove / 100.)
+      !bactrop = bactrop * (1. - surq_remove / 100.)
+      !bactrolp = bactrolp * (1. - surq_remove / 100.)
+      !bactsedp = bactsedp * (1. - sed_remove / 100.)
+      !bactsedlp = bactsedlp * (1. - sed_remove / 100.)
 
-
-!! summary calculations
-      if (time%yrs > pco%nyskip) then
-        sbactrop = sbactrop + bactrop * hru_dafr(j)
-        sbactrolp = sbactrolp + bactrolp * hru_dafr(j)
-        sbactsedp = sbactsedp + bactsedp * hru_dafr(j)
-        sbactsedlp = sbactsedlp + bactsedlp * hru_dafr(j)
-      end if
 	end if
 
 

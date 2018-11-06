@@ -41,10 +41,6 @@
 !!    sedrch      |metric tons   |sediment transported out of reach on day
 !!    setlpst     |mg pst        |amount of pesticide moving from water to
 !!                               |sediment due to settling
-!!    solpesto    |mg pst/m^3    |soluble pesticide concentration in outflow
-!!                               |on day
-!!    sorpesto    |mg pst/m^3    |sorbed pesticide concentration in outflow
-!!                               |on day
 !!    volatpst    |mg pst        |amount of pesticide lost from reach by
 !!                               |volatilization
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -77,10 +73,6 @@
                          !              |reach due to resuspension
       real :: setlpst    !mg pst        |amount of pesticide moving from water to
                          !              |sediment due to settling
-      real :: solpesto   !mg pst/m^3    |soluble pesticide concentration in outflow
-                         !              |on day
-      real :: sorpesto   !mg pst/m^3    |sorbed pesticide concentration in outflow
-                         !              |on day 
       real :: volatpst   !mg pst        |amount of pesticide lost from reach by
                          !                volatilization
 
@@ -102,8 +94,6 @@
       sdti = 0.
       sedrch = 0.
       setlpst = 0.
-      solpesto = 0.
-      sorpesto = 0.
       volatpst = 0.
       ch(jrch)%vel_chan = 0.
       sedrch = 0.

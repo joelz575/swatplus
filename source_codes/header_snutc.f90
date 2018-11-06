@@ -8,7 +8,7 @@
         open (2610,file="soil_nutcarb_out.txt",recl=800)
         write (2610,*) bsn%name, prog
         write (2610,*) snutc_hdr
-        write (9000,*) "SNUTC                 soil_nutcarb_out.txt"
+        write (9000,*) "SNUTC                     soil_nutcarb_out.txt"
       end if
           
       return

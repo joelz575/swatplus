@@ -38,9 +38,7 @@
         integer :: wq = 0        !! stream water quality code
                                  !!   0 do not model
                                  !!   1 model (QUAL2E)
-        integer :: nostress = 0    !! redeinfed to the sequence number  -- changed to no nutrient stress
-                                 !!   of pest in NPNO(:) to be routed
-                                 !!   through the watershed
+        integer :: nostress = 0  !! redeinfed to the sequence number  -- changed to no nutrient stress
         integer :: cn = 0        !! CN method flag
                                  !!   0 = use traditional SWAT method bases CN 
                                  !!   CN on soil moisture
@@ -118,15 +116,14 @@
         real :: trnsrch             !! fraction of transmission losses from main channel that enter
                                     !!  deep aquifer
         real :: evrch = 0.60        !! reach evaporation adjustment factor
-        real :: cncoef = 1.0        !! plant ET curve number coefficient
+        real :: open_var1           !! variable not used
         real :: cdn = 1.40          !! denitrification expoential rate coefficient        
         real :: sdnco = 1.30        !! denitrification threshold frac of field cap
         real :: bact_swf = 0.15     !! frac of manure containing active colony forming units
         real :: tb_adj = 0.         !! adjustment factor for subdaily unit hydrograph basetime
         real :: cn_froz = 0.000862  !! parameter for frozen soil adjustment on infiltraion/runoff
         real :: dorm_hr = -1.       !! time threshold used to define dormant (hrs)
-        real :: smxco = 1.0         !! adjustment factor for maximum curve number S factor.  
-                                    !!  coeffcient curve number method that uses antecedent climate
+        real :: open_var2           !! variable not used
         real :: fixco = 0.50        !! nitrogen fixation coeff
         real :: nfixmx = 20.0       !! max daily n-fixation (kg/ha)
         real :: decr_min = 0.01     !! minimum daily residue decay
@@ -141,7 +138,7 @@
                                     !!  overland flow erosion
         real :: ch_d50 = 0.         !! median particle diameter of main channel (mm)
         real :: sig_g = 0.          !! geometric std dev of part sizes for the main channel
-        real :: r2adj = 0.          !! curve number retention parameter adjustment for low gradient
+        real :: open_var3 = 0.      !! curve number retention parameter adjustment for low gradient
                                     !!  non-draining soils
         integer :: igen = 0         !!  random generator code: 
                                     !!   0 = use default numbers
@@ -237,117 +234,101 @@
       type (basin_print_codes) :: pco_init
       
       type mgt_header         
-          !character (len=12) :: hru =        "         hru"
-          !character (len=12) :: year =       "        year"
-          !character (len=12) :: mon =        "         mon"
-          !character (len=11) :: day =        "        day"
-          character (len=12) :: day =      "        jday"
-          character (len=11) :: mo =       "        mon"
-          character (len=12) :: day_mo =   "         day"                                          
-          character (len=12) :: yrc =      "          yr"
-          character (len=13) :: isd =      "        unit "
-          character (len=12) :: id =       "     gis_id "           
-          character (len=11) :: name =     "name       "           
-          !character (len=14) :: crop =      "crop/fert/pest"
-          character (len=19) :: oper =      "          operation"          
-          character (len=14) :: phub =      "       phubase"  
-          character (len=15) :: phua =      "       phuplant"  
-          character (len=14) :: sw =        "    soil_water" 
+          character (len=12) :: hru =       "        hru"
+          character (len=12) :: year =      "       year"
+          character (len=12) :: mon =       "        mon"
+          character (len=11) :: day =       "        day"
+          character (len=15) :: crop =      " crop/fert/pest"
+          character (len=12) :: oper =      " operation"          
+          character (len=12) :: phub =      "phubase"  
+          character (len=11) :: phua =      "   phuplant"  
+          character (len=12) :: sw =        "  soil_water" 
           character (len=17) :: bio =       "      plant_bioms"
-          character (len=14) :: rsd =       "      surf_rsd"
-          character (len=13) :: solno3 =    "     soil_no3"
+          character (len=11) :: rsd =       "   surf_rsd"
+          character (len=15) :: solno3 =    "       soil_no3"
           character (len=15) :: solp =      "      soil_solp"
           character (len=15) :: op_var =    "         op_var"
-          character (len=13) :: var1 =      "         var1"
-          character (len=15) :: var2 =      "           var2"
-          character (len=15) :: var3 =      "           var3"
-          character (len=15) :: var4 =      "           var4"
-          character (len=15) :: var5 =      "           var5"       
+          character (len=15) :: var1 =      "           var1"
+          character (len=14) :: var2 =      "          var2"
+          character (len=17) :: var3 =      "             var3"
+          character (len=17) :: var4 =      "             var4"
+          character (len=16) :: var5 =      "            var5"    
+          character (len=16) :: var6 =      "            var6"    
+          character (len=16) :: var7 =      "           var7"    
       end type mgt_header
       type (mgt_header) :: mgt_hdr
 
       type mgt_header_unit1         
-          !character (len=12) :: hru =        "  --- "
-          !character (len=12) :: year =       "  --- "
-          !character (len=12) :: mon =        "  --- "
-          !character (len=12) :: day =        "  --- "
-          character (len=12) :: day =        "        --- "     
-          character (len=12) :: mo =         "        --- "
-          character (len=12) :: day_mo =     "        --- "                                          
-          character (len=12) :: yrc =        "        --- "
-          character (len=12) :: isd =        "        --- "
-          character (len=12) :: id =         "        --- "           
-          character (len=5) :: name =       "  ---"
-          character (len=24) :: oper =      "                     ---"          
-          character (len=16) :: phub =      "           deg_c"  
-          character (len=14) :: phua =      "         deg_c"  
-          character (len=11) :: sw =        "         mm" 
-          character (len=19) :: bio =       "              kg/ha"
-          character (len=15) :: rsd =       "          kg/ha"
-          character (len=13) :: solno3 =    "        kg/ha"
+          character (len=12) :: hru =       "        --- "
+          character (len=12) :: year =      "        --- "
+          character (len=12) :: mon =       "        --- "
+          character (len=12) :: day =       "        --- "
+          character (len=11) :: crop =      "      ---  "
+          character (len=13) :: oper =      "       ---   "          
+          character (len=9) :: phub =       "    deg_c"  
+          character (len=16) :: phua =      "           deg_c"  
+          character (len=12) :: sw =        "          mm" 
+          character (len=17) :: bio =       "            kg/ha"
+          character (len=11) :: rsd =       "      kg/ha"
+          character (len=15) :: solno3 =    "          kg/ha"
           character (len=15) :: solp =      "          kg/ha"
-          character (len=14) :: op_var =    "           ---"
-          character (len=14) :: var1 =      "           ---"
-          character (len=15) :: var2 =      "            ---"
-          character (len=15) :: var3 =      "            ---"
-          character (len=15) :: var4 =      "           ---"
-          character (len=15) :: var5 =      "           ---"        
+          character (len=15) :: op_var =    "          --- "
+          character (len=16) :: var1 =      "            --- "
+          character (len=15) :: var2 =      "          --- "
+          character (len=16) :: var3 =      "            ---"
+          character (len=16) :: var4 =      "             ---"
+          character (len=16) :: var5 =      "             ---"       
+          character (len=16) :: var6 =      "             ---"  
+          character (len=15) :: var7 =      "            ---"  
       end type mgt_header_unit1
       type(mgt_header_unit1) :: mgt_hdr_unt1
       
       type snutc_header                              
-          !character (len=12) :: day =           "         day"
-          !character (len=12) :: year =          "        year"
-          !character (len=12) :: hru =           "         hru"     
-          character (len=12) :: day =           "        jday"
-          character (len=12) :: mo =            "         mon"
-          character (len=12) :: day_mo =        "         day"                                          
-          character (len=12) :: yrc =           "          yr"
-          character (len=12) :: isd =           "        unit"
-          character (len=12) :: id =            "      gis_id"           
-          character (len=16) :: name =          " name              "           
-          character (len=12) :: soil_mn_no3 =   " soil_mn_no3"
-          character (len=17) :: soil_mn_nh4 =   "      soil_mn_nh4"
-          character (len=16) :: soil_mp_wsol =  "    soil_mp_wsol"
+          character (len=12) :: day =           "         day"
+          character (len=12) :: year =          "        year"
+          character (len=12) :: hru =           "         hru"                                                       
+          character (len=14) :: soil_mn_no3 =   " soil_mn_no3  "
+          character (len=16) :: soil_mn_nh4 =   "    soil_mn_nh4 "
+          character (len=14) :: soil_mp_wsol =  "  soil_mp_wsol"
           character (len=13) :: soil_mp_lab  =  "  soil_mp_lab"  
-          character (len=15 ) :: soil_mp_act  = "    soil_mp_act"
+          character (len=13 ) :: soil_mp_act  = "  soil_mp_act"
           character (len=15) :: soil_mp_sta  =  "    soil_mp_sta"
-          character (len=17) :: soil_tot_m =    "       soil_tot_m"
-          character (len=12) :: soil_tot_c =    "  soil_tot_c"
-          character (len=14) :: soil_tot_n =    "    soil_tot_n "
-          character (len=15) :: soil_tot_p  =   "     soil_tot_p" 
-          character (len=16) :: soil_str_m =    "      soil_str_m"
-          character (len=17) :: soil_str_c =    "       soil_str_c"
-          character (len=15) :: soil_str_n =    "     soil_str_n"
-          character (len=15) :: soil_str_p  =   "     soil_str_p"           
-          character (len=14) :: soil_lig_m =    "    soil_lig_m"
-          character (len=16) :: soil_lig_c =    "      soil_lig_c"
-          character (len=15) :: soil_lig_n =    "     soil_lig_n"
-          character (len=15) :: soil_lig_p  =   "     soil_lig_p" 
-          character (len=15) :: soil_meta_m =   "    soil_meta_m"
-          character (len=15) :: soil_meta_c =   "    soil_meta_c"
-          character (len=15) :: soil_meta_n =   "    soil_meta_n"
-          character (len=14) :: soil_meat_p  =  "   soil_meta_p"
-          character (len=15) :: soil_man_m =    "     soil_man_m"
-          character (len=15) :: soil_man_c =    "     soil_man_c"
-          character (len=17) :: soil_man_n =    "       soil_man_n"
-          character (len=16) :: soil_man_p  =   "      soil_man_p" 
-          character (len=13) :: soil_hs_m =     "    soil_hs_m"
-          character (len=13) :: soil_hs_c =     "    soil_hs_c"
-          character (len=15) :: soil_hs_n =     "      soil_hs_n"
-          character (len=16) :: soil_hs_p  =    "       soil_hs_p"   
-          character (len=16) :: soil_hp_m =     "       soil_hp_m"
-          character (len=13) :: soil_hp_c =     "    soil_hp_c"
-          character (len=15) :: soil_hp_n =     "      soil_hp_n"
-          character (len=15) :: soil_hp_p  =    "      soil_hp_p"
-          character (len=17) :: soil_microb_m = "    soil_microb_m"
-          character (len=16) :: soil_microb_c = "   soil_microb_c"
-          character (len=15) :: soil_microb_n = "  soil_microb_n"
-          character (len=15) :: soil_microb_p  ="  soil_microb_p"  
-          character (len=16) :: soil_water_m =  "    soil_water_m"
-          character (len=14) :: soil_water_c =  "  soil_water_c"
-          character (len=16) :: soil_water_n =  "    soil_water_n"
-          character (len=15) :: soil_water_p  = "   soil_water_p"  
+          character (len=19) :: soil_tot_m =    "         soil_tot_m"
+          character (len=14) :: soil_tot_c =    "    soil_tot_c  "
+          character (len=14) :: soil_tot_n =    "    soil_tot_n  "
+          character (len=15) :: soil_tot_p  =   "    soil_tot_p  " 
+          character (len=18) :: soil_str_m =    "    soil_str_m  "
+          character (len=14) :: soil_str_c =    "    soil_str_c  "
+          character (len=14) :: soil_str_n =    "    soil_str_n  "
+          character (len=14) :: soil_str_p  =   "    soil_str_p"           
+          character (len=16) :: soil_lig_m =    "    soil_lig_m  "
+          character (len=14) :: soil_lig_c =    "    soil_lig_c  "
+          character (len=14) :: soil_lig_n =    "    soil_lig_n  "
+          character (len=14) :: soil_lig_p  =   "    soil_lig_p  " 
+          character (len=14) :: soil_meta_m =   "   soil_meta_m  "
+          character (len=14) :: soil_meta_c =   "   soil_meta_c  "
+          character (len=14) :: soil_meta_n =   "   soil_meta_n  "
+          character (len=14) :: soil_meat_p  =  "   soil_meta_p  "
+          character (len=14) :: soil_man_m =    "    soil_man_m  "
+          character (len=14) :: soil_man_c =    "    soil_man_c  "
+          character (len=14) :: soil_man_n =    "    soil_man_n  "
+          character (len=14) :: soil_man_p  =   "    soil_man_p  " 
+          character (len=14) :: soil_hs_m =     "    soil_hs_m   "
+          character (len=14) :: soil_hs_c =     "    soil_hs_c   "
+          character (len=16) :: soil_hs_n =     "    soil_hs_n   "
+          character (len=16) :: soil_hs_p  =    "    soil_hs_p   "   
+          character (len=16) :: soil_hp_m =     "    soil_hp_m   "
+          character (len=16) :: soil_hp_c =     "    soil_hp_c   "
+          character (len=16) :: soil_hp_n =     "    soil_hp_n   "
+          character (len=16) :: soil_hp_p  =    "    soil_hp_p   "
+          character (len=16) :: soil_microb_m = " soil_microb_m  "
+          character (len=16) :: soil_microb_c = " soil_microb_c  "
+          character (len=16) :: soil_microb_n = " soil_microb_n  "
+          character (len=16) :: soil_microb_p  =" soil_microb_p  "  
+          character (len=16) :: soil_water_m =  "   soil_water_m "
+          character (len=16) :: soil_water_c =  "   soil_water_c "
+          character (len=16) :: soil_water_n =  "   soil_water_n "
+          character (len=16) :: soil_water_p  = "   soil_water_p "  
       end type snutc_header
       type(snutc_header) :: snutc_hdr
       

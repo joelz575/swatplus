@@ -6,20 +6,15 @@
       use hru_module, only : aird,auto_wstr, bio_eat, bio_init,        &
        bio_min,bio_trmp,brt,bss,canstor,cn2,cnop,cumei,   &
        cumeira,cumrai,cumrt,divmax,dormhr,driftco,filterw,flowmin,frac_harvk,frt_kg,grz_days,  &
-       hru,hru_dafr,hrupest,igrz,      &
+       hru,hru_dafr,igrz,      &
        irr_asq,irr_mx,irr_no,irr_noa,irr_sc,irr_sca,irramt,irrno,irrsc,irrsq,isep,isep_ly,iseptic,itb,        &
-       lai_init,latno3,manure_id,nop,npno,orgn_con,orgp_con,par,phubase,qird,ranrns_hru,     &
+       lai_init,latno3,manure_id,nop,orgn_con,orgp_con,par,phubase,qird,ranrns_hru,     &
        sed_con,sepcrk,sol_sumsolp,soln_con,solp_con,sstmaxd,stmaxd,tileq,tmx,uh,         &
        wstrs_id,wt_shall,wtab,yr_skip
 
-      use bacteria_module
-      
       implicit none
       
       real :: ammonian                    !mg N/L             |ammonia concentration in reach
-      real :: bactkddb                    !none               |frac of bacteria in solution (remaining is sorbed to soil part)
-      real :: bactlpdb                    !# bact/kg frt      |conc of less persistent bacteria in fert
-      real :: bactpdb                     !# bact/kg frt      |conc of persistent bacteria in fert
       real :: cbodcnst                    !                   |
       real :: cbodmon                     !                   |
       real :: cbodyr                      !                   |
@@ -78,9 +73,6 @@
       aird = 0.
       ammonian = 0.
       auto_wstr = 0.
-      bactkddb = 0.
-      bactlpdb = 0.
-      bactpdb = 0.
       bio_init = 0.
       bio_min = 0.
       bio_eat = 0.
@@ -130,7 +122,6 @@
 !    Drainmod tile equations  01/2006
       hqd = 0.
       hru_dafr = 0.
-      hrupest = 0
       wstrs_id = 0
       manure_id = 0
       igrz = 0
@@ -158,7 +149,6 @@
       irr_mx = 0.
   !! change per JGA irrigation 4/2/2009
       latno3 = 0.
-      npno = 0
       orgn_con = 0.
       orgp_con = 0.
 	  phubase = 0.

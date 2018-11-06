@@ -8,10 +8,6 @@
       use reservoir_module
       
       implicit none
-      
-      real :: ressedc                  !              |
-      real :: solpesti                 !              |soluble pesticide 
-      real :: sorpesti                 !              |
 
 !! initialize daily variables
       bury = 0.
@@ -29,16 +25,11 @@
       resorgno = 0.
       resorgpo = 0.
       respesti = 0.
-      ressedc = 0.
       ressedi = 0.
       ressep = 0.
       ressolpo = 0.
       resuspst = 0.
       setlpst = 0.
-      solpesti = 0.
-      solpesto = 0.
-      sorpesti = 0. 
-      sorpesto = 0.
       volatpst = 0.
 
       return

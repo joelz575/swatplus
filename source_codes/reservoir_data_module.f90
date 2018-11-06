@@ -1,33 +1,7 @@
     module reservoir_data_module
     
     implicit none      
- 
-    type reservoir_initial
-        character(len=16) :: name
-        real :: vol = 0.          !m**3          |res vol (read in as frac principal and converted to m^3)
-        real :: sed = 0.          !kg/L          |amt of sed in res (read in as mg/L and converted to kg/L)
-        real :: orgn = 0.         !kg N          |amt of org N in res (read in as mg/L and converted to kg/L)
-        real :: no3 = 0.          !kg N          |amt of nitrate in res (read in as mg/L and converted to kg/L)
-        real :: no2 = 0.          !kg N          |amt of nitrite in res (read in as mg/L and converted to kg/L)
-        real :: nh3 = 0.          !kg N          |amt of ammonia in res (read in as mg/L and converted to kg/L)
-        real :: orgp = 0.         !kg P          |amt of org P in res (read in as mg/L and converted to kg/L)
-        real :: solp = 0.         !kg P          |amt of soluble P in res (read in as mg/L and converted to kg/L)
-        real :: seci = 0.         !m             |secchi-disk depth 
-        real :: san = 0.          !kg/L          |amt of san in res (read in as mg/L and converted to kg/L)
-        real :: sil = 0.          !kg/L          |amt of sil in res (read in as mg/L and converted to kg/L)
-        real :: cla = 0.          !kg/L          |amt of cla in res (read in as mg/L and converted to kg/L)
-        real :: sag = 0.          !kg/L          |amt of sag in res (read in as mg/L and converted to kg/L)
-        real :: lag = 0.          !kg/L          |amt of lag in res (read in as mg/L and converted to kg/L)
-        real :: gra = 0.          !kg/L          |amt of gra in res (read in as mg/L and converted to kg/L)
-        real :: chla = 0.         !kg chl-a      |amt of chlorophyll-a in res
-        real :: psol = 0.         !kg/L          |amt of pest in res (read in as mg/L and converted to kg/L)
-        real :: psor = 0.         !kg/L          |amt of pest in res (read in as mg/L and converted to kg/L)
-        real :: bactlp = 0.       !# cfu/100ml   |less persistent bacteria stored in res
-        real :: bactp = 0.        !# cfu/100ml   |persistent bacteria stored in res
-      end type reservoir_initial
-      type (reservoir_initial), dimension(:),allocatable :: res_init
-      type (reservoir_initial) :: resz
-      
+
       type reservoir_data_char_input
         character (len=16) :: name = "default"
         character (len=16) :: init                  !initial data-points to initial.res
@@ -52,7 +26,28 @@
       type (reservoir_data), dimension(:), allocatable :: res_dat
       type (reservoir_data), dimension(:), allocatable :: wet_dat
       type (reservoir_data) :: res_datz
-      
+            
+      type reservoir_init_data_char
+        character (len=16) :: init                 !initial data-points to initial.cha
+        character (len=16) :: org_min              !points to initial organic-mineral input file
+        character (len=16) :: pest                 !points to initial pesticide input file
+        character (len=16) :: path                 !points to initial pathogen input file
+        character (len=16) :: hmet                 !points to initial heavy metals input file
+        character (len=16) :: salt                 !points to initial salt input file
+      end type reservoir_init_data_char
+      type (reservoir_init_data_char), dimension(:), allocatable :: res_init_dat_c
+            
+      type reservoir_init_data
+        integer :: init = 1                 !initial data-points to initial.cha
+        integer :: org_min = 1              !points to initial organic-mineral input file
+        integer :: pest = 1                 !points to initial pesticide input file
+        integer :: path = 1                 !points to initial pathogen input file
+        integer :: hmet = 1                 !points to initial heavy metals input file
+        integer :: salt = 1                 !points to initial salt input file
+      end type reservoir_init_data
+      type (reservoir_init_data), dimension(:), allocatable :: res_init
+      type (reservoir_init_data), dimension(:), allocatable :: wet_init
+            
       type reservoir_hyd_data
         character(len=16) :: name = "default"
         integer :: iyres = 0      !none          |year of the sim that the res becomes operational
@@ -113,17 +108,15 @@
           
       type reservoir_pst_data
         character(len=16) :: name
-        real :: pst_conc = 0.         !mg/m^3        |pest concentration in lake water
-        real :: pst_koc = 0.          !m**3/g        |pest partition coeff between water and sed in lake water
-        real :: pst_mix = 0.          !m/day         |mixing velocity (diffusion/dispersion)in lake water for pest
-        real :: pst_rea = .007        !1/day         |pest reaction coeff in lake water
-        real :: pst_rsp = .002        !m/day         |resuspension velocity in lake water for pest sorbed to sed
-        real :: pst_stl = 1.0         !m/day         |settling velocity in lake water for pest sorbed to sed
-        real :: pst_vol = .01         !m/day         |pest volatilization coeff in lake water
-        real :: spst_act = .03        !m             |depth of active sed layer in lake for pest
-        real :: spst_bry = .002       !m/day         |pest burial velocity in lake bed sed
-        real :: spst_conc = 0.        !mg/m^3        |pest concentration in lake bed sed
-        real :: spst_rea = .05        !1/day         |pest reaction coeff in lake bed sed
+        real :: pst_koc = 0.          !m**3/g        |pest partition coeff between water and sed in reservoir water
+        real :: pst_mix = 0.          !m/day         |mixing velocity (diffusion/dispersion)in reservoir water for pest
+        real :: pst_rea = .007        !1/day         |pest reaction coeff in reservoir water
+        real :: pst_rsp = .002        !m/day         |resuspension velocity in reservoir water for pest sorbed to sed
+        real :: pst_stl = 1.0         !m/day         |settling velocity in reservoir water for pest sorbed to sed
+        real :: pst_vol = .01         !m/day         |pest volatilization coeff in reservoir water
+        real :: spst_act = .03        !m             |depth of active sed layer in reservoir for pest
+        real :: spst_bry = .002       !m/day         |pest burial velocity in reservoir bed sed
+        real :: spst_rea = .05        !1/day         |pest reaction coeff in reservoir bed sed
       end type reservoir_pst_data
       type (reservoir_pst_data), dimension(:), allocatable :: res_pst
             

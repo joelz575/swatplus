@@ -7,12 +7,7 @@
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    curyr        |none          |current year of simulation
-!!    hrupest(:)  |none           |pesticide use flag:
-!!                                | 0: no pesticides used in HRU
-!!                                | 1: pesticides used in HRU
 !!    ihru         |none          |HRU number
-!!    npmx        |none           |number of different pesticides used in
-!!                                |the simulation
 !!    plt_pst(:,:)|kg/ha          |pesticide on plant foliage
 !!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -33,7 +28,7 @@
 
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, hrupest, ihru, ipl, npmx
+      use hru_module, only : hru, ihru, ipl
       use soil_module
       use plant_module
       use constituent_mass_module
@@ -100,14 +95,11 @@
      call pl_leaf_drop (resnew, resnew_n)
 	end do
 
-      if (hrupest(j) == 1) then
-        npmx = cs_db%num_pests
-        do k = 1, npmx
+        do k = 1, cs_db%num_pests
            soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + pcom(j)%pest(k)
            pcom(j)%pest(k) = 0.
         end do
-      end if
-      
+
 	!! reset variables
       pcom(j)%plg(ipl) = plgz
       pcom(j)%plm(ipl) = plmz

@@ -51,6 +51,7 @@
       use basin_module
       use hydrograph_module, only : sp_ob
       use output_landscape_module
+      use conditional_module
       
       implicit none
       
@@ -169,8 +170,9 @@
           do iupd = 1, db_mx%cond_up
             do j = 1, sp_ob%hru
               id = upd_cond(iupd)%cond_num
-              call conditions (id, j)
-              call actions (id, j)
+              d_tbl => dtbl_scen(id)
+              call conditions (j)
+              call actions (j)
             end do
           end do
 
@@ -206,7 +208,7 @@
 
         !! perform end-of-year processes
         
-        call cal_sum_output
+        call calsoft_sum_output
         
         do j = 1, sp_ob%hru_lte
           !! zero yearly balances after using them in soft data calibration (was in hru_lte_output)
@@ -239,6 +241,7 @@
               if (pldb(idp)%typ == "perennial") then
                 pcom(j)%plcur(ipl)%curyr_mat = pcom(j)%plcur(ipl)%curyr_mat + 1
                 pcom(j)%plcur(ipl)%curyr_mat = Min(pcom(j)%plcur(ipl)%curyr_mat,pldb(idp)%mat_yrs)
+                pcom(j)%plcur(ipl)%curyr_gro = pcom(j)%plcur(ipl)%curyr_gro + 1
               end if
             end if
           end do
@@ -268,9 +271,9 @@
       end do            !!     end annual loop
       
       !! ave annual calibration output and reset time for next simulation
-      call cal_ave_output
+      call calsoft_ave_output
       time = time_init
 
       return
- 1234 format (1x, a, ' Executing mo/day/yr ', 2i4, 2x,i4,' Yr ', i4,' of ', i4)
+ 1234 format (1x, a, 2i4, 2x,i4,' Yr ', i4,' of ', i4)
       end subroutine time_control

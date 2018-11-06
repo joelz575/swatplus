@@ -130,11 +130,11 @@
 
       !! compute shallow water table depth and tile flow
       qtile = 0.
-      wt_shall = hru(j)%hyd%dep_imp
+      wt_shall = soil(j)%zmx
       !! drainmod tile equations   08/11/2006
       if (soil(j)%phys(2)%tmp > 0.) then   !Daniel 1/29/09
         por_air = 0.9
-        d = hru(j)%hyd%dep_imp - hru(j)%lumv%sdr_dep
+        d = soil(j)%zmx - hru(j)%lumv%sdr_dep
         !! drainmod wt_shall equations   10/23/2006
         if (bsn_cc%wtdn == 0) then !compute wt_shall using original eq-Daniel 10/23/06
           if (soil(j)%sw > soil(j)%sumfc) then
@@ -144,9 +144,9 @@
             end if
             xx = (soil(j)%sw - soil(j)%sumfc) / (yy - soil(j)%sumfc)
             if (xx > 1.) xx = 1.
-            wt_shall = xx * hru(j)%hyd%dep_imp
-		    wat = hru(j)%hyd%dep_imp - wt_shall
-			if(wat > hru(j)%hyd%dep_imp) wat = hru(j)%hyd%dep_imp
+            wt_shall = xx * soil(j)%zmx
+		    wat = soil(j)%zmx - wt_shall
+			if(wat > soil(j)%zmx) wat = soil(j)%zmx
           end if
         else
           !compute water table depth using Daniel"s modifications
@@ -155,8 +155,8 @@
               sw_del = soil(j)%swpwt - soil(j)%sw
               wt_del = sw_del * soil(j)%ly(j1)%vwt
               soil(j)%wat_tbl = soil(j)%wat_tbl + wt_del
-	          if(soil(j)%wat_tbl > hru(j)%hyd%dep_imp)  soil(j)%wat_tbl = hru(j)%hyd%dep_imp
-	          wt_shall = hru(j)%hyd%dep_imp - soil(j)%wat_tbl
+	          if(soil(j)%wat_tbl > soil(j)%zmx)  soil(j)%wat_tbl = soil(j)%zmx
+	          wt_shall = soil(j)%zmx - soil(j)%wat_tbl
 	          soil(j)%swpwt = soil(j)%sw
 	          exit
 	        end if

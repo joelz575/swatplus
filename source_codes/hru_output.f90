@@ -33,13 +33,16 @@
           if (pco%wb_hru%d == "y") then
              write (2000,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hwb_d(j)   !! waterbal
              if (pco%csvout == "y") then
-               write (4015,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hwb_d(j)  !! waterbal
+            !! changed write unit below (2004 to write file data)
+               write (2004,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hwb_d(j)  !! waterbal
+               !write (4015,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hwb_d(j)  !! waterbal
              end if
           end if
           if (pco%nb_hru%d == "y") then
+            !write (2020,*) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hnb_d(j)  !! nutrient bal
             write (2020,104) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hnb_d(j)  !! nutrient bal
               if (pco%csvout == "y") then
-                write (2024,'(*(G0.3,:","))') time%day, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hnb_d(j)  !! nutrient bal
+                write (2024,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hnb_d(j)  !! nutrient bal
               end if
           end if
           if (pco%ls_hru%d == "y") then
@@ -170,7 +173,7 @@
         
          if (time%end_sim == 1 .and. pco%pw_hru%a == "y") then     
            hpw_a(j) = hpw_a(j) / time%yrs_prt
-           hpw_a(j) = hpw_a(j) / time%days_prt
+           hpw_a(j) = hpw_a(j) // time%days_prt
            write (2043,102) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpw_a(j)
              if (pco%csvout == "y") then 
                write (2047,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpw_a(j)
@@ -199,6 +202,6 @@
 101   format (4i6,2i8,2x,a,20f12.3)
 102   format (4i6,2i8,2x,a,20f12.3)
 103   format (4i6,i8,4x,a,5x,f12.3)
-104   format (4i6,2i8,2x,a,27f18.3)
+104   format (4i6,2i8,2x,a8,4f12.3,23f17.3)
        
       end subroutine hru_output

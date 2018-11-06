@@ -11,6 +11,7 @@
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : ihru
+      use output_landscape_module, only : hnb_d
       use soil_module
       use time_module
       
@@ -22,6 +23,7 @@
       real :: rmn1                      !kg P/ha       |amount of phosphorus moving from the solution
                                         !              |mineral to the active mineral pool in the
                                         !              |soil layer
+      real :: rmp1                      !kg P/ha       |
       real :: roc                       !kg P/ha       |amount of phosphorus moving from the active
                                         !              |mineral to the stable mineral pool in the 
                                         !              |soil layer
@@ -36,10 +38,12 @@
       real :: stap                      !mg/kg	       |Stable pool phosphorous content
       real :: arate                     !			   |Intermediate Variable      
       real :: ssp                       !              | 
- 
-      j = 0
+
       j = ihru
         
+      hnb_d(j)%lab_min_p = 0.
+      hnb_d(j)%act_sta_p = 0.
+      
 	do l = 1, soil(j)%nly !! loop through soil layers in this HRU
 	!! make sure that no zero or negative pool values come in
 	if (soil1(j)%mp(l)%lab <= 1.e-6) soil1(j)%mp(l)%lab = 1.e-6
@@ -81,12 +85,10 @@
 	   end if	   
 
 	   !! Calculate P balance
-		rto = 0.
 		rto = bsn_prm%psp / (1.-bsn_prm%psp)
-		rmn1 = 0.
 		rmn1 = soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto !! P imbalance
 
-	  !! Move P between the soluble and active pools based on vadas et al., 2006
+	  !! Move P between the soluble and active pools based on Vadas et al., 2006
 		if (rmn1 >= 0.) then !! Net movement from soluble to active	
 		  rmn1 = Max(rmn1, (-1 * soil1(j)%mp(l)%lab))
 		!! Calculate Dynamic Coefficant		
@@ -164,6 +166,9 @@
 
 !! Add water soluble P pool assume 1:5 ratio based on sharpley 2005 et al
 	soil(j)%ly(l)%watp = soil1(j)%mp(l)%lab / 5
+    
+    hnb_d(j)%lab_min_p = hnb_d(j)%lab_min_p + rmp1
+    hnb_d(j)%act_sta_p = hnb_d(j)%act_sta_p + roc
 
       end do
       return

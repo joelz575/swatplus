@@ -26,36 +26,10 @@
         real :: srp_min_conc = .015 ! ppm             |minimum srp concentration
       end type routing_nut_data
       type (routing_nut_data), dimension(:), allocatable :: rte_nut
-      
-      type channel_initial
-        character(len=13) :: name
-        real :: vol               !m**3          |res vol (read in as frac principal and converted to m^3)
-        real :: sed               !kg/L          |amt of sed in res (read in as mg/L and converted to kg/L)
-        real :: orgn              !kg N          |amt of org N in res (read in as mg/L and converted to kg/L)
-        real :: no3               !kg N          |amt of nitrate in res (read in as mg/L and converted to kg/L)
-        real :: no2               !kg N          |amt of nitrite in res (read in as mg/L and converted to kg/L)
-        real :: nh3               !kg N          |amt of ammonia in res (read in as mg/L and converted to kg/L)
-        real :: orgp              !kg P          |amt of org P in res (read in as mg/L and converted to kg/L)
-        real :: solp              !kg P          |amt of soluble P in res (read in as mg/L and converted to kg/L)
-        real :: seci              !m             |secchi-disk depth 
-        real :: san               !kg/L          |amt of san in res (read in as mg/L and converted to kg/L)
-        real :: sil               !kg/L          |amt of sil in res (read in as mg/L and converted to kg/L)
-        real :: cla               !kg/L          |amt of cla in res (read in as mg/L and converted to kg/L)
-        real :: sag               !kg/L          |amt of sag in res (read in as mg/L and converted to kg/L)
-        real :: lag               !kg/L          |amt of lag in res (read in as mg/L and converted to kg/L)
-        real :: gra               !kg/L          |amt of gra in res (read in as mg/L and converted to kg/L)
-        real :: chla              !kg chl-a      |amt of chlorophyll-a in res
-        real :: psol              !kg/L          |amt of pest in res (read in as mg/L and converted to kg/L)
-        real :: psor              !kg/L          |amt of pest in res (read in as mg/L and converted to kg/L)
-        real :: bactlp            !# cfu/100ml   |less persistent bacteria stored in res
-        real :: bactp             !# cfu/100ml   |persistent bacteria stored in res
-      end type channel_initial
-      type (channel_initial), dimension(:),allocatable :: ch_init
-      
-      
+
       type channel_data_char_input
-        character(len=13) :: name = "default"
-        character(len=16) :: init                       !initial data-points to initial.res
+        character(len=16) :: name = "default"
+        character(len=16) :: init                       !points to initial_cha
         character(len=16) :: hyd                        !points to hydrology.res for hydrology inputs
         character(len=16) :: sed                        !sediment inputs-points to sediment.res
         character(len=16) :: nut                        !nutrient inputs-points to nutrient.res
@@ -65,9 +39,18 @@
       end type channel_data_char_input
       type (channel_data_char_input), dimension(:), allocatable :: ch_dat_c
 
+      type channel_init_datafiles
+        character(len=16) :: name = "default"
+        character(len=16) :: org_min = ""             !points to initial organic-mineral input file
+        character(len=16) :: pest = ""                !points to initial pesticide input file
+        character(len=16) :: path = ""                !points to initial pathogen input file
+        character(len=16) :: hmet = ""                !points to initial heavy metals input file
+        character(len=16) :: salt = ""                !points to initial salt input file
+      end type channel_init_datafiles
+      type (channel_init_datafiles), dimension(:), allocatable :: ch_init
 
       type channel_data
-        character(len=13) :: name = "default"
+        character(len=16) :: name = "default"
         integer :: init = 0                   !initial data-points to initial.res
         integer :: hyd = 0                    !points to hydrology.res for hydrology inputs
         integer :: sed = 0                    !sediment inputs-points to sediment.res
@@ -82,7 +65,7 @@
         !variables are conditional on res_dat()%hyd = 0 for reservoirs and 1 for hru impounding
         !surface areas are ha for 0 and frac of hru for 1; volumes are ha-m for 0 and mm for 1
         !br1 and br2 are used for 0 and acoef for 0 -- for surface area - volume relationship
-        character(len=13) :: name = "default"
+        character(len=16) :: name = "default"
         real :: w = 2.           ! m             |average width of main channel
         real :: d = .5           ! m             |average depth of main channel
         real :: s = .01          ! m/m           |average slope of main channel
@@ -96,7 +79,7 @@
       type (channel_hyd_data), dimension(:), allocatable :: ch_hyd
       
       type channel_sed_data
-        character(len=13) :: name
+        character(len=16) :: name
         integer :: eqn  = 0      !               |sediment routine methods: 
                                    !                   0 = original SWAT method
                                    !                   1 = Bagnold"s
@@ -119,7 +102,7 @@
       type (channel_sed_data), dimension(:), allocatable :: ch_sed
             
       type channel_nut_data
-        character(len=13) :: name
+        character(len=16) :: name
         real :: onco = 0.        ! ppm           |channel organic n concentration
         real :: opco = 0.        ! ppm           |channel organic p concentration
         real :: rs1 = 1.          ! m/day or m/hr   |local algal settling rate in reach at 20 deg C
@@ -169,7 +152,7 @@
       type (channel_nut_data), dimension(:), allocatable :: ch_nut
           
       type channel_pst_data
-        character(len=13) :: name
+        character(len=16) :: name
         real :: pst_rea = .007    ! 1/day           |pesticide reaction coeff in reach
         real :: pst_vol = .01     ! m/day           |pesticide volatilization coeff in reach
         real :: pst_koc = 0.      ! m**3/g          |pesticide partition coeff between water and sediment in reach
@@ -178,9 +161,19 @@
         real :: pst_stl = 1.      ! m/day           |settling velocity in reach for pesticide sorbed to sediment
         real :: sedpst_act = .03  ! m               |depth of active sediment layer in reach for pesticide
         real :: sedpst_bry = .002 ! m/day           |pesticide burial velocity in river bed sediment
-        real :: sedpst_conc = 0.  ! mg/(m**3)       |inital pesticide concentration in river bed sediment
+        real :: pst_solub = 0.    ! mg/(m**3)       |inital pesticide concentration in river bed sediment
         real :: sedpst_rea = .05  ! 1/day           |pesticide reaction coeff in river bed sediment  
       end type channel_pst_data
       type (channel_pst_data), dimension(:), allocatable :: ch_pst
+                 
+      type channel_temperature_data
+        character(len=16) :: name
+        real :: sno_mlt = 1.        ! none          |coefficient influencing snowmelt temperature contributions
+        real :: gw = .97            ! none          |coefficient influencing groundwater temperature contributions
+        real :: sur_lat = 1.        ! none          |coefficient influencing suface and lateral flow temperature contributions
+        real :: bulk_co = .0025     ! 1/hour        |bulk coefficient of heat transfer
+        real :: air_lag = 6.        ! days          |average air temperature lag
+      end type channel_temperature_data
+      type (channel_temperature_data), dimension(:), allocatable :: ch_temp
        
       end module channel_data_module 

@@ -8,13 +8,7 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hrupest(:)   |none          |pesticide use flag:
-!!                                | 0: no pesticides used in HRU
-!!                                | 1: pesticides used in HRU
 !!    ihru         |none          |HRU number
-!!    npmx         |none          |number of different pesticides used in
-!!                                |the simulation
-!!    npno(:)      |none          |array of unique pesticides used in watershed
 !!    pst_wsol(:)  |mg/L (ppm)    |solubility of chemical in water
 !!    sol_pst(:,:,:)|kg/ha        |amount of pesticide in layer
 !!    surfq(:)     |mm H2O        |surface runoff generated on day in HRU
@@ -25,8 +19,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    lat_pst(:)   |kg pst/ha     |amount of pesticide in lateral flow in HRU
 !!                                |for the day
-!!    pst_surq(:,:)|kg/ha         |amount of pesticide type lost in surface
-!!                                |runoff on current day in HRU
 !!    zdb(:,:)     |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
@@ -37,16 +29,16 @@
 
       use pesticide_data_module
       use basin_module
-      use hru_module, only : hru, hrupest, surfq, ihru, npmx
+      use hru_module, only : hru, surfq, ihru
       use soil_module
       use constituent_mass_module
-      use output_ls_constituent_module
+      use output_ls_pesticide_module
       
       implicit none        
       
       integer :: j         !none          |HRU number
       integer :: k         !none          |counter
-      integer :: kk        !none          |pesticide number from pest.dat
+      integer :: ipest_db  !none          |pesticide number from pest.dat
       integer :: ly        !none          |counter (soil layers)
       real :: yy           !              |
       real :: qsurf        !mm H2O        |surface runoff for layer
@@ -60,40 +52,38 @@
 
       j = ihru
 
-      if (hrupest(j) /= 0) then
-
-        do ly = 1, soil(j)%nly
+      if (cs_db%num_pests /= 0) then
+        do k = 1, cs_db%num_pests
           hpest_bal(j)%pest(k)%perc = 0.
           hpest_bal(j)%pest(k)%surq = 0.
           hpest_bal(j)%pest(k)%latq = 0.
-          
-          npmx = cs_db%num_pests
-          do k = 1, npmx
-            kk = hru(j)%pst(k)%num_db
+        end do
 
-            if (kk > 0) then
+        do ly = 1, soil(j)%nly
+
+          do k = 1, cs_db%num_pests
+            ipest_db = cs_db%pest_num(k)
+            if (ipest_db > 0) then
               if (ly == 1) then
                 qsurf = surfq(j)
               else
                 qsurf = 0.
               endif
 
-              zdb1 = soil(j)%phys(ly)%ul + soil(j)%ly(ly)%kp(k) *          &
-                                                   soil(j)%phys(1)%bd*soil(j)%phys(1)%thick
+              zdb1 = soil(j)%phys(ly)%ul + soil(j)%ly(ly)%kp(k) *                           &
+                                                soil(j)%phys(1)%bd * soil(j)%phys(1)%thick
               !! units: mm + (m^3/ton)*(ton/m^3)*mm = mm
-              if (ly == 1) hru(j)%pst(k)%zdb = zdb1
 
               vf = qsurf + soil(j)%ly(ly)%prk + soil(j)%ly(ly)%flat
-
               if (soil(j)%ly(ly)%pst(k) >= 0.0001 .and. vf > 0.) then
                 xx =  soil(j)%ly(ly)%pst(k) * (1. - Exp(-vf / (zdb1 + 1.e-6)))
                 if (ly == 1) then
                   cocalc = xx / (soil(j)%ly(ly)%prk + bsn_prm%percop *                  &
-                   (qsurf + soil(j)%ly(ly)%flat) + 1.e-6)
+                                               (qsurf + soil(j)%ly(ly)%flat) + 1.e-6)
                 else
                   cocalc = xx/(soil(j)%ly(ly)%prk+soil(j)%ly(ly)%flat + 1.e-6)
                 end if
-                co = Min(pestdb(kk)%pst_wof / 100., cocalc)
+                co = Min(pestdb(ipest_db)%pst_wof / 100., cocalc)
                
                 !! calculate concentration of pesticide in surface
                 !! runoff and lateral flow

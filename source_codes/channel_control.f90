@@ -36,7 +36,7 @@
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Min
 !!    SWAT: rchinit, rtover, rtday, rtmusk, rthourly, rtsed, rthsed, watqual
-!!    SWAT: noqual, hhwatqual, hhnoqual, rtpest, rthpest, rtbact, irr_rch
+!!    SWAT: noqual, hhwatqual, hhnoqual, rtpest, rthpest, irr_rch
 !!    SWAT: rchuse, reachout
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -47,6 +47,7 @@
       use channel_data_module
       use time_module
       use channel_module
+      use constituent_mass_module
       
       implicit none
 
@@ -83,10 +84,6 @@
       real :: cbodin           !mg/L          |carbonaceous biological oxygen demand
       real :: disoxin          !mg O2/L       |dissolved oxygen concentration in inflow
       real :: cinn             !mg N/L        |effective available nitrogen concentration
-      real :: solpesto         !mg pst/m^3    |soluble pesticide concentration in outflow
-                               !              |on day
-      real :: sorpesto         !mg pst/m^3    |sorbed pesticide concentration in outflow
-                               !              |on day 
       real :: rttlc_d
       real :: rtdelt
       real :: rtevp_d
@@ -110,7 +107,7 @@
       !! zero flow out variables
       ob(icmd)%hd(1) = hz
       if (time%step > 0) then
-        do ii = 1, time%step ! changed from 24 to nstep for urban modeling by J.Jeong 4/16/2008
+        do ii = 1, time%step
           ob(icmd)%ts(1,ii) = hz
         end do
       end if  
@@ -158,12 +155,7 @@
          disoxin = 1000. * ob(icmd)%hin%dox  * rt_delt / wtrin
         end if            
 
- 
-
-
-!! concentrations
-         !! initialize inflow concentrations
-
+!! initialize inflow concentrations
         
         if (bsn_cc%rte == 0) call ch_rtday
         if (bsn_cc%rte == 1) call ch_rtmusk
@@ -174,8 +166,6 @@
         ob(icmd)%hd(1)%sedp = ch(jrch)%organicp * rtwtr /1000.
        ob(icmd)%hd(1)%no3 = ch(jrch)%nitraten * rtwtr / 1000.
        ob(icmd)%hd(1)%solp = ch(jrch)%disolvp * rtwtr / 1000.
-       ob(icmd)%hd(1)%psol = solpesto * rtwtr
-       ob(icmd)%hd(1)%psor = sorpesto * rtwtr
        ob(icmd)%hd(1)%chla = ch(jrch)%chlora * rtwtr / 1000.
        ob(icmd)%hd(1)%nh3 = ch(jrch)%ammonian * rtwtr / 1000.
        ob(icmd)%hd(1)%no2 = ch(jrch)%nitriten * rtwtr / 1000.
@@ -192,42 +182,40 @@
 	        rch_lag = ob(icmd)%hd(1)%lag 
 	        rch_gra = ob(icmd)%hd(1)%grv 
             end if
-
         else
             if (ch_sed(jsed)%eqn == 0) call ch_rtsed
             if (ch_sed(jsed)%eqn == 1) call ch_rtsed_bagnold
             if (ch_sed(jsed)%eqn == 2) call ch_rtsed_kodatie
             if (ch_sed(jsed)%eqn == 3) call ch_rtsed_Molinas_Wu
             if (ch_sed(jsed)%eqn == 4) call ch_rtsed_yangsand
-  
         end if
         
+        if (cs_db%num_pests > 0) then
+          call ch_rtpest 
+        end if
         
-        call ch_rtpest   
-        rtwtr_d=rtwtr
-        rttlc_d=rttlc
-        rtevp_d =rtevp
+        rtwtr_d = rtwtr
+        rttlc_d = rttlc
+        rtevp_d = rtevp
       else
-        rt_delt = 1./time%step  
+        rt_delt = 1. / time%step  
         wtrin = ob(icmd)%hin%flo * rt_delt
-        if ( ob(icmd)%hin%flo > 0.001) then
+        if (ob(icmd)%hin%flo > 0.001) then
          chlin = 1000. * ob(icmd)%hin%chla * rt_delt / wtrin 
          algin = 1000. * chlin / ch_nut(jnut)%ai0        !! QUAL2E equation III-1
-         orgnin = 1000. * ob(icmd)%hin%orgn  *rt_delt/ wtrin  
+         orgnin = 1000. * ob(icmd)%hin%orgn  * rt_delt/ wtrin  
          ammoin = 1000. * ob(icmd)%hin%nh3 * rt_delt / wtrin  
          nitritin = 1000. * ob(icmd)%hin%no2 * rt_delt / wtrin
          nitratin = 1000. * ob(icmd)%hin%no3 * rt_delt  / wtrin
          orgpin = 1000. * ob(icmd)%hin%sedp *rt_delt / wtrin 
-         dispin = 1000. * ob(icmd)%hin%solp* rt_delt  / wtrin
+         dispin = 1000. * ob(icmd)%hin%solp * rt_delt  / wtrin
          cbodin = 1000. * ob(icmd)%hin%cbod * rt_delt / wtrin
          disoxin = 1000. * ob(icmd)%hin%dox  * rtdelt / wtrin
         end if
         
         rtwtr = 0.
         do ii = 1, time%step
-
-
-!        wtrin = ob(icmd)%ts(1,ii)%flo  
+        ! wtrin = ob(icmd)%ts(1,ii)%flo  
         call ch_rtday
         if (bsn_cc%wq == 1)  call ch_watqual3
 !        call ch_rthpest
@@ -240,8 +228,6 @@
         ob(icmd)%hd(1)%sedp = ob(icmd)%hd(1)%sedp + ch(jrch)%organicp * rtwtr /1000.
        ob(icmd)%hd(1)%no3 = ob(icmd)%hd(1)%no3+ ch(jrch)%nitraten * rtwtr / 1000.
        ob(icmd)%hd(1)%solp = ob(icmd)%hd(1)%solp+ ch(jrch)%disolvp * rtwtr / 1000.
-       ob(icmd)%hd(1)%psol = ob(icmd)%hd(1)%psol+ solpesto * rtwtr
-       ob(icmd)%hd(1)%psor = ob(icmd)%hd(1)%psor+ sorpesto * rtwtr
        ob(icmd)%hd(1)%chla = ob(icmd)%hd(1)%chla + ch(jrch)%chlora * rtwtr / 1000.
        ob(icmd)%hd(1)%nh3 =  ob(icmd)%hd(1)%nh3+ ch(jrch)%ammonian * rtwtr / 1000.
        ob(icmd)%hd(1)%no2 = ob(icmd)%hd(1)%no2 + ch(jrch)%nitriten * rtwtr / 1000.
@@ -312,7 +298,7 @@
 !!      call ch_biofilm
       
 
-!! perform in-stream bacteria calculations
+!! perform in-stream pathogen calculations
       ! call ch_rtbact  dont merge
 
 !! remove water from reach for irrigation
@@ -350,10 +336,10 @@
       ch_d(jrch)%cbod_out = ob(icmd)%hd(1)%cbod                    
       ch_d(jrch)%dis_in = ob(icmd)%hin%dox         
       ch_d(jrch)%dis_out = ob(icmd)%hd(1)%dox                     
-      ch_d(jrch)%solpst_in = ob(icmd)%hin%psol      
-      ch_d(jrch)%solpst_out = ob(icmd)%hd(1)%psol                  
-      ch_d(jrch)%sorbpst_in = ob(icmd)%hin%psor     
-      ch_d(jrch)%sorbpst_out = ob(icmd)%hd(1)%psor                  
+      !ch_d(jrch)%solpst_in = ob(icmd)%hin%psol      
+      !ch_d(jrch)%solpst_out = ob(icmd)%hd(1)%psol                  
+      !ch_d(jrch)%sorbpst_in = ob(icmd)%hin%psor     
+      !ch_d(jrch)%sorbpst_out = ob(icmd)%hd(1)%psor                  
       ch_d(jrch)%react = reactw                                 
       ch_d(jrch)%volat = volatpst                           
       ch_d(jrch)%setlpst = setlpst                              
@@ -361,12 +347,7 @@
       ch_d(jrch)%difus = -difus                                 
       ch_d(jrch)%reactb = reactb                               
       ch_d(jrch)%bury = bury                                    
-      ch_d(jrch)%sedpest = sedpest                              
-      ch_d(jrch)%bacp = ob(icmd)%hd(1)%bacp                        
-      ch_d(jrch)%baclp = ob(icmd)%hd(1)%baclp                       
-      ch_d(jrch)%met1 = ob(icmd)%hd(1)%met1                         
-      ch_d(jrch)%met2 = ob(icmd)%hd(1)%met2                         
-      ch_d(jrch)%met3 = ob(icmd)%hd(1)%met3                          
+      ch_d(jrch)%sedpest = sedpest                                                       
       ch_d(jrch)%sand_in = ob(icmd)%hin%san 
       ch_d(jrch)%sand_out = ob(icmd)%hd(1)%san                         
       ch_d(jrch)%silt_in = ob(icmd)%hin%sil         

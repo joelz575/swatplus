@@ -141,16 +141,16 @@
          end do
          
       !crosswalk
-         do istart = 1, db_mx%d_tbl
-            if (hlt_db(idb)%igrow1 == d_tbl(istart)%name) then
+         do istart = 1, db_mx%dtbl_lum
+            if (hlt_db(idb)%igrow1 == dtbl_lum(istart)%name) then
               hlt(i)%start = istart
               exit
             endif
          end do
          
       !crosswalk
-         do iend = 1, db_mx%d_tbl
-            if (hlt_db(idb)%igrow2 == d_tbl(iend)%name) then
+         do iend = 1, db_mx%dtbl_lum
+            if (hlt_db(idb)%igrow2 == dtbl_lum(iend)%name) then
               hlt(i)%end = iend
               exit
             endif

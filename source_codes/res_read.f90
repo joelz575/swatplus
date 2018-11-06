@@ -5,6 +5,9 @@
       use maximum_data_module
       use reservoir_data_module
       use conditional_module
+      use hydrograph_module
+      use constituent_mass_module
+      use reservoir_module
       
       implicit none
 
@@ -26,6 +29,8 @@
       integer :: ised                 !none       |counter
       integer :: inut                 !none       |counter
       integer :: ipst                 !none       |counter
+      integer :: isp_ini              !          |
+      integer :: ics                  !none      |counter
        
       eof = 0
       imax = 0
@@ -63,13 +68,40 @@
          read (105,*,iostat=eof) k, res_dat_c(ires)
          if (eof < 0) exit
          
-         do iinit = 1, db_mx%res_init
-           if (res_init(iinit)%name == res_dat_c(ires)%init) then
-             res_dat(ires)%init = iinit
-             exit
-           end if
-         end do
-       
+         !! initialize organics and minerals in water
+        do isp_ini = 1, db_mx%om_water_init
+          if (res_dat_c(ires)%init == res_init_dat_c(isp_ini)%init) then
+            res_ob(ires)%init = isp_ini
+            if (res_ob(ires)%init == 0) write (9001,*) res_init_dat_c(isp_ini)%init, " not found (res-init)"
+            !! initial organic mineral
+            do ics = 1, db_mx%om_water_init
+              if (res_init_dat_c(isp_ini)%org_min == om_init_name(ics)) then
+                res_init(isp_ini)%org_min = ics
+                exit
+              end if
+            if (res_init(isp_ini)%org_min == 0) write (9001,*) om_init_name(ics), " not found"
+            end do
+            !! initial pesticides
+            do ics = 1, db_mx%pestw_ini
+              if (res_init_dat_c(isp_ini)%pest == pest_init_name(ics)) then
+                res_init(isp_ini)%pest = ics
+                exit
+              end if
+            if (res_init(isp_ini)%pest == 0) write (9001,*) pest_init_name(ics), " not found" 
+            end do
+            !! initial pathogens
+            do ics = 1, db_mx%pathw_ini
+              if (res_init_dat_c(isp_ini)%path == path_init_name(ics)) then
+                res_init(isp_ini)%path = ics
+                exit
+              end if
+            if (res_init(isp_ini)%path == 0) write (9001,*) path_init_name(ics), " not found"
+            end do
+            !! initial heavy metals
+            !! initial salts
+          end if
+        end do
+
          do ihyd = 1, db_mx%res_hyd
            if (res_hyd(ihyd)%name == res_dat_c(ires)%hyd) then
              res_dat(ires)%hyd = ihyd
@@ -77,8 +109,8 @@
            end if
          end do
        
-          do irel = 1, db_mx%d_tbl
-            if (d_tbl(irel)%name == res_dat_c(ires)%release) then
+          do irel = 1, db_mx%dtbl_res
+            if (dtbl_res(irel)%name == res_dat_c(ires)%release) then
              res_dat(ires)%release = irel
              exit
             end if
@@ -105,7 +137,7 @@
            end if
          end do 
          
-       if (res_dat(ires)%init == 0) write (9001,*) res_dat_c(ires)%init, " not found (res-init)"
+      
        if (res_dat(ires)%hyd == 0) write (9001,*) res_dat_c(ires)%hyd, " not found (res-hyd)"
        if (res_dat(ires)%release == 0) write (9001,*) res_dat_c(ires)%release, " not found (res-release)"         
        if (res_dat(ires)%sed == 0) write (9001,*) res_dat_c(ires)%sed, " not found (res-sed)"

@@ -140,7 +140,7 @@
          end if
          
            if (lum_str(ilu)%plant_cov == 0 .and. lum(ilu)%plant_cov /= "null") then 
-               write (9001,*) lum(ilu)%name, lum(ilu)%plant_cov, " not found in initial.plt" 
+               write (9001,*) lum(ilu)%name, lum(ilu)%plant_cov, " not found in plant.ini" 
            end if
            if (lum_str(ilu)%mgt_ops == 0 .and. lum(ilu)%mgt_ops /= "null") then
               write (9001,*) lum(ilu)%name, lum(ilu)%mgt_ops, " not found in management.sch"

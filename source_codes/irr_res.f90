@@ -77,11 +77,6 @@
       real :: vol              !m^3 H2O       |volume of water applied in irrigation 
                                !              |operation
       integer :: jres          !none          |reservoir number
-      integer :: ipot          !none          |number of HRU (in subbasin) that is ponding
-                               !              |water--the HRU that the surface runoff from
-                               !              |current HRU drains into. This variable is
-                               !              |used only for rice paddys or closed
-                               !              |depressional areas 
       real :: sq_rto           !              |
       
       do k = 1, nhru
@@ -128,24 +123,6 @@
               vmxi = irr_mx(k)
               if (vmm > vmxi) vmm = vmxi
             end if
-
- !           if (vmm > 0.) then
- !             vol = 0.
- !             vol = vmm * cnv
- !             if (potdb(ipot)%frac > 1.e-6) then
- !               pot(k)%vol = pot(k)%vol + vol
- !             else
- !               call pl_irrigate(k,vmm)
- !             end if
-
-              !! subtract irrigation from reservoir volume
-              if (potdb(ipot)%frac > 1.e-6) then
-                vol = 0.
-                vol = aird(k) * cnv
-              end if
-              vol = vol / irr_eff(k)		     !! BN inserted to account for irr. efficiency
-              res(jres)%flo = res(jres)%flo - vol
-              if (res(jres)%flo < 0.) res(jres)%flo = 0.
 
             end if
           end if

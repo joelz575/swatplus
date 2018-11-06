@@ -7,6 +7,7 @@
       use climate_module
       use time_module
       use plant_data_module
+      use conditional_module
       
       implicit none
       
@@ -181,8 +182,9 @@
           if (hlt(isd)%gro == "n") then
             ! istart points to rule set in d_table
             istart = hlt(isd)%start
-            call conditions (istart, isd)
-            call actions (istart, isd)
+            d_tbl => dtbl_lum(istart)
+            call conditions (isd)
+            call actions (isd)
           end if
           
 !         end growth for plants
@@ -192,8 +194,9 @@
             hlt(isd)%pet = hlt(isd)%pet + pet
             ! iend points to rule set in d_table
             iend = hlt(isd)%end
-            call conditions (iend, isd)
-            call actions (iend, isd)
+            d_tbl => dtbl_lum(iend)
+            call conditions (isd)
+            call actions (isd)
           end if
 
          ! calc yield, print max lai, dm and yield
@@ -319,14 +322,8 @@
           if (perc.lt.0.) perc = 0.
           perc = amin1(hlt(isd)%sw, perc)
           hlt(isd)%sw = hlt(isd)%sw - perc
-          !limit perc for depth to impermeable layer
-          !xx = (hlt(isd)%dep_imp - hlt_db(ihlt_db)%soildep) / 1000.
-          !if (xx < 1.e-4) then
-          !  perc = 0.
-          !else
-          !  perc = perc * xx / (xx + Exp(8.833 - 2.598 * xx))
-          !end if
-                                                                        
+          !limit perc with perco_co
+          
           aet = amin1(hlt(isd)%sw, aet)
           hlt(isd)%sw = hlt(isd)%sw - aet 
                                                                         
@@ -387,24 +384,6 @@
         hltwb_d(isd)%irr = air
         
 !    output_nutbal - no nutrients currently in SWAT-DEG
-!        hltnb_d(isd)%cfertn = 0.   !! cfertn
-!        hltnb_d(isd)%cfertp = 0.   !! cfertp
-!        hltnb_d(isd)%grazn =  0.   !! grazn
-!        hltnb_d(isd)%grazp =  0.   !! grazp
-!        hltnb_d(isd)%auton =  0.   !! auton
-!        hltnb_d(isd)%autop =  0.   !! autop
-!        hltnb_d(isd)%rmp1tl = 0.   !! rmp1tl
-!        hltnb_d(isd)%roctl =  0.   !! roctl
-!        hltnb_d(isd)%fertn =  0.   !! fertn
-!        hltnb_d(isd)%fertp =  0.   !! fertp
-!        hltnb_d(isd)%fixn =  0.    !! fixn
-!        hltnb_d(isd)%wdntl = 0.    !! wdntl
-!        hltnb_d(isd)%hmntl = 0.    !! hmntl
-!        hltnb_d(isd)%rwntl = 0.    !! rwntl
-!        hltnb_d(isd)%hmptl = 0.    !! hmptl
-!        hltnb_d(isd)%rmn2tl = 0.   !! rmn2tl
-!        hltnb_d(isd)%rmptl = 0.    !! rmptl
-!        hltnb_d(isd)%no3pcp = 0.   !! no3pcp
 
 !    output_losses - SWAT-DEG
         hltls_d(isd)%sedyld = sedin / (100. * hlt_db(ihlt_db)%dakm2) !! sedyld(isd) / hru_ha(isd)
@@ -414,8 +393,6 @@
         hltls_d(isd)%latno3 = 0.    !! latno3(isd)
         hltls_d(isd)%surqsolp = 0.  !! surqsolp(isd)
         hltls_d(isd)%usle = 0.      !! usle
-        hltls_d(isd)%bactp = 0.     !! bactrop + bactsedp
-        hltls_d(isd)%bactlp = 0.    !! bactrolp + bactsedlp
         hltls_d(isd)%sedmin = 0.    !! sedminpa(isd) + sedminps(isd)
         hltls_d(isd)%tileno3 = 0.   !! tileno3(isd)
         
@@ -456,13 +433,6 @@
          ob(icmd)%hd(1)%no2 = 0.                         !! NO2
          ob(icmd)%hd(1)%cbod = 0.
          ob(icmd)%hd(1)%dox = 0.
-         if (ob(icmd)%hd(1)%flo > .1) then
-          ob(icmd)%hd(1)%bacp = 0.
-          ob(icmd)%hd(1)%baclp = 0.
-         end if
-         ob(icmd)%hd(1)%met1 = 0.                            !! cmetal #1
-         ob(icmd)%hd(1)%met2 = 0.                            !! cmetal #2
-         ob(icmd)%hd(1)%met3 = 0.                            !! cmetal #3
          ob(icmd)%hd(1)%san = 0.                             !! det sand
          ob(icmd)%hd(1)%sil = 0.                             !! det silt
          ob(icmd)%hd(1)%cla = 0.                             !! det clay

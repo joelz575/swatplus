@@ -1,7 +1,7 @@
       module organic_mineral_mass_module
     
       implicit none 
-    
+
       type organic_mass
         real :: m = 0.              !kg or kg/ha      |total object mass
         real :: c = 0.              !kg or kg/ha      |carbon mass
@@ -169,7 +169,7 @@
       !herds are different from soil and plant in that they can move from hru to hru
       type animal_herds
         character(len=16) :: name                                           !           |herd name (small_dairy, )
-        integer :: num_tot                                                  !           |total number of animals in the here
+        integer :: num_tot                                                  !           |total number of animals in the herd
         type (organic_mass) :: herd_mass                                    !kg         |total mass of herd
         character(len=16), dimension(:), allocatable :: typ                 !           |animal type (points to animal.hrd)
         integer, dimension(:), allocatable :: num                           !           |number of each type of animal

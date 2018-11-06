@@ -52,8 +52,8 @@
         real :: st = 0.          !! mm H2O         amount of water stored in the soil layer on any given day (less wp water)
         real :: tmp = 0.         !! deg C          daily average temperature of second soil layer
         real :: ul = 0.          !! mm H2O         amount of water held in the soil layer at saturation (sat - wp water)
-        real :: up = 0.          !! mm H2O/mm soil water content of soil at -0.033 MPa (field capacity)
-        real :: wp = 0.          !! mm H20/mm soil water content of soil at -1.5 MPa (wilting point)
+        real :: up = 0.          !! mm H2O/mm      soil water content of soil at -0.033 MPa (field capacity)
+        real :: wp = 0.          !! mm H20/mm      soil water content of soil at -1.5 MPa (wilting point)
         real :: wpmm = 0.        !! mm H20         water content of soil at -1.5 MPa (wilting point)
       end type soil_physical_properties
 
@@ -65,7 +65,7 @@
         type (soil_physical_properties),dimension (:), allocatable::phys
         type (soilayer), dimension (:), allocatable :: ly
         real, dimension(:),allocatable :: pest              !! kg/ha    total pesticide in the soil profile
-        real :: zmx = 0.
+        real :: zmx = 0.                   !! mm            maximum rooting depth in soil
         real :: anion_excl = 0.            !! none          fraction of porosity from which anions are excluded
         real :: crk = 0.                   !! none          crack volume potential of soil
         real :: alb = 0.                   !! none          albedo when soil is moist

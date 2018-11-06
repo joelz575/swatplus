@@ -105,6 +105,7 @@
         blai_com(j) = 0.
         rsdco_plcom(j) = 0.
         pcom(j)%pcomdb = icom
+        pcom(j)%rot_yr = 1
         do ipl = 1, pcom(j)%npl
           pcom(j)%plg(ipl)%cpnm = pcomdb(icom)%pl(ipl)%cpnm
           pcom(j)%plcur(ipl)%gro = pcomdb(icom)%pl(ipl)%igro

@@ -21,6 +21,7 @@
 
       !allocate objects for each aquifer
       allocate (aqu(maqu_sp))
+      allocate (aqu_prm(maqu_sp))
       allocate (aqu_st(maqu_sp))
       allocate (aqu_m(maqu_sp))
       allocate (aqu_y(maqu_sp))
@@ -31,13 +32,17 @@
         aqu_st(iaq)%obj_no = iob
         aqu_st(iaq)%props = ob(iob)%props
         iaqdb = aqu_st(iaq)%props
-        !! initialize parameters
-        aqu_prm(iaqdb)%alpha_e = Exp(-aqudb(iaqdb)%alpha)
-        if(aqudb(iaqdb)%delay < .1) aqudb(iaqdb)%delay = .1
-        aqu_prm(iaqdb)%delay_e = Exp(-1./(aqudb(iaqdb)%delay + 1.e-6))
         
-        !! 
-        aqu_prm(iaqdb)%nloss = Exp(-.693 / (aqudb(iaqdb)%hlife_n + .1))
+        !! initialize parameters
+        aqu_prm(iaq)%alpha = aqudb(iaqdb)%alpha
+        aqu_prm(iaq)%delay = aqudb(iaqdb)%delay
+        aqu_prm(iaq)%flo_min = aqudb(iaqdb)%flo_min
+        aqu_prm(iaq)%revap_co = aqudb(iaqdb)%revap_co
+        aqu_prm(iaq)%revap_min = aqudb(iaqdb)%revap_min
+        aqu_prm(iaq)%alpha_e = Exp(-aqudb(iaqdb)%alpha)
+        if(aqudb(iaq)%delay < .1) aqudb(iaqdb)%delay = .1
+        aqu_prm(iaq)%delay_e = Exp(-1./(aqudb(iaqdb)%delay + 1.e-6))
+        aqu_prm(iaq)%nloss = Exp(-.693 / (aqudb(iaqdb)%hlife_n + .1))
         aqu(iaq)%flo = aqudb(iaqdb)%flo
         aqu(iaq)%stor = aqudb(iaqdb)%stor    !* ob(iob)%area_ha * 10.  !convert mm to m^3
         aqu(iaq)%hgt = aqudb(iaqdb)%hgt
@@ -45,9 +50,6 @@
         aqu(iaq)%minp = aqudb(iaqdb)%minp
         aqu(iaq)%orgn = aqudb(iaqdb)%orgn
         aqu(iaq)%orgp = aqudb(iaqdb)%orgp
-        aqu_st(iaq)%flo_min = aqudb(iaqdb)%flo_min
-        aqu_st(iaq)%revap_co = aqudb(iaqdb)%revap
-        aqu_st(iaq)%revap_min = aqudb(iaqdb)%revap_min
       end do
 
       return

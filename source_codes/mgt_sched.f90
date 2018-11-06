@@ -40,8 +40,6 @@
       real :: pst_kg               !kg/ha    |amount of pesticide applied to HRU
       
       j = ihru
-      iob = hru(j)%obj_no
-      
       
       ! determine which plant in community (%op2)
       if (mgt%op /= "fert      ") then
@@ -69,7 +67,7 @@
                 pcom(j)%plcur(ipl)%gro = "y"
                 pcom(j)%plcur(ipl)%idorm = "n"
                 if (pco%mgtout ==  "y") then
-                   write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, pldb(idp)%plantnm,  "         PLANT ",  &
+                  write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,  "PLANT ",          &
                       phubase(ihru), pcom(ihru)%plcur(ipl)%phuacc,  soil(ihru)%sw,                          &
                       pcom(ihru)%plm(ipl)%mass, soil(ihru)%ly(1)%rsd, sol_sumno3(ihru),                     &
                       sol_sumsolp(ihru),pcom(ihru)%plg(ipl)%lai, pcom(ihru)%plcur(ipl)%laimx_pop
@@ -102,7 +100,8 @@
             do ipl = 1, pcom(j)%npl
               biomass = pcom(j)%plm(ipl)%mass
               if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm .or. mgt%op_char == "all") then
-                          
+                pcom(j)%days_harv = 1       !reset days since last harvest    
+                  
                 !harvest specific type
                 select case (harvop_db(iharvop)%typ)
                 case ("biomass")    
@@ -127,7 +126,7 @@
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == "y") then
-                  write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id,  pldb(idp)%plantnm, "       HARVEST ",    &
+                  write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARVEST ",    &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, rsd1(j)%tot(ipl)%m,    &
                       sol_sumno3(j), sol_sumsolp(j), yield, pcom(j)%plstr(ipl)%sum_n,                   &
                       pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w,   &
@@ -145,7 +144,7 @@
   
                   idp = pcom(j)%plcur(ipl)%idplt
                   if (pco%mgtout == "y") then
-                       write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id,  pldb(idp)%plantnm, "         HARVEST ",  &
+                    write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARVEST ",  &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, rsd1(j)%tot(ipl)%m,    &
                       sol_sumno3(j), sol_sumsolp(j), yield, pcom(j)%plstr(ipl)%sum_n,                   &
                       pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w,   &
@@ -161,6 +160,7 @@
             do ipl = 1, pcom(j)%npl
               biomass = pcom(j)%plm(ipl)%mass
               if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm .or. mgt%op_char == "all") then
+                pcom(j)%days_harv = 1       !reset days since last harvest   
                           
                 !harvest specific type
                 select case (harvop_db(iharvop)%typ)
@@ -181,7 +181,7 @@
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == "y") then
-                  write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id,  pldb(idp)%plantnm, "         HARV/KILL ",  &
+                  write (2612, *) j, time%yrc, time%mo, time%day_mo,  pldb(idp)%plantnm, "HARV/KILL ",  &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, biomass, rsd1(j)%tot(ipl)%m,    &
                       sol_sumno3(j), sol_sumsolp(j), yield, pcom(j)%plstr(ipl)%sum_n,                   &
                       pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w,   &
@@ -199,7 +199,7 @@
             call mgt_newtillmix(j, 0., idtill)
             
             if (pco%mgtout == "y") then
-              write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, tilldb(idtill)%tillnm, "               TILLAGE ",     &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, tilldb(idtill)%tillnm, "TILLAGE ",     &
                   phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pcom(j)%plm(ipl)%mass,         &
                   rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), tilldb(idtill)%effmix
             end if
@@ -211,7 +211,7 @@
             call pl_irrigate (j, amt_mm, irrop)
             
             if (pco%mgtout == "y") then
-              write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, "        ", "         IRRIGATE ", phubase(j),   &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "IRRIGATE ", phubase(j),   &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass, rsd1(j)%tot(ipl)%m,   &
                   sol_sumno3(j), sol_sumsolp(j),irramt(j), irr_sc(j), irr_no(j)
             end if
@@ -224,7 +224,7 @@
             call pl_fert (j, ifrt, frt_kg, ifertop)
 
             if (pco%mgtout == "y") then
-              write (2612,*) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, mgt%op_char, "             FERT ", &
+              write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    FERT ", &
                 phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pcom(j)%plm(ipl)%mass,           &
                 soil(j)%ly(1)%rsd, sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3,         &
                 fertorgn, fertsolp, fertorgp
@@ -232,20 +232,22 @@
  
           case ("pest")   !! pesticide operation
             !xwalk application in the mgt file with the pest community
+            iob = sp_ob%hru + ihru - 1
             do ipestcom = 1, cs_db%num_pests
               if (cs_db%pests(ipestcom) == mgt%op_char) then
                 mgt%op1 = ipestcom
+                exit
               end if
             end do
 
             ipl = 1
             ipest = mgt%op1             !sequential pesticide type from pest community
             pest_kg = mgt%op3           !amount applied in kg/ha
-            ipestop = mgt%op4            !surface application fraction from chem app data base
-            call pl_apply (j, ipest, pest_kg, ipestop)
+            ipestop = mgt%op4           !surface application fraction from chem app data base
+            call pst_apply (j, ipest, pest_kg, ipestop)
             
             if (pco%mgtout == "y") then
-              write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, mgt%op_char, "             PEST ", &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    PEST ", &
                 phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,            &
                 rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), pst_kg
             endif
@@ -265,7 +267,7 @@
             manure_kg(j) = grazeop_db(mgt%op1)%manure
             
             if (pco%mgtout == "y") then
-               write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, "         ", "             GRAZE ",         &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "         ", "    GRAZE ",         &
                 phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,        &
                 rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), manure_kg(j)
             endif
@@ -277,7 +279,7 @@
             end do
                         
             if (pco%mgtout == "y") then
-                write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, "        ", "             BURN ", phubase(j),   &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "    BURN ", phubase(j),   &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass, rsd1(j)%tot(ipl)%m,   &
                   sol_sumno3(j), sol_sumsolp(j)
             end if
@@ -289,7 +291,7 @@
             fr_curb = sweepop%fr_curb
                   
             if (pco%mgtout == "y") then
-                write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, "        ", "      STREET SWEEP ", phubase(j),    &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "STREET SWEEP ", phubase(j),    &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass, rsd1(j)%tot(ipl)%m,       &
                   sol_sumno3(j), sol_sumsolp(j)
             end if
@@ -306,7 +308,7 @@
             endif 
             !! added below changed plcur(ipl) to plcur(j) and plm(ipl) to plm(j) gsm 1/30/2018
             if (pco%mgtout ==  "y") then
-              write (2612, *) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, pldb(idp)%plantnm,  "        DRAINAGE_MGT ",          &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,  "DRAINAGE_MGT ",          &
                    phubase(ihru), pcom(ihru)%plcur(j)%phuacc,  soil(ihru)%sw,                          &
                    pcom(ihru)%plm(j)%mass, soil(ihru)%ly(1)%rsd, sol_sumno3(ihru),                     &
                    sol_sumsolp(ihru),hru(j)%lumv%sdr_dep

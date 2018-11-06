@@ -52,16 +52,6 @@
           backspace (105)
           read (105,*)  ch_pst(ich)
           if (eof < 0) exit
-          
-          if (ch_pst(ich)%pst_vol <= 1.e-6) ch_pst(ich)%pst_vol = 0.01
-          if (ch_pst(ich)%pst_koc <= 1.e-6) ch_pst(ich)%pst_koc = 0.
-          if (ch_pst(ich)%pst_stl <= 1.e-6) ch_pst(ich)%pst_stl = 1.
-          if (ch_pst(ich)%pst_rsp <= 1.e-6) ch_pst(ich)%pst_rsp = 0.002
-          if (ch_pst(ich)%pst_mix <= 1.e-6) ch_pst(ich)%pst_mix = 0.001
-          if (ch_pst(ich)%sedpst_conc <= 1.e-6)ch_pst(ich)%sedpst_conc=0.
-          if (ch_pst(ich)%sedpst_rea <= 1.e-6) ch_pst(ich)%sedpst_rea=0.05
-          if (ch_pst(ich)%sedpst_bry <= 1.e-6)ch_pst(ich)%sedpst_bry=0.002
-          if (ch_pst(ich)%sedpst_act <= 1.e-6)ch_pst(ich)%sedpst_act=0.030
 
         end do
         exit

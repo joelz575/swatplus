@@ -53,7 +53,7 @@
       do ipl = 1, pcom(j)%npl
         bioms_tot = bioms_tot + pcom(j)%plm(ipl)%mass
       end do
-!! graze only if adequate biomass in HRU
+      !! graze only if adequate biomass in HRU
       if (bioms_tot > bio_min(j)) then
 
         do ipl = 1, pcom(j)%npl

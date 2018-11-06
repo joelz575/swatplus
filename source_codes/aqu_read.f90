@@ -23,7 +23,6 @@
        inquire (file=in_aqu%aqu, exist=i_exist)
        if (i_exist == 0 .or. in_aqu%aqu == "null") then
             allocate (aqudb(0:0))
-            allocate (aqu_prm(0:0))
           else
        do
           open (107,file=in_aqu%aqu)
@@ -39,7 +38,6 @@
             end do 
                        
           allocate (aqudb(0:imax))
-          allocate (aqu_prm(0:imax))
           rewind (107)
           read (107,*) titldum
           read (107,*) header

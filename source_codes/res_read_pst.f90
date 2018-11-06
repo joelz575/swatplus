@@ -58,15 +58,5 @@
       endif
       close(105)
 
-      !! convert units  
-      !! lake pesticide mass
-!      do ires = 1, imax
-!        ipst = res_dat(ires)%pst
-!        res(ires)%psor = res_pst(ipst)%pst_conc * res(ipst)%vol
-!        lkarea = res(ires)%psa
-!        res(ires)%psor = res_pst(ipst)%spst_conc * 
-!     &                         res_pst(ipst)%spst_act * lkarea * 10000.
-!      end do
-
       return
       end subroutine res_read_pst

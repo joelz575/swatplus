@@ -6,13 +6,13 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    mhyd        |none          |max number of hydrographs
-!!    mpst        |none          |max number of pesticides used in wshed
 !!    nstep       |none          |max number of time steps per day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
       use hru_module      
       use time_module
       use hydrograph_module
+      use constituent_mass_module
       
 !! initialize variables    
       mhyd = 1  !!added for jaehak vars
@@ -95,10 +95,6 @@
 
 !!    arrays which contain data related to HRUs
       allocate (aird(mhru))
-      allocate (bactlpq(mhru))
-      allocate (bactlps(mhru))
-      allocate (bactpq(mhru))
-      allocate (bactps(mhru))
       allocate (bio_min(mhru))
       allocate (brt(mhru))
       allocate (canstor(mhru))
@@ -124,7 +120,6 @@
       allocate (hru_dafr(mhru))
       allocate (hru_ra(mhru))
       allocate (hru_rmx(mhru))
-      allocate (hrupest(mhru))
       allocate (igrz(mhru))
       allocate (irramt(mhru))
       allocate (yr_skip(mhru))
@@ -149,7 +144,6 @@
       allocate (qdr(mhru))
       allocate (rhd(mhru))
 
-      allocate (sci(mhru))
 !    Drainmod tile equations  01/2006 
 	  allocate (sstmaxd(mhru))	  
 !    Drainmod tile equations  01/2006 
@@ -205,11 +199,7 @@
       allocate (eo_30d(30,mhru))
 
 !!    arrays which contain data related to pesticides, HRUs
-      allocate (pst_lag(mpst,3,mhru))
-      allocate (npno(mpst))
-
-!!    arrays
-      allocate (wpstaao(mpst,5))
+      allocate (pst_lag(cs_db%num_pests,3,mhru))
 
 !! sj aug 09 end
 	  allocate (hhsurf_bs(2,mhru,time%step))  !! nstep changed to nstep  OCt. 18,2007

@@ -74,7 +74,6 @@
        exit
       enddo
       endif
-      
       db_mx%mgt_ops = imax
        
       close(107)

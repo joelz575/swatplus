@@ -15,23 +15,15 @@
         call soils_init
         call soiltest_all_init
         call hru_output_allo
-        call bacteria_init
         call pesticide_init
+        call pathogen_init
         call plant_all_init
         call hydro_init
         if (db_mx%wet_dat > 0) call wet_initial
       end if
-            
-      !if tile drains, set dep_imp to zero
-      do ihru = 1, sp_ob%hru
-        if (hru(ihru)%tiledrain > 0) then
-          hru(ihru)%hyd%dep_imp = soil(ihru)%phys(soil(ihru)%nly)%d
-        end if
-      end do
-        
+
       call hru_lte_read
-      call sd_channel_read
-      
+
       call ls_link
         
       call rte_read_nut

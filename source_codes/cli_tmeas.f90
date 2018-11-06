@@ -103,8 +103,8 @@
          if (eof < 0) exit
          if (iyr == time%yrc .and. istep == time%day_start) exit
        end do
-	   
-	   backspace (108)
+
+       backspace (108)
        iyr_prev = iyr
        iyrs = 1
        

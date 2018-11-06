@@ -1,10 +1,11 @@
         subroutine cbn_zhang2
     
-        use hru_module, only : ihru, tillage_days, tillage_depth, tillage_factor, tillage_switch, wdntl
+        use hru_module, only : ihru, tillage_days, tillage_depth, tillage_factor, tillage_switch
         use soil_module
         use basin_module
         use organic_mineral_mass_module
         use carbon_module
+        use output_landscape_module
         
         implicit none
         
@@ -385,7 +386,7 @@
           if (org_con%cdg > 0. .and. void <= 0.1) then
             call nut_denit(k, j, org_con%cdg, wdn, void)
           end if
-          wdntl = wdntl + wdn
+          hnb_d(j)%denit = hnb_d(j)%denit + wdn
 
           sol_min_n = soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4
               

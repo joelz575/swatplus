@@ -7,14 +7,18 @@
       integer :: irch                   !              |
       integer :: idat                   !              |
       integer :: i                      !none          |counter
-      
+         
       call ch_read_init
+
+      call sd_hydsed_read
       call ch_read_hyd
       call ch_read_sed
       call ch_read_nut
       call ch_read_pst
       call ch_read
-      
+      call sd_channel_read
+      call sd_hydsed_init
+
       call channel_allo
       
       do ich = 1, sp_ob%chan

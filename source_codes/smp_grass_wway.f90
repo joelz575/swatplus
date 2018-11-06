@@ -29,11 +29,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, surfq, sedyld, ihru, clayld, sanyld, silyld, sagyld, lagyld,  &
-        sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, hrupest, bactrolp,       &
-        bactrop, bactsedlp, bactsedp, npmx, peakr, rcharea, sdti
+        sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, peakr, rcharea, sdti
       use constituent_mass_module
       use channel_velocity_module
-      use output_ls_constituent_module
+      use output_ls_pesticide_module
       
       implicit none
 
@@ -220,19 +219,17 @@
 
 !! Calculate pesticide removal 
 !! based on the sediment and runoff removal only
-      if (hrupest(j) == 1) then
-        npmx = cs_db%num_pests
-        do k = 1, npmx
+        do k = 1, cs_db%num_pests
           hpest_bal(j)%pest(k)%surq = hpest_bal(j)%pest(k)%surq * surq_frac
           hpest_bal(j)%pest(k)%sed = hpest_bal(j)%pest(k)%sed * (1. - sed_remove / 100.)
         end do
-      end if
-!! compute bacteria reductions
-      bactrop = bactrop * surq_frac
-      bactrolp = bactrolp * surq_frac
-      bactsedp = bactsedp * sed_frac
-      bactsedlp = bactsedlp * sed_frac
 
-      Endif
+!! compute bacteria reductions
+      !bactrop = bactrop * surq_frac
+      !bactrolp = bactrolp * surq_frac
+      !bactsedp = bactsedp * sed_frac
+      !bactsedlp = bactsedlp * sed_frac
+
+      end if
       return
       end subroutine smp_grass_wway

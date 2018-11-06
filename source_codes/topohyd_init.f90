@@ -18,6 +18,7 @@
       integer :: ihyd_db              !           |
       integer :: itopo_db             !           |
       integer :: iob                  !           |
+      real :: perc_ln_func            !none       |function to convert perco to perc_lim
     
       !!assign topography and hyd parameters
       do ihru = 1, sp_ob%hru
@@ -43,11 +44,16 @@
         hru(ihru)%hyd%erorgp = hyd_db(ihyd_db)%erorgp
         hru(ihru)%hyd%cn3_swf = hyd_db(ihyd_db)%cn3_swf
         hru(ihru)%hyd%perco = hyd_db(ihyd_db)%perco
+        if (hru(ihru)%hyd%perco > 1.e-9) then
+          perc_ln_func = 1.0052 * log(-log(hru(ihru)%hyd%perco - 1.e-6)) + 5.6862
+          hru(ihru)%hyd%perco_lim = exp(-perc_ln_func)
+          hru(ihru)%hyd%perco_lim = amin1 (1., hru(ihru)%hyd%perco_lim)
+        else
+          hru(ihru)%hyd%perco_lim = 0.
+        end if
+        
         hru(ihru)%topo%dis_stream = topo_db(itopohd_db)%dis_stream
         hru(ihru)%hyd%biomix = hyd_db(ihyd_db)%biomix
-        nly = soildb(isol)%s%nly
-        hru(ihru)%hyd%dep_imp = hyd_db(ihyd_db)%dep_imp + soildb(isol)%ly(nly)%z
-        hru(ihru)%hyd%dep_imp_init = hyd_db(ihyd_db)%dep_imp
         hru(ihru)%hyd%lat_orgn = hyd_db(ihyd_db)%lat_orgn
         hru(ihru)%hyd%lat_orgp = hyd_db(ihyd_db)%lat_orgp
         ! set field data

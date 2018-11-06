@@ -18,14 +18,12 @@
                                  !!                              |Mixing of soil due to activity of earthworms
                                  !!                              |and other soil biota. Mixing is performed at
                                  !!                              |the end of every calendar year.
-         real :: dep_imp = 0.    !! dep_imp(:)    |mm            |depth to impervious layer
+         real :: perco = 0.      !!               |0-1           |percolation coefficient - linear adjustment to daily perc
          real :: lat_orgn = 0.   !!               |ppm           |organic N concentration in lateral flow
          real :: lat_orgp = 0.   !!               |ppm           |organic P concentration in lateral flow
          real :: harg_pet  = .0023  !!            |              |coefficient related to radiation used in 
                                  !!                              | Hargreaves equation
          real :: cncoef = 0.3    !!               |              |plant ET curve number coefficient
-         real :: perco = 1.      !!               |              |percolation coefficient-adjusts soil moisture
-                                 !!                              | for perc to occur (1.0 = fc)
        end type hydrology_db
         type (hydrology_db), dimension (:), allocatable :: hyd_db
         

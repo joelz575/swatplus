@@ -7,13 +7,7 @@
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    enratio       |none         |enrichment ratio calculated for day in HRU
-!!    hrupest(:)    |none         |pesticide use flag:
-!!                                | 0: no pesticides used in HRU
-!!                                | 1: pesticides used in HRU
 !!    ihru          |none         |HRU number
-!!    npmx          |none         |number of different pesticides used in
-!!                                |the simulation
-!!    npno(:)       |none         |array of unique pesticides used in watershed
 !!    pst_enr(:,:)  |none         |pesticide enrichment ratio
 !!    sol_pst(:,:,:)|kg/ha        |amount of pesticide in layer in HRU
 !!    zdb(:,:)      |mm           |division term from net pesticide equation
@@ -22,8 +16,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    pst_sed(:,:)  |kg/ha        |pesticide loading from HRU sorbed onto
-!!                                |sediment
 !!    sol_pst(:,:,:)|kg/ha        |amount of pesticide in layer in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -34,35 +26,39 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : hru, hrupest, sedyld, ihru, enratio, npmx
+      use hru_module, only : hru, sedyld, ihru, enratio
       use soil_module
       use constituent_mass_module
-      use output_ls_constituent_module
+      use output_ls_pesticide_module
       
       implicit none 
 
       real :: conc        !              |concentration of pesticide in soil
       real :: er          !none          |enrichment ratio for pesticides
+      real :: zdb1        !              |
       integer :: j        !none          |HRU number
       integer :: k        !none          |counter
-      integer :: kk       !none          |pesticide number from database
+      integer :: ipest_db !none          |pesticide number from database
       real :: pest_init   !kg/ha         |amount of pesticide in soil
       integer :: icmd     !              | 
 
       j = ihru
 
-      if (hrupest(j) == 0) return
-          
-      npmx = cs_db%num_pests
-      do k = 1, npmx
-        kk = hru(j)%pst(k)%num_db
-        if (kk > 0) then
+      if (cs_db%num_pests == 0) return
+
+      do k = 1, cs_db%num_pests
+        ipest_db = cs_db%pest_num(k)
+        if (ipest_db > 0) then
           pest_init = soil(j)%ly(1)%pst(k)
           
           if (pest_init >= .0001) then
-            conc = 100. * soil(j)%ly(1)%kp(k) * pest_init / (hru(j)%pst(k)%zdb + 1.e-10)
-            if (hru(j)%pst(k)%enr > 0.) then
-              er = hru(j)%pst(k)%enr
+            zdb1 = soil(j)%phys(1)%ul + soil(j)%ly(1)%kp(k) *                           &
+                                            soil(j)%phys(1)%bd * soil(j)%phys(1)%thick
+            !! units: mm + (m^3/ton)*(ton/m^3)*mm = mm
+            conc = 100. * soil(j)%ly(1)%kp(k) * pest_init / (zdb1 + 1.e-10)
+
+            if (hru(j)%hyd%erorgn > .001) then
+              er = hru(j)%hyd%erorgn
             else
               er = enratio
             end if

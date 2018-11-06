@@ -91,7 +91,7 @@
         ! read and store entire year
         wnd(i)%yrs_start = 0
       end if
-          
+      
         ! read and store entire year
        do 
          read (108,*,iostat=eof) iyr, istep

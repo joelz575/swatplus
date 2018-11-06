@@ -75,12 +75,12 @@
       j = ihru
       nactfr = .02
       !zero transformations for summing layers
-      hnb_d(j)%rmn1 = 0.
-      hnb_d(j)%rmp = 0.
-      hnb_d(j)%hmn = 0.
-      hnb_d(j)%hmp = 0.
-      hnb_d(j)%rwn = 0.
-      hnb_d(j)%wdn = 0.
+      hnb_d(j)%rsd_nitorg_n = 0.
+      hnb_d(j)%rsd_laborg_p = 0.
+      hnb_d(j)%act_nit_n = 0.
+      hnb_d(j)%org_lab_p = 0.
+      hnb_d(j)%act_sta_n = 0.
+      hnb_d(j)%denit = 0.
 
       !! mineralization can occur only if temp above 0 deg
       if (soil(j)%phys(1)%tmp > 0.) then
@@ -146,8 +146,8 @@
           rsd1(j)%mp%lab = rsd1(j)%mp%lab + .8 * rmp
           soil1(j)%hp(1)%p = soil1(j)%hp(1)%p + .2 * rmp
           
-          hnb_d(j)%rmn1 = hnb_d(j)%rmn1 + rmn1
-          hnb_d(j)%rmp = hnb_d(j)%rmp + rmp
+          hnb_d(j)%rsd_nitorg_n = hnb_d(j)%rsd_nitorg_n + rmn1
+          hnb_d(j)%rsd_laborg_p = hnb_d(j)%rsd_laborg_p + rmp
           
         end do      ! ipl = 1, pcom(j)%npl
       end if
@@ -192,7 +192,7 @@
           endif
           soil1(j)%hp(k)%n = Max(1.e-6, soil1(j)%hp(k)%n + rwn)
           soil1(j)%hs(k)%n = Max(1.e-6, soil1(j)%hs(k)%n - rwn)
-          hnb_d(j)%rwn = hnb_d(j)%rwn + rwn
+          hnb_d(j)%act_sta_n = hnb_d(j)%act_sta_n + rwn
 
           !! compute humus mineralization on active organic n
           hmn = bsn_prm%cmn * csf * soil1(j)%hs(k)%n
@@ -211,8 +211,8 @@
           soil1(j)%hp(k)%p = soil1(j)%hp(k)%p - hmp
           soil1(j)%mp(k)%lab = soil1(j)%mp(k)%lab + hmp
           
-          hnb_d(j)%hmn = hnb_d(j)%hmn + hmn
-          hnb_d(j)%hmp = hnb_d(j)%hmp + hmp
+          hnb_d(j)%act_nit_n = hnb_d(j)%act_nit_n + hmn
+          hnb_d(j)%org_lab_p = hnb_d(j)%org_lab_p + hmp
 
           !! compute residue decomp and mineralization of 
           !! fresh organic n and p (upper two layers only)
@@ -265,8 +265,8 @@
             soil1(j)%mp(k)%lab = soil1(j)%mp(k)%lab + .8 * rmp
             soil1(j)%hp(k)%p = soil1(j)%hp(k)%p + .2 * rmp
             
-            hnb_d(j)%rmn1 = hnb_d(j)%rmn1 + rmn1
-            hnb_d(j)%rmp = hnb_d(j)%rmp + rmp
+            hnb_d(j)%rsd_nitorg_n = hnb_d(j)%rsd_nitorg_n + rmn1
+            hnb_d(j)%rsd_laborg_p = hnb_d(j)%rsd_laborg_p + rmp
           end if
           
           !! septic changes 1/28/09 gsm
@@ -280,7 +280,7 @@
 	        endif
 	        soil1(j)%mn(k)%no3 = soil1(j)%mn(k)%no3 - wdn
           end if
-          hnb_d(j)%wdn = hnb_d(j)%wdn + wdn
+          hnb_d(j)%denit = hnb_d(j)%denit + wdn
 
           !call nut_denit(k,j,cdg,wdn,0.05)
 

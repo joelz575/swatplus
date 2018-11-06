@@ -24,12 +24,6 @@
 !!    rchdep        |m             |depth of flow on day
 !!    rchwtr        |m^3 H2O       |water stored in reach at beginning of day
 !!    rtwtr         |m^3 H2O       |water leaving reach on day
-!!    sedpst_act(:) |m             |depth of active sediment layer in reach for
-!!                                 |pesticide
-!!    sedpst_bry(:) |m/day         |pesticide burial velocity in river bed
-!!                                 |sediment
-!!    sedpst_conc(:)|mg/(m**3)     |inital pesticide concentration in river bed
-!!                                 |sediment
 !!    sedpst_rea(:) |1/day         |pesticide reaction coefficient in river bed
 !!                                 |sediment
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -58,7 +52,6 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bedvol      |m^3           |volume of river bed sediment
 !!    chpstmass   |mg pst        |mass of pesticide in reach
 !!    depth       |m             |depth of water in reach
 !!    fd2         |
@@ -85,10 +78,13 @@
       
       use channel_data_module
       use channel_module
-      use hydrograph_module, only : ob, icmd, jrch
+      use ch_pesticide_module
+      use hydrograph_module, only : ob, jrch, ht1, ch_stor
+      use constituent_mass_module
       
       implicit none
       
+      integer :: ipest          !none          |pesticide counter
       real :: solpstin          !mg pst        |soluble pesticide entering reach during 
                                 !              |time step
       real :: sorpstin          !mg pst        |sorbed pesticide entering reach during
@@ -100,216 +96,172 @@
       real :: frsol             !none          |fraction of pesticide in reach that is soluble
       real :: frsrb             !none          |fraction of pesticide in reach that is sorbed
       real :: sedpstmass        !mg pst        |mass of pesticide in bed sediment
-      real :: bedvol            !m^3           |volume of river bed sediment
       real :: fd2               !units         |description
       real :: solmax            !units         |description
       real :: sedcon            !g/m^3         |sediment concentration 
       real :: tday              !none          |flow duration (fraction of 24 hr)
       real :: rchwtr            !m^3 H2O       |water stored in reach at beginning of day
-      real :: reactw            !mg pst        |amount of pesticide in reach that is lost
-                                !              |through reactions
-      real :: volatpst          !mg pst        |amount of pesticide lost from reach by
-                                !              |volatilization
-      real :: setlpst           !mg pst        |amount of pesticide moving from water to
-                                !              |sediment due to settling
-      real :: resuspst          !mg pst        |amount of pesticide moving from sediment to
-                                !              |reach due to resuspension
-      real :: difus             !mg pst        |diffusion of pesticide from sediment to reach      
-      real :: bury              !mg pst        |loss of pesticide from active sediment layer
-                                !              |by burial
-      real :: pest_sol          !kg/ha or kg   |soluble pesticide mass
-      real :: reactb            !mg pst        |amount of pesticide in sediment that is lost
-                                !              |through reactions
-                                !              |up by plant roots in the bank storage zone            
-      real :: solpesto          !mg pst/m^3    |soluble pesticide concentration in outflow
-                                !              |on day
-      real :: sorpesto          !mg pst/m^3    |sorbed pesticide concentration in outflow
-                                !              |on day
-      
 
-!! initialize depth of water for pesticide calculations
-      if (rchdep < 0.1) then
-        depth = .1
+      !! zero outputs
+      chpst_d(jrch) = chpstz
+      
+      !! initialize depth of water for pesticide calculations
+      if (rchdep < 0.01) then
+        depth = .01
       else
         depth = rchdep
       endif
 
-!! calculate volume of active river bed sediment layer
-      bedvol = ch_hyd(jhyd)%w *ch_hyd(jhyd)%l * 1000.*                    &
-               ch_pst(jpst)%sedpst_act
+      do ipest = 1, cs_db%num_pests
 
-!! calculate volume of water entering reach
-      wtrin = ob(icmd)%hin%flo 
+        !! volume of water entering reach and stored in reach
+        wtrin = ht1%flo + ch_stor(jrch)%flo
          
-!! pesticide transported into reach during day
-      solpstin = ob(icmd)%hin%psol 
-      sorpstin = ob(icmd)%hin%psor 
-      pstin = solpstin + sorpstin
+        !! pesticide transported into reach during day
+        solpstin = hcs1%pest(ipest)%sol 
+        sorpstin = hcs1%pest(ipest)%sor
+        pstin = solpstin + sorpstin
 
-!! add pesticide drifting from HRUs in subbasin to reach
-!      if (rtwtr > 0.) then
-!        pstin = pstin + (drift(jrch) * 1.e6)
-!      else
-!        sedpst_conc(jrch) = sedpst_conc(jrch) + drift(jrch) * 1.e6 /    
-!     &                                                            bedvol
-!      endif
- 
-      !! calculate mass of pesticide in reach
-      chpstmass = 0.
-      chpstmass = pstin + ch(jrch)%pst_conc * rchwtr
+        !! calculate mass of pesticide in reach
+        chpstmass = pstin + (ch_water(jrch)%pest(ipest)%sol + ch_water(jrch)%pest(ipest)%sor) * wtrin
       
-      !! calculate mass of pesticide in bed sediment
-      sedpstmass = 0.
-      sedpstmass = ch_pst(jpst)%sedpst_conc * bedvol
+        !! calculate mass of pesticide in bed sediment
+        sedpstmass = ch_benthic(jrch)%pest(ipest)%sol + ch_benthic(jrch)%pest(ipest)%sor
 
-      if (chpstmass + sedpstmass < 1.e-6) then
-        ch(jrch)%pst_conc = 0.
-        ch_pst(jpst)%sedpst_conc = 0.
-      end if
-      if (chpstmass + sedpstmass < 1.e-6) return
+        if (chpstmass + sedpstmass < 1.e-6) then
+          ch_water(jrch)%pest(ipest)%sol = 0.
+          ch_water(jrch)%pest(ipest)%sor = 0.
+          ch_benthic(jrch)%pest(ipest)%sol = 0.
+          ch_benthic(jrch)%pest(ipest)%sor = 0.
+        end if
+        if (chpstmass + sedpstmass < 1.e-6) return
 
-!!in-stream processes
-      if (rtwtr / 86400. > 0.002) then
-        !! calculated sediment concentration
-        sedcon = 0.
-        sedcon = sedrch / rtwtr * 1.e6
+        !!in-stream processes
+        if (rtwtr / 86400. > 0.002) then
+          !! calculated sediment concentration
+          sedcon = sedrch / rtwtr * 1.e6
 
-        !! calculate fraction of soluble and sorbed pesticide
-        frsol = 0.
-        frsrb = 0.
-        if (solpstin + sorpstin > 1.e-6) then
-          if (ch_pst(jpst)%pst_koc > 0.) then
-            frsol = 1. / (1. + ch_pst(jpst)%pst_koc* sedcon)
+          !! calculate fraction of soluble and sorbed pesticide
+          if (solpstin + sorpstin > 1.e-6) then
+            if (ch_pst(jpst)%pst_koc > 0.) then
+              frsol = 1. / (1. + ch_pst(jpst)%pst_koc* sedcon)
+            else
+              frsol = solpstin / (solpstin + sorpstin)
+            end if
+            frsrb = 1. - frsol
           else
-            frsol = solpstin / (solpstin + sorpstin)
+            !!drifting pesticide is only pesticide entering and none is sorbed
+            frsol = 1.
+            frsrb = 0.
           end if
-          frsrb = 1. - frsol
-        else
-          !!drifting pesticide is only pesticide entering
-          !!and none is sorbed
-          frsol = 1.
-          frsrb = 0.
-        end if
 
-        !! ASSUME POR=0.5; DENSITY=2.6E6; KD2=KD1
-        fd2 = 1. / (.5 + ch_pst(jpst)%pst_koc)
+          !! ASSUME POR=0.5; DENSITY=2.6E6; KD2=KD1
+          fd2 = 1. / (.5 + ch_pst(jpst)%pst_koc)
 
-        !! calculate flow duration
-         tday = rttime / 24.0
-         if (tday > 1.0) tday = 1.0
-         tday = 1.0
+          !! calculate flow duration
+          tday = rttime / 24.0
+          if (tday > 1.0) tday = 1.0
+          tday = 1.0
 
-        !! calculate amount of pesticide that undergoes chemical or
-        !! biological degradation on day in reach
-        !! MFW, 3/12/12: modify decay to be 1st order
-        !! reactw = chpst_rea(jrch) * chpstmass * tday
-        reactw = chpstmass - (chpstmass * EXP(-1. * ch_pst(jpst)%pst_rea    &
-                 * tday))
-        chpstmass = chpstmass - reactw
+          !! calculate amount of pesticide that undergoes chemical or
+          !! biological degradation on day in reach
+          !! MFW, 3/12/12: modify decay to be 1st order
+          !! reactw = chpst_rea(jrch) * chpstmass * tday
+          chpst%pest(jrch)%react = chpstmass - (chpstmass * EXP(-1. * ch_pst(jpst)%pst_rea * tday))
+          chpstmass = chpstmass - chpst%pest(jrch)%react
 
-        !! calculate amount of pesticide that volatilizes from reach
-        volatpst = ch_pst(jpst)%pst_vol * frsol * chpstmass * tday/depth
-        if (volatpst > frsol * chpstmass) then
-          volatpst = frsol * chpstmass 
-          chpstmass = chpstmass - volatpst
-        else
-          chpstmass = chpstmass - volatpst
-        end if
+          !! calculate amount of pesticide that volatilizes from reach
+          chpst%pest(jrch)%volat = ch_pst(jpst)%pst_vol * frsol * chpstmass * tday / depth
+          if (chpst%pest(jrch)%volat > frsol * chpstmass) then
+            chpst%pest(jrch)%volat = frsol * chpstmass 
+            chpstmass = chpstmass - chpst%pest(jrch)%volat
+          else
+            chpstmass = chpstmass - chpst%pest(jrch)%volat
+          end if
 
-        !! calculate amount of pesticide removed from reach by
-        !! settling
-        setlpst = ch_pst(jpst)%pst_rsp * frsrb * chpstmass * tday / depth
-        if (setlpst >  frsrb * chpstmass) then
-          setlpst = frsrb * chpstmass
-          chpstmass = chpstmass - setlpst
-        else
-          chpstmass = chpstmass - setlpst
-        end if
-        sedpstmass = sedpstmass + setlpst
+          !! calculate amount of pesticide removed from reach by settling
+          chpst%pest(jrch)%settle = ch_pst(jpst)%pst_rsp * frsrb * chpstmass * tday / depth
+          if (chpst%pest(jrch)%settle >  frsrb * chpstmass) then
+            chpst%pest(jrch)%settle = frsrb * chpstmass
+            chpstmass = chpstmass - chpst%pest(jrch)%settle
+          else
+            chpstmass = chpstmass - chpst%pest(jrch)%settle
+          end if
+          sedpstmass = sedpstmass + chpst%pest(jrch)%settle
 
-        !! calculate resuspension of pesticide in reach
-        resuspst = ch_pst(jpst)%pst_rsp * sedpstmass * tday / depth
-        if (resuspst > sedpstmass) then
-          resuspst = sedpstmass
-          sedpstmass = 0.
-        else
-          sedpstmass = sedpstmass - resuspst
-        end if
-        chpstmass = chpstmass + resuspst
-
-        !! calculate diffusion of pesticide between reach and sediment
-        difus = ch_pst(jpst)%pst_mix * (fd2 * sedpstmass - frsol *       &
-                                              chpstmass) * tday / depth
-        if (difus > 0.) then
-          if (difus > sedpstmass) then
-            difus = sedpstmass
+          !! calculate resuspension of pesticide in reach
+          chpst%pest(jrch)%resus = ch_pst(jpst)%pst_rsp * sedpstmass * tday / depth
+          if (chpst%pest(jrch)%resus > sedpstmass) then
+            chpst%pest(jrch)%resus = sedpstmass
             sedpstmass = 0.
           else
-            sedpstmass = sedpstmass - Abs(difus)
+            sedpstmass = sedpstmass - chpst%pest(jrch)%resus
           end if
-          chpstmass = chpstmass + Abs(difus)
-        else
-          if (Abs(difus) > chpstmass) then
-            difus = -chpstmass
-            chpstmass = 0.
+          chpstmass = chpstmass + chpst%pest(jrch)%resus
+
+          !! calculate diffusion of pesticide between reach and sediment
+          chpst%pest(jrch)%difus = ch_pst(jpst)%pst_mix * (fd2 * sedpstmass - frsol * chpstmass) * tday / depth
+          if (chpst%pest(jrch)%difus > 0.) then
+            if (chpst%pest(jrch)%difus > sedpstmass) then
+              chpst%pest(jrch)%difus = sedpstmass
+              sedpstmass = 0.
+            else
+              sedpstmass = sedpstmass - Abs(chpst%pest(jrch)%difus)
+            end if
+            chpstmass = chpstmass + Abs(chpst%pest(jrch)%difus)
           else
-            chpstmass = chpstmass - Abs(difus)
+            if (Abs(chpst%pest(jrch)%difus) > chpstmass) then
+              chpst%pest(jrch)%difus = -chpstmass
+              chpstmass = 0.
+            else
+              chpstmass = chpstmass - Abs(chpst%pest(jrch)%difus)
+            end if
+            sedpstmass = sedpstmass + Abs(chpst%pest(jrch)%difus)
           end if
-          sedpstmass = sedpstmass + Abs(difus)
+
+          !! calculate removal of pesticide from active sediment layer by burial
+          chpst%pest(jrch)%bury = ch_pst(jpst)%sedpst_bry * sedpstmass / ch_pst(jpst)%sedpst_act
+          if (chpst%pest(jrch)%bury > sedpstmass) then
+            chpst%pest(jrch)%bury = sedpstmass
+            sedpstmass = 0.
+          else
+            sedpstmass = sedpstmass - chpst%pest(jrch)%bury
+          end if
+
+          !! verify that water concentration is at or below solubility
+          solmax = ch_pst(jpst)%pst_solub * wtrin
+          if (solmax < chpstmass * frsol) then
+            sedpstmass = sedpstmass + (chpstmass * frsol - solmax)
+            chpstmass = chpstmass - (chpstmass * frsol - solmax)
+          end if
+        
+        else   
+          !!insignificant flow
+          sedpstmass = sedpstmass + chpstmass
+          chpstmass = 0.
         end if
 
-        !! calculate removal of pesticide from active sediment layer
-        !! by burial
-        bury = ch_pst(jpst)%sedpst_bry*sedpstmass/                       &
-                     ch_pst(jpst)%sedpst_act
-        if (bury > sedpstmass) then
-          bury = sedpstmass
+        !! sediment processes
+        !! calculate loss of pesticide from bed sediments by reaction
+        chpst%pest(jrch)%react_bot = ch_pst(jpst)%sedpst_rea * sedpstmass
+        if (chpst%pest(jrch)%react_bot > sedpstmass) then
+          chpst%pest(jrch)%react_bot = sedpstmass
           sedpstmass = 0.
         else
-          sedpstmass = sedpstmass - bury
+          sedpstmass = sedpstmass - chpst%pest(jrch)%react_bot
         end if
 
-        !! verify that water concentration is at or below solubility
-        solmax = pest_sol * (rchwtr + wtrin)
-        if (solmax < chpstmass * frsol) then
-         sedpstmass = sedpstmass + (chpstmass * frsol - solmax)
-         chpstmass = chpstmass - (chpstmass * frsol - solmax)
+        !! set new pesticide mass of (in + store) after processes
+        if (rchwtr + wtrin > 1.e-6) then
+          hcs1%pest(ipest)%sol = frsol * chpstmass
+          hcs1%pest(ipest)%sor = frsrb * chpstmass
+        else
+          sedpstmass = sedpstmass + chpstmass
         end if
-        
-      else   
-!!insignificant flow
-        sedpstmass = sedpstmass + chpstmass
-        chpstmass = 0.
-      end if
+        ch_benthic(jrch)%pest(ipest)%sol = 0.
+        ch_benthic(jrch)%pest(ipest)%sor = sedpstmass
 
-!! sediment processes
-      !! calculate loss of pesticide from bed sediments by reaction
-      reactb = ch_pst(jpst)%sedpst_rea * sedpstmass
-      if (reactb > sedpstmass) then
-        reactb = sedpstmass
-        sedpstmass = 0.
-      else
-        sedpstmass = sedpstmass - reactb
-      end if
-
-!! calculate pesticide concentrations at end of day
-      ch(jrch)%pst_conc = 0.
-      ch_pst(jpst)%sedpst_conc = 0.
-      if (rchwtr + wtrin > 1.e-6) then
-        ch(jrch)%pst_conc = chpstmass / (rchwtr + wtrin)
-      else
-        sedpstmass = sedpstmass + chpstmass
-      end if
-      ch_pst(jpst)%sedpst_conc = sedpstmass / bedvol
-
-!! calculate amount of pesticide transported out of reach
-      if (rtwtr / 86400. > 0.002) then             !Claire, corrected to match line 151
-        solpesto = ch(jrch)%pst_conc * frsol
-        sorpesto = ch(jrch)%pst_conc * frsrb
-      else
-        solpesto = 0.
-        sorpesto = 0.
-      end if
+      end do
 
       return
       end subroutine ch_rtpest

@@ -38,7 +38,7 @@
 
     use septic_data_module
     use basin_module
-    use bacteria_module
+    use pathogen_data_module
     use organic_mineral_mass_module
     use hru_module, only : hru, ihru, i_sep, iseptic, qstemm, bz_perc, isep, sep_tsincefail,    &
        biom, plqm, bio_bod, fcoli, rbiom, percp, isep
@@ -116,7 +116,7 @@
 	
 	!temperature correction factor for bacteria growth/dieoff (Eppley, 1972)
     ibac = 1        !there should be a loop for all pathogens in this hru
-	ctmp = bac_db(ibac)%t_adj ** (soil(j)%phys(bz_lyr)%tmp- 20.) 
+	ctmp = path_db(ibac)%t_adj ** (soil(j)%phys(bz_lyr)%tmp- 20.) 
 
 	! initial water volume
 	qi = (soil(j)%phys(bz_lyr)%st + soil(j)%ly(bz_lyr-1)%prk + qstemm(j)) *   &

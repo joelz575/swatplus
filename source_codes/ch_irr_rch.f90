@@ -26,11 +26,6 @@
 !!    wstrs_id(:)     |none          |water stress identifier:
 !!                                   |1 plant water demand
 !!                                   |2 soil water deficit
-!!    ipot(:)         |none          |number of HRU (in subbasin) that is ponding
-!!                                   |water--the HRU that the surface runoff from
-!!                                   |current HRU drains into. This variable is
-!!                                   |used only for rice paddys or closed
-!!                                   |depressional areas
 !!    irramt(:)       |mm H2O        |depth of irrigation water applied to
 !!                                   |HRU
 !!    irrno(:)        |none          |irrigation source location
@@ -91,8 +86,7 @@
 
       use tiles_data_module
       use hru_module, only : hru, irrsc, irrno, aird, irr_flag, auto_wstr, wstrs_id, strsw_av, irrsq,        &
-        irr_sc, irr_no, irr_asq, irr_sca, irr_noa, flowmin, divmax, flowfr, irramt, irr_mx, irr_eff, ipot,   &
-        nhru
+        irr_sc, irr_no, irr_asq, irr_sca, irr_noa, flowmin, divmax, flowfr, irramt, irr_mx, irr_eff, nhru
       use soil_module
       use basin_module
       use time_module
@@ -185,20 +179,6 @@
                 if (vmm > vmxi) vmm = vmxi
               end if
 
- !             if (vmm > 0.) then
- !               vol = 0.
- !               vol = vmm * cnv
- !               if (potdb(ipot)%frac > 1.e-6) then
- !                 pot(k)%vol = pot(k)%vol + vol
- !               else
- !                 call pl_irrigate(k,vmm)
- !               end if
-
-                !! subtract irrigation from reach outflow
-                if (potdb(ipot)%frac > 1.e-6) then
-                  vol = 0.
-                  vol = aird(k) * cnv
-                end if
                 if (time%step > 0) then
                   do ii = 1, time%step
                     hrtwtr(ii) = hrtwtr(ii) - vol * hrtwtr(ii) / rtwtr

@@ -6,6 +6,8 @@
       use reservoir_data_module
       use conditional_module
       use reservoir_module
+      use hydrograph_module
+      use constituent_mass_module
       
       implicit none
 
@@ -23,6 +25,9 @@
       integer :: ised                    !none       |counter
       integer :: inut                    !none       |counter
       integer :: ipst                    !none       |counter
+      integer :: isp_ini                 !none       |counter
+      integer :: ics                     !none       |counter
+      integer :: ichi                    !none       |counter
           
       real :: lnvol
       
@@ -53,61 +58,89 @@
       allocate (wet_dat_c(0:imax))
       allocate (wet_dat(0:imax))
       allocate (wet_ob(0:imax))
-      allocate (wet_d(0:imax))
-      allocate (wet_m(0:imax))
-      allocate (wet_y(0:imax))
-      allocate (wet_a(0:imax))
+      allocate (wet_in_d(0:imax))
+      allocate (wet_in_m(0:imax))
+      allocate (wet_in_y(0:imax))
+      allocate (wet_in_a(0:imax))
+      allocate (wet_out_d(0:imax))
+      allocate (wet_out_m(0:imax))
+      allocate (wet_out_y(0:imax))
+      allocate (wet_out_a(0:imax))
       rewind (105)
       read (105,*) titldum
       read (105,*) header
       
-       do ires = 1, db_mx%wet_dat
-         read (105,*,iostat=eof) i
-         backspace (105)
-         read (105,*,iostat=eof) k, wet_dat_c(ires)
-         if (eof < 0) exit
-         
-         do iinit = 1, db_mx%res_init
-           if (res_init(iinit)%name == wet_dat_c(ires)%init) then
-             wet_dat(ires)%init = iinit
-             exit
-           end if
-         end do
-                         
-         do ihyd = 1, db_mx%wet_hyd
-             if (wet_hyd(ihyd)%name == wet_dat_c(ires)%hyd) then
+      do ires = 1, db_mx%wet_dat
+        read (105,*,iostat=eof) i
+        backspace (105)
+        read (105,*,iostat=eof) k, wet_dat_c(ires)
+        if (eof < 0) exit
+                  
+        !! initialize orgaincs and minerals in water
+        do isp_ini = 1, db_mx%om_water_init
+          if (wet_dat_c(ichi)%init == res_init_dat_c(isp_ini)%init) then
+            wet_init(ichi)%init = isp_ini
+            !! initial organic mineral
+            do ics = 1, db_mx%om_water_init
+              if (res_init_dat_c(isp_ini)%org_min == om_init_name(ics)) then
+                wet_init(ichi)%org_min = ics
+                exit
+              end if
+            end do
+            !! initial pesticides
+            do ics = 1, db_mx%pestw_ini
+              if (res_init_dat_c(isp_ini)%pest == pest_init_name(ics)) then
+                wet_init(isp_ini)%pest = ics
+                exit
+              end if
+            end do
+            !! initial pathogens
+            do ics = 1, db_mx%pathw_ini
+              if (res_init_dat_c(isp_ini)%path == path_init_name(ics)) then
+                wet_init(isp_ini)%path = ics
+                exit
+              end if
+            end do
+            !! initial heavy metals
+            !! initial salts
+          end if
+        end do
+
+        do ihyd = 1, db_mx%wet_hyd
+          if (wet_hyd(ihyd)%name == wet_dat_c(ires)%hyd) then
              wet_dat(ires)%hyd = ihyd
              exit
-           end if
-         end do
+          end if
+        end do
        
-          do irel = 1, db_mx%d_tbl
-            if (d_tbl(irel)%name == wet_dat_c(ires)%release) then
-             wet_dat(ires)%release = irel
-             exit
-            end if
-          end do      
+        do irel = 1, db_mx%d_tbl
+            if (dtbl_res(irel)%name == wet_dat_c(ires)%release) then
+            wet_dat(ires)%release = irel
+            exit
+          end if
+        end do      
  
-         do ised = 1, db_mx%res_sed
-           if (res_sed(ised)%name == wet_dat_c(ires)%sed) then
-             wet_dat(ires)%sed = ised
-             exit
-           end if
-         end do      
+        do ised = 1, db_mx%res_sed
+          if (res_sed(ised)%name == wet_dat_c(ires)%sed) then
+            wet_dat(ires)%sed = ised
+            exit
+          end if
+        end do      
 
-         do inut = 1, db_mx%res_nut
-           if (res_nut(inut)%name == wet_dat_c(ires)%nut) then
-             wet_dat(ires)%nut = inut
-             exit
-           end if
-         end do   
+        do inut = 1, db_mx%res_nut
+          if (res_nut(inut)%name == wet_dat_c(ires)%nut) then
+            wet_dat(ires)%nut = inut
+            exit
+          end if
+        end do   
  
-         do ipst = 1, db_mx%res_pst
-           if (res_pst(ipst)%name == wet_dat_c(ires)%pst) then
-             wet_dat(ires)%pst = ipst
-             exit
-           end if
-         end do  
+        do ipst = 1, db_mx%res_pst
+          if (res_pst(ipst)%name == wet_dat_c(ires)%pst) then
+            wet_dat(ires)%pst = ipst
+            exit
+          end if
+        end do
+        
         if (wet_dat(ires)%init == 0) write (9001,*) wet_dat_c(ires)%init, " not found (wet-init)"
         if (wet_dat(ires)%hyd == 0) write (9001,*) wet_dat_c(ires)%hyd, " not found (wet-hyd)"
         if (wet_dat(ires)%release == 0) write (9001,*) wet_dat_c(ires)%release, " not found (wet-release)"

@@ -34,10 +34,10 @@
       do tstep = 1, nstep
           
         !calc release from decision table
-        do iac = 1, d_tbl(id)%acts
+        do iac = 1, dtbl_res(id)%acts
           action = "n"
-          do ial = 1, d_tbl(id)%alts
-            if (d_tbl(id)%act_hit(ial) == "y" .and. d_tbl(id)%act_outcomes(iac,ial) == "y") then
+          do ial = 1, dtbl_res(id)%alts
+            if (dtbl_res(id)%act_hit(ial) == "y" .and. dtbl_res(id)%act_outcomes(iac,ial) == "y") then
               action = "y"
               exit
             end if
@@ -45,11 +45,11 @@
           
           !condition is met - set the release rate
           if (action == "y") then
-            select case (d_tbl(id)%act(iac)%option)
+            select case (dtbl_res(id)%act(iac)%option)
             case ("rate")
-              resflwo = d_tbl(id)%act(iac)%const * 86400.
+              resflwo = dtbl_res(id)%act(iac)%const * 86400.
             case ("days")
-              select case (d_tbl(id)%act(iac)%file_pointer)
+              select case (dtbl_res(id)%act(iac)%file_pointer)
                 case ("null")
                   b_lo = 0.
                 case ("pvol")
@@ -57,11 +57,11 @@
                 case ("evol")
                   b_lo = res_ob(ihyd)%evol
               end select
-              resflwo = (res(jres)%flo - b_lo) / d_tbl(id)%act(iac)%const
+              resflwo = (res(jres)%flo - b_lo) / dtbl_res(id)%act(iac)%const
             case ("weir")
               resflwo = res_weir(ihyd)%c * res_weir(ihyd)%k * res_weir(ihyd)%w * (res_h ** 1.5)
             case ("meas")
-              irel = int(d_tbl(id)%act(iac)%const)
+              irel = int(dtbl_res(id)%act(iac)%const)
               select case (recall(irel)%typ)
               case (1)    !daily
                 resflwo = recall(irel)%hd(time%day,time%yrs)%flo

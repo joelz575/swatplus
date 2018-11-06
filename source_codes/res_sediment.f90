@@ -16,10 +16,6 @@
       real :: sag                 !              |
       real :: lag                 !              |
       real :: gra                 !              |
-	  real :: inised              !              |
-      real :: finsed              !              |
-      real :: setsed              !              |
-      real :: remsetsed           !              |
       integer :: jres             !none          |reservoir number
       real :: velofl              !              |  
       integer :: ised             !none          |counter
@@ -27,134 +23,79 @@
       real :: susp                !              |
       real :: vol                 !m^3 H2O       |volume of water applied in irrigation 
       real :: ressedc             !              |
+      real :: sed_ppm, sil_ppm, cla_ppm
       integer :: ihyd             !none          |counter 
-  
-      !! store initial values
-	  inised = 0.
-	  finsed = 0.
-	  setsed = 0.
-	  remsetsed = 0.
 
       if (res(jres)%flo < 1.e-6) then
-        !reservoir is empty
+        ! reservoir is empty
         res(jres)%sed = 0.
       else
-      sed = res(jres)%sed
+        sed = res(jres)%sed
 
-      !!    Storage by particle sizes
-      san = res(jres)%san
-      sil = res(jres)%sil
-      cla = res(jres)%cla
-      sag = res(jres)%sag
-      lag = res(jres)%lag
-	gra = res(jres)%grv
-
+        !! Storage by particle sizes
+        san = res(jres)%san
+        sil = res(jres)%sil
+        cla = res(jres)%cla
+        sag = res(jres)%sag
+        lag = res(jres)%lag
+	    gra = res(jres)%grv
 
         !! compute new sediment concentration in reservoir
-	  if (ressedi < 1.e-6) ressedi = 0.0      
-	  if (res_ob(jres)%area_ha == 0.) res_ob(jres)%area_ha = 1.e-6     !! MJW added 040711
-	  velofl = (resflwo / res_ob(jres)%area_ha) / 10000.  !!m3/d / ha * 10000. = m/d
-!!	  velsetl = 1.35      !! for clay particle m/d
-	  if (velofl > 1.e-6) then
-	    trapres = res_sed(ised)%velsetlr / velofl
-	    if (trapres > 1.) trapres = 1.
-	    susp = 1. - trapres
-	  else
-	    susp = 0.
-	  end if
-
-	if (res(jres)%flo > 0.) then                         !!MJW added 040811
-        res(jres)%sed = (ressedi * susp + sed * vol) / res(jres)%flo
-        res(jres)%san = (ressani + san * vol) / res(jres)%flo
-        res(jres)%sil = (ressili + sil * vol) / res(jres)%flo
-        res(jres)%cla = (resclai + cla * vol) / res(jres)%flo
-        res(jres)%sag = (ressagi + sag * vol) / res(jres)%flo
-        res(jres)%lag = (reslagi + lag * vol) / res(jres)%flo
-        res(jres)%grv = (resgrai + gra * vol) / res(jres)%flo
-
-        res(jres)%sed = Max(1.e-6,res(jres)%sed)
-        res(jres)%san = Max(1.e-6,res(jres)%san)
-        res(jres)%sil = Max(1.e-6,res(jres)%sil)
-        res(jres)%cla = Max(1.e-6,res(jres)%cla)
-        res(jres)%sag = Max(1.e-6,res(jres)%sag)
-        res(jres)%lag = Max(1.e-6,res(jres)%lag)
-        res(jres)%grv = Max(1.e-6,res(jres)%grv)
-	else
-        res(jres)%sed = 1.e-6             !!MJW added 040711
-        res(jres)%san = 1.e-6
-        res(jres)%sil = 1.e-6
-        res(jres)%cla = 1.e-6
-        res(jres)%sag = 1.e-6
-        res(jres)%lag = 1.e-6
-        res(jres)%grv = 1.e-6
-	endif
-        
-        !! compute change in sediment concentration due to settling
-        if (res(jres)%sed < 1.e-6) res(jres)%sed = 0.0   
-        if (res(jres)%sed > res_sed(ised)%nsed) then
-	    inised = res(jres)%sed
-          res(jres)%sed = (res(jres)%sed -res_sed(ised)%nsed) *         &        
-                         res_sed(ised)%sed_stlr + res_sed(ised)%nsed
-	    finsed = res(jres)%sed
-	    setsed = inised - finsed
-
-        if (res(jres)%grv >= setsed) then
-	    res(jres)%grv = res(jres)%grv - setsed
-	    remsetsed = 0.
-	  else
-	    remsetsed = setsed - res(jres)%grv
-          res(jres)%grv = 0.
-		if (res(jres)%lag >= remsetsed) then
-	      res(jres)%lag = res(jres)%lag - remsetsed
-	      remsetsed = 0.
+	    if (ressedi < 1.e-6) ressedi = 0.0      
+        !! velsetl = 1.35 for clay particle m/d
+	    if (res_om_d(jres)%area_ha > 1.e-6) then
+          velofl = (res(jres)%flo / res_om_d(jres)%area_ha) / 10000.  ! m3/d / ha * 10000. = m/d
+	      trapres = res_sed(ised)%velsetlr / velofl
+	      if (trapres > 1.) trapres = 1.
+	      susp = 1. - trapres
 	    else
-	      remsetsed = remsetsed - res(jres)%lag
-	      res(jres)%lag = 0.
-	      if (res(jres)%san >= remsetsed) then
-	        res(jres)%san = res(jres)%san - remsetsed
-	        remsetsed = 0.
-	      else
-	        remsetsed = remsetsed - res(jres)%san
-	        res(jres)%san = 0.
-              if (res(jres)%sag >= remsetsed) then
-	          res(jres)%sag = res(jres)%sag - remsetsed
-	          remsetsed = 0.
-	        else
-	          remsetsed = remsetsed - res(jres)%sag
-	          res(jres)%sag = 0.
-                if (res(jres)%sil >= remsetsed) then
-  	            res(jres)%sil = res(jres)%sil - remsetsed
-	            remsetsed = 0.
-	          else
-	            remsetsed = remsetsed - res(jres)%sil
-	            res(jres)%sil = 0.
-                  if (res(jres)%cla >= remsetsed) then
-	              res(jres)%cla = res(jres)%cla - remsetsed
-	              remsetsed = 0.
-	            else
-	              remsetsed = remsetsed - res(jres)%cla
-	              res(jres)%cla = 0.
-	            end if
-                end if
-	        end if
-	      end if
-	    end if
-	  endif
-
+	      susp = 0.
         end if
 
-        !! compute sediment leaving reservoir
-        ressedo = res(jres)%sed * resflwo
-        ressano = res(jres)%san * resflwo
-        ressilo = res(jres)%sil * resflwo
-        resclao = res(jres)%cla * resflwo
-        ressago = res(jres)%sag * resflwo
-        reslago = res(jres)%lag * resflwo
-	  resgrao = res(jres)%grv * resflwo
+        !! compute concentrations
+	    if (res(jres)%flo > 0.) then
+          vol = res(jres)%flo
+          sed_ppm = 1000000. * (ressedi * susp + sed) / vol
+          sed_ppm = Max(1.e-6, sed_ppm)
+          sil_ppm = 1000000. * (ressili * susp + sil) / vol
+          sil_ppm = Max(1.e-6, sil_ppm)
+          cla_ppm = 1000000. * (resclai * susp + cla) / vol
+          cla_ppm = Max(1.e-6, cla_ppm)
+	    else
+          sed_ppm = 1.e-6
+          sil_ppm = 1.e-6
+          cla_ppm = 1.e-6
+	    endif
+        
+        !! compute change in sediment concentration due to settling 
+        if (sed_ppm > res_sed(ised)%nsed) then
+          sed_ppm = (sed_ppm - res_sed(ised)%nsed) * res_sed(ised)%sed_stlr + res_sed(ised)%nsed
+          res(jres)%sed = sed_ppm * vol / 1000000.      ! ppm -> t
+          
+          sil_ppm = (sil_ppm - res_sed(ised)%nsed) * res_sed(ised)%sed_stlr + res_sed(ised)%nsed
+          res(jres)%sil = sil_ppm * vol / 1000000.      ! ppm -> t
+          
+          cla_ppm = (cla_ppm - res_sed(ised)%nsed) * res_sed(ised)%sed_stlr + res_sed(ised)%nsed
+          res(jres)%cla = cla_ppm * vol / 1000000.      ! ppm -> t
+
+          !! assume all settles
+          res(jres)%san = 0.
+          res(jres)%sag = 0.
+          res(jres)%lag = 0.
+          res(jres)%grv = 0.
+        end if
+
+        !! compute sediment leaving reservoir - ppm -> t
+        ressedo = sed_ppm * resflwo / 1000000.
+        ressilo = sil_ppm * resflwo / 1000000.
+        resclao = cla_ppm * resflwo / 1000000.
+        ressano = 0.
+        ressago = 0.
+        reslago = 0.
+	    resgrao = 0.
 
         !! net change in amount of sediment in reservoir for day
-        ressedc = vol * sed + ressedi - ressedo - res(jres)%sed *       &       
-                                                          res(jres)%flo
+        ressedc = vol * sed + ressedi - ressedo - res(jres)%sed * res(jres)%flo
       end if
 
       return

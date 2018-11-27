@@ -150,7 +150,7 @@
         rsd1(j)%tot(ipl)%m = Max(rsd1(j)%tot(ipl)%m, 0.)
         rsd1(j)%tot(ipl)%n = resnew * pcom(j)%plm(ipl)%n_fr + rsd1(j)%tot(ipl)%n
         rsd1(j)%tot(ipl)%p = resnew * pcom(j)%plm(ipl)%p_fr + rsd1(j)%tot(ipl)%p
-        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass * (1. - pcom(j)%plg(ipl)%bio_leaf)
+        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - resnew
         pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - resnew * pcom(j)%plm(ipl)%n_fr
         pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - resnew * pcom(j)%plm(ipl)%p_fr
         pcom(j)%plstr(ipl)%strsw = 1.

@@ -64,7 +64,6 @@
       integer :: orgc_f                !fraction       |fraction of organic carbon in fertilizer
       integer :: l                     !               |
       integer :: icmd                  !               |
-      integer :: nssr                  !none           |the new mass of roots
       real :: resnew                   !               |
       real :: resnew_n                 !               |
       real :: hiad1                    !none           |actual harvest index (adj for water/growth)
@@ -76,20 +75,14 @@
       real :: yieldn                   !               |
       real :: yieldp                   !               |
       real :: yldpst                   !kg pst/ha      |pesticide removed in yield
-      real :: rtresnew                 !               |
       real :: rtfr                     !none           |root fraction
       real :: rtres                    !               | 
       real :: rtresn                   !               |           
       real :: rtresp                   !               | 
-      real :: ff3                      !               | 
+      real :: abgr_remove_fr           !               |fraction  of above ground biomass lost at harvest
       real :: ff4                      !               | 
       real :: xx                       !none           |variable to hold calculation value  
       real :: yield                    !kg             |yield (dry weight)
-      real :: ssb                      !               |
-      real :: ssp                      !               | 
-      real :: ssn                      !               | 
-      real :: ssr                      !               | 
-      real :: ssabg                    !               | 
       real :: hi_ovr                   !!kg/ha)/(kg/ha)|harvest index target specified at harvest
 
       j = jj
@@ -98,12 +91,6 @@
       idp = pcom(j)%plcur(ipl)%idplt
       hi_ovr = harvop_db(iharvop)%hi_ovr
       harveff = harvop_db(iharvop)%eff
-
-      ssb = pcom(j)%plm(ipl)%mass                                       ! Armen 16 Jan 2009 storing info
-      ssabg = pcom(j)%plm(ipl)%mass * (1.- pcom(j)%plg(ipl)%root_frac)  ! Armen 16 Jan 2009 storing info
-      ssr = ssb * pcom(j)%root(ipl)%mass                                ! Armen 16 Jan 2009 storing info
-      ssn = pcom(j)%plm(ipl)%nmass                                      ! Armen 20 May 2006 storing info
-      ssp = pcom(ihru)%plm(ipl)%pmass                                   ! Armen 20 May 2006 storing info
 
       hiad1 = 0.
       if (hi_ovr > 0.) then
@@ -169,32 +156,21 @@
       call pl_leaf_drop (resnew, resnew_n)
 
 	!! Calculation for dead roots allocations, resetting phenology, updating other pools
-      if (ssabg > 1.e-6) then
-        ff3 = (yield + clip) / ssabg	! Armen 20 May 2008 and 16 Jan 2009
+      if (pcom(j)%ab_gr(ipl)%mass > 1.e-6) then
+        abgr_remove_fr = (yield + clip) / pcom(j)%ab_gr(ipl)%mass
       else
-        ff3 = 1.
+        abgr_remove_fr = 1.
       endif 
-      if (ff3 > 1.0) ff3 = 1.0
-
-	  !! nssr is the new mass of roots
-      nssr = pcom(j)%root(ipl)%mass * ssabg * (1. - ff3) / (1. - pcom(j)%plg(ipl)%root_frac)  
-      rtresnew = ssr - nssr
-      if (ssr > 1.e-6) then
-       ff4 = rtresnew / ssr
-      else
-	   ff4 = 0.
-      end if
-      rtresn = ff4 * ssn
-      rtresp = ff4 * ssp
+      if (abgr_remove_fr > 1.0) abgr_remove_fr = 1.0
 
       !! reset leaf area index and fraction of growing season
-      if (ssb > 0.001) then
-        pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai * (1. - ff3)
+      if (pcom(j)%plm(ipl)%mass > 0.001) then
+        pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai * (1. - abgr_remove_fr)
         if (pcom(j)%plg(ipl)%lai < pldb(idp)%alai_min) then   !Sue
           pcom(j)%plg(ipl)%lai = pldb(idp)%alai_min
         end if
-        pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc * (1. - ff3) 
-        pcom(j)%root(ipl)%mass = .4 - .2 * pcom(j)%plcur(ipl)%phuacc
+        pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc * (1. - abgr_remove_fr) 
+        pcom(j)%plg(ipl)%root_frac = pcom(j)%root(ipl)%mass / pcom(j)%plm(ipl)%mass
       else
         pcom(j)%plm(ipl)%mass = 0.
         pcom(j)%plg(ipl)%lai = 0.
@@ -202,9 +178,9 @@
       endif
 
 	  !! remove n and p in harvested yield, clipped biomass, and dead roots 
-      pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - yield - rtresnew
-      pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - yieldn - rtresn
-      pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - yieldp - clipp - rtresp 
+      pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - yield
+      pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - yieldn
+      pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - yieldp 
       if (pcom(j)%plm(ipl)%mass < 0.) pcom(j)%plm(ipl)%mass = 0.
       if (pcom(j)%plm(ipl)%nmass < 0.) pcom(j)%plm(ipl)%nmass = 0.
       if (pcom(ihru)%plm(ipl)%pmass < 0.) pcom(ihru)%plm(ipl)%pmass = 0.

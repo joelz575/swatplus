@@ -7,6 +7,7 @@
       use plant_module
       use carbon_module
       use organic_mineral_mass_module
+      use time_module
       
       implicit none 
       
@@ -43,6 +44,8 @@
    
           call pl_seed_gro
           
+          if (time%end_yr == 1) call pl_mortality
+
           call pl_partition
 
         end if

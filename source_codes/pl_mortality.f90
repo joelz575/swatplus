@@ -1,4 +1,4 @@
-      subroutine pl_leaf_mortality
+      subroutine pl_mortality
       
       use plant_data_module
       use basin_module
@@ -26,4 +26,4 @@
       end if
 
       return
-      end subroutine pl_leaf_mortality
+      end subroutine pl_mortality

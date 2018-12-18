@@ -27,7 +27,7 @@
       j = ihru
 
 !!    compute infiltration from surface runon to next landscape unit
-      ls_overq = ob(iob)%hin%flo        !/ (10. * hru(j)%area_ha)   ! m3/10*ha = mm
+      ls_overq = ob(iob)%hin_sur%flo        !/ (10. * hru(j)%area_ha)   ! m3/10*ha = mm
       precip_eff = precip_eff + ls_overq
       
 !!    compute infiltration from surface runon to next landscape unit
@@ -47,7 +47,7 @@
       !end if
       
 !!    sediment deposition across the landscape
-      sed = ob(iob)%hin%sed / hru(j)%area_ha
+      sed = ob(iob)%hin_sur%sed / hru(j)%area_ha
       !! use surface runoff (mm) for eiq - m3/(10 * ha) = mm
       trancap = hru(j)%topo%dep_co * usle_cfac(j) * ls_overq *        &
                 hru(j)%topo%slope**1.4 * field_db(ifield)%wid**1.4

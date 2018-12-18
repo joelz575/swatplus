@@ -5,6 +5,7 @@
 
       use reservoir_data_module
       use reservoir_module
+      use res_pesticide_module
       use hydrograph_module, only : res, ob
       use constituent_mass_module
       
@@ -52,10 +53,13 @@
         !! add incoming pesticide to pesticide in water layer
         respesti = solpesti + sorpesti
         tpest1 = tpest1 + respesti
+        respst_d(jres)%pest(ipst)%sol_in = solpesti
+        respst_d(jres)%pest(ipst)%sor_in = sorpesti
 
         !! determine pesticide lost through reactions in water layer
         reactw = res_pst(jpst)%pst_rea * tpest1
         tpest1 = tpest1 - reactw
+        respst_d(jres)%pest(ipst)%react = reactw
 
         !! determine pesticide lost through volatilization
         volatpst = res_pst(jpst)%pst_vol * fd1 * tpest1 / depth
@@ -65,6 +69,7 @@
         else
           tpest1 = tpest1 - volatpst
         end if
+        respst_d(jres)%pest(ipst)%volat = volatpst
 
         !! determine amount of pesticide settling to sediment layer
         setlpst = res_pst(jpst)%pst_stl * fp1 * tpest1 / depth
@@ -76,6 +81,7 @@
           tpest1 = tpest1 - setlpst
           tpest2 = tpest2 + setlpst
         end if
+        respst_d(jres)%pest(ipst)%settle = setlpst
 
         !! determine pesticide resuspended into lake water
         resuspst = res_pst(jpst)%pst_rsp * tpest2/res_pst(jpst)%spst_act
@@ -87,6 +93,7 @@
           tpest2 = tpest2 - resuspst
           tpest1 = tpest1 + resuspst
         end if
+        respst_d(jres)%pest(ipst)%resus = resuspst
 
         !! determine pesticide diffusing from sediment to water
         difus = res_pst(jpst)%pst_mix *                                 &                                
@@ -108,6 +115,7 @@
           end if
           tpest2 = tpest2 + Abs(difus)
         end if
+        respst_d(jres)%pest(ipst)%difus = difus
 
         !! determine pesticide lost from sediment by reactions
         reactb = res_pst(jpst)%spst_rea * tpest2
@@ -117,6 +125,7 @@
         else
           tpest2 = tpest2 - reactb
         end if
+        respst_d(jres)%pest(ipst)%react_bot = reactb
 
         !! determine pesticide lost from sediment by burial
         bury = res_pst(jpst)%spst_bry * tpest2 / res_pst(jpst)%spst_act
@@ -126,6 +135,7 @@
         else
           tpest2 = tpest2 - bury
         end if
+        respst_d(jres)%pest(ipst)%bury = bury
 
         !! calculate soluble pesticide transported out of reservoir
         solpesto = resflwo * fd1 * tpest1 / res(jres)%flo
@@ -135,6 +145,7 @@
         else
           tpest1 = tpest1 - solpesto
         end if
+        respst_d(jres)%pest(ipst)%sol_out = solpesto
 
         !! calculate sorbed pesticide transported out of reservoir
         sorpesto = resflwo * fp1 * tpest1 / res(jres)%flo
@@ -144,6 +155,7 @@
         else
           tpest1 = tpest1 - sorpesto
         end if
+        respst_d(jres)%pest(ipst)%sor_out = sorpesto
 
         !! update concentration of pesticide in lake water and sediment
         if (tpest1 < 1.e-10) tpest1 = 0.0

@@ -1,4 +1,4 @@
-      subroutine pst_enrsb
+      subroutine pest_enrsb
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the enrichment ratio for nutrient and
@@ -19,7 +19,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : sedyld, sanyld, silyld, clayld, sagyld, lagyld, ihru, enratio
+      use hru_module, only : hru, surfq, sedyld, sanyld, silyld, clayld, sagyld, lagyld, ihru, enratio
       
       implicit none       
       
@@ -38,15 +38,14 @@
       endif
 
       !! CREAMS method for calculating enrichment ratio
-      cy = 0.       ! sed(t) / flo(m^3)
-      !cy = .1 * sedyld(j) / (hru_ha(j) * surfq(j) + 1.e-6)
+      cy = .1 * sedyld(j) / (hru(j)%area_ha * surfq(j) + 1.e-6)
       if (cy > 1.e-6) then
         enratio = .78 * cy ** (-.2468)
       else
         enratio = 0.
       endif
 
-      if (enratio > 3.5) enratio = 1.5
+      if (enratio > 3.0) enratio = 3.0
 
       return
-      end subroutine pst_enrsb
+      end subroutine pest_enrsb

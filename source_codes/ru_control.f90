@@ -27,6 +27,7 @@
       integer :: ise                     !none        |counter
       integer :: iob                     !            |
       integer :: idr                     !none        |points to dr"s in delratio.dat 
+      integer :: isd
       integer :: ihtypno                 !            |
       real :: ef                         !            | 
       real :: cnv_m3                     !            |
@@ -41,7 +42,7 @@
       integer :: iadj                    !            | 
       integer :: istep                   !            |
       real :: sumflo_day                 !            |
-      real :: ratio!none                 !frac        |fraction change in precipitation due to 
+      real :: ratio                      !frac        |fraction change in precipitation due to 
                                          !            |elevation changes
       real :: wtmp                       !deg C       |temperature of water in reach
       
@@ -84,7 +85,7 @@
           delrto = ru_dr(idr)
         else
           !calculated dr = f(tconc element/ tconc sub)
-          delrto = ru_elem(ielem)%dr(0)
+          delrto = ru_elem(ise)%dr(0)
         end if
 
         if (ru_elem(ielem)%obtyp == "exc") then
@@ -225,8 +226,8 @@
               ob(icmd)%ts(iday,ii)%sedp = ob(icmd)%hd(1)%sedp * ratio         !!sedorgp
               ob(icmd)%ts(iday,ii)%no3 = ob(icmd)%hd(1)%no3 * ratio           !!no3
               ob(icmd)%ts(iday,ii)%solp = ob(icmd)%hd(1)%solp * ratio         !!minp
-              !ob(icmd)%ts(iday,ii)%psol = ob(icmd)%hd(1)%psol * ratio         !!sol pst
-              !ob(icmd)%ts(iday,ii)%psor = ob(icmd)%hd(1)%psor * ratio         !!sorb pst
+              !ob(icmd)%ts(iday,ii)%psol = ob(icmd)%hd(1)%psol * ratio        !!sol pst
+              !ob(icmd)%ts(iday,ii)%psor = ob(icmd)%hd(1)%psor * ratio        !!sorb pst
               ob(icmd)%ts(iday,ii)%chla = ob(icmd)%hd(1)%chla * ratio         !!chl_a
               ob(icmd)%ts(iday,ii)%nh3 = 0.                                   !! NH3
               ob(icmd)%ts(iday,ii)%no2 = 0.                                   !! NO2

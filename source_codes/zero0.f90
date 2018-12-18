@@ -9,7 +9,7 @@
        hru,hru_dafr,igrz,      &
        irr_asq,irr_mx,irr_no,irr_noa,irr_sc,irr_sca,irramt,irrno,irrsc,irrsq,isep,isep_ly,iseptic,itb,        &
        lai_init,latno3,manure_id,nop,orgn_con,orgp_con,par,phubase,qird,ranrns_hru,     &
-       sed_con,sepcrk,sol_sumsolp,soln_con,solp_con,sstmaxd,stmaxd,tileq,tmx,uh,         &
+       sed_con,sepcrk,sol_sumsolp,soln_con,solp_con,sstmaxd,stmaxd,tmx,uh,         &
        wstrs_id,wt_shall,wtab,yr_skip
 
       implicit none
@@ -176,7 +176,6 @@
       solp_con = 0.
       gw_qdeep = 0.
       tile_no3 = 0.
-      tileq = 0.
       uh = 0.
       wt_shall = 0.
       yr_skip = 0

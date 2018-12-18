@@ -1,4 +1,4 @@
-      subroutine pestparm_read
+      subroutine pest_parm_read
       
       use basin_module
       use input_file_module
@@ -65,11 +65,6 @@
           else
             pstcp(ip)%decay_s = 0.
           endif
-   
-          !! set values for pesticide routed through main channel network
-          !if (ip == bsn_cc%rtpest) then
-          !  pest_sol = pestdb(ip)%pst_wof * 1000.
-          !end if
 
         end do
         exit
@@ -80,4 +75,4 @@
 
       close (106)
       return
-      end subroutine pestparm_read
+      end subroutine pest_parm_read

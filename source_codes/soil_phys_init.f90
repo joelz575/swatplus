@@ -185,7 +185,7 @@
         sol(isol)%s%wat_tbl = (sol(isol)%s%det_lag - sol(isol)%s%ffc *   &
           sol(isol)%s%sumfc) / sol(isol)%phys(nly)%d
       else
-        sol(isol)%s%wat_tbl = 0.                              !!! jga
+        sol(isol)%s%wat_tbl = 0.
       end if
       sol(isol)%s%avpor = sumpor / sol(isol)%phys(nly)%d
       sol(isol)%s%avbd = 2.65 * (1. - sol(isol)%s%avpor)

@@ -220,8 +220,8 @@
 !! Calculate pesticide removal 
 !! based on the sediment and runoff removal only
         do k = 1, cs_db%num_pests
-          hpest_bal(j)%pest(k)%surq = hpest_bal(j)%pest(k)%surq * surq_frac
-          hpest_bal(j)%pest(k)%sed = hpest_bal(j)%pest(k)%sed * (1. - sed_remove / 100.)
+          hpestb_d(j)%pest(k)%surq = hpestb_d(j)%pest(k)%surq * surq_frac
+          hpestb_d(j)%pest(k)%sed = hpestb_d(j)%pest(k)%sed * (1. - sed_remove / 100.)
         end do
 
 !! compute bacteria reductions

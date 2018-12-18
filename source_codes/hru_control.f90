@@ -25,6 +25,7 @@
       use mgt_operations_module
       use reservoir_module
       use output_landscape_module
+      use output_ls_pesticide_module
       use time_module
       use conditional_module
       use constituent_mass_module
@@ -47,6 +48,7 @@
       integer :: id                 !              |
       integer :: jj                 !              |
       integer :: ly                 !none          |soil layer
+      integer :: ipest              !none          |sequential pesticide number
       real :: strsa_av              !              |
       real :: runoff_m3             !              |
       real :: bf_m3                 !              |
@@ -85,26 +87,28 @@
       
       hru(ihru)%water_seep = 0.
       !plt => hru(j)%pl(1)
-      
-      !!by zhang DSSAT tillage
-      !!======================
-      !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
-      !jj is hru number
-      if (bsn_cc%cswat == 2) then
-          if (tillage_switch(ihru) .eq. 1) then
-              if (tillage_days(ihru) .ge. 30) then
-                    tillage_switch(ihru) = 0
-                    tillage_days(ihru) = 0
-              else
-                    tillage_days(ihru) = tillage_days(ihru) + 1
-              end if                
-              !tillage_depth(ihru) = dtil
-              !tillage_switch(ihru) = .TRUE. 
-          end if
-      end if
-      !!by zhang DSSAT tillage  
-      !!====================== 
 
+      !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
+      if (bsn_cc%cswat == 2) then
+        if (tillage_switch(ihru) .eq. 1) then
+          if (tillage_days(ihru) .ge. 30) then
+            tillage_switch(ihru) = 0
+            tillage_days(ihru) = 0
+          else
+            tillage_days(ihru) = tillage_days(ihru) + 1
+          end if                
+          !tillage_depth(ihru) = dtil
+          !tillage_switch(ihru) = .TRUE. 
+        end if
+      end if
+
+      !! zero pesticide balance variables
+      if (cs_db%num_pests > 0) then
+        do ipest = 1, cs_db%num_pests
+          hpestb_d(j)%pest(ipest) = pestbz
+        end do
+      end if
+        
       call varinit
       nd_30 = nd_30 + 1
       if (nd_30 > 30) nd_30 = 1
@@ -114,26 +118,22 @@
         !!ht2== outflow from inflow: added to hru generated flows
         ht1 = hz
         ht2 = hz
-        if (ob(icmd)%rcv_tot > 0) then
+                  
+        !!route overland flow across hru
+        if (ob(icmd)%hin_sur%flo > 1.e-6) then
+          call rls_routesurf (icmd)
+        end if
+        
+        !!add lateral flow soil water
+        if (ob(icmd)%hin_lat%flo > 0) then
           !!Route incoming lateral soil flow
           call rls_routesoil (icmd)
         end if
           
-        !!add overland flow to precipday to compute runoff
-        if (ob(icmd)%hin%flo > 1.e-6) then
-          call rls_routesurf (icmd)
+        !!add tile flow to tile (subirrigation and saturated buffer)
+        if (ob(icmd)%hin_til%flo > 1.e-6) then
+          call rls_routetile (icmd)
         end if
-        
-        !!Route incoming overland flow
-        !if (ch_sur(ics)%hd()%flo > 1.e-6) then
-        !  if (ch_sur(ics)%hd()%flo > 1.e-6) then
-            !!partition flow-back to stream and downstream
-        !  else
-            !!all flow back to stream
-        !  end if
-          !!send partition into subroutine
-        !  call rls_routesurf (icmd)
-        !end if
 
         !! check auto operations
         if (sched(isched)%num_autos > 0) then
@@ -142,14 +142,20 @@
             jj = j
             d_tbl => dtbl_lum(id)
             call conditions (jj)
-            call actions (jj)
+            call actions (jj, iob, iauto)
+            
             !! if end of year, reset the one time fert application per year
             if (time%end_yr == 1) then
               do iac = 1, d_tbl%acts
-                pcom(j)%fert_apps(iac) = 1
+                pcom(j)%dtbl(iauto)%num_actions(iac) = 1
               end do
             end if
           end do
+          if (time%end_yr == 1) then
+            pcom(j)%rot_yr = pcom(j)%rot_yr + 1
+          end if
+          !! increment days since last harvest
+          pcom(j)%days_harv = pcom(j)%days_harv + 1
         end if
         
         !! update base zero total heat units
@@ -177,8 +183,14 @@
         !! calculate soil temperature for soil layers
         call stmp_solt
         
+        !! compute surface runoff processes
         call surface
-       ! wetland processes
+                  
+        !! compute evapotranspiration
+        call et_pot
+        call et_act
+
+        !! wetland processes
         hru(j)%water_fr = 0.
         if (ires > 0) call stor_surf
  
@@ -201,10 +213,6 @@
         peakr = 2. * runoff_m3 / (1.5 * tconc(j) * 3600.)
         peakrbf = bf_m3 / 86400.
         peakr = (peakr + peakrbf)     !* prf     
-          
-        !! compute evapotranspiration
-        call et_pot
-        call et_act
 
         !! compute water table depth using climate drivers
         call wattable
@@ -255,18 +263,14 @@
         !! compute actual ET for day in HRU
         etday = ep_day + es_day + canev
 
-      !! compute nitrogen and phosphorus mineralization 
-      if (bsn_cc%cswat == 0) then
-        call nut_nminrl
-      end if
+        !! compute nitrogen and phosphorus mineralization 
+        if (bsn_cc%cswat == 0) then
+          call nut_nminrl
+        end if
 
-	!! Add by zhang
-	!!=================
-	if (bsn_cc%cswat == 2) then
-	  call cbn_zhang2
-	end if
-	!! Add by zhang
-	!!=================	
+	    if (bsn_cc%cswat == 2) then
+	      call cbn_zhang2
+	    end if
 
         call nut_nitvol
         if (bsn_cc%sol_P_model == 1) then
@@ -275,26 +279,29 @@
             call nut_pminrl2
         end if
 
-!!    compute biozone processes in septic HRUs
-!!    if 1)current is septic hru and 2)  soil temperature is above zero
+        !! compute biozone processes in septic HRUs
+        !! if 1) current is septic hru and 2) soil temperature is above zero
         isep = iseptic(j)
-	  if (sep(isep)%opt /= 0. .and. time%yrc >= sep(isep)%yr) then
-	   if (soil(j)%phys(i_sep(j))%tmp > 0.) call sep_biozone     
-	  endif
+	    if (sep(isep)%opt /= 0. .and. time%yrc >= sep(isep)%yr) then
+	      if (soil(j)%phys(i_sep(j))%tmp > 0.) call sep_biozone     
+        endif
 
         !! compute pesticide washoff   
-        if (precipday >= 2.54) call pst_washp
+        if (precipday >= 2.54) call pest_washp
 
         !! compute pesticide degradation
-        call pst_decay
+        call pest_decay
 
         !! compute pesticide movement in soil
-        call pst_lch
-
+        call pest_lch
+      
+        !! sum total pesticide in soil
+        call pest_soil_tot
+        
         if (surfq(j) > 0. .and. peakr > 1.e-6) then
           if (precip_eff > 0.) then
-            call pst_enrsb
-            if (sedyld(j) > 0.) call pst_pesty
+            call pest_enrsb
+            if (sedyld(j) > 0.) call pest_pesty
 
 		  if (bsn_cc%cswat == 0) then
 			call nut_orgn
@@ -315,9 +322,6 @@
           end if
         end if
 
-        !! sum total pesticide in soil
-        call pst_soil_tot
-        
         !! add nitrate in rainfall to soil profile
         call nut_nrain
 
@@ -516,9 +520,18 @@
         hls_d(j)%sedmin = sedminpa(j) + sedminps(j)
         hls_d(j)%tileno3 = tileno3(j)
 
-      !! summarize output for multiple HRUs per subbasin
-      !! store reach loadings for new fig method
+      !! set hydrographs for direct routing or landscape unit
       call hru_hyds
+      
+      !! check decision table for flow control - water allocation
+      if (ob(iob)%ruleset /= "null" .and. ob(iob)%ruleset /= "0") then
+        id = ob(iob)%flo_dtbl
+        jj = j
+        d_tbl => dtbl_flo(id)
+        call conditions (jj)
+        call actions (jj, iob, id)
+      end if
+        
       aird(j) = 0.
 
       return

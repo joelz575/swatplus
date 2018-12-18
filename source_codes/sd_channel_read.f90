@@ -54,10 +54,14 @@
         do ich = 1, sp_ob%chandeg
           allocate (chpst_d(ich)%pest(cs_db%num_pests))
           allocate (chpst_m(ich)%pest(cs_db%num_pests))
+          allocate (chpst_y(ich)%pest(cs_db%num_pests))   
+          allocate (chpst_a(ich)%pest(cs_db%num_pests))   
           allocate (chpst%pest(cs_db%num_pests))
           allocate (chpstz%pest(cs_db%num_pests))
           allocate (bchpst_d%pest(cs_db%num_pests))
           allocate (bchpst_m%pest(cs_db%num_pests))
+          allocate (bchpst_y%pest(cs_db%num_pests))
+          allocate (bchpst_a%pest(cs_db%num_pests))
           allocate (ch_water(ich)%pest(cs_db%num_pests))
           allocate (ch_benthic(ich)%pest(cs_db%num_pests))
         end do

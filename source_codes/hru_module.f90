@@ -57,7 +57,7 @@
                                    !!                              |the model will calculate for every event
            real :: erorgp = 0.     !! erorgp(:)     |none          |organic P enrichment ratio, if left blank
                                    !!                              |the model will calculate for every event
-           real :: cn3_swf = 0.    !! evpot(:)      |none          |pothole evaporation coefficient
+           real :: cn3_swf = 0.    !!               |none          |curve number adjustment factor - sw at cn3
            real :: biomix = 0.     !! biomix(:)     |none          |biological mixing efficiency.
                                    !!                              |Mixing of soil due to activity of earthworms
                                    !!                              |and other soil biota. Mixing is performed at
@@ -273,7 +273,7 @@
       real :: da_ha, vpd
       real :: pet_day, ep_day
       real :: snoev, sno3up
-      real :: es_day, ls_overq, latqrunon
+      real :: es_day, ls_overq, latqrunon, tilerunon
       real :: ep_max
       real :: bsprev
       real :: usle_ei, no3pcp, rcharea
@@ -376,7 +376,7 @@
       real, dimension (:), allocatable :: percn
       real, dimension (:), allocatable :: cbodu,chl_a,qdr
       real, dimension (:), allocatable :: latno3,latq,nplnt
-      real, dimension (:), allocatable :: tileq, tileno3
+      real, dimension (:), allocatable :: tileno3
       real, dimension (:), allocatable :: sedminpa,sedminps,sedorgn
       real, dimension (:), allocatable :: sedorgp,sedyld,sepbtm
       real, dimension (:), allocatable :: surfq,surqno3

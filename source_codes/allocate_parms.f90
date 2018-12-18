@@ -19,8 +19,6 @@
       mhru = sp_ob%hru
       mch = sp_ob%chan
 
-      allocate (pot(mhru))
-      
 !!    drains
       allocate (wnan(10))
       allocate (ranrns_hru(mhru))
@@ -43,7 +41,6 @@
       allocate (rsdco_plcom(mhru))
       allocate (strsw_av(mhru))
       allocate (percn(mhru))
-      allocate (tileq(mhru))
 
 !! septic changes added 1/28/09 gsm
       allocate (percp(mhru))

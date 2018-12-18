@@ -64,8 +64,8 @@
             allocate (lsu_out(i)%num(1))
             lsu_out(i)%num_tot = 1
             lsu_out(i)%num(1) = elem_cnt(1)
-          else
-          !! nspu > 1
+          end if
+          if (nspu > 1) then
           ielem = 0
           do ii = 2, nspu
             ie1 = elem_cnt(ii-1)
@@ -112,12 +112,13 @@
           deallocate (elem_cnt)
           end if   !nspu > 1
         else
+          allocate (lsu_out(i)%num(0:0))
           !!all hrus are in region 
-          allocate (lsu_out(i)%num(sp_ob%hru))
-          lsu_out(i)%num_tot = sp_ob%hru
-          do iihru = 1, sp_ob%hru
-            lsu_out(i)%num(iihru) = iihru
-          end do      
+          !allocate (lsu_out(i)%num(sp_ob%hru))
+          !lsu_out(i)%num_tot = sp_ob%hru
+          !do iihru = 1, sp_ob%hru
+          !  lsu_out(i)%num(iihru) = iihru
+          !end do      
         end if
 
       end do    ! i = 1, mreg

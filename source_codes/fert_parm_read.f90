@@ -1,4 +1,4 @@
-      subroutine fertparm_read
+      subroutine fert_parm_read
       
       use input_file_module
       use maximum_data_module
@@ -55,4 +55,4 @@
       
       close (107)
       return
-      end subroutine fertparm_read
+      end subroutine fert_parm_read

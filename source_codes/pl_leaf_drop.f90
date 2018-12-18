@@ -151,6 +151,13 @@
         rsd1(j)%tot(ipl)%n = resnew * pcom(j)%plm(ipl)%n_fr + rsd1(j)%tot(ipl)%n
         rsd1(j)%tot(ipl)%p = resnew * pcom(j)%plm(ipl)%p_fr + rsd1(j)%tot(ipl)%p
         pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - resnew
+        
+      if (j == 24823) then
+        if (pcom(j)%plm(1)%mass > 30000.) then
+          pause
+        end if
+      end if    
+        
         pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - resnew * pcom(j)%plm(ipl)%n_fr
         pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - resnew * pcom(j)%plm(ipl)%p_fr
         pcom(j)%plstr(ipl)%strsw = 1.

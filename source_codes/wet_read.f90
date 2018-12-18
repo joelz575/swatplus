@@ -27,8 +27,7 @@
       integer :: ipst                    !none       |counter
       integer :: isp_ini                 !none       |counter
       integer :: ics                     !none       |counter
-      integer :: ichi                    !none       |counter
-          
+
       real :: lnvol
       
       eof = 0
@@ -55,17 +54,9 @@
         
       db_mx%wet_dat = imax
        
-      allocate (wet_dat_c(0:imax))
-      allocate (wet_dat(0:imax))
-      allocate (wet_ob(0:imax))
-      allocate (wet_in_d(0:imax))
-      allocate (wet_in_m(0:imax))
-      allocate (wet_in_y(0:imax))
-      allocate (wet_in_a(0:imax))
-      allocate (wet_out_d(0:imax))
-      allocate (wet_out_m(0:imax))
-      allocate (wet_out_y(0:imax))
-      allocate (wet_out_a(0:imax))
+      allocate (wet_dat_c(imax))
+      allocate (wet_dat(imax))
+      
       rewind (105)
       read (105,*) titldum
       read (105,*) header
@@ -78,12 +69,12 @@
                   
         !! initialize orgaincs and minerals in water
         do isp_ini = 1, db_mx%om_water_init
-          if (wet_dat_c(ichi)%init == res_init_dat_c(isp_ini)%init) then
-            wet_init(ichi)%init = isp_ini
+          if (wet_dat_c(ires)%init == res_init_dat_c(isp_ini)%init) then
+            wet_dat(ires)%init = isp_ini
             !! initial organic mineral
             do ics = 1, db_mx%om_water_init
               if (res_init_dat_c(isp_ini)%org_min == om_init_name(ics)) then
-                wet_init(ichi)%org_min = ics
+                wet_init(isp_ini)%org_min = ics
                 exit
               end if
             end do
@@ -113,7 +104,7 @@
           end if
         end do
        
-        do irel = 1, db_mx%d_tbl
+        do irel = 1, db_mx%dtbl_res
             if (dtbl_res(irel)%name == wet_dat_c(ires)%release) then
             wet_dat(ires)%release = irel
             exit

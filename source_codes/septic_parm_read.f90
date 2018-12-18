@@ -1,4 +1,4 @@
-      subroutine septicparm_read
+      subroutine septic_parm_read
       
       use input_file_module
       use maximum_data_module
@@ -52,4 +52,4 @@
       endif
       
       return
-      end  subroutine septicparm_read
+      end  subroutine septic_parm_read

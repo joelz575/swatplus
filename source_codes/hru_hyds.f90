@@ -6,7 +6,7 @@
 
       use hru_module, only : cbodu, chl_a, clayld, doxq, hhsurfq, hru, ihru, itb, lagyld, latq, peakr, percn, qday,  &
          sagyld, sanyld, silyld, sedminpa, sedminps, sedorgn, sedorgp, sepbtm, surqno3, surqsolp, tileno3,     &
-         tileq, tmpav, uh, sedyld, latno3
+         tmpav, uh, sedyld, latno3, qtile
       use hydrograph_module
       use basin_module
       use time_module
@@ -77,8 +77,8 @@
       ob(icmd)%hd(3)%lag = lagyld(j)                  !! detached large aggregates
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(3)%pest(ipest)%sol = hpest_bal(j)%pest(ipest)%surq
-        obcs(icmd)%hd(3)%pest(ipest)%sor = hpest_bal(j)%pest(ipest)%sed
+        obcs(icmd)%hd(3)%pest(ipest)%sol = hpestb_d(j)%pest(ipest)%surq
+        obcs(icmd)%hd(3)%pest(ipest)%sor = hpestb_d(j)%pest(ipest)%sed
       end do
       do ipath = 1, cs_db%num_paths
         obcs(icmd)%hd(3)%path(ipath)%sol = 0
@@ -90,7 +90,7 @@
       ob(icmd)%hd(2)%no3 = percn(j) * cnv_kg            !! recharge nitrate
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(2)%pest(ipest)%sol = hpest_bal(j)%pest(ipest)%perc
+        obcs(icmd)%hd(2)%pest(ipest)%sol = hpestb_d(j)%pest(ipest)%perc
         obcs(icmd)%hd(2)%pest(ipest)%sor = 0
       end do
       do ipath = 1, cs_db%num_paths
@@ -103,7 +103,7 @@
       ob(icmd)%hd(4)%no3 = latno3(j) * cnv_kg
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(4)%pest(ipest)%sol = hpest_bal(j)%pest(ipest)%latq
+        obcs(icmd)%hd(4)%pest(ipest)%sol = hpestb_d(j)%pest(ipest)%latq
         obcs(icmd)%hd(4)%pest(ipest)%sor = 0
       end do
       do ipath = 1, cs_db%num_paths
@@ -112,11 +112,11 @@
       end do
       
       !tile flow hydrograph (5)
-      ob(icmd)%hd(5)%flo = tileq(j) * cnv_m3            !! tile flow
+      ob(icmd)%hd(5)%flo = qtile * cnv_m3               !! tile flow
       ob(icmd)%hd(5)%no3 = tileno3(j) * cnv_kg          !! tile flow nitrate 
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(5)%pest(ipest)%sol = 0            !! need to add tile pesticides
+        obcs(icmd)%hd(5)%pest(ipest)%sol = hpestb_d(j)%pest(ipest)%tileq
         obcs(icmd)%hd(5)%pest(ipest)%sor = 0
       end do
       do ipath = 1, cs_db%num_paths

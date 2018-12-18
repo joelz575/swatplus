@@ -72,18 +72,22 @@
         real :: sum_a = 0.              !! none         |sum of aeration stress 
       end type plant_stress
       
+      type auto_operations
+        integer, dimension(:), allocatable :: num_actions      !! current number of actions - reset on January 1 
+      end type auto_operations
+      
       type plant_community
        character(len=4) :: name
        integer :: npl                  !! number of plants in community
        integer :: pcomdb               !! current plant community database number
        integer :: rot_yr = 1           !! rotation year
        integer :: days_harv = 1        !!               |days since last harvest - for conditional scheduling planting of winter annuals
-       integer, dimension(4) :: fert_apps = 1          !|d_tble autofert - limit fert apps per year 
        integer :: mseas = 0            !! none          |monsoon season to initiate tropical plant growth
                                        !!               |   0 = outside monsoon period and during monsoon after growth is triggered
                                        !!               |   1 = in monsoon period but new growth not triggered
        real :: cht_mx = 0.             !! m             |height of tallest plant in community for pet calculation
        real :: lai_sum = 0.            !! m/m           |sum of lai for each plant
+       type (auto_operations), dimension(:), allocatable :: dtbl               !!d_tble action - to limit number of actions per year 
        type (plant_growth), dimension(:), allocatable :: plg    !!plant growth variables
        type (plant_stress), dimension(:), allocatable :: plstr  !!plant stress variables
        type (plant_status), dimension(:), allocatable :: plcur  !!plant status variables

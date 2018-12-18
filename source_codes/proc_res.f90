@@ -5,17 +5,18 @@
       implicit none
                 
       !! allocate and initialize reservoir variables
+      call res_read_hyd
+      call res_read_sed
+      call res_read_nut
+      call res_read_pst
+      call res_read_weir
+      call res_read_init
+        
       if (sp_ob%res > 0) then
         call res_allo
         call res_objects
       
         ! read reservoir data
-        call res_read_init
-        call res_read_hyd
-        call res_read_sed
-        call res_read_nut
-        call res_read_pst
-        call res_read_weir
         call res_read
         call res_initial
       end if

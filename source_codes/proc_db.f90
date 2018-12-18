@@ -3,14 +3,14 @@
       implicit none
 
       !! databases used by all spatial modules
-      call plantparm_read                             !! read the plant paramter database
-      call plantparm_init                             !! initialize plant parameters
-      call tillparm_read                              !! read the tillage database
-      call pestparm_read                              !! read the pesticide database
-      call fertparm_read                              !! read the fertilizer/nutrient database
-      call urbanparm_read                             !! read the urban land types database
-      call pathparm_read                              !! read the pathogen data parameters
-      call septicparm_read 
+      call plant_parm_read                             !! read the plant paramter database
+      call plantparm_init                              !! initialize plant parameters
+      call till_parm_read                              !! read the tillage database
+      call pest_parm_read                              !! read the pesticide database
+      call fert_parm_read                              !! read the fertilizer/nutrient database
+      call urban_parm_read                             !! read the urban land types database
+      call path_parm_read                              !! read the pathogen data parameters
+      call septic_parm_read 
       
       !! read management scheduling and data files      
       call mgt_read_irrops

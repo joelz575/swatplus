@@ -110,7 +110,9 @@
       type all_constituent_hydrograph
         type (constituent_hydrograph), dimension (:), allocatable :: hd
         type (constituent_hydrograph) :: hin
-        type (constituent_hydrograph) :: hin_s
+        type (constituent_hydrograph) :: hin_sur
+        type (constituent_hydrograph) :: hin_lat
+        type (constituent_hydrograph) :: hin_til
         type (constituent_hydrograph), dimension(:), allocatable :: hcsin_d
         type (constituent_hydrograph), dimension(:), allocatable :: hcsin_m
         type (constituent_hydrograph), dimension(:), allocatable :: hcsin_y

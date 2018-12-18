@@ -1,4 +1,4 @@
-      subroutine pst_apply (jj, ipest, pest_kg, pestop)
+      subroutine pest_apply (jj, ipest, pest_kg, pestop)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine applies pesticide
@@ -35,41 +35,41 @@
       use hru_module, only : hru, driftco, pst_dep
       use soil_module
       use plant_module
+      use output_ls_pesticide_module
       
       implicit none
       
       integer :: j                       !none          |HRU number
       integer, intent (in) :: jj         !none          |subbasin number
       integer :: k                       !none          |sequence number of pesticide
-      real :: xx                         !kg/ha         |amount of pesticide applied to HRU
       real :: gc                         !none          |fraction of ground covered by plant foliage
       integer, intent (in) :: ipest      !none          |counter
       integer, intent (in) :: pestop     !              | 
       real, intent (in) :: pest_kg       !kg/ha         |amount of pesticide applied 
-      real :: pst_kg                     !kg/ha         |amount of pesticide applied to HRU
       integer :: nly                     !none          |counter
 
       j = jj
 
       !! initialize local variables
       k = ipest                                     !! sequential hru pesticide number
-      xx = pest_kg * chemapp_db(mgt%op4)%app_eff
 
+      hpestb_d(j)%pest(k)%apply_f = 0.
+      hpestb_d(j)%pest(k)%apply_s = 0.
       ! added for pesticide incorporation
       if (pst_dep > 1.e-6) then
        do nly = 1, soil(j)%nly
          if (nly == 1) then
            if (pst_dep < soil(j)%phys(nly)%d) then
-             soil(j)%ly(1)%pst(k) =  soil(j)%ly(1)%pst(k) + xx
+             soil(j)%ly(1)%pst(k) =  soil(j)%ly(1)%pst(k) + pest_kg
              exit
            endif
          else
-         if (pst_dep>soil(j)%phys(nly-1)%d .and. pst_dep < soil(j)%phys(nly)%d)then
-           soil(j)%ly(nly)%pst(k) = soil(j)%ly(nly)%pst(k) + xx
-           exit
-           endif
-         endif
-        enddo
+           if (pst_dep>soil(j)%phys(nly-1)%d .and. pst_dep < soil(j)%phys(nly)%d)then
+             soil(j)%ly(nly)%pst(k) = soil(j)%ly(nly)%pst(k) + pest_kg
+             exit
+           end if
+         end if
+        end do
       else
 
       !! calculate ground cover
@@ -77,11 +77,13 @@
       if (gc < 0.) gc = 0.
 
       !! update pesticide levels on ground and foliage
-      pcom(j)%pest(k) = pcom(j)%pest(k) + gc * xx
-      soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + (1. - gc) * xx
+      pcom(j)%pest(k) = pcom(j)%pest(k) + gc * pest_kg
+      soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + (1. - gc) * pest_kg
+      hpestb_d(j)%pest(k)%apply_f = gc * pest_kg
+      hpestb_d(j)%pest(k)%apply_s = (1. - gc) * pest_kg
       
       !! added endif for pesticide incorporation 3/31/08 gsm
       endif
 
       return
-      end subroutine pst_apply
+      end subroutine pest_apply

@@ -49,9 +49,11 @@
       use sd_channel_module
       use hru_lte_module
       use basin_module
-      use hydrograph_module, only : sp_ob
+      use hydrograph_module, only : sp_ob, sp_ob1
       use output_landscape_module
       use conditional_module
+      use constituent_mass_module
+      use output_ls_pesticide_module
       
       implicit none
       
@@ -65,6 +67,11 @@
       integer :: ich                 !none          |counter
       integer :: idp                 !              |
       integer :: iupd                !none          |counter
+      integer :: ipest               !none          |counter
+      integer :: date_time(8)        !              | 
+      character*10 b(3)              !              |
+  
+      integer :: iob                 !              |
 
       time%yrc = time%yrc_start
 
@@ -110,7 +117,9 @@
           
           time%yrc_tot = time%yrc_end - time%yrc_start + 1
           
-          write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc, time%yrs, time%yrc_tot
+          call DATE_AND_TIME (b(1), b(2), b(3), date_time)
+          write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc, time%yrs, time%yrc_tot,  &
+                   date_time(5), date_time(6), date_time(7)
          
           !! check for end of month, year and simulation
           time%end_mo = 0
@@ -169,10 +178,11 @@
           !! conditional reset of land use and management
           do iupd = 1, db_mx%cond_up
             do j = 1, sp_ob%hru
+              iob = sp_ob1%hru + j - 1
               id = upd_cond(iupd)%cond_num
               d_tbl => dtbl_scen(id)
               call conditions (j)
-              call actions (j)
+              call actions (j, iob, id)
             end do
           end do
 
@@ -229,7 +239,13 @@
           hnb_y(j) = hnbz
           hpw_y(j) = hpwz
           hls_y(j) = hlsz
-          
+          !! zero yearly pesticide balances after using them in soft data calibration (was in hru_output)
+          if (cs_db%num_pests > 0) then
+            do ipest = 1, cs_db%num_pests
+              hpestb_y(j)%pest(ipest) = pestbz
+            end do
+          end if
+        
           !! compute biological mixing at the end of every year
           if (hru(j)%hyd%biomix > 1.e-6) call mgt_newtillmix (j, hru(j)%hyd%biomix, 0)
 
@@ -275,5 +291,5 @@
       time = time_init
 
       return
- 1234 format (1x, a, 2i4, 2x,i4,' Yr ', i4,' of ', i4)
+ 1234 format (1x, a, 2i4, 2x,i4,' Yr ', i4,' of ', i4, " Time",2x,i2,":",i2,":",i2)
       end subroutine time_control

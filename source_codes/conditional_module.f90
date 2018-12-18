@@ -41,6 +41,7 @@
       type (decision_table), dimension(:), allocatable, target :: dtbl_lum
       type (decision_table), dimension(:), allocatable, target :: dtbl_res
       type (decision_table), dimension(:), allocatable, target :: dtbl_scen
+      type (decision_table), dimension(:), allocatable, target :: dtbl_flo
       type (decision_table), pointer :: d_tbl
       
       end module conditional_module   

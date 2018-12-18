@@ -77,22 +77,30 @@
                 npests = cs_db%num_pests
                 if (npests > 0) then
                   allocate (obcs(i)%hin%pest(npests))
-                  allocate (obcs(i)%hin_s%pest(npests))
+                  allocate (obcs(i)%hin_sur%pest(npests))
+                  allocate (obcs(i)%hin_lat%pest(npests))
+                  allocate (obcs(i)%hin_til%pest(npests))
                 end if
                 npaths = cs_db%num_paths
                 if (npaths > 0) then
                   allocate (obcs(i)%hin%path(npaths))
-                  allocate (obcs(i)%hin_s%path(npaths))
+                  allocate (obcs(i)%hin_sur%path(npaths))
+                  allocate (obcs(i)%hin_lat%path(npaths))
+                  allocate (obcs(i)%hin_til%path(npaths))
                 end if
                 nmetals = cs_db%num_metals
                 if (nmetals > 0) then 
                   allocate (obcs(i)%hin%hmet(nmetals))
-                  allocate (obcs(i)%hin_s%hmet(nmetals))
+                  allocate (obcs(i)%hin_sur%hmet(nmetals))
+                  allocate (obcs(i)%hin_lat%hmet(nmetals))
+                  allocate (obcs(i)%hin_til%hmet(nmetals))
                 end if
                 nsalts = cs_db%num_salts
                 if (nsalts > 0) then 
                   allocate (obcs(i)%hin%salt(nsalts))
-                  allocate (obcs(i)%hin_s%salt(nsalts))
+                  allocate (obcs(i)%hin_sur%salt(nsalts))
+                  allocate (obcs(i)%hin_lat%salt(nsalts))
+                  allocate (obcs(i)%hin_til%salt(nsalts))
                 end if
                 
                 do ihyd = 1, nhyds
@@ -128,6 +136,7 @@
                 allocate (ob(i)%htyp_out(nout))
                 allocate (ob(i)%ihtyp_out(nout))
                 allocate (ob(i)%frac_out(nout))
+                allocate (ob(i)%rcvob_inhyd(nout))
                 allocate (ob(i)%hout_m(nout))
                 allocate (ob(i)%hout_y(nout))
                 allocate (ob(i)%hout_a(nout))

@@ -150,7 +150,7 @@
 		 soil1(j)%mn(bz_lyr)%no3 = 0
 		 soil1(j)%hp(bz_lyr)%n = 0
 		 soil1(j)%hp(bz_lyr)%p = 0
-		 soil1(j)%tot(bz_lyr)%p = 0    !! nbs ?
+		 soil1(j)%tot(bz_lyr)%p = 0 
 		 soil1(j)%mp(bz_lyr)%lab = 0
          soil1(j)%mp(bz_lyr)%act = 0
 		 biom(j) = 0		

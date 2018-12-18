@@ -164,8 +164,8 @@
       !bactsedp = Max(0.,bactsedp)
 
 !        do k = 1, cs_db%num_pests
-!          hpest_bal(j)%pest(k)%surq = pst_lag(k,1,j) * brt(j)
-!          hpest_bal(j)%pest(k)%sed = pst_lag(k,2,j) * brt(j)
+!          hpestb_d(j)%pest(k)%surq = pst_lag(k,1,j) * brt(j)
+!          hpestb_d(j)%pest(k)%sed = pst_lag(k,2,j) * brt(j)
 !        end do
 
       surf_bs(2,j) = surf_bs(2,j) - sedyld(j)
@@ -187,8 +187,8 @@
       !surf_bs(12,j) = surf_bs(12,j) - bactsedp
 
 !        do k = 1, cs_db%num_pests
-!          pst_lag(k,1,j) = pst_lag(k,1,j) - hpest_bal(j)%pest(k)%surq
-!          pst_lag(k,2,j) = pst_lag(k,2,j) - hpest_bal(j)%pest(k)%sed
+!          pst_lag(k,1,j) = pst_lag(k,1,j) - hpestb_d(j)%pest(k)%surq
+!          pst_lag(k,2,j) = pst_lag(k,2,j) - hpestb_d(j)%pest(k)%sed
 !        end do
 
       return

@@ -18,7 +18,7 @@
       use hru_module, only : hru, ihru, cbodu, surfq, surqno3, surqsolp, sep_tsincefail, pot, i_sep,  &
         isep, qday, sepday
       use soil_module
-      
+      use hydrograph_module
       use basin_module
       use organic_mineral_mass_module
       
@@ -33,29 +33,25 @@
       real:: pormm                 !mm            |porosity in mm depth 
       real:: rtof                  !none          |weighting factor used to partition the 
                                    !              |organic N & P concentration of septic effluent
-                                   !              |between the fresh organic and the stable 
-                                   !              |organic pools
+                                   !              |between the fresh organic and the stable organic pools
       real :: qvol                 !              |     
       real :: xx                   !              |
       integer :: jj                !              |
       integer :: l                 !              | 
       integer :: nn                !none          |number of soil layers
       integer :: ly                !none          |counter
-      
 
-      j = 0
       j = ihru
       isp = sep(isep)%typ 	   !! J.Jeong 3/09/09
       rtof = 0.5
 
- 	if (sep(isep)%opt ==2.and.j1==i_sep(j)) then
+ 	if (sep(isep)%opt == 2 .and. j1 == i_sep(j)) then
 	  
 	  ii = j1 
 	  qlyr = soil(j)%phys(ii)%st
 	  
 	  ! distribute excess STE to upper soil layers 
-	  do while (qlyr>0.and.ii>1)
-	    
+	  do while (qlyr > 0 .and. ii > 1)
 		 ! distribute STE to soil layers above biozone layer
 		 if (soil(j)%phys(ii)%st > soil(j)%phys(ii)%ul) then
 	      qlyr = soil(j)%phys(ii)%st - soil(j)%phys(ii)%ul 	! excess water moving to upper layer
@@ -67,43 +63,34 @@
 	  
 	    ! Add surface ponding to the 10mm top layer when the top soil layer is saturated
 		 !  and surface ponding occurs.
-		 if (ii==2) then
+		 if (ii == 2) then
 	     qlyr = soil(j)%phys(1)%st - soil(j)%phys(1)%ul
 	     ! excess water makes surface runoff
-	     if (qlyr>0) then
-	         soil(j)%phys(1)%st = soil(j)%phys(1)%ul
-             cbodu(j) = (cbodu(j) * surfq(j) + sepdb(sep(isep)%typ)%bodconcs * qlyr) / (qday + qlyr) !add septic effluent cbod (mg/l) concentration to HRU runoff, Jaehak Jeong 2016
-	         surfq(j) = surfq(j) + qlyr 
-		       qvol = qlyr * hru(j)%area_ha * 10.
-		       ! nutrients in surface runoff
-		       xx = qvol / hru(j)%area_ha / 1000.
-	         surqno3(j) = surqno3(j) + xx * (sepdb(sep(isep)%typ)%no3concs +        &           
-                       sepdb(sep(isep)%typ)%no2concs) 
-               surqsolp(j) =  surqsolp(j) +  xx * sepdb(sep(isep)%typ)%minps 
-               
-	         ! Initiate counting the number of days the system fails and makes surface ponding of STE
-	         if(sep_tsincefail(j)==0) sep_tsincefail(j) = 1
+	     if (qlyr > 0) then
+            soil(j)%phys(1)%st = soil(j)%phys(1)%ul
+            !add septic effluent cbod (mg/l) concentration to HRU runoff, Jaehak Jeong 2016
+            cbodu(j) = (cbodu(j) * surfq(j) + sepdb(sep(isep)%typ)%bodconcs * qlyr) / (qday + qlyr) 
+            surfq(j) = surfq(j) + qlyr 
+            qvol = qlyr * hru(j)%area_ha * 10.
+            ! nutrients in surface runoff
+            xx = qvol / hru(j)%area_ha / 1000.
+            surqno3(j) = surqno3(j) + xx * (sepdb(sep(isep)%typ)%no3concs + sepdb(sep(isep)%typ)%no2concs) 
+            surqsolp(j) =  surqsolp(j) +  xx * sepdb(sep(isep)%typ)%minps 
+            
+            ! Initiate counting the number of days the system fails and makes surface ponding of STE
+            if(sep_tsincefail(j)==0) sep_tsincefail(j) = 1
 	     endif
 	     qlyr = 0.
            !nutrients in the first 10mm layer
 		   qvol = soil(j)%phys(1)%st * hru(j)%area_ha * 10.
 		   xx = qvol / hru(j)%area_ha / 1000.
-           rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + xx *                &   
-            (sepdb(sep(isep)%typ)%no3concs +                             &                      
-                       sepdb(sep(isep)%typ)%no2concs)  
-           rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 + xx *                &
-                         sepdb(sep(isep)%typ)%nh4concs                  
-           soil1(j)%hp(1)%n = soil1(j)%hp(1)%n + xx *                    &   
-                     sepdb(sep(isep)%typ)%orgnconcs * rtof
-           rsd1(j)%tot(1)%n = rsd1(j)%tot(1)%n + xx *                    &
-                     sepdb(sep(isep)%typ)%orgnconcs * (1.-rtof)
-           soil1(j)%hp(1)%p = soil1(j)%hp(1)%p + xx *                    &    
-                   sepdb(sep(isep)%typ)%orgps * rtof
-           rsd1(j)%tot(1)%p = rsd1(j)%tot(1)%p + xx*                     &
-                   sepdb(sep(isep)%typ)%orgps*(1.-rtof)
-           rsd1(j)%mp%lab = rsd1(j)%mp%lab + xx *                &    
-                   sepdb(sep(isep)%typ)%minps  
-     
+           rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + xx * (sepdb(sep(isep)%typ)%no3concs + sepdb(sep(isep)%typ)%no2concs)  
+           rsd1(j)%mn%nh4 = rsd1(j)%mn%nh4 + xx * sepdb(sep(isep)%typ)%nh4concs                  
+           soil1(j)%hp(1)%n = soil1(j)%hp(1)%n + xx * sepdb(sep(isep)%typ)%orgnconcs * rtof
+           rsd1(j)%tot(1)%n = rsd1(j)%tot(1)%n + xx * sepdb(sep(isep)%typ)%orgnconcs * (1.-rtof)
+           soil1(j)%hp(1)%p = soil1(j)%hp(1)%p + xx * sepdb(sep(isep)%typ)%orgps * rtof
+           rsd1(j)%tot(1)%p = rsd1(j)%tot(1)%p + xx * sepdb(sep(isep)%typ)%orgps*(1.-rtof)
+           rsd1(j)%mp%lab = rsd1(j)%mp%lab + xx * sepdb(sep(isep)%typ)%minps  
 		 endif
 
          ! volume water in the current layer: m^3
@@ -111,27 +98,19 @@
          
 		 ! add nutrient to soil layer
 		 xx = qvol / hru(j)%area_ha / 1000.
-       soil1(j)%mn(ii)%no3 = soil1(j)%mn(ii)%no3 + xx *        &
-                        sepdb(sep(isep)%typ)%no3concs          &
-                        + sepdb(sep(isep)%typ)%no2concs
-	   soil1(j)%mn(ii)%nh4 = soil1(j)%mn(ii)%nh4 + xx *        &
-                        sepdb(sep(isep)%typ)%nh4concs
-	   soil1(j)%hp(ii)%n = soil1(j)%hp(ii)%n + xx *            &        
-                        sepdb(sep(isep)%typ)%orgnconcs*rtof
-       soil1(j)%tot(ii)%n = soil1(j)%tot(ii)%n + xx *          &
-                         sepdb(sep(isep)%typ)%orgnconcs * (1.-rtof)
-       soil1(j)%hp(ii)%p = soil1(j)%hp(ii)%p + xx *            &
-                         sepdb(sep(isep)%typ)%orgps * rtof
-	   soil1(j)%tot(ii)%p = soil1(j)%tot(ii)%p + xx *        &
-                         sepdb(sep(isep)%typ)%orgps*(1.-rtof)
-       soil1(j)%mp(ii)%lab = soil1(jj)%mp(l)%lab + xx *        &
-                         sepdb(sep(isep)%typ)%minps
+         soil1(j)%mn(ii)%no3 = soil1(j)%mn(ii)%no3 + xx * sepdb(sep(isep)%typ)%no3concs + sepdb(sep(isep)%typ)%no2concs
+	   soil1(j)%mn(ii)%nh4 = soil1(j)%mn(ii)%nh4 + xx * sepdb(sep(isep)%typ)%nh4concs
+	   soil1(j)%hp(ii)%n = soil1(j)%hp(ii)%n + xx * sepdb(sep(isep)%typ)%orgnconcs*rtof
+       soil1(j)%tot(ii)%n = soil1(j)%tot(ii)%n + xx * sepdb(sep(isep)%typ)%orgnconcs * (1.-rtof)
+       soil1(j)%hp(ii)%p = soil1(j)%hp(ii)%p + xx * sepdb(sep(isep)%typ)%orgps * rtof
+	   soil1(j)%tot(ii)%p = soil1(j)%tot(ii)%p + xx * sepdb(sep(isep)%typ)%orgps*(1.-rtof)
+       soil1(j)%mp(ii)%lab = soil1(jj)%mp(l)%lab + xx * sepdb(sep(isep)%typ)%minps
 
 	    ii = ii - 1
 	  end do
 	endif
 	       
-      if (sep(isep)%opt ==0) then
+      if (sep(isep)%opt == 0) then
       if (j1 < soil(j)%nly) then
         if (soil(j)%phys(j1)%st - soil(j)%phys(j1)%ul > 1.e-4) then
           sepday = sepday + (soil(j)%phys(j1)%st - soil(j)%phys(j1)%ul)
@@ -152,9 +131,9 @@
               ul_excess = 0.
               exit
             end if
-            if (j1 == 1 .and. ul_excess > 0.) then
+            if (ly == 1 .and. ul_excess > 0.) then
               !! add ul_excess to depressional storage and then to surfq
-              pot(j)%vol = pot(j)%vol + ul_excess
+              wet(j)%flo = wet(j)%flo + ul_excess
             end if
           end do
           !compute tile flow again after saturation redistribution

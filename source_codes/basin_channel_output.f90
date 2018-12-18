@@ -20,7 +20,7 @@
 
       bch_m = bch_m + bch_d
       
-!!!!! daily print
+       !! daily print
        if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
         if (pco%chan_bsn%d == "y") then
           write (2110,100) time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bch_d
@@ -30,7 +30,7 @@
         end if 
       end if
 
-!!!!! monthly print
+      !! monthly print
       if (time%end_mo == 1) then
         bch_y = bch_y + bch_m
         if (pco%chan_bsn%m == "y") then
@@ -42,7 +42,7 @@
         bch_m = chz
       end if
 
-!!!!! yearly print
+      !! yearly print
       if (time%end_yr == 1) then
         bch_a = bch_a + bch_y
         if (pco%chan_bsn%y == "y") then 
@@ -55,7 +55,7 @@
         bch_y = chz
       end if
 
-!!!!! average annual print
+      !! average annual print
       if (time%end_sim == 1 .and. pco%chan_bsn%a == "y") then
         bch_a = bch_a / time%yrs_prt
         write (2113,100) time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bch_a
@@ -64,7 +64,6 @@
         end if
       end if
 
-!100   format (4i6,i8,2x,a,2x,a16,60(1x,e15.4))
  100   format (4i6,i8,2x,a,2x,a17,f14.4,59(1x,e14.4))
       return
       

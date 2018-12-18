@@ -22,6 +22,7 @@
       inquire (file=in_res%init_res, exist=i_exist)
       if (i_exist == 0 .or. in_res%init_res == "null") then
         allocate (res_init(0:0))
+        allocate (wet_init(0:0))
       else   
       do
        open (105,file=in_res%init_res)
@@ -38,6 +39,7 @@
       db_mx%res_init = imax
       
       allocate (res_init(0:imax))
+      allocate (wet_init(0:imax))
       allocate (res_init_dat_c(0:imax))
       
       rewind (105)

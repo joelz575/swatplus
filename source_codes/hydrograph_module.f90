@@ -186,7 +186,8 @@
         integer :: wst = 1              !weather station number
         integer :: constit              !constituent data pointer to pesticides, pathogens, metals, salts
         integer :: props2               !overbank connectivity pointer to landscape units - change props2 to overbank
-        integer :: ruleset              !ruleset pointer for flow fraction of hydrograph
+        character(len=16) :: ruleset    !points to the name of the dtbl in flo_con.dtl for out flow control
+        integer :: flo_dtbl             !dtbl pointer for flow fraction of hydrograph
         integer :: num = 1              !spatial object number- ie hru number corresponding to sequential command number
                                         !this is the first column in hru_dat (doesn"t have to be sequential)
         integer :: gis_id               !gis number for database purposes
@@ -196,7 +197,6 @@
         integer :: cmd_order = 0        !1=headwater,2=2nd order,etc
         integer :: src_tot = 0          !total number of outgoing (source) objects
         integer :: rcv_tot = 0          !total number of incoming (receiving) hydrographs
-        integer :: rcvob_tot = 0        !total number of incoming (receiving) objects
         integer :: dfn_tot = 0          !total number of defining objects (ie hru"s within a subbasin)
         integer :: ru_tot               !number of routing units that contain this object
         integer,  dimension(:), allocatable :: ru                  !subbasin the element is in
@@ -217,11 +217,14 @@
         character (len=3), dimension(:), allocatable :: htyp_in     !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
         integer, dimension(:), allocatable :: ihtyp_in
         real, dimension(:), allocatable :: frac_in
+        integer, dimension(:), allocatable :: rcvob_inhyd           !inflow hydrograph number of recieving object - used for dtbl flow fractions
         type (flow_duration_curve) :: fdc                                   !use for daily flows and then use to get median of annual fdc"s
         type (sorted_duration_curve), dimension(:),allocatable :: fdc_ll    !linked list of daily flow for year - dimensioned to 366
         type (sorted_duration_curve), dimension(:),allocatable :: fdc_lla   !linked list of annual flow for simulation - dimensioned to nbyr
         type (hyd_output) :: hin                                            !inflow hydrograph for surface runon - sum of all inflow hyds
-        type (hyd_output) :: hin_s                                          !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+        type (hyd_output) :: hin_sur                                        !inflow hydrograph for surface runoff - sum of all surface inflow hyds
+        type (hyd_output) :: hin_lat                                        !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+        type (hyd_output) :: hin_til                                        !inflow hydrograph for tile flow - sum of all tile inflow hyds
         type (hyd_output), dimension(:),allocatable :: hd                   !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
         type (hyd_output), dimension(:,:),allocatable :: ts                 !subdaily hydrographs
         type (hyd_output), dimension(:),allocatable :: tsin                 !inflow subdaily hydrograph
@@ -243,39 +246,22 @@
       end type object_connectivity
       type (object_connectivity), dimension(:), allocatable, save :: ob
       
-     type water_right_elements
-        character(len=16) :: name
-        character (len=3) :: obtyp      !object type- hru, hru_lte, channel, etc
-        integer :: obtypno = 0          !number of hru, hru_lte, channel, etc
-        integer :: obj = 1              !object number
-        integer :: right                !0-100
-        integer,  dimension(:), allocatable :: wro   !water rights object the element is in
-      end type water_right_elements
-      
-      type water_rights_object
-        character(len=16) :: name
-        integer :: num_src
-        character(len=16), dimension(:), allocatable :: typ_src
-        integer, dimension(:), allocatable :: num_elem
-        type (water_right_elements), dimension(:), allocatable :: wro_elem
-        real, dimension(:), allocatable :: demand
-      end type water_rights_object
-      
       !water rights elements (objects) within the water rights object
       type water_rights_elements
-        character (len=16) :: name
+        character (len=16) :: num
         character (len=16) :: ob_typ            !object type - hru, channel, reservoir, etc
-        character (len=16) :: ob_num            !object number
-        character (len=16) :: rights_typ        !ie. jr, sr
-        real :: rights                          !ie. irr demand, minimum flow, flow fraction, etc)
+        integer :: ob_num                       !object number
+        character (len=16) :: rights_typ        !ie. irr demand, minimum flow, flow fraction, etc)
+        real :: amount                          !0 for irr demand; ha-m for min_flo; frac for min_frac
+        integer :: rights                       !0-100 scale
       end type water_rights_elements
       
       !water rights objects
       type water_rights_data
         character (len=16) :: name
+        character (len=16) :: rule_typ          !points to ruleset to allocate water within the water rights object
+        integer :: rights                       !0-100 scale
         integer :: num = 0                      !number of objects
-        integer :: constit                      !points to constituent data
-        character (len=16) :: cond              !points to ruleset to allocate water within the water rights object
         type (water_rights_elements), dimension (:), allocatable :: elem    !irrigation water
       end type water_rights_data
       type (water_rights_data),dimension(:),allocatable:: wr_ob
@@ -480,7 +466,7 @@
       type output_flow_duration_header
         character (len=11) :: obtyp =   "ob_typ     "
         character (len=12) :: props =   "    props   "
-        character (len=11) :: min   =     "       min "!Q
+        character (len=11) :: min   =     "       min "
         character (len=15) :: p5    =     "            p5 "
         character (len=13) :: p10   =     "         p10 "     
         character (len=19) :: p25   =     "           p25 "
@@ -761,7 +747,7 @@
         type (hyd_output) :: hyd2
         hyd2%temp = hyd1%temp
         hyd2%flo = const * hyd1%flo 
-        hyd2%sed = const * hyd1%sed       
+        hyd2%sed = const * hyd1%sed / 1000.
         hyd2%orgn = const * hyd1%orgn       
         hyd2%sedp = const * hyd1%sedp 
         hyd2%no3 = const * hyd1%no3

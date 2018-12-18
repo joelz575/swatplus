@@ -73,8 +73,8 @@
       lagyld(j) = lagyld(j) * (1. - trapeff(j))
 
         do k = 1, cs_db%num_pests
-          hpest_bal(j)%pest(k)%surq = hpest_bal(j)%pest(k)%surq * (1. - trapeff(j))
-          hpest_bal(j)%pest(k)%sed = hpest_bal(j)%pest(k)%sed * (1. - trapeff(j))
+          hpestb_d(j)%pest(k)%surq = hpestb_d(j)%pest(k)%surq * (1. - trapeff(j))
+          hpestb_d(j)%pest(k)%sed = hpestb_d(j)%pest(k)%sed * (1. - trapeff(j))
         end do
 
       return

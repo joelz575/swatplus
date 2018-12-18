@@ -38,23 +38,11 @@
       integer :: k                    !none       |counter
       integer :: iob                  !           |
       integer :: kk                   !none       |counter
-      integer :: iph                  !           |
-      integer :: iphl                 !           |
-      integer :: ipru                 !           |
-      integer :: ipmf                 !           |
-      integer :: ipaqu                !           |
-      integer :: ipcha                !           | 
-      integer :: ipres                !           | 
-      integer :: ipec                 !           |
-      integer :: ipdr                 !           |
-      integer :: ipo                  !           |
-      integer :: ipsdc                !           |
       integer :: j                    !           |
       integer :: ielem_db             !           |
       integer :: jj                   !none       |counter
       integer :: iord                 !none       |counter
       integer :: isrc_tot             !           |
-      integer :: iprev                !           |
       integer :: iorder               !           |
       integer :: ircv                 !none       |counter
       integer :: ircv_ob              !           |
@@ -238,17 +226,6 @@
       
       !! determine number of recieving units and set object numbers for outflow hyds
         do i = 1, sp_ob%objs
-          iph = 0
-          iphl = 0
-          ipru = 0
-          ipmf = 0
-          ipaqu = 0
-          ipcha = 0
-          ipres = 0
-          ipec = 0
-          ipdr = 0
-          ipo = 0
-          ipsdc = 0
           do ii = 1, ob(i)%src_tot
             iob_out = ob(i)%obtyp_out(ii)          !object type out
             select case (iob_out)
@@ -256,39 +233,28 @@
               ob(i)%obj_out(ii) = sp_ob1%hru + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= iph) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              iph = j
             case ("hlt")   !hru_lte
               ob(i)%obj_out(ii) = sp_ob1%hru_lte+ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= iphl) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              iphl = j
             case ("ru")   !routing unit
               ob(i)%obj_out(ii) = sp_ob1%ru + ob(i)%obtypno_out(ii) - 1
               iru = ob(i)%obtypno_out(ii)
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipru) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
               do kk = 1, ru_def(iru)%num_tot
                 ielem = ru_def(iru)%num(kk)
                 iob = ru_elem(ielem)%obj
                 ob(iob)%rcv_tot = ob(iob)%rcv_tot + 1
-                if (j /= ipru) ob(iob)%rcvob_tot = ob(iob)%rcvob_tot + 1
               end do
-              ipru = j
             case ("mfl")   !modflow
               ob(i)%obj_out(ii) = sp_ob1%modflow+ob(i)%obtypno_out(ii)-1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipaqu) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              ipmf = j
             case ("aqu")   !aquifer
               ob(i)%obj_out(ii) = sp_ob1%aqu + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipaqu) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              ipaqu = j
             case ("cha")   !channel
               !! all channels receive flow from modflow
               if (ob(i)%typ == "modflow" .and. ob(i)%obtypno_out(ii) <= 0) then
@@ -296,45 +262,32 @@
                   ob(i)%obj_out(ii) = sp_ob1%chan + ich - 1
                   j = ob(i)%obj_out(ii)
                   ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-                  ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
                 end do
               else
                 ob(i)%obj_out(ii) = sp_ob1%chan +ob(i)%obtypno_out(ii) - 1
                 j = ob(i)%obj_out(ii)
                 ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-                if (j /= ipcha) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-                ipcha = j
               end if
             case ("res")   !reservoir
               ob(i)%obj_out(ii) = sp_ob1%res + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipres) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              ipres = j
             case ("exc")   !export coefficients
               ob(i)%obj_out(ii) = sp_ob1%exco + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipec) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              ipec = j
             case ("dr")   !delivery ratio
               ob(i)%obj_out(ii) = sp_ob1%dr + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipdr) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              ipdr = j
             case ("out")   !outlet
               ob(i)%obj_out(ii) = sp_ob1%outlet + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipo) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              ipo = j
             case ("sdc")   !swat-deg channel
               ob(i)%obj_out(ii) = sp_ob1%chandeg+ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-              if (j /= ipsdc) ob(j)%rcvob_tot = ob(j)%rcvob_tot + 1
-              ipsdc = j
             end select
             
             select case (ob(i)%htyp_out(ii))
@@ -425,7 +378,7 @@
             end do
           else
             kk = ob(i)%obj_out(ii)                          ! kk=object number of outflow object
-            rcv_sum(kk) = rcv_sum(kk) + 1                   ! setting sequential inflow number
+            rcv_sum(kk) = rcv_sum(kk) + 1                   ! setting sequential receiving hyd number
             jj = rcv_sum(kk)                                ! jj=seqential receiving number
             ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
             ob(kk)%obtyp_in(jj) = ob(i)%typ
@@ -433,24 +386,26 @@
             ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
             ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
             ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
-            !for subbasins, set receiving objects for each element (need for parallelization order)
+            ob(i)%rcvob_inhyd(ii) = jj
+            !! for subbasins, set receiving objects for each element (need for parallelization order)
             if (ob(kk)%typ == "ru") then
               iru = ob(kk)%num
               do ielem = 1, ru_def(iru)%num_tot
                 ielem_db = ru_def(iru)%num(ielem)
                 kk = ru_elem(ielem_db)%obj
-                ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
+                ob(kk)%obj_in(jj) = i                       ! source object number (for receiving unit)
                 ob(kk)%obtyp_in(jj) = ob(i)%typ
                 ob(kk)%obtypno_in(jj) = ob(i)%props
                 ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
                 ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
                 ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
+                ob(i)%rcvob_inhyd(ii) = jj
               end do
             end if
           end if
         end do
       end do
-      
+
       !! loop through again to set command (object) sequence
       cmdno = 0
       idone = 0
@@ -463,7 +418,7 @@
         do i = 1, sp_ob%objs
           !check if all incoming and defining objects have been met
           !if not sum incoming 
-          if (rcv_sum(i) == ob(i)%rcvob_tot .and.                        & 
+          if (rcv_sum(i) == ob(i)%rcv_tot .and.                        & 
                                       dfn_sum(i) == ob(i)%dfn_tot) then
             if (ob(i)%fired == 0) then
             ob(i)%fired = 1
@@ -477,13 +432,11 @@
             end do
           
             isrc_tot = Max(ob(i)%src_tot, 1)  !force to go through once
-            iprev = 0
             do ii = 1, isrc_tot
               !! add receiving object for single objects
               if (ob(i)%src_tot > 0) then
                 if (ob(i)%obtypno_out(ii) > 0) then
                   k = ob(i)%obj_out(ii)
-                  if (iprev /= k) then
                     rcv_sum(k) = rcv_sum(k) + 1
                     !! add subbasin elements
                     if (ob(k)%typ == "ru") then
@@ -493,10 +446,8 @@
                         iob = ru_elem(ielem)%obj
                         rcv_sum(iob) = rcv_sum(iob) + 1
                       end do
-                    end if
                   end if
                 end if
-                iprev = k
               else
                 !! modflow - for all inflow objects
                 if (ob(i)%typ == "modflow") then
@@ -513,17 +464,17 @@
               end if
               
               !! compute object order for parallelization (similar to stream order)
-              if (ob(i)%rcvob_tot == 0 .and. ob(i)%typ /= "ru") then
+              if (ob(i)%rcv_tot == 0 .and. ob(i)%typ /= "ru") then
                 ob(i)%cmd_order = 1
               else
                 iorder = 0
                 !! compute object order of highest receiving object and add 1
-                do ircv = 1, ob(i)%rcvob_tot
+                do ircv = 1, ob(i)%rcv_tot
                   ircv_ob = ob(i)%obj_in(ircv)
                   iorder = Max (iorder, ob(ircv_ob)%cmd_order)
                 end do
                 !! subbasin has to be in parallel order after elements in the subbasin 
-                if (ob(i)%typ == "ru" .and. ob(i)%rcvob_tot == 0) then
+                if (ob(i)%typ == "ru" .and. ob(i)%rcv_tot == 0) then
                   iorder = 1
                 end if
                 ob(i)%cmd_order = iorder + 1
@@ -537,7 +488,7 @@
                   sp_ob1%objs = i  !first command number
                 end if
                 cmd_prev = i
-                rcv_sum(i) = rcv_sum(i) + 1
+                !rcv_sum(i) = rcv_sum(i) + 1
                 ob(i)%cmd_order = iord
               end if  !exco"s are not commands
             

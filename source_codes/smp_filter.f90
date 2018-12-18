@@ -247,8 +247,8 @@
 !! Calculate pesticide removal 
 !! based on the sediment and runoff removal only
         do k = 1, cs_db%num_pests
-          hpest_bal(j)%pest(k)%surq = hpest_bal(j)%pest(k)%surq * (1. - surq_remove / 100.)
-          hpest_bal(j)%pest(k)%sed = hpest_bal(j)%pest(k)%sed * (1. - sed_remove / 100.)
+          hpestb_d(j)%pest(k)%surq = hpestb_d(j)%pest(k)%surq * (1. - surq_remove / 100.)
+          hpestb_d(j)%pest(k)%sed = hpestb_d(j)%pest(k)%sed * (1. - sed_remove / 100.)
         end do
 
 !! compute filter strip reduction

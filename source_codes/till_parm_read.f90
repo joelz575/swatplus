@@ -1,4 +1,4 @@
-      subroutine tillparm_read
+      subroutine till_parm_read
       
       use input_file_module
       use maximum_data_module
@@ -53,4 +53,4 @@
 
       close (105)
       return
-      end subroutine tillparm_read
+      end subroutine till_parm_read

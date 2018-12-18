@@ -256,7 +256,7 @@
        character(len=25) :: dtbl_lum = "lum.dtl"
        character(len=25) :: dtbl_res = "res_rel.dtl"
        character(len=25) :: dtbl_scen = "scen_lu.dtl"
-       
+       character(len=25) :: dtbl_flo = "flo_con.dtl"       
       end type input_condition
       type (input_condition) :: in_cond
            

@@ -1,7 +1,8 @@
-      subroutine pst_soil_tot
+      subroutine pest_washp
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the total amount of pesticide in the soil
+!!    this subroutine calculates the amount of pesticide washed off the plant
+!!    foliage and onto the soil
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -22,6 +23,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use pesticide_data_module
+      use output_ls_pesticide_module
       use hru_module, only : hru, ihru
       use soil_module
       use constituent_mass_module
@@ -30,19 +32,27 @@
       implicit none       
       
       integer :: j        !none          |HRU number
-      integer :: k        !none          |sequential pesticide number 
-      integer :: ly       !none          |soil layer   
+      integer :: k        !none          |counter
+      integer :: ipest_db !none          |pesticide number from pest.dat
+      real :: pest_soil   !kg/ha         |amount of pesticide in soil   
+      integer :: icmd     !              |
 
       j = ihru
 
       if (cs_db%num_pests == 0) return
 
       do k = 1, cs_db%num_pests
-        soil(j)%pest(k) = 0.
-        do ly = 1, soil(j)%nly
-          soil(j)%pest(k) = soil(j)%pest(k) + soil(j)%ly(ly)%pst(k)
-        end do
+        ipest_db = cs_db%pest_num(k)
+        if (pcom(j)%pest(k) >= 0.0001) then
+          if (ipest_db > 0) then
+            pest_soil = pestdb(ipest_db)%pst_wof * pcom(j)%pest(k)
+            if (pest_soil > pcom(j)%pest(k)) pest_soil = pcom(j)%pest(k)
+            soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + pest_soil
+            pcom(j)%pest(k) = pcom(j)%pest(k) - pest_soil
+            hpestb_d(j)%pest(k)%wash = pest_soil
+          end if
+        end if
       end do
 
       return
-      end subroutine pst_soil_tot
+      end subroutine pest_washp

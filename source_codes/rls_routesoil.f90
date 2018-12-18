@@ -15,16 +15,16 @@
       
       implicit none
 
-      real :: latqlyr       !           |
-      real :: xslat         !           | 
-      integer :: j          !           |
-      integer :: iob        !           | 
-      integer :: dep        !           |  
-      integer :: lyr        !none       |counter
+      real :: latqlyr               !           |
+      real :: xslat                 !           | 
+      integer :: j                  !           |
+      integer, intent (in) :: iob   !           | 
+      integer :: dep                !           |  
+      integer :: lyr                !none       |counter
 
       j = ihru
       
-      latqrunon = ob(iob)%hin_s%flo
+      latqrunon = ob(iob)%hin_lat%flo
       if (latqrunon > 1.e-9) then
       !!put in soil layers - weighted by depth of soil layer
         dep = 0.
@@ -33,10 +33,10 @@
           latqlyr = ((soil(j)%phys(lyr)%d - dep) / soil(j)%phys(soil(j)%nly)%d) * latqrunon
           dep = soil(j)%phys(lyr)%d
           soil(j)%phys(lyr)%st = soil(j)%phys(lyr)%st + latqlyr
-          if (soil(j)%phys(lyr)%st > soil(j)%phys(lyr)%ul) then
-            xslat = xslat + (soil(j)%phys(lyr)%st - soil(j)%phys(lyr)%ul)
-            soil(j)%phys(lyr)%st = soil(j)%phys(lyr)%ul
-          end if
+          !if (soil(j)%phys(lyr)%st > soil(j)%phys(lyr)%ul) then
+          !  xslat = xslat + (soil(j)%phys(lyr)%st - soil(j)%phys(lyr)%ul)
+          !  soil(j)%phys(lyr)%st = soil(j)%phys(lyr)%ul
+          !end if
         end do
         !add excess to surface storage
       end if

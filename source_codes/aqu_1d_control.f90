@@ -34,7 +34,7 @@
       aqu(iaq)%stor = aqu(iaq)%stor + aqu(iaq)%rchrg
       
       !! compute flow and substract from storage
-      if (aqu(iaq)%stor > aqu_prm(iaq)%flo_min) then
+      if (aqu(iaq)%dep_wt < aqu_prm(iaq)%flo_min) then
         aqu(iaq)%flo = aqu(iaq)%flo * aqu_prm(iaqdb)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaqdb)%alpha_e)
         aqu(iaq)%flo = Max (0., aqu(iaq)%flo)
         aqu(iaq)%flo = Min (aqu(iaq)%stor, aqu(iaq)%flo)
@@ -52,7 +52,7 @@
       aqu(iaq)%stor = aqu(iaq)%stor - aqu(iaq)%seep
       
       !! compute revap (deep root uptake from aquifer) and subtract from storage
-      if (aqu(iaq)%stor > aqu_prm(iaq)%revap_min) then
+      if (aqu(iaq)%dep_wt < aqu_prm(iaq)%revap_min) then
         aqu(iaq)%revap = wst(iwst)%weat%pet * aqu_prm(iaq)%revap_co
         aqu(iaq)%revap = amin1 (aqu(iaq)%revap, aqu(iaq)%stor)
         aqu(iaq)%stor = aqu(iaq)%stor - aqu(iaq)%revap
@@ -60,10 +60,14 @@
         aqu(iaq)%revap = 0.
       end if
 
+      !! compute groundwater depth from surface
+      aqu(iaq)%dep_wt = aqudb(iaqdb)%dep_bot - (aqu(iaq)%stor / (1000. * aqudb(iaqdb)%spyld))
+      aqu(iaq)%dep_wt = amax1 (0., aqu(iaq)%dep_wt)
+      
       !! compute groundwater height - datum: above bottom of channel
-      aqu(iaq)%hgt = aqu(iaq)%hgt * aqu_prm(iaqdb)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaqdb)%alpha_e) /   & 
-                                             (800. * aqudb(iaqdb)%spyld * aqu_prm(iaq)%alpha + 1.e-6)       
-      aqu(iaq)%hgt = Max(1.e-6, aqu(iaq)%hgt)
+      !aqu(iaq)%hgt = aqu(iaq)%hgt * aqu_prm(iaqdb)%alpha_e + aqu(iaq)%rchrg * (1. - aqu_prm(iaqdb)%alpha_e) /   & 
+      !                                       (800. * aqudb(iaqdb)%spyld * aqu_prm(iaq)%alpha + 1.e-6)       
+      !aqu(iaq)%hgt = Max(1.e-6, aqu(iaq)%hgt)
 
       !! compute nitrate recharge into the aquifer
       aqu(iaq)%rchrg_n = ob(icmd)%hin%no3 / (10. * ob(icmd)%area_ha)

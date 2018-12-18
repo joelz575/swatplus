@@ -2,6 +2,7 @@
 
       use maximum_data_module
       use reservoir_data_module
+      use reservoir_module
       use landuse_data_module
       use hydrology_data_module
       use topography_data_module
@@ -10,7 +11,7 @@
       use hru_module, only : hru, hru_db, ihru, sol_plt_ini
       use soil_module
       use plant_module
-      use hydrograph_module, only : ob, sp_ob, sp_ob1, wet
+      use hydrograph_module !, only : ob, sp_ob, sp_ob1, wet
       use organic_mineral_mass_module
       use carbon_module
       use constituent_mass_module
@@ -72,8 +73,21 @@
         allocate (soil1_init(0:imax))
         allocate (cbn_loss(0:imax))
         allocate (pcom(0:imax))
+        
         allocate (wet(0:imax))
-        allocate (wet_init(0:imax))
+        allocate (wet_ob(imax))
+        allocate (wet_om_d(imax))
+        allocate (wet_om_m(imax))
+        allocate (wet_om_y(imax))
+        allocate (wet_om_a(imax))
+        allocate (wet_in_d(imax))
+        allocate (wet_in_m(imax))
+        allocate (wet_in_y(imax))
+        allocate (wet_in_a(imax))
+        allocate (wet_out_d(imax))
+        allocate (wet_out_m(imax))
+        allocate (wet_out_y(imax))
+        allocate (wet_out_a(imax))
         allocate (rsd1(0:imax))
         
         rewind (113)

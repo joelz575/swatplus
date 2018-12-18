@@ -211,13 +211,17 @@
         character (len=16) :: name                                      !should match the object_connectivity object
         !water and soluble components
         type (organic_mineral_hydrograph) :: hin                                 !inflow hydrograph for surface runon - sum of all inflow hyds
-        type (organic_mineral_hydrograph) :: hin_s                               !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+        type (organic_mineral_hydrograph) :: hin_sur                             !inflow hydrograph for surface flow - sum of all surface inflow hyds
+        type (organic_mineral_hydrograph) :: hin_lat                             !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+        type (organic_mineral_hydrograph) :: hin_til                             !inflow hydrograph for tile flow - sum of all tile inflow hyds
         type (organic_mineral_hydrograph), dimension(:),allocatable :: hd        !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
         type (organic_mineral_hydrograph), dimension(:,:),allocatable :: ts      !subdaily hydrographs
         type (organic_mineral_hydrograph), dimension(:),allocatable :: tsin      !inflow subdaily hydrograph
         !sediment (sorbed) in the water components
         type (organic_mineral_hydrograph) :: hins                                 !inflow hydrograph for surface runon - sum of all inflow hyds
-        type (organic_mineral_hydrograph) :: hin_ss                               !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+        type (organic_mineral_hydrograph) :: hin_ssur                             !inflow hydrograph for surface flow - sum of all surface inflow hyds
+        type (organic_mineral_hydrograph) :: hin_slat                             !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
+        type (organic_mineral_hydrograph) :: hin_stil                             !inflow hydrograph for tile flow - sum of all tile inflow hyds
         type (organic_mineral_hydrograph), dimension(:),allocatable :: hds        !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
         type (organic_mineral_hydrograph), dimension(:,:),allocatable :: tss      !subdaily hydrographs
         type (organic_mineral_hydrograph), dimension(:),allocatable :: tsins      !inflow subdaily hydrograph

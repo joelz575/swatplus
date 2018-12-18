@@ -184,7 +184,7 @@
             istart = hlt(isd)%start
             d_tbl => dtbl_lum(istart)
             call conditions (isd)
-            call actions (isd)
+            call actions (isd, icmd, istart)
           end if
           
 !         end growth for plants
@@ -196,7 +196,7 @@
             iend = hlt(isd)%end
             d_tbl => dtbl_lum(iend)
             call conditions (isd)
-            call actions (isd)
+            call actions (isd, icmd, iend)
           end if
 
          ! calc yield, print max lai, dm and yield

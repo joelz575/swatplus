@@ -38,7 +38,7 @@
         integer :: wq = 0        !! stream water quality code
                                  !!   0 do not model
                                  !!   1 model (QUAL2E)
-        integer :: nostress = 0  !! redeinfed to the sequence number  -- changed to no nutrient stress
+        integer :: nostress = 0  !! redefined to the sequence number  -- changed to no nutrient stress
         integer :: cn = 0        !! CN method flag
                                  !!   0 = use traditional SWAT method bases CN 
                                  !!   CN on soil moisture
@@ -229,6 +229,8 @@
         ! HYDIN AND HYDOUT
         type(print_interval) :: hyd             !!  hydin_output and hydout_output
         type(print_interval) :: ru
+        type(print_interval) :: pest            !!  all constituents pesticide output files (hru, chan, res, basin_chan, basin_res,
+                                                !!        basin_ls
       end type basin_print_codes
       type (basin_print_codes) :: pco
       type (basin_print_codes) :: pco_init

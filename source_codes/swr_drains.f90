@@ -48,6 +48,7 @@
           mlyr, precip_eff, qtile, wt_shall
       use soil_module
       use time_module
+      use reservoir_module
       
       implicit none
 
@@ -188,11 +189,11 @@
       if (time%yrs == 1 .and. time%day == time%day_start) then 
         stor= 0.
       end if
-      if (pot(j)%sa <= 0.) then ! determine stor
+      if (wet_ob(j)%area_ha <= 0.) then ! determine stor
         stor = precip_eff - inflpcp - etday !Daniel 10/05/07
         if(surfq(j) > 0.0) stor = stmaxd(j)
       else
-        stor = pot(j)%vol/(pot(j)%sa*1000)
+        stor = wet(j)%flo / (wet_ob(j)%area_ha * 1000.)
       endif
       if(hdrain < hdmin) hdrain=hdmin
       if((stor > storro).and.(y1 < 5.0)) then

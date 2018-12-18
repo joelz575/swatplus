@@ -34,12 +34,16 @@
       allocate (hpw_y(mhru))
       allocate (hpw_a(mhru))
       if (cs_db%num_pests > 0) then
-        allocate (hpest_bal(mhru))
+        allocate (hpestb_d(mhru))
         allocate (hpestb_m(mhru))
         allocate (hpestb_y(mhru))
         allocate (hpestb_a(mhru))
+        allocate (bpestb_d%pest(cs_db%num_pests))
+        allocate (bpestb_m%pest(cs_db%num_pests))
+        allocate (bpestb_y%pest(cs_db%num_pests))
+        allocate (bpestb_a%pest(cs_db%num_pests))
         do ihru = 1, sp_ob%hru
-          allocate (hpest_bal(ihru)%pest(cs_db%num_pests))
+          allocate (hpestb_d(ihru)%pest(cs_db%num_pests))
           allocate (hpestb_m(ihru)%pest(cs_db%num_pests))
           allocate (hpestb_y(ihru)%pest(cs_db%num_pests))
           allocate (hpestb_a(ihru)%pest(cs_db%num_pests))

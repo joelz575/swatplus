@@ -125,11 +125,11 @@
         iob = sp_ob1%ru + iru - 1
         ob(iob)%ru_tot = 0
         read (107,*,iostat=eof) numb, namedum, nspu
-        allocate (elem_cnt(nspu))
         
         if (eof < 0) exit
         if (nspu > 0) then
           backspace (107)
+          allocate (elem_cnt(nspu))
           read (107,*,iostat=eof) numb, ru_def(iru)%name, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
           
@@ -223,9 +223,9 @@
                ru_elem(ii)%htypno = 5  
             end select
           end do
-          
+
+          deallocate (elem_cnt)  
         end if
-        deallocate (elem_cnt)
       end do    ! i = subbasin object numbers
         exit
       enddo
@@ -237,7 +237,7 @@
             ie = ru_def(iru)%num(ielem)
             iob = ru_elem(ie)%obj
             iru_tot = ob(iob)%ru_tot
-            allocate (ob(iob)%ru(iru_tot))
+            allocate (ob(iob)%ru(1))
           end do
 
           do ielem = 1, ru_def(iru)%num_tot

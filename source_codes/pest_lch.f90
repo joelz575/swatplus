@@ -1,4 +1,4 @@
-      subroutine pst_lch
+      subroutine pest_lch
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates pesticides leached through each layer,
@@ -29,7 +29,7 @@
 
       use pesticide_data_module
       use basin_module
-      use hru_module, only : hru, surfq, ihru
+      use hru_module, only : hru, surfq, qtile, ihru
       use soil_module
       use constituent_mass_module
       use output_ls_pesticide_module
@@ -54,9 +54,9 @@
 
       if (cs_db%num_pests /= 0) then
         do k = 1, cs_db%num_pests
-          hpest_bal(j)%pest(k)%perc = 0.
-          hpest_bal(j)%pest(k)%surq = 0.
-          hpest_bal(j)%pest(k)%latq = 0.
+          hpestb_d(j)%pest(k)%perc = 0.
+          hpestb_d(j)%pest(k)%surq = 0.
+          hpestb_d(j)%pest(k)%latq = 0.
         end do
 
         do ly = 1, soil(j)%nly
@@ -83,7 +83,7 @@
                 else
                   cocalc = xx/(soil(j)%ly(ly)%prk+soil(j)%ly(ly)%flat + 1.e-6)
                 end if
-                co = Min(pestdb(ipest_db)%pst_wof / 100., cocalc)
+                co = Min(pestdb(ipest_db)%pst_wsol / 100., cocalc)
                
                 !! calculate concentration of pesticide in surface
                 !! runoff and lateral flow
@@ -102,7 +102,7 @@
                 if (ly < soil(j)%nly) then
                   soil(j)%ly(ly+1)%pst(k) = soil(j)%ly(ly+1)%pst(k) + xx
                 else
-                  hpest_bal(j)%pest(k)%perc = xx
+                  hpestb_d(j)%pest(k)%perc = xx
                 end if
 
                 !! calculate pesticide lost in surface runoff
@@ -110,7 +110,7 @@
                   yy = csurf * surfq(j)
                   if (yy >  soil(j)%ly(ly)%pst(k)) yy = soil(j)%ly(ly)%pst(k)
                   soil(j)%ly(ly)%pst(k) =  soil(j)%ly(ly)%pst(k) - yy
-                  hpest_bal(j)%pest(k)%surq = yy 
+                  hpestb_d(j)%pest(k)%surq = yy 
                 endif
 
                 !! calculate pesticide lost in lateral flow
@@ -118,7 +118,16 @@
                 if (yy > soil(j)%ly(ly)%pst(k)) yy = soil(j)%ly(ly)%pst(k)
                  
                 soil(j)%ly(ly)%pst(k) = soil(j)%ly(ly)%pst(k) - yy
-                hpest_bal(j)%pest(k)%latq = hpest_bal(j)%pest(k)%latq + yy 
+                hpestb_d(j)%pest(k)%latq = hpestb_d(j)%pest(k)%latq + yy
+                
+                !! calculate pesticide lost in tile flow
+                if (ly == hru(j)%lumv%ldrain) then
+                  yy = csurf * qtile
+                  if (yy > soil(j)%ly(ly)%pst(k)) yy = soil(j)%ly(ly)%pst(k)
+                 
+                  soil(j)%ly(ly)%pst(k) = soil(j)%ly(ly)%pst(k) - yy
+                  hpestb_d(j)%pest(k)%tileq = yy
+                end if
 
               end if
 
@@ -128,4 +137,4 @@
       end if
 
       return
-      end subroutine pst_lch
+      end subroutine pest_lch

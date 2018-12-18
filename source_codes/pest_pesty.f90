@@ -1,4 +1,4 @@
-      subroutine pst_pesty
+      subroutine pest_pesty
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates pesticide transported with suspended sediment 
@@ -63,13 +63,13 @@
               er = enratio
             end if
 
-            hpest_bal(j)%pest(k)%sed = .001* sedyld(j) * conc * er / hru(j)%area_ha
-            if (hpest_bal(j)%pest(k)%sed < 0.) hpest_bal(j)%pest(k)%sed = 0.
-            if (hpest_bal(j)%pest(k)%sed > pest_init) hpest_bal(j)%pest(k)%sed = pest_init
-            soil(j)%ly(1)%pst(k) = pest_init - hpest_bal(j)%pest(k)%sed
+            hpestb_d(j)%pest(k)%sed = .001* sedyld(j) * conc * er / hru(j)%area_ha
+            if (hpestb_d(j)%pest(k)%sed < 0.) hpestb_d(j)%pest(k)%sed = 0.
+            if (hpestb_d(j)%pest(k)%sed > pest_init) hpestb_d(j)%pest(k)%sed = pest_init
+            soil(j)%ly(1)%pst(k) = pest_init - hpestb_d(j)%pest(k)%sed
           end if
         end if
       end do
 
       return
-      end subroutine pst_pesty
+      end subroutine pest_pesty

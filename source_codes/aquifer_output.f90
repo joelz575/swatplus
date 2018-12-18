@@ -30,7 +30,7 @@
         if (time%end_mo == 1) then
           const = float (ndays(time%mo + 1) - ndays(time%mo))
           aqu_m(iaq)%stor = aqu_m(iaq)%stor / const 
-          aqu_m(iaq)%hgt = aqu_m(iaq)%hgt / const
+          aqu_m(iaq)%dep_wt = aqu_m(iaq)%dep_wt / const
           aqu_m(iaq)%no3 = aqu_m(iaq)%no3 / const
           aqu_y(iaq) = aqu_y(iaq) + aqu_m(iaq)
           if (pco%aqu%m == "y") then
@@ -45,7 +45,7 @@
         !! yearly print - AQUIFER
         if (time%end_yr == 1) then
           aqu_y(iaq)%stor = aqu_y(iaq)%stor / 12.
-          aqu_y(iaq)%hgt = aqu_y(iaq)%hgt / 12.
+          aqu_y(iaq)%dep_wt = aqu_y(iaq)%dep_wt / 12.
           aqu_y(iaq)%no3 = aqu_y(iaq)%no3 / 12.
           aqu_a(iaq) = aqu_a(iaq) + aqu_y(iaq)
           if (pco%aqu%y == "y") then

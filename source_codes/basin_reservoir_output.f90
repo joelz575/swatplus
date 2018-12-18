@@ -76,6 +76,6 @@
       end if
       
       return
-100   format (4i6,i8,2x,a,2x,a16,f10.3,2x,18f10.3,2f12.3,22f12.3)
+100   format (4i6,i8,2x,a,2x,a16,f13.1,2x,17f10.3,f13.1,17f12.3)
        
       end subroutine basin_reservoir_output

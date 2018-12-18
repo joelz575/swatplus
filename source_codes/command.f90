@@ -26,16 +26,13 @@
       use output_landscape_module, only : hnb_d
       
       implicit none
-    
-      integer :: isur_in              !              |
+
       integer :: in                   !              |
       integer :: ielem                !              |  
       integer :: iob                  !              |
       integer :: kk                   !none          |counter
       integer :: iday                 !              |
       real :: conv                    !              |
-      real :: hin_s                   !none          |inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
-      real :: hin                     !none          |inflow hydrograph for surface runon - sum of all inflow hyds
       integer :: isd                  !none          |counter
       integer :: ires                 !none          |reservoir number
       integer :: irec                 !              |
@@ -43,14 +40,11 @@
       integer :: ihtyp                !              |
       integer :: iaq                  !none          |counter
       integer :: j                    !none          |counter
-      integer :: iru_in               !              |
       integer :: ihyd                 !              |
       integer :: idr                  !              |
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
-        isur_in = 0
-        iru_in = 0
         !subdaily - set current day of hydrograph
         if (time%step > 0) then
           !update current day of hydrograph for the object
@@ -61,10 +55,14 @@
         !sum all receiving hydrographs
         if (ob(icmd)%rcv_tot > 0) then
           ob(icmd)%hin = hz
-          ob(icmd)%hin_s = hz
+          ob(icmd)%hin_sur = hz
+          ob(icmd)%hin_lat = hz
+          ob(icmd)%hin_til = hz
           ht1 = hz
           obcs(icmd)%hin = hin_csz
-          obcs(icmd)%hin_s = hin_csz
+          obcs(icmd)%hin_sur = hin_csz
+          obcs(icmd)%hin_lat = hin_csz
+          obcs(icmd)%hin_til = hin_csz
           hcs1 = hin_csz
           hcs2 = hin_csz
           if (time%step > 0) ob(icmd)%tsin(:) = hz
@@ -77,11 +75,11 @@
             if (ob(icmd)%ru_tot > 0) then
               if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "hru_lte") then
                 ielem = ob(icmd)%elem
-                iru = ob(icmd)%ru(1)                          !can only be in one subbasin if routing over
-                iru = sp_ob1%ru + iru - 1                    !object number of the subbasin
+                iru = ob(icmd)%ru(1)                            !can only be in one subbasin if routing over
+                iru = sp_ob1%ru + iru - 1                       !object number of the subbasin
                 iob = ob(iru)%obj_in(in)
                 ihyd = ob(iru)%ihtyp_in(in)
-                ht1 = ob(iru)%frac_in(in) * ob(iob)%hd(ihyd)   !fraction of hydrograph
+                ht1 = ob(iru)%frac_in(in) * ob(iob)%hd(ihyd)    !fraction of hydrograph
                 ht1 = ru_elem(ielem)%frac * ht1                 !fraction of hru in subbasin
                 !fraction of hru in subbasin for constituents
                 if (cs_db%num_tot > 0) then
@@ -112,23 +110,37 @@
             end if
             ob(icmd)%hin_d(in) = ht1
             obcs(icmd)%hcsin_d(in) = hcs1    !for constituent hydrograph output
-
-            if (ihyd == 4) then  !route lat flow through soil
-              ob(icmd)%hin_s = ob(icmd)%hin_s + ht1
-              !add constituents
-              if (cs_db%num_tot > 0) then
-                obcs(icmd)%hin_s = obcs(icmd)%hin_s + hcs1
-              end if
-              iru_in = 1
-            else
+            
+            ! if routing to hru, need to save surf, lat and tile to route separately
+            if (ob(icmd)%typ /= "hru" .and. ob(icmd)%typ /= "ru") then
               ob(icmd)%hin = ob(icmd)%hin + ht1
               !add constituents
               if (cs_db%num_tot > 0) then
                 obcs(icmd)%hin = obcs(icmd)%hin + hcs1
               end if
-              isur_in = 1
+            else
+              select case (ob(icmd)%htyp_in(in))
+              case ("sur")   ! surface runoff
+                ob(icmd)%hin_sur = ob(icmd)%hin_sur + ht1
+                !add constituents
+                if (cs_db%num_tot > 0) then
+                  obcs(icmd)%hin_sur = obcs(icmd)%hin_sur + hcs1
+                end if
+              case ("lat")   ! lateral soil flow
+                ob(icmd)%hin_lat = ob(icmd)%hin_lat + ht1
+                !add constituents
+                if (cs_db%num_tot > 0) then
+                  obcs(icmd)%hin_lat = obcs(icmd)%hin_lat + hcs1
+                end if
+              case ("til")   ! tile flow
+                ob(icmd)%hin_til = ob(icmd)%hin_til + ht1
+                !add constituents
+                if (cs_db%num_tot > 0) then
+                  obcs(icmd)%hin_til = obcs(icmd)%hin_til + hcs1
+                end if
+              end select
             end if
-
+            
             !sum subdaily hydrographs
             if (time%step > 0) then
               do kk = 1, time%step
@@ -136,20 +148,11 @@
                 ob(icmd)%tsin(kk) = ob(icmd)%tsin(kk) + ob(iob)%ts(iday,kk)
               end do
             end if
-                        
-            !if (isur_in == 1) then
-            !  ht1 = ob(icmd)%hin
-            !  call hydin_output (in)
-            !end if
-            !if (iru_in == 1) then
-            !  ht1 = ob(icmd)%hin_s
-            !  call hydin_output (in)
-            !end if
-            
+
           end do    ! in = 1, ob(icmd)%rcv_tot
 
           !convert to per area basis
-          if (ob(icmd)%typ == "ru" .or. ob(icmd)%typ == "hru") then  !only convert hru and subbasin hyds for routing
+          if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "ru") then  !only convert hru and subbasin hyds for routing
             if (ob(icmd)%ru_tot > 0) then
               !object is in a subbasin
               ielem = ob(icmd)%elem
@@ -158,8 +161,9 @@
             else
               conv = ob(icmd)%area_ha
             end if
-            ob(icmd)%hin_s = ob(icmd)%hin_s // conv
-            ob(icmd)%hin = ob(icmd)%hin // conv
+            ob(icmd)%hin_sur = ob(icmd)%hin_sur // conv
+            ob(icmd)%hin_lat = ob(icmd)%hin_lat // conv
+            ob(icmd)%hin_til = ob(icmd)%hin_til // conv
           end if
         end if
 
@@ -265,8 +269,8 @@
         do ihru = 1, sp_ob%hru
           call hru_output (ihru)
           if (cs_db%num_tot > 0) then 
-              call hru_pesticide_output (ihru)
-              call hru_pathogen_output (ihru)
+            call hru_pesticide_output (ihru)
+            call hru_pathogen_output (ihru)
           end if
         end do        
         
@@ -280,10 +284,18 @@
                 
         do jrch = 1, sp_ob%chandeg
           call sd_channel_output (jrch)
+          if (cs_db%num_tot > 0) then 
+            call cha_pesticide_output (jrch)   
+            !call ch_pathogen_output (jrch)
+          end if         
         end do
 
         do j = 1, sp_ob%res
           call reservoir_output(j)
+         if (cs_db%num_tot > 0) then 
+            call res_pesticide_output (j)
+            !call res_pathogen_output (j)
+          end if       
         end do 
         
         do j = 1, sp_ob%ru
@@ -301,6 +313,9 @@
         
         call hydin_output   !if all output is no, then don"t call
         !call hcsin_output  gives allocate error
+        if (sp_ob%chandeg > 0 .and. cs_db%num_pests > 0) call basin_ch_pest_output  !! nbs
+        if (sp_ob%res > 0 .and. cs_db%num_pests > 0) call basin_res_pest_output     !! nbs
+        if (sp_ob%hru > 0 .and. cs_db%num_pests > 0) call basin_ls_pest_output      !! nbs
         if (db_mx%lsu_elem > 0) call basin_output
         if (db_mx%lsu_out > 0) call lsu_output
         if (db_mx%aqu_elem > 0) call basin_aquifer_output

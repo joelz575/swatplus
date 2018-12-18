@@ -62,10 +62,10 @@
 
       do k = 1, cs_db%num_pests
         if (pst_lag(k,3,j) < 1.e-6) pst_lag(k,3,j) = 0.0
-        pst_lag(k,3,j) = pst_lag(k,3,j) + hpest_bal(j)%pest(k)%latq
+        pst_lag(k,3,j) = pst_lag(k,3,j) + hpestb_d(j)%pest(k)%latq
         !MFW, 3/3/12: Modified lagged pesticide to include decay in lag
         ipst_db = cs_db%pest_num(k)
-        pst_lag(k,3,j) = (pst_lag(k,3,j) * pstcp(ipst_db)%decay_s) + hpest_bal(j)%pest(k)%latq
+        pst_lag(k,3,j) = (pst_lag(k,3,j) * pstcp(ipst_db)%decay_s) + hpestb_d(j)%pest(k)%latq
       end do
 
       latq(j) = bss(1,j) * hru(j)%hyd%lat_ttime
@@ -78,7 +78,7 @@
       if (tileno3(j) < 1.e-6) tileno3(j) = 0.
 
         do k = 1, cs_db%num_pests
-          hpest_bal(j)%pest(k)%latq = hpest_bal(j)%pest(k)%latq * hru(j)%hyd%lat_ttime
+          hpestb_d(j)%pest(k)%latq = hpestb_d(j)%pest(k)%latq * hru(j)%hyd%lat_ttime
         end do
 
       bss(1,j) = bss(1,j) - latq(j)
@@ -87,7 +87,7 @@
       bss(4,j) = bss(4,j) - tileno3(j)
 
         do k = 1, cs_db%num_pests
-          pst_lag(k,3,j) = pst_lag(k,3,j) - hpest_bal(j)%pest(k)%latq
+          pst_lag(k,3,j) = pst_lag(k,3,j) - hpestb_d(j)%pest(k)%latq
         end do
 
       return

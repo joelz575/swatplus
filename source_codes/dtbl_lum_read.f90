@@ -8,6 +8,8 @@
       use fertilizer_data_module
       use input_file_module
       use conditional_module
+      use pesticide_data_module
+      use constituent_mass_module
       
       implicit none
                   
@@ -24,7 +26,6 @@
       integer :: idb                  !none       |counter
       integer :: ilum                 !none       |counter
       integer :: iburn                !none       |counter
-      
       
       mdtbl = 0
       eof = 0
@@ -123,7 +124,23 @@
                       exit
                     endif
                   end do
-                                
+                                        
+                case ("pest_apply")
+                  !xwalk fert name with fertilizer data base
+                  do idb = 1, cs_db%num_pests
+                    if (dtbl_lum(i)%act(iac)%option == cs_db%pests(idb)) then
+                      dtbl_lum(i)%act_typ(iac) = idb
+                      exit
+                    endif
+                  end do
+                  !xwalk application type with chemical application data base
+                  do idb = 1, db_mx%chemapp_db
+                    if (dtbl_lum(i)%act(iac)%file_pointer == chemapp_db(idb)%name) then
+                      dtbl_lum(i)%act_app(iac) = idb
+                      exit
+                    endif
+                  end do
+                                   
                 case ("burn")
                   do iburn = 1, db_mx%fireop_db
                     if (dtbl_lum(i)%act(iac)%option == fire_db(iburn)%name) then
@@ -138,9 +155,10 @@
           end do
           db_mx%dtbl_lum = mdtbl
           exit
-        enddo
-      endif
-      close (107)
+        end do
+      end if
       
+      close (107)
+
       return  
       end subroutine dtbl_lum_read

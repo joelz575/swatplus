@@ -1,4 +1,4 @@
-      subroutine pathparm_read
+      subroutine path_parm_read
       
       use input_file_module
       use pathogen_data_module, only : path_db
@@ -55,4 +55,4 @@
       close (107)
       
       return
-      end subroutine pathparm_read
+      end subroutine path_parm_read

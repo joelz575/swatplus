@@ -1,4 +1,4 @@
-      subroutine plantparm_read
+      subroutine plant_parm_read
       
       use input_file_module
       use maximum_data_module
@@ -55,4 +55,4 @@
       
       close (104)
       return
-      end subroutine plantparm_read
+      end subroutine plant_parm_read

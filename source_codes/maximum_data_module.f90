@@ -57,6 +57,7 @@
         integer :: d_tbl = 0          !! none     |max number of decision tables
         integer :: dtbl_lum = 0       !! none     |max number of decision tables
         integer :: dtbl_res = 0       !! none     |max number of decision tables
+        integer :: dtbl_flo = 0       !! none     |max number of decision tables
         integer :: dtbl_scen = 0      !! none     |max number of decision tables
         integer :: cs_db = 0
         integer :: pathcom = 0

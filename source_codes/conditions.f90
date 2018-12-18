@@ -10,9 +10,12 @@
       use soil_module
       use plant_module
       use reservoir_module
+      use reservoir_data_module
       use sd_channel_module
       use hydrograph_module
-           
+      use output_landscape_module
+      use aquifer_module
+
       implicit none
 
       integer, intent (in)  :: ob_cur         !          |
@@ -82,7 +85,7 @@
             end if
           end do
           do ialt = 1, d_tbl%alts
-            if (d_tbl%alt(ic,ialt) == "<") then    !to trigger irrigation
+            if (d_tbl%alt(ic,ialt) == "<") then
               if (pcom(ob_num)%plcur(ipl)%phuacc > d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
@@ -140,6 +143,18 @@
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "=") then    !determine if growing (y) or not (n)
               if (pcom(ob_num)%days_harv /= d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                                            
+        !days since last harvest
+        case ("day_start")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "=") then    !determine if growing (y) or not (n)
+              if (time%day_start /= int(d_tbl%cond(ic)%lim_const)) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if
@@ -318,6 +333,39 @@
             end if
           end do
                     
+        !tile flow
+        case ("tile_flo")
+          ob_num = ob_cur   !the dtbl ob_num is the sequential  hyd number in the con file
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (hwb_d(ob_num)%qtile > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (hwb_d(ob_num)%qtile < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                                
+        !aquifer depth below surface
+        case ("aqu_dep")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (aqu(ob_num)%dep_wt > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (aqu(ob_num)%dep_wt < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+            
         !land use and management
         case ("land_use")
           ob_num = d_tbl%cond(ic)%ob_num
@@ -328,8 +376,6 @@
               if (hru(ob_num)%dbsc%land_use_mgt /= d_tbl%cond(ic)%lim_var) then
                 d_tbl%act_hit(ialt) = "n"
               end if
-            !else
-            !  d_tbl%act_hit(ialt) = "n"
             end if
           end do
                                  
@@ -343,8 +389,6 @@
               if (sd_ch(ob_num)%order /= d_tbl%cond(ic)%lim_var) then
                 d_tbl%act_hit(ialt) = "n"
               end if
-            !else
-            !  d_tbl%act_hit(ialt) = "n"
             end if
           end do
              
@@ -355,6 +399,8 @@
           if (ires == 0) ires = ob_cur
           
           select case (d_tbl%cond(ic)%lim_var)
+          case ("e-pv")   !emergency minus prinicpal storage volume
+            targ_val = res_hyd(ires)%evol - res_hyd(ires)%pvol
           case ("pvol")   !prinicpal storage volume
             targ_val = res_ob(ires)%pvol
           case ("evol")   !emergency storage volume
@@ -381,6 +427,44 @@
             end if
             if (d_tbl%alt(ic,ialt) == ">") then
               if (res(ires)%flo < targ) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                         
+        !wetland volume - stored on an hru
+        case ("vol_wet")
+          !determine target variable
+          ires = d_tbl%cond(ic)%ob_num
+          if (ires == 0) ires = ob_cur
+          
+          select case (d_tbl%cond(ic)%lim_var)
+          case ("pvol")   !prinicpal storage volume
+            targ_val = wet_ob(ires)%pvol
+          case ("evol")   !emergency storage volume
+            targ_val = wet_ob(ires)%evol
+          end select
+                      
+          !perform operation on target variable to get target
+          select case ((d_tbl%cond(ic)%lim_op))
+          case ("*")
+            targ = targ_val * d_tbl%cond(ic)%lim_const
+          case ("+")
+            targ = targ_val + d_tbl%cond(ic)%lim_const
+          case ("-")
+            targ = targ_val - d_tbl%cond(ic)%lim_const
+          case ("/")
+            targ = targ_val / d_tbl%cond(ic)%lim_const
+          end select
+
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (wet(ires)%flo > targ) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (wet(ires)%flo < targ) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if

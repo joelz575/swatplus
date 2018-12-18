@@ -1,4 +1,4 @@
-      subroutine urbanparm_read
+      subroutine urban_parm_read
       
       use input_file_module
       use maximum_data_module
@@ -47,4 +47,4 @@
       
       close (108)
       return
-      end subroutine urbanparm_read
+      end subroutine urban_parm_read

@@ -59,8 +59,8 @@
 
       !! initialize water entering first soil layer
       !! ht1%flo is infiltration from overland flow routing
-      sepday = inflpcp + aird(j) + pot(j)%seep + ht1%flo
-      pot(j)%seep = 0.
+      sepday = inflpcp + aird(j) + hru(j)%water_seep + ht1%flo
+      hru(j)%water_seep = 0.
 
       !! calculate crack flow 
       if (bsn_cc%crk == 1) then 
@@ -100,10 +100,7 @@
           call swr_percmicro(j1)
 
           soil(j)%phys(j1)%st = soil(j)%phys(j1)%st - sepday - latlyr - lyrtile
-          soil(j)%phys(j1)%st = Max(1.e-6,soil(j)%phys(j1)%st)
-
-          !! redistribute soil water if above field capacity (high water table)
-          call swr_satexcess(j1)
+          soil(j)%phys(j1)%st = Max(1.e-6, soil(j)%phys(j1)%st)
         end if
 
         !! summary calculations
@@ -121,6 +118,10 @@
       if (sep_left <= 0.) exit
       end do                    !slug loop
 
+      !! redistribute soil water if above saturation (high water table)
+      do j1 = 1, soil(j)%nly
+        call swr_satexcess(j1)
+      end do
       
       !! update soil profile water
       soil(j)%sw = 0.

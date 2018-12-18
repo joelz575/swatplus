@@ -13,7 +13,8 @@
       character(len=16) :: chg_parm                           !                |               
       character(len=16) :: chg_typ                            !variable        |type of change (absval, abschg, pctchg)
       character(len=1) :: cond_met                            !                |       
-      integer :: lyr = 1, iyr                                 !none            |counter
+      integer :: lyr                                          !none            |counter
+      integer :: iyr                                          !                |
       integer :: ichg_par                                     !none            |counter
       integer :: ispu                                         !none            |counter
       integer :: ielem                                        !none            |counter
@@ -29,7 +30,8 @@
       real :: chg_par                                         !variable        |type of change (absval, abschg, pctchg)
       integer :: iday                                         !none            |counter
       integer :: ig                                           !                |
-    
+      integer :: cal_lyr1, cal_lyr2
+         
       do ichg_par = 1, db_mx%cal_upd
         do ispu = 1, cal_upd(ichg_par)%num_elem
           ielem = cal_upd(ichg_par)%num(ispu)
@@ -82,10 +84,10 @@
             select case (cal_parms(num_db)%ob_typ)
             case ("sol")
               !! check layers for soil variables
-              if (cal_upd(ichg_par)%lyr1 <= 0) cal_upd(ichg_par)%lyr1 = 1
-              if (cal_upd(ichg_par)%lyr2 <= 0) cal_upd(ichg_par)%lyr2 = soil(ielem)%nly
-              cal_upd(ichg_par)%lyr2 = Min (cal_upd(ichg_par)%lyr2, soil(ielem)%nly)
-              do lyr = cal_upd(ichg_par)%lyr1, cal_upd(ichg_par)%lyr2
+              if (cal_upd(ichg_par)%lyr1 <= 0) cal_lyr1 = 1
+              if (cal_upd(ichg_par)%lyr2 <= 0) cal_lyr2 = soil(ielem)%nly
+              cal_lyr2 = Min (cal_lyr2, soil(ielem)%nly)
+              do lyr = cal_lyr1, cal_lyr2
                 call cal_parm_select (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
               end do
             case ("cli")

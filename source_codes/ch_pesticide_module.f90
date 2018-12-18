@@ -23,6 +23,7 @@
       type ch_pesticide_output
         type (ch_pesticide_processes), dimension (:), allocatable :: pest         !pesticide hydrographs
       end type ch_pesticide_output
+      type (ch_pesticide_processes) :: ch_pestbz
            
       type (ch_pesticide_output), dimension(:), allocatable, save :: chpst_d
       type (ch_pesticide_output), dimension(:), allocatable, save :: chpst_m
@@ -41,20 +42,21 @@
           character (len=6) :: yrc =        "    yr"
           character (len=8) :: isd =        "   unit "
           character (len=8) :: id =         " gis_id "           
-          character (len=16) :: name =      " name              "        
-          character(len=16) :: sol_in =     "   solpestin_kg"        ! (kg)
-          character(len=15) :: sol_out =    "  solpestout_kg"        ! (kg)
-          character(len=15) :: sor_in =     "   sorpestin_kg"        ! (kg)
-          character(len=15) :: sor_out=     "  sorpestout_kg"        ! (kg)
-          character(len=15) :: react =      "   react_h2o_kg"        ! (kg)
-          character(len=15) :: volat =      "       volat_kg"        ! (kg)
-          character(len=15) :: settle =     "      settle_kg"        ! (kg)
-          character(len=15) :: resus =      "   resuspend_kg"        ! (kg)
-          character(len=15) :: difus =      "     diffuse_kg"        ! (kg)
-          character(len=15) :: react_bot =  " react_benth_kg"        ! (kg)
-          character(len=15) :: bury =       "  bury_benth_kg"        ! (kg)
-          character(len=15) :: water =      "  water_stor_kg"        ! (kg)
-          character(len=15) :: benthic =    "     benthic_kg"        ! (kg)
+          character (len=16) :: name =      " name              "  
+          character (len=16) :: pest =      " pesticide"
+          character(len=13) :: sol_in =     "solpestin_kg "          ! (kg)
+          character(len=14) :: sol_out =    "solpestout_kg "         ! (kg)
+          character(len=13) :: sor_in =     "sorpestin_kg "          ! (kg)
+          character(len=14) :: sor_out=     "sorpestout_kg "         ! (kg)
+          character(len=13) :: react =      "react_h2o_kg "          ! (kg)
+          character(len=12) :: volat =      "volat_kg "              ! (kg)
+          character(len=12) :: settle =     "settle_kg "             ! (kg)
+          character(len=13) :: resus =      "resuspend_kg "          ! (kg)
+          character(len=12) :: difus =      "diffuse_kg "            ! (kg)
+          character(len=15) :: react_bot =  "react_benth_kg "        ! (kg)
+          character(len=14) :: bury =       "bury_benth_kg "         ! (kg)
+          character(len=14) :: water =      "water_stor_kg "         ! (kg)
+          character(len=12) :: benthic =    "benthic_kg "            ! (kg)
       end type ch_pesticide_header
       type (ch_pesticide_header) :: chpest_hdr
      
@@ -66,83 +68,67 @@
         module procedure chpest_div
       end interface
         
-      interface operator (*)
-        module procedure chpest_mult
+      interface operator (//)
+        module procedure chpest_ave
       end interface 
              
       contains
-!! routines for swatdeg_hru module
 
-      function chpest_add(cho1,cho2) result (cho3)
-      type (ch_pesticide_output),  intent (in) :: cho1
-      type (ch_pesticide_output),  intent (in) :: cho2
-      type (ch_pesticide_output) :: cho3
-      integer :: ipest
-      allocate (cho3%pest(cs_db%num_pests))
-             
-      do ipest = 1, cs_db%num_pests
-        cho3%pest(ipest)%sol_in = cho1%pest(ipest)%sol_in + cho2%pest(ipest)%sol_in
-        cho3%pest(ipest)%sol_out = cho1%pest(ipest)%sol_out + cho2%pest(ipest)%sol_out
-        cho3%pest(ipest)%sor_in = cho1%pest(ipest)%sor_in + cho2%pest(ipest)%sor_in
-        cho3%pest(ipest)%sor_out = cho1%pest(ipest)%sor_out + cho2%pest(ipest)%sor_out
-        cho3%pest(ipest)%react = cho1%pest(ipest)%react + cho2%pest(ipest)%react
-        cho3%pest(ipest)%volat = cho1%pest(ipest)%volat + cho2%pest(ipest)%volat
-        cho3%pest(ipest)%settle = cho1%pest(ipest)%settle + cho2%pest(ipest)%settle
-        cho3%pest(ipest)%resus = cho1%pest(ipest)%resus + cho2%pest(ipest)%resus
-        cho3%pest(ipest)%difus = cho1%pest(ipest)%difus + cho2%pest(ipest)%difus
-        cho3%pest(ipest)%react_bot = cho1%pest(ipest)%react_bot + cho2%pest(ipest)%react_bot
-        cho3%pest(ipest)%bury = cho1%pest(ipest)%bury + cho2%pest(ipest)%bury
-        cho3%pest(ipest)%water = cho1%pest(ipest)%water + cho2%pest(ipest)%water
-        cho3%pest(ipest)%benthic = cho1%pest(ipest)%benthic + cho2%pest(ipest)%benthic
-      end do
+      function chpest_add(cho1, cho2) result (cho3)
+        type (ch_pesticide_processes),  intent (in) :: cho1
+        type (ch_pesticide_processes),  intent (in) :: cho2
+        type (ch_pesticide_processes) :: cho3
+        cho3%sol_in = cho1%sol_in + cho2%sol_in
+        cho3%sol_out = cho1%sol_out + cho2%sol_out
+        cho3%sor_in = cho1%sor_in + cho2%sor_in
+        cho3%sor_out = cho1%sor_out + cho2%sor_out
+        cho3%react = cho1%react + cho2%react
+        cho3%volat = cho1%volat + cho2%volat
+        cho3%settle = cho1%settle + cho2%settle
+        cho3%resus = cho1%resus + cho2%resus
+        cho3%difus = cho1%difus + cho2%difus
+        cho3%react_bot = cho1%react_bot + cho2%react_bot
+        cho3%bury = cho1%bury + cho2%bury
+        cho3%water = cho1%water + cho2%water
+        cho3%benthic = cho1%benthic + cho2%benthic
       end function chpest_add
       
-      function chpest_div (ch1,const) result (ch2)
-        type (ch_pesticide_output), intent (in) :: ch1
+      function chpest_div (ch1, const) result (ch2)
+        type (ch_pesticide_processes), intent (in) :: ch1
         real, intent (in) :: const
-        integer :: ipest
-        type (ch_pesticide_output) :: ch2
-        allocate (ch2%pest(cs_db%num_pests))
-        
-        do ipest = 1, cs_db%num_pests
-          ch2%pest(ipest)%sol_in = ch1%pest(ipest)%sol_in / const
-          ch2%pest(ipest)%sol_out = ch1%pest(ipest)%sol_out / const
-          ch2%pest(ipest)%sor_in = ch1%pest(ipest)%sor_in / const
-          ch2%pest(ipest)%sor_out = ch1%pest(ipest)%sor_out / const
-          ch2%pest(ipest)%react = ch1%pest(ipest)%react / const
-          ch2%pest(ipest)%volat = ch1%pest(ipest)%volat / const
-          ch2%pest(ipest)%settle = ch1%pest(ipest)%settle / const
-          ch2%pest(ipest)%resus = ch1%pest(ipest)%resus / const
-          ch2%pest(ipest)%difus = ch1%pest(ipest)%difus / const
-          ch2%pest(ipest)%react_bot = ch1%pest(ipest)%react_bot / const
-          ch2%pest(ipest)%bury = ch1%pest(ipest)%bury / const
-          ch2%pest(ipest)%water = ch1%pest(ipest)%water / const
-          ch2%pest(ipest)%benthic = ch1%pest(ipest)%benthic / const
-        end do
+        type (ch_pesticide_processes) :: ch2
+          ch2%sol_in = ch1%sol_in / const
+          ch2%sol_out = ch1%sol_out / const
+          ch2%sor_in = ch1%sor_in / const
+          ch2%sor_out = ch1%sor_out / const
+          ch2%react = ch1%react / const
+          ch2%volat = ch1%volat / const
+          ch2%settle = ch1%settle / const
+          ch2%resus = ch1%resus / const
+          ch2%difus = ch1%difus / const
+          ch2%react_bot = ch1%react_bot / const
+          ch2%bury = ch1%bury / const
+          ch2%water = ch1%water / const
+          ch2%benthic = ch1%benthic / const
       end function chpest_div
       
-      function chpest_mult (const, chn1) result (chn2)
-        type (ch_pesticide_output), intent (in) :: chn1
-        integer :: ipest
+      function chpest_ave (ch1, const) result (ch2)
+        type (ch_pesticide_processes), intent (in) :: ch1
         real, intent (in) :: const
-        type (ch_pesticide_output) :: chn2
-        allocate (chn2%pest(cs_db%num_pests))
-               
-        do ipest = 1, cs_db%num_pests
-          chn2%pest(ipest)%sol_in = const * chn1%pest(ipest)%sol_in
-          chn2%pest(ipest)%sol_out = const * chn1%pest(ipest)%sol_out
-          chn2%pest(ipest)%sor_in = const * chn1%pest(ipest)%sor_in
-          chn2%pest(ipest)%sor_out = const * chn1%pest(ipest)%sor_out
-          chn2%pest(ipest)%react = const * chn1%pest(ipest)%react
-          chn2%pest(ipest)%volat = const * chn1%pest(ipest)%volat
-          chn2%pest(ipest)%settle = const * chn1%pest(ipest)%settle
-          chn2%pest(ipest)%resus = const * chn1%pest(ipest)%resus
-          chn2%pest(ipest)%difus = const * chn1%pest(ipest)%difus
-          chn2%pest(ipest)%react_bot = const * chn1%pest(ipest)%react_bot 
-          chn2%pest(ipest)%bury = const * chn1%pest(ipest)%bury
-          chn2%pest(ipest)%water = const * chn1%pest(ipest)%water
-          chn2%pest(ipest)%benthic = const * chn1%pest(ipest)%benthic
-        end do
-      end function chpest_mult
+        type (ch_pesticide_processes) :: ch2
+          ch2%sol_in = ch1%sol_in
+          ch2%sol_out = ch1%sol_out
+          ch2%sor_in = ch1%sor_in
+          ch2%sor_out = ch1%sor_out
+          ch2%react = ch1%react
+          ch2%volat = ch1%volat
+          ch2%settle = ch1%settle
+          ch2%resus = ch1%resus
+          ch2%difus = ch1%difus
+          ch2%react_bot = ch1%react_bot
+          ch2%bury = ch1%bury
+          ch2%water = ch1%water
+          ch2%benthic = ch1%benthic
+      end function chpest_ave
       
       end module ch_pesticide_module

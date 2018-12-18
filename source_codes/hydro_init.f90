@@ -152,17 +152,6 @@
          i_sep(j) = isep_ly
        endif    
       endif
-          
-!!    calculate sol_kp as function of koc and sol_cbn
-!!    and set initial pesticide in all layers equal to value given for upper layer
-      do k = 1, cs_db%num_pests
-        solpst = soil(j)%ly(1)%pst(k)  !!concentration of pesticide in soil
-        do n = 1, nly
-          wt1 = soil(j)%phys(n)%bd * soil(j)%phys(n)%thick / 100.      !! mg/kg => kg/ha
-          soil(j)%ly(n)%kp(k) = pestdb(jj)%skoc * soil1(j)%tot(n)%c / 100.
-          soil(j)%ly(n)%pst(k) = solpst * wt1
-        end do
-      end do
 
 !!    compute lateral flow travel time
         if (hru(j)%hyd%lat_ttime <= 0.) then

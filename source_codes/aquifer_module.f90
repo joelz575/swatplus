@@ -5,37 +5,37 @@
       real :: sumrchrg, sumflo, sumseep, sumrevap
        
       type aquifer_database
-        character(len=16) :: aqunm = ""       !aquifer name
-        real :: flo = 0.05         !mm        |flow from aquifer in current time step 
-        real :: stor = 0.          !mm        |water storage in aquifer 
-        real :: hgt                !m         |groundwater height
-        real :: no3 = 0.           !ppm NO3-N |nitrate-N concentration in aquifer 
-        real :: minp = 0.          !kg        |mineral phosphorus from aquifer on current timestep 
-        real :: orgn = 0.          !(kg/ha N) |organic nitrogen 
-        real :: orgp = 0.          !(kg/ha P) |organic phosphorus
-        real :: delay = 0.         !          |
-        real :: alpha = 0.         !          |
-        real :: revap_co = 0.      !mm        |revap
-        real :: seep = 0.          !kg N/ha   |seepage to next object
-        real :: spyld = 0.         !          |
-        real :: hlife_n = 0.       !          |
-        real :: flo_min = 0.       !mm        |minimum aquifer storage to allow return flow
-        real :: revap_min = 0.     !mm H2O    |threshold depth of water in shallow aquifer required to allow revap to occur 
+        character(len=16) :: aqunm = ""         !aquifer name
+        real :: flo = 0.05          !mm         |flow from aquifer in current time step 
+        real :: dep_bot = 0.        !m          |depth - mid-slope surface to bottom of aquifer 
+        real :: dep_wt = 0.         !m          |depth - mid-slope surface to water table (initial)
+        real :: no3 = 0.            !ppm NO3-N  |nitrate-N concentration in aquifer (initial)
+        real :: minp = 0.           !kg         |mineral phosphorus in aquifer (initial)
+        real :: orgn = 0.           !(kg/ha N)  |organic nitrogen in aquifer (initial)
+        real :: orgp = 0.           !(kg/ha P)  |organic phosphorus in aquifer (initial)
+        real :: delay = 0.          !days       |time for water leaving the bottom of the root zone to 
+                                                !reach the shallow aquifer
+        real :: alpha = 0.          !1/days     |lag factor for groundwater recession curve
+        real :: revap_co = 0.       !           |revap oefficient - evap=pet*revap_co
+        real :: seep = 0.           !mm         |seepage from aquifer
+        real :: spyld = 0.          !m^3/m^3    |specific yield of aquifer
+        real :: hlife_n = 0.        !days       |half-life of nitrogen in groundwater
+        real :: flo_min = 0.        !m          |water table depth for return flow to occur
+        real :: revap_min = 0.      !m          |water table depth for revap to occur 
       end type aquifer_database
       type (aquifer_database), dimension(:), allocatable :: aqudb 
       
       type aquifer_data_parameters
-        real :: alpha = 0.         !          |
-        real :: delay = 0.         !          |
-        real :: flo_min        !mm        |minimum aquifer storage to allow return flow
-        real :: revap_co       !0-1 frac  |fraction of pet to calculate revap
-        real :: revap_min = 0. !mm H2O    |threshold depth of water in shallow aquifer required to allow revap to occur
-        real :: delay_e = 0.   !delay_e     days       |groundwater delay (time required for water leaving the
-                                           !bottom of the root zone to reach shallow aquifer
-        real :: alpha_e = 0.   !days       |Exp(-alpha_bf(:))
-        real :: nloss = 0.     !frac       |nloss based on half life
+        real :: alpha = 0.      !           |
+        real :: delay = 0.      !           |
+        real :: flo_min         !mm         |minimum aquifer storage to allow return flow
+        real :: revap_co        !0-1 frac   |fraction of pet to calculate revap
+        real :: revap_min = 0.  !mm H2O     |threshold depth of water in shallow aquifer required to allow revap to occur
+        real :: delay_e = 0.    !days       |groundwater delay (time required for water leaving the
+                                            !bottom of the root zone to reach shallow aquifer
+        real :: alpha_e = 0.    !days       |Exp(-alpha_bf(:))
+        real :: nloss = 0.      !frac       |nloss based on half life
       end type aquifer_data_parameters
-      
       type (aquifer_data_parameters), dimension(:), allocatable :: aqu_prm 
                  
       type aquifer_state_parameters
@@ -48,23 +48,23 @@
       type (aquifer_state_parameters), dimension(:), allocatable :: aqu_st 
              
       type aquifer_dynamic
-        real :: flo = 0.       !mm        |flow from aquifer in current time step       
-        real :: stor = 0.      !mm        |water storage in aquifer 
-        real :: rchrg = 0.     !mm        |recharge
-        real :: seep = 0.      !kg N/ha   |seepage to next object
-        real :: revap = 0.     !mm        |revap
-        real :: hgt = 0.       !m         |groundwater height
-        real :: no3 = 0.       !ppm NO3-N |nitrate-N concentration in aquifer
-        real :: minp = 0.      !kg        |mineral phosphorus from aquifer on current timestep    
+        real :: flo = 0.        !mm         |flow from aquifer in current time step       
+        real :: dep_wt = 0.     !m          |depth to water table
+        real :: stor = 0.       !mm         |total water storage in aquifer
+        real :: rchrg = 0.      !mm         |recharge
+        real :: seep = 0.       !kg N/ha    |seepage to next object
+        real :: revap = 0.      !mm         |revap
+        real :: no3 = 0.        !ppm NO3-N  |nitrate-N concentration in aquifer
+        real :: minp = 0.       !kg         |mineral phosphorus from aquifer on current timestep    
         real :: orgn = 0.  
         real :: orgp = 0.   
-        real :: rchrg_n = 0.   !          |amount of nitrate getting to the shallow aquifer  
+        real :: rchrg_n = 0.    !           |amount of nitrate getting to the shallow aquifer  
         real :: nloss = 0. 
-        real :: no3gw          !kg N/ha   |nitrate loading to reach in groundwater
-        real :: seepno3 = 0.   !kg        |seepage of no3 to next object
-        real :: flo_cha = 0.   !mm H2O    |surface runoff flowing into channels
-        real :: flo_res = 0.   !mm H2O    |surface runoff flowing into reservoirs
-        real :: flo_ls = 0.    !mm H2O    |surface runoff flowing into a landscape element
+        real :: no3gw           !kg N/ha    |nitrate loading to reach in groundwater
+        real :: seepno3 = 0.    !kg         |seepage of no3 to next object
+        real :: flo_cha = 0.    !mm H2O     |surface runoff flowing into channels
+        real :: flo_res = 0.    !mm H2O     |surface runoff flowing into reservoirs
+        real :: flo_ls = 0.     !mm H2O     |surface runoff flowing into a landscape element
       end type aquifer_dynamic
       type (aquifer_dynamic), dimension(:), allocatable :: aqu
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_m
@@ -92,23 +92,23 @@
           character (len=8) :: isd      =      "   unit "                                            
           character (len=8) :: id       =      " gis_id "           
           character (len=16) :: name    =      " name              "          
-          character(len=16) :: flo      =      "            flo"         ! (mm)
-          character(len=15) :: stor     =      "           stor"          ! (mm)
-          character(len=15) :: rchrg    =      "          rchrg"          ! (mm)
-          character(len=15) :: seep     =      "           seep"          ! (mm)
-          character(len=15) :: revap    =      "          revap"          ! (mm)
-          character(len=16) :: hgt      =      "            hgt"         ! (m)
-          character(len=15) :: no3_st   =      "         no3_st"          ! (kg/ha N)
-          character(len=14) :: minp     =      "           minp"           ! (kg)
-          character(len=15) :: orgn     =      "           orgn"          ! (kg/ha N)
-          character(len=15) :: orgp     =      "           orgp"          ! (kg/ha P)
-          character(len=15) :: rchrgn   =      "         rchrgn"          ! (kg/ha N)
-          character(len=15) :: nloss    =      "          nloss"          ! (kg/ha N)
-          character(len=15) :: no3gw    =      "          no3gw"          ! (kg N/ha)
-          character(len=15) :: seep_no3 =      "        seepno3"          ! (kg)
-          character(len=15) :: flo_cha  =      "        flo_cha"          ! (m^3)
-          character(len=15) :: flo_res  =      "        flo_res"          ! (m^3)
-          character(len=15) :: flo_ls   =      "         flo_ls"          ! (m^3)
+          character(len=16) :: flo      =      "            flo"        ! (mm)
+          character(len=15) :: stor     =      "           stor"        ! (mm)
+          character(len=15) :: rchrg    =      "          rchrg"        ! (mm)
+          character(len=15) :: seep     =      "           seep"        ! (mm)
+          character(len=15) :: revap    =      "          revap"        ! (mm)
+          character(len=16) :: dep_wt   =      "         dep_wt"        ! (m)
+          character(len=15) :: no3_st   =      "         no3_st"        ! (kg/ha N)
+          character(len=14) :: minp     =      "           minp"        ! (kg)
+          character(len=15) :: orgn     =      "           orgn"        ! (kg/ha N)
+          character(len=15) :: orgp     =      "           orgp"        ! (kg/ha P)
+          character(len=15) :: rchrgn   =      "         rchrgn"        ! (kg/ha N)
+          character(len=15) :: nloss    =      "          nloss"        ! (kg/ha N)
+          character(len=15) :: no3gw    =      "          no3gw"        ! (kg N/ha)
+          character(len=15) :: seep_no3 =      "        seepno3"        ! (kg)
+          character(len=15) :: flo_cha  =      "        flo_cha"        ! (m^3)
+          character(len=15) :: flo_res  =      "        flo_res"        ! (m^3)
+          character(len=15) :: flo_ls   =      "         flo_ls"        ! (m^3)
       end type aqu_header
       type (aqu_header) :: aqu_hdr
       
@@ -120,12 +120,12 @@
           character (len=8) :: isd      =  "        "                                            
           character (len=8) :: id       =  "        "           
           character (len=16) :: name    =  "                   "          
-          character(len=16) :: flo      =  "              mm"         ! (mm)
+          character(len=16) :: flo      =  "             mm"         ! (mm)
           character(len=15) :: stor     =  "             mm"          ! (mm)
           character(len=15) :: rchrg    =  "             mm"          ! (mm)
           character(len=15) :: seep     =  "             mm"          ! (mm)
           character(len=15) :: revap    =  "             mm"          ! (mm)
-          character(len=16) :: hgt      =  "              m "         ! (m)
+          character(len=16) :: dep_wt   =  "              m "         ! (m)
           character(len=15) :: no3_st   =  "        kg/ha N"          ! (kg/ha N)
           character(len=14) :: minp     =  "            kg"           ! (kg)
           character(len=15) :: orgn     =  "        kg/ha N"          ! (kg/ha N)
@@ -155,8 +155,8 @@
       type (aquifer_dynamic),  intent (in) :: aqo2
       type (aquifer_dynamic) :: aqo3
        aqo3%flo = aqo1%flo + aqo2%flo
+       aqo3%dep_wt = aqo1%dep_wt + aqo2%dep_wt
        aqo3%stor = aqo1%stor + aqo2%stor
-       aqo3%hgt = aqo1%hgt + aqo2%hgt
        aqo3%no3 = aqo1%no3 + aqo2%no3   
        aqo3%minp = aqo1%minp + aqo2%minp  
        aqo3%orgn = aqo1%orgn + aqo2%orgn
@@ -178,8 +178,8 @@
         real, intent (in) :: const
         type (aquifer_dynamic) :: aq2
         aq2%flo = aq1%flo / const
+        aq2%dep_wt = aq1%dep_wt / const
         aq2%stor = aq1%stor / const
-        aq2%hgt = aq1%hgt / const
         aq2%no3 = aq1%no3 / const
         aq2%minp = aq1%minp / const
         aq2%orgn = aq1%orgn / const

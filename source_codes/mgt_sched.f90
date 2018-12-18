@@ -241,10 +241,10 @@
             end do
 
             ipl = 1
-            ipest = mgt%op1             !sequential pesticide type from pest community
-            pest_kg = mgt%op3           !amount applied in kg/ha
-            ipestop = mgt%op4           !surface application fraction from chem app data base
-            call pst_apply (j, ipest, pest_kg, ipestop)
+            ipest = mgt%op1                                     !sequential pesticide type from pest community
+            ipestop = mgt%op4                                   !surface application option from chem app data base
+            pest_kg = mgt%op3 * chemapp_db(ipestop)%app_eff    !amount applied in kg/ha
+            call pest_apply (j, ipest, pest_kg, ipestop)
             
             if (pco%mgtout == "y") then
               write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    PEST ", &

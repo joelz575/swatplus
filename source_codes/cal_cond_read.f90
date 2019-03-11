@@ -32,7 +32,7 @@
       character (len=80) :: header                       !           |header of file
       integer :: eof                                     !           |end of file
       integer :: imax                                    !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist                                 !none       |check to determine if file exists
+      logical :: i_exist                                 !none       |check to determine if file exists
       integer :: mchg_sched                              !none       |end of loop
       integer :: i                                       !none       |counter
       integer :: icond                                   !none       |counter
@@ -42,7 +42,7 @@
         
       !!read parameter change values for calibration
       inquire (file="conditional.upd", exist=i_exist)
-      if (i_exist == 0 .or. "conditional.upd" == "null") then
+      if (.not. i_exist .or. "conditional.upd" == "null") then
         allocate (upd_cond(0:0))
       else
       do
@@ -50,9 +50,11 @@
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mchg_sched
+        if (eof < 0) exit
+        
         allocate (upd_cond(0:mchg_sched))
         db_mx%cond_up = mchg_sched
-        if (eof < 0) exit
+        
         read (107,*,iostat=eof) header
         if (eof < 0) exit
 

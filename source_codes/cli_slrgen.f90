@@ -9,7 +9,6 @@
 !!    hru_rmx(:)  |MJ/m^2        |maximum possible radiation for the day in HRU
 !!    j           |none          |HRU number
 !!    pr_w(3,:,:) |none          |proportion of wet days in a month
-!!    solarav(:,:)|MJ/m^2/day    |average daily solar radiation for the month
 !!    wgncur(3,:) |none          |parameter which predicts impact of precip on
 !!                               |daily solar radiation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

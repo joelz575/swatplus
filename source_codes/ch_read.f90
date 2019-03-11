@@ -5,6 +5,7 @@
       use channel_data_module
       use maximum_data_module
       use hydrograph_module
+      use pesticide_data_module
 
       implicit none
       
@@ -13,7 +14,7 @@
       integer :: eof                    !              |end of file
       integer :: i                      !units         |description
       integer :: imax                   !units         |description
-      integer :: i_exist                !              |check to determine if file exists
+      logical :: i_exist                !              |check to determine if file exists
       integer :: ichi                   !none          |counter
       integer :: k                      !units         |description
       integer :: iinit                  !none          |counter
@@ -27,7 +28,7 @@
       imax = 0
 
       inquire (file=in_cha%dat, exist=i_exist)
-      if (i_exist == 0 .or. in_cha%dat == "null") then
+      if (.not. i_exist .or. in_cha%dat == "null") then
         allocate (ch_dat(0:0))
         allocate (ch_dat_c(0:0))
       else   
@@ -54,6 +55,7 @@
      
        do ichi = 1, db_mx%ch_dat
          read (105,*,iostat=eof) i
+         if (eof < 0) exit
          backspace (105)
          read (105,*,iostat=eof) k, ch_dat_c(ichi)
          if (eof < 0) exit
@@ -87,19 +89,11 @@
              exit
            end if
          end do   
- 
-         do ipst = 1, db_mx%ch_pst
-           if (ch_pst(ipst)%name == ch_dat_c(ichi)%pst) then
-             ch_dat(ichi)%pst = ipst
-             exit
-           end if
-         end do
-         
+
        if (ch_dat(ichi)%init == 0) write (9001,*) ch_dat_c(ichi)%init, " not found (chan)"
        if (ch_dat(ichi)%hyd == 0) write (9001,*) ch_dat_c(ichi)%hyd, " not found (chan)"
        if (ch_dat(ichi)%sed == 0) write (9001,*) ch_dat_c(ichi)%sed, " not found (chan)"
-       if (ch_dat(ichi)%nut == 0) write (9001,*) ch_dat_c(ichi)%nut, " not found (chan)"
-       if (ch_dat(ichi)%pst == 0) write (9001,*) ch_dat_c(ichi)%pst, " not found (chan)"         
+       if (ch_dat(ichi)%nut == 0) write (9001,*) ch_dat_c(ichi)%nut, " not found (chan)"      
        
        end do
               

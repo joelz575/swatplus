@@ -6,9 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fimp(:)     |fraction      |fraction of HRU area that is
-!!                               |impervious (both directly and
-!!                               |indirectly connected)
 !!    hhqday(:)   |mm H2O        |surface runoff generated each timestep 
 !!                               |of day in HRU
 !!    hru_km(:)   |km2           |area of HRU in square kilometers

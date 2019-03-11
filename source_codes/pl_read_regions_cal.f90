@@ -10,7 +10,7 @@
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: nspu                 !           | 
       integer :: mcal                 !           |
@@ -29,9 +29,10 @@
       
       imax = 0
       mcal = 0
+      mreg = 0
  
     inquire (file=in_chg%pl_regions_cal, exist=i_exist)
-    if (i_exist == 0 .or. in_chg%pl_regions_cal /= "null" ) then
+    if (.not. i_exist .or. in_chg%pl_regions_cal /= "null" ) then
       allocate (plcal(0:0))	
     else
       do
@@ -41,23 +42,25 @@
         read (107,*,iostat=eof) mreg
         if (eof < 0) exit
         read (107,*,iostat=eof) header
+        if (eof < 0) exit
         allocate (plcal(mreg))
 
       do i = 1, mreg
 
-        read (107,*,iostat=eof) plcal(i)%name, plcal(i)%lum_num, nspu
-        
+        read (107,*,iostat=eof) plcal(i)%name, plcal(i)%lum_num, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) plcal(i)%name, plcal(i)%lum_num,  nspu, (elem_cnt(isp), isp = 1, nspu)
+          if (eof < 0) exit
 
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (plcal(i)%num(1))
             plcal(i)%num_tot = 1
             plcal(i)%num(1) = elem_cnt(1)
+            deallocate (elem_cnt)
           else
           !! nspu > 1
           ielem = 0
@@ -120,6 +123,7 @@
         if (plcal(i)%lum_num > 0) then
           ilum_mx = plcal(i)%lum_num
           read (107,*,iostat=eof) header
+          if (eof < 0) exit
           allocate (plcal(i)%lum(ilum_mx))
           do ilum = 1, ilum_mx
             read (107,*,iostat=eof) plcal(i)%lum(ilum)%meas

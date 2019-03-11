@@ -80,11 +80,9 @@
       real :: shear_bank_adj          !              | 
       real :: e_bank                  !              |
       real :: perc                    !              |
-      
-      !real :: rttime                  !hr            |reach travel time
-      !integer :: jhyd                 !units         |description 
+      integer :: iaq
+      integer :: iaq_ch
       real :: det                     !hr            |time step
-      !real :: rt_delt                 !calc time step |days
       real :: scoef                   !none          |Storage coefficient
       real :: rchvol
       
@@ -102,6 +100,15 @@
       
       !! set ht1 to incoming hydrograph
       ht1 = ob(icmd)%hin
+      !! if connected to aquifer - add flow
+      if (sd_ch(ich)%aqu_link > 0) then
+        iaq = sd_ch(ich)%aqu_link
+        iaq_ch = sd_ch(ich)%aqu_link_ch
+        if (aq_ch(iaq)%ch(iaq_ch)%flo_fr > 0.) then
+          ht1 = ht1 + aq_ch(iaq)%ch(iaq_ch)%flo_fr * aq_ch(iaq)%hd
+          aq_ch(iaq)%ch(iaq_ch)%flo_fr = 0.
+        end if
+      end if
       hcs1 = obcs(icmd)%hin
       
       !! set incoming flow and sediment
@@ -234,7 +241,7 @@
             !! by iteration method at 1cm interval depth
             !! find the depth until the discharge rate is equal to volrt
             !zero overbank flow
-            sd_ch(ich)%overbank = "ub"
+            sd_ch(ich)%overbank = "ib"
             ob(icmd)%hd(3) = hz
             ob_const = 1.
             sdti = 0.
@@ -354,6 +361,7 @@
          !! use modified qual-2e routines
          ht3 = ht1
          call hyd_convert_mass_to_conc (ht3)
+         jnut = sd_dat(ich)%nut
          call ch_watqual4
          !! convert mass to concentration
          call hyd_convert_conc_to_mass (ht2)
@@ -366,7 +374,6 @@
         
         !! route constituents
         idb = ob(icmd)%props
-        jpst = sd_dat(idb)%pest
         jrch = ich
         call ch_rtpest
         call ch_rtpath
@@ -439,10 +446,8 @@
 
       !! set pesticide output variables
       do ipest = 1, cs_db%num_pests
-        chpst_d(ich)%pest(ipest)%sol_in = obcs(icmd)%hin%pest(ipest)%sol
-        chpst_d(ich)%pest(ipest)%sol_out = obcs(icmd)%hd(1)%pest(ipest)%sol
-        chpst_d(ich)%pest(ipest)%sor_in = obcs(icmd)%hin%pest(ipest)%sor
-        chpst_d(ich)%pest(ipest)%sor_out = obcs(icmd)%hd(1)%pest(ipest)%sor
+        chpst_d(ich)%pest(ipest)%pst_in = obcs(icmd)%hin%pest(ipest)
+        chpst_d(ich)%pest(ipest)%pst_out = obcs(icmd)%hd(1)%pest(ipest)
         chpst_d(ich)%pest(ipest)%react = chpst%pest(ipest)%react
         chpst_d(ich)%pest(ipest)%volat = chpst%pest(ipest)%volat
         chpst_d(ich)%pest(ipest)%settle = chpst%pest(ipest)%settle
@@ -450,8 +455,8 @@
         chpst_d(ich)%pest(ipest)%difus = chpst%pest(ipest)%difus
         chpst_d(ich)%pest(ipest)%react_bot = chpst%pest(ipest)%react_bot
         chpst_d(ich)%pest(ipest)%bury = chpst%pest(ipest)%bury 
-        chpst_d(ich)%pest(ipest)%water = ch_water(ich)%pest(ipest)%sol + ch_water(ich)%pest(ipest)%sol
-        chpst_d(ich)%pest(ipest)%benthic = ch_benthic(ich)%pest(ipest)%sol + ch_benthic(ich)%pest(ipest)%sol
+        chpst_d(ich)%pest(ipest)%water = ch_water(ich)%pest(ipest)
+        chpst_d(ich)%pest(ipest)%benthic = ch_benthic(ich)%pest(ipest)
       end do
         
       !! set values for recharge hydrograph - should be trans losses

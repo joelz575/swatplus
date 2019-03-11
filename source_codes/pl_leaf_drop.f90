@@ -6,9 +6,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    alai_min(:)    |m**2/m**2     |minimum LAI during winter dormant period
-!!    bio_leaf(:)    |none          |fraction of biomass that drops during
-!!                                  |dormancy (for trees only)
 !!    daylmn(:)      |hours         |shortest daylength occurring during the
 !!                                  |year
 !!    dormhr(:)      |hour          |time threshold used to define dormant
@@ -44,7 +41,6 @@
       integer :: orgc_f                 !fraction      |fraction of organic carbon in fertilizer
       integer :: iob                    !              |
       integer :: iwgn                   !              |
-      real :: dorm_flag                 !              |
       real :: xx                        !varies        |variable to hold calculation results 
       real :: rln                       !              |  
       real :: rlr                       !fraction      |fraction of lignin in the added residue
@@ -83,9 +79,6 @@
       iob = hru(j)%obj_no
       iwst = ob(iob)%wst
       iwgn = wst(iwst)%wco%wgn
-
-      !if (pldb(idp)%typ == "perennial") then
-        pcom(j)%plcur(ipl)%idorm = "y"
 
         if (bsn_cc%cswat == 2) then
           cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + resnew*0.42
@@ -150,21 +143,15 @@
         rsd1(j)%tot(ipl)%m = Max(rsd1(j)%tot(ipl)%m, 0.)
         rsd1(j)%tot(ipl)%n = resnew * pcom(j)%plm(ipl)%n_fr + rsd1(j)%tot(ipl)%n
         rsd1(j)%tot(ipl)%p = resnew * pcom(j)%plm(ipl)%p_fr + rsd1(j)%tot(ipl)%p
+        
         pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - resnew
-        
-      if (j == 24823) then
-        if (pcom(j)%plm(1)%mass > 30000.) then
-          pause
-        end if
-      end if    
-        
         pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - resnew * pcom(j)%plm(ipl)%n_fr
         pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - resnew * pcom(j)%plm(ipl)%p_fr
-        pcom(j)%plstr(ipl)%strsw = 1.
-        pcom(j)%plg(ipl)%lai = pldb(idp)%alai_min
-        pcom(j)%plcur(ipl)%phuacc = 0.
-        pcom(j)%plg(ipl)%laimxfr = 0.
-      !end if
+        
+        !pcom(j)%plstr(ipl)%strsw = 1.
+        !pcom(j)%plg(ipl)%lai = pldb(idp)%alai_min
+        !pcom(j)%plcur(ipl)%phuacc = 0.
+        !pcom(j)%plg(ipl)%laimxfr = 0.
 
       return
       end subroutine pl_leaf_drop

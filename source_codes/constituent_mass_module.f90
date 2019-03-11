@@ -20,106 +20,121 @@
         integer :: num_metals = 0                                   !number of heavy metals simulated
         character (len=16), dimension(:), allocatable :: metals     !name of the heavy metals- points to heavy metals database
         integer, dimension(:), allocatable :: metals_num            !number of the heavy metals- points to heavy metals database
-        integer :: num_salts = 0                                    !number of salts simulated
+        integer :: num_salts = 0                                    !number of salt ions simulated
         character (len=16), dimension(:), allocatable :: salts      !name of the salts - points to salts database
-        integer, dimension(:), allocatable :: salts_num             !number of the alts - points to salts database
+        integer, dimension(:), allocatable :: salts_num             !number of the salts - points to salts database
       end type constituents
       type (constituents) :: cs_db
 
-      type constituent_mass
-        real :: sol = 0.    !kg/ha or kg        |soluble constituent mass
-        real :: sor = 0.    !kg/ha or kg        |sorbed constituent mass
-      end type constituent_mass
-
       type exco_pesticide
-        type (constituent_mass), dimension (:), allocatable :: pest         !pesticide hydrographs
+        real, dimension (:), allocatable :: pest         !pesticide hydrographs
       end type exco_pesticide
       type (exco_pesticide), dimension (:), allocatable :: exco_pest        !export coefficients
       
       type dr_pesticide
-        type (constituent_mass), dimension (:), allocatable :: pest         !pesticide delivery
+        real, dimension (:), allocatable :: pest         !pesticide delivery
       end type dr_pesticide
       type (dr_pesticide), dimension (:), allocatable :: dr_pest            !delivery ratios
       
       type exco_pathogens
-        type (constituent_mass), dimension (:), allocatable :: path         !pesticide hydrographs
+        real, dimension (:), allocatable :: path         !pesticide hydrographs
       end type exco_pathogens
       type (exco_pathogens), dimension (:), allocatable :: exco_path        !export coefficients
       
       type dr_pathogens
-        type (constituent_mass), dimension (:), allocatable :: path         !pathogen delivery
+        real, dimension (:), allocatable :: path         !pathogen delivery
       end type dr_pathogens
       type (dr_pathogens), dimension (:), allocatable :: dr_path            !delivery ratios
       
       type exco_heavy_metals
-        type (constituent_mass), dimension (:), allocatable :: hmet         !heavy metals hydrographs
+        real, dimension (:), allocatable :: hmet                            !heavy metals hydrographs
       end type exco_heavy_metals
       type (exco_heavy_metals), dimension (:), allocatable :: exco_hmet     !export coefficients
       
       type dr_heavy_metals
-        type (constituent_mass), dimension (:), allocatable :: hmet         !heavy metals delivery
+        real, dimension (:), allocatable :: hmet                            !heavy metals delivery
       end type dr_heavy_metals
       type (dr_heavy_metals), dimension (:), allocatable :: dr_hmet         !delivery ratios
       
       type exco_salts
-        type (constituent_mass), dimension (:), allocatable :: salt         !salts hydrographs
+        real, dimension (:), allocatable :: salt                            !salts hydrographs
       end type exco_salts
       type (exco_salts), dimension (:), allocatable :: exco_salt            !export coefficients
       
       type dr_salts
-        type (constituent_mass), dimension (:), allocatable :: salt         !salts delivery
+        real, dimension (:), allocatable :: salt                            !salts delivery
       end type dr_salts
       type (dr_salts), dimension (:), allocatable :: dr_salt                !delivery ratios
       
-      ! constituent hydrographs - dimension to spatial object hyd number - i.e. 1=tot, 2=surf, etc.
-      type constituent_hydrograph
-        type (constituent_mass), dimension (:), allocatable :: pest      !pesticide hydrographs
-        type (constituent_mass), dimension (:), allocatable :: path      !pathogen hydrographs
-        type (constituent_mass), dimension (:), allocatable :: hmet      !heavy metal hydrographs
-        type (constituent_mass), dimension (:), allocatable :: salt      !salt hydrographs
-      end type constituent_hydrograph
+      type salt_solids_soil
+        real, dimension (:), allocatable :: solid                               !salt solid by soil layer
+      end type salt_solids_soil
+      type (salt_solids_soil), dimension (:), allocatable :: sol_salt_solid     !salt solid by hru
+
+      ! constituent mass - soil, plant, aquifer, channel and reservoir
+      type constituent_mass
+        real, dimension (:), allocatable :: pest      !mg/ha          |pesticide in soil layer
+        real, dimension (:), allocatable :: path      !pathogen hydrographs
+        real, dimension (:), allocatable :: hmet      !heavy metal hydrographs
+        real, dimension (:), allocatable :: salt      !salt ion hydrographs
+        real, dimension (:), allocatable :: salt_min  !salt mineral hydrographs
+      end type constituent_mass
       
-      ! intial water and benthic pesticides for channels and reservoirs
-      type pesticide_initial
-        type (constituent_mass), dimension (:), allocatable :: pest         !pesticide mass
-      end type pesticide_initial
-      type (pesticide_initial), dimension (:), allocatable :: pest_water_ini
-      type (pesticide_initial), dimension (:), allocatable :: pest_benthic_ini
+      ! irrigation water constituent mass - dimensioned by hru
+      type (constituent_mass), dimension (:), allocatable :: cs_irr
+      
+      ! soil constituent mass - dimensioned by hru
+      type soil_constituent_mass
+        type (constituent_mass), dimension (:), allocatable :: ly
+      end type soil_constituent_mass
+      type (soil_constituent_mass), dimension (:), allocatable :: cs_soil
+      
+      ! plant constituent mass
+      type (constituent_mass), dimension (:), allocatable :: cs_pl
             
-      ! intial water and benthic pathogens for channels and reservoirs
-      type pathogen_initial
-        type (constituent_mass), dimension (:), allocatable :: path         !pathogen mass
-      end type pathogen_initial
-      type (pathogen_initial), dimension (:), allocatable :: path_water_ini
-      type (pathogen_initial), dimension (:), allocatable :: path_benthic_ini
+      ! aquifer constituent mass
+      type (constituent_mass), dimension (:), allocatable :: cs_aqu
       
+      ! channel constituent mass
+      type channel_constituent_mass
+        type (constituent_mass) :: water
+        type (constituent_mass) :: benthic
+      end type channel_constituent_mass
+      type (channel_constituent_mass), dimension (:), allocatable :: cs_ch
+      
+      ! reservoir constituent mass
+      type reservoir_constituent_mass
+        type (constituent_mass) :: water
+        type (constituent_mass) :: benthic
+      end type reservoir_constituent_mass
+      type (reservoir_constituent_mass), dimension (:), allocatable :: cs_res
+      type (reservoir_constituent_mass), dimension (:), allocatable :: cs_cha
+
       ! storing water and benthic constituents in channels and reservoirs
-      type (constituent_hydrograph), dimension (:), allocatable :: ch_water
-      type (constituent_hydrograph), dimension (:), allocatable :: ch_benthic
-      type (constituent_hydrograph), dimension (:), allocatable :: res_water
-      type (constituent_hydrograph), dimension (:), allocatable :: res_benthic
-      type (constituent_hydrograph), dimension (:), allocatable :: wet_water
-      type (constituent_hydrograph), dimension (:), allocatable :: wet_benthic
+      type (constituent_mass), dimension (:), allocatable :: ch_water
+      type (constituent_mass), dimension (:), allocatable :: ch_benthic
+      type (constituent_mass), dimension (:), allocatable :: res_water
+      type (constituent_mass), dimension (:), allocatable :: res_benthic
       
       ! hydrographs used in command for adding incoming hyds
-      type (constituent_hydrograph) :: hcs1, hcs2
+      type (constituent_mass) :: hcs1, hcs2
       ! set zero constituent hydrograph
-      type (constituent_hydrograph) :: hin_csz
+      type (constituent_mass) :: hin_csz
       
       ! hydrographs for all constituents - dimension to number of each constituent
       type all_constituent_hydrograph
-        type (constituent_hydrograph), dimension (:), allocatable :: hd
-        type (constituent_hydrograph) :: hin
-        type (constituent_hydrograph) :: hin_sur
-        type (constituent_hydrograph) :: hin_lat
-        type (constituent_hydrograph) :: hin_til
-        type (constituent_hydrograph), dimension(:), allocatable :: hcsin_d
-        type (constituent_hydrograph), dimension(:), allocatable :: hcsin_m
-        type (constituent_hydrograph), dimension(:), allocatable :: hcsin_y
-        type (constituent_hydrograph), dimension(:), allocatable :: hcsin_a
-        type (constituent_hydrograph), dimension(:), allocatable :: hcsout_m
-        type (constituent_hydrograph), dimension(:), allocatable :: hcsout_y
-        type (constituent_hydrograph), dimension(:), allocatable :: hcsout_a
+        type (constituent_mass), dimension (:), allocatable :: hd
+        type (constituent_mass) :: hin
+        type (constituent_mass) :: hin_sur
+        type (constituent_mass) :: hin_lat
+        type (constituent_mass) :: hin_til
+        type (constituent_mass), dimension(:), allocatable :: hcsin_d
+        type (constituent_mass), dimension(:), allocatable :: hcsin_m
+        type (constituent_mass), dimension(:), allocatable :: hcsin_y
+        type (constituent_mass), dimension(:), allocatable :: hcsin_a
+        type (constituent_mass), dimension(:), allocatable :: hcsout_m
+        type (constituent_mass), dimension(:), allocatable :: hcsout_y
+        type (constituent_mass), dimension(:), allocatable :: hcsout_a
       end type all_constituent_hydrograph
       type (all_constituent_hydrograph), dimension (:), allocatable :: obcs
       
@@ -135,39 +150,31 @@
          !hyd_output units are in cms and mg/L
          type (constituent_mass), dimension (:,:), allocatable :: hd_pest
       end type recall_pesticide_inputs
-      type (recall_pesticide_inputs),dimension(:),allocatable:: rec_pest
+      type (recall_pesticide_inputs), dimension(:),allocatable:: rec_pest
       
-      ! initialize hru constituents
-      type constituent_hru_init
-        character (len=16) :: name                      !name of the constituent - points to constituent database
-        real :: plt           !! kg/ha or #cfu/m^2      |amount of constituent on plant at start of simulation
-        real :: soil          !! kg/ha or #cfu/m^2      |amount of constituent in soil at start of simulation
-      end type constituent_hru_init
+      ! intial constituent soil-plant concentrations for hrus and aquifers
+      type cs_soil_init_concentrations
+        character (len=16) :: name                  !! name of the constituent - points to constituent database
+        real, dimension (:), allocatable :: soil    !! ppm or #cfu/m^2      |amount of constituent in soil at start of simulation
+        real, dimension (:), allocatable :: plt     !! ppm or #cfu/m^2      |amount of constituent on plant at start of simulation
+      end type cs_soil_init_concentrations
+      type (cs_soil_init_concentrations), dimension(:), allocatable:: pest_soil_ini
+      type (cs_soil_init_concentrations), dimension(:), allocatable:: path_soil_ini
+      type (cs_soil_init_concentrations), dimension(:), allocatable:: hmet_soil_ini
+      !! first 8 values of soil and plt are salt ion concentrations and next 5 are salt mineral fractions
+      type (cs_soil_init_concentrations), dimension(:), allocatable:: salt_soil_ini
       
-      type pestinit_db
-        character(len=16) :: name        !!      |name of initial pesticide
-        type (constituent_hru_init), dimension (:), allocatable :: pesti
-      end type pestinit_db
-      type (pestinit_db), dimension (:), allocatable :: pesti_db
+      ! intial constituent water-benthic concentrations for reservoirs and channels
+      type cs_water_init_concentrations
+        character (len=16) :: name                  !! name of the constituent - points to constituent database
+        real, dimension (:), allocatable :: water   !! ppm or #cfu/m^2      |amount of constituent in water at start of simulation
+        real, dimension (:), allocatable :: benthic !! ppm or #cfu/m^2      |amount of constituent in benthic at start of simulation
+      end type cs_water_init_concentrations
+      type (cs_water_init_concentrations), dimension(:),allocatable:: pest_water_ini
+      type (cs_water_init_concentrations), dimension(:),allocatable:: path_water_ini
+      type (cs_water_init_concentrations), dimension(:),allocatable:: hmet_water_ini
+      type (cs_water_init_concentrations), dimension(:),allocatable:: salt_water_ini
 
-      type pathinit_db
-        character(len=16) :: name        !!      |name of initial pathogen
-        type (constituent_hru_init), dimension (:), allocatable :: pathi
-      end type pathinit_db
-      type (pathinit_db), dimension (:), allocatable :: pathi_db
- 
-      type hmetinit_db
-        character(len=16) :: name        !!      |name of initial heavy metal
-        type (constituent_hru_init), dimension (:), allocatable :: hmeti
-      end type hmetinit_db
-      type (hmetinit_db), dimension (:), allocatable :: hmeti_db
-
-      type saltinit_db
-        character(len=16) :: name        !!      |name of initial salt
-        type (constituent_hru_init), dimension (:), allocatable :: salti
-      end type saltinit_db
-      type (saltinit_db), dimension (:), allocatable :: salti_db
-      
      type constituents_header_in          
         character (len=11) :: day      = "       jday "
         character (len=12) :: mo       = "         mon"
@@ -222,9 +229,9 @@
       contains
       
       function hydcsout_add (hydcs1, hydcs2) result (hydcs3)
-        type (constituent_hydrograph), intent (in) :: hydcs1
-        type (constituent_hydrograph), intent (in) :: hydcs2
-        type (constituent_hydrograph) :: hydcs3
+        type (constituent_mass), intent (in) :: hydcs1
+        type (constituent_mass), intent (in) :: hydcs2
+        type (constituent_mass) :: hydcs3
         integer :: ipest, ipath, ihmet, isalt
         allocate (hydcs3%pest(cs_db%num_pests))
         allocate (hydcs3%path(cs_db%num_paths))
@@ -232,27 +239,23 @@
         allocate (hydcs3%salt(cs_db%num_salts))
 
         do ipest = 1, cs_db%num_pests
-          hydcs3%pest(ipest)%sol =  hydcs2%pest(ipest)%sol + hydcs1%pest(ipest)%sol
-          hydcs3%pest(ipest)%sor =  hydcs2%pest(ipest)%sor + hydcs1%pest(ipest)%sol
+          hydcs3%pest(ipest) =  hydcs2%pest(ipest) + hydcs1%pest(ipest)
         end do
         do ipath = 1, cs_db%num_paths
-          hydcs3%path(ipath)%sol =  hydcs2%path(ipath)%sol + hydcs1%path(ipath)%sol
-          hydcs3%path(ipath)%sor =  hydcs2%path(ipath)%sor + hydcs1%path(ipath)%sol
+          hydcs3%path(ipath) =  hydcs2%path(ipath) + hydcs1%path(ipath)
         end do
         do ihmet = 1, cs_db%num_metals
-          hydcs3%hmet(ihmet)%sol =  hydcs2%hmet(ihmet)%sol + hydcs1%hmet(ihmet)%sol
-          hydcs3%hmet(ihmet)%sor =  hydcs2%hmet(ihmet)%sor + hydcs1%hmet(ihmet)%sol
+          hydcs3%hmet(ihmet) =  hydcs2%hmet(ihmet) + hydcs1%hmet(ihmet)
         end do
         do isalt = 1, cs_db%num_salts
-          hydcs3%salt(isalt)%sol =  hydcs2%salt(isalt)%sol + hydcs1%salt(isalt)%sol
-          hydcs3%salt(isalt)%sor =  hydcs2%salt(isalt)%sor + hydcs1%salt(isalt)%sol
+          hydcs3%salt(isalt) =  hydcs2%salt(isalt) + hydcs1%salt(isalt)
         end do
       return
       end function hydcsout_add
       
       function hydcsout_mult_const (const, hydcs1) result (hydcs2)
-        type (constituent_hydrograph), intent (in) :: hydcs1
-        type (constituent_hydrograph) :: hydcs2
+        type (constituent_mass), intent (in) :: hydcs1
+        type (constituent_mass) :: hydcs2
         real, intent (in) :: const
         integer :: ipest, ipath, ihmet, isalt
         allocate (hydcs2%pest(cs_db%num_pests))
@@ -261,20 +264,16 @@
         allocate (hydcs2%salt(cs_db%num_salts))
 
         do ipest = 1, cs_db%num_pests
-          hydcs2%pest(ipest)%sol =  const * hydcs1%pest(ipest)%sol
-          hydcs2%pest(ipest)%sor =  const * hydcs1%pest(ipest)%sor
+          hydcs2%pest(ipest) =  const * hydcs1%pest(ipest)
         end do
         do ipath = 1, cs_db%num_paths
-          hydcs2%path(ipath)%sol =  const * hydcs1%path(ipath)%sol
-          hydcs2%path(ipath)%sor =  const * hydcs1%path(ipath)%sor
+          hydcs2%path(ipath) =  const * hydcs1%path(ipath)
         end do
         do ihmet = 1, cs_db%num_metals
-          hydcs2%hmet(ihmet)%sol =  const * hydcs1%hmet(ihmet)%sol
-          hydcs2%hmet(ihmet)%sor =  const * hydcs1%hmet(ihmet)%sor
+          hydcs2%hmet(ihmet) =  const * hydcs1%hmet(ihmet)
         end do
         do isalt = 1, cs_db%num_salts
-          hydcs2%salt(isalt)%sol =  const * hydcs1%salt(isalt)%sol
-          hydcs2%salt(isalt)%sor =  const * hydcs1%salt(isalt)%sor
+          hydcs2%salt(isalt) =  const * hydcs1%salt(isalt)
         end do
         return
       end function hydcsout_mult_const

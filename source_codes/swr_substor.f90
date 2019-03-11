@@ -65,7 +65,7 @@
         pst_lag(k,3,j) = pst_lag(k,3,j) + hpestb_d(j)%pest(k)%latq
         !MFW, 3/3/12: Modified lagged pesticide to include decay in lag
         ipst_db = cs_db%pest_num(k)
-        pst_lag(k,3,j) = (pst_lag(k,3,j) * pstcp(ipst_db)%decay_s) + hpestb_d(j)%pest(k)%latq
+        pst_lag(k,3,j) = (pst_lag(k,3,j) * pestcp(ipst_db)%decay_s) + hpestb_d(j)%pest(k)%latq
       end do
 
       latq(j) = bss(1,j) * hru(j)%hyd%lat_ttime

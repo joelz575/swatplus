@@ -12,12 +12,8 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cnop          |none          |SCS runoff curve number for moisture condition II
 !!    curyr         |none          |current year of simulation
-!!    deptil(:)     |mm            |depth of mixing caused by tillage operation
 !!    npmx          |none          |number of different pesticides used in the simulation
-!!    effmix(:)     |none          |mixing efficiency of tillage operation
-!!    sol_pst(:,:,:)|kg/ha         |amount of pesticide in layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -39,7 +35,7 @@
       use tillage_data_module
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only: tillage_days, tillage_depth, tillage_switch, cnop
+      use hru_module, only: tillage_days, tillage_depth, tillage_switch
       use soil_module
       use constituent_mass_module
       
@@ -96,7 +92,6 @@
 
       !!by zhang DSSAT tillage
       !!=======================
-      !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
       if (bsn_cc%cswat == 2) then
           tillage_days(jj) = 0
           tillage_depth(jj) = dtil
@@ -233,7 +228,7 @@
                  * sol_msn(l) + smix(19) * sol_msm(l)) / sol_mass(l)
 
             do k = 1, npmx
-              soil(jj)%ly(l)%pst(k) = soil(jj)%ly(l)%pst(k) * WW3 + smix(20+k) * WW4
+              cs_soil(jj)%ly(l)%pest(k) = cs_soil(jj)%ly(l)%pest(k) * WW3 + smix(20+k) * WW4
             end do
 
              if (bsn_cc%cswat == 2) then
@@ -259,8 +254,6 @@
             call mgt_tillfactor(jj,bmix,emix,dtil,sol_thick)
         end if
       end if
-
-      if (cnop > 1.e-4) call curno(cnop,jj)
 
       return
       end subroutine mgt_newtillmix

@@ -2,10 +2,9 @@
     
       implicit none
 
-      real :: sumrchrg, sumflo, sumseep, sumrevap
-       
       type aquifer_database
         character(len=16) :: aqunm = ""         !aquifer name
+        character(len=16) :: aqu_ini = ""       !initial aquifer data- points to name in initial.aqu
         real :: flo = 0.05          !mm         |flow from aquifer in current time step 
         real :: dep_bot = 0.        !m          |depth - mid-slope surface to bottom of aquifer 
         real :: dep_wt = 0.         !m          |depth - mid-slope surface to water table (initial)
@@ -13,8 +12,7 @@
         real :: minp = 0.           !kg         |mineral phosphorus in aquifer (initial)
         real :: orgn = 0.           !(kg/ha N)  |organic nitrogen in aquifer (initial)
         real :: orgp = 0.           !(kg/ha P)  |organic phosphorus in aquifer (initial)
-        real :: delay = 0.          !days       |time for water leaving the bottom of the root zone to 
-                                                !reach the shallow aquifer
+        real :: bf_max = 0.         !mm         |maximum daily baseflow - when all channels are contributing
         real :: alpha = 0.          !1/days     |lag factor for groundwater recession curve
         real :: revap_co = 0.       !           |revap oefficient - evap=pet*revap_co
         real :: seep = 0.           !mm         |seepage from aquifer
@@ -27,26 +25,17 @@
       
       type aquifer_data_parameters
         real :: alpha = 0.      !           |
-        real :: delay = 0.      !           |
+        real :: bf_max = 0.     !           |
         real :: flo_min         !mm         |minimum aquifer storage to allow return flow
         real :: revap_co        !0-1 frac   |fraction of pet to calculate revap
         real :: revap_min = 0.  !mm H2O     |threshold depth of water in shallow aquifer required to allow revap to occur
-        real :: delay_e = 0.    !days       |groundwater delay (time required for water leaving the
-                                            !bottom of the root zone to reach shallow aquifer
         real :: alpha_e = 0.    !days       |Exp(-alpha_bf(:))
         real :: nloss = 0.      !frac       |nloss based on half life
+        real :: rchrg_prev = 0.   !m^3      |previous days recharge
+        real :: rchrgn_prev = 0.  !m^3      |previous days n recharge
       end type aquifer_data_parameters
       type (aquifer_data_parameters), dimension(:), allocatable :: aqu_prm 
-                 
-      type aquifer_state_parameters
-        character(len=16) :: name
-        integer :: props
-        integer :: obj_no
-        real :: rchrg_prev = 0.   !m^3        |previous days recharge
-        real :: rchrgn_prev = 0.  !m^3        |previous days n recharge
-      end type aquifer_state_parameters
-      type (aquifer_state_parameters), dimension(:), allocatable :: aqu_st 
-             
+
       type aquifer_dynamic
         real :: flo = 0.        !mm         |flow from aquifer in current time step       
         real :: dep_wt = 0.     !m          |depth to water table
@@ -66,7 +55,7 @@
         real :: flo_res = 0.    !mm H2O     |surface runoff flowing into reservoirs
         real :: flo_ls = 0.     !mm H2O     |surface runoff flowing into a landscape element
       end type aquifer_dynamic
-      type (aquifer_dynamic), dimension(:), allocatable :: aqu
+      type (aquifer_dynamic), dimension(:), allocatable :: aqu_d
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_m
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_y
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_a
@@ -83,6 +72,25 @@
       type (aquifer_dynamic) :: baqu_y
       type (aquifer_dynamic) :: baqu_a
       type (aquifer_dynamic) :: aquz
+
+       type aquifer_init_data_char
+        character (len=16) :: name                 !xwalk with aqudb(iaqu)%aqu_ini 
+        character (len=16) :: org_min              !points to initial organic-mineral input file
+        character (len=16) :: pest                 !points to initial pesticide input file
+        character (len=16) :: path                 !points to initial pathogen input file
+        character (len=16) :: hmet                 !points to initial heavy metals input file
+        character (len=16) :: salt                 !points to initial salt input file
+      end type aquifer_init_data_char
+      type (aquifer_init_data_char), dimension(:), allocatable :: aqu_init_dat_c
+      
+      type aquifer_init_data
+        integer :: org_min = 1              !points to initial organic-mineral input file
+        integer :: pest = 1                 !points to initial pesticide input file
+        integer :: path = 1                 !points to initial pathogen input file
+        integer :: hmet = 1                 !points to initial heavy metals input file
+        integer :: salt = 1                 !points to initial salt input file
+      end type aquifer_init_data
+      type (aquifer_init_data), dimension(:), allocatable :: aqu_init
       
       type aqu_header
           character (len=6) :: day      =      "  jday"
@@ -111,34 +119,6 @@
           character(len=15) :: flo_ls   =      "         flo_ls"        ! (m^3)
       end type aqu_header
       type (aqu_header) :: aqu_hdr
-      
-      type aqu_header_units
-          character (len=6) :: day      =  "      "
-          character (len=6) :: mo       =  "      "
-          character (len=6) :: day_mo   =  "      "
-          character (len=6) :: yrc      =  "      "
-          character (len=8) :: isd      =  "        "                                            
-          character (len=8) :: id       =  "        "           
-          character (len=16) :: name    =  "                   "          
-          character(len=16) :: flo      =  "             mm"         ! (mm)
-          character(len=15) :: stor     =  "             mm"          ! (mm)
-          character(len=15) :: rchrg    =  "             mm"          ! (mm)
-          character(len=15) :: seep     =  "             mm"          ! (mm)
-          character(len=15) :: revap    =  "             mm"          ! (mm)
-          character(len=16) :: dep_wt   =  "              m "         ! (m)
-          character(len=15) :: no3_st   =  "        kg/ha N"          ! (kg/ha N)
-          character(len=14) :: minp     =  "            kg"           ! (kg)
-          character(len=15) :: orgn     =  "        kg/ha N"          ! (kg/ha N)
-          character(len=15) :: orgp     =  "        kg/ha P"          ! (kg/ha P)
-          character(len=15) :: rchrgn   =  "        kg/ha N"          ! (kg/ha N)
-          character(len=15) :: nloss    =  "        kg/ha N"           ! (kg/ha N)
-          character(len=15) :: no3gw    =  "        kg/ha N"          ! (kg N/ha)
-          character(len=15) :: seep_no3 =  "             kg"          ! (kg)
-          character(len=15) :: flo_cha  =  "            m^3"          ! (m^3)
-          character(len=15) :: flo_res  =  "            m^3"           ! (m^3)
-          character(len=15) :: flo_ls   =  "            m^3"           ! (m^3)
-      end type aqu_header_units
-      type (aqu_header_units) :: aqu_hdr_units
       
       interface operator (+)
         module procedure aqu_add

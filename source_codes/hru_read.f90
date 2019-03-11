@@ -2,18 +2,12 @@
 
       use maximum_data_module
       use reservoir_data_module
-      use reservoir_module
       use landuse_data_module
       use hydrology_data_module
       use topography_data_module
       use soil_data_module
       use input_file_module
-      use hru_module, only : hru, hru_db, ihru, sol_plt_ini
-      use soil_module
-      use plant_module
-      use hydrograph_module !, only : ob, sp_ob, sp_ob1, wet
-      use organic_mineral_mass_module
-      use carbon_module
+      use hru_module, only : hru_db, ihru, sol_plt_ini
       use constituent_mass_module
       
       implicit none
@@ -23,7 +17,7 @@
       character (len=16) :: namedum   !           |
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: i                    !           |
       integer :: max                  !           |
       integer :: k                    !           |
@@ -44,15 +38,8 @@
       call allocate_parms
 
       inquire (file=in_hru%hru_data, exist=i_exist)
-      if (i_exist == 0 .or. in_hru%hru_data == "null") then
+      if (.not. i_exist .or. in_hru%hru_data == "null") then
         allocate (hru_db(0:0))
-        allocate (hru(0:0))
-        allocate (soil(0:0))
-        allocate (soil1(0:0))
-        allocate (soil1_init(0:0))
-        allocate (cbn_loss(0:0))
-        allocate (pcom(0:0))
-        allocate (rsd1(0:0))
       else 
       do
         open (113,file=in_hru%hru_data)
@@ -67,42 +54,17 @@
           end do
           
         allocate (hru_db(0:imax))
-        allocate (hru(0:imax))
-        allocate (soil(0:imax))
-        allocate (soil1(0:imax))
-        allocate (soil1_init(0:imax))
-        allocate (cbn_loss(0:imax))
-        allocate (pcom(0:imax))
-        
-        allocate (wet(0:imax))
-        allocate (wet_ob(imax))
-        allocate (wet_om_d(imax))
-        allocate (wet_om_m(imax))
-        allocate (wet_om_y(imax))
-        allocate (wet_om_a(imax))
-        allocate (wet_in_d(imax))
-        allocate (wet_in_m(imax))
-        allocate (wet_in_y(imax))
-        allocate (wet_in_a(imax))
-        allocate (wet_out_d(imax))
-        allocate (wet_out_m(imax))
-        allocate (wet_out_y(imax))
-        allocate (wet_out_a(imax))
-        allocate (rsd1(0:imax))
-        
+
         rewind (113)
         read (113,*) titldum
         read (113,*) header
 
-      do ihru = 1, sp_ob%hru
+      do ihru = 1, imax
         read (113,*) i
         backspace (113)
         read (113,*,iostat=eof) k, hru_db(i)%dbsc
+        if (eof < 0) exit
 
-        hru(ihru)%obj_no = sp_ob1%hru + ihru - 1
-        hru(ihru)%area_ha = ob(hru(ihru)%obj_no)%area_ha
-        hru(ihru)%km = ob(hru(ihru)%obj_no)%area_ha / 100.
-        hru(ihru)%land_use_mgt_c = hru_db(ihru)%dbsc%land_use_mgt
         if (eof < 0) exit
 
           do ilum = 1, db_mx%landuse
@@ -125,28 +87,28 @@
               end do
               ! initial pesticides
               do ics = 1, db_mx%pest_ini
-                if (sol_plt_ini(isp_ini)%pestc == pesti_db(ics)%name) then
+                if (sol_plt_ini(isp_ini)%pestc == pest_soil_ini(ics)%name) then
                   sol_plt_ini(isp_ini)%pest = ics
                   exit
                 end if
               end do
               ! initial pathogens
               do ics = 1, db_mx%path_ini
-                if (sol_plt_ini(isp_ini)%pathc == pathi_db(ics)%name) then
+                if (sol_plt_ini(isp_ini)%pathc == path_soil_ini(ics)%name) then
                   sol_plt_ini(isp_ini)%path = ics
                   exit
                 end if
               end do
               ! initial heavy metals
               do ics = 1, db_mx%hmet_ini
-                if (sol_plt_ini(isp_ini)%hmetc == hmeti_db(ics)%name) then
+                if (sol_plt_ini(isp_ini)%hmetc == hmet_water_ini(ics)%name) then
                   sol_plt_ini(isp_ini)%hmet = ics
                   exit
                 end if
               end do
               ! initial salts
               do ics = 1, db_mx%salt_ini
-                if (sol_plt_ini(isp_ini)%saltc == salti_db(ics)%name) then
+                if (sol_plt_ini(isp_ini)%saltc == salt_soil_ini(ics)%name) then
                   sol_plt_ini(isp_ini)%salt = ics
                   exit
                 end if
@@ -199,5 +161,5 @@
       
       close (113)
      
-       return
-       end subroutine hru_read     
+      return
+      end subroutine hru_read     

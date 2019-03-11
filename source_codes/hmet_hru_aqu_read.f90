@@ -1,4 +1,4 @@
-      subroutine hmet_hru_init
+      subroutine hmet_hru_aqu_read
     
       use constituent_mass_module
       use input_file_module
@@ -9,12 +9,13 @@
       integer :: ihmet
       integer :: ihmeti
       integer :: eof, imax
+      logical :: i_exist              !none       |check to determine if file exists
 
       eof = 0
       
       !read all export coefficient data
       inquire (file=in_init%hmet_soil, exist=i_exist)
-      if (i_exist /= 0 .or. in_init%hmet_soil /= "null") then
+      if (i_exist .or. in_init%hmet_soil /= "null") then
         do
           open (107,file=in_init%hmet_soil)
           read (107,*,iostat=eof) titldum
@@ -24,6 +25,7 @@
             read (107,*,iostat=eof) header
             if (eof < 0) exit
             read (107,*,iostat=eof) titldum     !name
+            if (eof < 0) exit
             do ihmet = 1, cs_db%num_metals
               read (107,*,iostat=eof) titldum
               if (eof < 0) exit
@@ -33,11 +35,12 @@
           
           db_mx%hmet_ini = imax
           
-          allocate (hmeti_db(imax))
+          allocate (hmet_soil_ini(imax))
           allocate (cs_hmet_solsor(cs_db%num_metals))
           
           do ihmet = 1, imax
-            allocate (hmeti_db(ihmet)%hmeti(cs_db%num_metals))
+            allocate (hmet_soil_ini(ihmet)%soil(cs_db%num_metals))
+            allocate (hmet_soil_ini(ihmet)%plt(cs_db%num_metals))
           end do
            
           rewind (107)
@@ -45,9 +48,13 @@
 
           do ihmeti = 1, imax
             read (107,*,iostat=eof) header
-            read (107,*,iostat=eof) hmeti_db(ihmeti)%name
+            if (eof < 0) exit
+            read (107,*,iostat=eof) hmet_soil_ini(ihmeti)%name
+            if (eof < 0) exit
             do ipest = 1, cs_db%num_metals
-              read (107,*,iostat=eof) hmeti_db(ihmeti)%hmeti(ihmet)
+              read (107,*,iostat=eof) titldum, hmet_soil_ini(ihmeti)%soil(ihmet)
+              if (eof < 0) exit
+              read (107,*,iostat=eof) titldum, hmet_soil_ini(ihmeti)%plt(ihmet)
               if (eof < 0) exit
             end do
           end do
@@ -57,4 +64,4 @@
       end if
       
       return
-      end subroutine hmet_hru_init
+      end subroutine hmet_hru_aqu_read

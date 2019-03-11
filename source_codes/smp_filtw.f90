@@ -7,9 +7,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    curyr       |none          |current year of simulation
-!!    fsred(:)    |none          |reduction in bacteria loading from filter
-!!                               |strip
-!!    hru_dafr(:) |none          |fraction of watershed area in HRU
 !!    sedminpa(:) |kg P/ha       |amount of active mineral phosphorus sorbed to
 !!                               |sediment in surface runoff in HRU for day
 !!    sedminps(:) |kg P/ha       |amount of stable mineral phosphorus sorbed to
@@ -39,8 +36,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use hru_module, only : hru, fsred, sedorgn, surqno3, sedorgp, sedminpa, sedminps, surqsolp, sedyld, sanyld, &
-        silyld, clayld, sagyld, lagyld, trapeff, hru_dafr, ihru
+      use hru_module, only : hru, sedorgn, surqno3, sedorgp, sedminpa, sedminps, surqsolp, sedyld, sanyld, &
+        silyld, clayld, sagyld, lagyld, trapeff, ihru
       use constituent_mass_module
       use output_ls_pesticide_module
       use time_module
@@ -55,10 +52,6 @@
       j = ihru
 
 !! compute filter strip reduction
-      !bactrop = bactrop * fsred(j)
-      !bactrolp = bactrolp * fsred(j)
-      !bactsedp = bactsedp * fsred(j)
-      !bactsedlp = bactsedlp * fsred(j)
       sedorgn(j) = sedorgn(j) * (1. - trapeff(j))
       surqno3(j) = surqno3(j) * (1. - trapeff(j))
       sedorgp(j) = sedorgp(j) * (1. - trapeff(j))

@@ -16,7 +16,7 @@
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: mlu                  !           |
       integer :: ilu                  !           |landuse type 
       integer :: ipcom                !none       |counter
@@ -29,7 +29,7 @@
       
       !! read all landuse data from landuse.dat
       inquire (file=in_lum%landuse_lum, exist=i_exist)
-      if (i_exist == 0 .or. in_lum%landuse_lum == "null") then
+      if (.not. i_exist .or. in_lum%landuse_lum == "null") then
         allocate (lum(0:0))
         allocate (lum_str(0:0))
       else
@@ -54,6 +54,7 @@
       
        do ilu = 1, imax   
          read (107,*,iostat=eof) lum(ilu)
+         if (eof < 0) exit
        end do
        
        do ilu = 1, imax    

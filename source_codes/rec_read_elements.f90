@@ -9,7 +9,7 @@
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: imax                 !none       |end of loop
       integer :: isp                  !none       |counter
       integer :: mcal                 !           |           
@@ -25,11 +25,13 @@
       integer :: ireg                 !none       |counter
       integer :: irec                 !none       |counter
       integer :: ie2
+      
       imax = 0
       mcal = 0
+      mreg = 0
             
     inquire (file=in_regs%def_psc, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_psc /= "null") then
+    if (i_exist .or. in_regs%def_psc /= "null") then
       do
         open (107,file=in_regs%def_psc)
         read (107,*,iostat=eof) titldum
@@ -37,25 +39,27 @@
         read (107,*,iostat=eof) mreg
         if (eof < 0) exit
         read (107,*,iostat=eof) header
+        if (eof < 0) exit
         
         !! allocate recall outputsby region
         allocate (srec_d(0:mreg)); allocate (srec_m(0:mreg)); allocate (srec_y(0:mreg)); allocate (srec_a(0:mreg))
 
       do i = 1, mreg
 
-        read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu
-        
+        read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu      
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, pcu_out(i)%name, pcu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
+          if (eof < 0) exit
 
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (pcu_out(i)%num(1))
             pcu_out(i)%num_tot = 1
             pcu_out(i)%num(1) = elem_cnt(1)
+            deallocate (elem_cnt)
           else
           !! nspu > 1
           ielem = 0
@@ -121,7 +125,7 @@
         
     !! setting up regions for recall soft cal and/or output by type
     inquire (file=in_regs%def_psc_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_psc_reg /= "null") then
+    if (i_exist .or. in_regs%def_psc_reg /= "null") then
       do
         open (107,file=in_regs%def_psc_reg)
         read (107,*,iostat=eof) titldum
@@ -129,17 +133,18 @@
         read (107,*,iostat=eof) mreg
         if (eof < 0) exit
         read (107,*,iostat=eof) header
+        if (eof < 0) exit
 
       do i = 1, mreg
 
-        read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu
-        
+        read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, pcu_reg(i)%name, pcu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-
+          if (eof < 0) exit
+          
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (pcu_reg(i)%num(1))
@@ -219,7 +224,7 @@
       
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_psc, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_psc /= "null") then
+      if (i_exist .or. in_regs%ele_psc /= "null") then
       do
         open (107,file=in_regs%ele_psc)
         read (107,*,iostat=eof) titldum
@@ -243,6 +248,7 @@
    
         do isp = 1, imax
           read (107,*,iostat=eof) i
+          if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, pcu_elem(i)%name, pcu_elem(i)%obtyp, pcu_elem(i)%obtypno,      &
                                     pcu_elem(i)%bsn_frac, pcu_elem(i)%ru_frac, pcu_elem(i)%reg_frac

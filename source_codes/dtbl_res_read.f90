@@ -20,7 +20,7 @@
       integer :: ic                   !none       |counter 
       integer :: ial                  !none       |counter 
       integer :: iac                  !none       !counter 
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: idb                  !none       |counter
       integer :: ilum                 !none       |counter
       integer :: iburn                !none       |counter
@@ -31,7 +31,7 @@
       
       !! read all data from hydrol.dat
       inquire (file=in_cond%dtbl_res, exist=i_exist)
-      if (i_exist == 0 .or. in_cond%dtbl_res == "null") then
+      if (.not. i_exist .or. in_cond%dtbl_res == "null") then
         allocate (dtbl_res(0:0)) 
       else
         do
@@ -48,6 +48,7 @@
             read (107,*,iostat=eof) header
             if (eof < 0) exit
             read (107,*,iostat=eof) dtbl_res(i)%name, dtbl_res(i)%conds, dtbl_res(i)%alts, dtbl_res(i)%acts
+            if (eof < 0) exit
             allocate (dtbl_res(i)%cond(dtbl_res(i)%conds))
             allocate (dtbl_res(i)%alt(dtbl_res(i)%conds,dtbl_res(i)%alts))
             allocate (dtbl_res(i)%act(dtbl_res(i)%acts))

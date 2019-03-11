@@ -8,7 +8,6 @@
       call res_read_hyd
       call res_read_sed
       call res_read_nut
-      call res_read_pst
       call res_read_weir
       call res_read_init
         

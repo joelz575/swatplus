@@ -10,7 +10,7 @@
        character (len=80) :: header    !           |header of file
        integer :: eof                  !           |end of file
        integer :: imax                 !none       |determine max number for array (imax) and total number in file
-       integer :: i_exist              !none       |check to determine if file exists
+       logical :: i_exist              !none       |check to determine if file exists
        integer :: i                    !none       |counter
        integer :: mirrops              !           |
        integer :: irr_op               !none       |counter
@@ -22,7 +22,7 @@
        
       !! read irrigation operations
       inquire (file=in_ops%irr_ops, exist=i_exist)
-      if (i_exist == 0 .or. in_ops%irr_ops == "null") then
+      if (.not. i_exist .or. in_ops%irr_ops == "null") then
         allocate (irrop_db(0:0))
       else
       do
@@ -41,7 +41,9 @@
         
         rewind (107)
         read (107,*) titldum
+        if (eof < 0) exit
         read (107,*) header
+        if (eof < 0) exit
         
         do irr_op = 1, imax
           read (107,*,iostat=eof) irrop_db(irr_op)

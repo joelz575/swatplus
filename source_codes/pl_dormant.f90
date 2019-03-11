@@ -7,8 +7,6 @@
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    alai_min(:)    |m**2/m**2     |minimum LAI during winter dormant period
-!!    bio_leaf(:)    |none          |fraction of biomass that drops during
-!!                                  |dormancy (for trees only)
 !!    daylmn(:)      |hours         |shortest daylength occurring during the
 !!                                  |year
 !!    dormhr(:)      |hour          |time threshold used to define dormant
@@ -42,7 +40,6 @@
       integer :: idp                !              |
       integer :: iob                !              |
       integer :: iwgn               !              |
-      real :: dorm_flag             !              |
       real :: xx                    !varies        |variable to hold calculation results 
       real :: rln                   !              |  
       real :: rlr                   !fraction      |fraction of lignin in the added residue
@@ -59,8 +56,8 @@
         !! beginning of temperature based perennial dormant period - leaf drop
         if (pldb(idp)%typ == "perennial") then
           pcom(j)%plcur(ipl)%idorm = "y"
-          resnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%bio_leaf
-          resnew_n = resnew * pcom(j)%plm(ipl)%n_fr
+          resnew = pcom(j)%ab_gr(ipl)%mass * pcom(j)%plg(ipl)%leaf_frac
+          resnew_n = resnew * pcom(j)%ab_gr(ipl)%n_fr
           call pl_leaf_drop (resnew, resnew_n)
         end if
 

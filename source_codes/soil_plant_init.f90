@@ -8,12 +8,13 @@
       character (len=80) :: titldum
       character (len=80) :: header
       integer :: eof, imax
+      logical :: i_exist              !none       |check to determine if file exists
 
       eof = 0
       
       !read all export coefficient data
       inquire (file=in_init%soil_plant_ini, exist=i_exist)
-      if (i_exist /= 0 .or. in_init%soil_plant_ini /= "null") then
+      if (i_exist .or. in_init%soil_plant_ini /= "null") then
         do
           open (107,file=in_init%soil_plant_ini)
           read (107,*,iostat=eof) titldum

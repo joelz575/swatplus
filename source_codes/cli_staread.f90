@@ -12,7 +12,7 @@
     integer :: eof                  !           |end of file
     integer :: imax                 !none       |determine max number for array (imax) and total number in file
     integer :: iwgn                 !           |
-    integer :: i_exist              !none       |check to determine if file exists
+    logical :: i_exist              !none       |check to determine if file exists
     integer :: iwst                 !none       |counter
     integer :: i                    !none       |counter
     
@@ -20,7 +20,7 @@
     imax = 0
 
     inquire (file=in_cli%weat_sta, exist=i_exist)
-    if (i_exist == 0 .or. in_cli%weat_sta == "null") then
+    if (.not. i_exist .or. in_cli%weat_sta == "null") then
         allocate (wst(0:1))
         allocate (wst_n(0:0))
     else
@@ -54,6 +54,7 @@
                 read (107,*) titldum
                 backspace (107)
                 read (107,*,iostat=eof) wst(i)%name, wst(i)%wco_c
+                if (eof < 0) exit
                wst_n(i) = wst(i)%name
                if (db_mx%wgnsta > 0) call search (wgn_n, db_mx%wgnsta, wst(i)%wco_c%wgn, wst(i)%wco%wgn)
                if (wst(i)%wco%wgn == 0 .and. wst(i)%wco_c%wgn /= "sim") write (9001,*) wst(i)%wco_c%wgn, "file not found (wgn)"

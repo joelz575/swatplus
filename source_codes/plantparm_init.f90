@@ -66,7 +66,7 @@
           call ascrv(b2, b3, 0.5, 1.0, plcp(ic)%nup1, plcp(ic)%nup2)
 
 !!        phosphorus uptake parameters
-!!        fix bad input for pltpfr(3,ic)
+!!        fix bad input for pltpfr3
           if (pldb(ic)%pltpfr1 - pldb(ic)%pltpfr2 < .0001)                  &              
                          pldb(ic)%pltpfr2 = pldb(ic)%pltpfr1 - .0001
           if (pldb(ic)%pltpfr2 - pldb(ic)%pltpfr3 < .0001)                  &           

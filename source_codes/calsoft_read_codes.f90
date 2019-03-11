@@ -17,7 +17,7 @@
        character (len=80) :: header    !           |header of file
        integer :: eof                  !           |end of file
        integer :: icom                 !           | 
-       integer :: i_exist              !none       |check to determine if file exists
+       logical :: i_exist              !none       |check to determine if file exists
        integer :: j                    !none       |counter
        integer :: nplt                 !           |
        integer :: nly1                 !           |
@@ -25,7 +25,7 @@
        eof = 0
 
        inquire (file=in_chg%codes_cal, exist=i_exist)
-       if (i_exist == 0 .or. in_chg%codes_cal == "null") then
+       if (.not. i_exist .or. in_chg%codes_cal == "null") then
  !       allocate (cal_codes(0:0))
        else		            
          do 

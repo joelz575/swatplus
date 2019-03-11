@@ -37,5 +37,4 @@
       call landuse_read
      
 	  return
-      
-      end
+      end subroutine proc_db

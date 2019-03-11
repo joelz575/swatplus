@@ -48,7 +48,6 @@
 !!    nitriten(:)  |mg N/L        |nitrite concentration in reach
 !!    organicn(:)  |mg N/L        |organic nitrogen concentration in reach
 !!    organicp(:)  |mg P/L        |organic phosphorus concentration in reach
-!!    p_n          |none          |algal preference factor for ammonia
 !!    rch_cbod(:)  |mg O2/L       |carbonaceous biochemical oxygen demand in
 !!                                |reach 
 !!    rch_dox(:)   |mg O2/L       |dissolved oxygen concentration in reach

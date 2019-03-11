@@ -47,31 +47,12 @@
 !!    nitriten(:)  |mg N/L        |nitrite concentration in reach
 !!    organicn(:)  |mg N/L        |organic nitrogen concentration in reach
 !!    organicp(:)  |mg P/L        |organic phosphorus concentration in reach
-!!    p_n          |none          |algal preference factor for ammonia
 !!    rch_cbod(:)  |mg O2/L       |carbonaceous biochemical oxygen demand in
 !!                                |reach 
 !!    rch_dox(:)   |mg O2/L       |dissolved oxygen concentration in reach
 !!    rchdep       |m             |depth of flow on day
 !!    rchwtr       |m^3 H2O       |water stored in reach at beginning of day
 !!    rhoq         |1/day         |algal respiration rate at 20 deg C
-!!    rk1(:)       |1/day         |CBOD deoxygenation rate coefficient in reach 
-!!                                |at 20 deg C
-!!    rk2(:)       |1/day         |reaeration rate in accordance with Fickian
-!!                                |diffusion in reach at 20 deg C
-!!    rk3(:)       |1/day         |rate of loss of CBOD due to settling in reach
-!!                                |at 20 deg C
-!!    rk4(:)       |mg O2/        |sediment oxygen demand rate in reach
-!!                 |  ((m**2)*day)|at 20 deg C
-!!    rs1(:)       |m/day         |local algal settling rate in reach at 20 deg
-!!                                |C
-!!    rs2(:)       |(mg disP-P)/  |benthos source rate for dissolved phosphorus
-!!                 |  ((m**2)*day)|in reach at 20 deg C
-!!    rs3(:)       |(mg NH4-N)/   |benthos source rate for ammonia nitrogen in
-!!                 |  ((m**2)*day)|reach at 20 deg C
-!!    rs4(:)       |1/day         |rate coefficient for organic nitrogen
-!!                                |settling in reach at 20 deg C
-!!    rs5(:)       |1/day         |organic phosphorus settling rate in reach at
-!!                                |20 deg C
 !!    rttime       |hr            |reach travel time
 !!    tfact        |none          |fraction of solar radiation computed in the
 !!                                |temperature heat balance that is

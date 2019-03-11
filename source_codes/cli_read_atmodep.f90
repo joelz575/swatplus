@@ -16,13 +16,13 @@
       integer :: imo                  !           |counter
       integer :: iyr                  !           |counter
       integer :: imo_atmo             !           |
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: iyrc_atmo            !           |
       
       eof = 0
 
       inquire (file=in_cli%atmo_cli,exist=i_exist)
-      if (i_exist == 0 .or. in_cli%atmo_cli == "null") then
+      if (.not. i_exist .or. in_cli%atmo_cli == "null") then
         !!no filename 
         allocate (atmodep(0:0))
         allocate (atmo_n(0:0))
@@ -90,6 +90,7 @@
               allocate (atmodep(iadep)%nh4_drymo(atmodep_cont%num))
               allocate (atmodep(iadep)%no3_drymo(atmodep_cont%num))
               read (127,*,iostat=eof) atmodep(iadep)%name
+              if (eof < 0) exit
               atmo_n(iadep) = atmodep(iadep)%name
               read (127,*) (atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num)
               read (127,*) (atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num)
@@ -103,6 +104,7 @@
               allocate (atmodep(iadep)%nh4_dryyr(atmodep_cont%num))
               allocate (atmodep(iadep)%no3_dryyr(atmodep_cont%num))
               read (127,*,iostat=eof) atmodep(iadep)%name
+              if (eof < 0) exit
               atmo_n(iadep) = atmodep(iadep)%name
               read (127,*) (atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num)
               read (127,*) (atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num)

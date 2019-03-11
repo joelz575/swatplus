@@ -1,9 +1,12 @@
       module plant_data_module
     
-      implicit none    
+      implicit none
+      
+      character(len=16), dimension (:), allocatable :: plts_bsn     !none      |plant names simulated in current run
+      character(len=16), dimension (:), allocatable :: plants_bsn   !none      |plant names simulated in current run - final
      
       type plant_db
-        character(len=16) :: plantnm     !none              |4 letter char code represents crop name
+        character(len=16) :: plantnm     !none              |crop name
         character(len=18) :: typ         !none              |plant category
                                          !                  |warm_annual
                                          !                  |cold_annual
@@ -12,7 +15,7 @@
                                          !                  |moisture_gro
                                          !                  |temp_gro
         real :: nfix_co                  !none              |n fixation coefficient (0.5 legume; 0 non-legume)
-        real :: phu = 2500.              !heat units        |total number of heat units to bring crop to maturity
+        integer :: days_mat = 110.       !days              |days to maturity - if zero use hu for entire growing season
         real :: bio_e = 15.0             !(kg/ha/(MJ/m**2)  |biomass-energy ratio
         real :: hvsti = 0.76             !(kg/ha)/(kg/ha)   |harvest index: crop yield/aboveground biomass
         real :: blai = 5.0               !none              |max (potential) leaf area index
@@ -53,13 +56,14 @@
         real :: alai_min = 0.75          !m**2/m**2         |min LAI during winter dormant period
         real :: laixco_tree = 0.3        !none              |coefficient to estimate max lai during tree growth
         integer :: mat_yrs = 10          !years             |year to maturity  
-        real :: bmx_peren = 1000.        !metric tons/ha    |max biomass for forest (trees only)
+        real :: bmx_peren = 1000.        !metric tons/ha    |max biomass for forest
         real :: ext_coef = 0.65          !                  |light extinction coefficient
-        real :: leaf_tov_min = 0.        !months            |perennial leaf turnover rate with minimum stress
-        real :: leaf_tov_max = 0.        !months            |perennial leaf turnover rate with maximum stress
+        real :: leaf_tov_min = 12.       !months            |perennial leaf turnover rate with minimum stress (complete turnover in 12 mon)
+        real :: leaf_tov_max = 3.        !months            |perennial leaf turnover rate with maximum stress (complete turnover in 3 mon)
         real :: bm_dieoff = 1.           !frac              |above ground biomass that dies off at dormancy
-        real :: rsr1 = 0.                !                  |initial root to shoot ratio at the beg of growing season
-        real :: rsr2 = 0.                !                  |root to shoot ratio at the end of the growing season
+        !real :: leaf_frac_mx             !frac              |max fraction of above ground biomass that is leaf (assume constant over life of perennial)
+        real :: rsr1 = 0.                !frac              |initial root to shoot ratio at the beg of growing season
+        real :: rsr2 = 0.                !frac              |root to shoot ratio at the end of the growing season
         real :: pop1 = 0.                !plants/m^2        |plant population corresponding to the 1st point on the
                                          !                             population lai curve
         real :: frlai1 = 0.              !frac              |frac of max leaf area index corresponding to the 1st 
@@ -68,7 +72,7 @@
                                          !                             population lai curve
         real :: frlai2 = 0.              !frac              |frac of max leaf area index corresponding to the 2nd 
                                          !                     point on the leaf area development curve
-        real :: frsw_gro = .5            !frac              |frac of field capacity to initiate growth of tropical 
+        real :: frsw_gro = .5            !frac              |30 day sum of P-PET to initiate growth of tropical 
                                          !                     plants during monsoon season - pcom()%plcur()%iseason
         real :: wind_stl = 0.            !                  |wind erosion factor for standing live biomass
         real :: wind_std = 0.            !                  |wind erosion factor for standing dead residue
@@ -101,21 +105,22 @@
             
       type plant_init_db
         character(len=16) :: cpnm = "frsd"
-        integer :: db_num = 1      !             |plant object
-        character(len=1) :: igro = "y"    !      |land cover status
-                                          !      |n = no land cover growing
-                                          !      |y = land cover growing
-        real :: lai = 0.           !m**2/m**2    |leaf area index
-        real :: bioms = 0.         !kg/ha        |land cover/crop biomass
-        real :: phuacc = 0.        !             |frac of plant heat unit acc.
+        integer :: db_num = 1               !           |plant object
+        character(len=1) :: igro = "y"      !           |land cover status
+                                            !           |n = no land cover growing
+                                            !           |y = land cover growing
+        real :: lai = 0.                    !m**2/m**2  |leaf area index
+        real :: bioms = 0.                  !kg/ha      |land cover/crop biomass
+        real :: phuacc = 0.                 !           |frac of plant heat unit acc.
         real :: pop = 0.
-        real :: yrmat = 20.        !years        |years to maturity 
-        real :: rsdin = 10000.     !kg/ha        |initial residue cover
+        real :: yrmat = 20.                 !years      |years to maturity 
+        real :: rsdin = 10000.              !kg/ha      |initial residue cover
       end type plant_init_db
       
       type plant_community_db   
         character(len=35) :: name = "frsd_frsd"
         integer :: plants_com = 1
+        integer :: rot_yr_ini = 1
         type (plant_init_db), dimension(:), allocatable :: pl
       end type plant_community_db
       type (plant_community_db), dimension(:), allocatable :: pcomdb

@@ -15,7 +15,7 @@
       integer :: imo                  !none       |counter 
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists  
+      logical :: i_exist              !none       |check to determine if file exists  
       integer :: mo                   !none       !counter
       integer :: idir                 !none       !counter
 
@@ -25,7 +25,7 @@
 
       !! read weather generator data from weather_generator.dat - wgn parameters
       inquire (file=in_cli%weat_wgn, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%weat_wgn == "null") then              
+      if (.not. i_exist .or. in_cli%weat_wgn == "null") then              
         allocate (wgn(0:1))
         allocate (wgn_n(1))
         allocate (wgn_orig(0:1))
@@ -91,6 +91,7 @@
         
       do iwgn = 1, db_mx%wgnsta
         read (114,*,iostat=eof) wgn_n(iwgn), wgn(iwgn)%lat, wgn(iwgn)%long, wgn(iwgn)%elev, wgn(iwgn)%rain_yrs
+        if (eof < 0) exit
         read (114,*) header
         do mo = 1, 12
           read (114,*,iostat=eof) wgn(iwgn)%tmpmx(mo), wgn(iwgn)%tmpmn(mo), wgn(iwgn)%tmpstdmx(mo),             &
@@ -110,7 +111,7 @@
 
       !! read wind direction generator data from wind_direction.dat
       inquire (file=in_cli%wind_dir, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%wind_dir == "null") then
+      if (.not. i_exist .or. in_cli%wind_dir == "null") then
         allocate (wnd_dir(0:0))
       else
       do 

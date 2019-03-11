@@ -95,7 +95,7 @@
         character (len=4) :: name                                !                 |same as plant_community object
         !live biomass
         type (organic_mass), dimension(:), allocatable :: tot    !kg/ha            |total biomass for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: ab_gr  !kg/ha            |above groound vegetative mass for individual plant in community
+        type (organic_mass), dimension(:), allocatable :: ab_gr  !kg/ha            |above ground vegetative mass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: leaf   !kg/ha            |leaf mass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: wood   !kg/ha            |wood/stalk mass for individual plant in community
         type (organic_mass), dimension(:), allocatable :: grain  !kg/ha            |grain mass for individual plant in community
@@ -279,7 +279,7 @@
       !we may also need operators for organic and mineral operations
       
       interface operator (+)
-        module procedure om_add
+        module procedure om_add1
       end interface
             
       interface operator (+)
@@ -295,7 +295,7 @@
       end interface 
 
       interface operator (*)
-        module procedure om_mult_const
+        module procedure om_mult_const1
       end interface 
 
       interface operator (/)
@@ -328,7 +328,7 @@
       end function pmin_add
 
       !! routines for hydrograph module
-      function om_add (o_m1, o_m2) result (o_m3)
+      function om_add1 (o_m1, o_m2) result (o_m3)
         type (organic_mass), intent (in) :: o_m1
         type (organic_mass), intent (in) :: o_m2
         type (organic_mass) :: o_m3
@@ -336,7 +336,7 @@
         o_m3%c = o_m1%c + o_m2%c
         o_m3%n = o_m1%n + o_m2%n
         o_m3%p = o_m1%p + o_m2%p
-      end function om_add
+      end function om_add1
             
       !!start old stuff
       !! function to convert concentration to mass
@@ -402,7 +402,7 @@
         o_m2%min%po4 = const + o_m1%min%po4
       end function om_add_const
       
-      function om_mult_const (const, o_m1) result (o_m2)
+      function om_mult_const1 (const, o_m1) result (o_m2)
         type (organic_mineral_mass), intent (in) :: o_m1
         real, intent (in) :: const
         type (organic_mineral_mass) :: o_m2
@@ -420,7 +420,7 @@
         o_m2%min%no2 = const * o_m1%min%no2
         o_m2%min%nh4 = const * o_m1%min%nh4
         o_m2%min%po4 = const * o_m1%min%po4
-      end function om_mult_const
+      end function om_mult_const1
       
       function om_div_const (o_m1,const) result (o_m2)
         type (organic_mineral_mass), intent (in) :: o_m1

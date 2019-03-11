@@ -11,7 +11,6 @@
       integer :: iob                  !           |
       integer :: ihru_db              !           | 
 
-      !!Section i
       !!assign database pointers for the hru
       imp = 0
       do ihru = 1, sp_ob%hru
@@ -20,9 +19,11 @@
         hru(ihru)%dbs = hru_db(ihru_db)%dbs
         hru(ihru)%dbsc = hru_db(ihru_db)%dbsc
         hru(ihru)%parms = hru_db(ihru_db)%parms
+        hru(ihru)%obj_no = sp_ob1%hru + ihru - 1
+        hru(ihru)%area_ha = ob(iob)%area_ha
+        hru(ihru)%km = ob(iob)%area_ha / 100.
+        hru(ihru)%land_use_mgt_c = hru_db(ihru_db)%dbsc%land_use_mgt
       end do
-      !! use the same res object for resrvoirs and landscape storage
-      !! allocate res and other types later in res_init
 
       return
       end subroutine hrudb_init

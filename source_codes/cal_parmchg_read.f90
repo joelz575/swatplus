@@ -33,7 +33,7 @@
       integer :: eof                                      !           |end of file
       integer :: imax                                     !none       |determine max number for array (imax) and total number in file
       integer :: nspu                                     !           |
-      integer :: i_exist                                  !none       |check to determine if file exists
+      logical :: i_exist                                  !none       |check to determine if file exists
       integer :: i                                        !none       |counter
       integer :: mcal                                     !           |
       integer :: isp                                      !none       |counter
@@ -54,7 +54,7 @@
         
       !!read parameter change values for calibration
       inquire (file=in_chg%cal_upd, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%cal_upd == "null") then
+      if (.not. i_exist .or. in_chg%cal_upd == "null") then
         allocate (cal_upd(0:0))
       else
       do
@@ -71,8 +71,7 @@
 
         read (107,*,iostat=eof) cal_upd(i)%name, cal_upd(i)%chg_typ, cal_upd(i)%val, cal_upd(i)%conds,      &
               cal_upd(i)%lyr1, cal_upd(i)%lyr2, cal_upd(i)%year1, cal_upd(i)%year2, cal_upd(i)%day1,        &
-              cal_upd(i)%day2, nspu
-        
+              cal_upd(i)%day2, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
           backspace (107)
@@ -192,5 +191,4 @@
       db_mx%cal_upd = mcal
       
       return
-      end subroutine cal_parmchg_read
-      
+      end subroutine cal_parmchg_read      

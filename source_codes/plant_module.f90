@@ -2,18 +2,20 @@
     
       implicit none
      
+      integer :: basin_plants           !! number of different plants in the basin
+      
       type plant_growth
-         character(len=4) :: cpnm       !! N/A          4 letter char code represents crop name 
-         real :: cht = 0.               !! m            canopy height 
-         real :: lai = 0.               !! m**2/m**2    leaf area index
-         real :: plet = 0.              !! mm H2O       actual ET simulated during life of plant
-         real :: plpet = 0.             !! mm H2O       potential ET simulated during life of plant
+         character(len=4) :: cpnm       !! N/A              |plant name 
+         real :: cht = 0.               !! m                |canopy height 
+         real :: lai = 0.               !! m**2/m**2        |leaf area index
+         real :: plet = 0.              !! mm H2O           |actual ET simulated during life of plant
+         real :: plpet = 0.             !! mm H2O           |potential ET simulated during life of plant
          real :: laimxfr = 0.           !! 
-         real :: hvstiadj = 0.          !! (kg/ha)/(kg/ha)  optimal harvest index for current time during growing season
+         real :: hvstiadj = 0.          !! (kg/ha)/(kg/ha)  |optimal harvest index for current time during growing season
          real :: olai = 0.              !!
-         real :: bio_leaf = 0.          !! none         fraction of above ground tree biomass that is leaf
-         real :: root_dep = 0.          !! mm           root depth
-         real :: root_frac = 0.         !! kg/ha        root fraction of total plant mass
+         real :: leaf_frac = 0.         !! none             |fraction of above ground tree biomass that is leaf
+         real :: root_dep = 0.          !! mm               |root depth
+         real :: root_frac = 0.         !! kg/ha            |root fraction of total plant mass
       end type plant_growth
       
       type plant_mass
@@ -27,14 +29,15 @@
         real :: p_fr = 0.             !!none              |phosphorus fraction
       end type plant_mass
       !type (plant_mass) :: plt_mass_z
-      !type (plant_mass) :: yld_tbr
-      !type (plant_mass) :: yld_grn
-      !type (plant_mass) :: yld_veg
-      !type (plant_mass) :: yld_rsd
+      type (plant_mass) :: yld_tbr
+      type (plant_mass) :: yld_grn
+      type (plant_mass) :: yld_veg
+      type (plant_mass) :: yld_rsd
       !type (plant_mass), pointer :: pl_tot
       
       type plant_status
         integer :: idplt = 0            !! none         land cover code from plants.plt
+        integer :: bsn_num = 0         !!none              |basin plant number
         character(len=1) :: gro = "y"   !               |land cover status
                                         !               |n = no land cover growing
                                         !               |y = land cover growing
@@ -78,15 +81,16 @@
       
       type plant_community
        character(len=4) :: name
-       integer :: npl                  !! number of plants in community
-       integer :: pcomdb               !! current plant community database number
-       integer :: rot_yr = 1           !! rotation year
-       integer :: days_harv = 1        !!               |days since last harvest - for conditional scheduling planting of winter annuals
-       integer :: mseas = 0            !! none          |monsoon season to initiate tropical plant growth
-                                       !!               |   0 = outside monsoon period and during monsoon after growth is triggered
-                                       !!               |   1 = in monsoon period but new growth not triggered
-       real :: cht_mx = 0.             !! m             |height of tallest plant in community for pet calculation
-       real :: lai_sum = 0.            !! m/m           |sum of lai for each plant
+       integer :: npl                   !! number of plants in community
+       integer :: pcomdb                !! current plant community database number
+       integer :: rot_yr = 1            !! rotation year
+       integer :: days_plant = 1        !!               |days since last harvest - for conditional scheduling planting of winter annuals
+       integer :: days_harv = 1         !!               |days since last harvest - for conditional scheduling planting of winter annuals
+       integer :: mseas = 0             !! none          |monsoon season to initiate tropical plant growth
+                                        !!               |   0 = outside monsoon period and during monsoon after growth is triggered
+                                        !!               |   1 = in monsoon period but new growth not triggered
+       real :: cht_mx = 0.              !! m             |height of tallest plant in community for pet calculation
+       real :: lai_sum = 0.             !! m/m           |sum of lai for each plant
        type (auto_operations), dimension(:), allocatable :: dtbl               !!d_tble action - to limit number of actions per year 
        type (plant_growth), dimension(:), allocatable :: plg    !!plant growth variables
        type (plant_stress), dimension(:), allocatable :: plstr  !!plant stress variables
@@ -103,17 +107,23 @@
        type (plant_mass) :: stem_com                            !kg/ha            |wood/stalk mass for entire community
        type (plant_mass) :: root_com                            !kg/ha            |root mass for entire community
        type (plant_mass) :: seed_com                            !kg/ha            |seed (grain) mass for entire community
-       real, dimension(:), allocatable :: pest                  !!kg/ha           |amount of pesticide on plants
-       real, dimension(:), allocatable :: path                  !!# cfu/m^2       |amount of pathogens on plants
       end type plant_community
       type (plant_community), dimension (:), allocatable :: pcom
       type (plant_community), dimension (:), allocatable :: pcom_init
       type (plant_growth) :: plgz
       type (plant_mass) :: plmz
-      type (plant_mass) :: o_m1, o_m2
+      type (plant_mass) :: o_m1, o_m2, o_m3
       type (plant_stress) :: plstrz
-      type (plant_status) :: plcurz
-              
+
+      type basin_crop_yields
+        character(len=16) :: name
+        real :: area_ha = 0.        !ha         |area of crop harvested
+        real :: yield = 0.          !t          |yield mass removed in harvest
+      end type basin_crop_yields
+      type (basin_crop_yields), dimension(:), allocatable :: bsn_crop_yld
+      type (basin_crop_yields), dimension(:), allocatable :: bsn_crop_yld_aa
+      type (basin_crop_yields) :: bsn_crop_yld_z
+        
       type plant_carbon
         real :: leaf = .41      !none   |carbon fraction in leaves
         real :: stem = .46      !none   |carbon fraction in stem
@@ -125,7 +135,11 @@
       interface operator (*)
         module procedure om_mult_const
       end interface 
-               
+                       
+      interface operator (+)
+        module procedure om_add
+      end interface 
+                   
      contains
                
       !! routines for hydrograph module
@@ -138,5 +152,16 @@
         o_m2%nmass = const * o_m1%nmass
         o_m2%pmass = const * o_m1%pmass
       end function om_mult_const
+              
+      !! routines for hydrograph module
+      function om_add (o_m1, o_m2) result (o_m3)
+        type (plant_mass), intent (in) :: o_m1
+        type (plant_mass), intent (in) :: o_m2
+        type (plant_mass) :: o_m3
+        o_m3%mass = o_m1%mass + o_m2%mass
+        o_m3%cmass = o_m1%cmass + o_m2%cmass
+        o_m3%nmass = o_m1%nmass + o_m2%nmass
+        o_m3%pmass = o_m1%pmass + o_m2%pmass
+      end function om_add
 
      end module plant_module

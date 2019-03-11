@@ -14,7 +14,7 @@
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: iyr                  !none       |number of years 
-      integer :: i_exist              !none       |check to determine if file exists 
+      logical :: i_exist              !none       |check to determine if file exists 
       integer :: mpcp                 !           |
       integer :: i                    !none       |counter
       integer :: istep                !           |
@@ -28,7 +28,7 @@
 
       !! read all measured daily precipitation data
       inquire (file=in_cli%pcp_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%pcp_cli == "null") then
+      if (.not. i_exist .or. in_cli%pcp_cli == "null") then
         allocate (pcp(0:0))
         allocate (pcp_n(0))
       else
@@ -88,7 +88,7 @@
         
         ! read and save start jd and yr
          read (108,*,iostat=eof) iyr, istep
-         
+         if (eof < 0) exit        
          pcp(i)%start_day = istep
          pcp(i)%start_yr = iyr
          

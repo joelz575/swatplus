@@ -5,14 +5,15 @@
        character (len=80) :: titldum
        character (len=15) :: name
        integer :: eof
+       logical :: i_exist              !none       |check to determine if file exists
        
        eof = 0
        
        !! read file.cio
        inquire (file="file.cio", exist=i_exist)
-       if (i_exist /= 0) then
+       if (i_exist ) then
          open (107,file="file.cio")
-         read (107,*,iostat=eof) titldum
+         read (107,*) titldum
       do i = 1, 31
          read (107,*,iostat=eof) name, in_sim  
          if (eof < 0) exit

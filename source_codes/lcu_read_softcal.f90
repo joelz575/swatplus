@@ -15,7 +15,7 @@
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: mcal                 !           |
       integer :: mreg                 !none       |end of loop
       integer :: ireg                 !none       |counter 
@@ -24,9 +24,10 @@
        
       imax = 0
       mcal = 0
+      mreg = 0
 	  
       inquire (file=in_chg%ls_regions_cal, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%ls_regions_cal == "null") then
+      if (.not. i_exist .or. in_chg%ls_regions_cal == "null") then
         allocate (lscal(0:0))
         allocate (region(0:0))
       else  
@@ -37,6 +38,7 @@
           read (107,*,iostat=eof) mreg
           if (eof < 0) exit
           read (107,*,iostat=eof) header
+          if (eof < 0) exit
           
           allocate (lscal(0:mreg))
           allocate (region(0:mreg))
@@ -51,6 +53,7 @@
           do ireg = 1, mreg
 
             read (107,*,iostat=eof) region(ireg)%name, region(ireg)%nlum
+            if (eof < 0) exit
             
             db_mx%landuse = region(ireg)%nlum
             mlug = region(ireg)%nlum

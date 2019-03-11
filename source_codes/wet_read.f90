@@ -8,6 +8,7 @@
       use reservoir_module
       use hydrograph_module
       use constituent_mass_module
+      use pesticide_data_module
       
       implicit none
 
@@ -15,7 +16,7 @@
       character (len=80) :: header       !           |header of file
       integer :: eof                     !           |end of file
       integer :: imax                    !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist                 !none       |check to determine if file exists
+      logical :: i_exist                 !none       |check to determine if file exists
       integer :: i                       !none       |counter
       integer :: ires                    !none       |counter 
       integer :: ihyd                    !none       |counter 
@@ -36,7 +37,7 @@
       !read reservoir.res
       imax = 0
       inquire (file=in_res%wet, exist=i_exist)
-      if (i_exist == 0 .or. in_res%wet == "null") then
+      if (.not. i_exist .or. in_res%wet == "null") then
         allocate (wet_dat_c(0:0))
         allocate (wet_dat(0:0))
       else   
@@ -63,12 +64,13 @@
       
       do ires = 1, db_mx%wet_dat
         read (105,*,iostat=eof) i
+        if (eof < 0) exit
         backspace (105)
         read (105,*,iostat=eof) k, wet_dat_c(ires)
         if (eof < 0) exit
                   
         !! initialize orgaincs and minerals in water
-        do isp_ini = 1, db_mx%om_water_init
+        do isp_ini = 1, db_mx%res_init
           if (wet_dat_c(ires)%init == res_init_dat_c(isp_ini)%init) then
             wet_dat(ires)%init = isp_ini
             !! initial organic mineral
@@ -124,21 +126,13 @@
             exit
           end if
         end do   
- 
-        do ipst = 1, db_mx%res_pst
-          if (res_pst(ipst)%name == wet_dat_c(ires)%pst) then
-            wet_dat(ires)%pst = ipst
-            exit
-          end if
-        end do
-        
+
         if (wet_dat(ires)%init == 0) write (9001,*) wet_dat_c(ires)%init, " not found (wet-init)"
         if (wet_dat(ires)%hyd == 0) write (9001,*) wet_dat_c(ires)%hyd, " not found (wet-hyd)"
         if (wet_dat(ires)%release == 0) write (9001,*) wet_dat_c(ires)%release, " not found (wet-release)"
         if (wet_dat(ires)%sed == 0) write (9001,*) wet_dat_c(ires)%sed, " not found (wet-sed)"
         if (wet_dat(ires)%nut == 0) write (9001,*) wet_dat_c(ires)%nut, " not found (wet-nut)"
-        if (wet_dat(ires)%pst == 0) write (9001,*) wet_dat_c(ires)%pst, " not found (wet-pst)"
-       
+
        end do
        
       db_mx%wet_dat = imax

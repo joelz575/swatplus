@@ -11,7 +11,7 @@
       character (len=500) :: header    !              |header of file
       character (len=80) :: titldum    !              |title of file
       integer :: eof                   !              |end of file
-      integer :: i_exist               !              |check to determine if file exists
+      logical :: i_exist               !              |check to determine if file exists
       integer :: ii                    !none          |counter
       integer :: imax                  !none          |determine max number for array (imax) and total number in file
       integer :: mcal                  !              |
@@ -29,9 +29,10 @@
       
       imax = 0
       mcal = 0
+      mreg = 0
             
     inquire (file=in_regs%def_res, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_res /= "null") then
+    if (i_exist .or. in_regs%def_res /= "null") then
       do
         open (107,file=in_regs%def_res)
         read (107,*,iostat=eof) titldum
@@ -39,25 +40,27 @@
         read (107,*,iostat=eof) mreg
         if (eof < 0) exit
         read (107,*,iostat=eof) header
+        if (eof < 0) exit
         
         !allocate subbasin (landscape unit) outputs
         !allocate (reg_aqu_d(0:mreg)); allocate (reg_aqu_m(0:mreg)); allocate (reg_aqu_y(0:mreg)); allocate (reg_aqu_a(0:mreg))
 
       do i = 1, mreg
 
-        read (107,*,iostat=eof) k, rcu_out(i)%name, rcu_out(i)%area_ha, nspu
-        
+        read (107,*,iostat=eof) k, rcu_out(i)%name, rcu_out(i)%area_ha, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, rcu_out(i)%name, rcu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-
+          if (eof < 0) exit
+          
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (rcu_out(i)%num(1))
             rcu_out(i)%num_tot = 1
             rcu_out(i)%num(1) = elem_cnt(1)
+            deallocate (elem_cnt)
           else
           !! nspu > 1
           ielem = 0
@@ -123,25 +126,26 @@
         
     !! setting up regions for reservoir soft cal and/or output by type
     inquire (file=in_regs%def_res_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_res_reg /= "null") then
+    if (i_exist .or. in_regs%def_res_reg /= "null") then
       do
         open (107,file=in_regs%def_res_reg)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mreg
         if (eof < 0) exit
-        read (107,*,iostat=eof) header
-
+        read (107,*,iostat=eof) header    
+        if (eof < 0) exit
+        
       do i = 1, mreg
 
-        read (107,*,iostat=eof) k, rcu_cal(i)%name, rcu_cal(i)%area_ha, nspu
-        
+        read (107,*,iostat=eof) k, rcu_cal(i)%name, rcu_cal(i)%area_ha, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, rcu_cal(i)%name, rcu_cal(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-
+          if (eof < 0) exit
+          
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (rcu_cal(i)%num(1))
@@ -227,7 +231,7 @@
       
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_res, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_res /= "null") then
+      if (i_exist .or. in_regs%ele_res /= "null") then
       do
         open (107,file=in_regs%ele_res)
         read (107,*,iostat=eof) titldum
@@ -249,6 +253,7 @@
 
         do isp = 1, imax
           read (107,*,iostat=eof) i
+          if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, rcu_elem(i)%name, rcu_elem(i)%obtyp, rcu_elem(i)%obtypno,      &
                                     rcu_elem(i)%bsn_frac, rcu_elem(i)%ru_frac, rcu_elem(i)%reg_frac

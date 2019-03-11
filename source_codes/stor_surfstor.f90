@@ -11,10 +11,6 @@
 !!                                |outlet
 
 !!    ihru          |none         |HRU number
-!!    pst_lag(:,1,:)|kg pst/ha    |amount of soluble pesticide in surface runoff
-!!                                |lagged
-!!    pst_lag(:,2,:)|kg pst/ha    |amount of sorbed pesticide in surface runoff
-!!                                |lagged
 !!    sedminpa(:)   |kg P/ha      |amount of active mineral phosphorus sorbed to
 !!                                |sediment in surface runoff in HRU for day
 !!    sedminps(:)   |kg P/ha      |amount of stable mineral phosphorus sorbed to
@@ -46,10 +42,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    pst_lag(:,1,:)|kg pst/ha    |amount of soluble pesticide in surface runoff
-!!                                |lagged
-!!    pst_lag(:,2,:)|kg pst/ha    |amount of sorbed pesticide in surface runoff
-!!                                |lagged
 !!    sedminpa(:)   |kg P/ha      |amount of active mineral phosphorus sorbed to
 !!                                |sediment in surface runoff in HRU for day
 !!    sedminps(:)   |kg P/ha      |amount of stable mineral phosphorus sorbed to
@@ -138,11 +130,6 @@
       surf_bs(6,j) = Max(1.e-9, surf_bs(6,j) + surqsolp(j))
       surf_bs(7,j) = Max(1.e-9, surf_bs(7,j) + sedminpa(j))
       surf_bs(8,j) = Max(1.e-9, surf_bs(8,j) + sedminps(j))
-      
-      !surf_bs(9,j) = Max(0., surf_bs(9,j) + bactrolp)
-      !surf_bs(10,j) = Max(0., surf_bs(10,j) + bactrop)
-      !surf_bs(11,j) = Max(0., surf_bs(11,j) + bactsedlp)
-      !surf_bs(12,j) = Max(0., surf_bs(12,j) + bactsedp)
 
  !!     sedyld(j) = surf_bs(2,j) * brt(j)  <--line of code in x 2. fixes sedyld low prob
 
@@ -158,15 +145,6 @@
       surqsolp(j) = surf_bs(6,j) * brt(j)
       sedminpa(j) = surf_bs(7,j) * brt(j)
       sedminps(j) = surf_bs(8,j) * brt(j)
-      !bactrolp = Max(0.,bactrolp)
-      !bactrop = Max(0.,bactrop)
-      !bactsedlp = Max(0.,bactsedlp)
-      !bactsedp = Max(0.,bactsedp)
-
-!        do k = 1, cs_db%num_pests
-!          hpestb_d(j)%pest(k)%surq = pst_lag(k,1,j) * brt(j)
-!          hpestb_d(j)%pest(k)%sed = pst_lag(k,2,j) * brt(j)
-!        end do
 
       surf_bs(2,j) = surf_bs(2,j) - sedyld(j)
       surf_bs(13,j) = surf_bs(13,j) - sanyld(j)
@@ -181,15 +159,6 @@
       surf_bs(6,j) = surf_bs(6,j) - surqsolp(j)
       surf_bs(7,j) = surf_bs(7,j) - sedminpa(j)
       surf_bs(8,j) = surf_bs(8,j) - sedminps(j)
-      !surf_bs(9,j) = surf_bs(9,j) - bactrolp
-      !surf_bs(10,j) = surf_bs(10,j) - bactrop
-      !surf_bs(11,j) = surf_bs(11,j) - bactsedlp
-      !surf_bs(12,j) = surf_bs(12,j) - bactsedp
-
-!        do k = 1, cs_db%num_pests
-!          pst_lag(k,1,j) = pst_lag(k,1,j) - hpestb_d(j)%pest(k)%surq
-!          pst_lag(k,2,j) = pst_lag(k,2,j) - hpestb_d(j)%pest(k)%sed
-!        end do
 
       return
       end subroutine stor_surfstor

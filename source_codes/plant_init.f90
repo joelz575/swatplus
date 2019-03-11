@@ -1,13 +1,12 @@
       subroutine plant_init (init)
 
-      use hru_module, only : blai_com, cn2, cvm_com, hru, ihru, ipl, isol, nop,   &
-         rsdco_plcom, ilu
+      use hru_module, only : blai_com, cn2, cvm_com, hru, ihru, ipl, isol, rsdco_plcom, ilu
       use soil_module
       use plant_module
       use hydrograph_module
       use climate_module, only : wst, wgn
       use time_module
-      use hru_lte_module
+!      use hru_lte_module
       use maximum_data_module
       use plant_data_module
       use landuse_data_module
@@ -26,7 +25,6 @@
       integer :: iob                 !           |
       integer :: iwgn                !           |
       integer :: mo                  !none       |counter 
-      integer :: imo                 !none       |counter 
       integer :: iday                !none       |counter 
       integer :: iplt                !none       |counter 
       integer :: i                   !none       |counter  
@@ -35,6 +33,11 @@
       integer :: ilum                !none       |counter 
       integer :: idb                 !none       |counter 
       integer :: isched              !           |
+      integer :: iop                 !none       |management operation counter 
+      integer :: irot                !none       |rotation year counter 
+      integer :: igrow               !none       |julian day growth begins
+      integer :: iday_sum            !none       |day for southern hemisphere (182-181)
+      integer :: iday_sh             !none       |julian day growth begins in souther hemisphere
       real :: phutot                 !heat unit  |total potential heat units for year (used
                                      !           |when no crop is growing)
       real :: grow_start             !           |
@@ -45,7 +48,8 @@
       real :: xm                     !           |
       real :: sin_sl                 !           |
       real :: sl_len                 !           | 
-     
+      real :: phu0                   !deg C      |base zero heat units for year
+
       j = ihru
       
       !!assign land use pointers for the hru
@@ -61,6 +65,7 @@
         iob = hru(j)%obj_no
         iwst = ob(iob)%wst
         iwgn = wst(iwst)%wco%wgn
+        isched = hru(j)%mgt_ops
         hru(j)%mgt_ops = lum_str(ilu)%mgt_ops
         hru(j)%tiledrain = lum_str(ilu)%tiledrain
         hru(j)%septic = lum_str(ilu)%septic
@@ -88,7 +93,6 @@
           end if
         
         pcom(j)%npl = pcomdb(icom)%plants_com
-        nop(j) = 1
         ipl = pcom(j)%npl
         allocate (pcom(j)%plg(ipl)) 
         allocate (pcom(j)%plm(ipl)) 
@@ -117,37 +121,104 @@
           rsd1(j)%tot(ipl)%p = 0.43 * rsd1(j)%tot(ipl)%m / 300.
           
           ! set heat units to maturity
-          if (pldb(idp)%phu > 1.e-6) then
-            pcom(j)%plcur(ipl)%phumat = pldb(idp)%phu
+          ! first compute base0 units for entire year
+          phu0 = 0.
+          do iday = 1, 365
+            time%day = iday
+            call xmon
+            mo = time%mo
+            tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+            if (tave > 0.) phu0 = phu0 + tave
+          end do
+          
+          wgn(iwgn)%lat = -wgn(iwgn)%lat
+          ! if days to maturity are not input - assume the plant is active during entire growing season
+          if (pldb(icom)%days_mat < 1.e-6) then
+            pcom(j)%plcur(ipl)%phumat = .9 * phutot
           else
-            mo = 1
-            imo = 2
+            ! caculate planting day for annuals
+            iday_sum = 181
             phutot = 0.
+            phu0 = 0.15 * phu0    !assume planting at 0.15 base 0 heat units
             do iday = 1, 365
-              if (iday > ndays(imo)) then
-                imo = imo + 1
-                mo = mo + 1
+              if (wgn(iwgn)%lat > 0.) then
+                time%day = iday
+              else
+                ! find Southern Hemisphere day
+                iday_sum = iday_sum + 1
+                if (iday_sum > 365) then
+                  iday_sh = iday_sum - 365
+                else
+                  iday_sh = iday_sum
+                end if
+                time%day = iday_sh
               end if
-              if (iday > grow_start .and. iday < grow_end) then
-                tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
-                iplt = hlt(i)%iplant
-                phuday = tave - pldb(iplt)%t_base
-                if (phuday > 0.) then
-                  phutot = phutot + phuday
+              call xmon
+              mo = time%mo
+              tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+              phuday = tave
+              if (phuday > 0.) then
+                phutot = phutot + phuday
+              end if
+              if (phutot > phu0) exit
+            end do
+            
+            ! calculate heat units from plant day (iday) to maturity (add days to maturity)
+            if (wgn(iwgn)%lat > 0.) then
+              igrow = iday
+            else
+              igrow = iday_sh
+            end if
+            do iday = igrow, igrow + pldb(iplt)%days_mat
+              if (wgn(iwgn)%lat > 0.) then
+                time%day = iday
+              else
+                ! find Southern Hemisphere day
+                if (iday > 365) then
+                  iday_sh = iday - 365
+                else
+                  iday_sh = iday
+                end if
+                time%day = iday_sh
+              end if
+              call xmon
+              mo = time%mo
+              tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+              phuday = tave - pldb(iplt)%t_base
+              if (phuday > 0.) then
+                phutot = phutot + phuday
+              end if
+            end do
+            pcom(j)%plcur(ipl)%phumat = phutot
+          end if
+          
+          ! set initial operation for date scheduling
+          if (sched(isched)%num_ops > 0) then
+          if (sched(isched)%mgt_ops(1)%jday > 0) then
+            irot = 1
+            do iop = 1, sched(isched)%num_ops
+              if (irot == pcomdb(icom)%rot_yr_ini .and. time%day_start <= sched(isched)%mgt_ops(iop)%jday) then
+                exit
+              else
+                if (sched(isched)%mgt_ops(iop)%name == "skip") then
+                  irot = irot + 1
                 end if
               end if
             end do
-            pcom(j)%plcur(ipl)%phumat = .9 * phutot
-            pcom(j)%plcur(ipl)%phumat = Max(500., pcom(j)%plcur(ipl)%phumat)
-            
-         if (pldb(iplt)%typ == "warm_annual_legume" .or. pldb(iplt)%typ == "cold_annual_legume" .or.   &
-             pldb(iplt)%typ == "warm_annual" .or. pldb(iplt)%typ == "cold_annual") then
-              pcom(j)%plcur(ipl)%phumat = Min(2000., pcom(j)%plcur(ipl)%phumat)
-            end if
+            sched(isched)%first_op = min (iop, sched(isched)%num_ops)
+          else
+            sched(isched)%first_op = 1
           end if
-          ! set initial heat units
-          pcom(j)%plcur(ipl)%phuacc = pcomdb(icom)%pl(ipl)%phuacc
+          end if
+          sched(isched)%cur_op = sched(isched)%first_op
+
+          ! set initial rotation year for dtable scheduling
+          pcom(j)%rot_yr = pcomdb(icom)%rot_yr_ini
           
+          ! set initial heat units and other data
+          pcom(j)%plcur(ipl)%phuacc = pcomdb(icom)%pl(ipl)%phuacc
+          pcom(j)%plg(ipl)%laimxfr = pcom(j)%plcur(ipl)%phuacc / (pcom(j)%plcur(ipl)%phuacc +     &
+              Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc))
           pcom(j)%plg(ipl)%lai = pcomdb(icom)%pl(ipl)%lai
           pcom(j)%plm(ipl)%mass = pcomdb(icom)%pl(ipl)%bioms
           pcom(j)%plcur(ipl)%curyr_mat = pcomdb(icom)%pl(ipl)%yrmat
@@ -155,24 +226,21 @@
           rsdco_plcom(j) = rsdco_plcom(j) + pldb(idp)%rsdco_pl
           pcom(j)%plcur(ipl)%idplt = pcomdb(icom)%pl(ipl)%db_num
           idp = pcom(j)%plcur(ipl)%idplt
-          pcom(j)%plm(ipl)%p_fr = (pldb(idp)%pltpfr1-pldb(idp)%pltpfr3)*   &
-          (1. - pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +     &
-           Exp(plcp(idp)%pup1 - plcp(idp)%pup2 *                           &
+          pcom(j)%plm(ipl)%p_fr = (pldb(idp)%pltpfr1-pldb(idp)%pltpfr3)*        &
+          (1. - pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +          &
+           Exp(plcp(idp)%pup1 - plcp(idp)%pup2 *                                &
            pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltpfr3
-            pcom(j)%plm(ipl)%nmass=pcom(j)%plm(ipl)%n_fr *                 &
-           pcom(j)%plm(ipl)%mass                  
-          pcom(j)%plm(ipl)%n_fr =                                          &
-           (pldb(idp)%pltnfr1- pldb(idp)%pltnfr3) *                        &
-           (1.- pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +     &
-           Exp(plcp(idp)%nup1 - plcp(idp)%nup2 *                           &
-           pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
-          pcom(j)%plm(ipl)%pmass = pcom(j)%plm(ipl)%p_fr *                 &
-                pcom(j)%plm(ipl)%mass
+          pcom(j)%plm(ipl)%nmass=pcom(j)%plm(ipl)%n_fr * pcom(j)%plm(ipl)%mass                  
+          pcom(j)%plm(ipl)%n_fr = (pldb(idp)%pltnfr1- pldb(idp)%pltnfr3) *      &
+           (1.- pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +          &
+           Exp(plcp(idp)%nup1 - plcp(idp)%nup2 *                                &
+          pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
+           pcom(j)%plm(ipl)%pmass = pcom(j)%plm(ipl)%p_fr * pcom(j)%plm(ipl)%mass
           if (pcom(j)%plcur(ipl)%pop_com < 1.e-6) then
             pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai
           else
             xx = pcom(j)%plcur(ipl)%pop_com / 1001.
-            pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai * xx / (xx +     &
+            pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai * xx / (xx +          &
                     exp(pldb(idp)%pop1 - pldb(idp)%pop2 * xx))
           end if
           
@@ -245,15 +313,6 @@
 
         if (lum(ilum)%bmpuser /= "null") then
           call structure_set_parms("bmpuser         ", lum_str(ilum)%bmpuser, j)
-        end if
-
-        !! set linked-list array for all hru's with unlimited source irrigation (hru_irr_nosrc)
-        db_mx%irr_nosrc = 0
-        isched = hru(j)%mgt_ops
-        icmd = hru(j)%obj_no
-        if (sched(isched)%irr > 0 .and. ob(icmd)%wr_ob == 0) then
-          hru(j)%irrsrc = 1
-          db_mx%irr_nosrc = db_mx%irr_nosrc + 1
         end if
 
     return

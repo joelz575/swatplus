@@ -11,9 +11,6 @@
 !!    bio_p2(:)   |none           |2st shape parameter for plant P uptake
 !!                                |equation
 !!    ihru        |none           |HRU number
-!!    pltpfr(1,:) |kg P/kg biomass|phosphorus uptake parameter #1: normal
-!!                                |fraction of P in crop biomass at emergence
-!!    pltpfr(3,:) |kg P/kg biomass|phosphorus uptake parameter #3: normal
 !!                                |fraction of P in crop biomass at maturity
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition

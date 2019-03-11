@@ -14,14 +14,14 @@
       character (len=16) :: namedum   !           |
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       
       eof = 0
       imax = 0
         
       !! read all data from topo.dat
       inquire (file=in_hyd%field_fld, exist=i_exist)
-      if (i_exist == 0 .or. in_hyd%field_fld == "null") then
+      if (.not. i_exist .or. in_hyd%field_fld == "null") then
         allocate (field_db(0:0))
       else
         do
@@ -45,6 +45,7 @@
           
           do ith = 1, db_mx%field
              read (107,*,iostat=eof) titldum
+             if (eof < 0) exit
              backspace (107) 
              read (107,*,iostat=eof) field_db(ith)
              if (eof < 0) exit

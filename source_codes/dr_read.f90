@@ -9,7 +9,7 @@
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       character (len=16) :: namedum   !           |  
       integer :: imax                 !           |
       integer :: mdr_sp               !           |ending of loop 
@@ -21,7 +21,7 @@
       
       !read all delivery ratio data here - don't need a module
       inquire (file=in_delr%del_ratio, exist=i_exist)
-      if (i_exist /= 0 .or. in_delr%del_ratio /= 'null') then
+      if (i_exist .or. in_delr%del_ratio /= 'null') then
       do
         open (107,file=in_delr%del_ratio)
         read (107,*,iostat=eof) titldum

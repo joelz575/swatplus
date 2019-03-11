@@ -40,7 +40,7 @@
  
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, tmpav, canstor, sno_hru, sol_cov, hru_dafr, ihru, canev, ep_max,  &
+      use hru_module, only : hru, tmpav, canstor, sno_hru, sol_cov, ihru, canev, ep_max,  &
          es_day, pet_day, snoev
       use soil_module
       use plant_module
@@ -78,8 +78,6 @@
       real :: evz                !              | 
       real :: sev                !mm H2O        |amount of evaporation from soil layer
       real :: expo               !              |
-      real :: sno3up             !kg N/ha       |amount of nitrate moving upward in the soil
-                                 !              |profile in watershed
       integer :: ly              !none          |counter                               
 
       j = ihru
@@ -208,7 +206,6 @@
           no3up = 0.
           no3up =effnup * sev * soil1(j)%mn(2)%no3 / (soil(j)%phys(2)%st + 1.e-6)
           no3up = Min(no3up, soil1(j)%mn(2)%no3)
-          sno3up = sno3up + no3up * hru_dafr(j)
           soil1(j)%mn(2)%no3 = soil1(j)%mn(2)%no3 - no3up
           rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + no3up
         endif

@@ -11,7 +11,7 @@
          
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header of file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: eof                  !           |end of file
       integer :: i                    !           |
       integer :: imax                 !           |
@@ -29,7 +29,7 @@
       imax = 0
       
       inquire (file=in_sim%cs_db, exist=i_exist)
-      if (i_exist == 0 .or. in_sim%cs_db == "null") then
+      if (.not. i_exist .or. in_sim%cs_db == "null") then
         allocate (cs_db%pests(0:0))
         allocate (cs_db%paths(0:0))
         allocate (cs_db%metals(0:0))
@@ -68,7 +68,7 @@
 
       do ipest = 1, cs_db%num_pests
         do ipestdb = 1, db_mx%pestparm
-          if (pestdb(ipestdb)%pestnm == cs_db%pests(ipest)) then
+          if (pestdb(ipestdb)%name == cs_db%pests(ipest)) then
             cs_db%pest_num(ipest) = ipestdb
             exit
           end if
@@ -86,7 +86,7 @@
           
 !      do ihmet = 1, cs_db%num_hmets
 !        do ihmetdb = 1, db_mx%pestparm
-!          if (pestdb(ihmetdb)%pestnm == cs_db%hmets(ihmet)) then
+!          if (hmetdb(ihmetdb)%pestnm == cs_db%hmets(ihmet)) then
 !            cs_db%hmet_num(ihmet) = ihmetdb
 !            exit
 !          end if

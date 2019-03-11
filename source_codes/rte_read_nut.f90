@@ -15,7 +15,7 @@
       character (len=80) :: header      !             |header of file
       integer :: eof                    !             |end of file
       integer :: imax                   !             |determine max number for array (imax) and total number in file
-      integer :: i_exist                !none         |check to determine if file exists
+      logical :: i_exist                !none         |check to determine if file exists
       integer :: i                      !none         |counter
       integer :: ich                    !none         |counter
 
@@ -23,7 +23,7 @@
       imax = 0
 
       inquire (file="nutrients.rte",exist=i_exist)
-      if (i_exist == 0) then
+      if (.not. i_exist) then
         allocate (rte_nut(0:0))
       else
       do
@@ -45,6 +45,7 @@
           
         do ich = 1, imax
           read (105,*,iostat=eof) titldum
+          if (eof < 0) exit
           backspace (105)
           read (105,*) rte_nut(ich)
           if (eof < 0) exit

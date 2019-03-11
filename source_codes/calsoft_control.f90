@@ -156,7 +156,7 @@
 
 	    do isdc = 1, sp_ob%chandeg
 	      idb = sd_ch(isdc)%props
-		  write (4999,*) sd_chd(idb)%name, sd_chd(idb)%order, sd_chd(idb)%route_db, sd_chd(idb)%chw,          &
+		  write (4999,*) sd_chd(idb)%name, sd_chd(idb)%order, sd_chd(idb)%chw,          &
               sd_chd(idb)%chd, sd_chd(idb)%chs, sd_chd(idb)%chl, sd_chd(idb)%chn, sd_chd(idb)%chk,              &
               sd_ch(isdc)%cherod, sd_ch(isdc)%cov, sd_chd(idb)%hc_cov, sd_chd(idb)%chseq, sd_chd(idb)%d50,      &
               sd_chd(idb)%clay, sd_chd(idb)%bd, sd_chd(idb)%chss, sd_chd(idb)%bedldcoef, sd_chd(idb)%tc,        &

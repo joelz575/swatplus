@@ -5,11 +5,11 @@
 !!    hydrologic cycle
 
       use hru_module, only : hru, ihru, tmx, tmn, tmpav, hru_ra, hru_rmx, rhd, u10, tillage_switch,      &
-         tillage_days, ndeat, qdr, phubase, strsw_av, sedyld, aird, surfq,   &
+         tillage_days, ndeat, qdr, phubase, strsw_av, sedyld, surfq, bio_min, grz_days,  &
          yr_skip, latq, tconc, smx, sepbtm, igrz, iseptic, i_sep, filterw, sed_con, soln_con, solp_con, & 
          orgn_con, orgp_con, cnday, nplnt, percn, tileno3, pplnt, sedorgn, sedorgp, surqno3, latno3,    &
          surqsolp, sedminpa, sedminps,       &
-         fertn, fertp, fixn, grazn, grazp, ipl, no3pcp, peakr, qtile,      &
+         fertn, fertp, fixn, grazn, grazp, ipl, peakr, qtile,      &
          snofall, snomlt, strsn_av, strsp_av, strstmp_av, strsw_av, tloss, usle, canev,   &
          ep_day, es_day, etday, inflpcp, isep, iwgen, ls_overq, nd_30, pet_day,              &
          pot, precipday, precip_eff, qday, sno_hru, latqrunon
@@ -63,7 +63,7 @@
       real :: over_flow             !              |
       real :: yield                 !              |
       real :: dep                   !              |
-  
+
       j = ihru
       !if (pcom(j)%npl > 0) idp = pcom(ihru)%plcur(1)%idplt
       ulu = hru(j)%luse%urb_lu
@@ -88,7 +88,6 @@
       hru(ihru)%water_seep = 0.
       !plt => hru(j)%pl(1)
 
-      !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
       if (bsn_cc%cswat == 2) then
         if (tillage_switch(ihru) .eq. 1) then
           if (tillage_days(ihru) .ge. 30) then
@@ -154,7 +153,8 @@
           if (time%end_yr == 1) then
             pcom(j)%rot_yr = pcom(j)%rot_yr + 1
           end if
-          !! increment days since last harvest
+          !! increment days since last plant and harvest
+          pcom(j)%days_plant = pcom(j)%days_plant + 1
           pcom(j)%days_harv = pcom(j)%days_harv + 1
         end if
         
@@ -217,10 +217,17 @@
         !! compute water table depth using climate drivers
         call wattable
 
-        !! remove biomass from grazing and apply manure
-        if (igrz(j) == 1) then
-          ndeat(j) = ndeat(j) + 1
-          call pl_graze
+        !! graze only if adequate biomass in HRU
+        if (pcom(j)%ab_gr_com%mass > bio_min(j)) then
+          if (igrz(j) == 1) then
+            ndeat(j) = ndeat(j) + 1
+            call pl_graze
+            !! check to set if grazing period is over
+            if (ndeat(j) == grz_days(j)) then
+              igrz(j) = 0
+              ndeat(j) = 0
+            end if
+          end if
         end if
        
         !! compute plant community partitions
@@ -476,7 +483,7 @@
         hwb_d(j)%snopack = sno_hru(j)
         hwb_d(j)%pet = pet_day
         hwb_d(j)%qtile = qtile
-        hwb_d(j)%irr = aird(j)
+        hwb_d(j)%irr = irrig(j)%applied
         hwb_d(j)%surq_runon = ls_overq
         hwb_d(j)%latq_runon = latqrunon !/ (10. * hru(j)%area_ha) 
         hwb_d(j)%overbank = over_flow
@@ -532,7 +539,7 @@
         call actions (jj, iob, id)
       end if
         
-      aird(j) = 0.
+      irrig(j)%applied = 0.
 
       return
       end subroutine hru_control

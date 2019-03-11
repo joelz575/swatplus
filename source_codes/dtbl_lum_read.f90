@@ -22,7 +22,7 @@
       integer :: ic                   !none       |counter 
       integer :: ial                  !none       |counter 
       integer :: iac                  !none       !counter 
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: idb                  !none       |counter
       integer :: ilum                 !none       |counter
       integer :: iburn                !none       |counter
@@ -32,7 +32,7 @@
       
       !! read all data from hydrol.dat
       inquire (file=in_cond%dtbl_lum, exist=i_exist)
-      if (i_exist == 0 .or. in_cond%dtbl_lum == "null") then
+      if (.not. i_exist .or. in_cond%dtbl_lum == "null") then
         allocate (dtbl_lum(0:0)) 
       else
         do
@@ -49,6 +49,7 @@
             read (107,*,iostat=eof) header
             if (eof < 0) exit
             read (107,*,iostat=eof) dtbl_lum(i)%name, dtbl_lum(i)%conds, dtbl_lum(i)%alts, dtbl_lum(i)%acts
+            if (eof < 0) exit
             allocate (dtbl_lum(i)%cond(dtbl_lum(i)%conds))
             allocate (dtbl_lum(i)%alt(dtbl_lum(i)%conds,dtbl_lum(i)%alts))
             allocate (dtbl_lum(i)%act(dtbl_lum(i)%acts))
@@ -140,7 +141,15 @@
                       exit
                     endif
                   end do
-                                   
+                                                             
+                case ("graze")
+                  !xwalk graze name with grazing data base (graze.ops)
+                  do idb = 1, db_mx%grazeop_db
+                    if (dtbl_lum(i)%act(iac)%option == grazeop_db(idb)%name) then
+                      dtbl_lum(i)%act_typ(iac) = idb
+                    end if
+                  end do
+                  
                 case ("burn")
                   do iburn = 1, db_mx%fireop_db
                     if (dtbl_lum(i)%act(iac)%option == fire_db(iburn)%name) then

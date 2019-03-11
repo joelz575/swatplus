@@ -12,7 +12,7 @@
       character (len=13) :: file      !           |
       integer :: msolt_db             !           |
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: i                    !           |
       integer :: isolt                !           |
       
@@ -22,7 +22,7 @@
       
       !! read all soil test operations data from soiltest.dat
       inquire (file=in_sol%nut_sol,exist=i_exist)
-      if (i_exist == 0 .or. in_sol%nut_sol == "null") then
+      if (.not. i_exist .or. in_sol%nut_sol == "null") then
         allocate (solt_db(0:0))
       else
         do

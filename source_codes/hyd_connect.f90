@@ -47,7 +47,6 @@
       integer :: ircv                 !none       |counter
       integer :: ircv_ob              !           |
       integer :: max                  !           |
-      integer :: ipest
       integer :: ipath
       integer :: ihmet
       integer :: isalt
@@ -134,74 +133,73 @@
 
       !read connect file for hrus
       if (sp_ob%hru > 0) then
-        call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, 5, 2)     
+        call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, hd_tot%hru, 2)     
       end if
       
       !read connect file for hru_lte"s
       if (sp_ob%hru_lte > 0) then
-        call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, 1, 2) 
+        call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, hd_tot%hru_lte, 2) 
       end if
       
       !read connect file for subbasins
       if (sp_ob%ru > 0) then
-        call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, 5, 2)
+        call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, hd_tot%ru, 2)
         call ru_read
         call ru_read_elements
       end if
         
       !read connect file for modflow
       if (sp_ob%modflow > 0) then
-        call hyd_read_connect(in_con%modflow_con, "modflow ", sp_ob1%modflow, sp_ob%modflow, 1, 0)
+        call hyd_read_connect(in_con%modflow_con, "modflow ", sp_ob1%modflow, sp_ob%modflow, hd_tot%modflow, 0)
       end if
                      
       !read connect file for aquifer (1-D)
       if (sp_ob%aqu > 0) then
-        call hyd_read_connect(in_con%aqu_con, "aqu     ", sp_ob1%aqu, sp_ob%aqu, 5, 0)
+        call hyd_read_connect(in_con%aqu_con, "aqu     ", sp_ob1%aqu, sp_ob%aqu, hd_tot%aqu, 0)
         call aqu2d_read
       end if
                   
       !read connect file for channels
       if (sp_ob%chan > 0) then
-        call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, 3, 3) 
+        call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, hd_tot%chan, 3) 
         call overbank_read
         call channel_surf_link
       end if
                                   
       !read connect file for reservoirs
       if (sp_ob%res > 0) then
-        call hyd_read_connect(in_con%res_con, "res     ", sp_ob1%res, sp_ob%res, 2, 1) 
+        call hyd_read_connect(in_con%res_con, "res     ", sp_ob1%res, sp_ob%res, hd_tot%res, 1) 
       end if
                 
       !read connect file for recalls
       if (sp_ob%recall > 0) then
-        call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, 1, 0) 
+        call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 0) 
         call recall_read
       end if
                 
       !read connect file for export coefficients
       if (sp_ob%exco > 0) then
-        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, 2, 0) 
+        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 0) 
         call exco_db_read
       endif
                   
       !read connect file for delivery ratio
       if (sp_ob%dr > 0) then
-        call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, 2, 0) 
+        call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 0) 
         call dr_db_read
       end if
                   
       !read connect file for outlet
       if (sp_ob%outlet > 0) then
-        call hyd_read_connect(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, 1, 0)
+        call hyd_read_connect(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, hd_tot%outlet, 0)
       end if
           
       !read connect file for swat-deg channels
       if (sp_ob%chandeg > 0) then
-        call hyd_read_connect(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, 3, 3)
+        call hyd_read_connect(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, 3)
         call overbank_read
-        call aqu2d_read
       end if
-    
+
       !! for each hru or defining unit, set all subbasins that contain it 
         do i = 1, sp_ob%objs
           nspu = ob(i)%ru_tot
@@ -320,24 +318,12 @@
       allocate (hcs2%path(cs_db%num_paths))
       allocate (hcs2%hmet(cs_db%num_metals))
       allocate (hcs2%salt(cs_db%num_salts))
-      
-      do ipest = 1, npests
-        hin_csz%pest%sol = 0.
-        hin_csz%pest%sol = 0.
-      end do
-      do ipath = 1, npaths
-        hin_csz%path%sol = 0.
-        hin_csz%path%sol = 0.
-      end do
-      do ihmet = 1, nmetals
-        hin_csz%hmet%sol = 0.
-        hin_csz%hmet%sol = 0.
-      end do
-      do isalt = 1, nsalts
-        hin_csz%salt%sol = 0.
-        hin_csz%salt%sol = 0.
-      end do           
-      
+
+      hin_csz%pest = 0.
+      hin_csz%path = 0.
+      hin_csz%hmet = 0.
+      hin_csz%salt = 0.
+
       !! allocate receiving arrays
       do i = 1, sp_ob%objs
         if (ob(i)%rcv_tot > 0) then
@@ -371,7 +357,7 @@
               jj = rcv_sum(kk)                                ! jj=seqential receiving number
               ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
               ob(kk)%obtyp_in(jj) = ob(i)%typ
-              ob(kk)%obtypno_in(jj) = ob(i)%props
+              ob(kk)%obtypno_in(jj) = i
               ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
               ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
               ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
@@ -382,7 +368,7 @@
             jj = rcv_sum(kk)                                ! jj=seqential receiving number
             ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
             ob(kk)%obtyp_in(jj) = ob(i)%typ
-            ob(kk)%obtypno_in(jj) = ob(i)%props
+            ob(kk)%obtypno_in(jj) = i
             ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
             ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
             ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
@@ -398,7 +384,7 @@
                 ob(kk)%obtypno_in(jj) = ob(i)%props
                 ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
                 ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
-                ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
+                ob(kk)%frac_in(jj) = ob(i)%frac_out(ii) * ru_elem(ielem_db)%frac
                 ob(i)%rcvob_inhyd(ii) = jj
               end do
             end if

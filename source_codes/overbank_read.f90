@@ -12,7 +12,7 @@
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: nspu                 !           |
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: max                  !           |
       integer :: mcha_sp              !           |
       integer :: i                    !none       |counter
@@ -26,7 +26,7 @@
       
     !!read data for surface elements in the floodplain-for overbank flooding
       inquire (file=in_link%chan_surf, exist=i_exist)
-      if (i_exist /= 0 .or. in_link%chan_surf /= "null") then
+      if (i_exist .or. in_link%chan_surf /= "null") then
       do
         open (107,file=in_link%chan_surf)
         read (107,*,iostat=eof) titldum
@@ -47,6 +47,7 @@
         rewind (107)
         read (107,*) titldum
         read (107,*,iostat=eof) mcha_sp
+        if (eof < 0) exit
         read (107,*) header
 
         db_mx%ch_surf = imax
@@ -54,6 +55,7 @@
                 !db_mx%ch_surf
         do ise = 1, imax
           read (107,*,iostat=eof) i, ichan, namedum, nspu
+          if (eof < 0) exit
           allocate (ch_sur(i)%obtyp(nspu))
           allocate (ch_sur(i)%obtypno(nspu))
           allocate (ch_sur(i)%wid(nspu))
@@ -61,7 +63,6 @@
           allocate (ch_sur(i)%flood_volmx(nspu))
           allocate (ch_sur(i)%hd(nspu))
         
-          if (eof < 0) exit
           if (nspu > 0) then
             backspace (107)
             read (107,*,iostat=eof) numb, ch_sur(i)%chnum, ch_sur(i)%name,    &

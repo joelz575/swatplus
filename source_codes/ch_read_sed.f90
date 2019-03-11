@@ -18,7 +18,7 @@
       integer :: imax                  !          |determine max number for array (imax) and total number in file
       character (len=80) :: titldum    !title of file
       character (len=80) :: header     !header of file
-      integer :: i_exist               !          |check to determine if file exists
+      logical :: i_exist               !          |check to determine if file exists
       real :: sumerod                  !units     |description
       integer :: ich                   !none      |counter
       integer :: mo                    !none      |counter
@@ -27,7 +27,7 @@
       imax = 0
 
       inquire (file=in_cha%sed,exist=i_exist)
-      if (i_exist == 0 .or. in_cha%sed == "null") then
+      if (.not. i_exist .or. in_cha%sed == "null") then
         allocate (ch_sed(0:0))
       else
       do
@@ -51,6 +51,7 @@
              
         do ich = 1, db_mx%ch_sed
           read (105,*,iostat=eof) titldum
+          if (eof < 0) exit
           backspace (105)
           read (105,*) ch_sed(ich)
           if (eof < 0) exit

@@ -9,6 +9,7 @@
       use sd_channel_module
       use hydrograph_module
       use constituent_mass_module
+      use pesticide_data_module
       use pathogen_data_module
 
       implicit none
@@ -17,12 +18,13 @@
       character (len=80) :: header      !          |header of file
       integer :: eof                    !          |end of file
       integer :: imax                   !units     |description
-      integer :: i_exist                !          |check to determine if file exists
+      logical :: i_exist                !          |check to determine if file exists
       integer :: ichi                   !none      |counter
       integer :: isp_ini                !          |counter
       integer :: ics                    !none      |counter
       integer :: ich_ini                !none      |counter
       integer :: ipest_ini              !none      |counter
+      integer :: ipest_db               !none      |counter
       integer :: ipath_ini              !none      |counter
       integer :: inut                   !none      |counter 
       integer :: ihydsed                !none      |counter
@@ -51,17 +53,18 @@
       allocate (chpst_a(0:sp_ob%chandeg))
       
       if (cs_db%num_pests > 0) then
+        allocate (chpst%pest(cs_db%num_pests))
+        allocate (chpstz%pest(cs_db%num_pests))
+        allocate (bchpst_d%pest(cs_db%num_pests))
+        allocate (bchpst_m%pest(cs_db%num_pests))
+        allocate (bchpst_y%pest(cs_db%num_pests))
+        allocate (bchpst_a%pest(cs_db%num_pests))
         do ich = 1, sp_ob%chandeg
+          allocate (sd_ch(ich)%aq_mix(cs_db%num_pests))
           allocate (chpst_d(ich)%pest(cs_db%num_pests))
           allocate (chpst_m(ich)%pest(cs_db%num_pests))
           allocate (chpst_y(ich)%pest(cs_db%num_pests))   
-          allocate (chpst_a(ich)%pest(cs_db%num_pests))   
-          allocate (chpst%pest(cs_db%num_pests))
-          allocate (chpstz%pest(cs_db%num_pests))
-          allocate (bchpst_d%pest(cs_db%num_pests))
-          allocate (bchpst_m%pest(cs_db%num_pests))
-          allocate (bchpst_y%pest(cs_db%num_pests))
-          allocate (bchpst_a%pest(cs_db%num_pests))
+          allocate (chpst_a(ich)%pest(cs_db%num_pests))
           allocate (ch_water(ich)%pest(cs_db%num_pests))
           allocate (ch_benthic(ich)%pest(cs_db%num_pests))
         end do
@@ -89,7 +92,7 @@
       end if
 
       inquire (file=in_cha%chan_ez, exist=i_exist)
-      if (i_exist == 0 .or. in_cha%chan_ez == "null") then
+      if (.not. i_exist .or. in_cha%chan_ez == "null") then
         allocate (sd_dat(0:0))
       else   
       do
@@ -114,8 +117,7 @@
       
       do ichi = 1, db_mx%sdc_dat
         read (105,*,iostat=eof) sd_dat(ichi)%name, sd_dat(ichi)%initc, sd_dat(ichi)%hydc, sd_dat(ichi)%sedc, &
-            sd_dat(ichi)%nutc, sd_dat(ichi)%pestc, sd_dat(ichi)%pathc, sd_dat(ichi)%hmetc, sd_dat(ichi)%saltc,&
-            sd_dat(ichi)%tempc
+            sd_dat(ichi)%nutc
         if (eof < 0) exit
                          
         !! initialize orgaincs and minerals in water
@@ -125,7 +127,7 @@
             !! initial organic mineral
             do ics = 1, db_mx%om_water_init
               if (ch_init(isp_ini)%org_min == om_init_name(ics)) then
-                sd_init(ichi)%org_min = ics
+                sd_init(isp_ini)%org_min = ics
                 exit
               end if
             end do
@@ -150,13 +152,13 @@
 !                exit
 !              end if
 !            end do
-!            !! initial salts
-!            do ics = 1, db_mx%saltw_ini
-!              if (ch_init(isp_ini)%saltc == ch_salt_init(ics)%name) then
-!                sd_init(isp_ini)%salt = ics
-!                exit
-!              end if
-!            end do
+             !! initial salts
+             do ics = 1, db_mx%saltw_ini
+               if (ch_init(isp_ini)%salt == salt_init_name(ics)) then
+                 sd_init(isp_ini)%salt = ics
+                 exit
+               end if
+             end do
           end if
         end do
         
@@ -174,22 +176,6 @@
               exit
             end if
           end do   
-          
-          !! set pesticide input data for channel
-          do ipest = 1, db_mx%ch_pst
-            if (ch_pst(ipest)%name ==  sd_dat(ichi)%pestc) then
-              sd_dat(ichi)%pest = ipest
-              exit
-            end if
-          end do
-          
-          !! set pathogen input data
-          do ipath = 1, db_mx%path
-            if (path_db(ipath)%pathnm == sd_dat(ichi)%pathc) then
-              sd_dat(ichi)%path = ipath
-              exit
-            end if
-          end do
 
       end do
       close (105)
@@ -214,11 +200,14 @@
         ich_ini = sd_dat(ichdat)%init
         ipest_ini = sd_init(ich_ini)%pest
         do ipest = 1, cs_db%num_pests
-          ch_water(ich)%pest(ipest) = pest_water_ini(ipest_ini)%pest(ipest)
+          ipest_db = cs_db%pest_num(ipest)
+          ch_water(ich)%pest(ipest) = pest_water_ini(ipest_ini)%water(ipest)
+          ch_benthic(ich)%pest(ipest) = pest_water_ini(ipest_ini)%benthic(ipest)
           !! calculate volume of active river bed sediment layer
-          bedvol = sd_ch(ich)%chw *sd_ch(ich)%chl * 1000.* ch_pst(ipest_ini)%sedpst_act
-          ch_benthic(ich)%pest(ipest)%sol = pest_benthic_ini(ipest_ini)%pest(ipest)%sol * bedvol
-          ch_benthic(ich)%pest(ipest)%sor = pest_benthic_ini(ipest_ini)%pest(ipest)%sor * bedvol
+          bedvol = sd_ch(ich)%chw *sd_ch(ich)%chl * 1000.* pestdb(ipest_ini)%ben_act_dep
+          ch_benthic(ich)%pest(ipest) = pest_water_ini(ipest_ini)%benthic(ipest) * bedvol
+          !! calculate mixing velocity using molecular weight and porosity
+          sd_ch(ich)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt * (1. - sd_chd(ich)%bd / 2.65)
         end do
       end do
                   
@@ -229,8 +218,8 @@
         ich_ini = sd_dat(ichdat)%init
         ipath_ini = sd_init(ich_ini)%path
         do ipath = 1, cs_db%num_paths
-          ch_water(ich)%path(ipath) = path_water_ini(ipest_ini)%path(ipath)
-          ch_benthic(ich)%path(ipath) = path_benthic_ini(ipest_ini)%path(ipath)
+          ch_water(ich)%path(ipath) = path_water_ini(ipest_ini)%water(ipath)
+          ch_benthic(ich)%path(ipath) = path_water_ini(ipest_ini)%benthic(ipath)
         end do
       end do
       

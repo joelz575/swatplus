@@ -14,14 +14,14 @@
       iob = sp_ob1%aqu + iaq - 1
        
         !! sum monthly variables        
-        aqu_m(iaq) = aqu_m(iaq) + aqu(iaq)
+        aqu_m(iaq) = aqu_m(iaq) + aqu_d(iaq)
         
         !! daily print - AQUIFER
          if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%aqu%d == "y") then
-            write (2520,100) time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu(iaq)
+            write (2520,100) time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_d(iaq)
             if (pco%csvout == "y") then
-              write (2524,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu(iaq)
+              write (2524,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_d(iaq)
             end if
           end if
         end if

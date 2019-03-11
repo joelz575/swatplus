@@ -249,46 +249,7 @@
         character (len=12) :: latq_ls    =  "     latq_ls"
       end type output_waterbal_header      
       type (output_waterbal_header) :: wb_hdr
-      
-      type output_waterbal_header_units
-        character (len=5) :: day         =  "     "
-        character (len=6) :: mo          =  "      "
-        character (len=6) :: day_mo      =  "      "
-        character (len=6) :: yrc         =  "      "
-        character (len=8) :: isd         =  "        "
-        character (len=8) :: id          =  "        "        
-        character (len=16) :: name       =  "                "        
-        character (len=14) :: precip     =  "          mm"
-        character (len=12) :: snofall    =  "          mm"
-        character (len=12) :: snomlt     =  "          mm"        
-        character (len=12) :: surq_gen   =  "          mm"      
-        character (len=12) :: latq       =  "          mm" 
-        character (len=12) :: wateryld   =  "          mm"
-        character (len=12) :: perc       =  "          mm"   
-        character (len=12) :: et         =  "          mm"
-        character (len=12) :: tloss      =  "          mm"
-        character (len=12) :: eplant     =  "          mm"
-        character (len=12) :: esoil      =  "          mm"
-        character (len=12) :: surq_cont  =  "          mm"
-        character (len=12) :: cn         =  "            "
-        character (len=12) :: sw         =  "          mm"
-        character (len=12) :: sw_300     =  "          mm"
-        character (len=12) :: snopack    =  "          mm"  
-        character (len=12) :: pet        =  "          mm"
-        character (len=12) :: qtile      =  "          mm"
-        character (len=12) :: irr        =  "          mm"
-        character (len=12) :: surq_runon =  "          mm"
-        character (len=12) :: latq_runon =  "          mm"
-        character (len=12) :: overbank   =  "          mm"
-        character (len=12) :: surq_cha   =  "          mm"
-        character (len=12) :: surq_res   =  "          mm"
-        character (len=12) :: surq_ls    =  "          mm"
-        character (len=12) :: latq_cha   =  "          mm"
-        character (len=12) :: latq_res   =  "          mm"
-        character (len=12) :: latq_ls    =  "          mm"
-      end type output_waterbal_header_units      
-      type (output_waterbal_header_units) :: wb_hdr_units
-      
+       
       type output_nutbal_header
          character (len=5) :: day           =    " jday"
          character (len=6) :: mo            =    "   mon"
@@ -315,32 +276,6 @@
       end type output_nutbal_header         
       type (output_nutbal_header) :: nb_hdr
       
-      type output_nutbal_header_units
-         character (len=5) :: day           =    "     "
-         character (len=6) :: mo            =    "      "
-         character (len=6) :: day_mo        =    "      "
-         character (len=6) :: yrc           =    "      "
-         character (len=9) :: isd           =    "         " 
-         character (len=8) :: id            =    "        "        
-         character (len=9) :: name          =    "         "         
-         character(len=12) :: grazn         =    "        kgha"
-         character(len=12) :: grazp         =    "        kgha"         
-         character(len=17) :: lab_min_p     =    "             kgha"     
-         character(len=17) :: act_sta_p     =    "             kgha" 
-         character(len=17) :: fertn         =    "             kgha"        
-         character(len=17) :: fertp         =    "             kgha"        
-         character(len=17) :: fixn          =    "             kgha"        
-         character(len=17) :: denit         =    "             kgha" 
-         character(len=17) :: act_nit_n     =    "             kgha" 
-         character(len=17) :: act_sta_n     =    "             kgha" 
-         character(len=17) :: org_lab_p     =    "             kgha" 
-         character(len=17) :: rsd_nitorg_n  =    "             kgha"       
-         character(len=17) :: rsd_laborg_p  =    "             kgha"       
-         character(len=17) :: no3atmo       =    "             kgha"  
-         character(len=17) :: nh4atmo       =    "             kgha" 
-      end type output_nutbal_header_units         
-      type (output_nutbal_header_units) :: nb_hdr_units
-      
       type output_losses_header
         character (len=6) :: day        =  "  jday"
         character (len=6) :: mo         =  "   mon"
@@ -361,26 +296,6 @@
       end type output_losses_header      
       type (output_losses_header) :: ls_hdr
       
-       type output_losses_header_units
-        character (len=6) :: day        =  "      "
-        character (len=6) :: mo         =  "      "
-        character (len=6) :: day_mo     =  "      "
-        character (len=6) :: yrc        =  "      "
-        character (len=8) :: isd        =  "        "
-        character (len=8) :: id         =  "        "        
-        character (len=16) :: name      =  "                    "        
-        character (len=12) :: sedyld    =  "         tha"
-        character (len=12)  :: sedorgn  =  "        kgha"
-        character (len=12)  :: sedorgp  =  "        kgha"
-        character (len=12)  :: surqno3  =  "        kgha"
-        character (len=12)  :: latno3   =  "        kgha"            
-        character (len=12)  :: surqsolp =  "        kgha"
-        character (len=12)  :: usle     =  "        tons"     
-        character (len=12)  :: sedmin   =  "            "
-        character (len=12)  :: tileno3  =  "            "
-      end type output_losses_header_units      
-      type (output_losses_header_units) :: ls_hdr_units
-     
       type output_plantweather_header
         character (len=6) :: day        =  "  jday"
         character (len=6) :: mo         =  "   mon"
@@ -409,42 +324,8 @@
         character (len=12) :: wndspd    =  "      wndspd"
         character (len=12) :: rhum      =  "        rhum"
         character (len=12) :: phubase0  =  "     phubas0"
-      end type output_plantweather_header
-      
-      type (output_plantweather_header) :: pw_hdr
-      
-      type output_plantweather_header_units
-        character (len=6) :: day        =  "      "
-        character (len=6) :: mo         =  "      "
-        character (len=6) :: day_mo     =  "      "
-        character (len=6) :: yrc        =  "      "
-        character (len=8) :: isd        =  "        "
-        character (len=8) :: id         =  "        "        
-        character (len=16) :: name      =  "                   "        
-        character (len=13) :: lai       =  "             "
-        character (len=12) :: bioms     =  "            "
-        character (len=12) :: yield     =  "            "
-        character (len=12) :: residue   =  "            "
-        character (len=12) :: sol_tmp   =  "            "
-        character (len=12) :: strsw     =  "            "
-        character (len=12) :: strsa     =  "            "
-        character (len=12) :: strstmp   =  "            "
-        character (len=12) :: strsn     =  "            "
-        character (len=12) :: strsp     =  "            "
-        character (len=12) :: nplnt     =  "        kgha"
-        character (len=12) :: percn     =  "        kgha"
-        character (len=12) :: pplnt     =  "        kgha"
-        character (len=12) :: tmx       =  "        degc"
-        character (len=12) :: tmn       =  "        degc"
-        character (len=12) :: tmpav     =  "        degc"
-        character (len=12) :: solrad    =  "      mj/m^2"
-        character (len=12) :: wndspd    =  "         m/s"
-        character (len=12) :: rhum      =  "        frac"
-        character (len=12) :: phubase0  =  "        degc"
-      end type output_plantweather_header_units
-      
-      type (output_plantweather_header_units) :: pw_hdr_units
-      
+      end type output_plantweather_header     
+      type (output_plantweather_header) :: pw_hdr   
       
       interface operator (+)
         module procedure hruout_waterbal_add

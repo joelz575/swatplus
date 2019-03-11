@@ -9,7 +9,7 @@
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: i                    !none       |counter
       integer :: iobj                 !           |
       integer :: ii                   !none       !counter
@@ -21,7 +21,7 @@
       
       !! read old saveconc properties
       inquire (file=in_sim%object_prt,exist=i_exist)
-      if (i_exist == 0 .or. in_sim%object_prt == "null") then         
+      if (.not. i_exist .or. in_sim%object_prt == "null") then         
         allocate (ob_out(0:0))
       else
       do
@@ -44,6 +44,7 @@
 
         do i = 1, mobj_out
           read (107,*,iostat=eof) ii
+          if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, ob_out(i)%obtyp,                    &
              ob_out(i)%obtypno, ob_out(i)%hydtyp, ob_out(i)%filename
@@ -88,7 +89,6 @@
          write (9000,*) "OBJECT.PRT                ", ob_out(i)%filename
          
          write (iunit+i,*) hyd_hdr_time, hyd_hdr !! write header !H
- !         write (iunit+i,100) hyd_hdr_time, hyd_hdr !! write header !H
         enddo    
         exit
       enddo

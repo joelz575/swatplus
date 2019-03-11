@@ -3,14 +3,12 @@
       implicit none
       
       type ch_pathogen_output
-        real :: sol_in = 0.             ! (m^3/s)      !ave flow rate
-        real :: sol_out = 0.            ! (m^3/s)      |peak runoff rate
-        real :: sor_in = 0.             ! (tons)       !total sed in
-        real :: sor_out = 0.            ! (tons)       !total sed out
-        real :: dre_off = 0.            ! (tons)       !wash load
-        real :: regrow = 0.             ! (tons)       !bed load
-        real :: water = 0.              !
-        real :: benthic = 0.            !          !
+        real :: pth_in = 0.             ! # cfu/100ml       !pathogens into channel
+        real :: pth_out = 0.            ! # cfu/100ml       |pathogens out of channel
+        real :: dre_off = 0.            ! # cfu/100ml       !die_off
+        real :: regrow = 0.             ! # cfu/100ml       !regrowth
+        real :: water = 0.              ! # cfu/100ml       !pathogens in water column
+        real :: benthic = 0.            ! # cfu/100ml       !pathogens in bottom sediments
       end type ch_pathogen_output
       
       type (ch_pathogen_output), dimension(:), allocatable, save :: chpth_d
@@ -31,10 +29,8 @@
           character (len=8) :: isd =        "   unit "
           character (len=8) :: id =         " gis_id "           
           character (len=16) :: name =      " name              "        
-          character(len=16) :: sol_in =     " solpestin_#cfu/100ml"         ! # cfu/100ml
-          character(len=15) :: sol_out =    " solpestout_#cfu/100ml"        ! # cfu/100ml
-          character(len=15) :: sor_in =     " sorpestin_#cfu/100ml"         ! # cfu/100ml
-          character(len=15) :: sor_out=     " sorpestout_#cfu/100ml"        ! # cfu/100ml
+          character(len=16) :: pth_in =     " path_in_#cfu/100ml"         ! # cfu/100ml
+          character(len=15) :: pth_out =    " path_out_#cfu/100ml"        ! # cfu/100ml
           character(len=15) :: dre_off =    "  dre_off_#cfu/100ml "         ! # cfu/100ml
           character(len=15) :: regrow =     "    regrow_#cfu/100ml"         ! # cfu/100ml
           character(len=15) :: water =      " water_stor_#cfu/100ml"        ! # cfu/100ml
@@ -61,25 +57,20 @@
       type (ch_pathogen_output),  intent (in) :: cho1
       type (ch_pathogen_output),  intent (in) :: cho2
       type (ch_pathogen_output) :: cho3
-       cho3%sol_in = cho1%sol_in + cho2%sol_in
-       cho3%sol_out = cho1%sol_out + cho2%sol_out
-       cho3%sor_in = cho1%sor_in + cho2%sor_in
-       cho3%sor_out = cho1%sor_out + cho2%sor_out
+       cho3%pth_in = cho1%pth_in + cho2%pth_in
+       cho3%pth_out = cho1%pth_out + cho2%pth_out
        cho3%dre_off = cho1%dre_off + cho2%dre_off
        cho3%regrow = cho1%regrow + cho2%regrow
        cho3%water = cho1%water + cho2%water
        cho3%benthic = cho1%benthic + cho2%benthic
- 
       end function chpath_add
       
       function chpath_div (ch1,const) result (ch2)
         type (ch_pathogen_output), intent (in) :: ch1
         real, intent (in) :: const
         type (ch_pathogen_output) :: ch2
-        ch2%sol_in = ch1%sol_in / const
-        ch2%sol_out = ch1%sol_out / const
-        ch2%sor_in = ch1%sor_in / const
-        ch2%sor_out = ch1%sor_out / const
+        ch2%pth_in = ch1%pth_in / const
+        ch2%pth_out = ch1%pth_out / const
         ch2%dre_off = ch1%dre_off / const
         ch2%regrow = ch1%regrow / const
         ch2%water = ch1%water / const
@@ -90,10 +81,8 @@
         type (ch_pathogen_output), intent (in) :: chn1
         real, intent (in) :: const
         type (ch_pathogen_output) :: chn2
-        chn2%sol_in = const * chn1%sol_in
-        chn2%sol_out = const * chn1%sol_out
-        chn2%sor_in = const * chn1%sor_in
-        chn2%sor_out = const * chn1%sor_out
+        chn2%pth_in = const * chn1%pth_in
+        chn2%pth_out = const * chn1%pth_out
         chn2%dre_off = const * chn1%dre_off
         chn2%regrow = const * chn1%regrow
         chn2%water = const * chn1%water

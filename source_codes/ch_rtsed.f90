@@ -54,7 +54,7 @@
       use basin_module
       use channel_data_module
       use channel_module
-      use hydrograph_module, only : ob
+      use hydrograph_module, only : ob, jrch, icmd
       use time_module
              
       implicit none
@@ -77,8 +77,6 @@
       real :: sedinorg         !units         |description
       real :: tbase            !none          |flow duration (fraction of 1 hr)
       real :: dat2             !m             |change in channel depth during time step
-      integer :: jrch          !none          |reach number
-      integer :: icmd          !units         |description
 
       sedin = 0.0
 
@@ -138,7 +136,7 @@
 	  !! First the deposited material will be degraded before channel bed
 	  if (deg >= ch(jrch)%depch) then
 	    deg1 = ch(jrch)%depch
-        deg2 = (deg - deg1) * ch_sed(jrch)%erod(time%mo) * ch_sed(jsed)%cov2
+        deg2 = (deg - deg1) * ch_sed(jsed)%erod(time%mo) * ch_sed(jsed)%cov2
 	  else
 	    deg1 = deg
 	    deg2 = 0.

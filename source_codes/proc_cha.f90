@@ -14,12 +14,15 @@
       call ch_read_hyd
       call ch_read_sed
       call ch_read_nut
-      call ch_read_pst
       call ch_read
       call sd_channel_read
       call sd_hydsed_init
 
       call channel_allo
+          
+      !! intialize stream-aquifer interactions for geomorphic baseflow
+      !! aquifer to channel flow
+      call aqu2d_init
       
       do ich = 1, sp_ob%chan
         !! initialize flow routing variables
@@ -36,4 +39,4 @@
 
 	  return
       
-      end
+      end subroutine proc_cha

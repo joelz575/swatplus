@@ -1,6 +1,6 @@
       subroutine mgt_plantop
     
-      use hru_module, only: bio_init, cnop, ihru, ipl, lai_init
+      use hru_module, only: ihru, ipl
       use soil_module
       use plant_module
       use plant_data_module
@@ -11,11 +11,7 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bio_init       |kg/ha         |initial biomass of transplants
-!!    cnop           |none          |SCS runoff curve number for moisture 
-!!                                  |condition II
 !!    ihru           |none          |HRU number
-!!    lai_init       |none          |initial leaf area index of transplants
 !!    pcom%plcur     
 !!         idorm     |none          |dormancy status code; 0=land cover growing 1=land cover dormant
 !!         phuacc    |fraction      |fraction of plant heat unit accumulated
@@ -35,12 +31,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cnop        |none          |SCS runoff curve number for moisture condII
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -71,18 +61,9 @@
       pcom(j)%root(ipl)%mass = 0.
       pcom(j)%plstr(ipl) = plstrz 
 
-      !! initialize transplant variables
-      if (lai_init > 0.) then
-        pcom(j)%plg(ipl)%lai = lai_init
-        pcom(j)%plm(ipl)%mass = bio_init
-      endif
-      
       !! compare maximum depth in soil to maximum rooting depth of plant
       plt_zmx = 1000. * pldb(ipl)%rdmx
       soil(ihru)%zmx = Min(soil(ihru)%zmx, plt_zmx)
-      
-      !! reset curve number if given in .mgt file
-      if (cnop > 0.) call curno(cnop,j)
 
       return
       end subroutine mgt_plantop

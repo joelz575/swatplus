@@ -6,6 +6,7 @@
       use maximum_data_module
       use soil_data_module
       use organic_mineral_mass_module
+      use constituent_mass_module
       use hydrograph_module, only : sp_ob
       use time_module
       use basin_module
@@ -134,6 +135,7 @@
         soil(ihru) = sol(isol)%s
         nly = soil(ihru)%nly
         allocate (soil(ihru)%ly(nly))
+        allocate (cs_soil(ihru)%ly(nly))
         allocate (soil(ihru)%phys(nly))
         allocate (soil1(ihru)%sw(nly))
         allocate (soil1(ihru)%cbn(nly))

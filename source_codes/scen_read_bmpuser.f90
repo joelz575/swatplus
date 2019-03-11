@@ -10,7 +10,7 @@
        character (len=80) :: header    !           |header of file
        integer :: eof                  !           |end of file
        integer :: imax                 !none       |determine max number for array (imax) and total number in file
-       integer :: i_exist              !none       |check to determine if file exists
+       logical :: i_exist              !none       |check to determine if file exists
        integer :: i                    !none       |counter
        integer :: ibmpop               !none       |counter
 
@@ -18,7 +18,7 @@
       
        !! read user defined upland CP removal operations
        inquire (file=in_str%bmpuser_str, exist=i_exist)
-       if (i_exist == 0 .or. in_str%bmpuser_str == "null") then
+       if (.not. i_exist .or. in_str%bmpuser_str == "null") then
          allocate (bmpuser_db(0:0))
        else
        do

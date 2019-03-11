@@ -1,5 +1,5 @@
 lum.dtl
-   6
+  10
 
  NAME   	     CONDS	ALTS	ACTS
 pl_hv_wwht	       6         4	  3
@@ -94,3 +94,31 @@ phu_plant 	hru	  0	    phu_mat		  -	    1.05		 	-       <
  ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION      CONST   CONST2      FP         OUTCOMES
 fertilize	hru	  0  ammonia_spring   anh_nh3	    160.       1      inject      	y     	 n
 fertilize	hru	  0  side_dress	      urea	     50.       2      broadcast	  	n	 y
+
+ NAME   	CONDS	ALTS	ACTS
+irr_str8	  1	 1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR	     LIM_OP	   LIM_CONST	               ALT1
+w_stress 	hru	  0	    null	-	       0.8		 	<
+ ACT_TYP    OBJ OBJ_NUM           NAME         OPTION     CONST    CONST2   FP       OUTCOMES
+irr_demand	hru	  0	 drip_high	drip	   25.4      0      null	y
+
+ NAME   	CONDS	ALTS	ACTS
+irr_str8_unlim	  1	 1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR	     LIM_OP	   LIM_CONST	               ALT1
+w_stress 	hru	  0	    null	-	       0.8		 	<
+ ACT_TYP    OBJ OBJ_NUM           NAME         OPTION     CONST    CONST2   FP       OUTCOMES
+irr_demand	hru	  0	 drip_high	drip	   25.4      0      unlim	y
+
+ NAME   	CONDS	ALTS	ACTS
+irr_sw75	  2	 1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR	     LIM_OP	   LIM_CONST		       ALT1
+soil_water 	hru	  0	fcap_mm	  	-	       75.		        <
+ ACT_TYP    OBJ OBJ_NUM           NAME         OPTION       CONST  CONST2   FP       OUTCOMES
+irr_demand	hru	  0	 sprinkler   sprinkler_high  50.     0      null	y
+
+ NAME   	CONDS	ALTS	ACTS
+irr_sw75_unlim	  2	 1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR	     LIM_OP	   LIM_CONST		       ALT1
+soil_water 	hru	  0	fcap_mm	  	-	       75.		        <
+ ACT_TYP    OBJ OBJ_NUM           NAME         OPTION       CONST  CONST2   FP       OUTCOMES
+irr_demand	hru	  0	 sprinkler   sprinkler_high  50.     0      unlim	y

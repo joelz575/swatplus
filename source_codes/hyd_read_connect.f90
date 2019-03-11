@@ -23,7 +23,7 @@
       character (len=16) :: namedum   !           |
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       character (len=16) ::con_file   !           |
       character (len=3) :: ihtyp      !           |
       character (len=8) :: obtyp      !           |
@@ -37,7 +37,6 @@
       integer :: iout                 !           |       
       integer :: k                    !           |
       integer :: ics                  !           |
-      integer :: ipestmx              !           |
       integer :: ihyd                 !           |hydrograph counter
       integer :: npests               !           |pesticides counter
       integer :: npaths               !           |pathogens counter
@@ -50,7 +49,7 @@
   
       !! read hru spatial data
       inquire (file=con_file, exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist ) then
         do
           open (107,file=con_file)
           read (107,*,iostat=eof) titldum
@@ -61,16 +60,10 @@
           if (nspu > 0) then
             ob1 = nspu1
             ob2 = nspu1 + nspu - 1
-            
-            !find maximum id number
-            !do i = ob1, ob2
-            !  read (107,*,iostat=eof) k
-            !  id_max = Max (id_max, k)
-            !end do
-                
 
             do i = ob1, ob2
               ob(i)%typ = obtyp
+              ob(i)%nhyds = nhyds
               allocate (ob(i)%hd(nhyds))
               if (cs_db%num_tot > 0) then
                 allocate (obcs(i)%hd(nhyds))

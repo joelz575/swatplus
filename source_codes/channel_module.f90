@@ -5,7 +5,6 @@
       integer :: jhyd    !units         |description    
       integer :: jsed    !units         |description 
       integer :: jnut    !units         |description
-      integer :: jpst    !units         |description
       real :: rttime     !hr            |reach travel time
       real :: rchdep     !m             |depth of flow on day
       real :: rtevp      !m^3 H2O       |evaporation from reach on day
@@ -266,76 +265,6 @@
           character(len=15) :: tot_ssed =     "        tot_ssed"        ! total suspended sediments       
       end type ch_header
       type (ch_header) :: ch_hdr
-      
-      type ch_header_units
-          character (len=6) :: day         =   "     "  
-          character (len=6) :: mo          =   "     "
-          character (len=6) :: day_mo      =   "      "                                          
-          character (len=5) :: yrc         =   "     "
-          character (len=9) :: isd         =   "         "
-          character (len=8) :: id          =   "        "           
-          character (len=16) :: name       =   "               "           
-          character(len=16) :: flo_in      =   "        ha-m"            ! (ha-m)
-          character(len=15) :: flo_out     =   "       ha-m"             ! (ha-m)
-          character(len=15) :: evap        =   "        ha-m"            ! (ha-m)
-          character(len=15) :: tloss       =   "      ha-m"              ! (ha-m)
-          character(len=15) :: sed_in      =   "        tons"            ! (tons)
-          character(len=15) :: sed_out     =   "        tons"            ! (tons)
-          character(len=15) :: sed_conc    =   "        mg/L"            ! (mg/L)
-          character(len=15) :: orgn_in     =   "        kgN"             ! (kg N)
-          character(len=15) :: orgn_out    =   "         kgN"            ! (kg N)
-          character(len=15) :: orgp_in     =   "          kgP"           ! (kg P)
-          character(len=15) :: orgp_out    =   "           kgP"          ! (kg P)
-          character(len=15) :: no3_in      =   "          kgN"           ! (kg N)
-          character(len=15) :: no3_out     =   "          kgN"           ! (kg N)
-          character(len=15) :: nh4_in      =   "            kg"          ! (kg)
-          character(len=15) :: nh4_out     =   "            kg"          ! (kg)
-          character(len=15) :: no2_in      =   "            kg"          ! (kg)
-          character(len=15) :: no2_out     =   "            kg"          ! (kg)
-          character(len=15) :: solp_in     =   "          kgP"           ! (kg P)
-          character(len=15) :: solp_out    =   "          kgP"           ! (kg P)
-          character(len=15) :: chla_in     =   "            kg"          ! (kg)
-          character(len=15) :: chla_out    =   "            kg"          ! (kg)
-          character(len=15) :: cbod_in     =   "            kg"           ! (kg)
-          character(len=15) :: cbod_out    =   "            kg"           ! (kg)
-          character(len=15) :: dis_in      =   "            kg"           ! (kg)
-          character(len=15) :: dis_out     =   "            kg"           ! (kg)
-          character(len=15) :: solpst_in   =   "      mg pst"           ! (mg pst)
-          character(len=15) :: solpst_out  =   "       mg pst"           ! (mg pst)
-          character(len=15) :: sorbpst_in  =   "      mg pst"           ! (mg pst)
-          character(len=15) :: sorbpst_out =   "       mg pst"           ! (mg pst)
-          character(len=15) :: react       =   "    mg pst"           ! (mg pst)
-          character(len=15) :: volat       =   "           mg"           ! (mg)
-          character(len=15) :: setlpst     =   "    mg pst"           ! (mg pst)
-          character(len=15) :: resuspst    =   "           mg"           ! (mg)
-          character(len=15) :: difus       =   "    mg pst"           ! (mg pst)              
-          character(len=15) :: reactb      =   "        mg"           ! pst/sed (mg)
-          character(len=15) :: bury        =   "       mg"           ! pst bury (mg)
-          character(len=15) :: sedpest     =   "           mg"           ! pst in rivbed sed mg
-          character(len=15) :: bacp        =   "                "        ! persistent bact out
-          character(len=15) :: baclp       =   "                "        ! lpersistent bact out
-          character(len=15) :: met1        =   "                "        ! cmetal #1  
-          character(len=15) :: met2        =   "                "        ! cmetal #2
-          character(len=15) :: met3        =   "                "        ! cmetal #3
-          character(len=15) :: sand_in     =   "                "        ! sand in 
-          character(len=15) :: sand_out    =   "                "        ! sand out
-          character(len=15) :: silt_in     =   "                "        ! silt_in
-          character(len=15) :: silt_out    =   "                "        ! silt_out
-          character(len=15) :: clay_in     =   "                "        ! clay_in
-          character(len=15) :: clay_out    =   "                "        ! clay_out
-          character(len=15) :: smag_in     =   "                "        ! sm ag in  
-          character(len=15) :: smag_out    =   "                "        ! sm ag out
-          character(len=15) :: lag_in      =   "                "        ! lg ag in
-          character(len=15) :: lag_out     =   "                "        ! lg ag out
-          character(len=15) :: grvl_in     =   "                "        ! gravel in
-          character(len=15) :: grvl_out    =   "                "        ! gravel out
-          character(len=15) :: bnk_ero     =   "                "        ! bank erosion
-          character(len=15) :: ch_deg      =   "                "        ! channel degradation
-          character(len=15) :: ch_dep      =   "                "        ! channel deposition
-          character(len=15) :: fp_dep      =   "                "        ! flood deposition         
-          character(len=15) :: tot_ssed    =   "                "        ! total suspended sediments       
-      end type ch_header_units
-      type (ch_header_units) :: ch_hdr_units
       
       interface operator (+)
         module procedure ch_add

@@ -7,12 +7,13 @@
  
       character (len=80) :: titldum, header
       integer :: eof, imax
+      logical :: i_exist              !none       |check to determine if file exists
 
       eof = 0
       
       !read all export coefficient data
       inquire (file=in_exco%exco, exist=i_exist)
-      if (i_exist /= 0 .or. in_exco%exco /= "null") then
+      if (i_exist .or. in_exco%exco /= "null") then
         do
           open (107,file=in_exco%exco)
           read (107,*,iostat=eof) titldum

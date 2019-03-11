@@ -11,7 +11,7 @@
       character (len=16) :: namedum   !           |
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: itl                  !none       |counter
       integer :: mtl                  !           |
       
@@ -20,7 +20,7 @@
       mtl = 0
       
       inquire (file=in_parmdb%till_til, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%till_til == "null") then
+      if (.not. i_exist .or. in_parmdb%till_til == "null") then
           allocate (tilldb(0:0))
       else
       do

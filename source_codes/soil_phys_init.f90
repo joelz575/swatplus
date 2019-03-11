@@ -7,8 +7,6 @@
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ddrain(:)     |mm            |depth to the sub-surface drain
-!!    hru_dafr(:)   |km2/km2       |fraction of total watershed area contained
-!!                                 |in HRU
 !!    i             |none          |HRU number
 !!    rock(:)       |%             |percent of rock fragments in soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

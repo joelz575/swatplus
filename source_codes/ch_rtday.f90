@@ -14,7 +14,6 @@
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
 !!    pet_ch       |mm H2O        |potential evapotranspiration
-!!    rchstor(:)   |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -26,7 +25,6 @@
 !!    rttlc       |m^3 H2O       |transmission losses from reach on day
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
 !!    sdti        |m^3/s         |average flow on day in reach
-!!    rchstor(:)   |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~

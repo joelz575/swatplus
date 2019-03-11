@@ -1,10 +1,108 @@
-lum.dtl
- 1
+flo_con.dtl
+  11
 
  NAME   	        CONDS	ALTS	ACTS
 sat_buffer	         1	 1	 1
  VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1
 tile_flo 	        hru	  0	  null		  -	  	   0.0		        	>
  ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
-flow_control	        hru	  1	 buffer_tile	 min_flo    5.0	      0         null	 	y
+flow_control	        hrucon	  1	 buffer_tile	 min_flo    5.0	      0         null	 	y
+
+ NAME   	        CONDS	ALTS	ACTS
+aqu_only	         2	 1	 1
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1
+irr_demand	        hru	  2	  null		  -	  	   0.0		                >
+aqu_dep                 aqu       1       null            -               30.0                          <
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+irrigate	        hru	  2	 aquifer_only	 null        0	      0         null	 	y
+
+ NAME   	        CONDS	ALTS	ACTS
+cha_only	         2	 1	 1
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1
+irr_demand	        hru	  2	  null		  -	  	   0.0		        	>
+cha_flo                 cha       2     demand            -                1.1                          >
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+irrigate	        hru	  2	 channel_only	 null        0	      0         null	 	y
+
+ NAME   	        CONDS	ALTS	ACTS
+cha_aqu_backup	         3	 2	 2
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1	ALT2
+irr_demand	        hru	  2	  null		  -	  	   0.0		        	>	>
+cha_flo                 cha       2     demand            -                1.1                          >	<
+aqu_dep                 cha       2    aqu_dep            -               30.0                          -	<	
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+irrigate	        hru	  2	 channel	 null        0	      0         null	 	y	n
+irrigate	        hru	  2	 aquifer	 null        0	      0         null	 	n	y
+
+ NAME   	        CONDS	ALTS	ACTS
+res_only	         2	 1	 1
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1
+irr_demand	        hru	  2	  null		  -	  	   0.0		                >
+vol                     res       1       pvol            *                0.7                          >
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+irrigate	        hru	  2	 reservoir_only	 null        0	      0         null	 	y
+
+ NAME   	        CONDS	ALTS	ACTS
+res_aqu_backup	         2	 2	 2
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1	ALT2
+irr_demand	        hru	  2	  null		  -	  	   0.0		        	>	>
+vol                     res       1       pvol            *                0.7                          >	<
+aqu_dep                 cha       2    aqu_dep            -               30.0                          -	<	
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+irrigate	        hru	  2	 reservoir	 null        0	      0         null	 	y	n
+irrigate	        hru	  2	 aquifer	 null        0	      0         null	 	n	y
+
+ NAME   	        CONDS	ALTS	ACTS
+ch_diver_min_flo	 3	 2	 3
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1	ALT2
+irr_demand	        hru	  2	  null		  -	  	   0.0		        	-	>
+cha_flo                 cha       3    min+dmd            *                1.0                          <	>
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+irrigate	        hru	  2	 irrigate	 null         0	      0         null	 	n	y
+flow_control	        chcon	  1	 all_min	 all_flo      0	      0         null	 	y	n
+flow_control	        chcon	  1	 all_min	 rest_flo     0	      0         null	 	n	y
+
+ NAME   	        CONDS	ALTS	ACTS
+ch_div_part_dmd	 	 3	 3	 3
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1    ALT2    ALT3
+irr_demand	        hru	  2	  cha		  -	  	     1		        	-       >	=
+irr_demand	        hru	  3	  cha		  -	  	     2		        	-	=       >
+cha_flo                 cha       1    dmd_tot            -                0.0                          <	>       >
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+flow_control	        chacon	  1	 channel	 part_dmd    0	      0         null	 	y	n	n
+flow_control	        chacon	  1	 channel	 all_flo     0	      0         null	 	n	y	n
+flow_control	        chacon	  2	 channel	 all_flo     0	      0         null	 	n	n	y
+
+ NAME   	        CONDS	ALTS	ACTS
+ch_div_high_dmd	 	 3	 3	 3
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1    ALT2    ALT3
+irr_demand	        hru	  2	  cha		  -	  	     1		        	-       >	=
+irr_demand	        hru	  3	  cha		  -	  	     2		        	-	=       >
+cha_flo                 cha       1    dmd_tot            -                0.0                          <	>       >
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+flow_control	        chacon	  1	 channel	 high_dmd    0	      0         null	 	y	n	n
+flow_control	        chacon	  1	 channel	 all_flo     0	      0         null	 	n	y	n
+flow_control	        chacon	  2	 channel	 all_flo     0	      0         null	 	n	n	y
+
+ NAME   	        CONDS	ALTS	ACTS
+ch_div_part_right	 3	 3	 3
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1    ALT2    ALT3
+irr_demand	        hru	  2	  null		  -	  	   0.0		        	>       >	=
+irr_demand	        hru	  3	  null		  -	  	   0.0		        	>	=       >
+cha_flo                 cha       2    dmd_tot            -                0.0                          >	>       >
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+flow_control	        chacon	  1	 channel	 part_right  0	      0         null	 	y	n	n
+flow_control	        chacon	  1	 channel	 all_flo     0	      0         null	 	y	y	n
+flow_control	        chacon	  2	 channel	 all_flo     0	      0         null	 	y	n	y
+
+ NAME   	        CONDS	ALTS	ACTS
+ch_div_high_right 	 3	 3	 3
+ VAR		        OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      		ALT1    ALT2    ALT3
+irr_demand	        hru	  2	  null		  -	  	   0.0		        	>       >	=
+irr_demand	        wro	  1	  null		  -	  	   0.0		        	>	=       >
+cha_flo                 cha       2    dmd_tot            -                0.0                          >	>       >
+ ACT_TYP    	        OBJ    OBJ_NUM   NAME            OPTION    CONST    CONST2      FP         	OUTCOMES
+flow_control	        chacon	  1	 channel	 high_right  0	      0         null	 	y	n	n
+flow_control	        chacon	  1	 channel	 all_flo     0	      0         null	 	y	y	n
+flow_control	        chacon	  2	 channel	 all_flo     0	      0         null	 	y	n	y
 

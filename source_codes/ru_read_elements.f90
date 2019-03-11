@@ -12,7 +12,7 @@
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: nspu                 !           |
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: i                    !none       |counter
       integer :: max                  !           | 
       integer :: isp                  !none       |counter
@@ -34,7 +34,7 @@
       
       !!read data for each element in all subbasins
       inquire (file=in_ru%ru_ele, exist=i_exist)
-      if (i_exist /= 0 .or. in_ru%ru_ele /= "null") then
+      if (i_exist .or. in_ru%ru_ele /= "null") then
       do
         open (107,file=in_ru%ru_ele)
         read (107,*,iostat=eof) titldum
@@ -62,7 +62,7 @@
           read (107,*,iostat=eof) i
           backspace (107)
           read (107,*,iostat=eof) k, ru_elem(i)%name, ru_elem(i)%obtyp, ru_elem(i)%obtypno,     &
-                                ru_elem(i)%htyp, ru_elem(i)%frac, ru_elem(i)%idr
+                                ru_elem(i)%frac, ru_elem(i)%idr
           if (eof < 0) exit
         end do
         exit
@@ -71,7 +71,7 @@
               
       !read all delivery ratio data for subbasin deliveries
       inquire (file=in_ru%ru_dr, exist=i_exist)
-      if (i_exist /= 0 .or. in_ru%ru_dr /= "null") then
+      if (i_exist .or. in_ru%ru_dr /= "null") then
       do
         open (107,file=in_ru%ru_dr)
         read (107,*,iostat=eof) titldum
@@ -101,7 +101,7 @@
       
       !!read subbasin definition data -ie. hru"s in the subbasin
       inquire (file=in_ru%ru_def, exist=i_exist)
-      if (i_exist /= 0 .or. in_ru%ru_def /= "null") then
+      if (i_exist .or. in_ru%ru_def /= "null") then
       do
         open (107,file=in_ru%ru_def)
         read (107,*,iostat=eof) titldum
@@ -196,6 +196,8 @@
               ru_elem(ii)%obj = sp_ob1%ru + ru_elem(ii)%obtypno - 1
             case ("cha")   !channel
               ru_elem(ii)%obj = sp_ob1%chan + ru_elem(ii)%obtypno - 1
+            case ("res")   !reservoir
+              ru_elem(ii)%obj = sp_ob1%res + ru_elem(ii)%obtypno - 1
             case ("exc")   !export coefficient
               ru_elem(ii)%obj = sp_ob1%exco + ru_elem(ii)%obtypno - 1
             case ("dr")   !delivery ratio
@@ -207,21 +209,6 @@
             end select
             k = ru_elem(ii)%obj
             ob(k)%ru_tot = ob(k)%ru_tot + 1
-          end do
-          
-          do ii = ie1, ie2
-          select case (ru_elem(ii)%htyp)
-            case ("tot")   !total flow
-               ru_elem(ii)%htypno = 1
-            case ("rhg")   !recharge
-               ru_elem(ii)%htypno = 2              
-            case ("sur")   !surface
-               ru_elem(ii)%htypno = 3 
-            case ("lat")   !lateral
-               ru_elem(ii)%htypno = 4
-            case ("til")   !tile
-               ru_elem(ii)%htypno = 5  
-            end select
           end do
 
           deallocate (elem_cnt)  

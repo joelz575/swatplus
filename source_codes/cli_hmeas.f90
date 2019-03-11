@@ -13,7 +13,7 @@
       integer ::i                       !none      |counter
       integer :: imax                   !none      |determine max number for array (imax) and total number in file
       integer :: iyr                    !none      |number of years
-      integer :: i_exist                !none      |check to determine if file exists
+      logical :: i_exist                !none      |check to determine if file exists
       integer :: istep                  !units     |description
       integer :: iyr_prev               !none      |previous year
       integer :: iyrs                   !units     |description
@@ -23,7 +23,7 @@
 
       !! read all measured daily relative humidity data
       inquire (file=in_cli%hmd_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%hmd_cli == "null") then
+      if (.not. i_exist .or. in_cli%hmd_cli == "null") then
          allocate (hmd(0:0))
          allocate (hmd_n(0))
       else

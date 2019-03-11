@@ -12,7 +12,7 @@
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: iops                 !none       |counter   
       integer :: nauto                !           |end of loop
       integer :: iauto                !none       |counter
@@ -25,7 +25,7 @@
       !!   read mgtops.dat file
       !! calculate number of records in management 
       inquire (file=in_lum%management_sch, exist=i_exist)
-      if (i_exist == 0 .or. in_lum%management_sch == "null") then
+      if (.not. i_exist .or. in_lum%management_sch == "null") then
         allocate (sched(0:0))
       else
       do

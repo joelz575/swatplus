@@ -9,14 +9,14 @@
        character (len=80) :: titldum   !           |title of file
        character (len=80) :: header    !           |header of file
        integer :: eof                  !           |end of file
-       integer :: i_exist              !none       |check to determine if file exists
+       logical :: i_exist              !none       |check to determine if file exists
        integer :: mlsp                 !none       |end of loop
        integer :: i                    !none       |counter
        
        eof = 0
 
       inquire (file=in_chg%ls_parms_cal, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%ls_parms_cal == "null") then
+      if (.not. i_exist .or. in_chg%ls_parms_cal == "null") then
         allocate (ls_prms(0:0))	   	   
       else   
        do 

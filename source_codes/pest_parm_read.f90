@@ -6,13 +6,12 @@
       use pesticide_data_module
       
       implicit none
-     
-      !character (len=13) :: pestdbase
+
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: i                    !none       |counter
       integer :: num                  !           |
       integer :: ip                   !none       |counter 
@@ -21,9 +20,9 @@
       imax = 0
       
       inquire (file=in_parmdb%pest, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%pest == "null") then
+      if (.not. i_exist .or. in_parmdb%pest == "null") then
         allocate (pestdb(0:0))
-        allocate (pstcp(0:0))
+        allocate (pestcp(0:0))
       else
       do
         open (106,file=in_parmdb%pest)
@@ -38,7 +37,7 @@
           end do
           
         allocate (pestdb(0:imax))
-        allocate (pstcp(0:imax))
+        allocate (pestcp(0:imax))
 
         rewind (106)
         read (106,*) titldum
@@ -55,15 +54,15 @@
           !! P(t) = P_o*Exp(-kt) is used where P_o is the original amount of 
           !! pesticide. k can be calculate with the equation k = 0.693/hlife.
           !! decay_f or decay_s = Exp(-k)
-          if (pestdb(ip)%hlife_f > 0.) then
-            pstcp(ip)%decay_f = Exp(-.693 / pestdb(ip)%hlife_f)
+          if (pestdb(ip)%foliar_hlife > 0.) then
+            pestcp(ip)%decay_f = Exp(-.693 / pestdb(ip)%foliar_hlife)
           else
-            pstcp(ip)%decay_f = 0.
+            pestcp(ip)%decay_f = 0.
           endif
-          if (pestdb(ip)%hlife_s > 0.) then
-            pstcp(ip)%decay_s = Exp(-.693 / pestdb(ip)%hlife_s)
+          if (pestdb(ip)%soil_hlife > 0.) then
+            pestcp(ip)%decay_s = Exp(-.693 / pestdb(ip)%soil_hlife)
           else
-            pstcp(ip)%decay_s = 0.
+            pestcp(ip)%decay_s = 0.
           endif
 
         end do

@@ -3,29 +3,6 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the kill operation
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name         |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr        |none          |current year of simulation
-!!    ihru         |none          |HRU number
-!!    plt_pst(:,:)|kg/ha          |pesticide on plant foliage
-!!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name         |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    plt_pst(:,:) |kg/ha         |pesticide on plant foliage
-!!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : hru, ihru, ipl
@@ -96,8 +73,8 @@
 	end do
 
         do k = 1, cs_db%num_pests
-           soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + pcom(j)%pest(k)
-           pcom(j)%pest(k) = 0.
+           cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) !+ cs_pl(j)%pest(k)
+           cs_pl(j)%pest(k) = 0.
         end do
 
 	!! reset variables

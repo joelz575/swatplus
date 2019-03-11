@@ -77,12 +77,10 @@
       ob(icmd)%hd(3)%lag = lagyld(j)                  !! detached large aggregates
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(3)%pest(ipest)%sol = hpestb_d(j)%pest(ipest)%surq
-        obcs(icmd)%hd(3)%pest(ipest)%sor = hpestb_d(j)%pest(ipest)%sed
+        obcs(icmd)%hd(3)%pest(ipest) = hpestb_d(j)%pest(ipest)%surq + hpestb_d(j)%pest(ipest)%sed
       end do
       do ipath = 1, cs_db%num_paths
-        obcs(icmd)%hd(3)%path(ipath)%sol = 0
-        obcs(icmd)%hd(3)%path(ipath)%sor = 0
+        obcs(icmd)%hd(3)%path(ipath) = 0
       end do
       
       !recharge hydrograph (2)
@@ -90,12 +88,10 @@
       ob(icmd)%hd(2)%no3 = percn(j) * cnv_kg            !! recharge nitrate
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(2)%pest(ipest)%sol = hpestb_d(j)%pest(ipest)%perc
-        obcs(icmd)%hd(2)%pest(ipest)%sor = 0
+        obcs(icmd)%hd(2)%pest(ipest) = hpestb_d(j)%pest(ipest)%perc
       end do
       do ipath = 1, cs_db%num_paths
-        obcs(icmd)%hd(2)%path(ipath)%sol = 0
-        obcs(icmd)%hd(2)%path(ipath)%sor = 0
+        obcs(icmd)%hd(2)%path(ipath) = 0
       end do
       
       !lateral soil flow hydrograph (4)
@@ -103,12 +99,10 @@
       ob(icmd)%hd(4)%no3 = latno3(j) * cnv_kg
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(4)%pest(ipest)%sol = hpestb_d(j)%pest(ipest)%latq
-        obcs(icmd)%hd(4)%pest(ipest)%sor = 0
+        obcs(icmd)%hd(4)%pest(ipest) = hpestb_d(j)%pest(ipest)%latq
       end do
       do ipath = 1, cs_db%num_paths
-        obcs(icmd)%hd(4)%path(ipath)%sol = 0
-        obcs(icmd)%hd(4)%path(ipath)%sor = 0
+        obcs(icmd)%hd(4)%path(ipath) = 0
       end do
       
       !tile flow hydrograph (5)
@@ -116,12 +110,10 @@
       ob(icmd)%hd(5)%no3 = tileno3(j) * cnv_kg          !! tile flow nitrate 
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(5)%pest(ipest)%sol = hpestb_d(j)%pest(ipest)%tileq
-        obcs(icmd)%hd(5)%pest(ipest)%sor = 0
+        obcs(icmd)%hd(5)%pest(ipest) = hpestb_d(j)%pest(ipest)%tileq
       end do
       do ipath = 1, cs_db%num_paths
-        obcs(icmd)%hd(5)%path(ipath)%sol = 0
-        obcs(icmd)%hd(5)%path(ipath)%sor = 0
+        obcs(icmd)%hd(5)%path(ipath) = 0.
       end do
       
       !sum to obtain the total outflow hydrograph (1)
@@ -131,12 +123,11 @@
       end do
       !set constituents
       do ipest = 1, cs_db%num_pests
-        obcs(icmd)%hd(1)%pest(ipest)%sol = obcs(icmd)%hd(3)%pest(ipest)%sol + obcs(icmd)%hd(4)%pest(ipest)%sol + obcs(icmd)%hd(5)%pest(ipest)%sol
-        obcs(icmd)%hd(1)%pest(ipest)%sor = obcs(icmd)%hd(3)%pest(ipest)%sor
+        obcs(icmd)%hd(1)%pest(ipest) = obcs(icmd)%hd(2)%pest(ipest) + obcs(icmd)%hd(3)%pest(ipest) +    &
+                                           obcs(icmd)%hd(4)%pest(ipest) + obcs(icmd)%hd(5)%pest(ipest)
       end do
       do ipath = 1, cs_db%num_paths
-        obcs(icmd)%hd(1)%path(ipath)%sol = 0
-        obcs(icmd)%hd(1)%path(ipath)%sor = 0
+        obcs(icmd)%hd(1)%path(ipath) = 0
       end do
       
       !! set subdaily hydrographs

@@ -8,9 +8,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    curyr       |none          |current year of simulation
-!!    fsred(:)    |none          |reduction in bacteria loading from filter
-!!                               |strip
-!!    hru_dafr(:) |none          |fraction of watershed area in HRU
 !!    sedminpa(:) |kg P/ha       |amount of active mineral phosphorus sorbed to
 !!                               |sediment in surface runoff in HRU for day
 !!    sedminps(:) |kg P/ha       |amount of stable mineral phosphorus sorbed to
@@ -31,7 +28,7 @@
 
     use basin_module
     use hru_module, only : hru, surfq, ihru, sagyld, silyld, clayld, lagyld, sedorgn, surqno3, sedminpa,  &
-      sedminps, sedorgp, surqsolp, sedyld, sanyld, hru_dafr
+      sedminps, sedorgp, surqsolp, sedyld, sanyld
     use soil_module
     use constituent_mass_module
     use time_module
@@ -250,12 +247,6 @@
           hpestb_d(j)%pest(k)%surq = hpestb_d(j)%pest(k)%surq * (1. - surq_remove / 100.)
           hpestb_d(j)%pest(k)%sed = hpestb_d(j)%pest(k)%sed * (1. - sed_remove / 100.)
         end do
-
-!! compute filter strip reduction
-      !bactrop = bactrop * (1. - surq_remove / 100.)
-      !bactrolp = bactrolp * (1. - surq_remove / 100.)
-      !bactsedp = bactsedp * (1. - sed_remove / 100.)
-      !bactsedlp = bactsedlp * (1. - sed_remove / 100.)
 
 	end if
 

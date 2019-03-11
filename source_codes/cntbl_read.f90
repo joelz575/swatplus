@@ -12,14 +12,14 @@
       integer :: i                    !           | 
       integer :: imax                 !           |
       integer :: icno                 !none       |counter
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
                 
       eof = 0
       imax = 0
       
     !! read all curve number data from cn.tbl
       inquire (file=in_lum%cntable_lum, exist=i_exist)
-      if (i_exist == 0 .or. in_lum%cntable_lum == "null") then
+      if (.not. i_exist .or. in_lum%cntable_lum == "null") then
         allocate (cn(0:0))
       else
       do

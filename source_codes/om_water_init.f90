@@ -14,14 +14,14 @@
       character (len=80) :: header      !          |header of file
       integer :: eof                    !          |end of file
       integer :: imax                   !units     |description
-      integer :: i_exist                !          |check to determine if file exists
+      logical :: i_exist                !          |check to determine if file exists
       integer :: ichi                   !none      |counter
       
       eof = 0
       imax = 0
       
       inquire (file=in_init%om_water, exist=i_exist)
-      if (i_exist == 0 .or. in_init%om_water == "null") then
+      if (.not. i_exist .or. in_init%om_water == "null") then
         allocate (om_init_water(0:0))
         allocate (om_init_name(0:0))
       else   
@@ -47,6 +47,7 @@
       
        do ichi = 1, db_mx%om_water_init
          read (105,*,iostat=eof) titldum
+         if (eof < 0) exit
          backspace (105)
          read (105,*,iostat=eof) om_init_name(ichi), om_init_water(ichi)
          if (eof < 0) exit

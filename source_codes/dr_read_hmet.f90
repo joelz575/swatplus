@@ -9,13 +9,14 @@
  
       character (len=80) :: titldum, header
       integer :: eof, imax, ob1, ob2
+      logical :: i_exist              !none       |check to determine if file exists
 
       eof = 0
       imax = 0
       
       !read all delivery ratio data
       inquire (file=in_delr%hmet, exist=i_exist)
-      if (i_exist /= 0 .or. in_delr%hmet /= "null") then
+      if (i_exist .or. in_delr%hmet /= "null") then
         do
           open (107,file=in_delr%hmet)
           read (107,*,iostat=eof) titldum
@@ -44,8 +45,9 @@
           !read all export coefficient data
           do ii = 1, db_mx%dr_hmet
             read (107,*,iostat=eof) titldum
+            if (eof < 0) exit
             backspace (107)
-            read (107,*,iostat=eof) dr_hmet_name(ii), (dr_hmet(ii)%hmet(ihmet)%sol, dr_hmet(ii)%hmet(ihmet)%sor, ihmet = 1, cs_db%num_metals)   
+            read (107,*,iostat=eof) dr_hmet_name(ii), (dr_hmet(ii)%hmet(ihmet), ihmet = 1, cs_db%num_metals)   
             if (eof < 0) exit
           end do
           close (107)

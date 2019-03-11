@@ -9,13 +9,14 @@
  
       character (len=80) :: titldum, header
       integer :: eof, imax, ob1, ob2
+      logical :: i_exist              !none       |check to determine if file exists
 
       eof = 0
       imax = 0
       
       !read all export coefficient data
       inquire (file=in_exco%salt, exist=i_exist)
-      if (i_exist /= 0 .or. in_exco%salt /= "null") then
+      if (i_exist .or. in_exco%salt /= "null") then
         do
           open (107,file=in_exco%salt)
           read (107,*,iostat=eof) titldum
@@ -44,8 +45,9 @@
           !read all export coefficient data
           do ii = 1, db_mx%exco_salt
             read (107,*,iostat=eof) titldum
+            if (eof < 0) exit
             backspace (107)
-            read (107,*,iostat=eof) exco_salt_name(ii), (exco_salt(ii)%salt(isalt)%sol, exco_salt(ii)%salt(isalt)%sor, isalt = 1, cs_db%num_salts)   
+            read (107,*,iostat=eof) exco_salt_name(ii), (exco_salt(ii)%salt(isalt), isalt = 1, cs_db%num_salts)   
             if (eof < 0) exit
           end do
           close (107)

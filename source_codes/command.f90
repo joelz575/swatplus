@@ -68,48 +68,17 @@
           if (time%step > 0) ob(icmd)%tsin(:) = hz
           ob(icmd)%peakrate = 0.
           do in = 1, ob(icmd)%rcv_tot
-            !check to see if the object is in a subbasin
-            !if routing over an hru, it can only be in one subbasin
-            !element type should be an hru if routing over - if element is a channel use incoming directly
-            !CEAP uses representative 1st order streams as elements to define upland sub
-            if (ob(icmd)%ru_tot > 0) then
-              if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "hru_lte") then
-                ielem = ob(icmd)%elem
-                iru = ob(icmd)%ru(1)                            !can only be in one subbasin if routing over
-                iru = sp_ob1%ru + iru - 1                       !object number of the subbasin
-                iob = ob(iru)%obj_in(in)
-                ihyd = ob(iru)%ihtyp_in(in)
-                ht1 = ob(iru)%frac_in(in) * ob(iob)%hd(ihyd)    !fraction of hydrograph
-                ht1 = ru_elem(ielem)%frac * ht1                 !fraction of hru in subbasin
-                !fraction of hru in subbasin for constituents
-                if (cs_db%num_tot > 0) then
-                  hcs1 = ob(iru)%frac_in(in) * obcs(iob)%hd(ihyd)   !fraction of hydrograph
-                  hcs1 = ru_elem(ielem)%frac * hcs1                 !fraction of hru in subbasin
-                end if
-                ob(iru)%hin_d(in) = ob(iru)%hin_d(in) + ht1
-                obcs(iru)%hcsin_d(in) = obcs(iru)%hcsin_d(in) + hcs1
-              else
-                iob = ob(icmd)%obj_in(in)
-                ihyd = ob(icmd)%ihtyp_in(in)
-                ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
-                !fraction of constituents
-                if (cs_db%num_tot > 0) then
-                  hcs1 = ob(icmd)%frac_in(in) * obcs(iob)%hd(ihyd)
-                end if
-                ob(icmd)%peakrate = ob(iob)%peakrate
-              end if
-            else
-              iob = ob(icmd)%obj_in(in)
-              ihyd = ob(icmd)%ihtyp_in(in)
-              ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
-              ob(icmd)%peakrate = ob(iob)%peakrate
-              !fraction of constituents
-              if (cs_db%num_tot > 0) then
-                hcs1 = ob(icmd)%frac_in(in) * obcs(iob)%hd(ihyd)
-              end if
+            !incoming hydrograph and constituents
+            iob = ob(icmd)%obj_in(in)
+            ihyd = ob(icmd)%ihtyp_in(in)
+            ht1 = ob(icmd)%frac_in(in) * ob(iob)%hd(ihyd)
+            ob(icmd)%peakrate = ob(iob)%peakrate
+            !fraction of constituents
+            if (cs_db%num_tot > 0) then
+              hcs1 = ob(icmd)%frac_in(in) * obcs(iob)%hd(ihyd)
             end if
-            ob(icmd)%hin_d(in) = ht1
-            obcs(icmd)%hcsin_d(in) = hcs1    !for constituent hydrograph output
+            ob(icmd)%hin_d(in) = ht1        !for hydrograph output
+            obcs(icmd)%hcsin_d(in) = hcs1   !for constituent hydrograph output
             
             ! if routing to hru, need to save surf, lat and tile to route separately
             if (ob(icmd)%typ /= "hru" .and. ob(icmd)%typ /= "ru") then

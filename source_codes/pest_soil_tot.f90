@@ -3,24 +3,6 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the total amount of pesticide in the soil
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru          |none          |HRU number
-!!    plt_pst(:,:)  |kg/ha         |pesticide on plant foliage
-!!    pst_wof(:)    |none          |fraction of pesticide on foliage which
-!!                                 |is washed-off by a rainfall event
-!!    sol_pst(:,:,1)|kg/ha         |pesticide in first layer of soil
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    plt_pst(:,:)  |kg/ha         |pesticide on plant foliage
-!!    sol_pst(:,:,1)|kg/ha         |pesticide in first layer of soil
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
       use pesticide_data_module
       use hru_module, only : hru, ihru
       use soil_module
@@ -39,10 +21,10 @@
       if (cs_db%num_pests == 0) return
 
       do k = 1, cs_db%num_pests
-        hpestb_d(j)%pest(k)%plant = pcom(j)%pest(k)    !store for each plant in future
+        hpestb_d(j)%pest(k)%plant = cs_pl(j)%pest(k)    !store for each plant in future
         hpestb_d(j)%pest(k)%soil = 0.
         do ly = 1, soil(j)%nly
-          hpestb_d(j)%pest(k)%soil = hpestb_d(j)%pest(k)%soil + soil(j)%ly(ly)%pst(k)
+          hpestb_d(j)%pest(k)%soil = hpestb_d(j)%pest(k)%soil + cs_soil(j)%ly(ly)%pest(k)
         end do
       end do
 

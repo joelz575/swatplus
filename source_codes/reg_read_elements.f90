@@ -13,7 +13,7 @@
       character (len=80) :: titldum     !             |title of file
       character (len=80) :: header      !             |header of file
       integer :: eof                    !             |end of file
-      integer :: i_exist                !none         |check to determine if file exists
+      logical :: i_exist                !none         |check to determine if file exists
       integer :: imax                   !             |determine max number for array (imax) and total number in file
       integer :: mcal                   !             |
       integer :: mreg                   !             |
@@ -35,10 +35,11 @@
       
       imax = 0
       mcal = 0
+      mreg = 0
             
     !! setting up regions for landscape soft cal and/or output by landuse
     inquire (file=in_regs%def_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_reg /= "null") then
+    if (i_exist .or. in_regs%def_reg /= "null") then
       do
         open (107,file=in_regs%def_reg)
         read (107,*,iostat=eof) titldum
@@ -65,6 +66,7 @@
           if (eof < 0) exit
         end if
         read (107,*,iostat=eof) header
+        if (eof < 0) exit
  
       !! if no regions are input, don"t need elements
       if (mreg > 0) then
@@ -86,19 +88,20 @@
       db_mx%lsu_reg = mreg
       do i = 1, mreg
 
-        read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu
-        
+        read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-
+          if (eof < 0) exit
+          
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (lsu_reg(i)%num(1))
             lsu_reg(i)%num_tot = 1
             lsu_reg(i)%num(1) = elem_cnt(1)
+            deallocate (elem_cnt)
           else
           !! nspu > 1
           ielem = 0
@@ -162,7 +165,7 @@
 
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_reg, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_reg /= "null") then
+      if (i_exist .or. in_regs%ele_reg /= "null") then
       do
         open (107,file=in_regs%ele_reg)
         read (107,*,iostat=eof) titldum

@@ -4,10 +4,11 @@
       
      type irrigation_operation
         character (len=13) :: name
+        real :: amt_mm = 25.4           !! mm     |irrigation application amount
         real :: eff = 0.                !!        |irrigation in-field efficiency
         real :: surq = 0.               !! frac   |surface runoff ratio
-        real :: dep_mm = 0.             !! mm     |depth of application for subsurface
-        real :: salt = 0.               !! mg/kg  |concentration of salt in irrigation
+        real :: dep_mm = 0.             !! mm     |depth of application for subsurface irrigation
+        real :: salt = 0.               !! mg/kg  |concentration of total salt in irrigation
         real :: no3 = 0.                !! mg/kg  |concentration of nitrate in irrigation
         real :: po4 = 0.                !! mg/kg  |concentration of phosphate in irrigation
       end type irrigation_operation
@@ -108,6 +109,7 @@
       type grazing_operation
         character (len=13) :: name
         character (len=13) :: fertnm = " "
+        integer :: manure_id                             !fertilizer number from fertilizer.frt
         real :: eat = 0.              !!(kg/ha)/day      |dry weight of biomass removed 
                                       !!                    by grazing daily
         real :: tramp = 0.            !!(kg/ha)/day      |dry weight of biomass removed
@@ -116,6 +118,7 @@
         real :: biomin = 0.           !!kg/ha            |minimum plant biomass for grazing
       end type grazing_operation
       type (grazing_operation), dimension(:), allocatable :: grazeop_db
+      type (grazing_operation) :: graze
       
       type streetsweep_operation
         character (len=13) :: name
@@ -200,6 +203,8 @@
         character(len=35) :: name
         integer :: num_ops = 0
         integer :: num_autos = 0
+        integer :: first_op = 0
+        integer :: cur_op = 1
         type (management_ops), dimension (:), allocatable :: mgt_ops
         character(len=16), dimension (:), allocatable :: auto_name
         integer, dimension (:), allocatable :: num_db

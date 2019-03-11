@@ -13,14 +13,14 @@
       integer :: eof                     !              |end of file
       integer :: i                       !none          |counter
       integer :: imax                    !none          |counter 
-      integer :: i_exist                 !              |check to determine if file exists
+      logical :: i_exist                 !              |check to determine if file exists
       
       eof = 0
       imax = 0    
       
       !! read pathogen properties
       inquire (file=in_parmdb%pathcom_db,exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%pathcom_db == "null") then
+      if (.not. i_exist .or. in_parmdb%pathcom_db == "null") then
          allocate (path_db(0:0))
       else
       do
@@ -44,6 +44,7 @@
 
         do ibac = 1, db_mx%path
           read (107,*,iostat=eof) titldum
+          if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) path_db(ibac)
           if (eof < 0) exit

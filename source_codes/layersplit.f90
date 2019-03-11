@@ -3,6 +3,7 @@
       use hru_module, only : ihru, isep_ly
       use soil_module
       use organic_mineral_mass_module
+      use constituent_mass_module
       
       implicit none
       
@@ -33,8 +34,10 @@
         deallocate (soil(ihru)%phys)
         !!!deallocate (soil(ihru)%nut)
         deallocate (soil(ihru)%ly)
+        deallocate (cs_soil(ihru)%ly)
         nly1 = soil(ihru)%nly + 1                                                                                                         
         allocate (soil(ihru)%ly(nly1))
+        allocate (cs_soil(ihru)%ly(nly1))
         allocate (soil(ihru)%phys(nly1))
         allocate (soil1(ihru)%tot(nly1))
         allocate (soil1_init(ihru)%tot(nly1))

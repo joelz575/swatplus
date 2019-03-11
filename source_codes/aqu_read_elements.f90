@@ -13,7 +13,7 @@
       integer :: eof                    !             |end of file
       integer :: imax                   !             |determine max number for array (imax) and total number in file
       integer :: mcal                   !             |
-      integer :: i_exist                !none         |check to determine if file exists
+      logical :: i_exist                !none         |check to determine if file exists
       integer :: mreg                   !             |
       integer :: i                      !none         |counter
       integer :: k                      !             |
@@ -27,14 +27,13 @@
       integer :: ihru                   !none         |counter
       integer :: iaqu                   !none         |counter
       integer :: ireg                   !none         |counter
-           
-      
-      
+                
+      mreg = 0
       imax = 0
       mcal = 0
             
     inquire (file=in_regs%def_aqu, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_aqu /= "null") then
+    if (i_exist .or. in_regs%def_aqu /= "null") then
       do
         open (107,file=in_regs%def_aqu)
         read (107,*,iostat=eof) titldum
@@ -42,6 +41,7 @@
         read (107,*,iostat=eof) mreg
         if (eof < 0) exit
         read (107,*,iostat=eof) header
+        if (eof < 0) exit
         
         allocate (acu_reg(0:mreg)); allocate (acu_out(0:mreg)); allocate (acu_cal(0:mreg))
         !! allocate aquifer outputs for writing
@@ -49,19 +49,19 @@
 
       do i = 1, mreg
 
-        read (107,*,iostat=eof) k, acu_out(i)%name, acu_out(i)%area_ha, nspu
-        
+        read (107,*,iostat=eof) k, acu_out(i)%name, acu_out(i)%area_ha, nspu        
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, acu_out(i)%name, acu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-
+          if (eof < 0) exit
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (acu_out(i)%num(1))
             acu_out(i)%num_tot = 1
             acu_out(i)%num(1) = elem_cnt(1)
+            deallocate (elem_cnt)
           else
           !! nspu > 1
           ielem = 0
@@ -127,7 +127,7 @@
         
     !! setting up regions for aquifer soft cal and/or output by type
     inquire (file=in_regs%def_aqu_reg, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_aqu_reg /= "null") then
+    if (i_exist .or. in_regs%def_aqu_reg /= "null") then
       do
         open (107,file=in_regs%def_aqu)
         read (107,*,iostat=eof) titldum
@@ -135,17 +135,16 @@
         read (107,*,iostat=eof) mreg
         if (eof < 0) exit
         read (107,*,iostat=eof) header
-
+        if (eof < 0) exit
       do i = 1, mreg
 
-        read (107,*,iostat=eof) k, acu_reg(i)%name, acu_reg(i)%area_ha, nspu
-        
+        read (107,*,iostat=eof) k, acu_reg(i)%name, acu_reg(i)%area_ha, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, acu_reg(i)%name, acu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
-
+          if (eof < 0) exit
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (acu_reg(i)%num(1))
@@ -233,7 +232,7 @@
       
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_aqu, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_aqu /= "null") then
+      if (i_exist .or. in_regs%ele_aqu /= "null") then
       do
         open (107,file=in_regs%ele_aqu)
         read (107,*,iostat=eof) titldum
@@ -256,6 +255,7 @@
         db_mx%aqu_elem = imax
         do isp = 1, imax
           read (107,*,iostat=eof) i
+          if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, acu_elem(i)%name, acu_elem(i)%obtyp, acu_elem(i)%obtypno,      &
                                     acu_elem(i)%bsn_frac, acu_elem(i)%ru_frac, acu_elem(i)%reg_frac

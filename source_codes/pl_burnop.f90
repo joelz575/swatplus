@@ -13,7 +13,7 @@
       use basin_module
       use mgt_operations_module
       use organic_mineral_mass_module
-      use hru_module, only : cn2, ihru, cnop, ipl
+      use hru_module, only : cn2, ihru, ipl
       use soil_module
       use plant_module
       use carbon_module
@@ -23,7 +23,8 @@
       integer :: j                           !none          |counter
       integer, intent (in) :: jj             !none          |counter
       integer, intent (in) :: iplant         !              |plant number xwalked from hlt_db()%plant and plants.plt  
-      integer, intent (in) :: iburn          !julian date   |date of burning    
+      integer, intent (in) :: iburn          !julian date   |date of burning
+      real :: cnop                           !              |updated cn after fire
       real :: fr_burn                        !              |fraction burned
       real :: pburn                          !              |amount of phosphorus that burns - removed from plant
                                              !              |phosphorus and added to soil organic phosphorus 

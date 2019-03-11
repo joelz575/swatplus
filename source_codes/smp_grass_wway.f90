@@ -29,7 +29,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, surfq, sedyld, ihru, clayld, sanyld, silyld, sagyld, lagyld,  &
-        sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, peakr, rcharea, sdti
+        sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, peakr, sdti
       use constituent_mass_module
       use channel_velocity_module
       use output_ls_pesticide_module
@@ -53,6 +53,7 @@
       real :: sedint                 !mg		    |Sediment into waterway channel
       real :: cyin                   !              |
       real :: cych                   !              |
+      real :: rcharea
       real :: depnet                 !metric tons   |
       real :: deg                    !metric tons   |sediment reentrained in water by channel
                                      !              |degradation
@@ -223,12 +224,6 @@
           hpestb_d(j)%pest(k)%surq = hpestb_d(j)%pest(k)%surq * surq_frac
           hpestb_d(j)%pest(k)%sed = hpestb_d(j)%pest(k)%sed * (1. - sed_remove / 100.)
         end do
-
-!! compute bacteria reductions
-      !bactrop = bactrop * surq_frac
-      !bactrolp = bactrolp * surq_frac
-      !bactsedp = bactsedp * sed_frac
-      !bactsedlp = bactsedlp * sed_frac
 
       end if
       return

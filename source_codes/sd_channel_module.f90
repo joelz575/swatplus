@@ -10,7 +10,6 @@
       type swatdeg_hydsed_data
         character(len=16) :: name
         character(len=16) :: order
-        character(len=16) :: route_db = "" ! pointer to routing_nut_data from nutrients.cha
         real :: chw             !m         |channel width
         real :: chd             !m         |channel depth
         real :: chs             !m/m       |channel slope
@@ -23,6 +22,7 @@
         real :: chseq           !m/m       |equilibrium channel slope
         real :: d50             !mm        |channel median sediment size
         real :: clay            !%         |clay percent of bank and bed
+        real :: carbon          !%         |cabon percent of bank and bed
         real :: bd              !t/m3      |dry bulk density
         real :: chss            !          |channel side slope
         real :: bedldcoef       !          |percent of sediment entering the channel that is bed material
@@ -50,20 +50,10 @@
         character(len=16) :: hydc = ""
         character(len=16) :: sedc = ""
         character(len=16) :: nutc = ""
-        character(len=16) :: pestc = ""
-        character(len=16) :: pathc = ""
-        character(len=16) :: hmetc = ""
-        character(len=16) :: saltc = ""
-        character(len=16) :: tempc = ""
         integer :: init = 1
         integer :: hyd = 1
         integer :: sed = 1
         integer :: nut = 1
-        integer :: pest = 1
-        integer :: path = 1
-        integer :: hmet = 1
-        integer :: salt = 1
-        integer :: temp = 1
       end type swatdeg_datafiles
       type (swatdeg_datafiles), dimension(:),allocatable :: sd_dat
 
@@ -71,6 +61,8 @@
         character(len=13) :: name = "default"
         integer :: props
         integer :: obj_no
+        integer :: aqu_link = 0             !aquifer the channel is linked to
+        integer :: aqu_link_ch = 0          !sequential channel number in the aquifer
         character(len=16) :: region
         character(len=16) :: order
         real :: chw = 3.        !m          |channel width
@@ -84,13 +76,15 @@
         real :: hc_co = 0.      !m/m        |proportionality coefficient for head cut
         real :: hc_len = 0.     !m          |length of head cut
         real :: hc_hgt          !m          |headcut height
-        character (len=2) :: overbank  !    |0=inbank; 1=overbank flood
+        real, dimension (:), allocatable :: kd      !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+        real, dimension (:), allocatable :: aq_mix  ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+        character (len=2) :: overbank               !           |"ib"=in bank; "ob"=overbank flood
       end type swatdeg_channel_dynamic
-      type (swatdeg_channel_dynamic),dimension (:), allocatable :: sd_ch
-      type (swatdeg_channel_dynamic),dimension (:), allocatable :: sdch_init  
+      type (swatdeg_channel_dynamic), dimension (:), allocatable :: sd_ch
+      type (swatdeg_channel_dynamic), dimension (:), allocatable :: sdch_init  
               
       type sd_ch_output
-        real :: flo = 0.              ! (m^3/s)      !ave flow rate
+        real :: flo = 0.              ! (m^3/s)      !ave flow rate (flo_out)
         real :: peakr = 0.            ! (m^3/s)      |peak runoff rate
         real :: sed_in = 0.           ! (tons)       !total sed in
         real :: sed_out = 0.          ! (tons)       !total sed out
@@ -148,33 +142,6 @@
           character(len=15) :: hc_len     =  "         hc_len"        ! (m)
       end type sdch_header
       type (sdch_header) :: sdch_hdr
-      
-     type sdch_header_units
-          character (len=6) :: day        =  "      "
-          character (len=6) :: mo         =  "      "
-          character (len=6) :: day_mo     =  "      "
-          character (len=6) :: yrc        =  "      "
-          character (len=8) :: isd        =  "        "
-          character (len=8) :: id         =  "        "           
-          character (len=16) :: name      =  "                   "        
-          character(len=16) :: flo        =  "           m^3/s"       ! (m^3/s)
-          character(len=15) :: peakr      =  "          m^3/s"        ! (m^3/s)
-          character(len=15) :: sed_in     =  "           tons"        ! (tons)
-          character(len=15) :: sed_out    =  "           tons"        ! (tons)
-          character(len=15) :: washld     =  "           tons"        ! (tons)
-          character(len=15) :: bedld      =  "           tons"        ! (tons)
-          character(len=15) :: dep        =  "           tons"        ! (tons)
-          character(len=15) :: deg_btm    =  "           tons"        ! (tons)
-          character(len=15) :: deg_bank   =  "           tons"        ! (tons)
-          character(len=15) :: hc_sed     =  "           tons"        ! (tons)
-          character(len=15) :: width      =  "              m"        ! (m)
-          character(len=15) :: depth      =  "              m"        ! (m)
-          character(len=15) :: slope      =  "            m/m"        ! (m/m)
-          character(len=15) :: deg_btm_m  =  "              m"        ! (m)
-          character(len=15) :: deg_bank_m =  "              m"        ! (m)
-          character(len=15) :: hc_len     =  "              m"        ! (m)
-      end type sdch_header_units
-      type (sdch_header_units) :: sdch_hdr_units
      
       interface operator (+)
         module procedure chsd_add

@@ -7,9 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fimp(:)      |fraction      |fraction of HRU area that is
-!!                                |impervious (both directly and
-!!                                |indirectly connected)
 !!    hru_km(:)    |km^2          |area of HRU in square kilometers
 !!    ihru         |none          |HRU number
 !!    iregion(:)      |none          |precipitation category:

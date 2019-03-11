@@ -107,7 +107,7 @@
         case ("pest")
           !xwalk fert name with fertilizer data base
           do idb = 1, db_mx%pestparm
-            if (sched(isched)%mgt_ops(iop)%op_char == pestdb(idb)%pestnm) then
+            if (sched(isched)%mgt_ops(iop)%op_char == pestdb(idb)%name) then
               sched(isched)%mgt_ops(iop)%op1 = idb
               exit
             endif

@@ -26,7 +26,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use mgt_operations_module
-      use hru_module, only : hru, nop, yr_skip, phubase, ihru, ipl
+      use hru_module, only : hru, yr_skip, phubase, ihru, ipl
       use plant_module
       use time_module
       
@@ -41,7 +41,7 @@
       isched = hru(j)%mgt_ops
       if (sched(isched)%num_ops < 1) return
       
-        mgt = sched(isched)%mgt_ops(nop(j))
+        mgt = sched(isched)%mgt_ops(sched(isched)%cur_op)
 
         do while(mgt%jday > 0 .and. time%day == mgt%jday)
           call mgt_sched (isched)
@@ -66,11 +66,10 @@
           end if
           if (dorm_flag == 1) aphu = 999.
           if (mgt%op == "skip") then
-	      call mgt_sched (isched)
+	        call mgt_sched (isched)
           end if
           if (yr_skip(j) == 1) exit
         end do
          
       return
-1000  format (4i10,a10)
       end subroutine mgt_operatn

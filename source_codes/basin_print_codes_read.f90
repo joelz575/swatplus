@@ -10,14 +10,14 @@
       character (len=80) :: titldum    !              |title of file
       character (len=16) :: name       !              |name
       integer :: eof                   !              |end of file
-      integer :: i_exist               !              |check to determine if file exists
+      logical :: i_exist               !              |check to determine if file exists
       integer :: ii                    !none          |counter
        
       eof = 0
 
       !! read time codes
       inquire (file=in_sim%prt, exist=i_exist)
-      if (i_exist /= 0 .or. in_sim%prt /= "null") then
+      if (i_exist .or. in_sim%prt /= "null") then
       do
         open (107,file=in_sim%prt)
         read (107,*,iostat=eof) titldum

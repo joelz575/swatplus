@@ -14,7 +14,7 @@
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       
       mhydrol = 0
       eof = 0
@@ -22,7 +22,7 @@
       
       !! read all data from hydrol.dat
       inquire (file=in_hyd%hydrol_hyd, exist=i_exist)
-      if (i_exist == 0.or. in_hyd%hydrol_hyd == "null") then
+      if (.not. i_exist .or. in_hyd%hydrol_hyd == "null") then
         allocate (hyd_db(0:0))
       else
         do

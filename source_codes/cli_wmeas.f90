@@ -13,7 +13,7 @@
       integer :: i                    !none       |counter  
       integer :: imax                 !none       |ending of loop
       integer :: iyr                  !none       |number of years 
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: istep                !           |
       integer :: iyr_prev              !none      |previous year
       integer :: iyrs                 !           |
@@ -23,7 +23,7 @@
 
       !! read all measured daily solar radiation data
       inquire (file=in_cli%wnd_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%wnd_cli == "null") then
+      if (.not. i_exist .or. in_cli%wnd_cli == "null") then
          allocate (wnd(0:0))
          allocate (wnd_n(0))
       else
@@ -70,7 +70,7 @@
         if (eof < 0) exit
         read (108,*,iostat=eof) header
         if (eof < 0) exit
-        read (108,*,iostat=eof) wnd(i)%nbyr, tmp(i)%tstep, wnd(i)%lat, wnd(i)%long,     &
+        read (108,*,iostat=eof) wnd(i)%nbyr, wnd(i)%tstep, wnd(i)%lat, wnd(i)%long,     &
                                wnd(i)%elev
         if (eof < 0) exit
        

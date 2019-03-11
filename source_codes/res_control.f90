@@ -48,9 +48,6 @@
       if (time%yrc > res_hyd(jres)%iyres .or. (time%mo >= res_hyd(jres)%mores   &
                                    .and. time%yrc == res_hyd(jres)%iyres)) then
 
-        !! Adjust Reservoir Storage for Irrigation Diversions
-        !call irr_res
-
         !! perform reservoir water/sediment balance
         idat = res_ob(jres)%props
         ihyd = res_dat(idat)%hyd
@@ -136,27 +133,6 @@
           res_out_d(jres)%chla = chlao
           res_in_d(jres)%cbod = cbodi
           res_out_d(jres)%cbod = cbodo
-
-          !res_d(jres)%area_ha = res_ob(jres)%area_ha
-          !res_d(jres)%ev = resev / 10000.           !m^3 -> ha-m
-          !res_d(jres)%sep = ressep / 10000.         !m^3 -> ha-m
-          !res_d(jres)%pcp = respcp / 10000.         !m^3 -> ha-m
-          !res_d(jres)%sedcon = sedcon
-          !res_d(jres)%reactw = reactw
-          !res_d(jres)%volatpst = volatpst
-          !res_d(jres)%setlpst = setlpst
-          !res_d(jres)%resuspst = resuspst
-          !res_d(jres)%difus = difus
-          !res_d(jres)%reactb = reactb
-          !res_d(jres)%pesto = pesto
-          !res_d(jres)%pstcon = pstcon
-          !res_d(jres)%spstcon = spstcon
-          !res_d(jres)%orgpc = orgpc
-          !res_d(jres)%solpc = solpc
-          !res_d(jres)%orgnc = orgnc
-          !res_d(jres)%no3c = no3c
-          !res_d(jres)%no2c = no2c
-          !res_d(jres)%nh3c = nh3c
         end if             
         
       else

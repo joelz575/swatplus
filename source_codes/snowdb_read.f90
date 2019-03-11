@@ -11,7 +11,7 @@
       character (len=13) :: file      !           |
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: i                    !none       |counter
       integer :: msno                 !           |
       integer :: isno                 !none       |counter
@@ -23,7 +23,7 @@
       
       !! read snow database data from snow.sno
       inquire (file=in_parmdb%snow, exist=i_exist)
-      if (i_exist == 0 .or. in_parmdb%snow == "null") then
+      if (.not. i_exist .or. in_parmdb%snow == "null") then
         allocate (snodb(0:0))
       else 
       do 

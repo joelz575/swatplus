@@ -71,6 +71,7 @@
       
       character(len=16), dimension(:), allocatable :: om_init_name
       
+      type (hyd_output), dimension(:),allocatable :: aqu
       type (hyd_output), dimension(:),allocatable :: res
       type (hyd_output), dimension(:),allocatable :: wet
       type (hyd_output) :: resz
@@ -130,7 +131,7 @@
       type (hyd_output) :: bch_out_y
       type (hyd_output) :: bch_out_a
       type (hyd_output) :: chomz
-      
+
       type object_output
         character (len=3) :: name
         character (len=3) :: obtyp     !! object type: hru,hlt,hs,rxc,dr,out,sdc
@@ -177,6 +178,7 @@
       type object_connectivity
         character(len=16) :: name = "default"
         character(len=8) :: typ = " "   !object type - ie hru, hru_lte, sub, chan, res, recall
+        integer :: nhyds                !hru=5, chan=3 - see type hd_tot for each object
         real :: lat                     !latitude (degrees)
         real :: long                    !longitude (degrees)
         real :: elev = 100.             !elevation (m)
@@ -204,7 +206,6 @@
         integer :: flood_ch_lnk = 0     !channel the landscape unit is linked to
         integer :: flood_ch_elem = 0    !landscape unit number - 1 is nearest to stream
         integer :: flood_frac = 0       !fraction of flood flow assigned to the object
-        integer :: wr_ob = 0            !1=element in a water rights object; 0=not an element
         character (len=3), dimension(:), allocatable :: obtyp_out   !outflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
         integer, dimension(:), allocatable :: obtypno_out           !outflow object type name
         integer, dimension(:), allocatable :: obj_out               !outflow object
@@ -228,6 +229,8 @@
         type (hyd_output), dimension(:),allocatable :: hd                   !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
         type (hyd_output), dimension(:,:),allocatable :: ts                 !subdaily hydrographs
         type (hyd_output), dimension(:),allocatable :: tsin                 !inflow subdaily hydrograph
+        type (hyd_output) :: supply                                         !water supply allocation
+        real :: demand                                                      !water irrigation demand (ha-m)
         integer :: day_cur = 1                                              !current hydrograph day in ts
         integer :: day_max                                                  !maximum number of days to store the hydrograph
         real :: peakrate                                                    !peak flow rate during time step - m3/s
@@ -255,25 +258,16 @@
         real :: amount                          !0 for irr demand; ha-m for min_flo; frac for min_frac
         integer :: rights                       !0-100 scale
       end type water_rights_elements
-      
-      !water rights objects
-      type water_rights_data
-        character (len=16) :: name
-        character (len=16) :: rule_typ          !points to ruleset to allocate water within the water rights object
-        integer :: rights                       !0-100 scale
-        integer :: num = 0                      !number of objects
-        type (water_rights_elements), dimension (:), allocatable :: elem    !irrigation water
-      end type water_rights_data
-      type (water_rights_data),dimension(:),allocatable:: wr_ob
-      
+
       !water allocation
-      type water_allocation
-        integer :: typ = 0                                                  !water rights object = 1; hru unlimited source = 0
-        real, dimension (:), allocatable :: demand                          !m^3    |water demand for each element
+      type irrigation_water_transfer
+        real :: demand = 0.                     !irrigation demand          |ha-m
+        real :: applied = 0.                    !irrigation applied         |mm
+        real :: runoff = 0.                     !irrigation surface runoff  |mm
         !hyd_output units are in mm and mg/L
-        type (hyd_output), dimension (:), allocatable :: hd                 !irrigation water
-      end type water_allocation
-      type (water_allocation),dimension(:),allocatable:: wat_allo
+        type (hyd_output) :: water              !irrigation water
+      end type irrigation_water_transfer
+      type (irrigation_water_transfer),dimension(:),allocatable:: irrig         !dimension by hru
       
       !recall hydrograph inputs
       type recall_hydrograph_inputs
@@ -285,7 +279,7 @@
          type (hyd_output), dimension (:,:), allocatable :: hd     !export coefficients
       end type recall_hydrograph_inputs
       type (recall_hydrograph_inputs),dimension(:),allocatable:: recall
-      
+
       type spatial_objects
         integer :: objs = 0      !number of objects or 1st object command
         integer :: hru = 0       !1-number of hru"s or 1st hru command
@@ -307,8 +301,28 @@
         integer :: herd = 0      !18-number of herds
         integer :: wro = 0       !19-number of water rights
       end type spatial_objects
-      type (spatial_objects) :: sp_ob
-      type (spatial_objects) :: sp_ob1
+      type (spatial_objects) :: sp_ob       !total number of the object
+      type (spatial_objects) :: sp_ob1      !first sequential number of the object
+            
+      type object_total_hydrographs
+        integer :: hru = 5          !1=total 2=recharge 3=surface 4=lateral 5= tile
+        integer :: hru_lte = 5      !1=total 2=recharge 3=surface 4=lateral 5= tile
+        integer :: ru = 5           !1=total 2=recharge 3=surface 4=lateral 5= tile
+        integer :: modflow = 1      !1=total
+        integer :: aqu = 2          !1=return flow 3= deep perc
+        integer :: chan = 3         !1=total 2=recharge 3=overbank
+        integer :: res = 2          !1=total 2=recharge 
+        integer :: recall = 1       !1=total
+        integer :: exco = 2         !1=surface 2=groundwater
+        integer :: dr = 2           !1=surface 2=groundwater
+        integer :: pump = 1         !1=total
+        integer :: outlet = 1       !1=total
+        integer :: chandeg = 3      !1=total 2=recharge 3=overbank
+        integer :: aqu2d = 2        !1=return flow 3= deep perc
+        integer :: herd = 1
+        integer :: wro = 1
+      end type object_total_hydrographs
+      type (object_total_hydrographs) :: hd_tot
       
       type routing_unit_data
         character(len=16) :: name
@@ -322,8 +336,8 @@
         integer :: obj = 1              !object number
         character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
         integer :: obtypno = 0          !2-number of hru_lte"s or 1st hru_lte command
-        character (len=3) :: htyp       !hydrograph type (1=total, 2=surface, etc)
-        integer :: htypno               !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
+        !character (len=3) :: htyp       !hydrograph type (1=total, 2=surface, etc)
+        !integer :: htypno               !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
         real :: frac = 0                !fraction of element in ru (expansion factor)
         integer :: idr = 0               !points to dr"s in delratio.dat
         type (hyd_output), dimension (:), allocatable :: dr    !calculated del ratios for element
@@ -348,13 +362,26 @@
       end type channel_surface_elements
       type (channel_surface_elements),dimension(:),allocatable :: ch_sur
       
-      !channel-aquifer linkage for 2D groundwater flow model
+      !channel data for channel-aquifer linkage for geomorphic base flow model
+      type geomorphic_baseflow_channel_data
+        !linked list to sort the flow duration curves
+        real :: area = 0.           !drainage area of the channel
+        real :: len = 0.            !length of the channel
+        real :: len_left = 0.       !fraction of chan length left when channel becomes non-contributing
+        real :: flo_fr = 0.         !fraction of aquifer baseflow for each channel
+      end type geomorphic_baseflow_channel_data
+      type (geomorphic_baseflow_channel_data),dimension(:),allocatable :: aqu_cha       !unsorted
+      
+      !channel-aquifer linkage for geomorphic base flow model
       type channel_aquifer_elements
         character(len=16) :: name
-        integer :: num = 0                               !number of elements
-        integer, dimension(:), allocatable :: aqu_no     !aquifer number
+        integer :: num_tot = 0                          !number of elements
+        integer, dimension(:), allocatable :: num       !channel numbers
+        real :: len_tot                                 !total length of channels in aquifer (km)
+        type (hyd_output) :: hd                         !baseflow hydrograph for the aquifer
+        type (geomorphic_baseflow_channel_data), dimension(:),allocatable :: ch
       end type channel_aquifer_elements
-      type (channel_aquifer_elements),dimension(:),allocatable :: ch_aqu
+      type (channel_aquifer_elements),dimension(:),allocatable :: aq_ch         !sorted by drainage area (smallest first)
       
       !export coefficient is hyd_output type but not part of an object 
       type (hyd_output), dimension(:), allocatable :: dr          !delivery ratio for objects- chan, res, lu
@@ -384,67 +411,7 @@
         character (len=15) :: temp =    "           temp"        !! deg c        |temperature
       end type hyd_header
       type (hyd_header) :: hyd_hdr
-      
-        type hyd_header_units  !pts (point source)/deposition/ru (routing_unit) files output uses this units header
-        character (len=11) :: day    =  "           "
-        character (len=12) :: mo     =  "            "
-        character (len=12) :: day_mo =  "            "
-        character (len=13) :: yrc    =  "            "
-        character (len=12) :: name   =  "            "
-        character (len=6) :: otype   =  "      "    
-        character (len=17) :: flo    =  "              ha-m"     !! m^3          |volume of water
-        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
-        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
-        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
-        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
-        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
-        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
-        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
-        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
-        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
-        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
-        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
-        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
-        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
-        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
-        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
-        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
-        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature
-      end type hyd_header_units
-      type (hyd_header_units) :: hyd_hdr_units
-      
-      type hyd_header_units2  !hydin/hydout files uses this units header 
-        character (len=11) :: day    =  "           "
-        character (len=12) :: mo     =  "            "
-        character (len=12) :: day_mo =  "            "
-        character (len=13) :: yrc    =  "            "
-        character (len=12) :: name   =  "            "
-        character (len=6) :: otype   =  "      "    
-        character (len=13) :: iotyp  =  "            "
-        character (len=9) :: iotypno =  "         "
-        character (len=8) :: hydio   =  "        "
-        character (len=8) :: objno   =  "        "
-        character (len=17) :: flo    =  "              ha-m"     !! ha-m         |volume of water
-        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
-        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
-        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
-        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
-        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
-        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
-        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
-        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
-        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
-        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
-        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
-        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
-        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
-        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
-        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
-        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
-        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature
-      end type hyd_header_units2
-      type (hyd_header_units2) :: hyd_hdr_units2
-            
+                     
       type hyd_header_time                                       
         character (len=11) :: day    =  "       jday"
         character (len=12) :: mo     =  "         mon"

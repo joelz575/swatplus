@@ -10,11 +10,6 @@
 !!    rch_bactlp(:)    |# cfu/100ml |less persistent bacteria stored in reach
 !!    rch_bactp(:)     |# cfu/100ml |persistent bacteria stored in reach
 !!    rchwtr           |m^3 H2O     |water stored in reach at beginning of day
-
-!!    wdlprch          |1/day       |Die-off factor for less persistent bacteria
-!!                                  |in streams
-!!    wdprch           |1/day       |Die-off factor for persistent bacteria in 
-!!                                  |streams
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -89,8 +84,7 @@
           !ipath_db = sol_plt_ini(isp_ini)%path
       
           !! total pathogen mass in reach
-          path_tot = (obcs(iob)%hd(1)%path(ipath)%sol + obcs(iob)%hd(1)%path(ipath)%sor) *    &
-                                                ob(icmd)%hin%flo + ch(jrch)%bactp * rchwtr
+          path_tot = obcs(iob)%hd(1)%path(ipath) * ob(icmd)%hin%flo + ch(jrch)%bactp * rchwtr
 
           !! compute pathogen die-off
           tday = rttime / 24.0            !! calculate flow duration
@@ -104,9 +98,9 @@
   	      !! change made by CS while running region 4; date 2 jan 2006	
 	      if (path_tot < 1.e-6) path_tot = 0.0 
           if (netwtr >= 1.) then
-            ch_water(jrch)%path(ipath)%sol = path_tot / netwtr
+            ch_water(jrch)%path(ipath) = path_tot / netwtr
           else
-            ch_water(jrch)%path(ipath)%sol = 0.
+            ch_water(jrch)%path(ipath) = 0.
           end if
 
         end do

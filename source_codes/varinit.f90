@@ -25,8 +25,6 @@
 !!                               |that can occur on day in HRU
 !!    es_day      |mm H2O        |actual amount of evaporation (from soil) that
 !!                               |occurs on day in HRU
-!!    gwseep      |mm H2O        |amount of water recharging deep aquifer on 
-!!                               |current day
 !!    hhqday(:)   |mm H2O        |surface runoff from HRU for every hour in day
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates into
 !!                               |soil (enters soil)
@@ -62,8 +60,8 @@
 
       use time_module
       use hru_module, only : hhqday, ihru, albday,    &
-        bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp, gwseep,     &
-        hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, no3pcp, peakr,  &
+        bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp,      &
+        hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, peakr,  &
         pet_day, qday, qtile, sepday, snoev, snofall, snomlt,             &
         sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, fixn 
       use soil_module
@@ -105,11 +103,9 @@
         fixn = 0.
         grazn = 0.
         grazp = 0.
-        gwseep = 0.
         if (time%step > 0)  hhqday(j,:) = 0.
         inflpcp = 0.
         lyrtile = 0.
-        no3pcp = 0.
         peakr = 0.
         pet_day = 0.
         qday = 0.

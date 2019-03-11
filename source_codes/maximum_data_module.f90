@@ -52,8 +52,6 @@
         integer :: cal_upd = 0        !! none     |max number of calibration parameter updates
         integer :: sched_up = 0       !! none     |max number of scheduled updates (paramters, structures, land_use_mgt)
         integer :: cond_up = 0        !! none     |max number of conditional updates (paramters, structures, land_use_mgt)
-        integer :: wr_ob = 0          !! none     |max number of water rights objects
-        integer :: irr_nosrc = 0      !! none     |max number of hru"s with unlimited water source for irrigation
         integer :: d_tbl = 0          !! none     |max number of decision tables
         integer :: dtbl_lum = 0       !! none     |max number of decision tables
         integer :: dtbl_res = 0       !! none     |max number of decision tables
@@ -63,7 +61,6 @@
         integer :: pathcom = 0
         integer :: hmetcom = 0
         integer :: saltcom = 0
-        integer :: res = 0            !! none     |max number of reservoir data
         integer :: lsu_elem = 0
         integer :: lsu_out = 0        !! none     |max number of landscape regions for output
         integer :: reg_elem = 0
@@ -86,7 +83,6 @@
         integer :: res_hyd
         integer :: res_sed
         integer :: res_nut
-        integer :: res_pst
         integer :: res_weir
         integer :: wet_dat       
         integer :: wet_hyd
@@ -96,7 +92,6 @@
         integer :: ch_hyd
         integer :: ch_sed
         integer :: ch_nut
-        integer :: ch_pst
         integer :: ch_temp
         integer :: path
         integer :: exco
@@ -124,6 +119,7 @@
         integer :: ch_lte
         integer :: om_water_init
         integer :: sdc_dat
+        integer :: aqudb
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
                                  

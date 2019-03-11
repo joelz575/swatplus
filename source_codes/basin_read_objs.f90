@@ -18,13 +18,13 @@
       integer :: npsu                 !            |
       integer :: isp                  !            |counter
       integer :: eof                  !            |end of file
-      integer :: i_exist              !            |check to determine if file exists
+      logical :: i_exist              !            |check to determine if file exists
       
       eof = 0
       
       !! read number of spatial objects from obj_connect.dat
       inquire (file=in_sim%object_cnt, exist=i_exist)
-      if (i_exist == 0 .or. in_sim%object_cnt == "null") then
+      if (.not. i_exist .or. in_sim%object_cnt == "null") then
           allocate (ob(0:0))
           allocate (obcs(0:0))
           allocate (obom(0:0))

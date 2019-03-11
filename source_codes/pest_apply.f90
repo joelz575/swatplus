@@ -9,12 +9,7 @@
 !!    ap_ef(:)     |none             |application efficiency (0-1)
 !!    drift(:)     |kg               |amount of pesticide drifting onto main 
 !!                                   |channel in subbasin
-!!    driftco(:)   |none             |coefficient for pesticide drift directly
-!!                                   |onto stream
 !!    hru_km(:)    |km**2            |area of HRU in square kilometers
-!!    plt_pst(:,:) |kg/ha            |pesticide on plant foliage
-!!    pst_dep      |kg/ha          |depth of pesticide in soil
-!!    sol_pst(:,:,1)|kg/ha           |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -22,8 +17,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    drift(:)    |kg            |amount of pesticide drifting onto main 
 !!                               |channel in subbasin
-!!    plt_pst(:,:)|kg/ha         |pesticide on plant foliage
-!!    sol_pst(:,:,1)|kg/ha       |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    SWAT: Erfc
@@ -32,10 +25,11 @@
 
       use mgt_operations_module
       use basin_module
-      use hru_module, only : hru, driftco, pst_dep
+      use hru_module, only : hru
       use soil_module
       use plant_module
       use output_ls_pesticide_module
+      use constituent_mass_module
       
       implicit none
       
@@ -46,6 +40,7 @@
       integer, intent (in) :: ipest      !none          |counter
       integer, intent (in) :: pestop     !              | 
       real, intent (in) :: pest_kg       !kg/ha         |amount of pesticide applied 
+      real :: pst_dep                    !kg/ha          |depth of pesticide in soil
       integer :: nly                     !none          |counter
 
       j = jj
@@ -60,12 +55,12 @@
        do nly = 1, soil(j)%nly
          if (nly == 1) then
            if (pst_dep < soil(j)%phys(nly)%d) then
-             soil(j)%ly(1)%pst(k) =  soil(j)%ly(1)%pst(k) + pest_kg
+             cs_soil(j)%ly(1)%pest(k) =  cs_soil(j)%ly(1)%pest(k) + pest_kg
              exit
            endif
          else
            if (pst_dep>soil(j)%phys(nly-1)%d .and. pst_dep < soil(j)%phys(nly)%d)then
-             soil(j)%ly(nly)%pst(k) = soil(j)%ly(nly)%pst(k) + pest_kg
+             cs_soil(j)%ly(nly)%pest(k) = cs_soil(j)%ly(nly)%pest(k) + pest_kg
              exit
            end if
          end if
@@ -77,12 +72,11 @@
       if (gc < 0.) gc = 0.
 
       !! update pesticide levels on ground and foliage
-      pcom(j)%pest(k) = pcom(j)%pest(k) + gc * pest_kg
-      soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + (1. - gc) * pest_kg
+      cs_pl(j)%pest(k) = cs_pl(j)%pest(k) + gc * pest_kg
+      cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) + (1. - gc) * pest_kg
       hpestb_d(j)%pest(k)%apply_f = gc * pest_kg
       hpestb_d(j)%pest(k)%apply_s = (1. - gc) * pest_kg
       
-      !! added endif for pesticide incorporation 3/31/08 gsm
       endif
 
       return

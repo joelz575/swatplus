@@ -16,8 +16,7 @@
         implicit none 
         
         integer :: ihru            !none          !counter       
-        integer :: npmx            !none          |total number of pesticides
-        integer :: mpst            !none          |max number of pesticides used in wshed       
+        integer :: npmx            !none          |total number of pesticides     
         integer :: ly              !none          |counter
         integer :: ipest           !none          |counter
         integer :: ipest_db        !              | 
@@ -25,27 +24,26 @@
         real :: wt1                !              |
         real :: solpst             !              |
         
-      !! allocate pesticides
+      !! allocate hru pesticides
       do ihru = 1, sp_ob%hru
         npmx = cs_db%num_pests
         if (npmx > 0) then
           do ly = 1, soil(ihru)%nly
-            allocate (soil(ihru)%ly(ly)%kp(npmx))
-            allocate (soil(ihru)%ly(ly)%pst(npmx))
+            allocate (cs_soil(ihru)%ly(ly)%pest(npmx))
           end do
-          allocate (pcom(ihru)%pest(npmx))
+          allocate (cs_pl(ihru)%pest(npmx))
+          allocate (cs_irr(ihru)%pest(npmx))
         end if
 
         isp_ini = hru(ihru)%dbs%soil_plant_init
         ipest_db = sol_plt_ini(isp_ini)%pest
         do ipest = 1, npmx
-          hpestb_d(ihru)%pest(ipest)%plant = pesti_db(ipest_db)%pesti(ipest)%plt
-          pcom(ihru)%pest(ipest) = pesti_db(ipest_db)%pesti(ipest)%plt
-          solpst = pesti_db(ipest_db)%pesti(ipest)%soil
+          hpestb_d(ihru)%pest(ipest)%plant = pest_soil_ini(ipest_db)%plt(ipest)
+          cs_pl(ihru)%pest(ipest) = pest_soil_ini(ipest_db)%plt(ipest)
+          solpst = pest_soil_ini(ipest_db)%soil(ipest)
           do ly = 1, soil(ihru)%nly
             wt1 = soil(ihru)%phys(ly)%bd * soil(ihru)%phys(ly)%thick / 100.      !! mg/kg => kg/ha
-            soil(ihru)%ly(ly)%kp(ipest) = pestdb(ipest_db)%skoc * soil1(ihru)%tot(ly)%c / 100.
-            soil(ihru)%ly(ly)%pst(ipest) = solpst * wt1
+            cs_soil(ihru)%ly(ly)%pest(ipest) = solpst * wt1
           end do
         end do
 

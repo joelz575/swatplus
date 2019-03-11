@@ -54,29 +54,10 @@
 !!    nitriten(:)      |mg N/L        |nitrite concentration in reach
 !!    organicn(:)      |mg N/L        |organic nitrogen concentration in reach
 !!    organicp(:)      |mg P/L        |organic phosphorus concentration in reach
-!!    p_n              |none          |algal preference factor for ammonia
 !!    rch_cbod(:)      |mg O2/L       |carbonaceous biochemical oxygen demand in
 !!                                    |reach 
 !!    rch_dox(:)       |mg O2/L       |dissolved oxygen concentration in reach
 !!    rhoq             |1/hr          |algal respiration rate at 20 deg C
-!!    rk1(:)           |1/hr          |CBOD deoxygenation rate coefficient in 
-!!                                    |reach at 20 deg C
-!!    rk2(:)           |1/hr          |reaeration rate in accordance with Fickian
-!!                                    |diffusion in reach at 20 deg C
-!!    rk3(:)           |1/hr          |rate of loss of CBOD due to settling in 
-!!                                    |reach at 20 deg C
-!!    rk4(:)           |mg O2/        |sediment oxygen demand rate in reach
-!!                     |  ((m**2)*hr) |at 20 deg C
-!!    rs1(:)           |m/hr          |local algal settling rate in reach at 
-!!                                    |20 deg C
-!!    rs2(:)           |(mg disP-P)/  |benthos source rate for dissolved P
-!!                     |  ((m**2)*hr) |in reach at 20 deg C
-!!    rs3(:)           |(mg NH4-N)/   |benthos source rate for ammonia nitrogen
-!!                     |  ((m**2)*hr) |in reach at 20 deg C
-!!    rs4(:)           |1/hr          |rate coefficient for organic nitrogen
-!!                                    |settling in reach at 20 deg C
-!!    rs5(:)           |1/hr          |organic phosphorus settling rate in reach
-!!                                    |at 20 deg C
 !!    rttime           |hr            |reach travel time
 !!    tfact            |none          |fraction of solar radiation that is
 !!                                    |photosynthetically active

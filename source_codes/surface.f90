@@ -23,7 +23,7 @@
       use time_module
       use hydrograph_module
       use climate_module, only:  wst
-      use hru_module, only : hru, surfq, qird, ovrlnd_dt, ihru, &
+      use hru_module, only : hru, surfq, ovrlnd_dt, ihru, &
         peakr, precipday, precip_eff, qday
       use soil_module
       use urban_data_module
@@ -68,8 +68,8 @@
       end if
 
       !! add irrigation runoff and surface runon runoff
-      surfq(j) = surfq(j) + qird(j)
-      qird(j) = 0.
+      surfq(j) = surfq(j) + irrig(j)%runoff
+      irrig(j)%runoff = 0.
 
       !! calculate amount of surface runoff reaching main channel during day
       !! (qday) and store the remainder

@@ -11,7 +11,6 @@
 !!                               |Mixing of soil due to activity of earthworms
 !!                               |and other soil biota. Mixing is performed at
 !!                               |the end of every calendar year.
-!!    nhru        |none          |number of HRUs in watershed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -41,7 +40,7 @@
       use calibration_data_module
       use plant_data_module
       use mgt_operations_module
-      use hru_module, only : curyr, hru, ihru, ipl, nhru, nop, phubase, yr_skip, timest
+      use hru_module, only : curyr, hru, ihru, ipl, phubase, yr_skip, timest
       use plant_module
       use time_module
       use climate_module
@@ -49,7 +48,7 @@
       use sd_channel_module
       use hru_lte_module
       use basin_module
-      use hydrograph_module, only : sp_ob, sp_ob1
+      use hydrograph_module, only : sp_ob, sp_ob1, ob
       use output_landscape_module
       use conditional_module
       use constituent_mass_module
@@ -66,6 +65,7 @@
       integer :: iwst                !              |
       integer :: ich                 !none          |counter
       integer :: idp                 !              |
+      integer :: iplt
       integer :: iupd                !none          |counter
       integer :: ipest               !none          |counter
       integer :: date_time(8)        !              | 
@@ -191,34 +191,38 @@
 
           call command              !! command loop 
 
-        do ihru = 1, nhru  
-          isched = hru(j)%mgt_ops
-          if (sched(isched)%num_ops > 0) then
-            if (time%day_start > 180 .and. wst(iwst)%lat < 0) then
-              if (time%day == 180) then
-                isched = hru(j)%mgt_ops
-                if (sched(isched)%mgt_ops(nop(ihru))%op /= "skip") then
-                  dorm_flag = 1
-                  call mgt_operatn
-                  dorm_flag = 0
-                endif
-                nop(ihru) = nop(ihru) + 1
-                if (nop(ihru) > sched(isched)%num_ops) then
-                  nop(ihru) = 1
-                end if
-      
-                phubase(ihru) = 0.
-	            yr_skip(ihru) = 0
-	          endif
-	        end if
-	      endif
-        end do
+        
+          ! reset base0 heat units and yr_skip at end of year for southern hemisphere
+          ! near winter solstace (winter solstice is around June 22)
+          if (time%day == 181) then
+            do ihru = 1, sp_ob%hru
+              iob = sp_ob1%hru + ihru - 1
+              iwst = ob(iob)%wst
+              if (wst(iwst)%lat < 0) then
+                 phubase(ihru) = 0.
+                 yr_skip(ihru) = 0
+              end if
+            end do
+          end if
 
-        end do                                        !! end daily loop
+        end do              !! end daily loop
 
         !! perform end-of-year processes
         
         call calsoft_sum_output
+        
+        !! write annual basin crop yields and harvested areas
+        do iplt = 1, basin_plants
+          !write () time%yrc, plants_bsn(iplt), bsn_crop_ylds(iplt)
+          bsn_crop_yld_aa(iplt)%area_ha = bsn_crop_yld_aa(iplt)%area_ha + bsn_crop_yld(iplt)%area_ha
+          bsn_crop_yld_aa(iplt)%yield = bsn_crop_yld_aa(iplt)%yield + bsn_crop_yld(iplt)%yield
+          bsn_crop_yld(iplt) = bsn_crop_yld_z
+          if (time%end_sim == 1) then
+            bsn_crop_yld_aa(iplt)%area_ha = bsn_crop_yld_aa(iplt)%area_ha / time%yrs_prt
+            bsn_crop_yld_aa(iplt)%yield = bsn_crop_yld_aa(iplt)%yield / time%yrs_prt
+            !write () time%yrs_prt, plants_bsn(iplt), bsn_crop_ylds_aa(iplt)
+          end if
+        end do
         
         do j = 1, sp_ob%hru_lte
           !! zero yearly balances after using them in soft data calibration (was in hru_lte_output)
@@ -262,25 +266,14 @@
             end if
           end do
 
-          if (time%day_start < 181) then
-            isched = hru(j)%mgt_ops
-            if (sched(isched)%num_ops > 0) then
-              if (sched(isched)%mgt_ops(nop(j))%op /= "skip") then
-                dorm_flag = 1
-                ihru = j
-                call mgt_operatn
-                dorm_flag = 0
-              end if
-              nop(j) = nop(j) + 1
-              if (nop(j) > sched(isched)%num_ops) then
-                nop(j) = 1
-              end if
-            
-              phubase(j) = 0.
-              yr_skip(j) = 0
-            end if
+          ! reset base0 heat units and yr_skip at end of year for northern hemisphere
+          ! on December 31 (winter solstice is around December 22)
+          iwst = ob(j)%wst
+          if (wst(iwst)%lat >= 0) then
+            phubase(j) = 0.
+            yr_skip(j) = 0
           end if
-        end do
+        end do      
 
       !! update simulation year
       time%yrc = time%yrc + 1

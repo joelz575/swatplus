@@ -13,7 +13,7 @@
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: i                    !none       |counter 
       integer :: iyr                  !none       |number of years
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: istep                !           | 
       integer :: mtmp                 !           |
       real :: tempx                   !           |
@@ -27,7 +27,7 @@
 
       !! read all measured daily temperature data
       inquire (file=in_cli%tmp_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%tmp_cli == "null") then
+      if (.not. i_exist .or. in_cli%tmp_cli == "null") then
          allocate (tmp(0:0))
          allocate (tmp_n(0))
       else
@@ -84,6 +84,7 @@
         
         ! read and save start jd and yr
         read (108,*,iostat=eof) iyr, istep
+        if (eof < 0) exit
         
         tmp(i)%start_day = istep
         tmp(i)%start_yr = iyr

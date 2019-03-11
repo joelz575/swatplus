@@ -59,7 +59,7 @@
           if (ob_num == 0) ob_num = ob_cur
           ipl = Max (d_tbl%cond(ic)%ob_num, 1)
           do ialt = 1, d_tbl%alts
-            if (d_tbl%alt(ic,ialt) == "<") then    !to trigger irrigation
+            if (d_tbl%alt(ic,ialt) == "<") then    !to trigger fertilizer application
               if (pcom(ob_num)%plstr(ipl)%strsn > d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
@@ -111,12 +111,12 @@
           iwst = ob(iob)%wst
           
           do ialt = 1, d_tbl%alts
-            if (d_tbl%alt(ic,ialt) == "<") then    !to trigger irrigation
+            if (d_tbl%alt(ic,ialt) == "<") then
               if (wst(iwst)%weat%phubase0 > d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if
-            if (d_tbl%alt(ic,ialt) == ">") then    !may use for grazing or fire
+            if (d_tbl%alt(ic,ialt) == ">") then
               if (wst(iwst)%weat%phubase0 < d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
@@ -135,7 +135,19 @@
               end if
             end if
           end do
-                                  
+                                                  
+        !days since last plant
+        case ("days_plant")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "=") then    !determine if growing (y) or not (n)
+              if (pcom(ob_num)%days_plant /= d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                                   
         !days since last harvest
         case ("days_harv")
           ob_num = d_tbl%cond(ic)%ob_num
@@ -189,7 +201,7 @@
           
           !determine if condition is met
           do ialt = 1, d_tbl%alts
-            if (d_tbl%alt(ic,ialt) == "<") then    !to trigger irrigation
+            if (d_tbl%alt(ic,ialt) == "<") then
               if (soil(ob_num)%sw > targ) then
                 d_tbl%act_hit(ialt) = "n"
               end if
@@ -313,7 +325,37 @@
               end if
             end if
           end do
-                      
+                          
+        !current years of maturity for perennial plants
+        case ("cur_yrs_mat")
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (pcom(ob_num)%plcur(1)%curyr_mat > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (pcom(ob_num)%plcur(1)%curyr_mat < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                                       
+        !current years of maturity for perennial plants
+        case ("biomass")
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (pcom(ob_num)%ab_gr_com%mass > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (pcom(ob_num)%ab_gr_com%mass < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                             
         !probability
         case ("prob")
           !call RANDOM_SEED ()
@@ -335,7 +377,7 @@
                     
         !tile flow
         case ("tile_flo")
-          ob_num = ob_cur   !the dtbl ob_num is the sequential  hyd number in the con file
+          ob_num = ob_cur   !the dtbl ob_num is the sequential hyd number in the con file
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "<") then
               if (hwb_d(ob_num)%qtile > d_tbl%cond(ic)%lim_const) then
@@ -348,19 +390,37 @@
               end if
             end if
           end do
-                                
+                            
+        !irrigation demand
+        case ("irr_demand")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          !determine if condition is met
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (irrig(ob_num)%demand > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then    !may use for grazing or fire
+              if (irrig(ob_num)%demand < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+            
         !aquifer depth below surface
         case ("aqu_dep")
           ob_num = d_tbl%cond(ic)%ob_num
           if (ob_num == 0) ob_num = ob_cur
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "<") then
-              if (aqu(ob_num)%dep_wt > d_tbl%cond(ic)%lim_const) then
+              if (aqu_d(ob_num)%dep_wt > d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl%alt(ic,ialt) == ">") then
-              if (aqu(ob_num)%dep_wt < d_tbl%cond(ic)%lim_const) then
+              if (aqu_d(ob_num)%dep_wt < d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if

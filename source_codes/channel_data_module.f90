@@ -33,9 +33,6 @@
         character(len=16) :: hyd                        !points to hydrology.res for hydrology inputs
         character(len=16) :: sed                        !sediment inputs-points to sediment.res
         character(len=16) :: nut                        !nutrient inputs-points to nutrient.res
-        character(len=16) :: pst                        !pesticide inputs-points to pesticide.res
-        character(len=16) :: ls_lnk                     !landscape linkage-points to ch_ls_link?
-        character(len=16) :: aqu_lnk                    !aquifer linkage-points to ch_aqu_link
       end type channel_data_char_input
       type (channel_data_char_input), dimension(:), allocatable :: ch_dat_c
 
@@ -55,9 +52,6 @@
         integer :: hyd = 0                    !points to hydrology.res for hydrology inputs
         integer :: sed = 0                    !sediment inputs-points to sediment.res
         integer :: nut = 0                    !nutrient inputs-points to nutrient.res
-        integer :: pst = 0                    !pesticide inputs-points to pesticide.res
-        integer :: ls_lnk = 0                 !landscape linkage-points to ch_ls_link?
-        integer :: aqu_lnk = 0                !aquifer linkage-points to ch_aqu_link
       end type channel_data
       type (channel_data), dimension(:), allocatable :: ch_dat
             
@@ -150,22 +144,7 @@
         real :: p_n = 0.5         ! none            |algal preference factor for ammonia
       end type channel_nut_data
       type (channel_nut_data), dimension(:), allocatable :: ch_nut
-          
-      type channel_pst_data
-        character(len=16) :: name
-        real :: pst_rea = .007    ! 1/day           |pesticide reaction coeff in reach
-        real :: pst_vol = .01     ! m/day           |pesticide volatilization coeff in reach
-        real :: pst_koc = 0.      ! m**3/g          |pesticide partition coeff between water and sediment in reach
-        real :: pst_mix = .001    ! m/day           |mixing velocity (diffusion/dispersion) for pesticide in reach
-        real :: pst_rsp = .002    ! m/day           |resuspension velocity in reach for pesticide sorbed to sediment 
-        real :: pst_stl = 1.      ! m/day           |settling velocity in reach for pesticide sorbed to sediment
-        real :: sedpst_act = .03  ! m               |depth of active sediment layer in reach for pesticide
-        real :: sedpst_bry = .002 ! m/day           |pesticide burial velocity in river bed sediment
-        real :: pst_solub = 0.    ! mg/(m**3)       |inital pesticide concentration in river bed sediment
-        real :: sedpst_rea = .05  ! 1/day           |pesticide reaction coeff in river bed sediment  
-      end type channel_pst_data
-      type (channel_pst_data), dimension(:), allocatable :: ch_pst
-                 
+
       type channel_temperature_data
         character(len=16) :: name
         real :: sno_mlt = 1.        ! none          |coefficient influencing snowmelt temperature contributions

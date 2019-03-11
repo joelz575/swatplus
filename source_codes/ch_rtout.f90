@@ -131,8 +131,6 @@
           ob(icmd)%ts(1,ii)%sedp = horgp(ii) *  hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%no3 = hno3(ii) * hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%solp = hsolp(ii) * hrtwtr(ii) / 1000.
-          !ob(icmd)%ts(1,ii)%psol = hsolpst(ii) * hrtwtr(ii)
-          !ob(icmd)%ts(1,ii)%psor = hsorpst(ii) * hrtwtr(ii)
           ob(icmd)%ts(1,ii)%chla = hchla(ii) * hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%nh3 = hnh4(ii) * hrtwtr(ii) / 1000.
           ob(icmd)%ts(1,ii)%no2 = hno2(ii) * hrtwtr(ii) / 1000.
@@ -147,10 +145,6 @@
                                              ob(icmd)%ts(1,ii)%no3
           ob(icmd)%hd(1)%solp = ob(icmd)%hd(1)%solp +                   &
                                              ob(icmd)%ts(1,ii)%solp
-          !ob(icmd)%hd(1)%psol = ob(icmd)%hd(1)%psol +                   &
-          !                                   ob(icmd)%ts(1,ii)%psol
-          !ob(icmd)%hd(1)%psor = ob(icmd)%hd(1)%psor +                   &
-          !                                   ob(icmd)%ts(1,ii)%psor
           ob(icmd)%hd(1)%chla = ob(icmd)%hd(1)%chla +                   &
                                              ob(icmd)%ts(1,ii)%chla
           ob(icmd)%hd(1)%nh3 = ob(icmd)%hd(1)%nh3 +                     &                   

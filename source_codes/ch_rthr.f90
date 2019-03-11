@@ -15,7 +15,6 @@
 !!                                   |change in vertical distance on channel
 !!                                   |side slopes; always set to 2 (slope=1/2)
 !!    pet_ch          |mm H2O        |potential evapotranspiration
-!!    rchstor(:)      |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -31,7 +30,6 @@
 !!    hrtwtr(:)   |m^3 H2O       |water leaving reach during time step
 !!    hsdti(:)    |m^3/s         |average flow rate during time step
 !!    rchdep      |m             |depth of flow on day
-!!    rchstor(:)  |m^3 H2O       |water stored in reach
 !!    rhy(:)          |m H2O         |main channel hydraulic radius
 !!    rtevp       |m^3 H2O       |evaporation from reach on day
 !!    rttime      |hr            |reach travel time

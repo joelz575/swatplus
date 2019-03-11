@@ -15,7 +15,7 @@
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: i                    !           |
       integer :: max                  !           |
       integer :: k                    !           |
@@ -26,7 +26,7 @@
       imax = 0
       
       inquire (file=in_ru%ru, exist=i_exist)
-      if (i_exist == 0 .or. in_ru%ru == "null") then
+      if (.not. i_exist .or. in_ru%ru == "null") then
           allocate (ru(0:0))
       else
       do
@@ -55,6 +55,7 @@
       !! read subbasin parameters
         do iru = 1, mru_db
           read (107,*,iostat=eof) i
+          if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, ru(i)%name, ru(i)%dbsc
           if (eof < 0) exit

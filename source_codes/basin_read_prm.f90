@@ -8,12 +8,12 @@
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header
       integer :: eof                  !           |end of file
-      integer :: i_exist              !           |check to determine if file exists
+      logical :: i_exist              !           |check to determine if file exists
       
       eof = 0
 
       inquire (file=in_basin%parms_bas, exist=i_exist)
-      if (i_exist /= 0 .or. in_basin%parms_bas /= "null") then
+      if (i_exist .or. in_basin%parms_bas /= "null") then
         !! read basin parameters
       do
         open (107,file=in_basin%parms_bas)

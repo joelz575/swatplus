@@ -11,14 +11,14 @@
       character (len=80) :: header     !          |header of file
       integer :: eof                   !          |end of file
       integer :: imax                  !units     |description
-      integer :: i_exist               !          |check to determine if file exists
+      logical :: i_exist               !          |check to determine if file exists
       integer :: ich                   !none      |counter
       
       eof = 0
       imax = 0
       
       inquire (file=in_cha%temp, exist=i_exist)
-      if (i_exist == 0 .or. in_cha%temp == "null") then
+      if (.not. i_exist .or. in_cha%temp == "null") then
         allocate (ch_temp(0:0))
       else   
       do
@@ -42,6 +42,7 @@
       
        do ich = 1, db_mx%ch_temp
          read (105,*,iostat=eof) titldum
+         if (eof < 0) exit
          backspace (105)
          read (105,*,iostat=eof) ch_temp(ich)
          if (eof < 0) exit

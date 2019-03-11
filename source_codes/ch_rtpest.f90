@@ -78,19 +78,18 @@
       
       use channel_data_module
       use channel_module
+      use sd_channel_module
       use ch_pesticide_module
       use hydrograph_module, only : ob, jrch, ht1, ch_stor
       use constituent_mass_module
+      use pesticide_data_module
       
       implicit none
       
-      integer :: ipest          !none          |pesticide counter
-      real :: solpstin          !mg pst        |soluble pesticide entering reach during 
-                                !              |time step
-      real :: sorpstin          !mg pst        |sorbed pesticide entering reach during
-                                !              |time step
-      real :: pstin             !mg pst        |total pesticide transported into reach
-                                !              |during time step
+      integer :: ipest          !none          |pesticide counter - sequential
+      integer :: jpst           !none          |pesticide counter from data base
+      real :: pstin             !mg pst        |total pesticide transported into reach during time step
+      real :: kd                !(mg/kg)/(mg/L) |koc * carbon
       real :: depth             !m             |depth of water in reach
       real :: chpstmass         !mg pst        |mass of pesticide in reach
       real :: frsol             !none          |fraction of pesticide in reach that is soluble
@@ -101,6 +100,7 @@
       real :: sedcon            !g/m^3         |sediment concentration 
       real :: tday              !none          |flow duration (fraction of 24 hr)
       real :: rchwtr            !m^3 H2O       |water stored in reach at beginning of day
+      real :: por               !none          |porosity of bottom sediments
 
       !! zero outputs
       chpst_d(jrch) = chpstz
@@ -113,65 +113,54 @@
       endif
 
       do ipest = 1, cs_db%num_pests
+        jpst = cs_db%pest_num(ipest)
 
         !! volume of water entering reach and stored in reach
         wtrin = ht1%flo + ch_stor(jrch)%flo
          
         !! pesticide transported into reach during day
-        solpstin = hcs1%pest(ipest)%sol 
-        sorpstin = hcs1%pest(ipest)%sor
-        pstin = solpstin + sorpstin
+        pstin = hcs1%pest(ipest) 
 
         !! calculate mass of pesticide in reach
-        chpstmass = pstin + (ch_water(jrch)%pest(ipest)%sol + ch_water(jrch)%pest(ipest)%sor) * wtrin
+        chpstmass = pstin + ch_water(jrch)%pest(ipest) * wtrin
       
         !! calculate mass of pesticide in bed sediment
-        sedpstmass = ch_benthic(jrch)%pest(ipest)%sol + ch_benthic(jrch)%pest(ipest)%sor
+        sedpstmass = ch_benthic(jrch)%pest(ipest)
 
         if (chpstmass + sedpstmass < 1.e-6) then
-          ch_water(jrch)%pest(ipest)%sol = 0.
-          ch_water(jrch)%pest(ipest)%sor = 0.
-          ch_benthic(jrch)%pest(ipest)%sol = 0.
-          ch_benthic(jrch)%pest(ipest)%sor = 0.
+          ch_water(jrch)%pest(ipest) = 0.
+          ch_benthic(jrch)%pest(ipest) = 0.
         end if
         if (chpstmass + sedpstmass < 1.e-6) return
 
         !!in-stream processes
         if (rtwtr / 86400. > 0.002) then
-          !! calculated sediment concentration
+          !! calculate sediment concentration
           sedcon = sedrch / rtwtr * 1.e6
+          
+          !! set kd
+          kd = pestdb(jpst)%koc * sd_chd(jrch)%carbon / 100.
 
           !! calculate fraction of soluble and sorbed pesticide
-          if (solpstin + sorpstin > 1.e-6) then
-            if (ch_pst(jpst)%pst_koc > 0.) then
-              frsol = 1. / (1. + ch_pst(jpst)%pst_koc* sedcon)
-            else
-              frsol = solpstin / (solpstin + sorpstin)
-            end if
-            frsrb = 1. - frsol
-          else
-            !!drifting pesticide is only pesticide entering and none is sorbed
-            frsol = 1.
-            frsrb = 0.
-          end if
+          frsol = 1. / (1. + kd * sedcon)
+          frsrb = 1. - frsol
 
-          !! ASSUME POR=0.5; DENSITY=2.6E6; KD2=KD1
-          fd2 = 1. / (.5 + ch_pst(jpst)%pst_koc)
+          !! ASSUME DENSITY=2.6E6; KD2=KD1
+          por = 1. - sd_chd(jrch)%bd / 2.65
+          fd2 = 1. / (por + kd)
 
           !! calculate flow duration
           tday = rttime / 24.0
           if (tday > 1.0) tday = 1.0
           tday = 1.0
 
-          !! calculate amount of pesticide that undergoes chemical or
-          !! biological degradation on day in reach
-          !! MFW, 3/12/12: modify decay to be 1st order
-          !! reactw = chpst_rea(jrch) * chpstmass * tday
-          chpst%pest(jrch)%react = chpstmass - (chpstmass * EXP(-1. * ch_pst(jpst)%pst_rea * tday))
+          !! calculate amount of pesticide that undergoes chemical or biological degradation on day in reach
+          !! MFW, 3/12/12: modify decay to be 1st order reactw = chpstmass * tday / chpst_rea(jrch)
+          chpst%pest(jrch)%react = chpstmass * tday / pestdb(jpst)%aq_reac
           chpstmass = chpstmass - chpst%pest(jrch)%react
 
           !! calculate amount of pesticide that volatilizes from reach
-          chpst%pest(jrch)%volat = ch_pst(jpst)%pst_vol * frsol * chpstmass * tday / depth
+          chpst%pest(jrch)%volat = pestdb(jpst)%aq_volat * frsol * chpstmass * tday / depth
           if (chpst%pest(jrch)%volat > frsol * chpstmass) then
             chpst%pest(jrch)%volat = frsol * chpstmass 
             chpstmass = chpstmass - chpst%pest(jrch)%volat
@@ -180,7 +169,7 @@
           end if
 
           !! calculate amount of pesticide removed from reach by settling
-          chpst%pest(jrch)%settle = ch_pst(jpst)%pst_rsp * frsrb * chpstmass * tday / depth
+          chpst%pest(jrch)%settle = pestdb(jpst)%aq_settle * frsrb * chpstmass * tday / depth
           if (chpst%pest(jrch)%settle >  frsrb * chpstmass) then
             chpst%pest(jrch)%settle = frsrb * chpstmass
             chpstmass = chpstmass - chpst%pest(jrch)%settle
@@ -190,7 +179,7 @@
           sedpstmass = sedpstmass + chpst%pest(jrch)%settle
 
           !! calculate resuspension of pesticide in reach
-          chpst%pest(jrch)%resus = ch_pst(jpst)%pst_rsp * sedpstmass * tday / depth
+          chpst%pest(jrch)%resus = pestdb(jpst)%aq_resus * sedpstmass * tday / depth
           if (chpst%pest(jrch)%resus > sedpstmass) then
             chpst%pest(jrch)%resus = sedpstmass
             sedpstmass = 0.
@@ -200,7 +189,7 @@
           chpstmass = chpstmass + chpst%pest(jrch)%resus
 
           !! calculate diffusion of pesticide between reach and sediment
-          chpst%pest(jrch)%difus = ch_pst(jpst)%pst_mix * (fd2 * sedpstmass - frsol * chpstmass) * tday / depth
+          chpst%pest(jrch)%difus = sd_ch(jrch)%aq_mix(ipest) * (fd2 * sedpstmass - frsol * chpstmass) * tday / depth
           if (chpst%pest(jrch)%difus > 0.) then
             if (chpst%pest(jrch)%difus > sedpstmass) then
               chpst%pest(jrch)%difus = sedpstmass
@@ -220,7 +209,7 @@
           end if
 
           !! calculate removal of pesticide from active sediment layer by burial
-          chpst%pest(jrch)%bury = ch_pst(jpst)%sedpst_bry * sedpstmass / ch_pst(jpst)%sedpst_act
+          chpst%pest(jrch)%bury = pestdb(jpst)%ben_bury * sedpstmass / pestdb(jpst)%ben_act_dep
           if (chpst%pest(jrch)%bury > sedpstmass) then
             chpst%pest(jrch)%bury = sedpstmass
             sedpstmass = 0.
@@ -229,7 +218,7 @@
           end if
 
           !! verify that water concentration is at or below solubility
-          solmax = ch_pst(jpst)%pst_solub * wtrin
+          solmax = pestdb(jpst)%solub * wtrin
           if (solmax < chpstmass * frsol) then
             sedpstmass = sedpstmass + (chpstmass * frsol - solmax)
             chpstmass = chpstmass - (chpstmass * frsol - solmax)
@@ -243,7 +232,7 @@
 
         !! sediment processes
         !! calculate loss of pesticide from bed sediments by reaction
-        chpst%pest(jrch)%react_bot = ch_pst(jpst)%sedpst_rea * sedpstmass
+        chpst%pest(jrch)%react_bot = sedpstmass / pestdb(jpst)%ben_reac
         if (chpst%pest(jrch)%react_bot > sedpstmass) then
           chpst%pest(jrch)%react_bot = sedpstmass
           sedpstmass = 0.
@@ -253,13 +242,11 @@
 
         !! set new pesticide mass of (in + store) after processes
         if (rchwtr + wtrin > 1.e-6) then
-          hcs1%pest(ipest)%sol = frsol * chpstmass
-          hcs1%pest(ipest)%sor = frsrb * chpstmass
+          hcs1%pest(ipest) = chpstmass
         else
           sedpstmass = sedpstmass + chpstmass
         end if
-        ch_benthic(jrch)%pest(ipest)%sol = 0.
-        ch_benthic(jrch)%pest(ipest)%sor = sedpstmass
+        ch_benthic(jrch)%pest(ipest) = sedpstmass
 
       end do
 

@@ -4,24 +4,6 @@
 !!    this subroutine calculates the amount of pesticide washed off the plant
 !!    foliage and onto the soil
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru          |none          |HRU number
-!!    plt_pst(:,:)  |kg/ha         |pesticide on plant foliage
-!!    pst_wof(:)    |none          |fraction of pesticide on foliage which
-!!                                 |is washed-off by a rainfall event
-!!    sol_pst(:,:,1)|kg/ha         |pesticide in first layer of soil
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    plt_pst(:,:)  |kg/ha         |pesticide on plant foliage
-!!    sol_pst(:,:,1)|kg/ha         |pesticide in first layer of soil
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
       use pesticide_data_module
       use output_ls_pesticide_module
       use hru_module, only : hru, ihru
@@ -43,12 +25,12 @@
 
       do k = 1, cs_db%num_pests
         ipest_db = cs_db%pest_num(k)
-        if (pcom(j)%pest(k) >= 0.0001) then
+        if (cs_pl(j)%pest(k) >= 0.0001) then
           if (ipest_db > 0) then
-            pest_soil = pestdb(ipest_db)%pst_wof * pcom(j)%pest(k)
-            if (pest_soil > pcom(j)%pest(k)) pest_soil = pcom(j)%pest(k)
-            soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + pest_soil
-            pcom(j)%pest(k) = pcom(j)%pest(k) - pest_soil
+            pest_soil = pestdb(ipest_db)%washoff * cs_pl(j)%pest(k)
+            if (pest_soil > cs_pl(j)%pest(k)) pest_soil = cs_pl(j)%pest(k)
+            cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) + pest_soil
+            cs_pl(j)%pest(k) = cs_pl(j)%pest(k) - pest_soil
             hpestb_d(j)%pest(k)%wash = pest_soil
           end if
         end if

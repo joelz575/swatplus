@@ -23,14 +23,6 @@
         real :: percc = 0.       !!
         real :: latc = 0.        !!
         real :: vwt = 0.         !!
-        !type (plant_mass) :: hum_sl                        !! slow humus
-        !type (plant_mass) :: hum_pa                        !! passive humus
-        !type (plant_mass) :: man                           !! manure organics
-        !type (plant_mass), dimension(:),allocatable :: rs  !! residue mass type
-        real, dimension(:),allocatable :: kp
-        real, dimension(:),allocatable :: pst
-        real, dimension(:),allocatable :: bacsol
-        real, dimension(:),allocatable :: bacsor
       end type soilayer
       type (soilayer), dimension(:), allocatable :: layer1
       

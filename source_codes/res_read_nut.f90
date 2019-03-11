@@ -17,14 +17,14 @@
       character (len=80) :: header      !             |header of file
       integer :: eof                    !             |end of file
       integer :: imax                   !             |determine max number for array (imax) and total number in file
-      integer :: i_exist                !none         |check to determine if file exists
+      logical :: i_exist                !none         |check to determine if file exists
       integer :: ires                   !none         |counter
       
       eof = 0
       imax = 0
 
       inquire (file=in_res%nut_res,exist=i_exist)
-      if (i_exist == 0 .or. in_res%nut_res == "null") then
+      if (.not. i_exist .or. in_res%nut_res == "null") then
         allocate (res_nut(0:0))
       else
       do
@@ -45,9 +45,11 @@
         rewind (105)
         read (105,*) titldum
         read (105,*) header
+        if (eof < 0) exit
           
         do ires = 1, imax
           read (105,*,iostat=eof) titldum
+          if (eof < 0) exit
           backspace (105)
           read (105,*) res_nut(ires)
           if (eof < 0) exit

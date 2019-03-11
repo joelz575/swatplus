@@ -14,7 +14,7 @@
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: ob1                  !none       |beginning of loop
       integer :: ob2                  !none       |ending of loop
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: ii                   !none       |counter
       integer :: iob                  !none       |counter
       integer :: iexco                !           |
@@ -25,7 +25,7 @@
       
       !read all export coefficient data
       inquire (file=in_exco%exco, exist=i_exist)
-      if (i_exist /= 0 .or. in_exco%exco /= 'null') then
+      if (i_exist .or. in_exco%exco /= 'null') then
         do
           open (107,file=in_exco%exco)
           read (107,*,iostat=eof) titldum
@@ -49,6 +49,7 @@
           !read all export coefficient data
           do ii = 1, db_mx%exco
             read (107,*,iostat=eof) titldum
+            if (eof < 0) exit
             backspace (107)
             read (107,*,iostat=eof) namedum, exco(ii)   
             if (eof < 0) exit

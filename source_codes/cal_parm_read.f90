@@ -16,7 +16,7 @@
       integer :: eof                                       !         |end of file
       integer :: imax                                      !         |determine max number for array (imax) and total number in file
       integer :: mchg_par                                  !         |
-      integer :: i_exist                                   !         |check to determine if file exists
+      logical :: i_exist                                   !         |check to determine if file exists
       integer :: i                                         !none     |counter
             
       imax = 0
@@ -24,7 +24,7 @@
         
       !!read parameter change values for calibration
       inquire (file=in_chg%cal_parms, exist=i_exist)
-      if (i_exist == 0 .or. in_chg%cal_parms == "null") then
+      if (.not. i_exist .or. in_chg%cal_parms == "null") then
         allocate (cal_parms(0:0))
       else
         do
@@ -32,8 +32,10 @@
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
           read (107,*,iostat=eof) mchg_par
-          allocate (cal_parms(mchg_par))
           if (eof < 0) exit
+          
+          allocate (cal_parms(mchg_par))
+
           read (107,*,iostat=eof) header
           if (eof < 0) exit
 

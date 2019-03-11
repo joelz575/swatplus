@@ -10,7 +10,7 @@
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: j                    !none       |hru            
       integer :: nlyr                 !           |
       integer :: lyr                  !none       |counter
@@ -21,7 +21,7 @@
       imax = 0
 
       inquire (file=in_sol%soils_sol,exist=i_exist)
-      if (i_exist == 0 .or. in_sol%soils_sol == "null") then
+      if (.not. i_exist .or. in_sol%soils_sol == "null") then
         allocate (soildb(0:0))
         allocate (soildb(0)%ly(0:0))
       else
@@ -54,9 +54,9 @@
         do isol = 1, db_mx%soil
             
          read (107,*,iostat=eof) soildb(isol)%s%snam, soildb(isol)%s%nly
-         mlyr = soildb(isol)%s%nly
          if (eof < 0) exit
-       
+         mlyr = soildb(isol)%s%nly
+      
          allocate (soildb(isol)%ly(mlyr)) 
        
          backspace 107
@@ -64,6 +64,7 @@
           soildb(isol)%s%hydgrp, soildb(isol)%s%zmx,                       &           
           soildb(isol)%s%anion_excl, soildb(isol)%s%crk,                   &           
           soildb(isol)%s%texture
+         if (eof < 0) exit
        do j = 1, mlyr
         read (107,*,iostat=eof) soildb(isol)%ly(j)%z, soildb(isol)%ly(j)%bd,             &
             soildb(isol)%ly(j)%awc, soildb(isol)%ly(j)%k, soildb(isol)%ly(j)%cbn,        &           

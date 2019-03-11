@@ -13,7 +13,7 @@
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: iyr                  !none       |number of years
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: istep                !           |
       integer :: iyr_prev             !none       |previous year
       integer :: iyrs                 !           |
@@ -24,7 +24,7 @@
 
       !! read all measured daily solar radiation data
       inquire (file=in_cli%slr_cli, exist=i_exist)
-      if (i_exist == 0 .or. in_cli%slr_cli == "null") then
+      if (.not. i_exist .or. in_cli%slr_cli == "null") then
         allocate (slr(0:0))
         allocate (slr_n(0))
       else
@@ -80,6 +80,7 @@
         
         ! read and save start jd and yr
         read (108,*,iostat=eof) iyr, istep
+        if (eof < 0) exit
         
         slr(i)%start_day = istep
         slr(i)%start_yr = iyr

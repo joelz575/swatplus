@@ -83,8 +83,6 @@
 	  ressagi = sagyld(ihru) * fracwet
 	  reslagi = lagyld(ihru) * fracwet
 	  resgrai = grayld(ihru) * fracwet
-      solpesti = 0.   !add soluble pest
-      sorpesti = 0.   !add sorbed pest
 
       !! add incoming nutrients to those in reservoir
       !! equation 29.1.1 in SWAT manual
@@ -189,8 +187,6 @@
 	  sagyld(ihru) = ressago / hru(ihru)%area_ha + sagyld(ihru) * bypass
 	  lagyld(ihru) = reslago / hru(ihru)%area_ha + lagyld(ihru) * bypass
 	  grayld(ihru) = resgrao / hru(ihru)%area_ha + grayld(ihru) * bypass
-      solpesti = 0.   !add soluble pest
-      sorpesti = 0.   !add sorbed pest
 
       !! add incoming nutrients to those in reservoir
       !! equation 29.1.1 in SWAT manual

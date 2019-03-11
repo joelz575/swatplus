@@ -33,7 +33,7 @@
 !!	  y1          |mm 		     |dummy variable for wat
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : aird, hru, ihru, i_sep, inflpcp, isep, latlyr, latq, lyrtile, qstemm, sepbtm, sepcrktot, sepday,   &
+      use hru_module, only : hru, ihru, i_sep, inflpcp, isep, latlyr, latq, lyrtile, qstemm, sepbtm, sepcrktot, sepday,   &
          sw_excess, wt_shall, pot, qtile
       use soil_module
       use septic_data_module
@@ -59,7 +59,7 @@
 
       !! initialize water entering first soil layer
       !! ht1%flo is infiltration from overland flow routing
-      sepday = inflpcp + aird(j) + hru(j)%water_seep + ht1%flo
+      sepday = inflpcp + irrig(j)%applied + hru(j)%water_seep + ht1%flo
       hru(j)%water_seep = 0.
 
       !! calculate crack flow 

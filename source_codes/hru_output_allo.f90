@@ -5,6 +5,7 @@
       use constituent_mass_module
       use output_ls_pesticide_module
       use output_ls_pathogen_module
+      use output_ls_salt_module
       
       implicit none
       
@@ -59,6 +60,18 @@
           allocate (hpathb_m(ihru)%path(cs_db%num_paths))
           allocate (hpathb_y(ihru)%path(cs_db%num_paths))
           allocate (hpathb_a(ihru)%path(cs_db%num_paths))
+        end do
+      end if
+      if (cs_db%num_salts > 0) then
+        allocate (hsaltb_d(mhru))
+        allocate (hsaltb_m(mhru))
+        allocate (hsaltb_y(mhru))
+        allocate (hsaltb_a(mhru))
+        do ihru = 1, sp_ob%hru
+          allocate (hsaltb_d(ihru)%salt(cs_db%num_salts))
+          allocate (hsaltb_m(ihru)%salt(cs_db%num_salts))
+          allocate (hsaltb_y(ihru)%salt(cs_db%num_salts))
+          allocate (hsaltb_a(ihru)%salt(cs_db%num_salts))
         end do
       end if
       !if (cs_db%num_metals > 0) then

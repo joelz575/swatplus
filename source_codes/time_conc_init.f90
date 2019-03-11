@@ -1,7 +1,7 @@
       subroutine time_conc_init 
     
       use ru_module
-      use hru_module, only : brt, hru, hru_db, ihru, t_ov, tconc
+      use hru_module, only : brt, hru, ihru, t_ov, tconc
       use hydrograph_module, only : sp_ob, ru_def, ru_elem, sp_ob1, ob
       use topography_data_module
       use time_module
@@ -56,8 +56,8 @@
       
       !!compute time of concentration (sum of overland and channel times)
       do ihru = 1, sp_ob%hru
-        ith = hru_db(ihru)%dbs%topo
-        ifld = hru_db(ihru)%dbs%field
+        ith = hru(ihru)%dbs%topo
+        ifld = hru(ihru)%dbs%field
         t_ov(ihru) = .0556 * (hru(ihru)%topo%slope_len *                    &
            hru(ihru)%luse%ovn) ** .6 / (hru(ihru)%topo%slope + .00001) ** .3
         ch_slope = .5 * topo_db(ith)%slope

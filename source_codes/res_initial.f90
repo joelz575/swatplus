@@ -5,6 +5,7 @@
       use reservoir_data_module
       use hydrograph_module
       use constituent_mass_module
+      use pesticide_data_module
       
       implicit none
       
@@ -15,9 +16,12 @@
       integer :: iires       !              | 
       real :: resdif         !              |
       integer :: i           !none          |counter
+      integer :: idat        !none          |counter
       integer :: init        !              | 
       integer :: ipest       !none          |counter
-      integer :: ipath       !              | 
+      integer :: ipath       !              |
+      integer :: isalt       !              |
+      integer :: ipest_db    !none      |counter
 
       do ires = 1, sp_ob%res
         !! set initial volumes for res and hru types
@@ -56,7 +60,8 @@
       end do
       
       do ires = 1, sp_ob%res
-        i = res_ob(ires)%init
+        idat = res_ob(ires)%props
+        i = res_dat(idat)%init
         
         !! initialize org-min in reservoir
         init = res_init(i)%org_min
@@ -66,17 +71,27 @@
         !! initialize pesticides in reservoir water and benthic from input data
         init = res_init(i)%pest
         do ipest = 1, cs_db%num_pests
-          res_water(ires)%pest(ipest) = pest_water_ini(init)%pest(ipest)
-          res_benthic(ires)%pest(ipest) = pest_benthic_ini(init)%pest(ipest)
+          ipest_db = cs_db%pest_num(ipest)
+          res_water(ires)%pest(ipest) = pest_water_ini(init)%water(ipest)
+          res_benthic(ires)%pest(ipest) = pest_water_ini(init)%benthic(ipest)
+          !! calculate mixing velocity using molecular weight and porosity
+          res_ob(ires)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt * (1. - res_sed(ires)%bd / 2.65)
         end do
                   
         !! initialize pathogens in reservoir water and benthic from input data
         init = res_init(i)%path
         do ipath = 1, cs_db%num_paths
-          res_water(ires)%path(ipath) = path_water_ini(init)%path(ipath)
-          res_benthic(ires)%path(ipath) = path_benthic_ini(init)%path(ipath)
+          res_water(ires)%path(ipath) = path_water_ini(init)%water(ipath)
+          res_benthic(ires)%path(ipath) = path_water_ini(init)%benthic(ipath)
         end do
-      
+                        
+        !! initialize salts in reservoir water and benthic from input data
+        init = res_init(i)%salt
+        do isalt = 1, cs_db%num_salts
+          res_water(ires)%salt(isalt) = salt_water_ini(init)%water(isalt)
+          res_benthic(ires)%salt(isalt) = salt_water_ini(init)%benthic(isalt)
+        end do
+        
         !! calculate initial surface area       
         res_om_d(ires)%area_ha = res_ob(ires)%br1 * res(ires)%flo ** res_ob(ires)%br2
 

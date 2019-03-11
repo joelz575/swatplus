@@ -60,11 +60,5 @@
       surqno3(j) = surqno3(j) * (1 - hru(j)%lumv%bmp_sn/100)
 	latno3(j) = latno3(j) * (1 - hru(j)%lumv%bmp_sn/100)
 
-!! Bacteria 
-      !bactrop = bactrop * (1 - hru(j)%lumv%bmp_bac/100)
-      !bactrolp = bactrolp * (1 - hru(j)%lumv%bmp_bac/100)
-      !bactsedp = bactsedp * (1 - hru(j)%lumv%bmp_bac/100)
-      !bactsedlp = bactsedlp * (1 - hru(j)%lumv%bmp_bac/100)
-
       return
       end subroutine smp_bmpfixed

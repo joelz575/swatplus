@@ -7,12 +7,8 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curbden(:)   |km/ha          |curb length density in HRU
 !!    dirtmx(:)    |kg/curb km     |maximum amount of solids allowed to
 !!                                 |build up on impervious surfaces
-!!    fimp(:)      |fraction       |fraction of HRU area that is
-!!                                 |impervious (both directly and
-!!                                 |indirectly connected)
 !!    hru_km(:)    |km^2           |area of HRU in square kilometers
 !!    ihru         |none           |HRU number
 !!    isweep(:,:,:)|julian date    |date of street sweeping operation

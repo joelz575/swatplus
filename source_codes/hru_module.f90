@@ -70,6 +70,25 @@
            real :: perco_lim = 1.  !!               |              |percolation coefficient-limits perc from bottom layer
       end type hydrology
       
+      type snow_parameters
+         character (len=16) :: name
+         real :: falltmp = 0.     !deg C         |snowfall temp
+         real :: melttmp = 0.     !deg C         |snow melt base temp 
+         real :: meltmx = 0.      !mm/deg C/day  |Max melt rate for snow during year (June 21)
+         real :: meltmn = 0.      !mm/deg C/day  |Min melt rate for snow during year (Dec 21)
+         real :: timp             !none          |snow pack temp lag factor (0-1)
+         real :: covmx = 0.       !mm H20        |Min snow water content
+         real :: cov50 = 0.       !none          |frac of COVMX
+         real :: init_mm = 0.     !mm H20        |initial snow water content at start of simulation
+      end type snow_parameters
+      
+      type subsurface_drainage_parameters
+        character(len=13) :: name = "default"
+        real :: depth = 0.    !! |mm            |depth of drain tube from the soil surface
+        real :: time = 0.     !! |hrs           |time to drain soil to field capacity
+        real :: lag = 0.      !! |hours         |drain tile lag time
+      end type subsurface_drainage_parameters
+              
       type landuse
           character(len=15) :: name
           integer :: cn_lu = 0
@@ -169,14 +188,14 @@
         integer :: obj_no
         real :: area_ha
         real :: km
-        integer :: surf_stor               !!points to res() for surface storage
-        type (hru_databases) :: dbs       !!database pointers
-        type (hru_databases_char) :: dbsc !!database pointers
-        type (hru_parms_db) :: parms      !!calibration parameters
+        integer :: surf_stor                    !points to res() for surface storage
+        type (hru_databases) :: dbs             !database pointers
+        type (hru_databases_char) :: dbsc       !database pointers
+        type (hru_parms_db) :: parms            !calibration parameters
         integer :: land_use_mgt
         character(len=16) :: land_use_mgt_c
         integer :: lum_group
-        character(len=16) :: lum_group_c        !!land use group for soft cal and output
+        character(len=16) :: lum_group_c        !land use group for soft cal and output
         character(len=16) :: region
         integer :: plant_cov
         integer :: mgt_ops
@@ -185,8 +204,6 @@
         integer :: fstrip = 0
         integer :: grassww = 0
         integer :: bmpuser = 0
-        !! impunded water - points to res()
-        integer :: res
 
         !! other data
         type (topography) :: topo
@@ -194,7 +211,8 @@
         type (hydrology) :: hyd
         type (landuse) :: luse
         type (land_use_mgt_variables) :: lumv
-        integer :: irrsrc
+        type (subsurface_drainage_parameters) :: sdr
+        type (snow_parameters) :: sno
         real :: water_fr
         real :: water_seep
         integer :: ich_flood
@@ -268,29 +286,23 @@
       real :: voltot                 !!mm            |total volumne of cracks expressed as depth per area unit
       real :: volcrmin               !!mm            |minimum crack volume allowed in any soil layer
       real :: canev, usle, rcn
-      real :: bactrop, bactsedp
       real :: enratio
-      real :: da_ha, vpd
+      real :: vpd
       real :: pet_day, ep_day
-      real :: snoev, sno3up
+      real :: snoev
       real :: es_day, ls_overq, latqrunon, tilerunon
       real :: ep_max
       real :: bsprev
-      real :: usle_ei, no3pcp, rcharea
+      real :: usle_ei
       real :: snocov1, snocov2, lyrtile
 
       real :: etday
-      real :: gwseep
-      real :: wdlprch
       integer :: myr
-      integer :: nhru,  mo, nrch
+      integer :: mo
       integer :: ihru             !!none          |HRU number
       integer :: curyr
       integer :: nd_30
-      integer :: iscen
       integer :: mpst, mlyr
-      integer, dimension(100) :: ida_lup, iyr_lup
-      integer :: no_up
 !  routing 5/3/2010 gsm per jga    
 ! date
       character(len=8) :: date
@@ -314,32 +326,25 @@
       real, dimension (:), allocatable :: sanyld,silyld,clayld,sagyld
       real, dimension (:), allocatable :: lagyld,grayld
       integer, dimension (:), allocatable :: itb
-      real, dimension (:), allocatable :: qird
       
 !!!!!! drains
       real, dimension (:), allocatable :: wnan
       real, dimension (:,:), allocatable :: uh
 
-      real, dimension (:), allocatable :: irramt
       real, dimension (:), allocatable :: phusw
-      integer, dimension (:), allocatable :: nop
       integer, dimension (:), allocatable :: yr_skip, isweep
-      real :: sweepeff,frt_kg, pst_dep
+      real :: sweepeff
 
       real, dimension (:), allocatable :: ranrns_hru
       integer, dimension (:), allocatable :: itill
 
       real, dimension (:), allocatable :: tc_gwat
       real, dimension (:), allocatable :: wfsh
-      real, dimension (:), allocatable :: fsred
       real, dimension (:), allocatable :: sed_con, orgn_con, orgp_con
       real, dimension (:), allocatable :: soln_con, solp_con
       real, dimension (:), allocatable :: filterw
-      real, dimension (:), allocatable :: flowfr
-      real, dimension (:), allocatable :: flowmin
-      real, dimension (:), allocatable :: divmax, cn2
+      real, dimension (:), allocatable :: cn2
       real, dimension (:), allocatable :: sol_cov
-      real, dimension (:), allocatable :: driftco
       real, dimension (:), allocatable :: smx
       real, dimension (:), allocatable :: cnday
       real, dimension (:), allocatable :: tmpav
@@ -347,18 +352,10 @@
       real, dimension (:), allocatable :: tmx,tmn
       real, dimension (:), allocatable :: tconc,hru_rmx
       real, dimension (:), allocatable :: usle_cfac,usle_eifac
-      real, dimension (:), allocatable :: aird,t_ov
+      real, dimension (:), allocatable :: t_ov
       real, dimension (:), allocatable :: u10,rhd
       real, dimension (:), allocatable :: canstor,ovrlnd
-      real, dimension (:), allocatable :: irr_mx, auto_wstr
-      real, dimension (:), allocatable :: irr_asq, irr_eff
-      real, dimension (:), allocatable :: irrsq
-      real, dimension (:), allocatable :: bio_eat         !!(kg/ha)/day     |dry weight of biomass removed by grazing daily
-      real, dimension (:), allocatable :: bio_trmp        !!(kg/ha)/day     |dry weight of biomass removed by trampling daily
-      integer, dimension (:), allocatable :: irr_noa
-      integer, dimension (:), allocatable :: irr_sc,irr_no
-      integer, dimension (:), allocatable :: imp_trig, irr_sca
-      integer, dimension (:), allocatable :: wstrs_id
+
 !    Drainmod tile equations  08/2006 
 	  real, dimension (:), allocatable :: cumei,cumeira
 	  real, dimension (:), allocatable :: cumrt, cumrai
@@ -380,11 +377,9 @@
       real, dimension (:), allocatable :: sedminpa,sedminps,sedorgn
       real, dimension (:), allocatable :: sedorgp,sedyld,sepbtm
       real, dimension (:), allocatable :: surfq,surqno3
-      real, dimension (:), allocatable :: hru_dafr
       real, dimension (:), allocatable :: phubase
       real, dimension (:), allocatable :: lai_yrmx,dormhr
       real, dimension (:), allocatable :: wtab,wtab_mn,wtab_mx
-      real, dimension (:), allocatable :: manure_kg
       real, dimension (:,:), allocatable :: rfqeo_30d,eo_30d
       real, dimension (:,:), allocatable :: wrt
       real, dimension (:,:), allocatable :: bss,surf_bs  
@@ -392,11 +387,7 @@
       integer, dimension (:), allocatable :: swtrg
       !! burn
       integer, dimension (:), allocatable :: grz_days
-      integer, dimension (:), allocatable :: irrno
       integer, dimension (:), allocatable :: igrz,ndeat
-      integer, dimension (:), allocatable :: irrsc
-      integer, dimension (:), allocatable :: irr_flag
-      integer, dimension (:), allocatable :: manure_id
 
 !!     gsm added for sdr (drainage) 7/24/08
       integer, dimension (:,:), allocatable :: mgt_ops
@@ -414,7 +405,7 @@
 	real, dimension(:,:), allocatable:: hhsedy
 	real, dimension(:), allocatable:: init_abstrc
      
-      real :: bio_init, lai_init, cnop, harveff, frac_harvk
+      real :: harveff
 
       integer, dimension(:), allocatable :: tillage_switch
       real, dimension(:), allocatable :: tillage_depth

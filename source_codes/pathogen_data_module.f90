@@ -28,6 +28,5 @@
       type (pathogen_db), dimension(:), allocatable  :: path_db
       
       contains
-      !include "bac_read_lsparms.f90" 
-      
+
       end module pathogen_data_module 

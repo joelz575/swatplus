@@ -15,12 +15,9 @@
       integer :: isp_ini    !none          |soil-plant initialization number from data file
       real :: pl_ini        !              |
       real :: sol_ini       !              |
-      real :: sor_ini       !              |
       real :: pl_die_gro
       real :: sol_die_gro
-      real :: sor_die_gro
       real :: bacdiegrosol_out
-      real :: bacdiegrosor_out
       real :: bacdiegroplt_out
       real :: theta 
 
@@ -32,40 +29,32 @@
       
         !! compute pathogen wash off
         if (precipday >= 2.54) then
-          hpath_bal(j)%path(ipath)%wash = path_db(ipath_db)%washoff * pcom(j)%path(ipath)
-          if (hpath_bal(j)%path(ipath)%wash > pcom(j)%path(ipath)) hpath_bal(j)%path(ipath)%wash = pcom(j)%path(ipath)
-          soil(j)%ly(1)%bacsol(ipath) = soil(j)%ly(1)%bacsol(ipath) + hpath_bal(j)%path(ipath)%wash
-          pcom(j)%path(ipath) = pcom(j)%path(ipath) - hpath_bal(j)%path(ipath)%wash
+          hpath_bal(j)%path(ipath)%wash = path_db(ipath_db)%washoff * cs_pl(j)%path(ipath)
+          if (hpath_bal(j)%path(ipath)%wash > cs_pl(j)%path(ipath)) hpath_bal(j)%path(ipath)%wash = cs_pl(j)%path(ipath)
+          cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) + hpath_bal(j)%path(ipath)%wash
+          cs_pl(j)%path(ipath) = cs_pl(j)%path(ipath) - hpath_bal(j)%path(ipath)%wash
         end if
 
         !! compute pathogen die-off and re-growth on foilage
-        pl_ini = pcom(j)%path(ipath)
+        pl_ini = cs_pl(j)%path(ipath)
         pl_die_gro = path_db(ipath_db)%do_plnt - path_db(ipath_db)%gr_plnt
-        pcom(j)%path(ipath) = pcom(j)%path(ipath) * Exp(-Theta(pl_die_gro, path_db(ipath_db)%t_adj, tmpav(j))) -     &
+        cs_pl(j)%path(ipath) = cs_pl(j)%path(ipath) * Exp(-Theta(pl_die_gro, path_db(ipath_db)%t_adj, tmpav(j))) -     &
                                               path_db(ipath_db)%conc_min
-        pcom(j)%path(ipath) = Max(0., pcom(j)%path(ipath))
-        if (pcom(j)%path(ipath) < path_db(ipath_db)%conc_min) pcom(j)%path(ipath) = path_db(ipath_db)%conc_min
+        cs_pl(j)%path(ipath) = Max(0., cs_pl(j)%path(ipath))
+        if (cs_pl(j)%path(ipath) < path_db(ipath_db)%conc_min) cs_pl(j)%path(ipath) = path_db(ipath_db)%conc_min
 
         !! compute pathogen die-off and re-growth in surface soil layer
-        sol_ini = soil(j)%ly(1)%bacsol(ipath)
+        sol_ini = cs_soil(j)%ly(1)%path(ipath)
         sol_die_gro = path_db(ipath_db)%do_soln - path_db(ipath_db)%gr_soln
-        soil(j)%ly(1)%bacsol(ipath) = soil(j)%ly(1)%bacsol(ipath) * Exp(-Theta(sol_die_gro, path_db(ipath_db)%t_adj, tmpav(j)))   &
+        cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) * Exp(-Theta(sol_die_gro, path_db(ipath_db)%t_adj, tmpav(j)))   &
                                               - path_db(ipath_db)%conc_min
-        soil(j)%ly(1)%bacsol(ipath) = Max(0., soil(j)%ly(1)%bacsol(ipath))
-        if (soil(j)%ly(1)%bacsol(ipath) < path_db(ipath_db)%conc_min) soil(j)%ly(1)%bacsol(ipath) = path_db(ipath_db)%conc_min
+        cs_soil(j)%ly(1)%path(ipath) = Max(0., cs_soil(j)%ly(1)%path(ipath))
+        if (cs_soil(j)%ly(1)%path(ipath) < path_db(ipath_db)%conc_min) cs_soil(j)%ly(1)%path(ipath) = path_db(ipath_db)%conc_min
 
-        sor_ini = soil(j)%ly(1)%bacsor(ipath)
-        sor_die_gro = path_db(ipath_db)%do_sorb - path_db(ipath_db)%gr_sorb
-        soil(j)%ly(1)%bacsor(ipath) = soil(j)%ly(1)%bacsor(ipath) * Exp(-Theta(sor_die_gro, path_db(ipath_db)%t_adj, tmpav(j)))   &
-                                             - path_db(ipath_db)%conc_min
-        soil(j)%ly(1)%bacsor(ipath) = Max(0., soil(j)%ly(1)%bacsor(ipath))
-        if (soil(j)%ly(1)%bacsor(ipath) < path_db(ipath_db)%conc_min) soil(j)%ly(1)%bacsor(ipath) = path_db(ipath_db)%conc_min
-
-        bacdiegrosol_out = pl_ini - soil(j)%ly(1)%bacsol(ipath)
-        bacdiegrosor_out = sol_ini - soil(j)%ly(1)%bacsor(ipath)
-        bacdiegroplt_out = sor_ini - pcom(j)%path(ipath)
+        bacdiegrosol_out = sol_ini - cs_soil(j)%ly(1)%path(ipath)
+        bacdiegroplt_out = pl_ini - cs_pl(j)%path(ipath)
         !! net die_off - negative is regrowth
-        hpath_bal(j)%path(ipath)%die_off = bacdiegrosol_out + bacdiegrosor_out + bacdiegroplt_out
+        hpath_bal(j)%path(ipath)%die_off = bacdiegrosol_out + bacdiegroplt_out
         
       end do
 

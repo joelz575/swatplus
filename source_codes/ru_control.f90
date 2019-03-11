@@ -66,7 +66,6 @@
         ise = ru_def(iru)%num(ielem)
         iob = ru_elem(ise)%obj
         ihru = ru_elem(ise)%obtypno
-        ihtyp = ru_elem(ise)%htyp
         ht1 = hz
         ht2 = hz
         ht3 = hz
@@ -79,7 +78,6 @@
         
         !define delivery ratio - all variables are hyd_output type
         idr = ru_elem(ise)%idr
-        ihtypno = ru_elem(ise)%htypno
         if (idr > 0) then
           !input dr from sub_dr.dat
           delrto = ru_dr(idr)
@@ -102,47 +100,19 @@
           
         else
 
-        !define expansion factor to surface/soil and recharge
-        ef = ru_elem(ise)%frac * ru(iru)%da_km2 / (ob(iob)%area_ha / 100.)
-        
-        !compute all hyd"s needed for routing
-        select case (ihtypno)
-        case (1)   !total hyd
-          ht1 = ob(iob)%hd(1) ** delrto
-          ht1 = ef * ht1
-          ru_d(iru) = ru_d(iru) + ht1
-          if (ob(iob)%typ == "hru") then
-            ht3 = ob(iob)%hd(3) ** delrto
-            ht3 = ef * ht3
-            ht4 = ob(iob)%hd(4) ** delrto
-            ht4 = ef * ht4
-            ht5 = ef * ob(iob)%hd(5)  !no dr on tile
-          end if
-        case (3)   !surface runoff hyd
-          ht1 = ob(iob)%hd(ihtypno) ** delrto
-          ht1 = ef * ht1
-          ht3 = ob(iob)%hd(ihtypno) ** delrto
-          ht3 = ef * ht3
-          ru_d(iru) = ru_d(iru) + ht3
-        case (4)   !soil lateral flow hyd
-          ht1 = ob(iob)%hd(ihtypno) ** delrto
-          ht1 = ef * ht1
-          ht4 = ob(iob)%hd(ihtypno) ** delrto
-          ht4 = ef * ht4
-          ru_d(iru) = ru_d(iru) + ht4
-        case (5)   !tile flow hyd
-          ht1 = ef * ob(iob)%hd(ihtypno)
-          ht5 = ef * ob(iob)%hd(ihtypno)  !no dr on tile
-          ru_d(iru) = ru_d(iru) + ht5
-        end select
+          !define expansion factor to surface/soil and recharge
+          ef = ru_elem(ise)%frac * ru(iru)%da_km2 / (ob(iob)%area_ha / 100.)
+          
+          !compute all hyd"s needed for routing
+          do ihtypno = 1, ob(iob)%nhyds
+            ht1 = ob(iob)%hd(ihtypno) ** delrto
+            ht1 = ef * ht1
+            ob(icmd)%hd(ihtypno) = ob(icmd)%hd(ihtypno) + ht1
+            ru_d(iru) = ru_d(iru) + ht1
+          end do
+          
         end if      !ru_elem(ielem)%obtyp == "exc"
-        
-        !recharge hyd - hru_lte computes gw flow and doesnt need recharge hyd
-        if (ru_elem(ielem)%obtyp /= "hlt") then
-          ht2 = ef * ob(iob)%hd(2)
-          ru_d(iru) = ru_d(iru) + ht2
-        end if
-                
+  
         ! sum subdaily hydrographs for each object
         if (time%step > 0) then
           select case (ru_elem(ielem)%obtyp)
@@ -153,12 +123,6 @@
           end select
         end if
 
-      ob(icmd)%hd(1) = ob(icmd)%hd(1) + ht1             !sum total hyd 
-      ob(icmd)%hd(2) = ob(icmd)%hd(2) + ht2             !sum recharge hyd
-      ob(icmd)%hd(3) = ob(icmd)%hd(3) + ht3             !sum surface hyd 
-      ob(icmd)%hd(4) = ob(icmd)%hd(4) + ht4             !sum lateral soil hyd
-      ob(icmd)%hd(5) = ob(icmd)%hd(5) + ht5             !sum tile hyd 
-          
       end do  !element loop
       
       !! set subdaily hydrographs

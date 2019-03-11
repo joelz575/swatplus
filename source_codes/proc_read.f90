@@ -9,10 +9,10 @@
 
       call soil_plant_init
       call solt_db_read
-      call pest_hru_init
-      call path_hru_init
-      call hmet_hru_init
-      call salt_hru_init
+      call pest_hru_aqu_read
+      call path_hru_aqu_read
+      call hmet_hru_aqu_read
+      call salt_hru_aqu_read
 
       call topo_read
       call field_read

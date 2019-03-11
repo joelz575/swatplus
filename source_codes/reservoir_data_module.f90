@@ -8,8 +8,7 @@
         character (len=16) :: hyd                   !points to hydrology.res for hydrology inputs
         character (len=16) :: release               !0=simulated; 1=measured outflow
         character (len=16) :: sed                   !sediment inputs-points to sediment.res
-        character (len=16) :: nut                   !nutrient inputs-points to nutrient.res
-        character (len=16) :: pst                   !pesticide inputs-points to pesticide.res      
+        character (len=16) :: nut                   !nutrient inputs-points to nutrient.res    
       end type reservoir_data_char_input
       type (reservoir_data_char_input), dimension(:), allocatable :: res_dat_c
       type (reservoir_data_char_input), dimension(:), allocatable :: wet_dat_c
@@ -82,10 +81,12 @@
       
       type reservoir_sed_data
         character(len=16) :: name
-        real :: nsed              !kg/L          |normal amt of sed in res (read in as mg/L and convert to kg/L)
-        real :: d50               ! 
-        real :: sed_stlr          !none          |sed settling rate
-        real :: velsetlr
+        real :: nsed                !kg/L       |normal amt of sed in res (read in as mg/L and convert to kg/L)
+        real :: d50                 !mm         |median particle size of suspended and benthic sediment
+        real :: carbon              !%          |organic carbon in suspended and benthic sediment
+        real :: bd                  !t/m^3      |bulk density of benthic sediment
+        real :: sed_stlr            !none       |sediment settling rate
+        real :: velsetlr            !m/d        |sediment settling velocity
       end type reservoir_sed_data
       type (reservoir_sed_data), dimension(:), allocatable :: res_sed
             
@@ -106,20 +107,6 @@
       end type reservoir_nut_data
       type (reservoir_nut_data), dimension(:), allocatable :: res_nut
           
-      type reservoir_pst_data
-        character(len=16) :: name
-        real :: pst_koc = 0.          !m**3/g        |pest partition coeff between water and sed in reservoir water
-        real :: pst_mix = 0.          !m/day         |mixing velocity (diffusion/dispersion)in reservoir water for pest
-        real :: pst_rea = .007        !1/day         |pest reaction coeff in reservoir water
-        real :: pst_rsp = .002        !m/day         |resuspension velocity in reservoir water for pest sorbed to sed
-        real :: pst_stl = 1.0         !m/day         |settling velocity in reservoir water for pest sorbed to sed
-        real :: pst_vol = .01         !m/day         |pest volatilization coeff in reservoir water
-        real :: spst_act = .03        !m             |depth of active sed layer in reservoir for pest
-        real :: spst_bry = .002       !m/day         |pest burial velocity in reservoir bed sed
-        real :: spst_rea = .05        !1/day         |pest reaction coeff in reservoir bed sed
-      end type reservoir_pst_data
-      type (reservoir_pst_data), dimension(:), allocatable :: res_pst
-            
       type reservoir_weir_outflow
         character(len=16) :: name
         real :: num_steps = 24        !              |number of time steps in day for weir routing

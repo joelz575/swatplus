@@ -25,7 +25,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
      
       use hru_module, only : cbodu,chl_a,clayld,cnday,doxq,etday,grayld,hhsedy,                     &
-         hhsurfq,hru,hru_ra,hru_rmx,irr_flag,lagyld,latno3,latq,nplnt,                             &
+         hhsurfq,hru,hru_ra,hru_rmx,lagyld,latno3,latq,nplnt,                             &
          par,percn,pot,pplnt,qdr,rcn,rhd,sagyld,sanyld,sedminpa,                           &
          sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,sol_sumno3,sol_sumsolp,            &
          surfq,                                &
@@ -60,7 +60,6 @@
       hru_ra = 0.
       hru_rmx = 0.
       hrupstd = 0.
-	  irr_flag = 0
       latno3 = 0.
       latq = 0.
       nplnt = 0.

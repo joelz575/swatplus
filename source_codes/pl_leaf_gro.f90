@@ -116,8 +116,7 @@
 
             !! calculate fraction of above ground tree biomass that is leaf
             if (pldb(idp)%typ == "perennial") then
-              pcom(j)%plg(ipl)%bio_leaf = pldb(idp)%rsr1 - (pldb(idp)%rsr2 * float(pcom(j)%plcur(ipl)%curyr_mat)) /  &
-                                                            (float(pldb(idp)%mat_yrs))
+              pcom(j)%plg(ipl)%leaf_frac = 0.03     !!***needs to be a plants.plt parameter
             end if
             
             if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax

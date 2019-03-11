@@ -13,12 +13,12 @@
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: nspu                 !           |
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: mcal                 !           |
       integer :: mlsu                 !none       |counter
       integer :: i                    !none       |counter
       integer :: k                    !           |
-      integer :: isp                  !           |
+      integer :: isp                  !none       |counter
       integer :: ielem                !none       |counter
       integer :: ii                   !none       |counter
       integer :: ie1                  !none       |counter
@@ -31,7 +31,7 @@
             
     !! read landscape cataloging unit definitions for output (old subbasin output file)
     inquire (file=in_regs%def_lsu, exist=i_exist)
-    if (i_exist /= 0 .or. in_regs%def_lsu /= "null") then
+    if (i_exist .or. in_regs%def_lsu /= "null") then
       do
         open (107,file=in_regs%def_lsu)
         read (107,*,iostat=eof) titldum
@@ -39,6 +39,7 @@
         read (107,*,iostat=eof) mlsu
         if (eof < 0) exit
         read (107,*,iostat=eof) header
+        if (eof < 0) exit
         
         !allocate subbasin (landscape unit) inputs and outputs
         allocate (lsu_out(0:mlsu))
@@ -51,21 +52,21 @@
         
       do i = 1, mlsu
 
-        read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu
-        
+        read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu      
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
+          if (eof < 0) exit
 
           !!save the object number of each defining unit
           if (nspu == 1) then
             allocate (lsu_out(i)%num(1))
             lsu_out(i)%num_tot = 1
             lsu_out(i)%num(1) = elem_cnt(1)
-          end if
-          if (nspu > 1) then
+            deallocate (elem_cnt)
+          else
           ielem = 0
           do ii = 2, nspu
             ie1 = elem_cnt(ii-1)
@@ -131,7 +132,7 @@
 
       !!read data for each element in all landscape cataloging units
       inquire (file=in_regs%ele_lsu, exist=i_exist)
-      if (i_exist /= 0 .or. in_regs%ele_lsu /= "null") then
+      if (i_exist .or. in_regs%ele_lsu /= "null") then
       do
         open (107,file=in_regs%ele_lsu)
         read (107,*,iostat=eof) titldum
@@ -155,6 +156,7 @@
         
         do isp = 1, imax
           read (107,*,iostat=eof) i
+          if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, lsu_elem(i)%name, lsu_elem(i)%obtyp, lsu_elem(i)%obtypno,      &
                                     lsu_elem(i)%bsn_frac, lsu_elem(i)%ru_frac

@@ -18,7 +18,7 @@
         
         do iaq = 1, sp_ob%aqu
           const = 1. / acu_elem(iaq)%bsn_frac
-          baqu_d = baqu_d + aqu(iaq) / const
+          baqu_d = baqu_d + aqu_d(iaq) / const
         end do
         
         baqu_m = baqu_m + baqu_d

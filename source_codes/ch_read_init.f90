@@ -12,14 +12,14 @@
       character (len=80) :: header     !          |header of file
       integer :: eof                   !          |end of file
       integer :: imax                  !units     |description
-      integer :: i_exist               !          |check to determine if file exists
+      logical :: i_exist               !          |check to determine if file exists
       integer :: ich                   !none      |counter
       
       eof = 0
       imax = 0
       
       inquire (file=in_cha%init, exist=i_exist)
-      if (i_exist == 0 .or. in_cha%init == "null") then
+      if (.not. i_exist .or. in_cha%init == "null") then
         allocate (ch_init(0:0))
         allocate (sd_init(0:0))
       else   

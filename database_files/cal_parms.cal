@@ -1,5 +1,5 @@
-cal_parms.upd
-       185
+cal_parms.cal
+       193
 NAME        OBJ_TYP     ABSMIN    ABSMAX                   UNITS
 cn2             hru         25        98                    null
 usle_p          hru          0         1                    null
@@ -23,6 +23,14 @@ lat_orgp        hru          0       200                    mg/l
 field_len       hru       0.01         2                      km
 field_wid       hru       0.01         2                      km
 field_ang       hru          0       360                 degrees
+snofall_tmp     hru         -5         5                 degrees
+snomelt_tmp     hru         -5         5                 degrees
+snomelt_max     hru          0        10                 mm/deg/c/day
+snomelt_min     hru          0        10                 mm/deg/c/day
+snomelt_lag     hru          0         1                    none
+tile_dep        hru          0      2000                      mm
+tile_dtime      hru          0        72                     hrs
+tile_lag        hru          0       100                     hrs
 anion_excl      sol       0.01         1                    null
 crk             sol          0         1                    null
 z               sol          0      3500                      mm
@@ -153,11 +161,11 @@ pst_mix_re      res          0         1                   m/day
 spst_conc       res          0         1                 mg/m**3
 spst_bry        res          0         1                   m/day
 spst_act        res          0         1                       m
-alpha            gw          0         1                    days
-delay            gw          0       500                    days
-flo_min          gw          0      5000                      mm
-revap_co         gw       0.02       0.2                    null
-revap_min        gw          0       500                      mm
+alpha           aqu          0         1                    days
+bf_max          aqu          0         2                      mm
+flo_min         aqu          0      5000                      mm
+revap_co        aqu       0.02       0.2                    null
+revap_min       aqu          0       500                      mm
 cn2_lte         hlt         25        98                    null
 tc_lte          hlt          1     86400                     min
 soildep_lt      hlt         10     10000                      mm
@@ -170,7 +178,7 @@ percc_lte       hlt          0       0.9                fraction
 sw_lte          hlt          0         1                fraction
 gw_lte          hlt          0     10000                      mm
 gwflow_lte      hlt          0        10                      mm
-gwdeep_lte      hlt          0        10                      mm
+gwdeep_lte      hlt          0        10                      mmpst
 snow_lte        hlt          0      1000                      mm
 itext_lte       hlt          1        12                    null
 tropical_l      hlt          0         1                    null
@@ -181,8 +189,5 @@ uslek_lte       hlt          0      0.65                    null
 uslec_lte       hlt          0         1                    null
 uslep_lte       hlt          0         1                    null
 uslels_lte      hlt          0         1                    null
-t_opt           plt          0        15                    degc
-nup1            plt          0     0.060                    null
-wsol            pst          0  2000000.                    ppm 
 precip          cli          0      250.                      mm
 temp            cli       -75.       55.                   deg c                                  

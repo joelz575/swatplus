@@ -14,7 +14,7 @@
       integer :: imax                 !none       |end of loop
       integer :: iyr                  !           |
       integer :: eof                  !           |end of file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: nbyr                 !none       !number of years the land use occurred 
       integer :: k                    !           |
       integer :: iyrs                 !           | 
@@ -30,7 +30,7 @@
 
       !read all recall files
       inquire (file=in_rec%recall_rec, exist=i_exist)
-      if (i_exist /= 0 .or. in_rec%recall_rec /= "null") then
+      if (i_exist .or. in_rec%recall_rec /= "null") then
       do
         open (107,file=in_rec%recall_rec)
         read (107,*,iostat=eof) titldum
@@ -56,6 +56,7 @@
       
       do ii = 1, imax
         read (107,*,iostat=eof) i
+        if (eof < 0) exit
         backspace (107)
  !       read (107,*,iostat = eof) k, rec_om(i)%name, rec_om(i)%typ, rec_om(i)%filename
         read (107,*,iostat = eof) k, recall(i)%name, recall(i)%typ, recall(i)%filename
@@ -121,7 +122,7 @@
       
       !read all rec_pest files
       inquire (file="pest.com", exist=i_exist)
-      if (i_exist /= 0) then
+      if (i_exist ) then
       do
         open (107,file="pest.com")
         read (107,*,iostat=eof) titldum
@@ -142,9 +143,11 @@
       
       do ipc = 1, db_mx%pestcom
         read (107,*,iostat=eof) ipestcom_db   !pointer to pestcom_db - fix***
+        if (eof < 0) exit
 
          do ii = 1, imax
            read (107,*,iostat=eof) i
+           if (eof < 0) exit
            backspace (107)
            read (107,*,iostat = eof) k, rec_pest(i)%name, rec_pest(i)%typ, rec_pest(i)%filename
            if (eof < 0) exit

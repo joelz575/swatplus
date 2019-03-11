@@ -5,8 +5,8 @@
       use tillage_data_module
       use basin_module
       use hydrograph_module
-      use hru_module, only : hru, ihru, imp_trig, phubase, ndeat, igrz, manure_id, grz_days, bio_trmp, bio_min,   &
-        manure_kg, yr_skip, nop, bio_eat, sol_sumno3, sol_sumsolp, irramt, irr_sc, irr_no, fertnh3, fertno3, fertorgn,  &
+      use hru_module, only : hru, ihru, phubase, ndeat, igrz, grz_days, bio_min,   &
+        yr_skip, sol_sumno3, sol_sumsolp, fertnh3, fertno3, fertorgn,  &
         fertorgp, fertsolp, ipl, sweepeff, yr_skip, yield
       use soil_module
       use plant_module
@@ -21,16 +21,17 @@
       integer :: j                 !none     |counter
       integer :: iharvop           !         |harvest operation type 
       integer :: idtill            !none     |tillage type
-      integer :: irrop             !         |irrigation operations
       integer :: ifrt              !         |fertilizer type from fert data base
       integer :: iob               !         | 
       integer :: ipestcom          !none     |counter
       integer :: ipest             !none     |sequential pesticide type from pest community
       integer :: ipestop           !none     |surface application fraction from chem app data base 
+      integer :: irrop             !none     |irrigation ops data base pointer
       integer :: jj                !none     |counter
       integer :: isched            !         | 
       integer :: iburn             !none     |burn type from fire data base
       integer :: ifertop           !frac     |surface application fraction from chem app data base
+      integer :: iplt_bsn
       real :: fr_curb              !none     |availability factor, the fraction of the 
                                    !         |curb length that is sweepable
       real :: biomass              !         |
@@ -61,6 +62,7 @@
 
           case ("plnt")    !! plant one plant or entire community
             icom = pcom(j)%pcomdb
+            pcom(j)%days_plant = 1       !reset days since last plant
             do ipl = 1, pcom(j)%npl
               idp = pcomdb(icom)%pl(ipl)%db_num
               if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
@@ -123,6 +125,11 @@
                 !! sum yield and number of harvest to calc ave yields
                 pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield + yield
                 pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
+                
+                !! sum basin crop yields and area harvested
+                iplt_bsn = pcom(j)%plcur(ipl)%bsn_num
+                bsn_crop_yld(iplt_bsn)%area_ha = bsn_crop_yld(iplt_bsn)%area_ha + hru(j)%area_ha
+                bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + yield * hru(j)%area_ha / 1000.
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == "y") then
@@ -178,6 +185,11 @@
                 !! sum yield and num. of harvest to calc ave yields
                 pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield + yield
                 pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
+                
+                !! sum basin crop yields and area harvested
+                iplt_bsn = pcom(j)%plcur(ipl)%bsn_num
+                bsn_crop_yld(iplt_bsn)%area_ha = bsn_crop_yld(iplt_bsn)%area_ha + hru(j)%area_ha
+                bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + yield * hru(j)%area_ha / 1000.
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == "y") then
@@ -204,16 +216,17 @@
                   rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), tilldb(idtill)%effmix
             end if
 
-          case ("irrm")  !! irrigation operation
+          case ("irrm")  !! date scheduled irrigation operation
             ipl = 1
-            amt_mm = mgt%op3
-            irrop = mgt%op1     !! from irrop_db - ie: drip, sprinkler, etc - xwalk in read_mgtops
-            call pl_irrigate (j, amt_mm, irrop)
-            
+            irrop = mgt%op4                        !irrigation amount (mm) from irr.ops data base
+            irrig(j)%applied = irrop_db(irrop)%amt_mm * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
+            irrig(j)%runoff = irrop_db(irrop)%amt_mm * irrop_db(irrop)%surq
+
+            !print irrigation applied
             if (pco%mgtout == "y") then
               write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "IRRIGATE ", phubase(j),   &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass, rsd1(j)%tot(ipl)%m,   &
-                  sol_sumno3(j), sol_sumsolp(j),irramt(j), irr_sc(j), irr_no(j)
+                  sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied, irrig(j)%runoff
             end if
           
           case ("fert")   !! fertilizer operation
@@ -256,20 +269,15 @@
             ndeat(j) = 0
             igrz(j) = 1
             ipl = Max(1, mgt%op2)
-            manure_id(j) = mgt%op1
             grz_days(j) = mgt%op3
-            bio_eat(j) = grazeop_db(mgt%op1)%eat
-            bio_trmp(j) = grazeop_db(mgt%op1)%tramp
+            graze = grazeop_db(mgt%op1)
             bio_min(j) = grazeop_db(mgt%op1)%biomin
-            !if (grazeop_db(mgt%op1)%manure <= 0.) then 
-            !  grazeop_db(mgt%op1)%manure = 0.95 * grazeop_db(mgt%op1)%eat
-            !end if
-            manure_kg(j) = grazeop_db(mgt%op1)%manure
+            call pl_graze
             
             if (pco%mgtout == "y") then
               write (2612, *) j, time%yrc, time%mo, time%day_mo, "         ", "    GRAZE ",         &
                 phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,        &
-                rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), manure_kg(j)
+                rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), grazeop_db(mgt%op1)%eat, grazeop_db(mgt%op1)%manure
             endif
 
           case ("burn")   !! burning
@@ -319,12 +327,12 @@
 
       end select
 
-      if (mgt%op /= "skip") nop(j) = nop(j) + 1  !don't icrement if skip year
-      if (nop(j) > sched(isched)%num_ops) then
-        nop(j) = 1
+      if (mgt%op /= "skip") sched(isched)%cur_op = sched(isched)%cur_op + 1  !don't icrement if skip year
+      if (sched(isched)%cur_op > sched(isched)%num_ops) then
+        sched(isched)%cur_op = 1
       end if
       
-      mgt = sched(isched)%mgt_ops(nop(j))
+      mgt = sched(isched)%mgt_ops(sched(isched)%cur_op)
    
       return
 

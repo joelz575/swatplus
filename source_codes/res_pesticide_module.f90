@@ -5,10 +5,8 @@
       implicit none
               
       type res_pesticide_processes
-        real :: sol_in = 0.             ! kg        !soluble pesticide into reservoir
-        real :: sol_out = 0.            ! kg        !soluble pesticide out of reservoir
-        real :: sor_in = 0.             ! kg        !sorbed pesticide into reservoir
-        real :: sor_out = 0.            ! kg        !sorbed pesticide out of reservoir
+        real :: pst_in = 0.             ! kg        !pesticide into reservoir
+        real :: pst_out = 0.            ! kg        !pesticide out of reservoir
         real :: react = 0.              ! kg        !pesticide lost through reactions in water layer
         real :: volat = 0.              ! kg        !pesticide lost through volatilization
         real :: settle = 0.             ! kg        !pesticide settling to sediment layer
@@ -44,10 +42,8 @@
           character (len=8) :: id =         " gis_id "           
           character (len=16) :: name =      " name"
           character (len=16) :: pest =      " pesticide"
-          character(len=13) :: sol_in =     "solpestin_kg "        	! (kg)
-          character(len=14) :: sol_out =    "solpestout_kg "        ! (kg)
-          character(len=13) :: sor_in =     "sorpestin_kg"        	! (kg)
-          character(len=14) :: sor_out=     "sorpestout_kg "        ! (kg)
+          character(len=13) :: pst_in =     "pestin_kg "        	! (kg)
+          character(len=14) :: pst_out =    "pestout_kg "           ! (kg)
           character(len=13) :: react =      "react_h2o_kg"        	! (kg)
           character(len=10) :: volat =      "volat_kg"        		! (kg)
           character(len=10) :: settle =     "settle_kg"        		! (kg)
@@ -79,10 +75,8 @@
         type (res_pesticide_processes),  intent (in) :: res1
         type (res_pesticide_processes),  intent (in) :: res2
         type (res_pesticide_processes) :: res3
-        res3%sol_in = res1%sol_in + res2%sol_in
-        res3%sol_out = res1%sol_out + res2%sol_out
-        res3%sor_in = res1%sor_in + res2%sor_in
-        res3%sor_out = res1%sor_out + res2%sor_out
+        res3%pst_in = res1%pst_in + res2%pst_in
+        res3%pst_out = res1%pst_out + res2%pst_out
         res3%react = res1%react + res2%react
         res3%volat = res1%volat + res2%volat
         res3%settle = res1%settle + res2%settle
@@ -98,10 +92,8 @@
         type (res_pesticide_processes), intent (in) :: res1
         real, intent (in) :: const
         type (res_pesticide_processes) :: res2
-          res2%sol_in = res1%sol_in / const
-          res2%sol_out = res1%sol_out / const
-          res2%sor_in = res1%sor_in / const
-          res2%sor_out = res1%sor_out / const
+          res2%pst_in = res1%pst_in / const
+          res2%pst_out = res1%pst_out / const
           res2%react = res1%react / const
           res2%volat = res1%volat / const
           res2%settle = res1%settle / const
@@ -117,10 +109,8 @@
         type (res_pesticide_processes), intent (in) :: res1
         real, intent (in) :: const
         type (res_pesticide_processes) :: res2
-          res2%sol_in = res1%sol_in
-          res2%sol_out = res1%sol_out
-          res2%sor_in = res1%sor_in
-          res2%sor_out = res1%sor_out
+          res2%pst_in = res1%pst_in
+          res2%pst_out = res1%pst_out
           res2%react = res1%react
           res2%volat = res1%volat
           res2%settle = res1%settle

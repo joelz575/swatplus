@@ -55,8 +55,6 @@
       allocate (plqm(mhru))
       allocate (itb(mhru))
       
-!! septic changes added 1/28/09 gsm
-      allocate (qird(mhru))      
       if (time%step > 0) allocate (hhqday(mhru,time%step))
       allocate (uh(mhru,time%step+1))
 
@@ -65,33 +63,13 @@
       allocate (sol_sumno3(mhru))
       allocate (sol_sumsolp(mhru))
 
-!!    arrays which contain data related to years of rotation,
-!!    applications, and HRUs
-      allocate (auto_wstr(mhru))
-!! burn 3/5/09   
-          
-      allocate (wstrs_id(mhru))
-      allocate (imp_trig(mhru))
-      allocate (irr_asq(mhru))
-      allocate (irr_mx(mhru))
-      allocate (irrsq(mhru))
-      allocate (irr_eff(mhru))
-      allocate (irr_sc(mhru))
-      allocate (irr_no(mhru))
-      allocate (irr_sca(mhru))
-      allocate (irr_noa(mhru))
       allocate (iseptic(mhru))
 
 !!    arrays which contain data related to years of rotation,
 !!    grazings per year, and HRUs
-      allocate (bio_eat(mhru))
-      allocate (bio_trmp(mhru))
       allocate (grz_days(mhru))
-      allocate (manure_id(mhru))
-      allocate (manure_kg(mhru))
 
 !!    arrays which contain data related to HRUs
-      allocate (aird(mhru))
       allocate (bio_min(mhru))
       allocate (brt(mhru))
       allocate (canstor(mhru))
@@ -106,31 +84,19 @@
 	  allocate (cumrt(mhru))
 	  allocate (cumrai(mhru))
 !    Drainmod tile equations  01/2006
-      allocate (divmax(mhru))
       allocate (dormhr(mhru))
       allocate (doxq(mhru))
-      allocate (driftco(mhru))
       allocate (filterw(mhru))
-      allocate (flowfr(mhru))
-      allocate (flowmin(mhru))
-      allocate (fsred(mhru))
-      allocate (hru_dafr(mhru))
       allocate (hru_ra(mhru))
       allocate (hru_rmx(mhru))
       allocate (igrz(mhru))
-      allocate (irramt(mhru))
       allocate (yr_skip(mhru))
       allocate (isweep(mhru))
       allocate (phusw(mhru))
-      allocate (irr_flag(mhru))
-      imho = max(mhru,20)
-      allocate (irrno(mhru))
-      allocate (irrsc(mhru))
       allocate (lai_yrmx(mhru))
       allocate (latno3(mhru))
       allocate (latq(mhru))
       allocate (ndeat(mhru))
-      allocate (nop(mhru))
       allocate (nplnt(mhru))
       allocate (orgn_con(mhru))
       allocate (orgp_con(mhru))

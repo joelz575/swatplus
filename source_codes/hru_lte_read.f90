@@ -17,7 +17,7 @@
       character (len=80) :: header    !           |header of file
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: grow_start           !           |
       integer :: grow_end             !           |
       integer :: ipl                  !none       |counter
@@ -66,7 +66,7 @@
       a2 = .8 
       
       inquire (file=in_hru%hru_ez, exist=i_exist)
-      if (i_exist == 0 .or. in_hru%hru_ez == "null") then
+      if (.not. i_exist .or. in_hru%hru_ez == "null") then
         allocate (hlt_db(0:0))
       else
       do
@@ -90,7 +90,8 @@
         read (1,*) header
 
       do isd_h = 1, imax
-        read (1,*,iostat = eof) i
+        read (1,*,iostat=eof) i
+        if (eof < 0) exit
         backspace (1)
         read (1,*,iostat=eof) k, hlt_db(i)
         if (eof < 0) exit

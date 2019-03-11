@@ -11,12 +11,9 @@
 !!                                |yield that is removed from HRU; the 
 !!                                |remainder becomes residue on the soil
 !!                                |surface
-!!    hru_dafr(:) |km2/km2        |fraction of watershed area in HRU
 !!    hvsti(:)    |(kg/ha)/(kg/ha)|harvest index: crop yield/aboveground
 !!                                |biomass
 !!    ihru        |none           |HRU number
-!!    plt_pst(:,:)|kg/ha          |pesticide on plant foliage
-!!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
 !!    wsyf(:)     |(kg/ha)/(kg/ha)|Value of harvest index between 0 and HVSTI
 !!                                |which represents the lowest value expected
 !!                                |due to water stress
@@ -25,10 +22,8 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    plt_pst(:,:)|kg/ha          |pesticide on plant foliage
 !!    rsr1c(:)    |               |initial root to shoot ratio at beg of growing season
 !!    rsr2c(:)    |               |root to shoot ratio at end of growing season
-!!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -191,17 +186,17 @@
           yldpst = 0.
           clippst = 0.
           if (pldb(idp)%hvsti > 1.001) then
-            yldpst = pcom(j)%pest(k)
-            pcom(j)%pest(k) = 0.
+            yldpst = cs_pl(j)%pest(k)
+            cs_pl(j)%pest(k) = 0.
           else
-            yldpst = hiad1 * pcom(j)%pest(k)
-            pcom(j)%pest(k) = pcom(j)%pest(k) - yldpst
-            if (pcom(j)%pest(k) < 0.)pcom(j)%pest(k) = 0.
+            yldpst = hiad1 * cs_pl(j)%pest(k)
+            cs_pl(j)%pest(k) = cs_pl(j)%pest(k) - yldpst
+            if (cs_pl(j)%pest(k) < 0.) cs_pl(j)%pest(k) = 0.
           endif
           clippst = yldpst * (1. - harveff)
           if (clippst < 0.) clippst = 0.
           !! add pesticide in clippings to soil surface
-          soil(j)%ly(1)%pst(k) = soil(j)%ly(1)%pst(k) + clippst
+          cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) + clippst
         end do   
 
       return

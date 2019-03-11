@@ -38,7 +38,6 @@
 !!    pr_w(1,:,:) |none          |probability of wet day after dry day in month
 !!    pr_w(2,:,:) |none          |probability of wet day after wet day in month
 !!    pr_w(3,:,:) |none          |proportion of wet days in the month
-!!    solarav(:,:)|MJ/m^2/day    |average daily solar radiation for the month
 !!    tmp_an(:)   |deg C         |average annual air temperature
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
 !!    tmpmx(:,:)  |deg C         |avg monthly maximum air temperature

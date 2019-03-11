@@ -10,13 +10,14 @@
       character (len=80) :: titldum, header
       character (len=16) :: namedum
       integer :: eof, imax, ob1, ob2
+      logical :: i_exist              !none       |check to determine if file exists
 
       eof = 0
       imax = 0
       
       !read delivery ratio organic-mineral data
       inquire (file=in_delr%om, exist=i_exist)
-      if (i_exist /= 0 .or. in_delr%om /= "null") then
+      if (i_exist .or. in_delr%om /= "null") then
         do
           open (107,file=in_delr%om)
           read (107,*,iostat=eof) titldum
@@ -42,6 +43,7 @@
           !read all delivery ratio data
           do ii = 1, db_mx%dr_om
             read (107,*,iostat=eof) titldum
+            if (eof < 0) exit
             backspace (107)
             read (107,*,iostat=eof) dr_om_name(ii), dr(ii)   
             if (eof < 0) exit

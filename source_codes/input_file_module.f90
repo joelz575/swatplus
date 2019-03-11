@@ -60,10 +60,6 @@
        character(len=25) :: hyd =  "hydrology.cha"
        character(len=25) :: sed =  "sediment.cha"
        character(len=25) :: nut =  "nutrients.cha"
-       character(len=25) :: pest = "pesticide.cha"
-	   character(len=25) :: path = "pathogens.cha"
-	   character(len=25) :: metals = "metals.cha"
-	   character(len=25) :: salt = "salt.cha"
        character(len=25) :: chan_ez = "channel-lte.cha"
        character(len=25) :: hyd_sed = "hyd-sed-lte.cha"
        character(len=25) :: temp = "temperature.cha"
@@ -75,12 +71,8 @@
        character(len=25) :: init_res = "initial.res"
        character(len=25) :: res =      "reservoir.res"
        character(len=25) :: hyd_res =  "hydrology.res"
-       character(len=25) :: nut_res =  "nutrients.res"
-       character(len=25) :: pest_res = "pesticide.res"
-	   character(len=25) :: path = "pathogens.res"
-	   character(len=25) :: metals = "metals.res"
-	   character(len=25) :: salt = "salt.res"
        character(len=25) :: sed_res =  "sediment.res"
+       character(len=25) :: nut_res =  "nutrients.res"
        character(len=25) :: weir_res = "weir.res"
        character(len=25) :: wet =      "wetland.wet"
        character(len=25) :: hyd_wet =  "hydrology.wet"
@@ -133,6 +125,7 @@
 
 !! aquifer 
       type input_aqu
+       character(len=25) :: init = "initial.aqu"
        character(len=25) :: aqu = "aquifer.aqu"
       end type input_aqu
       type (input_aqu) :: in_aqu
@@ -156,7 +149,7 @@
 !! link
       type input_link
        character(len=25) :: chan_surf = "chan-surf.lin"
-       character(len=25) :: chan_aqu = "chan-aqu.lin"
+       character(len=25) :: aqu_cha = "aqu_cha.lin"
       end type input_link
       type (input_link) :: in_link
 
@@ -248,6 +241,7 @@
       type input_soils
        character(len=25) :: soils_sol = "soils.sol"
        character(len=25) :: nut_sol = "nutrients.sol"
+       character(len=25) :: lte_sol = "soils_lte.sol"      
       end type input_soils
       type (input_soils) :: in_sol
 

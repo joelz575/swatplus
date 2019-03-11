@@ -8,8 +8,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    curyr       |none          |current year of simulation
-!!    fsred(:)    |none          |reduction in bacteria loading from filter
-!!                               |strip
 !!    sedminpa    |kg P/ha       |amount of active mineral phosphorus sorbed to
 !!                               |sediment in surface runoff in HRU for day
 !!    sedminps    |kg P/ha       |amount of stable mineral phosphorus sorbed to

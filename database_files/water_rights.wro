@@ -1,0 +1,26 @@
+water rights objects - water_rights.wro
+  4
+
+NAME			RULE_TYP		RIGHT		NUM_OBJS
+Irr_District_1		high_right_first_serve  100		2
+NUM	OB_TYP  OB_NUM	DEMAND_TYP		AMOUNT		RIGHT
+1	hru	2	irr_demand		0.		100
+2	hru	3	irr_demand		0.		50
+
+NAME			RULE_TYP		RIGHT		NUM_OBJS
+Irr_District_2		partition_by_right      75		2
+NUM	OB_TYP  OB_NUM	DEMAND_TYP		AMOUNT		RIGHT
+1	hru	2	irr_demand		0.		100
+2	hru	3	irr_demand		0.		50
+
+NAME			RULE_TYP		RIGHT		NUM_OBJS
+min_down_stream		high_right_first_serve	100		1
+NUM	OB_TYP  OB_NUM	DEMAND_TYP		AMOUNT		RIGHT
+1	cha	2	min_flo			2.		100
+2	hru	2	irr_demand		0.		 50
+
+NAME			RULE_TYP		RIGHT		NUM_OBJS
+frac_down_stream	partition_by_right      100		1
+NUM	OB_TYP  OB_NUM	DEMAND_TYP		AMOUNT		RIGHT
+1	cha	2	min_frac		0.2		100
+2	hru	2	irr_demand		0.		 50

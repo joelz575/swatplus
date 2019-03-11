@@ -62,7 +62,7 @@
         hru(ihru)%field%ang = field_db(ifield_db)%ang
         hru(ihru)%topo%dep_co = topo_db(itopohd_db)%dep_co
         ! set initial snow cover
-        isno = hru_db(i)%dbs%snow 
+        isno = hru(ihru)%dbs%snow 
         sno_hru(ihru) = snodb(isno)%init_mm
       end do
       

@@ -11,7 +11,7 @@
       character (len=13) :: file      !           |
       character (len=13) :: name      !           |
       integer :: eof                  !           |end of file
-      integer :: i_exist              !none       |check to determine if file exists
+      logical :: i_exist              !none       |check to determine if file exists
       integer :: mcom                 !           |
       integer :: icom                 !none       |counter
       integer :: imax                 !none       |counter
@@ -28,7 +28,7 @@
 
 !! Open plant community data file
       inquire (file=in_init%plant, exist=i_exist)
-      if (i_exist == 0 .or. in_init%plant == "null") then
+      if (.not. i_exist .or. in_init%plant == "null") then
         allocate (pcomdb(0:0))
         allocate (pcomdb(0)%pl(0:0))
         db_mx%plantcom = mcom + 1
@@ -41,20 +41,27 @@
        if (eof < 0) exit
           do while (eof == 0)
              read (113,*,iostat=eof) name, numb
+             if (eof < 0) exit
              do ii = 1, numb
                 read (113,*,iostat=eof) name
+                if (eof < 0) exit
              end do
              if (eof < 0) exit
              imax = imax + 1
           end do
+          
        allocate (pcomdb(0:imax))
+       
        rewind (113)
        read (113,*,iostat=eof) titldum
+       if (eof < 0) exit
        read (113,*,iostat=eof) header
+       if (eof < 0) exit
        
        do icom = 1, imax
        ! loop through all plant communities
-         read (113,*,iostat=eof)  pcomdb(icom)%name, pcomdb(icom)%plants_com
+         read (113,*,iostat=eof)  pcomdb(icom)%name, pcomdb(icom)%plants_com, pcomdb(icom)%rot_yr_ini
+         if (eof < 0) exit
 
          mpcom = pcomdb(icom)%plants_com
          allocate (pcomdb(icom)%pl(mpcom))
@@ -62,6 +69,7 @@
            read (113,*,iostat=eof) pcomdb(icom)%pl(iplt)%cpnm, pcomdb(icom)%pl(iplt)%igro,          &
              pcomdb(icom)%pl(iplt)%lai, pcomdb(icom)%pl(iplt)%bioms, pcomdb(icom)%pl(iplt)%phuacc,  &
              pcomdb(icom)%pl(iplt)%pop, pcomdb(icom)%pl(iplt)%yrmat, pcomdb(icom)%pl(iplt)%rsdin
+           if (eof < 0) exit
 
           do ipldb = 1, db_mx%plantparm
             if (pcomdb(icom)%pl(iplt)%cpnm == pldb(ipldb)%plantnm) then 
@@ -82,4 +90,4 @@
       
       close (113)
       return
-      end
+      end subroutine readpcom

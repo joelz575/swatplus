@@ -1,0 +1,8 @@
+calibration.cal  (modified calibration decision table)
+ 5
+NAME	CHG_TYPE	         VAL  CONDS	   LYR1	   LYR2	  YEAR1 YEAR2	DAY1  DAY2	OBJ_TOT
+cn2	      abschg	         4.0      0	      0       0	      0     0	   0	 0	      0
+awc       pctchg            25.0      0	      0 	  0	      0	    0	   0	 0        0
+esco	  absval	        0.95	  0	      0 	  0	      0	    0	   0	 0        0
+epco	  absval            0.32	  0	      0 	  0	      0	    0	   0	 0        0
+alpha     absval             1.0      0	      0 	  0	      0	    0	   0	 0        0

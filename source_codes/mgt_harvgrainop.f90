@@ -6,18 +6,12 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cnop        |none           |SCS runoff curve number for moisture
-!!                                |condition II
 !!    cnyld(:)    |kg N/kg yield  |fraction of nitrogen in yield
 !!    cpyld(:)    |kg P/kg yield  |fraction of phosphorus in yield
 !!    curyr       |none           |current year in simulation
-!!    hru_dafr(:) |km2/km2        |fraction of watershed in HRU
 !!    hvsti(:)    |(kg/ha)/(kg/ha)|harvest index: crop yield/aboveground
 !!                                |biomass
 !!    ihru        |none           |HRU number
-!!    plt_pst(:,:)|kg/ha          |pesticide on plant foliage
-!!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
-!!                                |organic (residue) pool0
 !!    wsyf(:)     |(kg/ha)/(kg/ha)|Value of harvest index between 0 and HVSTI
 !!                                |which represents the lowest value expected
 !!                                |due to water stress
@@ -26,8 +20,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    plt_pst(:,:)|kg/ha         |pesticide on plant foliage
-!!    sol_pst(:,:,1)|kg/ha       |pesticide in first layer of soil
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -51,7 +43,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use hru_module, only : ihru, cnop, harveff, ipl, yield
+      use hru_module, only : ihru, harveff, ipl, yield
       use plant_module
       use plant_data_module
       use mgt_operations_module
@@ -118,11 +110,7 @@
 !! summary calculations
        xx = pcom(j)%plm(ipl)%mass
        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - yield
-       pcom(j)%root(ipl)%mass = pcom(j)%root(ipl)%mass * xx /                &
-         (pcom(j)%plm(ipl)%mass + 1.e-6)
-
-!! update curve number
-      if (cnop > 0.) call curno(cnop,j)
+       pcom(j)%root(ipl)%mass = pcom(j)%root(ipl)%mass * xx / (pcom(j)%plm(ipl)%mass + 1.e-6)
 
       return
       end  subroutine mgt_harvgrainop

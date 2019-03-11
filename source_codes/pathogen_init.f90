@@ -52,27 +52,28 @@
       do ihru = 1, sp_ob%hru  
         !! allocate pathogens
         mpath = cs_db%num_paths
+        if (mpath > 0) then
+          !! allocate pathogens associated with soil and plant
+          do ly = 1, soil(ihru)%nly
+            allocate (cs_soil(ihru)%ly(ly)%path(mpath))
+          end do
+          allocate (cs_pl(ihru)%path(mpath))
+          allocate (cs_irr(ihru)%path(mpath))
+        end if
+
         isp_ini = hru(ihru)%dbs%soil_plant_init
         ipath_db = sol_plt_ini(isp_ini)%path
         if (mpath > 0) then
-          !! allocate pathogens associated with soil
-          do ly = 1, soil(ihru)%nly
-            allocate (soil(ihru)%ly(ly)%bacsol(mpath))
-            allocate (soil(ihru)%ly(ly)%bacsor(mpath))
-          end do
-          !! allocate pathogens associated with plant
-          allocate (pcom(ihru)%path(mpath))
-          
           do ipath = 1, mpath
-            if (ly == 1) then
-              soil(ihru)%ly(1)%bacsol(ipath) = pathi_db(ipath_db)%pathi(ipath)%soil
-              soil(ihru)%ly(1)%bacsor(ipath) = pathi_db(ipath_db)%pathi(ipath)%soil
-            else
-              soil(ihru)%ly(1)%bacsol(ipath) = 0.
-              soil(ihru)%ly(1)%bacsor(ipath) = 0.
-            end if
-             
-            hpath_bal(ihru)%path(ipath)%plant = pathi_db(ipath_db)%pathi(ipath)%plt
+            do ly = 1, soil(ihru)%nly
+              if (ly == 1) then
+                cs_soil(ihru)%ly(1)%path(ipath) = path_soil_ini(ipath_db)%soil(ipath)
+              else
+                cs_soil(ihru)%ly(1)%path(ipath) = 0.
+              end if
+            end do
+            
+            hpath_bal(ihru)%path(ipath)%plant = path_soil_ini(ipath_db)%plt(ipath)
           end do
         end if
       end do

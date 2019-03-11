@@ -37,6 +37,7 @@
         do ires = 1, sp_ob%res
           allocate (res_water(ires)%pest(cs_db%num_pests))
           allocate (res_benthic(ires)%pest(cs_db%num_pests))
+          allocate (res_ob(ires)%aq_mix(cs_db%num_pests))
           allocate (respst_d(ires)%pest(cs_db%num_pests))
           allocate (respst_m(ires)%pest(cs_db%num_pests))
           allocate (respst_y(ires)%pest(cs_db%num_pests))

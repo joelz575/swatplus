@@ -125,7 +125,7 @@
 !!    determine detached sediment size distribution
 !!    typical for mid-western soils in USA (Foster et al., 1980)
 !!    Based on SWRRB
-       sol(isol)%s%det_san = 2.49 * sa * (1. - cl)   !! Sand fraction
+       sol(isol)%s%det_san = sa * (1. - cl)** 2.49   !! Sand fraction
        sol(isol)%s%det_sil = 0.13 * si               !! Silt fraction
        sol(isol)%s%det_cla = 0.20 * cl               !! Clay fraction   
        if (cl < .25) then

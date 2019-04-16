@@ -22,7 +22,6 @@
 
        !! read shallow aquifer property data from aquifer.aqu
        inquire (file=in_aqu%aqu, exist=i_exist)
-       !if (.not. i_exist .or. in_aqu%aqu == "null") then
        if (.not. i_exist .or. in_aqu%aqu == "null") then
             allocate (aqudb(0:0))
           else
@@ -42,8 +41,10 @@
           db_mx%aqudb = msh_aqp
           allocate (aqudb(0:imax))
           rewind (107)
-          read (107,*) titldum
-          read (107,*) header
+          read (107,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
           
           do ish_aqp = 1, msh_aqp
             read (107,*,iostat=eof) i

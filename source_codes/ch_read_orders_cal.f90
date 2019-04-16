@@ -32,12 +32,12 @@
       mcal = 0
       mreg = 0
  
-      inquire (file=in_chg%ch_orders_cal, exist=i_exist)
-      if (.not. i_exist .or. in_chg%ch_orders_cal == "null") then
+      inquire (file=in_chg%ch_sed_budget_sft, exist=i_exist)
+      if (.not. i_exist .or. in_chg%ch_sed_budget_sft == "null") then
            allocate (chcal(0:0))	      
       else 
       do
-        open (107,file=in_chg%ch_orders_cal)
+        open (107,file=in_chg%ch_sed_budget_sft)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mreg

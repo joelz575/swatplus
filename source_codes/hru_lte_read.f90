@@ -86,8 +86,10 @@
         allocate (hlt(sp_ob%hru_lte))
         
         rewind (1)
-        read (1,*) titldum
-        read (1,*) header
+        read (1,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (1,*,iostat=eof) header
+        if (eof < 0) exit
 
       do isd_h = 1, imax
         read (1,*,iostat=eof) i
@@ -132,15 +134,17 @@
          hlt(i)%dm = 0. 
          hlt(i)%alai = .15 
          hlt(i)%g = 0. 
-                  
+                 
          !crosswalk plant with plants.plt
          do ipl = 1, db_mx%plantparm
             if (hlt_db(idb)%plant == pldb(ipl)%plantnm) then
               hlt(i)%iplant = ipl
               exit
-            endif
+            end if 
          end do
          
+         if (hlt(i)%iplant == 0) write (9001,*) hlt_db(idb)%plant, "not found (plants.plt)"
+        
       !crosswalk
          do istart = 1, db_mx%dtbl_lum
             if (hlt_db(idb)%igrow1 == dtbl_lum(istart)%name) then
@@ -149,6 +153,8 @@
             endif
          end do
          
+        if (hlt(i)%start == 0) write (9001,*) hlt_db(idb)%igrow1, " entry in (hru-lte.hru) not found in (lum.dtl)"
+         
       !crosswalk
          do iend = 1, db_mx%dtbl_lum
             if (hlt_db(idb)%igrow2 == dtbl_lum(iend)%name) then
@@ -156,6 +162,8 @@
               exit
             endif
          end do
+         
+        if (hlt(i)%end == 0) write (9001,*) hlt_db(idb)%igrow2, " entry in (hru-lte.hru) not found in (lum.dtl)"
          
          !compute heat units from growing season and weather generator
          iwst = ob(icmd)%wst

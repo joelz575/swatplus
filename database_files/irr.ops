@@ -1,6 +1,6 @@
-irr.ops: Irrigation operations - Water_LS2_Take2
-  IRR_OP_NAME    	IRR_EFF   SURQ_RATIO	DEPTH	IRR_SALT  IRR_NO3    IRR_PO4
-      surface		0.500      0.400      	0.000     0.000      0.000    0.000
-      sprinkler		0.700      0.100      	0.000     0.000      0.000    0.000
-      drip		0.900      0.000      	0.000     0.000      0.000    0.000
-      subsurface	1.000      0.000      150.000     0.000      0.000    0.000
+irr.ops
+NAME                AMT_MM    EFF_FRAC   SUMQ_FRAC     DEP_SUB    SALT_PPM     NO3_PPM     PO4_PPM
+sprinkler_med         25.00        0.85        0.00        0.00      100.00       20.00        1.00
+sprinkler_high        40.00        0.80        0.00        0.00      100.00       20.00        1.00
+drip                  25.00        0.90        0.00      100.00      100.00       20.00        1.00
+furrow                50.00        0.70        0.20        0.00      100.00       20.00        1.00

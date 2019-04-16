@@ -51,8 +51,10 @@
        allocate (sched(0:imax))
        
        rewind (107)
-       read (107,*) titldum
-       read (107,*) header
+       read (107,*,iostat=eof) titldum
+       if (eof < 0) exit
+       read (107,*,iostat=eof) header
+       if (eof < 0) exit
        
        do isched = 1, imax
          read (107,*,iostat=eof)  sched(isched)%name, sched(isched)%num_ops, sched(isched)%num_autos

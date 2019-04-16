@@ -39,8 +39,10 @@
           allocate (exco_salt_num(imax))
           allocate (exco_salt_name(imax))
           rewind (107)
-          read (107,*) titldum
-          read (107,*) header
+          read (107,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
       
           !read all export coefficient data
           do ii = 1, db_mx%exco_salt
@@ -69,8 +71,12 @@
       ob2 = sp_ob1%exco + sp_ob%exco - 1
       do iob = ob1, ob2
         iexco = ob(iob)%props
-        iexco_salt = exco_salt_num(iexco)
-        obcs(iob)%hd(1)%salt = exco_salt(iexco_salt)%salt
+        if (exco_db(iexco)%salts_file == "null") then
+          obcs(iob)%hd(1)%salt = 0.
+        else		
+          iexco_salt = exco_salt_num(iexco)
+          obcs(iob)%hd(1)%salt = exco_salt(iexco_salt)%salt
+		end if
       end do
       
       return

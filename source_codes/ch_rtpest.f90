@@ -92,8 +92,6 @@
       real :: kd                !(mg/kg)/(mg/L) |koc * carbon
       real :: depth             !m             |depth of water in reach
       real :: chpstmass         !mg pst        |mass of pesticide in reach
-      real :: frsol             !none          |fraction of pesticide in reach that is soluble
-      real :: frsrb             !none          |fraction of pesticide in reach that is sorbed
       real :: sedpstmass        !mg pst        |mass of pesticide in bed sediment
       real :: fd2               !units         |description
       real :: solmax            !units         |description
@@ -101,6 +99,8 @@
       real :: tday              !none          |flow duration (fraction of 24 hr)
       real :: rchwtr            !m^3 H2O       |water stored in reach at beginning of day
       real :: por               !none          |porosity of bottom sediments
+      real :: pest_init         !mg            |amount of pesticide before decay
+      real :: pest_end          !mg            |amount of pesticide after decay
 
       !! zero outputs
       chpst_d(jrch) = chpstz
@@ -155,9 +155,12 @@
           tday = 1.0
 
           !! calculate amount of pesticide that undergoes chemical or biological degradation on day in reach
-          !! MFW, 3/12/12: modify decay to be 1st order reactw = chpstmass * tday / chpst_rea(jrch)
-          chpst%pest(jrch)%react = chpstmass * tday / pestdb(jpst)%aq_reac
-          chpstmass = chpstmass - chpst%pest(jrch)%react
+          pest_init = chpstmass
+          if (pest_init > 1.e-12) then
+            pest_end = chpstmass * pestcp(jpst)%decay_a
+            chpstmass = pest_end
+            chpst%pest(jrch)%react = pest_init - pest_end
+          end if
 
           !! calculate amount of pesticide that volatilizes from reach
           chpst%pest(jrch)%volat = pestdb(jpst)%aq_volat * frsol * chpstmass * tday / depth
@@ -230,14 +233,13 @@
           chpstmass = 0.
         end if
 
-        !! sediment processes
+        !! benthic processes
         !! calculate loss of pesticide from bed sediments by reaction
-        chpst%pest(jrch)%react_bot = sedpstmass / pestdb(jpst)%ben_reac
-        if (chpst%pest(jrch)%react_bot > sedpstmass) then
-          chpst%pest(jrch)%react_bot = sedpstmass
-          sedpstmass = 0.
-        else
-          sedpstmass = sedpstmass - chpst%pest(jrch)%react_bot
+        pest_init = sedpstmass
+        if (pest_init > 1.e-12) then
+          pest_end = sedpstmass * pestcp(jpst)%decay_b
+          sedpstmass = pest_end
+          chpst%pest(jrch)%react_bot = pest_init - pest_end
         end if
 
         !! set new pesticide mass of (in + store) after processes

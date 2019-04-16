@@ -32,9 +32,9 @@
                                     !              |9=sandy_clay_loam 10=sandy_clay 
                                     !              |11=silty_clay 12=clay 
         character(len=16) ::  tropical !           |(0)="non_trop" (1)="trop"
-        character(len=16) :: igrow1 !              |1 = start of growing season for non-tropical (pl_grow_sum)
+        character(len=16) :: igrow1 !              |start of growing season for non-tropical (pl_grow_sum)
                                     !              |start of monsoon initialization period for tropical 
-        character(len=16) :: igrow2 !              |2 = end of growing season for non-tropical (pl_end_sum)
+        character(len=16) :: igrow2 !              |end of growing season for non-tropical (pl_end_sum)
                                     !              |end of monsoon initialization period for tropical
         character(len=16) :: plant  !              |plant type (as listed in plants.plt)
         real :: stress = 0.         !frac          |plant stress - pest, root restriction, soil quality, nutrient, (non water, temp)
@@ -56,7 +56,8 @@
         character(len=16) :: lsu             !              |landscape unit - character
         character(len=16) :: region          !              |region - character
         character(len=16) :: plant           !              |plant type (as listed in plants.plt)
-        integer :: iplant = 1                !              |plant number xwalked from hlt_db()%plant and plants.plt
+        !integer :: iplant = 1                !              |plant number xwalked from hlt_db()%plant and plants.plt
+        integer :: iplant = 0                !              |plant number xwalked from hlt_db()%plant and plants.plt
         real :: km2 = 0.                     !km^2          |drainage area
         real :: cn2 = 0.                     !              |condition II curve number (used in calibration)
         real :: cn3_swf = 0.                 !none          |soil water factor for cn3 (used in calibration)
@@ -94,8 +95,8 @@
         real :: gwdeep = 0.                  !mm            |deep aquifer storage
         real :: aet = 0.                     !mm            |sum of actual et during growing season (for hi water stress)
         real :: pet = 0.                     !mm            |sum of potential et during growing season (for hi water stress)
-        integer :: start
-        integer :: end
+        integer :: start = 0
+        integer :: end = 0
       end type swatdeg_hru_dynamic
       type (swatdeg_hru_dynamic), dimension (:), allocatable :: hlt
       type (swatdeg_hru_dynamic), dimension (:), allocatable :: hlt_init

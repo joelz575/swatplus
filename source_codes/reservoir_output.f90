@@ -17,12 +17,13 @@
          if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%res%d == "y") then
             write (2540,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, res_in_d(j), res_out_d(j), res_om_d(j)
-             if (pco%csvout == "y") then
+               if (pco%csvout == "y") then
                write (2544,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, res_in_d(j), res_out_d(j), res_om_d(j)
              end if
           end if 
-        end if 
-                                                    
+         end if 
+  
+         
         res_in_m(j) = res_in_m(j) + res_in_d(j)
         res_out_m(j) = res_out_m(j) + res_out_d(j)
         res_om_m(j) = res_om_m(j) + res_om_d(j)
@@ -84,6 +85,7 @@
         
       return
         
-100   format (4i6,2i8,2x,a,e10.3,e12.3,45e10.3)
-       
+100   format (4i6,2i10,2x,a,e10.3,e12.3,45e10.3)
+      
+     
       end subroutine reservoir_output

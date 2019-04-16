@@ -21,7 +21,9 @@
       real :: biomxyr
       real :: ppet              !mm/mm              |running average of precip over pet
       real :: leaf_tov_mon      !months             |leaf turnover rate months
-               
+      real :: coef              !                   |coefficient for ppet - leaf turnover equation
+      real :: exp_co            !                   |exponent for ppet - leaf turnover equation
+      
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
       
@@ -53,17 +55,20 @@
         !! linear lai decline based on soil moisture (max loss at p/pet=0.1, min loss at p/pet=0.5)
         ppet = wgn_pms(iwgn)%precip_sum / wgn_pms(iwgn)%pet_sum
         if (ppet < 0.5) then
-          leaf_tov_mon = pldb(idp)%leaf_tov_min - (0.5 - ppet) * (pldb(idp)%leaf_tov_min - pldb(idp)%leaf_tov_max) / 0.4
+          coef = 1. ! / .36
+          exp_co = -10. * ppet + 6.
+          leaf_tov_mon = coef * exp (-exp_co) * (pldb(idp)%leaf_tov_min - pldb(idp)%leaf_tov_max) + pldb(idp)%leaf_tov_max
+          !leaf_tov_mon = pldb(idp)%leaf_tov_min - (0.5 - ppet) * (pldb(idp)%leaf_tov_min - pldb(idp)%leaf_tov_max) / 0.4
         else
           leaf_tov_mon = pldb(idp)%leaf_tov_min
         end if
         leaf_tov_mon = amin1 (leaf_tov_mon, pldb(idp)%leaf_tov_min)
         leaf_tov_mon = amax1 (leaf_tov_mon, pldb(idp)%leaf_tov_max)
         !! daily turnover - from monthly turnover rate
-        pcom(j)%plcur(ipl)%leaf_tov = (1. / (30. * leaf_tov_mon)) * pcom(j)%leaf(ipl)%mass
+        pcom(j)%plcur(ipl)%leaf_tov = (1. / (30. * leaf_tov_mon))
         
         !! assume an lai-biomass relationship - linear with slope = 0.0002 LAI/leaf biomass(kg/ha) ***should be plant parm in plants.plt
-        pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai - 0.00025 * pcom(j)%plcur(ipl)%leaf_tov
+        pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai - pcom(j)%plcur(ipl)%leaf_tov
         pcom(j)%plg(ipl)%lai = amax1 (pcom(j)%plg(ipl)%lai, pldb(idp)%alai_min)
       end if
           

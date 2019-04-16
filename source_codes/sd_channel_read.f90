@@ -47,6 +47,7 @@
       allocate (ch_water(0:sp_ob%chandeg))
       allocate (ch_benthic(0:sp_ob%chandeg))
       allocate (ch_stor(0:sp_ob%chandeg))
+      allocate (ch_om_water_init(0:sp_ob%chandeg))
       allocate (chpst_d(0:sp_ob%chandeg))
       allocate (chpst_m(0:sp_ob%chandeg))
       allocate (chpst_y(0:sp_ob%chandeg))
@@ -112,8 +113,10 @@
       allocate (sd_dat(0:imax))
       
       rewind (105)
-      read (105,*) titldum
-      read (105,*) header
+      read (105,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (105,*,iostat=eof) header
+      if (eof < 0) exit
       
       do ichi = 1, db_mx%sdc_dat
         read (105,*,iostat=eof) sd_dat(ichi)%name, sd_dat(ichi)%initc, sd_dat(ichi)%hydc, sd_dat(ichi)%sedc, &
@@ -191,6 +194,7 @@
         ich_ini = sd_dat(ichdat)%init
         iom_ini = sd_init(ich_ini)%org_min
         ch_stor(ich) = om_init_water(iom_ini)
+        ch_om_water_init(ich) = ch_stor(ich)
       end do
       
       ! initialize pesticides in channel water and benthic from input data
@@ -207,7 +211,7 @@
           bedvol = sd_ch(ich)%chw *sd_ch(ich)%chl * 1000.* pestdb(ipest_ini)%ben_act_dep
           ch_benthic(ich)%pest(ipest) = pest_water_ini(ipest_ini)%benthic(ipest) * bedvol
           !! calculate mixing velocity using molecular weight and porosity
-          sd_ch(ich)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt * (1. - sd_chd(ich)%bd / 2.65)
+          sd_ch(ich)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt ** (-.6666) * (1. - sd_chd(ich)%bd / 2.65) * (69.35 / 365)
         end do
       end do
                   

@@ -4,9 +4,13 @@
       
       implicit none
               
+      real :: frsol             !none          |fraction of pesticide in reach that is soluble
+      real :: frsrb             !none          |fraction of pesticide in reach that is sorbed
+      
       type ch_pesticide_processes
-        real :: pst_in = 0.             ! kg        !pesticide into reservoir
-        real :: pst_out = 0.            ! kg        !pesticide out of reservoir
+        real :: tot_in = 0.             ! kg        !total pesticide into reservoir
+        real :: sol_out = 0.            ! kg        !soluble pesticide out of reservoir
+        real :: sor_out = 0.            ! kg        !sorbed pesticide out of reservoir
         real :: react = 0.              ! kg        !pesticide lost through reactions in water layer
         real :: volat = 0.              ! kg        !pesticide lost through volatilization
         real :: settle = 0.             ! kg        !pesticide settling to sediment layer
@@ -42,17 +46,18 @@
           character (len=8) :: id =         " gis_id "           
           character (len=16) :: name =      " name              "  
           character (len=16) :: pest =      " pesticide"
-          character(len=13) :: pst_in =     "pestin_kg "             ! (kg)
-          character(len=14) :: pst_out =    "pestout_kg "            ! (kg)
-          character(len=13) :: react =      "react_h2o_kg "          ! (kg)
-          character(len=12) :: volat =      "volat_kg "              ! (kg)
-          character(len=12) :: settle =     "settle_kg "             ! (kg)
-          character(len=13) :: resus =      "resuspend_kg "          ! (kg)
-          character(len=12) :: difus =      "diffuse_kg "            ! (kg)
-          character(len=15) :: react_bot =  "react_benth_kg "        ! (kg)
-          character(len=14) :: bury =       "bury_benth_kg "         ! (kg)
-          character(len=14) :: water =      "water_stor_kg "         ! (kg)
-          character(len=12) :: benthic =    "benthic_kg "            ! (kg)
+          character(len=13) :: tot_in =     "tot_in_kg "            ! (kg)
+          character(len=13) :: sol_out =    "sol_out_kg "           ! (kg)
+          character(len=14) :: sor_out =    "sor_out_kg "           ! (kg)
+          character(len=13) :: react =      "react_h2o_kg "         ! (kg)
+          character(len=12) :: volat =      "volat_kg "             ! (kg)
+          character(len=12) :: settle =     "settle_kg "            ! (kg)
+          character(len=13) :: resus =      "resuspend_kg "         ! (kg)
+          character(len=12) :: difus =      "diffuse_kg "           ! (kg)
+          character(len=15) :: react_bot =  "react_benth_kg "       ! (kg)
+          character(len=14) :: bury =       "bury_benth_kg "        ! (kg)
+          character(len=14) :: water =      "water_stor_kg "        ! (kg)
+          character(len=12) :: benthic =    "benthic_kg "           ! (kg)
       end type ch_pesticide_header
       type (ch_pesticide_header) :: chpest_hdr
      
@@ -74,8 +79,9 @@
         type (ch_pesticide_processes),  intent (in) :: cho1
         type (ch_pesticide_processes),  intent (in) :: cho2
         type (ch_pesticide_processes) :: cho3
-        cho3%pst_in = cho1%pst_in + cho2%pst_in
-        cho3%pst_out = cho1%pst_out + cho2%pst_out
+        cho3%tot_in = cho1%tot_in + cho2%tot_in
+        cho3%sol_out = cho1%sol_out + cho2%sol_out
+        cho3%sor_out = cho1%sor_out + cho2%sor_out
         cho3%react = cho1%react + cho2%react
         cho3%volat = cho1%volat + cho2%volat
         cho3%settle = cho1%settle + cho2%settle
@@ -91,8 +97,9 @@
         type (ch_pesticide_processes), intent (in) :: ch1
         real, intent (in) :: const
         type (ch_pesticide_processes) :: ch2
-          ch2%pst_in = ch1%pst_in / const
-          ch2%pst_out = ch1%pst_out / const
+          ch2%tot_in = ch1%tot_in / const
+          ch2%sol_out = ch1%sol_out / const
+          ch2%sor_out = ch1%sor_out / const
           ch2%react = ch1%react / const
           ch2%volat = ch1%volat / const
           ch2%settle = ch1%settle / const
@@ -108,8 +115,9 @@
         type (ch_pesticide_processes), intent (in) :: ch1
         real, intent (in) :: const
         type (ch_pesticide_processes) :: ch2
-          ch2%pst_in = ch1%pst_in
-          ch2%pst_out = ch1%pst_out
+          ch2%tot_in = ch1%tot_in
+          ch2%sol_out = ch1%sol_out
+          ch2%sor_out = ch1%sor_out
           ch2%react = ch1%react
           ch2%volat = ch1%volat
           ch2%settle = ch1%settle

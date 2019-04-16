@@ -231,6 +231,100 @@
           character (len=12) :: temp  = "        temp"        !! deg c        |temperature
           end type res_headerbsn
        type (res_headerbsn) :: res_hdrbsn
+       
+       type res_header_unit
+       !! is this correct for res_out ??? also uses hy_output ??? gsm 9/2018
+          character (len=5) :: day    = "     "
+          character (len=6) :: mo     = "      "
+          character (len=6) :: day_mo = "      "
+          character (len=6) :: yrc    = "      "
+          character (len=8) :: j      = "         "
+          character (len=9) :: id     = "         "        
+          character (len=16) :: name  = "                   " 
+          character (len=13) :: flo   = "        ha-m"    !! ha-m         |volume of water
+          character (len=12) :: sed   = "   met_tons"     !! metric tons  |sediment 
+          character (len=10) :: orgn  = "    kg N"        !! kg N         |organic N
+          character (len=10) :: sedp  = "    kg P"        !! kg P         |organic P
+          character (len=10) :: no3   = "    kg N"        !! kg N         |NO3-N
+          character (len=10) :: solp  = "    kg P"        !! kg P         |mineral (soluble P)
+          character (len=10) :: chla  = "      kg"        !! kg           |chlorophyll-a
+          character (len=10) :: nh3   = "    kg N"        !! kg N         |NH3
+          character (len=10) :: no2   = "    kg N"        !! kg N         |NO2
+          character (len=10) :: cbod  = "      kg"        !! kg           |carbonaceous biological oxygen demand
+          character (len=10) :: dox   = "      kg"        !! kg           |dissolved oxygen
+          character (len=10) :: san   = "    tons"        !! tons         |detached sand
+          character (len=10) :: sil   = "    tons"        !! tons         |detached silt
+          character (len=10) :: cla   = "    tons"        !! tons         |detached clay
+          character (len=10) :: sag   = "    tons"        !! tons         |detached small ag
+          character (len=10) :: lag   = "    tons"        !! tons         |detached large ag
+          character (len=10) :: grv   = "    tons"        !! tons         |gravel
+          character (len=10) :: temp  = "   deg c"        !! deg c        |temperature 
+          end type res_header_unit
+       type (res_header_unit) :: res_hdr_unt
+          
+        type res_header_unit1
+       !! is this correct for Units res_out ??? also uses hy_output ??? gsm 9/2018
+          character (len=10) :: flo   = "     ha-m"         !! ha-m         |volume of water
+          character (len=8) :: sed    = "met_tons"          !! metric tons  |sediment 
+          character (len=10) :: orgn  = "      kg_N"        !! kg N         |organic N
+          character (len=10) :: sedp  = "      kg_P"        !! kg P         |organic P
+          character (len=10) :: no3   = "      kg_N"        !! kg N         |NO3-N
+          character (len=10) :: solp  = "      kg_P"        !! kg P         |mineral (soluble P)
+          character (len=10) :: chla  = "        kg"        !! kg           |chlorophyll-a
+          character (len=10) :: nh3   = "      kg N"        !! kg N         |NH3
+          character (len=10) :: no2   = "      kg N"        !! kg N         |NO2
+          character (len=10) :: cbod  = "        kg"        !! kg           |carbonaceous biological oxygen demand
+          character (len=10) :: dox   = "        kg"        !! kg           |dissolved oxygen
+          character (len=10) :: san   = "      tons"        !! tons         |detached sand
+          character (len=10) :: sil   = "      tons"        !! tons         |detached silt
+          character (len=10) :: cla   = "      tons"        !! tons         |detached clay
+          character (len=10) :: sag   = "      tons"        !! tons         |detached small ag
+          character (len=10) :: lag   = "      tons"        !! tons         |detached large ag
+          character (len=10) :: grv   = "      tons"        !! tons         |gravel
+          character (len=10) :: temp  = "     deg_c"        !! deg c        |temperature 
+          end type res_header_unit1
+       type (res_header_unit1) :: res_hdr_unt1
+       
+       type res_header_unit2
+           !! last part of units 
+        character (len=10) :: area_ha   =    "        ha"  
+        character (len=10) :: evap      =    "        mm"
+        character (len=10) :: seep      =    "        mm"        !mm     |seepage from res bottom
+        character (len=10) :: sed_setl  =    "         t"        !t      |sediment settling
+        character (len=10) :: seci      =    "         m"        !m      !seci depth 
+        character (len=10) :: solp_loss =    "        kg"        !kg     |soluble phosphorus loss  
+        character (len=10) :: sedp_loss =    "        kg"        !kg     |sediment attached phosphorus loss 
+        character (len=10) :: orgn_loss =    "        kg"        !kg     |organic nitrogen loss 
+        character (len=10) :: no3_loss  =    "        kg"        !kg     |nitrate loss
+        character (len=10) :: nh3_loss  =    "        kg"        !kg     |ammonium nitrogen loss
+        character (len=10) :: no2_loss  =    "        kg"        !kg     |nitrite loss
+      end type res_header_unit2
+type (res_header_unit2) res_hdr_unt2
+
+type res_header_unitbsn
+       !! is this correct for Units res_out ??? also uses hy_output ??? gsm 9/2018
+          character (len=10) :: flo   = "     m^3"        !! m^3          |volume of water
+          character (len=12) :: sed   = "  met_tons"        !! metric tons  |sediment 
+          character (len=10) :: orgn  = "      kg_N"        !! kg N         |organic N
+          character (len=12) :: sedp  = "        kg_P"        !! kg P         |organic P
+          character (len=12) :: no3   = "        kg_N"        !! kg N         |NO3-N
+          character (len=12) :: solp  = "        kg_P"        !! kg P         |mineral (soluble P)
+          character (len=12) :: chla  = "          kg"        !! kg           |chlorophyll-a
+          character (len=12) :: nh3   = "        kg_N"        !! kg N         |NH3
+          character (len=12) :: no2   = "        kg_N"        !! kg N         |NO2
+          character (len=12) :: cbod  = "          kg"        !! kg           |carbonaceous biological oxygen demand
+          character (len=12) :: dox   = "          kg"        !! kg           |dissolved oxygen
+          character (len=12) :: san   = "        tons"        !! tons         |detached sand
+          character (len=12) :: sil   = "        tons"        !! tons         |detached silt
+          character (len=12) :: cla   = "        tons"        !! tons         |detached clay
+          character (len=12) :: sag   = "        tons"        !! tons         |detached small ag
+          character (len=12) :: lag   = "        tons"        !! tons         |detached large ag
+          character (len=12) :: grv   = "        tons"        !! tons         |gravel
+          character (len=12) :: temp  = "       deg_c"        !! deg c        |temperature 
+          end type res_header_unitbsn
+       type (res_header_unitbsn) :: res_hdr_untbsn
+
+       
        interface operator (+)
         module procedure resom_add
       end interface

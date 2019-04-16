@@ -30,7 +30,9 @@
       real :: aunif                           !          |
       integer :: ires                         !          |
       integer :: iipl                         !          |
-      real :: targ                            !          | 
+      real :: targ                            !          |
+      integer :: pl_sum                       !none      |number of plants growing
+      real :: strs_sum                        !none      |sum of stress (water or n) of all growing plants
       
       d_tbl%act_hit = "y"
       do ic = 1, d_tbl%conds
@@ -39,15 +41,25 @@
         case ("w_stress")
           ob_num = d_tbl%cond(ic)%ob_num
           if (ob_num == 0) ob_num = ob_cur
-          ipl = Max (d_tbl%cond(ic)%ob_num, 1)
+          !! find average water stress of all growing plants
+          pl_sum = 0
+          strs_sum = 0.
+          do ipl = 1, pcom(ob_num)%npl
+            if (pcom(ob_num)%plcur(ipl)%gro == "y") then
+              pl_sum = pl_sum + 1
+              strs_sum = strs_sum + pcom(ob_num)%plstr(ipl)%strsw
+            end if
+          end do
+          if (pl_sum > 0) strs_sum = strs_sum / pl_sum
+
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "<") then    !to trigger irrigation
-              if (pcom(ob_num)%plstr(ipl)%strsw > d_tbl%cond(ic)%lim_const) then
+              if (strs_sum > d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl%alt(ic,ialt) == ">") then    !may use for grazing or fire
-              if (pcom(ob_num)%plstr(ipl)%strsw < d_tbl%cond(ic)%lim_const) then
+              if (strs_sum < d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if
@@ -57,15 +69,25 @@
         case ("n_stress")
           ob_num = d_tbl%cond(ic)%ob_num
           if (ob_num == 0) ob_num = ob_cur
-          ipl = Max (d_tbl%cond(ic)%ob_num, 1)
+          !! find average water stress of all growing plants
+          pl_sum = 0
+          strs_sum = 0.
+          do ipl = 1, pcom(ob_num)%npl
+            if (pcom(ob_num)%plcur(ipl)%gro == "y") then
+              pl_sum = pl_sum + 1
+              strs_sum = strs_sum + pcom(ob_num)%plstr(ipl)%strsn
+            end if
+          end do
+          if (pl_sum > 0) strs_sum = strs_sum / pl_sum
+
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "<") then    !to trigger fertilizer application
-              if (pcom(ob_num)%plstr(ipl)%strsn > d_tbl%cond(ic)%lim_const) then
+              if (strs_sum > d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl%alt(ic,ialt) == ">") then    !may use for grazing or fire
-              if (pcom(ob_num)%plstr(ipl)%strsn < d_tbl%cond(ic)%lim_const) then
+              if (strs_sum < d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if

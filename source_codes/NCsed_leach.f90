@@ -169,7 +169,6 @@
       latc_clyr = latc_clyr + soil(j)%ly(1)%latc   
       DO k = 2, soil(j)%nly
           if (soil(j)%ly(k)%prk > 0 .and. k == soil(j)%nly) then
-            !write (*,*) "stop"
           end if
           sol_thick = 0.
           sol_thick = soil(j)%phys(k)%d-soil(j)%phys(k-1)%d

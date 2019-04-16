@@ -66,8 +66,10 @@
         allocate (sd_chd(0:imax))
         
         rewind (1)
-        read (1,*) titldum
-        read (1,*) header
+        read (1,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (1,*,iostat=eof) header
+        if (eof < 0) exit
         
         do idb = 1, db_mx%ch_lte
           read (1,*,iostat=eof) sd_chd(idb)

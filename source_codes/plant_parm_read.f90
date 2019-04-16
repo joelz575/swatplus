@@ -39,8 +39,10 @@
         allocate (plcp(0:imax))
         
         rewind (104)
-        read (104,*) titldum
-        read (104,*) header
+        read (104,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (104,*,iostat=eof) header
+        if (eof < 0) exit
         
         do ic = 1, imax
           read (104,*,iostat=eof) pldb(ic)

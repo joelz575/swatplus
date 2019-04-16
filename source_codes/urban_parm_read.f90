@@ -32,8 +32,10 @@
         allocate (urbdb(0:imax)) 
         
         rewind (108)
-        read (108,*) titldum
-        read (108,*) header
+        read (108,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (108,*,iostat=eof) header
+        if (eof < 0) exit
             
         do iu = 1, imax
            read (108,*,iostat=eof) urbdb(iu)

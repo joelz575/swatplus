@@ -88,33 +88,25 @@
         type (constituent_mass), dimension (:), allocatable :: ly
       end type soil_constituent_mass
       type (soil_constituent_mass), dimension (:), allocatable :: cs_soil
+      type (soil_constituent_mass), dimension (:), allocatable :: cs_soil_init
       
       ! plant constituent mass
       type (constituent_mass), dimension (:), allocatable :: cs_pl
+      type (constituent_mass), dimension (:), allocatable :: cs_pl_init
             
       ! aquifer constituent mass
       type (constituent_mass), dimension (:), allocatable :: cs_aqu
-      
-      ! channel constituent mass
-      type channel_constituent_mass
-        type (constituent_mass) :: water
-        type (constituent_mass) :: benthic
-      end type channel_constituent_mass
-      type (channel_constituent_mass), dimension (:), allocatable :: cs_ch
-      
-      ! reservoir constituent mass
-      type reservoir_constituent_mass
-        type (constituent_mass) :: water
-        type (constituent_mass) :: benthic
-      end type reservoir_constituent_mass
-      type (reservoir_constituent_mass), dimension (:), allocatable :: cs_res
-      type (reservoir_constituent_mass), dimension (:), allocatable :: cs_cha
+      type (constituent_mass), dimension (:), allocatable :: cs_aqu_init
 
       ! storing water and benthic constituents in channels and reservoirs
       type (constituent_mass), dimension (:), allocatable :: ch_water
       type (constituent_mass), dimension (:), allocatable :: ch_benthic
       type (constituent_mass), dimension (:), allocatable :: res_water
       type (constituent_mass), dimension (:), allocatable :: res_benthic
+      type (constituent_mass), dimension (:), allocatable :: ch_water_init
+      type (constituent_mass), dimension (:), allocatable :: ch_benthic_init
+      type (constituent_mass), dimension (:), allocatable :: res_water_init
+      type (constituent_mass), dimension (:), allocatable :: res_benthic_init
       
       ! hydrographs used in command for adding incoming hyds
       type (constituent_mass) :: hcs1, hcs2

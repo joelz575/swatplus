@@ -84,22 +84,24 @@
       type (swatdeg_channel_dynamic), dimension (:), allocatable :: sdch_init  
               
       type sd_ch_output
-        real :: flo = 0.              ! (m^3/s)      !ave flow rate (flo_out)
-        real :: peakr = 0.            ! (m^3/s)      |peak runoff rate
-        real :: sed_in = 0.           ! (tons)       !total sed in
-        real :: sed_out = 0.          ! (tons)       !total sed out
-        real :: washld = 0.           ! (tons)       !wash load
-        real :: bedld = 0.            ! (tons)       !bed load
-        real :: dep = 0.              ! (tons)       !deposition
-        real :: deg_btm = 0.          ! (tons)       !bottom erosion
-        real :: deg_bank = 0.         ! (tons)       !bank erosion
-        real :: hc_sed = 0.           ! (tons)       !headcut erosion
-        real :: width = 0.            ! 
-        real :: depth = 0.            !
-        real :: slope = 0.            !
-        real :: deg_btm_m = 0.        ! (m)          !downcutting
-        real :: deg_bank_m = 0.       ! (m)          !widening
-        real :: hc_m = 0.             ! (m)          !headcut retreat
+        real :: flo_in = 0.             ! (m^3/s)      !ave flow rate
+        real :: aqu_in = 0.             ! (m^3/s)      !ave flow rate
+        real :: flo = 0.                ! (m^3/s)      !ave flow rate
+        real :: peakr = 0.              ! (m^3/s)      |peak runoff rate
+        real :: sed_in = 0.             ! (tons)       !total sed in
+        real :: sed_out = 0.            ! (tons)       !total sed out
+        real :: washld = 0.             ! (tons)       !wash load
+        real :: bedld = 0.              ! (tons)       !bed load
+        real :: dep = 0.                ! (tons)       !deposition
+        real :: deg_btm = 0.            ! (tons)       !bottom erosion
+        real :: deg_bank = 0.           ! (tons)       !bank erosion
+        real :: hc_sed = 0.             ! (tons)       !headcut erosion
+        real :: width = 0.              ! 
+        real :: depth = 0.              !
+        real :: slope = 0.              !
+        real :: deg_btm_m = 0.          ! (m)          !downcutting
+        real :: deg_bank_m = 0.         ! (m)          !widening
+        real :: hc_m = 0.               ! (m)          !headcut retreat
       end type sd_ch_output
       
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_d
@@ -124,7 +126,9 @@
           character (len=8) :: isd        =  "   unit "
           character (len=8) :: id         =  " gis_id "           
           character (len=16) :: name      =  " name              "        
-          character(len=16) :: flo        =  "           floin"        ! (m^3/s)
+          character(len=16) :: flo_in     =  "         flo_in"        ! (m^3/s)
+          character(len=16) :: aqu_in     =  "         aqu_in"        ! (m^3/s)
+          character(len=16) :: flo        =  "         flo_out"       ! (m^3/s)
           character(len=15) :: peakr      =  "          peakr"        ! (m^3/s)
           character(len=15) :: sed_in     =  "         sed_in"        ! (tons)
           character(len=15) :: sed_out    =  "        sed_out"        ! (tons)
@@ -142,6 +146,35 @@
           character(len=15) :: hc_len     =  "         hc_len"        ! (m)
       end type sdch_header
       type (sdch_header) :: sdch_hdr
+      
+     type sdch_header_units
+          character (len=6) :: day        =  "      "
+          character (len=6) :: mo         =  "      "
+          character (len=6) :: day_mo     =  "      "
+          character (len=6) :: yrc        =  "      "
+          character (len=8) :: isd        =  "        "
+          character (len=8) :: id         =  "        "           
+          character (len=16) :: name      =  "                   "        
+          character(len=16) :: flo_in     =  "           m^3/s"       ! (m^3/s)
+          character(len=16) :: aqu_in     =  "           m^3/s"       ! (m^3/s)      
+          character(len=16) :: flo        =  "           m^3/s"       ! (m^3/s) 
+          character(len=15) :: peakr      =  "          m^3/s"        ! (m^3/s)
+          character(len=15) :: sed_in     =  "           tons"        ! (tons)
+          character(len=15) :: sed_out    =  "           tons"        ! (tons)
+          character(len=15) :: washld     =  "           tons"        ! (tons)
+          character(len=15) :: bedld      =  "           tons"        ! (tons)
+          character(len=15) :: dep        =  "           tons"        ! (tons)
+          character(len=15) :: deg_btm    =  "           tons"        ! (tons)
+          character(len=15) :: deg_bank   =  "           tons"        ! (tons)
+          character(len=15) :: hc_sed     =  "           tons"        ! (tons)
+          character(len=15) :: width      =  "              m"        ! (m)
+          character(len=15) :: depth      =  "              m"        ! (m)
+          character(len=15) :: slope      =  "            m/m"        ! (m/m)
+          character(len=15) :: deg_btm_m  =  "              m"        ! (m)
+          character(len=15) :: deg_bank_m =  "              m"        ! (m)
+          character(len=15) :: hc_len     =  "              m"        ! (m)
+      end type sdch_header_units
+      type (sdch_header_units) :: sdch_hdr_units
      
       interface operator (+)
         module procedure chsd_add
@@ -162,6 +195,8 @@
       type (sd_ch_output),  intent (in) :: cho1
       type (sd_ch_output),  intent (in) :: cho2
       type (sd_ch_output) :: cho3
+       cho3%flo_in = cho1%flo_in + cho2%flo_in
+       cho3%aqu_in = cho1%aqu_in + cho2%aqu_in
        cho3%flo = cho1%flo + cho2%flo
        cho3%peakr = cho1%peakr + cho2%peakr
        cho3%sed_in = cho1%sed_in + cho2%sed_in
@@ -184,6 +219,8 @@
         type (sd_ch_output), intent (in) :: ch1
         real, intent (in) :: const
         type (sd_ch_output) :: ch2
+        ch2%flo_in = ch1%flo_in / const
+        ch2%aqu_in = ch1%aqu_in / const
         ch2%flo = ch1%flo / const
         ch2%peakr = ch1%peakr / const
         ch2%sed_in = ch1%sed_in / const
@@ -206,6 +243,8 @@
         type (sd_ch_output), intent (in) :: chn1
         real, intent (in) :: const
         type (sd_ch_output) :: chn2
+        chn2%flo_in = const * chn1%flo_in
+        chn2%aqu_in = const * chn1%aqu_in
         chn2%flo = const * chn1%flo
         chn2%peakr = const * chn1%peakr
         chn2%sed_in = const * chn1%sed_in

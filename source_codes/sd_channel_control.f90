@@ -100,11 +100,13 @@
       
       !! set ht1 to incoming hydrograph
       ht1 = ob(icmd)%hin
+      chsd_d(ich)%flo_in = ht1%flo / 86400.
       !! if connected to aquifer - add flow
       if (sd_ch(ich)%aqu_link > 0) then
         iaq = sd_ch(ich)%aqu_link
         iaq_ch = sd_ch(ich)%aqu_link_ch
         if (aq_ch(iaq)%ch(iaq_ch)%flo_fr > 0.) then
+          chsd_d(ich)%aqu_in = (aq_ch(iaq)%ch(iaq_ch)%flo_fr * aq_ch(iaq)%hd%flo) / 86400.
           ht1 = ht1 + aq_ch(iaq)%ch(iaq_ch)%flo_fr * aq_ch(iaq)%hd
           aq_ch(iaq)%ch(iaq_ch)%flo_fr = 0.
         end if
@@ -172,14 +174,16 @@
             vol_ovb = peakrate - sd_ch_vel(ich)%vel_bf
             const = vol_ovb / peakrate
             ob(icmd)%hd(3) = const * ob(icmd)%hin
+            
             !find current total flood volume (ht1)
-            ht1 = hz
             ics = ob(icmd)%props2
             if (ics > 0) then   ! flood elements are specified - link to surface elements
+            ht1 = hz
             ob_const = const
             do ii = 1, ch_sur(ics)%num
               ht1 = ht1 + ch_sur(ics)%hd(ii)
             end do
+            
             !add current and new flood volumes
             ht1 = ht1 + ob(icmd)%hd(3)
            if (ht1%flo > ch_sur(ics)%flood_volmx(0)) then
@@ -387,7 +391,7 @@
       ht2%sed = sedout
       
       !! output_channel
-      chsd_d(ich)%flo = ob(icmd)%hin%flo  / 86400.  !adjust if overbank flooding is moved to landscape
+      chsd_d(ich)%flo = ht2%flo / 86400.  !adjust if overbank flooding is moved to landscape
       chsd_d(ich)%peakr = peakrate 
       chsd_d(ich)%sed_in = ob(icmd)%hin%sed
       chsd_d(ich)%sed_out = sedout
@@ -446,8 +450,9 @@
 
       !! set pesticide output variables
       do ipest = 1, cs_db%num_pests
-        chpst_d(ich)%pest(ipest)%pst_in = obcs(icmd)%hin%pest(ipest)
-        chpst_d(ich)%pest(ipest)%pst_out = obcs(icmd)%hd(1)%pest(ipest)
+        chpst_d(ich)%pest(ipest)%tot_in = obcs(icmd)%hin%pest(ipest)
+        chpst_d(ich)%pest(ipest)%sol_out = frsol * obcs(icmd)%hd(1)%pest(ipest)
+        chpst_d(ich)%pest(ipest)%sor_out = frsrb * obcs(icmd)%hd(1)%pest(ipest)
         chpst_d(ich)%pest(ipest)%react = chpst%pest(ipest)%react
         chpst_d(ich)%pest(ipest)%volat = chpst%pest(ipest)%volat
         chpst_d(ich)%pest(ipest)%settle = chpst%pest(ipest)%settle

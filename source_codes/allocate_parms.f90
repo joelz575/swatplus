@@ -161,9 +161,6 @@
       allocate (rfqeo_30d(30,mhru))
       allocate (eo_30d(30,mhru))
 
-!!    arrays which contain data related to pesticides, HRUs
-      allocate (pst_lag(cs_db%num_pests,3,mhru))
-
 !! sj aug 09 end
 	  allocate (hhsurf_bs(2,mhru,time%step))  !! nstep changed to nstep  OCt. 18,2007
       allocate (ubnrunoff(time%step),ubntss(time%step))

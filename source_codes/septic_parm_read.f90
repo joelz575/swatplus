@@ -36,8 +36,10 @@
            
         allocate (sepdb(0:imax))        
         rewind (171)
-        read (171,*) titldum
-        read (171,*) header
+        read (171,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (171,*,iostat=eof) header
+        if (eof < 0) exit
     
         do is = 1, db_mx%sep
           read (171,*,iostat=eof) titldum

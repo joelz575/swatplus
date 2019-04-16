@@ -48,16 +48,20 @@
       allocate (pcp_n(imax))
       
       rewind (107)
-      read (107,*) titldum
-      read (107,*) header
+      read (107,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (107,*,iostat=eof) header
+      if (eof < 0) exit
       do i = 1, imax
         read (107,*,iostat = eof) pcp_n(i)
         if (eof < 0) exit
       end do
       
       rewind (107)
-      read (107,*) titldum
-      read (107,*) header
+      read (107,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (107,*,iostat=eof) header
+      if (eof < 0) exit
       
       do i = 1, imax
         read (107,*,iostat = eof) pcp(i)%filename

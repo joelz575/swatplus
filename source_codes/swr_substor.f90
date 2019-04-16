@@ -18,7 +18,6 @@
 !!    latq(:)       |mm H2O       |amount of water in lateral flow in HRU for
 !!                                |the day
 !!    qtile(:)      |mm H2O       |amount of water in tile flow in HRU for the day
-!!    pst_lag(:,3,:)|kg pst/ha    |amount of pesticide lagged
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -32,12 +31,11 @@
 !!                                 |for the day
 !!    latq(:)       |mm H2O        |amount of water in lateral flow in HRU for
 !!                                 |the day
-!!    pst_lag(:,3,:)|kg pst/ha     |amount of pesticide lagged
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use pesticide_data_module
-      use hru_module, only : hru, ihru, latq, latno3, qtile, bss, pst_lag, tileno3
+      use hru_module, only : hru, ihru, latq, latno3, qtile, bss, tileno3
       use constituent_mass_module
       use output_ls_pesticide_module
       
@@ -60,14 +58,6 @@
       if (bss(3,j) < 1.e-6) bss(3,j) = 0.0
       if (bss(4,j) < 1.e-6) bss(4,j) = 0.0
 
-      do k = 1, cs_db%num_pests
-        if (pst_lag(k,3,j) < 1.e-6) pst_lag(k,3,j) = 0.0
-        pst_lag(k,3,j) = pst_lag(k,3,j) + hpestb_d(j)%pest(k)%latq
-        !MFW, 3/3/12: Modified lagged pesticide to include decay in lag
-        ipst_db = cs_db%pest_num(k)
-        pst_lag(k,3,j) = (pst_lag(k,3,j) * pestcp(ipst_db)%decay_s) + hpestb_d(j)%pest(k)%latq
-      end do
-
       latq(j) = bss(1,j) * hru(j)%hyd%lat_ttime
       latno3(j) = bss(2,j) * hru(j)%hyd%lat_ttime
       qtile = bss(3,j) * hru(j)%lumv%tile_ttime
@@ -77,18 +67,10 @@
       if (qtile < 1.e-6) qtile = 0.
       if (tileno3(j) < 1.e-6) tileno3(j) = 0.
 
-        do k = 1, cs_db%num_pests
-          hpestb_d(j)%pest(k)%latq = hpestb_d(j)%pest(k)%latq * hru(j)%hyd%lat_ttime
-        end do
-
       bss(1,j) = bss(1,j) - latq(j)
       bss(2,j) = bss(2,j) - latno3(j)
       bss(3,j) = bss(3,j) - qtile
       bss(4,j) = bss(4,j) - tileno3(j)
-
-        do k = 1, cs_db%num_pests
-          pst_lag(k,3,j) = pst_lag(k,3,j) - hpestb_d(j)%pest(k)%latq
-        end do
 
       return
       end subroutine swr_substor

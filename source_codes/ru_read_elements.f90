@@ -22,10 +22,8 @@
       integer :: iob2                 !none       |ending of loop
       integer :: iru                  !none       |counter
       integer :: numb                 !           |
-      integer :: ielem                !none       |counter
+      integer :: ielem1               !none       |counter
       integer :: ii                   !none       |counter
-      integer :: ie1                  !none       |beginning of loop
-      integer :: ie2                  !none       |ending of loop  
       integer :: ie                   !none       |counter
       integer :: iru_tot              !           |
       
@@ -53,13 +51,16 @@
         allocate (ielem_ru(imax))
         
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
         
         ielem_ru = 0
    
         do isp = 1, imax
           read (107,*,iostat=eof) i
+          if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, ru_elem(i)%name, ru_elem(i)%obtyp, ru_elem(i)%obtypno,     &
                                 ru_elem(i)%frac, ru_elem(i)%idr
@@ -87,8 +88,10 @@
         allocate (ru_dr(imax))
         
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
         
         do i = 1, imax
           read (107,*,iostat=eof) ru_dr(i)
@@ -116,8 +119,10 @@
           end do
 
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
 
       iob1 = sp_ob1%ru
       iob2 = sp_ob1%ru + sp_ob%ru - 1
@@ -132,60 +137,20 @@
           allocate (elem_cnt(nspu))
           read (107,*,iostat=eof) numb, ru_def(iru)%name, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
+
+          call define_unit_elements (nspu, ielem1)
           
-          !!save the object number of each defining unit
-          ielem = 0
-          do ii = 1, nspu
-            ie1 = elem_cnt(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-            else
-              if (elem_cnt(ii+1) < 0) then
-                ie2 = abs(elem_cnt(ii+1))
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                end do
-                if (ii+1 == nspu) exit
-              else
-                ielem = ielem + 1
-              end if
-            end if
-            if (nspu == 1) ie2 = ie1
-            if (ii == nspu .and. elem_cnt(ii) < 0) exit
-          end do
-          allocate (ru_def(iru)%num(ielem))
-          ru_def(iru)%num_tot = ielem
+          allocate (ru_def(iru)%num(ielem1))
+          ru_def(iru)%num = defunit_num
+          ru_def(iru)%num_tot = ielem1
+          deallocate (defunit_num)
+          
           iob = sp_ob1%ru + iru - 1
           ob(iob)%dfn_tot = ru_def(iru)%num_tot
-          
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-              ru_def(iru)%num(ielem) = ie1
-            else
-              ie2 = elem_cnt(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 1
-                ru_def(iru)%num(ielem) = ie1
-                ielem = ielem + 1
-                ru_def(iru)%num(ielem) = ie2
-              else
-                ie2 = abs(ie2)
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                  ru_def(iru)%num(ielem) = ie
-                end do
-              end if
-              ii = ii + 2
-            end if
-          end do
 
           ! determine how many subbasins the object is in
-          do ii = ie1, ie2
+          do ielem1 = 1, ru_def(iru)%num_tot
+            ii = ru_def(iru)%num(ielem1)
             iobtyp = ru_elem(ii)%obtyp       !object type in sub
             select case (iobtyp)
             case ("hru")   !hru
@@ -211,7 +176,6 @@
             ob(k)%ru_tot = ob(k)%ru_tot + 1
           end do
 
-          deallocate (elem_cnt)  
         end if
       end do    ! i = subbasin object numbers
         exit
@@ -220,19 +184,19 @@
       
         ! set all subbasins that each element is in
         do iru = 1, sp_ob%ru
-          do ielem = 1, ru_def(iru)%num_tot
-            ie = ru_def(iru)%num(ielem)
+          do ielem1 = 1, ru_def(iru)%num_tot
+            ie = ru_def(iru)%num(ielem1)
             iob = ru_elem(ie)%obj
             iru_tot = ob(iob)%ru_tot
             allocate (ob(iob)%ru(1))
           end do
 
-          do ielem = 1, ru_def(iru)%num_tot
-            ie = ru_def(iru)%num(ielem)
+          do ielem1 = 1, ru_def(iru)%num_tot
+            ie = ru_def(iru)%num(ielem1)
             ielem_ru(ie) = ielem_ru(ie) + 1
             iob = ru_elem(ie)%obj
             ob(iob)%ru(ielem_ru(ie)) = iru
-            ob(iob)%elem = ielem
+            ob(iob)%elem = ielem1
           end do
         end do
 

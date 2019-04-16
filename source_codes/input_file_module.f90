@@ -209,15 +209,15 @@
 
 !! calibration change
       type input_chg
-       character(len=25) :: codes_cal = "codes.cal"
        character(len=25) :: cal_parms = "cal_parms.cal"
        character(len=25) :: cal_upd = "calibration.cal"
-       character(len=25) :: ls_parms_cal = "ls_parms.cal"
-       character(len=25) :: ls_regions_cal = "ls_regions.cal"
-       character(len=25) :: ch_orders_cal = "ch_orders.cal"
-       character(len=25) :: ch_parms_cal = "ch_parms.cal"
-       character(len=25) :: pl_parms_cal = "pl_parms.cal"
-       character(len=25) :: pl_regions_cal = "pl_regions.cal"
+       character(len=25) :: codes_sft = "codes.sft"                     !! renamed from codes.cal
+       character(len=25) :: wb_parms_sft = "wb_parms.sft"               !! renamed from ls_parms.cal
+       character(len=25) :: water_balance_sft = "water_balance.sft"     !! renamed from ls_regions.cal
+       character(len=25) :: ch_sed_budget_sft = "ch_sed_budget.sft"     !! renamed from ch_orders.cal
+       character(len=25) :: ch_sed_parms_sft = "ch_sed_parms.sft"       !! renamed from ch_parms.cal
+       character(len=25) :: plant_parms_sft = "plant_parms.sft"         !! renamed from pl_parms.cal
+       character(len=25) :: plant_gro_sft = "plant_gro.sft"             !! renamed from pl_regions.cal
       end type input_chg
       type (input_chg) :: in_chg
       

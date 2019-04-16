@@ -30,9 +30,9 @@
       integer :: ised                 !none       |counter
       integer :: inut                 !none       |counter
       integer :: ipst                 !none       |counter
-      integer :: isp_ini              !           |
-      integer :: ics                  !none       |counter
-      integer :: iob                  !none       |counter
+      integer :: isp_ini              !          |
+      integer :: ics                  !none      |counter
+      integer :: iob                  !none      |counter
       
       eof = 0
       imax = 0
@@ -61,11 +61,14 @@
       allocate (res_dat_c(0:imax))
       allocate (res_dat(0:imax))
       rewind (105)
-      read (105,*) titldum
-      read (105,*) header
+      read (105,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (105,*,iostat=eof) header
+      if (eof < 0) exit
       
        do ires = 1, db_mx%res_dat
          read (105,*,iostat=eof) i
+         if (eof < 0) exit
          backspace (105)
          read (105,*,iostat=eof) k, res_dat_c(ires)
          if (eof < 0) exit

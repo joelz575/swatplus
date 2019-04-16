@@ -78,48 +78,49 @@
         integer :: plcal_reg = 0      !! none     |max number of regions for plant calibration
         integer :: ch_reg = 0         !! none     |max number of regions for channel calibration
         integer :: lscal_prms = 0     !! none     |max number of parameters for landscape hru calibration
-        integer :: res_dat       
-        integer :: res_init
-        integer :: res_hyd
-        integer :: res_sed
-        integer :: res_nut
-        integer :: res_weir
-        integer :: wet_dat       
-        integer :: wet_hyd
-        integer :: ch_surf
-        integer :: ch_dat
-        integer :: ch_init
-        integer :: ch_hyd
-        integer :: ch_sed
-        integer :: ch_nut
-        integer :: ch_temp
-        integer :: path
-        integer :: exco
-        integer :: exco_om
-        integer :: exco_pest
-        integer :: exco_path
-        integer :: exco_hmet
-        integer :: exco_salt
-        integer :: dr
-        integer :: dr_om
-        integer :: dr_pest
-        integer :: dr_path
-        integer :: dr_hmet
-        integer :: dr_salt
-        integer :: sol_plt_ini
-        integer :: pest_ini
-        integer :: path_ini
-        integer :: hmet_ini
-        integer :: salt_ini
-        integer :: pestw_ini
-        integer :: pathw_ini
-        integer :: hmetw_ini
-        integer :: saltw_ini
-        integer :: sep
-        integer :: ch_lte
-        integer :: om_water_init
-        integer :: sdc_dat
-        integer :: aqudb
+        integer :: res_dat = 0      
+        integer :: res_init = 0
+        integer :: res_hyd = 0
+        integer :: res_sed = 0
+        integer :: res_nut = 0
+        integer :: res_weir = 0
+        integer :: wet_dat = 0      
+        integer :: wet_hyd = 0
+        integer :: ch_surf = 0
+        integer :: ch_dat = 0
+        integer :: ch_init = 0
+        integer :: ch_hyd = 0
+        integer :: ch_sed = 0
+        integer :: ch_nut = 0
+        integer :: ch_temp = 0
+        integer :: path = 0
+        integer :: exco = 0
+        integer :: exco_om = 0
+        integer :: exco_pest = 0
+        integer :: exco_path = 0
+        integer :: exco_hmet = 0 
+        integer :: exco_salt = 0
+        integer :: dr = 0
+        integer :: dr_om = 0
+        integer :: dr_pest = 0
+        integer :: dr_path = 0
+        integer :: dr_hmet = 0 
+        integer :: dr_salt = 0
+        integer :: sol_plt_ini = 0
+        integer :: pest_ini = 0
+        integer :: path_ini = 0
+        integer :: hmet_ini = 0
+        integer :: salt_ini = 0
+        integer :: pestw_ini = 0
+        integer :: pathw_ini = 0
+        integer :: hmetw_ini = 0
+        integer :: saltw_ini = 0
+        integer :: sep = 0
+        integer :: ch_lte = 0
+        integer :: om_water_init = 0
+        integer :: sdc_dat = 0
+        integer :: aqudb = 0
+        integer :: aqu2d = 0
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
                                  

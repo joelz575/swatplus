@@ -87,6 +87,11 @@
         real :: depth = 0.    !! |mm            |depth of drain tube from the soil surface
         real :: time = 0.     !! |hrs           |time to drain soil to field capacity
         real :: lag = 0.      !! |hours         |drain tile lag time
+        real :: radius = 0.   !! |mm            |effective radius of drains
+        real :: dist = 0.     !! |mm            |distance between two drain tubes or tiles
+        real :: drain_co = 0. !! |mm/day        |drainage coefficient
+        real :: pumpcap = 0.  !! |mm/hr         |pump capacity 
+        real :: latksat = 0.  !! !na            |multiplication factor to determine lat sat hyd conductivity for profile
       end type subsurface_drainage_parameters
               
       type landuse
@@ -213,6 +218,7 @@
         type (land_use_mgt_variables) :: lumv
         type (subsurface_drainage_parameters) :: sdr
         type (snow_parameters) :: sno
+        integer :: cur_op = 1
         real :: water_fr
         real :: water_seep
         integer :: ich_flood
@@ -383,7 +389,6 @@
       real, dimension (:,:), allocatable :: rfqeo_30d,eo_30d
       real, dimension (:,:), allocatable :: wrt
       real, dimension (:,:), allocatable :: bss,surf_bs  
-      real, dimension (:,:,:), allocatable :: pst_lag
       integer, dimension (:), allocatable :: swtrg
       !! burn
       integer, dimension (:), allocatable :: grz_days

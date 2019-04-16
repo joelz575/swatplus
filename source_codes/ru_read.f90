@@ -49,8 +49,10 @@
         allocate (ru_a(sp_ob%ru))
         
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
 
       !! read subbasin parameters
         do iru = 1, mru_db

@@ -14,12 +14,12 @@
        
        eof = 0
        
-      inquire (file=in_chg%ch_parms_cal, exist=i_exist)
-      if (.not. i_exist .or. in_chg%ch_parms_cal == "null") then
+      inquire (file=in_chg%ch_sed_parms_sft, exist=i_exist)
+      if (.not. i_exist .or. in_chg%ch_sed_parms_sft == "null") then
            allocate (ch_prms(0:0))         
       else    
        do 
-         open (107,file=in_chg%ch_parms_cal)
+         open (107,file=in_chg%ch_sed_parms_sft)
          read (107,*,iostat=eof) titldum
          if (eof < 0) exit
          read (107,*,iostat=eof) mchp

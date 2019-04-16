@@ -40,8 +40,10 @@
         allocate (pestcp(0:imax))
 
         rewind (106)
-        read (106,*) titldum
-        read (106,*) header 
+        read (106,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (106,*,iostat=eof) header
+        if (eof < 0) exit
         
         do ip = 1, imax
            read (106,*,iostat=eof) pestdb(ip)
@@ -63,6 +65,17 @@
             pestcp(ip)%decay_s = Exp(-.693 / pestdb(ip)%soil_hlife)
           else
             pestcp(ip)%decay_s = 0.
+          endif
+          
+          if (pestdb(ip)%aq_hlife > 0.) then
+            pestcp(ip)%decay_a = Exp(-.693 / pestdb(ip)%aq_hlife)
+          else
+            pestcp(ip)%decay_a = 0.
+          endif
+          if (pestdb(ip)%ben_hlife > 0.) then
+            pestcp(ip)%decay_b = Exp(-.693 / pestdb(ip)%ben_hlife)
+          else
+            pestcp(ip)%decay_b = 0.
           endif
 
         end do

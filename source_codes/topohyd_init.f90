@@ -37,6 +37,7 @@
         hru(ihru)%hyd%lat_ttime = hyd_db(ihyd_db)%lat_ttime
         hru(ihru)%hyd%lat_sed = hyd_db(ihyd_db)%lat_sed / 1000. !mg/l => g/l ; mm * km2 * g/l = t
         hru(ihru)%topo%lat_len = topo_db(itopohd_db)%lat_len
+        if (hru(ihru)%topo%lat_len < 1.e-6) hru(ihru)%topo%lat_len = 50.
         hru(ihru)%hyd%canmx = hyd_db(ihyd_db)%canmx
         hru(ihru)%hyd%esco = hyd_db(ihyd_db)%esco
         hru(ihru)%hyd%epco = hyd_db(ihyd_db)%epco

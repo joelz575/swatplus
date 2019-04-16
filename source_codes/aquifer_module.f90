@@ -55,6 +55,7 @@
         real :: flo_res = 0.    !mm H2O     |surface runoff flowing into reservoirs
         real :: flo_ls = 0.     !mm H2O     |surface runoff flowing into a landscape element
       end type aquifer_dynamic
+      type (aquifer_dynamic), dimension(:), allocatable :: aqu_om_init
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_d
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_m
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_y
@@ -119,6 +120,34 @@
           character(len=15) :: flo_ls   =      "         flo_ls"        ! (m^3)
       end type aqu_header
       type (aqu_header) :: aqu_hdr
+      
+      type aqu_header_units
+          character (len=6) :: day      =  "      "
+          character (len=6) :: mo       =  "      "
+          character (len=6) :: day_mo   =  "      "
+          character (len=6) :: yrc      =  "      "
+          character (len=8) :: isd      =  "        "                                            
+          character (len=8) :: id       =  "        "           
+          character (len=16) :: name    =  "                   "          
+          character(len=16) :: flo      =  "              mm"         ! (mm)
+          character(len=15) :: stor     =  "             mm"          ! (mm)
+          character(len=15) :: rchrg    =  "             mm"          ! (mm)
+          character(len=15) :: seep     =  "             mm"          ! (mm)
+          character(len=15) :: revap    =  "             mm"          ! (mm)
+          character(len=16) :: hgt      =  "              m "         ! (m)
+          character(len=15) :: no3_st   =  "        kg/ha_N"          ! (kg/ha N)
+          character(len=14) :: minp     =  "            kg"           ! (kg)
+          character(len=15) :: orgn     =  "        kg/ha_N"          ! (kg/ha N)
+          character(len=15) :: orgp     =  "        kg/ha_P"          ! (kg/ha P)
+          character(len=15) :: rchrgn   =  "        kg/ha_N"          ! (kg/ha N)
+          character(len=15) :: nloss    =  "        kg/ha_N"           ! (kg/ha N)
+          character(len=15) :: no3gw    =  "        kg/ha_N"          ! (kg N/ha)
+          character(len=15) :: seep_no3 =  "             kg"          ! (kg)
+          character(len=15) :: flo_cha  =  "            m^3"          ! (m^3)
+          character(len=15) :: flo_res  =  "            m^3"           ! (m^3)
+          character(len=15) :: flo_ls   =  "            m^3"           ! (m^3)
+      end type aqu_header_units
+      type (aqu_header_units) :: aqu_hdr_units
       
       interface operator (+)
         module procedure aqu_add

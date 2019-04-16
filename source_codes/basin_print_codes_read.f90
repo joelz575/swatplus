@@ -108,6 +108,7 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) name, pco%pw_hru
         if (eof < 0) exit 
+        
      !! hru-lte
         read (107,*,iostat=eof) name, pco%wb_sd
         if (eof < 0) exit     

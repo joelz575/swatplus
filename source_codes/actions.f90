@@ -82,11 +82,24 @@
 
             irrop = d_tbl%act_typ(iac)
             irrig(j)%demand = irrop_db(irrop)%amt_mm * hru(j)%area_ha / 1000.       ! ha-m = mm * ha / 1000.
-
-            if (pco%mgtout == "y") then
-              write (2612, *) j, time%yrc, time%mo, time%day, "        ", "IRRIGATE", phubase(j),  &
-                  pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass, rsd1(j)%tot(ipl)%m, &
-                  sol_sumno3(j), sol_sumsolp(j), irrig(j)%demand
+            
+            !! if unlimited source, set irrigation applied directly to hru
+            if (d_tbl%act(iac)%file_pointer == "unlim") then
+              irrig(j)%applied = irrop_db(irrop)%amt_mm * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
+              irrig(j)%runoff = irrop_db(irrop)%amt_mm * irrop_db(irrop)%surq
+              !set organics and constituents from irr.ops ! irrig(j)%water =  cs_irr(j) = 
+              if (pco%mgtout == "y") then
+                write (2612, *) j, time%yrc, time%mo, time%day, "        ", "IRRIGATE", phubase(j),  &
+                    pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass, rsd1(j)%tot(ipl)%m, &
+                    sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied
+              end if
+            else
+              !! set demand for irrigation from channel, reservoir or aquifer
+              if (pco%mgtout == "y") then
+                write (2612, *) j, time%yrc, time%mo, time%day, "        ", "IRRIG_DMD", phubase(j), &
+                    pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass, rsd1(j)%tot(ipl)%m, &
+                    sol_sumno3(j), sol_sumsolp(j), irrig(j)%demand
+              end if
             end if
 
           !irrigate - hru action
@@ -155,7 +168,8 @@
               call pl_fert (j, ifrt, frt_kg, ifertop)
 
               if (pco%mgtout == "y") then
-                write (2612, *) j, time%yrc, time%mo, time%day, chemapp_db(mgt%op4)%name, "    FERT", &
+                !write (2612, *) j, time%yrc, time%mo, time%day, chemapp_db(mgt%op4)%name, "    FERT", &
+                write (2612, *) j, time%yrc, time%mo, time%day, chemapp_db(j)%name, "    FERT",       &
                   phubase(j),pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pcom(j)%plm(ipl)%mass,            &
                   rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3,        &
                   fertorgn, fertsolp, fertorgp
@@ -352,9 +366,9 @@
               call pest_apply (j, ipst, pest_kg, ipestop)
 
               if (pco%mgtout == "y") then
-                write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    PEST ", &
-                phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,            &
-                rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), pest_kg
+                write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    PEST ",        &
+                 phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pcom(j)%plm(ipl)%mass,           &
+                 rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), pest_kg
               endif
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             end if

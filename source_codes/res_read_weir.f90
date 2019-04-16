@@ -43,14 +43,16 @@
         
         allocate (res_weir(0:imax))
         rewind (105)
-        read (105,*) titldum
-        read (105,*) header
+        read (105,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (105,*,iostat=eof) header
+        if (eof < 0) exit
           
         do ires = 1, imax
           read (105,*,iostat=eof) titldum
           if (eof < 0) exit
           backspace (105)
-          read (105,*) res_weir(ires)
+          read (105,*,iostat=eof) res_weir(ires)
           if (eof < 0) exit
         end do
         exit

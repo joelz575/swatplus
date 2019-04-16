@@ -48,16 +48,20 @@
       allocate (tmp_n(imax))
       
       rewind (107)
-      read (107,*) titldum
-      read (107,*) header
+      read (107,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (107,*,iostat=eof) header
+      if (eof < 0) exit
       do i = 1, imax
         read (107,*,iostat = eof) tmp_n(i)
         if (eof < 0) exit
       end do
       
       rewind (107)
-      read (107,*) titldum
-      read (107,*) header
+      read (107,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (107,*,iostat=eof) header
+      if (eof < 0) exit
         
       do i = 1, imax
         read (107,*,iostat = eof) tmp(i)%filename
@@ -75,8 +79,9 @@
         if (eof < 0) exit
         read (108,*,iostat=eof) header
         if (eof < 0) exit
-        read (108,*,iostat=eof) tmp(i)%nbyr, tmp(i)%lat, tmp(i)%long,      &
+        read (108,*,iostat=eof) tmp(i)%nbyr, tmp(i)%tstep, tmp(i)%lat, tmp(i)%long,      &
                                      tmp(i)%elev
+
         if (eof < 0) exit
        
         allocate (tmp(i)%ts(366,tmp(i)%nbyr))

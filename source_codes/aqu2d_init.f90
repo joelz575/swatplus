@@ -2,6 +2,7 @@
     
       use hydrograph_module
       use sd_channel_module
+      use maximum_data_module
 
       implicit none
 
@@ -20,6 +21,7 @@
       real, dimension(:), allocatable :: next   !!next channel to dry up - sorted by drainage area
       
       !! set parameters needed to distribute gwflow to channels using geomorphical model
+      if (db_mx%aqu2d <= 0) return
       do iaq = 1, sp_ob%aqu
         !! set channel drainage areas
         allocate (aq_ch(iaq)%ch(aq_ch(iaq)%num_tot))

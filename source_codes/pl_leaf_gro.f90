@@ -81,6 +81,7 @@
       real :: deltalai          !                   |
       real :: laimax            !none               |maximum leaf area index
       real :: lai_exp           !                   |
+      real :: rto_lin           !none               |ratio of current years of growth:years to maturity of perennial
       real :: rto               !none               |ratio of current years of growth:years to maturity of perennial
       real :: sumlaiht          !                   |
       integer :: jpl            !none               |counter
@@ -99,8 +100,8 @@
             deltalai = 0.
             if (pldb(idp)%typ == "perennial") then
               if (pcom(j)%plcur(ipl)%curyr_mat < 1) pcom(j)%plcur(ipl)%curyr_mat = 1
-              rto = float(pcom(j)%plcur(ipl)%curyr_mat) / float(pldb(idp)%mat_yrs)
-              rto = alog10 (rto)
+              rto_lin = float(pcom(j)%plcur(ipl)%curyr_mat) / float(pldb(idp)%mat_yrs)
+              rto = alog10 (rto_lin)
               lai_exp = rto * pldb(idp)%laixco_tree
               laimax = pcom(j)%plcur(ipl)%laimx_pop * 10. ** lai_exp
             else
@@ -109,7 +110,7 @@
             
             !! calculate new canopy height
             if (pldb(idp)%typ == "perennial") then
-              pcom(j)%plg(ipl)%cht = rto * pldb(idp)%chtmx
+              pcom(j)%plg(ipl)%cht = rto_lin * pldb(idp)%chtmx
             else
               pcom(j)%plg(ipl)%cht = pldb(idp)%chtmx * Sqrt(f)
             end if

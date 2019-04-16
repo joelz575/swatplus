@@ -39,10 +39,12 @@
           allocate (exco_pest_num(imax))
           allocate (exco_pest_name(imax))
           rewind (107)
-          read (107,*) titldum
-          read (107,*) header
+          read (107,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
       
-          !read all export coefficient data
+          !read all pesticide export coefficient data
           do ii = 1, db_mx%exco_pest
             read (107,*,iostat=eof) titldum
             if (eof < 0) exit
@@ -65,13 +67,17 @@
         end do
       end do
       
-      !set exco_pest object hydrograph
+      ! set exco_pest object hydrograph
       ob1 = sp_ob1%exco
       ob2 = sp_ob1%exco + sp_ob%exco - 1
       do iob = ob1, ob2
         iexco = ob(iob)%props
-        iexco_pest = exco_pest_num(iexco)
-        obcs(iob)%hd(1)%pest = exco_pest(iexco_pest)%pest
+        if (exco_db(iexco)%pest_file == "null") then
+          obcs(iob)%hd(1)%pest = 0.
+        else
+          iexco_pest = exco_pest_num(iexco)
+          obcs(iob)%hd(1)%pest = exco_pest(iexco_pest)%pest
+        end if
       end do
       
       return

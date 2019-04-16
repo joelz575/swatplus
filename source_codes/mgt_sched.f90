@@ -327,12 +327,12 @@
 
       end select
 
-      if (mgt%op /= "skip") sched(isched)%cur_op = sched(isched)%cur_op + 1  !don't icrement if skip year
-      if (sched(isched)%cur_op > sched(isched)%num_ops) then
-        sched(isched)%cur_op = 1
+      if (mgt%op /= "skip") hru(j)%cur_op = hru(j)%cur_op + 1  !don't icrement if skip year
+      if (hru(j)%cur_op > sched(isched)%num_ops) then
+        hru(j)%cur_op = 1
       end if
       
-      mgt = sched(isched)%mgt_ops(sched(isched)%cur_op)
+      mgt = sched(isched)%mgt_ops(hru(j)%cur_op)
    
       return
 

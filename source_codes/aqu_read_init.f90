@@ -44,8 +44,10 @@
       allocate (aqu_init_dat_c(0:imax))
 
       rewind (105)
-      read (105,*) titldum
-      read (105,*) header
+      read (105,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (105,*,iostat=eof) header
+      if (eof < 0) exit
            
        do iaqu = 1, imax
          read (105,*,iostat=eof) aqu_init_dat_c(iaqu)

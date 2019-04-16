@@ -19,11 +19,8 @@
       integer :: i                    !none       |counter
       integer :: k                    !           |
       integer :: isp                  !none       |counter
-      integer :: ielem                !none       |counter
+      integer :: ielem1               !none       |counter
       integer :: ii                   !none       |counter
-      integer :: ie1                  !none       |counter
-      integer :: ie2                  !none       |counter
-      integer :: ie                   !none       |counter
       integer :: iihru                !none       |counter
             
       imax = 0
@@ -60,58 +57,12 @@
           read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
 
-          !!save the object number of each defining unit
-          if (nspu == 1) then
-            allocate (lsu_out(i)%num(1))
-            lsu_out(i)%num_tot = 1
-            lsu_out(i)%num(1) = elem_cnt(1)
-            deallocate (elem_cnt)
-          else
-          ielem = 0
-          do ii = 2, nspu
-            ie1 = elem_cnt(ii-1)
-            if (elem_cnt(ii) > 0) then
-              if (ii == nspu) then
-                ielem = ielem + 1
-              else
-                if (elem_cnt(ii+1) > 0) then
-                  ielem = ielem + 1
-                end if
-              end if
-            else
-              ielem = ielem + abs(elem_cnt(ii)) - elem_cnt(ii-1) + 1
-            end if
-          end do
-          allocate (lsu_out(i)%num(ielem))
-          lsu_out(i)%num_tot = ielem
-
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-              lsu_out(i)%num(ielem) = ie1
-            else
-              ie2 = elem_cnt(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 1
-                lsu_out(i)%num(ielem) = ie1
-                ielem = ielem + 1
-                lsu_out(i)%num(ielem) = ie2
-              else
-                ie2 = abs(ie2)
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                  lsu_out(i)%num(ielem) = ie
-                end do
-              end if
-              ii = ii + 2
-            end if
-          end do
-          deallocate (elem_cnt)
-          end if   !nspu > 1
+          call define_unit_elements (nspu, ielem1)
+          
+          allocate (lsu_out(i)%num(ielem1))
+          lsu_out(i)%num = defunit_num
+          lsu_out(i)%num_tot = ielem1
+          deallocate (defunit_num)
         else
           allocate (lsu_out(i)%num(0:0))
           !!all hrus are in region 
@@ -149,8 +100,10 @@
         allocate (lsu_elem(imax))
 
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
 
         db_mx%lsu_elem = imax
         

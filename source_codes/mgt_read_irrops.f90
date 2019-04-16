@@ -27,9 +27,9 @@
       else
       do
         open (107,file=in_ops%irr_ops)
-        read (107,*) titldum
+        read (107,*,iostat=eof) titldum
         if (eof < 0) exit
-        read (107,*) header
+        read (107,*,iostat=eof) header
         if (eof < 0) exit
         do while (eof == 0)
           read (107,*,iostat=eof) titldum
@@ -40,9 +40,9 @@
         allocate (irrop_db(0:imax))
         
         rewind (107)
-        read (107,*) titldum
+        read (107,*,iostat=eof) titldum
         if (eof < 0) exit
-        read (107,*) header
+        read (107,*,iostat=eof) header
         if (eof < 0) exit
         
         do irr_op = 1, imax

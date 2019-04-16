@@ -35,8 +35,10 @@
           
           allocate (sep(0:imax))
           rewind (172)
-          read (172,*) titldum
-          read (172,*) header   
+          read (172,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (172,*,iostat=eof) header 
+          if (eof < 0) exit
                 
           do isep = 1, imax
             read(172,*,iostat=eof) sep(isep)        

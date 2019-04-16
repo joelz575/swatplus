@@ -39,8 +39,10 @@
           allocate (exco_path_num(imax))
           allocate (exco_path_name(imax))
           rewind (107)
-          read (107,*) titldum
-          read (107,*) header
+          read (107,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
       
           !read all export coefficient data
           do ii = 1, db_mx%exco_path
@@ -70,8 +72,12 @@
       ob2 = sp_ob1%exco + sp_ob%exco - 1
       do iob = ob1, ob2
         iexco = ob(iob)%props
-        iexco_path = exco_path_num(iexco)
-        obcs(iob)%hd(1)%path = exco_path(iexco_path)%path
+		if (exco_db(iexco)%path_file == "null") then
+		  obcs(iob)%hd(1)%path = 0.
+		else
+          iexco_path = exco_path_num(iexco)
+          obcs(iob)%hd(1)%path = exco_path(iexco_path)%path
+		end if 
       end do
       
       return

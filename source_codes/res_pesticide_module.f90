@@ -5,8 +5,9 @@
       implicit none
               
       type res_pesticide_processes
-        real :: pst_in = 0.             ! kg        !pesticide into reservoir
-        real :: pst_out = 0.            ! kg        !pesticide out of reservoir
+        real :: tot_in = 0.             ! kg        !total pesticide into reservoir
+        real :: sol_out = 0.            ! kg        !soluble pesticide out of reservoir
+        real :: sor_out = 0.            ! kg        !sorbed pesticide out of reservoir
         real :: react = 0.              ! kg        !pesticide lost through reactions in water layer
         real :: volat = 0.              ! kg        !pesticide lost through volatilization
         real :: settle = 0.             ! kg        !pesticide settling to sediment layer
@@ -42,8 +43,9 @@
           character (len=8) :: id =         " gis_id "           
           character (len=16) :: name =      " name"
           character (len=16) :: pest =      " pesticide"
-          character(len=13) :: pst_in =     "pestin_kg "        	! (kg)
-          character(len=14) :: pst_out =    "pestout_kg "           ! (kg)
+          character(len=13) :: tot_in =     "tot_in_kg "            ! (kg)
+          character(len=13) :: sol_out =    "sol_out_kg "           ! (kg)
+          character(len=14) :: sor_out =    "sor_out_kg "           ! (kg)
           character(len=13) :: react =      "react_h2o_kg"        	! (kg)
           character(len=10) :: volat =      "volat_kg"        		! (kg)
           character(len=10) :: settle =     "settle_kg"        		! (kg)
@@ -75,8 +77,9 @@
         type (res_pesticide_processes),  intent (in) :: res1
         type (res_pesticide_processes),  intent (in) :: res2
         type (res_pesticide_processes) :: res3
-        res3%pst_in = res1%pst_in + res2%pst_in
-        res3%pst_out = res1%pst_out + res2%pst_out
+        res3%tot_in = res1%tot_in + res2%tot_in
+        res3%sol_out = res1%sol_out + res2%sol_out
+        res3%sor_out = res1%sor_out + res2%sor_out
         res3%react = res1%react + res2%react
         res3%volat = res1%volat + res2%volat
         res3%settle = res1%settle + res2%settle
@@ -92,8 +95,9 @@
         type (res_pesticide_processes), intent (in) :: res1
         real, intent (in) :: const
         type (res_pesticide_processes) :: res2
-          res2%pst_in = res1%pst_in / const
-          res2%pst_out = res1%pst_out / const
+          res2%tot_in = res1%tot_in / const
+          res2%sol_out = res1%sol_out / const
+          res2%sor_out = res1%sor_out / const
           res2%react = res1%react / const
           res2%volat = res1%volat / const
           res2%settle = res1%settle / const
@@ -109,8 +113,9 @@
         type (res_pesticide_processes), intent (in) :: res1
         real, intent (in) :: const
         type (res_pesticide_processes) :: res2
-          res2%pst_in = res1%pst_in
-          res2%pst_out = res1%pst_out
+          res2%tot_in = res1%tot_in
+          res2%sol_out = res1%sol_out
+          res2%sor_out = res1%sor_out
           res2%react = res1%react
           res2%volat = res1%volat
           res2%settle = res1%settle

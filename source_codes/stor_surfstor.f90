@@ -79,7 +79,7 @@
       use time_module
       use constituent_mass_module
       use output_ls_pesticide_module
-      use hru_module, only : hru, pst_lag, sedyld, surf_bs, ihru, hhsurf_bs, hhsedy, sanyld, silyld,     &
+      use hru_module, only : hru, sedyld, surf_bs, ihru, hhsurf_bs, hhsedy, sanyld, silyld,     &
          clayld, sagyld, lagyld, sedorgn, sedorgp, surqno3, surqsolp, sedminpa, sedminps, brt 
       
       implicit none

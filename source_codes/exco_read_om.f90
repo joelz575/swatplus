@@ -36,8 +36,10 @@
           allocate (exco_om_num(0:imax))
           allocate (exco_om_name(0:imax))
           rewind (107)
-          read (107,*) titldum
-          read (107,*) header
+          read (107,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
       
           !read all export coefficient data
           do ii = 1, db_mx%exco_om

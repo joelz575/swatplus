@@ -4,7 +4,7 @@
 !!    this subroutine initializes the values for some of the arrays 
 
       use hru_module, only : bio_bod,biom,bz_perc,cn2,fcoli,hru,i_sep,par,percp,   &
-       plqm,pst_lag,qstemm,rbiom,sep_tsincefail,sno_hru,        &
+       plqm,qstemm,rbiom,sep_tsincefail,sno_hru,                   &
        sol_cov,sweepeff,swtrg,t_ov,tconc,trapeff,usle,usle_cfac,   &
        usle_ei,usle_eifac,wfsh
       
@@ -57,7 +57,6 @@
 !!  septic changes 1/29/09
       pr_w = 0.
       pst_kg = 0.
-      pst_lag = 0.
       rchrg = 0.
 
       sedst = 0.

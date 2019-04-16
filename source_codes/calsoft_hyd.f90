@@ -465,7 +465,7 @@
         end if
         end do  
                   
-        ! 1st perco_co for percolation
+        ! 1st perco for percolation
         isim = 0
         do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
@@ -480,7 +480,8 @@
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
 
-                chg_val = 0.1 * (soft - lscal(ireg)%lum(ilum)%aa%pcr) / 10.   ! 0.1 change in perco for 20 mm perc difference
+                chg_val = (soft - lscal(ireg)%lum(ilum)%aa%pcr) / lscal(ireg)%lum(ilum)%aa%pcr   ! assume perco is linear
+                chg_val = 0.001 * (soft - lscal(ireg)%lum(ilum)%aa%pcr)
                 lscal(ireg)%lum(ilum)%prm_prev%perco = lscal(ireg)%lum(ilum)%prm%perco 
                 lscal(ireg)%lum(ilum)%prm%perco = lscal(ireg)%lum(ilum)%prm%perco + chg_val
                 lscal(ireg)%lum(ilum)%prev%pcr = lscal(ireg)%lum(ilum)%aa%pcr
@@ -541,8 +542,8 @@
           call time_control
         end if
   
-          ! adjust percolation using perco_co
-          do iperco = 1, iter_ind
+          ! adjust percolation using perco
+          do iperco = 1, 4  !iter_ind
           isim = 0
           do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
@@ -561,7 +562,7 @@
                   chg_val = 0.
                 end if
                 lscal(ireg)%lum(ilum)%prm_prev%perco = lscal(ireg)%lum(ilum)%prm%perco 
-                lscal(ireg)%lum(ilum)%prm%perco = lscal(ireg)%lum(ilum)%prm%perco * chg_val
+                lscal(ireg)%lum(ilum)%prm%perco = lscal(ireg)%lum(ilum)%prm%perco + chg_val
                 lscal(ireg)%lum(ilum)%prev%pcr = lscal(ireg)%lum(ilum)%aa%pcr
 
                 if (lscal(ireg)%lum(ilum)%prm%perco >= ls_prms(8)%pos) then

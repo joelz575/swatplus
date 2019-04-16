@@ -43,8 +43,10 @@
       allocate (res_init_dat_c(0:imax))
       
       rewind (105)
-      read (105,*) titldum
-      read (105,*) header
+      read (105,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (105,*,iostat=eof) header
+      if (eof < 0) exit
            
        do ires = 1, db_mx%res_init
          read (105,*,iostat=eof) res_init_dat_c(ires)

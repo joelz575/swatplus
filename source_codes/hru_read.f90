@@ -56,15 +56,16 @@
         allocate (hru_db(0:imax))
 
         rewind (113)
-        read (113,*) titldum
-        read (113,*) header
-
-      do ihru = 1, imax
-        read (113,*) i
-        backspace (113)
-        read (113,*,iostat=eof) k, hru_db(i)%dbsc
+        read (113,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (113,*,iostat=eof) header
         if (eof < 0) exit
 
+      do ihru = 1, imax
+        read (113,*,iostat=eof) i
+        if (eof < 0) exit
+        backspace (113)
+        read (113,*,iostat=eof) k, hru_db(i)%dbsc
         if (eof < 0) exit
 
           do ilum = 1, db_mx%landuse
@@ -74,10 +75,15 @@
             end if
           end do
           
+         if (hru_db(i)%dbs%land_use_mgt == 0) write (9001,*) hru_db(i)%dbsc%land_use_mgt, "not found (landuse.lum)"
+          
           ! initialize nutrients and constituents in soil and plants
           do isp_ini = 1, db_mx%sol_plt_ini
             if (hru_db(i)%dbsc%soil_plant_init == sol_plt_ini(isp_ini)%name) then
               hru_db(i)%dbs%soil_plant_init = isp_ini
+              
+            if (hru_db(i)%dbs%soil_plant_init == 0) write (9001,*) hru_db(i)%dbsc%soil_plant_init, "not found (plant.ini)" 
+              
               ! initial soil nutrients (soil test)
               do ics = 1, db_mx%soiltest
                 if (sol_plt_ini(isp_ini)%nutc == solt_db(ics)%name) then
@@ -123,36 +129,53 @@
             exit
             end if
           end do
+          
+         if (hru_db(i)%dbs%topo == 0) write (9001,*) hru_db(i)%dbsc%topo, "not found (topography.hyd)"
+        
          do ithyd = 1, db_mx%hyd
             if (hru_db(i)%dbsc%hyd == hyd_db(ithyd)%name) then
                hru_db(i)%dbs%hyd = ithyd
             exit
             end if
          end do
+         
+         if (hru_db(i)%dbs%hyd == 0) write (9001,*) hru_db(i)%dbsc%hyd, "not found (hydrograph.hyd)"
+         
          do isol = 1, db_mx%soil
             if (hru_db(i)%dbsc%soil == soildb(isol)%s%snam) then
                hru_db(i)%dbs%soil = isol
             exit
             end if
          end do
+         
+         if (hru_db(i)%dbs%soil == 0) write (9001,*) hru_db(i)%dbsc%soil, "not found (soils.sol)"
+         
          do isstor = 1, db_mx%wet_dat
             if (hru_db(i)%dbsc%surf_stor == wet_dat_c(isstor)%name) then
                hru_db(i)%dbs%surf_stor = isstor
             exit
             end if
          end do
+         
+         if (hru_db(i)%dbs%surf_stor == 0 .and. hru_db(i)%dbsc%surf_stor /= 'null') write (9001,*) hru_db(i)%dbsc%surf_stor, "not found (wetland.wet)"
+         
          do isno = 1, db_mx%sno
             if (hru_db(i)%dbsc%snow == snodb(isno)%name) then
                hru_db(i)%dbs%snow = isno
             exit
             end if
          end do
+         
+         if (hru_db(i)%dbs%snow == 0 .and. hru_db(i)%dbsc%snow /= 'null') write (9001,*) hru_db(i)%dbsc%snow, "not found (snow.sno)"
+         
          do ifld = 1, db_mx%field
              if (hru_db(i)%dbsc%field == field_db(ifld)%name) then
                hru_db(i)%dbs%field = ifld
             exit
             end if
          end do
+         
+        if (hru_db(i)%dbs%field == 0 .and. hru_db(i)%dbsc%field /= 'null') write (9001,*) hru_db(i)%dbsc%field, "not found (field.fld)"
 
       end do
       exit

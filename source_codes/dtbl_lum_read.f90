@@ -102,7 +102,7 @@
                     endif
                   end do
                 
-                case ("irrigate")
+                case ("irr_demand")
                   do idb = 1, db_mx%irrop_db
                     if (dtbl_lum(i)%act(iac)%option == irrop_db(idb)%name) then
                       dtbl_lum(i)%act_typ(iac) = idb

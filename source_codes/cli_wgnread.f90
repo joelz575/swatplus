@@ -85,14 +85,16 @@
         rndseed = 0
 
         rewind (114)
-        read (114,*) titldum
+        read (114,*,iostat=eof) titldum
+        if (eof < 0) exit
         
         call gcycl
         
       do iwgn = 1, db_mx%wgnsta
         read (114,*,iostat=eof) wgn_n(iwgn), wgn(iwgn)%lat, wgn(iwgn)%long, wgn(iwgn)%elev, wgn(iwgn)%rain_yrs
         if (eof < 0) exit
-        read (114,*) header
+        read (114,*,iostat=eof) header
+        if (eof < 0) exit
         do mo = 1, 12
           read (114,*,iostat=eof) wgn(iwgn)%tmpmx(mo), wgn(iwgn)%tmpmn(mo), wgn(iwgn)%tmpstdmx(mo),             &
               wgn(iwgn)%tmpstdmn(mo), wgn(iwgn)%pcpmm(mo), wgn(iwgn)%pcpstd(mo), wgn(iwgn)%pcpskw(mo),          &

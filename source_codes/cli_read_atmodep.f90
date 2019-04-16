@@ -92,10 +92,14 @@
               read (127,*,iostat=eof) atmodep(iadep)%name
               if (eof < 0) exit
               atmo_n(iadep) = atmodep(iadep)%name
-              read (127,*) (atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num)
-              read (127,*) (atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num)
-              read (127,*) (atmodep(iadep)%nh4_drymo(imo),imo = 1,atmodep_cont%num)
-              read (127,*) (atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num)
+              read (127,*,iostat=eof) (atmodep(iadep)%nh4_rfmo(imo), imo = 1,atmodep_cont%num)
+              if (eof < 0) exit
+              read (127,*,iostat=eof) (atmodep(iadep)%no3_rfmo(imo), imo = 1,atmodep_cont%num)
+              if (eof < 0) exit
+              read (127,*,iostat=eof) (atmodep(iadep)%nh4_drymo(imo),imo = 1,atmodep_cont%num)
+              if (eof < 0) exit
+              read (127,*,iostat=eof) (atmodep(iadep)%no3_drymo(imo),imo = 1,atmodep_cont%num)
+              if (eof < 0) exit
             end if
               
             if (atmodep_cont%timestep == "yr") then
@@ -106,10 +110,14 @@
               read (127,*,iostat=eof) atmodep(iadep)%name
               if (eof < 0) exit
               atmo_n(iadep) = atmodep(iadep)%name
-              read (127,*) (atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num)
-              read (127,*) (atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num)
-              read (127,*) (atmodep(iadep)%nh4_dryyr(iyr),iyr = 1,atmodep_cont%num)
-              read (127,*) (atmodep(iadep)%no3_dryyr(iyr),iyr = 1,atmodep_cont%num)
+              read (127,*,iostat=eof) (atmodep(iadep)%nh4_rfyr(iyr), iyr = 1,atmodep_cont%num)
+              if (eof < 0) exit
+              read (127,*,iostat=eof) (atmodep(iadep)%no3_rfyr(iyr), iyr = 1,atmodep_cont%num)
+              if (eof < 0) exit
+              read (127,*,iostat=eof) (atmodep(iadep)%nh4_dryyr(iyr),iyr = 1,atmodep_cont%num)
+              if (eof < 0) exit
+              read (127,*,iostat=eof) (atmodep(iadep)%no3_dryyr(iyr),iyr = 1,atmodep_cont%num)
+              if (eof < 0) exit
             end if
           end do    ! iadep
           exit

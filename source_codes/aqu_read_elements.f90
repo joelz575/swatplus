@@ -19,11 +19,7 @@
       integer :: k                      !             |
       integer :: nspu                   !             | 
       integer :: isp                    !             |
-      integer :: ielem                  !none         |counter
-      integer :: ii                     !none         |counter
-      integer :: ie1                    !none         |counter
-      integer :: ie2                    !none         |counter
-      integer :: ie                     !none         |counter
+      integer :: ielem1                 !none         |counter
       integer :: ihru                   !none         |counter
       integer :: iaqu                   !none         |counter
       integer :: ireg                   !none         |counter
@@ -56,59 +52,13 @@
           backspace (107)
           read (107,*,iostat=eof) k, acu_out(i)%name, acu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
-          !!save the object number of each defining unit
-          if (nspu == 1) then
-            allocate (acu_out(i)%num(1))
-            acu_out(i)%num_tot = 1
-            acu_out(i)%num(1) = elem_cnt(1)
-            deallocate (elem_cnt)
-          else
-          !! nspu > 1
-          ielem = 0
-          do ii = 2, nspu
-            ie1 = elem_cnt(ii-1)
-            if (elem_cnt(ii) > 0) then
-              if (ii == nspu) then
-                ielem = ielem + 1
-              else
-                if (elem_cnt(ii+1) > 0) then
-                  ielem = ielem + 1
-                end if
-              end if
-            else
-              ielem = ielem + abs(elem_cnt(ii)) - elem_cnt(ii-1) + 1
-            end if
-          end do
-          allocate (acu_out(i)%num(ielem))
-          acu_out(i)%num_tot = ielem
 
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-              acu_out(i)%num(ielem) = ie1
-            else
-              ie2 = elem_cnt(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 1
-                acu_out(i)%num(ielem) = ie1
-                ielem = ielem + 1
-                acu_out(i)%num(ielem) = ie2
-              else
-                ie2 = abs(ie2)
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                  acu_out(i)%num(ielem) = ie
-                end do
-              end if
-              ii = ii + 2
-            end if
-          end do
-          deallocate (elem_cnt)
-          end if   !nspu > 1
+          call define_unit_elements (nspu, ielem1)
+          
+          allocate (acu_out(i)%num(ielem1))
+          acu_out(i)%num = defunit_num
+          acu_out(i)%num_tot = ielem1
+          deallocate (defunit_num)
         else
           !!all hrus are in region 
           allocate (acu_out(i)%num(sp_ob%hru))
@@ -124,7 +74,7 @@
       db_mx%aqu_out = mreg
       end do 
       end if	  
-        
+
     !! setting up regions for aquifer soft cal and/or output by type
     inquire (file=in_regs%def_aqu_reg, exist=i_exist)
     if (i_exist .or. in_regs%def_aqu_reg /= "null") then
@@ -145,58 +95,13 @@
           backspace (107)
           read (107,*,iostat=eof) k, acu_reg(i)%name, acu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
-          !!save the object number of each defining unit
-          if (nspu == 1) then
-            allocate (acu_reg(i)%num(1))
-            acu_reg(i)%num_tot = 1
-            acu_reg(i)%num(1) = elem_cnt(1)
-          else
-          !! nspu > 1
-          ielem = 0
-          do ii = 2, nspu
-            ie1 = elem_cnt(ii-1)
-            if (elem_cnt(ii) > 0) then
-              if (ii == nspu) then
-                ielem = ielem + 1
-              else
-                if (elem_cnt(ii+1) > 0) then
-                  ielem = ielem + 1
-                end if
-              end if
-            else
-              ielem = ielem + abs(elem_cnt(ii)) - elem_cnt(ii-1) + 1
-            end if
-          end do
-          allocate (acu_reg(i)%num(ielem))
-          acu_reg(i)%num_tot = ielem
 
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-              acu_reg(i)%num(ielem) = ie1
-            else
-              ie2 = elem_cnt(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 1
-                acu_reg(i)%num(ielem) = ie1
-                ielem = ielem + 1
-                acu_reg(i)%num(ielem) = ie2
-              else
-                ie2 = abs(ie2)
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                  acu_reg(i)%num(ielem) = ie
-                end do
-              end if
-              ii = ii + 2
-            end if
-          end do
-          deallocate (elem_cnt)
-          end if   !nspu > 1
+          call define_unit_elements (nspu, ielem1)
+          
+          allocate (acu_reg(i)%num(ielem1))
+          acu_reg(i)%num = defunit_num
+          acu_reg(i)%num_tot = ielem1
+          deallocate (defunit_num)
         else
           !!all hrus are in region 
           allocate (acu_reg(i)%num(sp_ob%hru))
@@ -249,8 +154,10 @@
         allocate (acu_elem(imax))
 
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
 
         db_mx%aqu_elem = imax
         do isp = 1, imax
@@ -268,10 +175,10 @@
       ! set hru number from element number and set hru areas in the region
       do ireg = 1, mreg
         do iaqu = 1, acu_reg(ireg)%num_tot      !elements have to be hru or hru_lte
-          ielem = acu_reg(ireg)%num(iaqu)
+          ielem1 = acu_reg(ireg)%num(iaqu)
           !switch %num from element number to hru number
-          acu_cal(ireg)%num(iaqu) = acu_elem(ielem)%obtypno
-          acu_cal(ireg)%hru_ha(iaqu) = acu_elem(ielem)%ru_frac * acu_cal(ireg)%area_ha
+          acu_cal(ireg)%num(iaqu) = acu_elem(ielem1)%obtypno
+          acu_cal(ireg)%hru_ha(iaqu) = acu_elem(ielem1)%ru_frac * acu_cal(ireg)%area_ha
         end do
       end do
       

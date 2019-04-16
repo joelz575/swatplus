@@ -38,6 +38,7 @@
           cnv = om_init_water(init_om)%flo * wet_ob(ihru)%pvol / 1000.
           wet(ihru) = cnv * om_init_water(init_om)
           wet(ihru)%flo = om_init_water(init_om)%flo * wet_ob(ihru)%pvol
+          wet_om_init(ihru) = wet(ihru)
 
           !! wetland on hru - solve quadratic to find new depth
           !! testing relationship wet_vol(jres) = float(jj) * .1 * wet_pvol(jres)

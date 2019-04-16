@@ -259,6 +259,32 @@
           character (len=16) :: var7 =      "           var7"    
       end type mgt_header
       type (mgt_header) :: mgt_hdr
+
+      type mgt_header_unit1         
+          character (len=12) :: hru =       "        --- "
+          character (len=12) :: year =      "        --- "
+          character (len=12) :: mon =       "        --- "
+          character (len=12) :: day =       "        --- "
+          character (len=11) :: crop =      "      ---  "
+          character (len=13) :: oper =      "       ---   "          
+          character (len=9) :: phub =       "    deg_c"  
+          character (len=16) :: phua =      "           deg_c"  
+          character (len=12) :: sw =        "          mm" 
+          character (len=17) :: bio =       "            kg/ha"
+          character (len=11) :: rsd =       "      kg/ha"
+          character (len=15) :: solno3 =    "          kg/ha"
+          character (len=15) :: solp =      "          kg/ha"
+          character (len=15) :: op_var =    "          --- "
+          character (len=16) :: var1 =      "            --- "
+          character (len=15) :: var2 =      "          --- "
+          character (len=16) :: var3 =      "            ---"
+          character (len=16) :: var4 =      "             ---"
+          character (len=16) :: var5 =      "             ---"       
+          character (len=16) :: var6 =      "             ---"  
+          character (len=15) :: var7 =      "            ---"  
+      end type mgt_header_unit1
+      type(mgt_header_unit1) :: mgt_hdr_unt1
+      
      
       type snutc_header                              
           character (len=12) :: day =           "         day"

@@ -65,7 +65,7 @@
         iob = hru(j)%obj_no
         iwst = ob(iob)%wst
         iwgn = wst(iwst)%wco%wgn
-        isched = hru(j)%mgt_ops
+        isched = lum_str(ilu)%mgt_ops
         hru(j)%mgt_ops = lum_str(ilu)%mgt_ops
         hru(j)%tiledrain = lum_str(ilu)%tiledrain
         hru(j)%septic = lum_str(ilu)%septic
@@ -132,9 +132,20 @@
           end do
           
           wgn(iwgn)%lat = -wgn(iwgn)%lat
-          ! if days to maturity are not input - assume the plant is active during entire growing season
-          if (pldb(icom)%days_mat < 1.e-6) then
-            pcom(j)%plcur(ipl)%phumat = .9 * phutot
+          ! if days to maturity are not input (0) - assume the plant is potentially active during entire growing season
+          if (pldb(idp)%days_mat < 1.e-6) then
+            phutot = 0.
+            do iday = 1, 365
+              time%day = iday
+              call xmon
+              mo = time%mo
+              tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+              phuday = tave - pldb(idp)%t_base
+              if (phuday > 0.) then
+                phutot = phutot + phuday
+              end if
+            end do
+            pcom(j)%plcur(ipl)%phumat = .95 * phutot
           else
             ! caculate planting day for annuals
             iday_sum = 181
@@ -169,7 +180,7 @@
             else
               igrow = iday_sh
             end if
-            do iday = igrow, igrow + pldb(iplt)%days_mat
+            do iday = igrow, igrow + pldb(idp)%days_mat
               if (wgn(iwgn)%lat > 0.) then
                 time%day = iday
               else
@@ -184,7 +195,7 @@
               call xmon
               mo = time%mo
               tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
-              phuday = tave - pldb(iplt)%t_base
+              phuday = tave - pldb(idp)%t_base
               if (phuday > 0.) then
                 phutot = phutot + phuday
               end if
@@ -210,7 +221,7 @@
             sched(isched)%first_op = 1
           end if
           end if
-          sched(isched)%cur_op = sched(isched)%first_op
+          hru(j)%cur_op = sched(isched)%first_op
 
           ! set initial rotation year for dtable scheduling
           pcom(j)%rot_yr = pcomdb(icom)%rot_yr_ini

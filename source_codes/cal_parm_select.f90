@@ -63,7 +63,7 @@
         hru(ielem)%hyd%biomix = chg_par (hru(ielem)%hyd%biomix,           &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-      case ("cn3_swf") 
+      case ("cn3_swf")
         hru(ielem)%hyd%cn3_swf = chg_par (hru(ielem)%hyd%cn3_swf,         &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
@@ -146,8 +146,8 @@
       case ("field_ang")
         hru(ielem)%field%ang = chg_par(hru(ielem)%field%ang,            &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-      case ("snofall_tmp")
+
+       case ("snofall_tmp")
         hru(ielem)%sno%falltmp = chg_par(hru(ielem)%sno%falltmp,        &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
                
@@ -166,7 +166,7 @@
       case ("snomelt_lag")
         hru(ielem)%sno%timp = chg_par(hru(ielem)%sno%timp,            &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-               
+                     
       case ("tile_dep")
         hru(ielem)%sdr%depth = chg_par(hru(ielem)%sdr%depth,           &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
@@ -177,6 +177,26 @@
                
       case ("tile_lag")
         hru(ielem)%sdr%lag = chg_par(hru(ielem)%sdr%lag,               &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+
+      case ("tile_rad")
+        hru(ielem)%sdr%radius = chg_par(hru(ielem)%sdr%radius,         &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                      
+      case ("tile_dist")
+        hru(ielem)%sdr%dist = chg_par(hru(ielem)%sdr%dist,             &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                      
+      case ("tile_drain")
+        hru(ielem)%sdr%drain_co = chg_par(hru(ielem)%sdr%drain_co,     &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                      
+      case ("tile_pump")
+        hru(ielem)%sdr%pumpcap = chg_par(hru(ielem)%sdr%pumpcap,       &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                      
+      case ("tile_latk")
+        hru(ielem)%sdr%lag = chg_par(hru(ielem)%sdr%latksat,           &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
                       
       !! SOL  
@@ -414,39 +434,6 @@
         case ("bc4")
           ch_nut(ielem)%bc4 = chg_par(ch_nut(ielem)%bc4,                &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-        case ("pst_solub")
-          pestdb(ielem)%solub = chg_par(pestdb(ielem)%solub,    &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
-        
-        case ("pst_aq_reac")
-          pestdb(ielem)%aq_reac = chg_par(pestdb(ielem)%aq_reac,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-        case ("pst_aq_volat")
-          pestdb(ielem)%aq_volat = chg_par(pestdb(ielem)%aq_volat,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
- 
-        case ("pst_aq_settle")
-          pestdb(ielem)%aq_settle = chg_par(pestdb(ielem)%aq_settle,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
-        
-        case ("pst_aq_resus")
-          pestdb(ielem)%aq_resus = chg_par(pestdb(ielem)%aq_resus,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-
-        case ("pst_ben_rean")
-          pestdb(ielem)%ben_reac = chg_par(pestdb(ielem)%ben_reac,  &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
-        
-        case ("pst_ben_bury")
-          pestdb(ielem)%ben_bury = chg_par(pestdb(ielem)%ben_bury,  &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-        case ("pst_ben_act_dep")
-          pestdb(ielem)%ben_act_dep = chg_par(pestdb(ielem)%ben_act_dep,  &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
         case ("rch_dox")
           ch(ielem)%rch_dox = chg_par(ch(ielem)%rch_dox,                &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
@@ -477,6 +464,55 @@
         
         case ("disolvp")
           ch(ielem)%disolvp = chg_par(ch(ielem)%disolvp,                &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          
+!!     PST
+        case ("pst_koc")
+          pestdb(ielem)%koc = chg_par(pestdb(ielem)%koc,                &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
+          
+        case ("pst_washoff")
+          pestdb(ielem)%washoff = chg_par(pestdb(ielem)%washoff,        &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
+          
+        case ("pst_foliar_hlife")
+          pestdb(ielem)%foliar_hlife = chg_par(pestdb(ielem)%foliar_hlife, &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
+
+        case ("pst_soil_hlife")
+          pestdb(ielem)%soil_hlife = chg_par(pestdb(ielem)%soil_hlife,    &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
+                    
+        case ("pst_solub")
+          pestdb(ielem)%solub = chg_par(pestdb(ielem)%solub,    &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
+        
+        case ("pst_aq_hlife")
+          pestdb(ielem)%aq_hlife = chg_par(pestdb(ielem)%aq_hlife,        &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+        case ("pst_aq_volat")
+          pestdb(ielem)%aq_volat = chg_par(pestdb(ielem)%aq_volat,        &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
+ 
+        case ("pst_aq_settle")
+          pestdb(ielem)%aq_settle = chg_par(pestdb(ielem)%aq_settle,        &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
+        
+        case ("pst_aq_resus")
+          pestdb(ielem)%aq_resus = chg_par(pestdb(ielem)%aq_resus,        &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+
+        case ("pst_ben_hlife")
+          pestdb(ielem)%ben_hlife = chg_par(pestdb(ielem)%ben_hlife,  &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db) 
+        
+        case ("pst_ben_bury")
+          pestdb(ielem)%ben_bury = chg_par(pestdb(ielem)%ben_bury,  &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+        case ("pst_ben_act_dep")
+          pestdb(ielem)%ben_act_dep = chg_par(pestdb(ielem)%ben_act_dep,  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
 !!      RTE
@@ -734,9 +770,7 @@
             
         case ("uslels_lte")
             hlt_db(ielem)%uslels = chg_par (hlt_db(ielem)%uslels, ielem, chg_typ, chg_val, absmin, absmax, num_db)
-            
-        case ("t_opt")
-            hlt_db(ielem)%uslels = chg_par (hlt_db(ielem)%uslels, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+
         end select
 
       return

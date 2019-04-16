@@ -11,11 +11,13 @@
 
       implicit none
 
-      prog = " SWAT+ Mar 11 2019    MODULAR Rev 2019.58"
+      character (len=1) :: cal_hard = "n"       !! if y, perform hard calibration
+      
+      prog = " SWAT+ Apr 16 2019    MODULAR Rev 2019.59"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 58            ",/,             &
+     &          "               Revision 59            ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -25,6 +27,7 @@
       call proc_db
       call proc_read
 
+      call exco_db_read
       call hyd_connect
            
       call object_read_output
@@ -68,6 +71,8 @@
       end if
 
       if (cal_soft == "y") call calsoft_control
+
+      if (cal_hard == "y") call calhard_control
            
       write (*,1001)
  1001 format (/," Execution successfully completed ")

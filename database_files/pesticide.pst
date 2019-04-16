@@ -1,5 +1,5 @@
       Pesticide parameters
-      PEST_NAME       KOC   WASHOFF   FOLIAR_HL   SOIL_HL     SOLUB   AQ_REAC   AQ_VOLA     AQ_MW  AQ_RESUS   AQ_SETL  BEN_ACT_D  BEN_BURY  BEN_REAC                     Description
+      PEST_NAME       KOC   WASHOFF   FOLIAR_HL   SOIL_HL     SOLUB   AQ_HLIFE   AQ_VOLA     AQ_MW  AQ_RESUS   AQ_SETL  BEN_ACT_D  BEN_BURY  BEN_HLIFE                     Description
          245-tp       2600       0.4           5        20       2.5     0.007   0.00001       0.1     0.002       0.5        0.3     0.002      0.05                   Silvex_Amine
          2plus2         20      0.95          10        21    660000     0.007   0.00001       0.1     0.002       0.5        0.3     0.002      0.05                       Mecoprop
          aatrex        171      0.45           5        60        33     0.007   0.00001       0.1     0.002       0.5        0.3     0.002      0.05                       Atrazine

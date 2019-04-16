@@ -41,8 +41,10 @@
         allocate (grazeop_db(0:imax)) 
         
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
               
         do igrazop = 1, imax 
           read (107,*,iostat=eof) grazeop_db(igrazop)%name, grazeop_db(igrazop)%fertnm, grazeop_db(igrazop)%eat,    &

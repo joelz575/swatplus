@@ -40,8 +40,10 @@
           allocate (topo_db(0:imax))
           
           rewind (107)
-          read (107,*) titldum
-          read (107,*) header
+          read (107,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
                    
           do ith = 1, imax 
              read (107,*,iostat=eof) topo_db(ith)           

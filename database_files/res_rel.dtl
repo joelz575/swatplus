@@ -10,7 +10,7 @@ corps_med_res1	  5	    5	   5
  month	   null           0	      null		  -	         5		 		                             -	   >	>	 <	  -
  month	   null           0	      null		  -	         9		 		                             -	   <	<	 >	  -
  ACT_TYP   OBJ       OBJ_NUM   NAME                OPTION        CONST         CONST2      FP        OUTCOMES
- release   res	          0	   below_prinipal	     days	      1000.	            0    null		 y     n    n    n    n
+ release   res	          0	   below_principal	     days	      1000.	            0    null		 y     n    n    n    n
  release   res	          0	   non_flood<1.3	     days	       365.	            0    pvol		 n     y    n    n    n
  release   res	          0	   non_flood>1.3	     days	       100.	            0    pvol		 n     n    y    n    n
  release   res	          0	   flood		         days	        25.	            0    pvol		 n     n    n    y    n

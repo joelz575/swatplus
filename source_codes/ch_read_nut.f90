@@ -45,14 +45,16 @@
         
         allocate (ch_nut(0:imax))
         rewind (105)
-        read (105,*) titldum
-        read (105,*) header
+        read (105,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (105,*,iostat=eof) header
+        if (eof < 0) exit
          
         do ich = 1, db_mx%ch_nut
           read (105,*,iostat=eof) titldum
           if (eof < 0) exit
           backspace (105)
-          read (105,*) ch_nut(ich)
+          read (105,*,iostat=eof) ch_nut(ich)
           if (eof < 0) exit
           
 !!    set default values for undefined parameters

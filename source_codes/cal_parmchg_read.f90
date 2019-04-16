@@ -35,19 +35,14 @@
       integer :: nspu                                     !           |
       logical :: i_exist                                  !none       |check to determine if file exists
       integer :: i                                        !none       |counter
+      integer :: ie                                       !none       |counter
       integer :: mcal                                     !           |
       integer :: isp                                      !none       |counter
       integer :: ical                                     !none       |counter
       integer :: ipar                                     !           |
-      integer :: ie                                       !none       |counter
-      integer :: ielem                                    !none       |counter
-      integer :: ii                                       !none       |counter 
-      integer :: ie1                                      !none       |counter
-      integer :: ie2                                      !none       |counter 
+      integer :: ielem1                                   !none       |counter
       integer :: nconds                                   !none       |counter
       integer :: icond                                    !none       |counter
-      
-      
       
       imax = 0
       mcal = 0
@@ -127,61 +122,18 @@
                 cal_upd(i)%num(ie) = ie
             end do
           else
-          !!set object elements when they are input (num_tot > 0)
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt1(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-            else
-              ie2 = elem_cnt1(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 2
-              else
-                ielem = ielem + (abs(ie2) - ie1) + 1
-              end if
-              ii = ii + 2
-            end if
-          end do
-          allocate (cal_upd(i)%num(ielem))
-
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt1(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-              cal_upd(i)%num(ielem) = ie1
-            else
-              ie2 = elem_cnt1(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 1
-                cal_upd(i)%num(ielem) = ie1
-                ielem = ielem + 1
-                cal_upd(i)%num(ielem) = ie2
-              else
-                ie2 = abs(ie2)
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                  cal_upd(i)%num(ielem) = ie
-                end do
-              end if
-              ii = ii + 2
-            end if
-          end do
-          deallocate (elem_cnt1)
-          cal_upd(i)%num_elem = ielem
-        end if
-        
+              
+            allocate (cal_upd(i)%num(ielem1))
+            cal_upd(i)%num = defunit_num
+            cal_upd(i)%num_elem = ielem1
+            deallocate (defunit_num)
         nconds = cal_upd(i)%conds
         allocate (cal_upd(i)%cond(nconds))
         do icond = 1, nconds
           read (107,*,iostat=eof) cal_upd(i)%cond(icond)
         end do 
         
+        end if
       end do
       exit
          

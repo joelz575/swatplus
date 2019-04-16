@@ -37,7 +37,8 @@
              
           !! leaf drop for moisture based growth plants - any time of year
           if (pldb(idp)%trig == "moisture_gro") then
-            resnew = pcom(j)%plcur(ipl)%leaf_tov
+            !! assume 
+            resnew = (pcom(j)%plcur(ipl)%leaf_tov / pldb(idp)%blai) * pcom(j)%leaf(ipl)%mass
             resnew_n = pcom(j)%plcur(ipl)%leaf_tov * pcom(j)%leaf(ipl)%nmass
             call pl_leaf_drop (resnew, resnew_n)
           end if

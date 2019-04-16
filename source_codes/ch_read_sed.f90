@@ -46,14 +46,16 @@
         
         allocate (ch_sed(0:imax))
         rewind (105)
-        read (105,*) titldum
-        read (105,*) header
+        read (105,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (105,*,iostat=eof) header
+        if (eof < 0) exit
              
         do ich = 1, db_mx%ch_sed
           read (105,*,iostat=eof) titldum
           if (eof < 0) exit
           backspace (105)
-          read (105,*) ch_sed(ich)
+          read (105,*,iostat=eof) ch_sed(ich)
           if (eof < 0) exit
           
        if (ch_sed(ich)%tc_bnk <= 0.) ch_sed(ich)%tc_bnk=0. !! Critical shear stress (N.m^2)

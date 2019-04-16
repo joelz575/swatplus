@@ -6,6 +6,7 @@
       use constituent_mass_module
       use maximum_data_module
       use time_module
+      use exco_module
       
       implicit none      
  
@@ -24,6 +25,8 @@
       integer :: ipc                  !none       |counter
       integer :: ii                   !none       |counter
       integer :: i                    !           |
+      integer :: iexco_om
+      integer :: iexco
 
       eof = 0
       imax = 0
@@ -51,8 +54,10 @@
       allocate (rec_a(imax))
       
       rewind (107)
-      read (107,*) titldum
-      read (107,*) header
+      read (107,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (107,*,iostat=eof) header
+      if (eof < 0) exit
       
       do ii = 1, imax
         read (107,*,iostat=eof) i
@@ -61,13 +66,15 @@
  !       read (107,*,iostat = eof) k, rec_om(i)%name, rec_om(i)%typ, rec_om(i)%filename
         read (107,*,iostat = eof) k, recall(i)%name, recall(i)%typ, recall(i)%filename
         if (eof < 0) exit
-        open (108,file = recall(i)%filename)
-        read (108,*,iostat=eof) titldum
-        if (eof < 0) exit
-        read (108,*,iostat=eof) nbyr
-        if (eof < 0) exit
-        read (108,*,iostat=eof) header
-        if (eof < 0) exit
+        
+        if (recall(i)%typ /= 4) then
+          open (108,file = recall(i)%filename)
+          read (108,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (108,*,iostat=eof) nbyr
+          if (eof < 0) exit
+          read (108,*,iostat=eof) header
+          if (eof < 0) exit 
         
 !        select case (rec_om(i)%typ)
         select case (recall(i)%typ)
@@ -76,12 +83,13 @@
             allocate (recall(i)%hd(366,nbyr))
             
            case (2) !! monthly
-            !allocate (rec_om(i)%hd_om(12,nbyr))  !!!!!!!!!!this didn"t seem right added commented and added next line
+            !allocate (rec_om(i)%hd_om(12,nbyr))
             allocate (recall(i)%hd(12,nbyr))
             
            case (3) !! annual
-            !allocate (rec_om(i)%hd_om(1,nbyr))   !!!!!!!!!!same here
+            !allocate (rec_om(i)%hd_om(1,nbyr))
             allocate (recall(i)%hd(1,nbyr))
+
         end select
            
         ! read and store entire year
@@ -111,9 +119,21 @@
              iyrs = iyrs + 1
            end if
          end if
-       end do
-       close (108)
-       
+       end do   
+         close (108)
+      else
+          
+     if (recall(i)%typ == 4) then
+        allocate (recall(i)%hd(1,1))
+        !! xwalk with exco file to get sequential number
+        do iexco_om = 1, db_mx%exco_om
+          if (exco_db(iexco_om)%name == recall(i)%filename) then
+            recall(i)%hd(1,1) = exco(iexco)
+            exit
+          end if
+        end do
+     end if 
+     end if
       end do
       close (107)
       exit
@@ -138,8 +158,10 @@
           
       allocate (rec_pest(0:imax))
       rewind (107)
-      read (107,*) titldum
-      read (107,*) header
+      read (107,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (107,*,iostat=eof) header
+      if (eof < 0) exit
       
       do ipc = 1, db_mx%pestcom
         read (107,*,iostat=eof) ipestcom_db   !pointer to pestcom_db - fix***

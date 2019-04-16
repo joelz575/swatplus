@@ -40,14 +40,16 @@
         
         allocate (rte_nut(0:imax))
         rewind (105)
-        read (105,*) titldum
-        read (105,*) header
+        read (105,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (105,*,iostat=eof) header
+        if (eof < 0) exit
           
         do ich = 1, imax
           read (105,*,iostat=eof) titldum
           if (eof < 0) exit
           backspace (105)
-          read (105,*) rte_nut(ich)
+          read (105,*,iostat=eof) rte_nut(ich)
           if (eof < 0) exit
         end do
         exit

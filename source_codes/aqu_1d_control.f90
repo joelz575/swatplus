@@ -4,6 +4,7 @@
       use time_module
       use hydrograph_module
       use climate_module, only : wst
+      use maximum_data_module
       
       implicit none
       
@@ -102,27 +103,29 @@
       ob(icmd)%hd(1)%sedp = 10. * aqu_d(iaq)%flo * ob(icmd)%area_ha
 
       !! compute fraction of flow to each channel in the aquifer
-      !aqu_d(iaq)%flo = .5
-      contrib_len = aq_ch(iaq)%len_tot * aqu_d(iaq)%flo / aqudb(iaqdb)%bf_max
+      !! if connected to aquifer - add flow
+      if (db_mx%aqu2d > 0) then
+        contrib_len = aq_ch(iaq)%len_tot * aqu_d(iaq)%flo / aqudb(iaqdb)%bf_max
       
-      !! find the first channel contributing
-      do icha = 1, aq_ch(iaq)%num_tot
-        if (contrib_len >= aq_ch(iaq)%ch(icha)%len_left) then
-          icontrib = icha
-          contrib_len_left = aq_ch(iaq)%ch(icha)%len_left + aq_ch(iaq)%ch(icha)%len
-          exit
-        end if
-      end do
-      !! set fractions for flow to each channel
-      do icha = 1, aq_ch(iaq)%num_tot
-        if (icha >= icontrib) then
-          aq_ch(iaq)%ch(icha)%flo_fr = aq_ch(iaq)%ch(icha)%len / contrib_len_left
-        else
-          aq_ch(iaq)%ch(icha)%flo_fr = 0.
-        end if
-      end do
-      !! save hydrographs to distribute on following day
-      aq_ch(iaq)%hd = ob(icmd)%hd(1)
+        !! find the first channel contributing
+        do icha = 1, aq_ch(iaq)%num_tot
+          if (contrib_len >= aq_ch(iaq)%ch(icha)%len_left) then
+            icontrib = icha
+            contrib_len_left = aq_ch(iaq)%ch(icha)%len_left + aq_ch(iaq)%ch(icha)%len
+            exit
+          end if
+        end do
+        !! set fractions for flow to each channel
+        do icha = 1, aq_ch(iaq)%num_tot
+          if (icha >= icontrib .and. icontrib > 0) then
+            aq_ch(iaq)%ch(icha)%flo_fr = aq_ch(iaq)%ch(icha)%len / contrib_len_left
+          else
+            aq_ch(iaq)%ch(icha)%flo_fr = 0.
+          end if
+        end do
+        !! save hydrographs to distribute on following day
+        aq_ch(iaq)%hd = ob(icmd)%hd(1)
+      end if
 
       ! compute outflow objects (flow to channels, reservoirs, or landscape)
       ! if flow from hru is directly routed

@@ -141,7 +141,7 @@
         call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, hd_tot%hru_lte, 2) 
       end if
       
-      !read connect file for subbasins
+      !read connect file for routing units
       if (sp_ob%ru > 0) then
         call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, hd_tot%ru, 2)
         call ru_read
@@ -170,19 +170,18 @@
       if (sp_ob%res > 0) then
         call hyd_read_connect(in_con%res_con, "res     ", sp_ob1%res, sp_ob%res, hd_tot%res, 1) 
       end if
-                
+  
+      !read connect file for export coefficients
+      if (sp_ob%exco > 0) then
+        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 0) 
+      endif
+                        
       !read connect file for recalls
       if (sp_ob%recall > 0) then
         call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 0) 
         call recall_read
       end if
-                
-      !read connect file for export coefficients
-      if (sp_ob%exco > 0) then
-        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 0) 
-        call exco_db_read
-      endif
-                  
+                        
       !read connect file for delivery ratio
       if (sp_ob%dr > 0) then
         call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 0) 
@@ -384,6 +383,7 @@
                 ob(kk)%obtypno_in(jj) = ob(i)%props
                 ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
                 ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
+                !! if routing over ru - the hru frac is included
                 ob(kk)%frac_in(jj) = ob(i)%frac_out(ii) * ru_elem(ielem_db)%frac
                 ob(i)%rcvob_inhyd(ii) = jj
               end do

@@ -39,6 +39,7 @@
         allocate (irrig(0:imax))
         
         allocate (wet(0:imax))
+        allocate (wet_om_init(0:imax))
         allocate (wet_ob(imax))
         allocate (wet_om_d(imax))
         allocate (wet_om_m(imax))

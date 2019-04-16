@@ -24,6 +24,8 @@
       real :: solpesto              !mg pst        |soluble pesticide transported out of reservoir
       real :: sorpesto              !mg pst        |sorbed pesticide transported out of reservoir
       real :: sedmass_watervol      !kg/L or t/m3  |sediment mass divided by water volume in water and benthic
+      real :: pest_init             !mg            |amount of pesticide before decay
+      real :: pest_end              !mg            |amount of pesticide after decay
       integer :: jres               !none          |reservoir number  
       integer :: ipst               !none          |counter
       integer :: icmd               !none          |
@@ -38,7 +40,7 @@
         idb = ob(icmd)%props
         jpst = cs_db%pest_num(ipst)
         jsed = res_dat(idb)%sed
-        respst_d(jres)%pest(ipst)%pst_in = obcs(icmd)%hin%pest(ipst)
+        respst_d(jres)%pest(ipst)%tot_in = obcs(icmd)%hin%pest(ipst)
         tpest1 = obcs(icmd)%hin%pest(ipst) + res_water(jres)%pest(ipst)
         bedvol = 1000. * res_om_d(jres)%area_ha * pestdb(jpst)%ben_act_dep + .01
         tpest2 = res_benthic(jres)%pest(ipst) * bedvol
@@ -65,10 +67,13 @@
         fp2 = 1. - fd2
 
         !! determine pesticide lost through reactions in water layer
-        reactw = tpest1 / pestdb(jpst)%aq_reac
-        tpest1 = tpest1 - reactw
-        respst_d(jres)%pest(ipst)%react = reactw
-
+        pest_init = tpest1
+        if (pest_init > 1.e-12) then
+          pest_end = tpest1 * pestcp(jpst)%decay_a
+          tpest1 = pest_end
+          respst_d(jres)%pest(ipst)%react = pest_init - pest_end
+        end if
+        
         !! determine pesticide lost through volatilization
         volatpst = pestdb(jpst)%aq_volat * fd1 * tpest1 / depth
         if (volatpst > tpest1) then
@@ -126,14 +131,12 @@
         respst_d(jres)%pest(ipst)%difus = difus
 
         !! determine pesticide lost from sediment by reactions
-        reactb = tpest2 / pestdb(jpst)%ben_reac
-        if (reactb > tpest2) then
-          reactb = tpest2
-          tpest2 = 0.
-        else
-          tpest2 = tpest2 - reactb
+        pest_init = tpest2
+        if (pest_init > 1.e-12) then
+          pest_end = tpest2 * pestcp(jpst)%decay_b
+          tpest2 = pest_end
+          respst_d(jres)%pest(ipst)%react_bot = pest_init - pest_end
         end if
-        respst_d(jres)%pest(ipst)%react_bot = reactb
 
         !! determine pesticide lost from sediment by burial
         bury = pestdb(jpst)%ben_bury * tpest2 / pestdb(jpst)%ben_act_dep
@@ -162,7 +165,8 @@
         else
           tpest1 = tpest1 - sorpesto
         end if
-        respst_d(jres)%pest(ipst)%pst_out = solpesto + sorpesto
+        respst_d(jres)%pest(ipst)%sol_out = solpesto
+        respst_d(jres)%pest(ipst)%sor_out = sorpesto
 
         !! update concentration of pesticide in lake water and sediment
         if (tpest1 < 1.e-10) tpest1 = 0.0

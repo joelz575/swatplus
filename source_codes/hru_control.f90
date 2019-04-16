@@ -484,6 +484,7 @@
         hwb_d(j)%pet = pet_day
         hwb_d(j)%qtile = qtile
         hwb_d(j)%irr = irrig(j)%applied
+        irrig(j)%applied = 0.
         hwb_d(j)%surq_runon = ls_overq
         hwb_d(j)%latq_runon = latqrunon !/ (10. * hru(j)%area_ha) 
         hwb_d(j)%overbank = over_flow
@@ -538,8 +539,6 @@
         call conditions (jj)
         call actions (jj, iob, id)
       end if
-        
-      irrig(j)%applied = 0.
 
       return
       end subroutine hru_control

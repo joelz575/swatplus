@@ -204,7 +204,6 @@
         integer :: num_ops = 0
         integer :: num_autos = 0
         integer :: first_op = 0
-        integer :: cur_op = 1
         type (management_ops), dimension (:), allocatable :: mgt_ops
         character(len=16), dimension (:), allocatable :: auto_name
         integer, dimension (:), allocatable :: num_db

@@ -19,11 +19,8 @@
       integer :: k                     !units     |description
       integer :: nspu                  !units     |description
       integer :: isp                   !none      |counter
-      integer :: ielem                 !units     |description
+      integer :: ielem1                !units     |description
       integer :: ii                    !none      |counter
-      integer :: ie1                   !beginning of loop
-      integer :: ie2                   !ending of loop
-      integer :: ie                    !none      |counter
       integer :: icha                  !none      |counter 
       integer :: ireg                  !none      |counter
       integer :: ires                  !none      |counter
@@ -54,60 +51,13 @@
           backspace (107)
           read (107,*,iostat=eof) k, ccu_out(i)%name, ccu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
-          
-          !!save the object number of each defining unit
-          if (nspu == 1) then
-            allocate (ccu_out(i)%num(1))
-            ccu_out(i)%num_tot = 1
-            ccu_out(i)%num(1) = elem_cnt(1)
-            deallocate (elem_cnt)
-          else
-          !! nspu > 1
-          ielem = 0
-          do ii = 2, nspu
-            ie1 = elem_cnt(ii-1)
-            if (elem_cnt(ii) > 0) then
-              if (ii == nspu) then
-                ielem = ielem + 1
-              else
-                if (elem_cnt(ii+1) > 0) then
-                  ielem = ielem + 1
-                end if
-              end if
-            else
-              ielem = ielem + abs(elem_cnt(ii)) - elem_cnt(ii-1) + 1
-            end if
-          end do
-          allocate (ccu_out(i)%num(ielem))
-          ccu_out(i)%num_tot = ielem
 
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-              ccu_out(i)%num(ielem) = ie1
-            else
-              ie2 = elem_cnt(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 1
-                ccu_out(i)%num(ielem) = ie1
-                ielem = ielem + 1
-                ccu_out(i)%num(ielem) = ie2
-              else
-                ie2 = abs(ie2)
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                  ccu_out(i)%num(ielem) = ie
-                end do
-              end if
-              ii = ii + 2
-            end if
-          end do
-          deallocate (elem_cnt)
-          end if   !nspu > 1
+          call define_unit_elements (nspu, ielem1)
+          
+          allocate (ccu_out(i)%num(ielem1))
+          ccu_out(i)%num = defunit_num
+          ccu_out(i)%num_tot = ielem1
+          deallocate (defunit_num)
         else
           !!all hrus are in region 
           allocate (ccu_out(i)%num(sp_ob%hru))
@@ -145,59 +95,13 @@
           backspace (107)
           read (107,*,iostat=eof) k, ccu_reg(i)%name, ccu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
-          
-          !!save the object number of each defining unit
-          if (nspu == 1) then
-            allocate (ccu_reg(i)%num(1))
-            ccu_reg(i)%num_tot = 1
-            ccu_reg(i)%num(1) = elem_cnt(1)
-          else
-          !! nspu > 1
-          ielem = 0
-          do ii = 2, nspu
-            ie1 = elem_cnt(ii-1)
-            if (elem_cnt(ii) > 0) then
-              if (ii == nspu) then
-                ielem = ielem + 1
-              else
-                if (elem_cnt(ii+1) > 0) then
-                  ielem = ielem + 1
-                end if
-              end if
-            else
-              ielem = ielem + abs(elem_cnt(ii)) - elem_cnt(ii-1) + 1
-            end if
-          end do
-          allocate (ccu_reg(i)%num(ielem))
-          ccu_reg(i)%num_tot = ielem
 
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-              ccu_reg(i)%num(ielem) = ie1
-            else
-              ie2 = elem_cnt(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 1
-                ccu_reg(i)%num(ielem) = ie1
-                ielem = ielem + 1
-                ccu_reg(i)%num(ielem) = ie2
-              else
-                ie2 = abs(ie2)
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                  ccu_reg(i)%num(ielem) = ie
-                end do
-              end if
-              ii = ii + 2
-            end if
-          end do
-          deallocate (elem_cnt)
-          end if   !nspu > 1
+          call define_unit_elements (nspu, ielem1)
+          
+          allocate (ccu_reg(i)%num(ielem1))
+          ccu_reg(i)%num = defunit_num
+          ccu_reg(i)%num_tot = ielem1
+
         else
           !!all channels are in region 
           allocate (ccu_reg(i)%num(sp_ob%hru))
@@ -249,8 +153,10 @@
         allocate (ccu_elem(imax))
 
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
 
         do isp = 1, imax
           read (107,*,iostat=eof) i
@@ -267,10 +173,10 @@
       ! set hru number from element number and set hru areas in the region
       do ireg = 1, mreg
         do icha = 1, ccu_reg(ireg)%num_tot      !elements have to be hru or hru_lte
-          ielem = ccu_reg(ireg)%num(icha)
+          ielem1 = ccu_reg(ireg)%num(icha)
           !switch %num from element number to hru number
-          ccu_cal(ireg)%num(icha) = ccu_elem(ielem)%obtypno
-          ccu_cal(ireg)%hru_ha(icha) = ccu_elem(ielem)%ru_frac * ccu_cal(ireg)%area_ha
+          ccu_cal(ireg)%num(icha) = ccu_elem(ielem1)%obtypno
+          ccu_cal(ireg)%hru_ha(icha) = ccu_elem(ielem1)%ru_frac * ccu_cal(ireg)%area_ha
         end do
       end do
       

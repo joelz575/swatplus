@@ -5,6 +5,7 @@
       use plant_module
       use organic_mineral_mass_module
       use mgt_operations_module
+      use hydrograph_module
       
       implicit none
 
@@ -15,6 +16,7 @@
       soil1(iihru) = soil1_init(iihru)
       rsd1(iihru) = rsd1_init(iihru)
       pcom(iihru) = pcom_init(iihru)
+      wet(iihru) = wet_om_init(iihru)
       sno_hru(iihru) = sno_init(iihru)
       bss(:,iihru) = 0.
 

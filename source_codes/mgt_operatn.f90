@@ -41,7 +41,7 @@
       isched = hru(j)%mgt_ops
       if (sched(isched)%num_ops < 1) return
       
-        mgt = sched(isched)%mgt_ops(sched(isched)%cur_op)
+        mgt = sched(isched)%mgt_ops(hru(j)%cur_op)
 
         do while(mgt%jday > 0 .and. time%day == mgt%jday)
           call mgt_sched (isched)

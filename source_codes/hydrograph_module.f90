@@ -21,6 +21,7 @@
       integer, dimension (:), allocatable :: rcv_sum                     !              |
       integer, dimension (:), allocatable :: dfn_sum                     !              |
       integer, dimension (:), allocatable :: elem_cnt                    !              |
+      integer, dimension (:), allocatable :: defunit_num                 !              |
       integer, dimension (:), allocatable :: ru_seq                      !              |
       real, dimension (:), allocatable :: hyd_km2                        !              |  
       integer, dimension (:), allocatable :: ob_order                    !              |
@@ -74,10 +75,13 @@
       type (hyd_output), dimension(:),allocatable :: aqu
       type (hyd_output), dimension(:),allocatable :: res
       type (hyd_output), dimension(:),allocatable :: wet
+      type (hyd_output), dimension(:),allocatable :: res_om_init
+      type (hyd_output), dimension(:),allocatable :: wet_om_init
       type (hyd_output) :: resz
       
       type (hyd_output), dimension(:),allocatable :: om_init_water
       type (hyd_output), dimension(:),allocatable :: ch_stor
+      type (hyd_output), dimension(:),allocatable :: ch_om_water_init
       
       type (hyd_output), dimension(:), allocatable, save :: res_in_d
       type (hyd_output), dimension(:), allocatable, save :: res_in_m
@@ -192,7 +196,7 @@
         integer :: flo_dtbl             !dtbl pointer for flow fraction of hydrograph
         integer :: num = 1              !spatial object number- ie hru number corresponding to sequential command number
                                         !this is the first column in hru_dat (doesn"t have to be sequential)
-        integer :: gis_id               !gis number for database purposes
+        integer*8 :: gis_id             !gis number for database purposes
         integer :: fired = 0            !0=not fired; 1=fired off as a command
         integer :: cmd_next = 0         !next command (object) number
         integer :: cmd_prev = 0         !previous command (object) number
@@ -411,6 +415,67 @@
         character (len=15) :: temp =    "           temp"        !! deg c        |temperature
       end type hyd_header
       type (hyd_header) :: hyd_hdr
+      
+        type hyd_header_units  !pts (point source)/deposition/ru (routing_unit) files output uses this units header
+        character (len=11) :: day    =  "           "
+        character (len=12) :: mo     =  "            "
+        character (len=12) :: day_mo =  "            "
+        character (len=13) :: yrc    =  "            "
+        character (len=12) :: name   =  "            "
+        character (len=6) :: otype   =  "      "    
+        character (len=17) :: flo    =  "             ha-m"      !! m^3          |volume of water
+        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
+        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
+        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
+        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
+        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
+        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
+        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
+        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
+        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
+        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
+        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
+        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature
+      end type hyd_header_units
+      type (hyd_header_units) :: hyd_hdr_units
+      
+      type hyd_header_units2  !hydin/hydout files uses this units header 
+        character (len=11) :: day    =  "           "
+        character (len=12) :: mo     =  "            "
+        character (len=12) :: day_mo =  "            "
+        character (len=13) :: yrc    =  "            "
+        character (len=12) :: name   =  "            "
+        character (len=6) :: otype   =  "      "    
+        character (len=13) :: iotyp  =  "            "
+        character (len=9) :: iotypno =  "         "
+        character (len=8) :: hydio   =  "        "
+        character (len=8) :: objno   =  "        "
+        character (len=17) :: flo    =  "             ha-m"      !! ha-m         |volume of water
+        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
+        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
+        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
+        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
+        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
+        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
+        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
+        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
+        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
+        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
+        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
+        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature
+      end type hyd_header_units2
+      type (hyd_header_units2) :: hyd_hdr_units2
+            
                      
       type hyd_header_time                                       
         character (len=11) :: day    =  "       jday"

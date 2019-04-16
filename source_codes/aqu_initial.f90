@@ -19,6 +19,7 @@
       integer :: idat
 
       !allocate objects for each aquifer
+      allocate (aqu_om_init(sp_ob%aqu))
       allocate (aqu_d(sp_ob%aqu))
       allocate (aqu_prm(sp_ob%aqu))
       allocate (aqu_m(sp_ob%aqu))

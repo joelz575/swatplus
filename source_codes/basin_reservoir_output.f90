@@ -19,6 +19,7 @@
           bres_in_d = bres_in_d + res_in_d(ires)
           res_in_d(ires) = resmz
           bres_out_d = bres_out_d + res_out_d(ires)
+
           res_out_d(ires) = resmz
         end do
 

@@ -39,8 +39,10 @@
           allocate (exco_hmet_num(imax))
           allocate (exco_hmet_name(imax))
           rewind (107)
-          read (107,*) titldum
-          read (107,*) header
+          read (107,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
       
           !read all export coefficient data
           do ii = 1, db_mx%exco_hmet
@@ -70,8 +72,12 @@
       ob2 = sp_ob1%exco + sp_ob%exco - 1
       do iob = ob1, ob2
         iexco = ob(iob)%props
-        iexco_hmet = exco_hmet_num(iexco)
-        obcs(iob)%hd(1)%hmet = exco_hmet(iexco_hmet)%hmet
+        if (exco_db(iexco)%hmet_file == "null") then
+          obcs(iob)%hd(1)%hmet = 0.
+		else
+          iexco_hmet = exco_hmet_num(iexco)
+          obcs(iob)%hd(1)%hmet = exco_hmet(iexco_hmet)%hmet
+		end if
       end do
       
       return

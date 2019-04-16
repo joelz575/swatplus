@@ -24,11 +24,8 @@
       integer :: ilum
       integer :: nspu                   !             | 
       integer :: isp                    !             |
-      integer :: ielem                  !none         |counter
+      integer :: ielem1                 !none         |counter
       integer :: ii                     !none         |counter
-      integer :: ie1                    !none         |counter
-      integer :: ie2                    !none         |counter
-      integer :: ie                     !none         |counter
       integer :: iihru                  !none         |counter
       integer :: ihru_tot               !             |
       integer :: ilsu                   !             |
@@ -95,60 +92,13 @@
           backspace (107)
           read (107,*,iostat=eof) k, lsu_reg(i)%name, lsu_reg(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
-          
-          !!save the object number of each defining unit
-          if (nspu == 1) then
-            allocate (lsu_reg(i)%num(1))
-            lsu_reg(i)%num_tot = 1
-            lsu_reg(i)%num(1) = elem_cnt(1)
-            deallocate (elem_cnt)
-          else
-          !! nspu > 1
-          ielem = 0
-          do ii = 2, nspu
-            ie1 = elem_cnt(ii-1)
-            if (elem_cnt(ii) > 0) then
-              if (ii == nspu) then
-                ielem = ielem + 1
-              else
-                if (elem_cnt(ii+1) > 0) then
-                  ielem = ielem + 1
-                end if
-              end if
-            else
-              ielem = ielem + abs(elem_cnt(ii)) - elem_cnt(ii-1) + 1
-            end if
-          end do
-          allocate (lsu_reg(i)%num(ielem))
-          lsu_reg(i)%num_tot = ielem
 
-          ielem = 0
-          ii = 1
-          do while (ii <= nspu)
-            ie1 = elem_cnt(ii)
-            if (ii == nspu) then
-              ielem = ielem + 1
-              ii = ii + 1
-              lsu_reg(i)%num(ielem) = ie1
-            else
-              ie2 = elem_cnt(ii+1)
-              if (ie2 > 0) then
-                ielem = ielem + 1
-                lsu_reg(i)%num(ielem) = ie1
-                ielem = ielem + 1
-                lsu_reg(i)%num(ielem) = ie2
-              else
-                ie2 = abs(ie2)
-                do ie = ie1, ie2
-                  ielem = ielem + 1
-                  lsu_reg(i)%num(ielem) = ie
-                end do
-              end if
-              ii = ii + 2
-            end if
-          end do
-          deallocate (elem_cnt)
-          end if   !nspu > 1
+          call define_unit_elements (nspu, ielem1)
+          
+          allocate (lsu_reg(i)%num(ielem1))
+          lsu_reg(i)%num = defunit_num
+          lsu_reg(i)%num_tot = ielem1
+          deallocate (defunit_num)
         else
           !!all hrus are in region 
           allocate (lsu_reg(i)%num(sp_ob%hru))
@@ -182,8 +132,10 @@
         allocate (reg_elem(imax))
 
         rewind (107)
-        read (107,*) titldum
-        read (107,*) header
+        read (107,*,iostat=eof) titldum
+        if (eof < 0) exit
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
 
         db_mx%reg_elem = imax
         do isp = 1, imax
@@ -199,12 +151,12 @@
       ! set hru number from element number and set hru areas in the region
       do ireg = 1, mreg
         ihru_tot = 0
-        do ielem = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte
-          select case (reg_elem(ielem)%obtyp)
+        do ielem1 = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte
+          select case (reg_elem(ielem1)%obtyp)
           case ("hru")
             ihru_tot = ihru_tot + 1
           case ("lsu")
-            ilsu = reg_elem(ielem)%obtypno
+            ilsu = reg_elem(ielem1)%obtypno
             ihru_tot = ihru_tot + lsu_out(ilsu)%num_tot
           end select
         end do
@@ -216,15 +168,15 @@
         region(ireg)%num_tot = ihru_tot
         allocate (region(ireg)%num(ihru_tot))
         allocate (region(ireg)%hru_ha(ihru_tot))
-        do ielem = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte
+        do ielem1 = 1, db_mx%lsu_reg     !lsu_reg(ireg)%num_tot      !elements - lsu, hru or hru_lte
           select case (reg_elem(ireg)%obtyp)
           case ("hru")
             ! xwalk lum groups
             ihru = ihru + 1
-            region(ireg)%num(ihru) = reg_elem(ielem)%obtypno
+            region(ireg)%num(ihru) = reg_elem(ielem1)%obtypno
             region(ireg)%hru_ha(ihru) = hru(ihru)%area_ha
           case ("lsu")
-            ilsu = reg_elem(ielem)%obtypno
+            ilsu = reg_elem(ielem1)%obtypno
             do iihru = 1, lsu_out(ilsu)%num_tot
               ihru = ihru + 1
               region(ireg)%num(ihru) = lsu_elem(iihru)%obtypno

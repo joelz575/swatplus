@@ -25,6 +25,7 @@
       real :: trancap           !            |
 
       j = ihru
+      ifield = hru(j)%dbs%field
 
 !!    compute infiltration from surface runon to next landscape unit
       ls_overq = ob(iob)%hin_sur%flo        !/ (10. * hru(j)%area_ha)   ! m3/10*ha = mm

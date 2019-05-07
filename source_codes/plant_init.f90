@@ -4,7 +4,7 @@
       use soil_module
       use plant_module
       use hydrograph_module
-      use climate_module, only : wst, wgn
+      use climate_module, only : wst, wgn, wgn_pms
       use time_module
 !      use hru_lte_module
       use maximum_data_module
@@ -49,6 +49,11 @@
       real :: sin_sl                 !           |
       real :: sl_len                 !           | 
       real :: phu0                   !deg C      |base zero heat units for year
+      real :: sd                     !radians    |solar declination: latitude at which the sun
+                                     !           |is directly overhead at noon
+      real :: sdlat                  !none       |(-Tan(sd)*Tan(lat))
+      real :: h                      !none       |Acos(-Tan(sd)*Tan(lat))
+      real :: daylength              !hours      |daylength
 
       j = ihru
       
@@ -82,11 +87,13 @@
           if (init > 0) then
             deallocate (pcom(j)%plg) 
             deallocate (pcom(j)%plm)
-            deallocate (pcom(j)%ab_gr)
-            deallocate (pcom(j)%leaf)
-            deallocate (pcom(j)%stem)
-            deallocate (pcom(j)%seed)
-            deallocate (pcom(j)%root)
+            deallocate (pl_mass(j)%tot)
+            deallocate (pl_mass(j)%ab_gr)
+            deallocate (pl_mass(j)%leaf)
+            deallocate (pl_mass(j)%stem)
+            deallocate (pl_mass(j)%seed)
+            deallocate (pl_mass(j)%root)
+            deallocate (pl_mass(j)%yield_tot)
             deallocate (pcom(j)%plstr) 
             deallocate (pcom(j)%plcur) 
             deallocate (rsd1(j)%tot)
@@ -96,11 +103,13 @@
         ipl = pcom(j)%npl
         allocate (pcom(j)%plg(ipl)) 
         allocate (pcom(j)%plm(ipl)) 
-        allocate (pcom(j)%ab_gr(ipl))
-        allocate (pcom(j)%leaf(ipl))
-        allocate (pcom(j)%stem(ipl))
-        allocate (pcom(j)%seed(ipl))
-        allocate (pcom(j)%root(ipl))
+        allocate (pl_mass(j)%tot(ipl)) 
+        allocate (pl_mass(j)%ab_gr(ipl))
+        allocate (pl_mass(j)%leaf(ipl))
+        allocate (pl_mass(j)%stem(ipl))
+        allocate (pl_mass(j)%seed(ipl))
+        allocate (pl_mass(j)%root(ipl))
+        allocate (pl_mass(j)%yield_tot(ipl))
         allocate (pcom(j)%plstr(ipl)) 
         allocate (pcom(j)%plcur(ipl)) 
         allocate (rsd1(j)%tot(ipl))
@@ -130,8 +139,7 @@
             tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
             if (tave > 0.) phu0 = phu0 + tave
           end do
-          
-          wgn(iwgn)%lat = -wgn(iwgn)%lat
+
           ! if days to maturity are not input (0) - assume the plant is potentially active during entire growing season
           if (pldb(idp)%days_mat < 1.e-6) then
             phutot = 0.
@@ -147,32 +155,58 @@
             end do
             pcom(j)%plcur(ipl)%phumat = .95 * phutot
           else
-            ! caculate planting day for annuals
-            iday_sum = 181
-            phutot = 0.
-            phu0 = 0.15 * phu0    !assume planting at 0.15 base 0 heat units
-            do iday = 1, 365
-              if (wgn(iwgn)%lat > 0.) then
-                time%day = iday
-              else
-                ! find Southern Hemisphere day
-                iday_sum = iday_sum + 1
-                if (iday_sum > 365) then
-                  iday_sh = iday_sum - 365
+            ! caculate planting day for summer annuals
+            if (pldb(idp)%typ == "warm_annual") then
+              iday_sum = 181
+              phutot = 0.
+              phu0 = 0.15 * phu0    !assume planting at 0.15 base 0 heat units
+              do iday = 1, 365
+                if (wgn(iwgn)%lat > 0.) then
+                  time%day = iday
                 else
-                  iday_sh = iday_sum
+                  ! find Southern Hemisphere day
+                  iday_sum = iday_sum + 1
+                  if (iday_sum > 365) then
+                    iday_sh = iday_sum - 365
+                  else
+                    iday_sh = iday_sum
+                  end if
+                  time%day = iday_sh
                 end if
-                time%day = iday_sh
+                call xmon
+                mo = time%mo
+                tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+                phuday = tave
+                if (phuday > 0.) then
+                  phutot = phutot + phuday
+                end if
+                if (phutot > phu0) exit   ! exit on plant day at 0.15 base 0 heat units(iday)
+              end do
+            end if
+          
+            ! caculate planting day for winter annuals at end of dormancy
+            if (pldb(idp)%typ == "cold_annual") then
+              if (wgn(iwgn)%lat > 0.) then
+                igrow = 1
+              else
+                igrow = 181
               end if
-              call xmon
-              mo = time%mo
-              tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
-              phuday = tave
-              if (phuday > 0.) then
-                phutot = phutot + phuday
-              end if
-              if (phutot > phu0) exit
-            end do
+              do iday = igrow, igrow + 180
+                !! calculate solar declination: equation 2.1.2 in SWAT manual
+                sd = Asin(.4 * Sin((Real(iday) - 82.) / 58.09))  !!365/2pi = 58.09
+                sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
+                if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
+                  h = 0.
+                elseif (sdlat >= -1.) then
+                  h = Acos(sdlat)
+                else
+                  h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
+                endif 
+                daylength = 7.6394 * h
+                iday_sh = iday
+                if (daylength - 0.5 > wgn_pms(iwgn)%daylmn) exit
+              end do
+            end if
             
             ! calculate heat units from plant day (iday) to maturity (add days to maturity)
             if (wgn(iwgn)%lat > 0.) then
@@ -180,6 +214,7 @@
             else
               igrow = iday_sh
             end if
+            phutot = 0.
             do iday = igrow, igrow + pldb(idp)%days_mat
               if (wgn(iwgn)%lat > 0.) then
                 time%day = iday
@@ -231,8 +266,9 @@
           pcom(j)%plg(ipl)%laimxfr = pcom(j)%plcur(ipl)%phuacc / (pcom(j)%plcur(ipl)%phuacc +     &
               Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc))
           pcom(j)%plg(ipl)%lai = pcomdb(icom)%pl(ipl)%lai
-          pcom(j)%plm(ipl)%mass = pcomdb(icom)%pl(ipl)%bioms
-          pcom(j)%plcur(ipl)%curyr_mat = pcomdb(icom)%pl(ipl)%yrmat
+          pl_mass(j)%tot(ipl)%m = pcomdb(icom)%pl(ipl)%bioms
+          pcom(j)%plcur(ipl)%curyr_mat = int (pcomdb(icom)%pl(ipl)%fr_yrmat * float(pldb(idp)%mat_yrs))
+          pcom(j)%plcur(ipl)%curyr_mat = max (1, pcom(j)%plcur(ipl)%curyr_mat)
           cvm_com(j) = plcp(idp)%cvm + cvm_com(j)
           rsdco_plcom(j) = rsdco_plcom(j) + pldb(idp)%rsdco_pl
           pcom(j)%plcur(ipl)%idplt = pcomdb(icom)%pl(ipl)%db_num
@@ -241,12 +277,12 @@
           (1. - pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +          &
            Exp(plcp(idp)%pup1 - plcp(idp)%pup2 *                                &
            pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltpfr3
-          pcom(j)%plm(ipl)%nmass=pcom(j)%plm(ipl)%n_fr * pcom(j)%plm(ipl)%mass                  
+          pl_mass(j)%tot(ipl)%n = pcom(j)%plm(ipl)%n_fr * pl_mass(j)%tot(ipl)%m                  
           pcom(j)%plm(ipl)%n_fr = (pldb(idp)%pltnfr1- pldb(idp)%pltnfr3) *      &
            (1.- pcom(j)%plcur(ipl)%phuacc/(pcom(j)%plcur(ipl)%phuacc +          &
            Exp(plcp(idp)%nup1 - plcp(idp)%nup2 *                                &
           pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
-           pcom(j)%plm(ipl)%pmass = pcom(j)%plm(ipl)%p_fr * pcom(j)%plm(ipl)%mass
+           pl_mass(j)%tot(ipl)%p = pcom(j)%plm(ipl)%p_fr * pl_mass(j)%tot(ipl)%m
           if (pcom(j)%plcur(ipl)%pop_com < 1.e-6) then
             pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai
           else

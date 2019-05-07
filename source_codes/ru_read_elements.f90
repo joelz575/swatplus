@@ -2,6 +2,8 @@
     
       use hydrograph_module
       use input_file_module
+      use maximum_data_module
+      use dr_module
       
       implicit none
   
@@ -21,6 +23,7 @@
       integer :: iob1                 !none       |beginning of loop
       integer :: iob2                 !none       |ending of loop
       integer :: iru                  !none       |counter
+      integer :: idr                  !none       |counter
       integer :: numb                 !           |
       integer :: ielem1               !none       |counter
       integer :: ii                   !none       |counter
@@ -63,43 +66,23 @@
           if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, ru_elem(i)%name, ru_elem(i)%obtyp, ru_elem(i)%obtypno,     &
-                                ru_elem(i)%frac, ru_elem(i)%idr
+                                ru_elem(i)%frac, ru_elem(i)%dr_name
           if (eof < 0) exit
+          
+          ! xwalk ru_elem(i)%dr_name with dr_db()%name from delratio.del file
+          do idr = 1, db_mx%dr_om
+            if (ru_elem(i)%dr_name == dr_db(idr)%name) then
+              !! dr_om_num was previously xwalked with dr_db()%om_file
+              ru_elem(i)%dr = dr(dr_om_num(idr))
+              exit
+            end if
+          end do
+      
         end do
         exit
       end do
       close (107)
-              
-      !read all delivery ratio data for subbasin deliveries
-      inquire (file=in_ru%ru_dr, exist=i_exist)
-      if (i_exist .or. in_ru%ru_dr /= "null") then
-      do
-        open (107,file=in_ru%ru_dr)
-        read (107,*,iostat=eof) titldum
-        if (eof < 0) exit
-        read (107,*,iostat=eof) header
-        if (eof < 0) exit
-          do while (eof == 0) 
-            read (107,*,iostat=eof) titldum
-            if (eof < 0) exit
-            imax = imax + 1
-          end do
-             
-        allocate (ru_dr(imax))
-        
-        rewind (107)
-        read (107,*,iostat=eof) titldum
-        if (eof < 0) exit
-        read (107,*,iostat=eof) header
-        if (eof < 0) exit
-        
-        do i = 1, imax
-          read (107,*,iostat=eof) ru_dr(i)
-          if (eof < 0) exit
-        end do
-        exit
-      enddo
-      endif
+
       end if
       
       !!read subbasin definition data -ie. hru"s in the subbasin

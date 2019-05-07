@@ -37,47 +37,25 @@
       integer, intent (in) :: jj         !none          |subbasin number
       integer :: k                       !none          |sequence number of pesticide
       real :: gc                         !none          |fraction of ground covered by plant foliage
-      integer, intent (in) :: ipest      !none          |counter
+      integer, intent (in) :: ipest      !none          |sequential hru pesticide number
       integer, intent (in) :: pestop     !              | 
       real, intent (in) :: pest_kg       !kg/ha         |amount of pesticide applied 
-      real :: pst_dep                    !kg/ha          |depth of pesticide in soil
-      integer :: nly                     !none          |counter
+      real :: surf_frac                  !kg/ha         |amount added to soil surface layer - rest to second layer
 
       j = jj
-
-      !! initialize local variables
-      k = ipest                                     !! sequential hru pesticide number
-
-      hpestb_d(j)%pest(k)%apply_f = 0.
-      hpestb_d(j)%pest(k)%apply_s = 0.
-      ! added for pesticide incorporation
-      if (pst_dep > 1.e-6) then
-       do nly = 1, soil(j)%nly
-         if (nly == 1) then
-           if (pst_dep < soil(j)%phys(nly)%d) then
-             cs_soil(j)%ly(1)%pest(k) =  cs_soil(j)%ly(1)%pest(k) + pest_kg
-             exit
-           endif
-         else
-           if (pst_dep>soil(j)%phys(nly-1)%d .and. pst_dep < soil(j)%phys(nly)%d)then
-             cs_soil(j)%ly(nly)%pest(k) = cs_soil(j)%ly(nly)%pest(k) + pest_kg
-             exit
-           end if
-         end if
-        end do
-      else
 
       !! calculate ground cover
       gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
       if (gc < 0.) gc = 0.
 
       !! update pesticide levels on ground and foliage
-      cs_pl(j)%pest(k) = cs_pl(j)%pest(k) + gc * pest_kg
-      cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) + (1. - gc) * pest_kg
-      hpestb_d(j)%pest(k)%apply_f = gc * pest_kg
-      hpestb_d(j)%pest(k)%apply_s = (1. - gc) * pest_kg
+      cs_pl(j)%pest(ipest) = cs_pl(j)%pest(ipest) + gc * pest_kg
+      surf_frac = chemapp_db(pestop)%surf_frac
+      cs_soil(j)%ly(1)%pest(ipest) = cs_soil(j)%ly(1)%pest(ipest) + (1. - gc) * surf_frac * pest_kg
+      cs_soil(j)%ly(2)%pest(ipest) = cs_soil(j)%ly(2)%pest(ipest) + (1. - gc) * (1. - surf_frac) * pest_kg
       
-      endif
+      hpestb_d(j)%pest(ipest)%apply_f = gc * pest_kg
+      hpestb_d(j)%pest(ipest)%apply_s = (1. - gc) * pest_kg
 
       return
       end subroutine pest_apply

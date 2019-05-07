@@ -8,6 +8,7 @@
       use channel_data_module
       use channel_module
       use ch_pesticide_module
+      use climate_module
     
       implicit none     
     
@@ -88,6 +89,7 @@
       
       ich = isdch
       isd_db = ob(icmd)%props
+      iwst = ob(icmd)%wst
       erode_btm = 0.
       erode_bank = 0.
       deg_btm = 0.
@@ -96,6 +98,7 @@
       washld = 0.
       bedld = 0.
       dep = 0.
+      hc = 0.
       hc_sed = 0.
       
       !! set ht1 to incoming hydrograph
@@ -442,7 +445,7 @@
       end if
 
       ob(icmd)%hd(1) = ht2
-      ob(icmd)%hd(1)%temp = 5. + .75 * tave
+      ob(icmd)%hd(1)%temp = 5. + .75 * wst(iwst)%weat%tave
       
       if (cs_db%num_pests > 0) then
         obcs(icmd)%hd(1)%pest = hcs2%pest

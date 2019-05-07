@@ -60,7 +60,7 @@
             if (abs(lscal(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) icvmax = icvmax + 1
 	      end do
 	    end do
-        write (5000,*) " calibration.upd developed from soft data calibration"
+        write (5000,*) " hru-new.cal developed from soft data calibration"
         write (5000,501) icvmax
 501     format (i6)
         write (5000,*) "NAME           CHG_TYP                  VAL   CONDS  LYR1  LYR2   YEAR1  YEAR2   DAY1   DAY2  OBJ_TOT"

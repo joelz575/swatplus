@@ -147,10 +147,11 @@ nsetlr2          res          1        15                   m/day
 chlar            res        0.5         2                    none
 seccir           res        0.5         2                    none
 alpha            aqu          0         1                    days
+dep_bot          aqu          0        10                       m
 bf_max           aqu          0         2                      mm
-flo_min          aqu          0      5000                      mm
+flo_min          aqu          0        10                       m
 revap_co         aqu       0.02       0.2                    null
-revap_min        aqu          0       500                      mm
+revap_min        aqu          0        10                       m
 cn2_lte          hlt         25        98                    null
 awc_lte          hlt       0.01         1               mm_H20/mm
 etco_lte         hlt          0         1                    null

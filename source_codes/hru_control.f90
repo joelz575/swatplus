@@ -5,7 +5,7 @@
 !!    hydrologic cycle
 
       use hru_module, only : hru, ihru, tmx, tmn, tmpav, hru_ra, hru_rmx, rhd, u10, tillage_switch,      &
-         tillage_days, ndeat, qdr, phubase, strsw_av, sedyld, surfq, bio_min, grz_days,  &
+         tillage_days, ndeat, qdr, phubase, strsw_av, sedyld, surfq, grz_days, yield, &
          yr_skip, latq, tconc, smx, sepbtm, igrz, iseptic, i_sep, filterw, sed_con, soln_con, solp_con, & 
          orgn_con, orgp_con, cnday, nplnt, percn, tileno3, pplnt, sedorgn, sedorgp, surqno3, latno3,    &
          surqsolp, sedminpa, sedminps,       &
@@ -61,7 +61,6 @@
       integer :: iout               !none          |counter
       integer :: iac
       real :: over_flow             !              |
-      real :: yield                 !              |
       real :: dep                   !              |
 
       j = ihru
@@ -111,8 +110,7 @@
       call varinit
       nd_30 = nd_30 + 1
       if (nd_30 > 30) nd_30 = 1
-      
-        !! Add incoming lateral soil flow
+
         !!ht1== deposition: write to deposition.out
         !!ht2== outflow from inflow: added to hru generated flows
         ht1 = hz
@@ -120,7 +118,14 @@
                   
         !!route overland flow across hru
         if (ob(icmd)%hin_sur%flo > 1.e-6) then
-          call rls_routesurf (icmd)
+          !!route incoming surface runoff
+          if (ires > 0) then
+            !! add surface runon to wetland
+            wet(j) = wet(j) + ob(icmd)%hin_sur
+          else
+            !! route across hru - infiltrate and deposit sediment
+            call rls_routesurf (icmd)
+          end if
         end if
         
         !!add lateral flow soil water
@@ -218,18 +223,17 @@
         call wattable
 
         !! graze only if adequate biomass in HRU
-        if (pcom(j)%ab_gr_com%mass > bio_min(j)) then
-          if (igrz(j) == 1) then
-            ndeat(j) = ndeat(j) + 1
-            call pl_graze
-            !! check to set if grazing period is over
-            if (ndeat(j) == grz_days(j)) then
-              igrz(j) = 0
-              ndeat(j) = 0
-            end if
+        if (igrz(j) == 1) then
+          ndeat(j) = ndeat(j) + 1
+          !! if total above ground biomass is available - graze
+          call pl_graze
+          !! check to set if grazing period is over
+          if (ndeat(j) == grz_days(j)) then
+            igrz(j) = 0
+            ndeat(j) = 0
           end if
         end if
-       
+
         !! compute plant community partitions
         call pl_community
    
@@ -472,6 +476,9 @@
         !hwb_d(j)%rchrg =  rchrg(j)
         hwb_d(j)%wateryld = qdr(j)
         hwb_d(j)%perc = sepbtm(j)
+        if (sepbtm(j) > 70.) then
+          iru = 0
+        end if
         hwb_d(j)%et = etday
         hwb_d(j)%tloss = tloss
         hwb_d(j)%eplant = ep_day
@@ -487,7 +494,7 @@
         irrig(j)%applied = 0.
         hwb_d(j)%surq_runon = ls_overq
         hwb_d(j)%latq_runon = latqrunon !/ (10. * hru(j)%area_ha) 
-        hwb_d(j)%overbank = over_flow
+        ! hwb_d(j)%overbank = over_flow     !overbank is not added yet
 
       ! output_nutbal
         hnb_d(j)%grazn = grazn
@@ -498,10 +505,10 @@
 
       ! output_plantweather
         hpw_d(j)%lai = pcom(j)%lai_sum
-        hpw_d(j)%bioms = pcom(j)%tot_com%mass
+        hpw_d(j)%bioms = pl_mass(j)%tot_com%m
         hpw_d(j)%residue = rsd1(j)%tot_com%m
-        hpw_d(j)%yield = yield
-        yield = 0.
+        hpw_d(j)%yield = pl_yield%m
+        pl_yield = plt_mass_z
         hpw_d(j)%sol_tmp =  soil(j)%phys(2)%tmp
         hpw_d(j)%strsw = (1. - strsw_av(j))
         hpw_d(j)%strsa = (1. - strsa_av)

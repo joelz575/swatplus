@@ -59,10 +59,10 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use time_module
-      use hru_module, only : hhqday, ihru, albday,    &
+      use hru_module, only : hhqday, ihru, albday,                                      &
         bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp,      &
-        hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, peakr,  &
-        pet_day, qday, qtile, sepday, snoev, snofall, snomlt,             &
+        hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, peakr, yield,                    &
+        pet_day, qday, qtile, sepday, snoev, snofall, snomlt,                           &
         sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, fixn 
       use soil_module
       
@@ -77,8 +77,7 @@
       real :: over_flow         !              |
       real :: sedprev           !              | 
       integer :: irmmdt         !              | 
-      real :: yield             !t/ha or t     |crop yield
-      
+
       j = ihru
 
       !! initialize hru variables - modular code

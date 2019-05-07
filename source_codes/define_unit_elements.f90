@@ -1,12 +1,11 @@
-      subroutine define_unit_elements (num_elem, num_tot)
+      subroutine define_unit_elements (num_elem, ielem)
 
       use hydrograph_module, only : elem_cnt, defunit_num
       
       implicit none
 
       integer, intent (in)  :: num_elem
-      integer, intent (out)  :: num_tot
-      integer :: ielem
+      integer, intent (out)  :: ielem
       integer :: ii                   !none       |counter
       integer :: ie1                  !none       |beginning of loop
       integer :: ie2                  !none       |ending of loop  
@@ -48,7 +47,6 @@
             end if
           end do
           allocate (defunit_num(ielem))
-          num_tot = ielem
 
           ielem = 0
           ii = 1

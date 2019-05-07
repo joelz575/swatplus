@@ -14,7 +14,6 @@
       real :: theta              !1/day         |value of the reaction rate coefficient at
                                  !              |the local temperature 
 
-      theta = 0.
       theta = r20 * thk ** (tmp - 20.)
 
       return

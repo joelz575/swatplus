@@ -20,7 +20,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    phubase(:)  |heat units    |base zero total heat units (used when no
 !!                               |land cover is growing)
-!!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -34,8 +33,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : ep_max, epmax, hru_ra, htfac, ihru, ipl, par, sol_cov, sum_no3,  &
-         sum_solp, tmpav, translt, uapd, uapd_tot, uno3d, uno3d_tot
+      use hru_module, only : ep_max, epmax, hru_ra, htfac, ihru, ipl, par, tmpav, translt
       use soil_module
       use plant_module
       use plant_data_module
@@ -54,20 +52,9 @@
       real :: sumf              !              |
       real :: sumle             !              |
       real :: fi                !              |
-      real :: delg              !              |
-      integer :: nly            !none          |counter
-      
 
       j = ihru  
       par = 0.
-
-      !! sum vegetative biomass for each plant
-      sol_cov(j) = 0.
-      do ipl = 1, pcom(j)%npl
-        sol_cov(j) = sol_cov(j) + .8 * pcom(j)%plm(ipl)%mass
-      end do
-      !! add surface residue to cover
-      sol_cov(j) = sol_cov(j) + rsd1(j)%tot_com%m
 
       !! calc total lai for plant community
       pcom(j)%lai_sum = 0.
@@ -83,10 +70,20 @@
         end if
       end do
 
-      !! calc total root mass for plant community
-      pcom(j)%root_com%mass = 0.
+      !! sum total masses for plant community
+      pl_mass(j)%tot_com%m = 0.
+      pl_mass(j)%ab_gr_com%m = 0.
+      pl_mass(j)%leaf_com%m = 0.
+      pl_mass(j)%stem_com%m = 0.
+      pl_mass(j)%seed_com%m = 0.
+      pl_mass(j)%root_com%m = 0.
       do ipl = 1, pcom(j)%npl
-        pcom(j)%root_com%mass = amax1 (pcom(j)%root_com%mass, pcom(j)%root(ipl)%mass)
+        pl_mass(j)%tot_com%m = pl_mass(j)%tot_com%m + pl_mass(j)%tot(ipl)%m
+        pl_mass(j)%ab_gr_com%m = pl_mass(j)%ab_gr_com%m + pl_mass(j)%ab_gr(ipl)%m
+        pl_mass(j)%leaf_com%m = pl_mass(j)%leaf_com%m + pl_mass(j)%leaf(ipl)%m
+        pl_mass(j)%stem_com%m = pl_mass(j)%stem_com%m + pl_mass(j)%stem(ipl)%m
+        pl_mass(j)%seed_com%m = pl_mass(j)%seed_com%m + pl_mass(j)%seed(ipl)%m
+        pl_mass(j)%root_com%m = pl_mass(j)%root_com%m + pl_mass(j)%root(ipl)%m
       end do
       
       !! calc max height for penman pet equation
@@ -96,9 +93,9 @@
       end do
       
       !! calc total biomass for plant community
-      pcom(j)%tot_com%mass = 0.
+      pl_mass(j)%tot_com%m = 0.
       do ipl = 1, pcom(j)%npl
-        pcom(j)%tot_com%mass = amax1 (pcom(j)%tot_com%mass, pcom(j)%plm(ipl)%mass)
+        pl_mass(j)%tot_com%m = amax1 (pl_mass(j)%tot_com%m, pl_mass(j)%tot(ipl)%m)
       end do
       
       npl_gro = 0
@@ -165,34 +162,6 @@
           end do  
         end if
       end if
-      
-      uno3d(ipl) = 0.
-      uno3d_tot = 0.
-      uapd(ipl) = 0.
-      uapd_tot = 0.
-      do ipl = 1, pcom(j)%npl
-        idp = pcom(j)%plcur(ipl)%idplt
-        if (pcom(j)%plcur(ipl)%idorm == 'n'.and.pcom(j)%plcur(ipl)%gro=="y")    &
-                                                                   then
-        !! update accumulated heat units for the plant
-        delg = 0.
-        if (pcom(j)%plcur(ipl)%phumat > 0.1) then
-          delg = (tmpav(j) - pldb(idp)%t_base) / pcom(j)%plcur(ipl)%phumat
-        end if
-        if (delg < 0.) delg = 0.
-        pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc + delg  
-        call pl_nupd
-        call pl_pupd
-        uno3d_tot = uno3d_tot + uno3d(ipl)
-        uapd_tot = uapd_tot + uapd(ipl)
-        end if
-      end do
-      sum_no3 = 0.
-      sum_solp = 0.
-      do nly = 1, soil(j)%nly
-        sum_no3 = sum_no3 + soil1(j)%mn(nly)%no3
-        sum_solp = sum_solp + soil1(j)%mp(nly)%lab
-      end do
 
       return
       

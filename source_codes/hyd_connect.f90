@@ -170,18 +170,18 @@
       if (sp_ob%res > 0) then
         call hyd_read_connect(in_con%res_con, "res     ", sp_ob1%res, sp_ob%res, hd_tot%res, 1) 
       end if
-  
-      !read connect file for export coefficients
-      if (sp_ob%exco > 0) then
-        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 0) 
-      endif
-                        
+                
       !read connect file for recalls
       if (sp_ob%recall > 0) then
         call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 0) 
         call recall_read
       end if
-                        
+                
+      !read connect file for export coefficients
+      if (sp_ob%exco > 0) then
+        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 0) 
+      endif
+                  
       !read connect file for delivery ratio
       if (sp_ob%dr > 0) then
         call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 0) 

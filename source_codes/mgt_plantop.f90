@@ -4,6 +4,7 @@
       use soil_module
       use plant_module
       use plant_data_module
+      use organic_mineral_mass_module
   
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the plant operation
@@ -51,14 +52,14 @@
       pcom(j)%plcur(ipl)%gro = "y"
       pcom(j)%plcur(ipl)%idorm = "n"
       pcom(j)%plcur(ipl)%phuacc = 0.
-      pcom(j)%plm(ipl)%nmass = 0.
-      pcom(ihru)%plm(ipl)%pmass = 0.
+      pl_mass(j)%tot(ipl)%n = 0.
+      pl_mass(j)%tot(ipl)%p = 0.
       pcom(j)%plg(ipl)%plet = 0.
       pcom(j)%plg(ipl)%plpet = 0.                         
       pcom(j)%plg(ipl)%laimxfr = 0.
       pcom(j)%plg(ipl)%hvstiadj = 0.
       pcom(j)%plg(ipl)%olai = 0.
-      pcom(j)%root(ipl)%mass = 0.
+      pl_mass(j)%root(ipl)%m = 0.
       pcom(j)%plstr(ipl) = plstrz 
 
       !! compare maximum depth in soil to maximum rooting depth of plant

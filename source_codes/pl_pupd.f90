@@ -40,6 +40,7 @@
       use plant_data_module
       use hru_module, only : up2, uapd, ihru, ipl, uptake
       use plant_module
+      use organic_mineral_mass_module
 
       implicit none
 
@@ -61,9 +62,9 @@
         Exp(plcp(idp)%pup1 - plcp(idp)%pup2 *                           &
         pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltpfr3
 
-      up2(ipl) = pcom(j)%plm(ipl)%p_fr * pcom(j)%plm(ipl)%mass
-      if (up2(ipl)<pcom(ihru)%plm(ipl)%pmass) up2(ipl)=pcom(ihru)%plm(ipl)%pmass
-      uapd(ipl) = up2(ipl) - pcom(ihru)%plm(ipl)%pmass
+      up2(ipl) = pcom(j)%plm(ipl)%p_fr * pl_mass(j)%tot(ipl)%m
+      if (up2(ipl) < pl_mass(j)%tot(ipl)%p) up2(ipl) = pl_mass(j)%tot(ipl)%p
+      uapd(ipl) = up2(ipl) - pl_mass(j)%tot(ipl)%p
       uapd(ipl) = 1.5 * uapd(ipl)                     !! luxury p uptake
  
       return

@@ -102,11 +102,11 @@
           character (len=8) :: id       =      " gis_id "           
           character (len=16) :: name    =      " name              "          
           character(len=16) :: flo      =      "            flo"        ! (mm)
+          character(len=16) :: dep_wt   =      "         dep_wt"        ! (m)
           character(len=15) :: stor     =      "           stor"        ! (mm)
           character(len=15) :: rchrg    =      "          rchrg"        ! (mm)
           character(len=15) :: seep     =      "           seep"        ! (mm)
           character(len=15) :: revap    =      "          revap"        ! (mm)
-          character(len=16) :: dep_wt   =      "         dep_wt"        ! (m)
           character(len=15) :: no3_st   =      "         no3_st"        ! (kg/ha N)
           character(len=14) :: minp     =      "           minp"        ! (kg)
           character(len=15) :: orgn     =      "           orgn"        ! (kg/ha N)
@@ -130,22 +130,22 @@
           character (len=8) :: id       =  "        "           
           character (len=16) :: name    =  "                   "          
           character(len=16) :: flo      =  "              mm"         ! (mm)
+          character (len=16) :: depwt   =  "              m "         ! (m)
           character(len=15) :: stor     =  "             mm"          ! (mm)
           character(len=15) :: rchrg    =  "             mm"          ! (mm)
           character(len=15) :: seep     =  "             mm"          ! (mm)
           character(len=15) :: revap    =  "             mm"          ! (mm)
-          character(len=16) :: hgt      =  "              m "         ! (m)
           character(len=15) :: no3_st   =  "        kg/ha_N"          ! (kg/ha N)
           character(len=14) :: minp     =  "            kg"           ! (kg)
           character(len=15) :: orgn     =  "        kg/ha_N"          ! (kg/ha N)
           character(len=15) :: orgp     =  "        kg/ha_P"          ! (kg/ha P)
           character(len=15) :: rchrgn   =  "        kg/ha_N"          ! (kg/ha N)
-          character(len=15) :: nloss    =  "        kg/ha_N"           ! (kg/ha N)
+          character(len=15) :: nloss    =  "        kg/ha_N"          ! (kg/ha N)
           character(len=15) :: no3gw    =  "        kg/ha_N"          ! (kg N/ha)
           character(len=15) :: seep_no3 =  "             kg"          ! (kg)
           character(len=15) :: flo_cha  =  "            m^3"          ! (m^3)
-          character(len=15) :: flo_res  =  "            m^3"           ! (m^3)
-          character(len=15) :: flo_ls   =  "            m^3"           ! (m^3)
+          character(len=15) :: flo_res  =  "            m^3"          ! (m^3)
+          character(len=15) :: flo_ls   =  "            m^3"          ! (m^3)
       end type aqu_header_units
       type (aqu_header_units) :: aqu_hdr_units
       

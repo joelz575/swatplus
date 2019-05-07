@@ -110,10 +110,8 @@
         character (len=13) :: name
         character (len=13) :: fertnm = " "
         integer :: manure_id                             !fertilizer number from fertilizer.frt
-        real :: eat = 0.              !!(kg/ha)/day      |dry weight of biomass removed 
-                                      !!                    by grazing daily
-        real :: tramp = 0.            !!(kg/ha)/day      |dry weight of biomass removed
-                                      !!                    by trampling daily
+        real :: eat = 0.              !!(kg/ha)/day      |dry weight of biomass removed by grazing daily
+        real :: tramp = 0.            !!(kg/ha)/day      |dry weight of biomass removed by trampling daily
         real :: manure = 0.           !!(kg/ha)/day      |dry weight of manure deposited
         real :: biomin = 0.           !!kg/ha            |minimum plant biomass for grazing
       end type grazing_operation

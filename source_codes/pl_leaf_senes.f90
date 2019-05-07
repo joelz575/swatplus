@@ -23,6 +23,8 @@
       real :: leaf_tov_mon      !months             |leaf turnover rate months
       real :: coef              !                   |coefficient for ppet - leaf turnover equation
       real :: exp_co            !                   |exponent for ppet - leaf turnover equation
+      real :: lai_init          !                   |lai before senescence
+      real :: lai_drop          !                   |lai decline due to senescence
       
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
@@ -35,15 +37,23 @@
         end if
       end if
       
-      !! lai decline for temperture based perennials - use annual base zero phu's
+      !! lai decline for temperature based perennials - use annual base zero phu's
       if (pldb(idp)%typ == "perennial" .and. pldb(idp)%trig == "temp_gro") then
         if (wst(iwst)%weat%phubase0 > pldb(idp)%dlai .and. wst(iwst)%weat%phubase0 < 1.) then
           iob = hru(j)%obj_no
           iwst = ob(iob)%wst
+          lai_init = pcom(j)%plg(ipl)%lai
           !! logistic decline rate - Strauch and Volk
           rto = (1. - wst(iwst)%weat%phubase0) / (1. - pldb(idp)%dlai)
           pcom(j)%plg(ipl)%lai = (pcom(j)%plg(ipl)%olai - pldb(idp)%alai_min) /   &
                 (1. + Exp((rto - .5) * -12)) + pldb(idp)%alai_min
+                  
+          !! compute leaf biomass drop
+          lai_drop = lai_init - pcom(j)%plg(ipl)%lai
+          lai_drop = amax1 (0., lai_drop)
+          leaf_drop = lai_drop * pl_mass(j)%leaf(ipl)
+          rsd1(j)%tot(ipl) = rsd1(j)%tot(ipl) + leaf_drop
+          pl_mass(j)%leaf(ipl) = pl_mass(j)%leaf(ipl) - leaf_drop
         end if
       end if
       
@@ -66,6 +76,11 @@
         leaf_tov_mon = amax1 (leaf_tov_mon, pldb(idp)%leaf_tov_max)
         !! daily turnover - from monthly turnover rate
         pcom(j)%plcur(ipl)%leaf_tov = (1. / (30. * leaf_tov_mon))
+        
+        !! compute leaf biomass drop
+        leaf_drop = pcom(j)%plcur(ipl)%leaf_tov * pl_mass(j)%leaf(ipl)
+        rsd1(j)%tot(ipl) = rsd1(j)%tot(ipl) + leaf_drop
+        pl_mass(j)%leaf(ipl) = pl_mass(j)%leaf(ipl) - leaf_drop
         
         !! assume an lai-biomass relationship - linear with slope = 0.0002 LAI/leaf biomass(kg/ha) ***should be plant parm in plants.plt
         pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai - pcom(j)%plcur(ipl)%leaf_tov

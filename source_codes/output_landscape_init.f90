@@ -968,8 +968,8 @@
         open (4008,file="crop_yld_aa.out")
         write (4008,*) bsn%name, prog
           write (4008,1000)
-1000    format (1x," jday",1x,"  mon",1x,"  day",1x,"   yr",1x,"   unit", 1x,"PLANTNM",   &
-                 18x,"      YIELD")
+1000    format (80x,"--YIELD (kg/ha)--",/,1x," jday",1x,"  mon",1x,"  day",1x,"   yr",1x,"   unit", 1x,"PLANTNM",   &
+                 18x,"       MASS","          C", "           N","           P")
         write (9000,*) "CROP                      crop_yld_aa.out"
         if (pco%csvout == "y") then
             open (4009,file="crop_yld_aa.csv")

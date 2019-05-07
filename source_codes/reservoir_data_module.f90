@@ -70,8 +70,8 @@
         real :: pdep = 0.         !mm            |average depth of water at principal spillway
         real :: esa = 0.          !frac          |fraction of hru area at emergency spillway (ie: when starts to spill into ditch)
         real :: edep = 0.         !mm            |average depth of water at emergency spillway
-        real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom
-        real :: evrsv = .7        !none          |lake evap coeff
+        real :: k = .01           !mm/hr         |hydraulic conductivity of the wetland bottom
+        real :: evrsv = .7        !none          |wetland evap coeff
         real :: acoef = 1.        !none          |vol-surface area coefficient for hru impoundment
         real :: bcoef = 1         !none          |vol-depth coefficient for hru impoundment
         real :: ccoef = 1         !none          |vol-depth coefficient for hru impoundment

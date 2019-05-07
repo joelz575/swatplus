@@ -6,10 +6,8 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bio_n1(:)   |none           |1st shape parameter for plant N uptake
-!!                                |equation
-!!    bio_n2(:)   |none           |2nd shape parameter for plant N uptake
-!!                                |equation
+!!    bio_n1(:)   |none           |1st shape parameter for plant N uptake equation
+!!    bio_n2(:)   |none           |2nd shape parameter for plant N uptake equation
 !!    ihru        |none           |HRU number
 !!    pltnfr(1,:) |kg N/kg biomass|nitrogen uptake parameter #1: normal fraction
 !!                                |of N in crop biomass at emergence
@@ -26,20 +24,13 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    un2         |kg N/ha       |ideal plant nitrogen content
-!!    unmx        |kg N/ha       |maximum amount of nitrogen that can be 
-!!                               |removed from soil layer
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Min
-!!    SWAT: nfix, nuts
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use plant_data_module
       use hru_module, only : un2, uno3d, ihru, ipl
       use plant_module
+      use organic_mineral_mass_module
       
       implicit none      
       
@@ -49,8 +40,7 @@
       real :: uno3l          !kg N/ha   |plant nitrogen demand
       integer :: ir          !none      |flag to denote bottom of root zone reached
       integer :: idp         !          |       
-      real :: gx             !mm        |lowest depth in layer from which nitrogen
-                             !          |may be removed
+      real :: gx             !mm        |lowest depth in layer from which nitrogen may be removed
 
       j = ihru
 
@@ -61,9 +51,9 @@
           Exp(plcp(idp)%nup1 - plcp(idp)%nup2 *                          &
           pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
 
-      un2(ipl) = pcom(j)%plm(ipl)%n_fr * (1. - pcom(j)%root(ipl)%mass) * pcom(j)%plm(ipl)%mass
-      if (un2(ipl) < pcom(j)%plm(ipl)%nmass) un2(ipl) = pcom(j)%plm(ipl)%nmass
-      uno3d(ipl) = un2(ipl) - pcom(j)%plm(ipl)%nmass
+      un2(ipl) = pcom(j)%plm(ipl)%n_fr * pl_mass(j)%tot(ipl)%m
+      if (un2(ipl) < pl_mass(j)%tot(ipl)%n) un2(ipl) = pl_mass(j)%tot(ipl)%n
+      uno3d(ipl) = un2(ipl) - pl_mass(j)%tot(ipl)%n
       
       return 
       end subroutine pl_nupd

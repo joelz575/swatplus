@@ -58,7 +58,7 @@
       end if
             
       ! xwalk with dr file to get sequential number
-      do idr = 1, db_mx%dr_salt
+      do idr = 1, db_mx%dr
         do idr_salt = 1, db_mx%dr_salt
           if (dr_db(idr)%salts_file == dr_salt_name(idr_salt)) then
             dr_salt_num(idr) = idr_salt

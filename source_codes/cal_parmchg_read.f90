@@ -27,7 +27,7 @@
       
       implicit none
 
-      integer, dimension (:), allocatable :: elem_cnt1    !           |  
+      !integer, dimension (:), allocatable :: elem_cnt1    !           |  
       character (len=80) :: titldum                       !           |title of file
       character (len=80) :: header                        !           |header of file
       integer :: eof                                      !           |end of file
@@ -70,10 +70,10 @@
         if (eof < 0) exit
         if (nspu > 0) then
           backspace (107)
-          allocate (elem_cnt1(nspu))
+          allocate (elem_cnt(nspu))
           read (107,*,iostat=eof) cal_upd(i)%name, cal_upd(i)%chg_typ, cal_upd(i)%val, cal_upd(i)%conds,    &
               cal_upd(i)%lyr1, cal_upd(i)%lyr2, cal_upd(i)%year1, cal_upd(i)%year2, cal_upd(i)%day1,        &
-              cal_upd(i)%day2, cal_upd(i)%num_tot, (elem_cnt1(isp), isp = 1, nspu)
+              cal_upd(i)%day2, cal_upd(i)%num_tot, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
         end if
           
@@ -122,7 +122,8 @@
                 cal_upd(i)%num(ie) = ie
             end do
           else
-              
+
+            call define_unit_elements (nspu, ielem1)
             allocate (cal_upd(i)%num(ielem1))
             cal_upd(i)%num = defunit_num
             cal_upd(i)%num_elem = ielem1

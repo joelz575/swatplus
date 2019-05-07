@@ -113,7 +113,7 @@
         real :: bioms = 0.                  !kg/ha      |land cover/crop biomass
         real :: phuacc = 0.                 !           |frac of plant heat unit acc.
         real :: pop = 0.
-        real :: yrmat = 20.                 !years      |years to maturity 
+        real :: fr_yrmat = 20.              !years      |fraction of current year of growth to years to maturity 
         real :: rsdin = 10000.              !kg/ha      |initial residue cover
       end type plant_init_db
       

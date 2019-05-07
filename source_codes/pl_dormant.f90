@@ -3,35 +3,13 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine checks the dormant status of the different plant types
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name           |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    alai_min(:)    |m**2/m**2     |minimum LAI during winter dormant period
-!!    daylmn(:)      |hours         |shortest daylength occurring during the
-!!                                  |year
-!!    dormhr(:)      |hour          |time threshold used to define dormant
-!!                                  |period for plant (when daylength is within
-!!                                  |the time specified by dormhr from the minimum
-!!                                  |daylength for the area, the plant will go
-!!                                  |dormant)
-!!    ihru           |none          |HRU number
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
-
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
       use climate_module
       use hydrograph_module
       use plant_data_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, dormhr, phubase, sol_sumno3, sol_sumsolp, ipl, ihru,  &
-         sol_sumno3, sol_sumsolp
-      use soil_module
+      use hru_module, only : hru, dormhr, ipl, ihru
       use plant_module
-      use carbon_module
-      use time_module
-      
+
       implicit none
 
       real :: resnew                !              |
@@ -40,9 +18,6 @@
       integer :: idp                !              |
       integer :: iob                !              |
       integer :: iwgn               !              |
-      real :: xx                    !varies        |variable to hold calculation results 
-      real :: rln                   !              |  
-      real :: rlr                   !fraction      |fraction of lignin in the added residue
 
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
@@ -50,23 +25,21 @@
       iwst = ob(iob)%wst
       iwgn = wst(iwst)%wco%wgn
 
-    !! check for beginning of dormant season
+      !! check for beginning of dormant season
       if (pcom(j)%plcur(ipl)%idorm == "n" .and. wst(iwst)%weat%daylength - dormhr(j) < wgn_pms(iwgn)%daylmn) then
 
         !! beginning of temperature based perennial dormant period - leaf drop
         if (pldb(idp)%typ == "perennial") then
           pcom(j)%plcur(ipl)%idorm = "y"
-          resnew = pcom(j)%ab_gr(ipl)%mass * pcom(j)%plg(ipl)%leaf_frac
-          resnew_n = resnew * pcom(j)%ab_gr(ipl)%n_fr
-          call pl_leaf_drop (resnew, resnew_n)
+          !! add leaf mass to residue pool
+          rsd1(j)%tot(1) = pl_mass(j)%leaf(ipl) + rsd1(j)%tot(1)
         end if
 
         !! beginning of temperature based perennial dormant period - mortality
         if (pldb(idp)%typ == "perennial") then
           pcom(j)%plcur(ipl)%idorm = "y"
-          resnew = pldb(idp)%bm_dieoff * pcom(j)%plm(ipl)%mass 
-          resnew_n = pldb(idp)%bm_dieoff * pcom(j)%plm(ipl)%nmass
-          call pl_leaf_drop (resnew, resnew_n)
+          !! add stem mass to residue pool
+          rsd1(j)%tot(1) = pl_mass(j)%stem(ipl) + rsd1(j)%tot(1)
         end if
 
         !! beginning of cool season annual dormant period
@@ -78,23 +51,22 @@
         end if
       end if
 
-    !! check if end of dormant period
-        if (pcom(j)%plcur(ipl)%idorm == "y" .and. wst(iwst)%weat%daylength - dormhr(j) >=   &
+      !! check if end of dormant period
+      if (pcom(j)%plcur(ipl)%idorm == "y" .and. wst(iwst)%weat%daylength - dormhr(j) >=   &
                                                                 wgn_pms(iwgn)%daylmn) then
-
-         if (pldb(idp)%typ == "perennial") then
-           !! end of perennial dormant period
-           pcom(j)%plcur(ipl)%idorm = "n"
-         end if
-
-         !! end of cool season annual dormant period
-         if (pldb(idp)%typ == "cold_annual") then
-           pcom(j)%plcur(ipl)%idorm = "n"
-           pcom(j)%plcur(ipl)%phuacc = 0.
-         end if
-
+        if (pldb(idp)%typ == "perennial") then
+          !! end of perennial dormant period
+          pcom(j)%plcur(ipl)%idorm = "n"
+          pcom(j)%plcur(ipl)%phuacc = 0.
         end if
 
-1000  format (4i6,5x,2a15,7f10.2)
+        !! end of cool season annual dormant period
+        if (pldb(idp)%typ == "cold_annual") then
+          pcom(j)%plcur(ipl)%idorm = "n"
+          pcom(j)%plcur(ipl)%phuacc = 0.
+        end if
+
+      end if
+
       return
       end subroutine pl_dormant

@@ -115,7 +115,7 @@
         sol1(isol)%microb(j)%p = sol1(isol)%microb(j)%c / 80.                   !assume 80:1 C:P ratio
 
         !initialize metabolic litter pool
-        sol1(isol)%meta(j)%m = sol(isol)%ly(j)%rsd / 1000.      !t/ha - kg/ha
+        sol1(isol)%meta(j)%m = sol1(isol)%tot(j)%m / 1000.      !t/ha - kg/ha
         sol1(isol)%meta(j)%c = .42 * sol1(isol)%meta(j)%c       !assume 42% C
         sol1(isol)%meta(j)%n = sol1(isol)%meta(j)%c / 150.      !assume 150:1 C:N ratio
         sol1(isol)%meta(j)%p = sol1(isol)%meta(j)%c / 1500.     !assume 1500:1 C:P ratio

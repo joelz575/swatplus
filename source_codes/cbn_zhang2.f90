@@ -911,7 +911,7 @@
               
               !!update other vairables used in swat
               !!==================================
-              soil(j)%ly(k)%rsd = soil1(j)%str(k)%m + soil1(j)%meta(k)%m            
+              soil1(j)%tot(k)%m = soil1(j)%str(k)%m + soil1(j)%meta(k)%m            
               soil1(j)%tot(k)%c = 100. * (soil1(j)%hs(k)%c + soil1(j)%hp(k)%c + soil1(j)%microb(k)%c) / sol_mass 
         end if  !soil temp and soil water > 0.
 

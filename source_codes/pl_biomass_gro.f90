@@ -85,7 +85,8 @@
           if (pcom(j)%plstr(ipl)%reg < 0.) pcom(j)%plstr(ipl)%reg = 0.
           if (pcom(j)%plstr(ipl)%reg > 1.) pcom(j)%plstr(ipl)%reg = 1.
 
-          pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass + bioday * pcom(j)%plstr(ipl)%reg
+          pl_mass_up%m = bioday * pcom(j)%plstr(ipl)%reg
+          pl_mass_up%c = 0.42 * bioday * pcom(j)%plstr(ipl)%reg
                                       
           !! increase in plant c
           if (bsn_cc%cswat == 2) then

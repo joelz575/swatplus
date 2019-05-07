@@ -47,8 +47,10 @@
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
+                !! re-initialize all objects
+                call re_initialize
+
                 !set parms for 1st sediment yield calibration and rerun
-                call hru_re_initialize (iihru)
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 
@@ -91,8 +93,10 @@
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
-                !set parms for 1st sediment tconc calibration and rerun
-                call hru_re_initialize (iihru)
+                !! re-initialize all objects
+                call re_initialize
+
+                !set parms for 1st sediment yield calibration and rerun
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 
@@ -125,7 +129,10 @@
               do iihru = 1, sp_ob%hru
                 !set parms for 1st slope calibration and rerun
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
-                  call hru_re_initialize (iihru)
+                  !! re-initialize all objects
+                  call re_initialize
+
+                  !set parms for 1st sediment yield calibration and rerun
                   lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
  
@@ -165,7 +172,10 @@
               do iihru = 1, sp_ob%hru
                 !set parms for 1st slope calibration and rerun
                 if (lscal(ireg)%lum(ilum)%meas%name == hru(ihru)%lum_group_c) then
-                  call hru_re_initialize (iihru)
+                  !! re-initialize all objects
+                  call re_initialize
+
+                  !set parms for 1st sediment yield calibration and rerun
                   lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 

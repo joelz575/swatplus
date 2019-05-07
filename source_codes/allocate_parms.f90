@@ -70,7 +70,6 @@
       allocate (grz_days(mhru))
 
 !!    arrays which contain data related to HRUs
-      allocate (bio_min(mhru))
       allocate (brt(mhru))
       allocate (canstor(mhru))
       allocate (cbodu(mhru))
@@ -130,7 +129,6 @@
       allocate (snotmp(mhru))
       allocate (soln_con(mhru))
       allocate (solp_con(mhru))
-      allocate (sol_cov(mhru))
 !!    Drainmod tile equations  01/2006 
 	  allocate (stmaxd(mhru))
       allocate (itill(mhru))

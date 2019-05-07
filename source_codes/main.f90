@@ -11,13 +11,11 @@
 
       implicit none
 
-      character (len=1) :: cal_hard = "n"       !! if y, perform hard calibration
-      
-      prog = " SWAT+ Apr 16 2019    MODULAR Rev 2019.59"
+      prog = " SWAT+ May 7 2019    MODULAR Rev 2019.59.1"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 59            ",/,             &
+     &          "               Revision 59.1          ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -28,6 +26,7 @@
       call proc_read
 
       call exco_db_read
+      call dr_db_read
       call hyd_connect
            
       call object_read_output
@@ -46,11 +45,11 @@
       call proc_hru
       call proc_cha
       call proc_allo
-      call proc_cal
-      call proc_open
       call proc_cond
       call hru_dtbl_actions_init
-
+      call proc_cal
+      call proc_open
+      
       ! compute unit hydrograph parameters for subdaily runoff
       if (time%step > 0) call unit_hyd
       
@@ -71,8 +70,12 @@
       end if
 
       if (cal_soft == "y") call calsoft_control
-
-      if (cal_hard == "y") call calhard_control
+      
+      if (cal_hard == "y") then
+        deallocate (cal_upd)
+        call cal_parmchg_read
+        call calhard_control
+      end if
            
       write (*,1001)
  1001 format (/," Execution successfully completed ")

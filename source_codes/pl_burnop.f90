@@ -37,11 +37,11 @@
       
       !!burn biomass and residue
       fr_burn = fire_db(iburn)%fr_burn
-      pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass * fr_burn
-      pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass * fr_burn
-      pburn = pcom(ihru)%plm(ipl)%pmass * fr_burn
+      pl_mass(j)%tot(ipl)%m = pl_mass(j)%tot(ipl)%m * fr_burn
+      pl_mass(j)%tot(ipl)%n = pl_mass(j)%tot(ipl)%n * fr_burn
+      pburn = pl_mass(j)%tot(ipl)%p * fr_burn
       soil1(j)%hp(1)%p = soil1(j)%hp(1)%p + pburn
-      pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - pburn
+      pl_mass(j)%tot(ipl)%p = pl_mass(j)%tot(ipl)%p - pburn
       rsd1(j)%tot_com%m = rsd1(j)%tot_com%m * fr_burn
       rsd1(j)%tot(1)%n = rsd1(j)%tot(1)%n * fr_burn
       soil1(jj)%hs(1)%n = soil1(jj)%hs(1)%n * fr_burn
@@ -58,7 +58,7 @@
           rsd1(j)%meta%n = rsd1(j)%meta%n * fr_burn
           rsd1(j)%lig%m = rsd1(j)%lig%m * fr_burn  
 
-          cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + pcom(j)%plm(ipl)%mass * (1. - fr_burn)
+          cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + pl_mass(j)%tot(ipl)%m * (1. - fr_burn)
           cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + rsd1(j)%tot_com%m * (1. - fr_burn)  
       end if 
       !!insert new biomss by zhang

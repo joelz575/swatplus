@@ -5,7 +5,7 @@
 
       use hru_module, only : bio_bod,biom,bz_perc,cn2,fcoli,hru,i_sep,par,percp,   &
        plqm,qstemm,rbiom,sep_tsincefail,sno_hru,                   &
-       sol_cov,sweepeff,swtrg,t_ov,tconc,trapeff,usle,usle_cfac,   &
+       sweepeff,swtrg,t_ov,tconc,trapeff,usle,usle_cfac,   &
        usle_ei,usle_eifac,wfsh
       
       implicit none
@@ -61,7 +61,6 @@
 
       sedst = 0.
       sno_hru = 0.
-      sol_cov = 0.
       sol_wp = 0.
       sweepeff = 0.
       swtrg = 0

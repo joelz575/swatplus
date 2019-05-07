@@ -350,7 +350,6 @@
       real, dimension (:), allocatable :: soln_con, solp_con
       real, dimension (:), allocatable :: filterw
       real, dimension (:), allocatable :: cn2
-      real, dimension (:), allocatable :: sol_cov
       real, dimension (:), allocatable :: smx
       real, dimension (:), allocatable :: cnday
       real, dimension (:), allocatable :: tmpav
@@ -368,7 +367,6 @@
       real, dimension (:), allocatable :: sstmaxd
 	  real, dimension (:), allocatable :: stmaxd
 !    Drainmod tile equations  08/2006
-      real, dimension (:), allocatable :: bio_min         !!kg/ha           |minimum plant biomass for grazing
       real, dimension (:), allocatable :: surqsolp
       real, dimension (:), allocatable :: cklsp
       real, dimension (:), allocatable :: trapeff
@@ -409,8 +407,6 @@
 !! subdaily erosion modeling by Jaehak Jeong
 	real, dimension(:,:), allocatable:: hhsedy
 	real, dimension(:), allocatable:: init_abstrc
-     
-      real :: harveff
 
       integer, dimension(:), allocatable :: tillage_switch
       real, dimension(:), allocatable :: tillage_depth

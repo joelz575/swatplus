@@ -92,14 +92,15 @@
       end if
 
       nplnt(j) = nplnt(j) + fixn
-      pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass + nplnt(j)
+      pl_mass(j)%tot(ipl)%n = pl_mass(j)%tot(ipl)%n + nplnt(j)
+      pl_mass_up%n = nplnt(j)
  
 !! compute nitrogen stress
 
       if (pldb(idp)%nfix_co > 1.e-6) then
         pcom(j)%plstr(ipl)%strsn = 1.
       else
-        call nuts (pcom(j)%plm(ipl)%nmass, un2(ipl), pcom(j)%plstr(ipl)%strsn)
+        call nuts (pl_mass(j)%tot(ipl)%n, un2(ipl), pcom(j)%plstr(ipl)%strsn)
         if (uno3d(ipl) > 1.e-5) then
           xx = nplnt(j) / uno3d(ipl)
         else

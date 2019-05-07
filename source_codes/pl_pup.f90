@@ -74,10 +74,11 @@
       end do
       if (pplnt(j) < 0.) pplnt(j) = 0.
 
-      pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass + pplnt(j)
+      pl_mass(j)%tot(ipl)%p = pl_mass(j)%tot(ipl)%p + pplnt(j)
+      pl_mass_up%p = pplnt(j)
 
 !! compute phosphorus stress
-      call nuts(pcom(ihru)%plm(ipl)%pmass, up2(ipl), pcom(j)%plstr(ipl)%strsp)
+      call nuts(pl_mass(j)%tot(ipl)%p, up2(ipl), pcom(j)%plstr(ipl)%strsp)
 
       return
       end subroutine pl_pup

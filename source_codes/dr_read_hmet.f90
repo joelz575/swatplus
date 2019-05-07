@@ -58,7 +58,7 @@
       end if
                   
       ! xwalk with dr file to get sequential number
-      do idr = 1, db_mx%dr_hmet
+      do idr = 1, db_mx%dr
         do idr_hmet = 1, db_mx%dr_hmet
           if (dr_db(idr)%hmet_file == dr_hmet_name(idr_hmet)) then
             dr_hmet_num(idr) = idr_hmet

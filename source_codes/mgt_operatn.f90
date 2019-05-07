@@ -35,7 +35,6 @@
       integer :: j           !none          |HRU number
       real :: aphu           !heat units    |fraction of total heat units accumulated 
       integer :: isched      !              |
-      real :: dorm_flag      !              |
 
       j = ihru
       isched = hru(j)%mgt_ops
@@ -55,7 +54,7 @@
         else
           aphu = pcom(j)%plcur(ipl)%phuacc
         end if 
-        if (dorm_flag == 1) aphu = 999.
+        !if (dorm_flag == 1) aphu = 999.
         do while (mgt%husc > 0. .and. aphu > mgt%husc)
           call mgt_sched (isched)
           ipl = Max(mgt%op2, 1)
@@ -64,7 +63,7 @@
           else
             aphu = pcom(j)%plcur(ipl)%phuacc
           end if
-          if (dorm_flag == 1) aphu = 999.
+          !if (dorm_flag == 1) aphu = 999.
           if (mgt%op == "skip") then
 	        call mgt_sched (isched)
           end if

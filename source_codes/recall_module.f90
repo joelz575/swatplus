@@ -20,7 +20,7 @@
       !! exco and dr are average annual recalls - all data in one file
       !! recall are for daily, monthly, and annual time series - each recall is individual file
       type (recall_databases), dimension(:), allocatable :: recall_db
-      type (recall_databases), dimension(:), allocatable :: exco_db
-      type (recall_databases), dimension(:), allocatable :: dr_db
+      !type (recall_databases), dimension(:), allocatable :: exco_db
+      !type (recall_databases), dimension(:), allocatable :: dr_db
       
       end module recall_module

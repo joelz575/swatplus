@@ -74,7 +74,7 @@
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
 
-      if (epmax(ipl) <= 0.01) then
+      if (epmax(ipl) <= 1.e-6) then
         pcom(j)%plstr(ipl)%strsw = 1.
       else
         !! initialize variables
@@ -114,7 +114,6 @@
             sum = epmax(ipl) * (1. - Exp(-uptake%water_dis * gx / pcom(j)%plg(ipl)%root_dep)) / uptake%water_norm
           end if
 
-          wuse = sum - sump + yy * hru(j)%hyd%epco
           wuse = sum - sump + (sump - xx) * hru(j)%hyd%epco
           sump = sum
 
@@ -154,8 +153,9 @@
 
           soil(j)%phys(k)%st = Max(1.e-6, soil(j)%phys(k)%st - wuse)
           xx = xx + wuse
-          end do
-
+          
+        end do      !! soil layer loop
+        
         !! update total soil water in profile
         soil(j)%sw = 0.
         do k = 1, soil(j)%nly

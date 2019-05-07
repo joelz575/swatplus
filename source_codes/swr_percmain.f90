@@ -106,6 +106,9 @@
         !! summary calculations
         if (j1 == soil(j)%nly) then
           sepbtm(j) = sepbtm(j) + sepday
+          if (sepday > 10.) then
+            lyrtile = 0.
+          end if
         endif
         latq(j) = latq(j) + latlyr
         qtile = qtile + lyrtile

@@ -11,7 +11,6 @@
         real ::conk = 0.         !! mm/hr          lateral saturated hydraulic conductivity for each profile layer in a give HRU. 
         real ::flat = 0.         !! mm H2O         lateral flow storage array
         real :: prk = 0.         !! mm H2O         percolation from soil layer on current day
-        real :: rsd = 0.         !! kg/ha          amount of organic matter in the soil classified as residue
         real :: volcr = 0.       !! mm             crack volume for soil layer 
         real :: tillagef = 0. 
         real :: rtfr = 0.        !! none           root fraction

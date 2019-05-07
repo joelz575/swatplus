@@ -43,9 +43,10 @@
     use climate_module
     use time_module
     use hydrograph_module
-    use hru_module, only : hru, hhsedy, hhqday, cvm_com, sol_cov, ihru
+    use hru_module, only : hru, hhsedy, hhqday, cvm_com, ihru
     use soil_module
     use plant_module
+    use organic_mineral_mass_module
       
     implicit none
       
@@ -70,6 +71,7 @@
     real :: rain_d50                 !             |
     real :: rintnsty                 !mm/hr        |rainfall intensity
     real :: ulu                      !             |
+    real :: cover                    !kg/ha         |soil cover
 
 	j = ihru
 	ulu = hru(j)%luse%urb_lu
@@ -161,8 +163,8 @@
 
 	!! Overland flow erosion 
     !! cover and management factor used in usle equation (ysed.f)
-	  c = Exp((-.2231 - cvm_com(j)) *                                      &                                     
-       	  Exp(-.00115 * sol_cov(j)) + cvm_com(j))
+      cover = pl_mass(j)%ab_gr_com%m + rsd1(j)%tot_com%m
+	  c = Exp((-.2231 - cvm_com(j)) * Exp(-.00115 * cover) + cvm_com(j))
 	!! specific weight of water at 5 centigrate =9807N/m3
 	  bed_shear = 9807 * (hhqday(j,k) / 1000.) * hru(j)%topo%slope ! N/m2
 	  sedov = 11.02 * bsn_prm%rill_mult * soil(j)%ly(1)%usle_k *           & 

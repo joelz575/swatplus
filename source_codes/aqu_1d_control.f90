@@ -108,6 +108,7 @@
         contrib_len = aq_ch(iaq)%len_tot * aqu_d(iaq)%flo / aqudb(iaqdb)%bf_max
       
         !! find the first channel contributing
+        icontrib = 0
         do icha = 1, aq_ch(iaq)%num_tot
           if (contrib_len >= aq_ch(iaq)%ch(icha)%len_left) then
             icontrib = icha

@@ -136,17 +136,22 @@
                 allocate (obcs(i)%hcsout_m(nout))
                 allocate (obcs(i)%hcsout_y(nout))
                 allocate (obcs(i)%hcsout_a(nout))
-                do iout = 1, nout
-                  if (npests > 0) then 
-                    allocate (obcs(i)%hcsout_m(iout)%pest(npests))
-                    allocate (obcs(i)%hcsout_y(iout)%pest(npests))
-                    allocate (obcs(i)%hcsout_a(iout)%pest(npests))
-                  end if
-                  if (npaths > 0) then 
-                    allocate (obcs(i)%hcsout_m(iout)%path(npaths))
-                    allocate (obcs(i)%hcsout_y(iout)%path(npaths))
-                    allocate (obcs(i)%hcsout_a(iout)%path(npaths))
-                  end if
+                
+                if (cs_db%num_tot > 0) then
+                  npests = cs_db%num_pests
+                  do iout = 1, nout
+                    if (npests > 0) then 
+                      allocate (obcs(i)%hcsout_m(iout)%pest(npests))
+                      allocate (obcs(i)%hcsout_y(iout)%pest(npests))
+                      allocate (obcs(i)%hcsout_a(iout)%pest(npests))
+                    end if
+                    npaths = cs_db%num_paths
+                    if (npaths > 0) then 
+                      allocate (obcs(i)%hcsout_m(iout)%path(npaths))
+                      allocate (obcs(i)%hcsout_y(iout)%path(npaths))
+                      allocate (obcs(i)%hcsout_a(iout)%path(npaths))
+                    end if
+                    
                   if (nmetals > 0) then 
                     allocate (obcs(i)%hcsout_m(iout)%hmet(nmetals))
                     allocate (obcs(i)%hcsout_y(iout)%hmet(nmetals))
@@ -158,6 +163,7 @@
                     allocate (obcs(i)%hcsout_a(iout)%salt(nsalts))
                   end if
                 end do
+                end if
 
                 backspace (107)
                 read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,    &

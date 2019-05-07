@@ -53,13 +53,13 @@
 	  ! distribute excess STE to upper soil layers 
 	  do while (qlyr > 0 .and. ii > 1)
 		 ! distribute STE to soil layers above biozone layer
-		 if (soil(j)%phys(ii)%st > soil(j)%phys(ii)%ul) then
+        if (soil(j)%phys(ii)%st > soil(j)%phys(ii)%ul) then
 	      qlyr = soil(j)%phys(ii)%st - soil(j)%phys(ii)%ul 	! excess water moving to upper layer
 	      soil(j)%phys(ii)%st = soil(j)%phys(ii)%ul  ! layer saturated
 	      soil(j)%phys(ii-1)%st = soil(j)%phys(ii-1)%st + qlyr ! add excess water to upper layer
-	   else 
+	    else 
 	      qlyr = 0.
-	   endif
+	    endif
 	  
 	    ! Add surface ponding to the 10mm top layer when the top soil layer is saturated
 		 !  and surface ponding occurs.

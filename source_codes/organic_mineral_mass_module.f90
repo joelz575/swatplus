@@ -43,9 +43,9 @@
         type (mineral_nitrogen), dimension(:), allocatable :: mn    !       |mineral n pool dimensioned by layer
         type (mineral_phosphorus), dimension(:), allocatable :: mp  !       |mineral p humus pool dimensioned by layer
         type (organic_mass), dimension(:), allocatable :: tot       !       |total organic pool dimensioned by layer
-        type (organic_mass), dimension(:), allocatable :: hs        !       |slow humus (nbs added)
-        type (organic_mass), dimension(:), allocatable :: hp        !       |passive humus (nbs added)
-        type (organic_mass), dimension(:), allocatable :: microb    !       |microbial biomass (nbs added)
+        type (organic_mass), dimension(:), allocatable :: hs        !       |slow humus
+        type (organic_mass), dimension(:), allocatable :: hp        !       |passive humus
+        type (organic_mass), dimension(:), allocatable :: microb    !       |microbial biomass
         type (organic_mass), dimension(:), allocatable :: str       !       |structural litter pool dimensioned by layer
         type (organic_mass), dimension(:), allocatable :: lig       !       |lignin pool dimensioned by layer
         type (organic_mass), dimension(:), allocatable :: meta      !       |metabolic litter pool dimensioned by layer
@@ -110,6 +110,32 @@
       !plant community object - dimensioned to number of hrus, using the hru pointer
       type (plant_community_mass1), dimension(:), allocatable :: plnt1
             
+      type plant_community_mass
+       character(len=4) :: name
+       type (organic_mass), dimension(:), allocatable :: tot        !kg/ha      |total biomass for individual plant in community
+       type (organic_mass), dimension(:), allocatable :: ab_gr      !kg/ha      |above ground biomass for individual plant in community
+       type (organic_mass), dimension(:), allocatable :: leaf       !kg/ha      |leaf mass for individual plant in community
+       type (organic_mass), dimension(:), allocatable :: stem       !kg/ha      |wood/stalk mass for individual plant in community
+       type (organic_mass), dimension(:), allocatable :: root       !kg/ha      |root mass for individual plant in community (by soil layer)
+       type (organic_mass), dimension(:), allocatable :: seed       !kg/ha      |seed (grain) mass for individual plant in community
+       type (organic_mass), dimension(:), allocatable :: yield_tot  !kg/ha      |running sum of yield at harvest
+       type (organic_mass) :: tot_com                               !kg/ha      |total biomass for entire community
+       type (organic_mass) :: ab_gr_com                             !kg/ha      |above ground mass for entire community
+       type (organic_mass) :: leaf_com                              !kg/ha      |leaf mass for entire community
+       type (organic_mass) :: stem_com                              !kg/ha      |wood/stalk mass for entire community
+       type (organic_mass) :: root_com                              !kg/ha      |root mass for entire community
+       type (organic_mass) :: seed_com                              !kg/ha      |seed (grain) mass for entire community
+      end type plant_community_mass
+      type (plant_community_mass), dimension (:), allocatable :: pl_mass
+      type (plant_community_mass), dimension (:), allocatable :: pl_mass_init
+      type (organic_mass) :: pl_yield                               !kg/ha      |crop yield
+      type (organic_mass) :: pl_mass_up                             !kg/ha      |daily biomass and c increase; n and p uptake
+      type (organic_mass) :: pl_residue
+      type (organic_mass) :: harv_seed, harv_leaf, harv_stem, harv_left
+      type (organic_mass) :: graz_plant, graz_seed, graz_leaf, graz_stem
+      type (organic_mass) :: leaf_drop
+      type (organic_mass) :: plt_mass_z
+
       type organic_mineral_hydrograph1
         real :: vol = 0.                    ! m^3           |volume of water
         type (sediment) :: sed              !               |sediment
@@ -147,24 +173,24 @@
       !soil profile object - dimensioned to number of hrus, using the hru pointer
       !type (soil_profile_mass), dimension(:), allocatable :: soil
       
-      type plant_community_mass
-        character (len=4) :: name                                !                 |same as plant_community object
-        !live biomass
-        type (organic_mass), dimension(:), allocatable :: tot    !kg/ha            |total biomass for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: veg    !kg/ha            |vegetative mass for individual plant in community
-        type (organic_mass), dimension(:,:), allocatable :: root !kg/ha            |root mass for individual plant in community (by soil layer)
-        type (organic_mass), dimension(:), allocatable :: grain  !kg/ha            |grain mass for individual plant in community
-        type (organic_mass) :: tot_com                           !kg/ha            |total biomass for entire community
-        type (organic_mass) :: veg_com                           !kg/ha            |vegetative mass for entire community
-        type (organic_mass) :: root_com                          !kg/ha            |root mass for entire community
-        type (organic_mass) :: grain_com                         !kg/ha            |grain mass for entire community
-        !dead biomass - residue
-        type (organic_mass), dimension(:,:), allocatable :: rsd  !kg/ha            |flat residue for individual plant in community (by soil layer)
-        type (organic_mass), dimension(:), allocatable :: rsd_st !kg/ha            |standing residue for individual plant in community
-      end type plant_community_mass
+      !type plant_community_mass
+      !  character (len=4) :: name                                !                 |same as plant_community object
+      !  !live biomass
+      !  type (organic_mass), dimension(:), allocatable :: tot    !kg/ha            |total biomass for individual plant in community
+      !  type (organic_mass), dimension(:), allocatable :: veg    !kg/ha            |vegetative mass for individual plant in community
+      !  type (organic_mass), dimension(:,:), allocatable :: root !kg/ha            |root mass for individual plant in community (by soil layer)
+      !  type (organic_mass), dimension(:), allocatable :: grain  !kg/ha            |grain mass for individual plant in community
+      !  type (organic_mass) :: tot_com                           !kg/ha            |total biomass for entire community
+      !  type (organic_mass) :: veg_com                           !kg/ha            |vegetative mass for entire community
+      !  type (organic_mass) :: root_com                          !kg/ha            |root mass for entire community
+      !  type (organic_mass) :: grain_com                         !kg/ha            |grain mass for entire community
+      !  !dead biomass - residue
+      !  type (organic_mass), dimension(:,:), allocatable :: rsd  !kg/ha            |flat residue for individual plant in community (by soil layer)
+      !  type (organic_mass), dimension(:), allocatable :: rsd_st !kg/ha            |standing residue for individual plant in community
+      !end type plant_community_mass
       !plant community object - dimensioned to number of hrus, using the hru pointer
-      type (plant_community_mass), dimension(:), allocatable :: plnt
-      
+      !type (plant_community_mass), dimension(:), allocatable :: plnt
+
       !hru will point diretly to herds - managed in schedule_ops and ultimately can be managed in conditional subroutine
       !herds are different from soil and plant in that they can move from hru to hru
       type animal_herds
@@ -281,7 +307,19 @@
       interface operator (+)
         module procedure om_add1
       end interface
+      
+      interface operator (-)
+        module procedure om_subtract
+      end interface
             
+      interface operator (*)
+        module procedure om_mult_const
+      end interface 
+                         
+      interface operator (/)
+        module procedure om_divide
+      end interface 
+                   
       interface operator (+)
         module procedure pmin_add
         end interface 
@@ -289,23 +327,7 @@
       interface operator (+)
         module procedure nmin_add
         end interface 
-      
-      interface operator (.add.)
-        module procedure om_add_const
-      end interface 
 
-      interface operator (*)
-        module procedure om_mult_const1
-      end interface 
-
-      interface operator (/)
-        module procedure om_div_const
-      end interface   
-             
-      interface operator (//)
-        module procedure om_div_conv
-      end interface   
-             
     contains
 
       
@@ -327,7 +349,7 @@
         pmin_m3%sta = pmin_m1%sta + pmin_m2%sta
       end function pmin_add
 
-      !! routines for hydrograph module
+      !! add organic mass
       function om_add1 (o_m1, o_m2) result (o_m3)
         type (organic_mass), intent (in) :: o_m1
         type (organic_mass), intent (in) :: o_m2
@@ -338,149 +360,39 @@
         o_m3%p = o_m1%p + o_m2%p
       end function om_add1
             
-      !!start old stuff
-      !! function to convert concentration to mass
-      subroutine om_convert (o_m1)
-        type (organic_mineral_mass), intent (inout) :: o_m1
-        ! m3/s to m3
-        o_m1%vol = o_m1%vol * 86400.
-        ! kg = ppm * m3 / 1000.
-        o_m1%hum%m = o_m1%hum%m * o_m1%vol / 1000.
-        o_m1%hum%c = o_m1%hum%c * o_m1%vol / 1000.
-        o_m1%hum%n = o_m1%hum%n * o_m1%vol / 1000.
-        o_m1%hum%p = o_m1%hum%p * o_m1%vol / 1000.
-        o_m1%hum_act%m = o_m1%hum_act%m * o_m1%vol / 1000.
-        o_m1%hum_act%c = o_m1%hum_act%c * o_m1%vol / 1000.
-        o_m1%hum_act%n = o_m1%hum_act%n * o_m1%vol / 1000.
-        o_m1%hum_act%p = o_m1%hum_act%p * o_m1%vol / 1000.
-        o_m1%min%m = o_m1%min%m * o_m1%vol / 1000.
-        o_m1%min%no3 = o_m1%min%no3 * o_m1%vol / 1000.
-        o_m1%min%no2 = o_m1%min%no2 * o_m1%vol / 1000.
-        o_m1%min%nh4 = o_m1%min%nh4 * o_m1%vol / 1000.
-        o_m1%min%po4 = o_m1%min%po4 * o_m1%vol / 1000.
-      end subroutine om_convert
-            
-      !! routines for hydrograph module
-      function om_mult (o_m1, o_m2) result (o_m3)
-        type (organic_mineral_mass), intent (in) :: o_m1
-        type (organic_mineral_mass), intent (in) :: o_m2
-        type (organic_mineral_mass) :: o_m3
-        o_m3%vol = o_m1%vol * o_m2%vol
-        o_m3%hum%m = o_m1%hum%m * o_m2%hum%m
-        o_m3%hum%c = o_m1%hum%c * o_m2%hum%c
-        o_m3%hum%n = o_m1%hum%n * o_m2%hum%n
-        o_m3%hum%p = o_m1%hum%p * o_m2%hum%p
-        o_m3%hum_act%m = o_m1%hum_act%m * o_m2%hum_act%m
-        o_m3%hum_act%c = o_m1%hum_act%c * o_m2%hum_act%c
-        o_m3%hum_act%n = o_m1%hum_act%n * o_m2%hum_act%n
-        o_m3%hum_act%p = o_m1%hum_act%p * o_m2%hum_act%p
-        o_m3%min%m = o_m1%min%m * o_m2%min%m
-        o_m3%min%no3 = o_m1%min%no3 * o_m2%min%no3
-        o_m3%min%no2 = o_m1%min%no2 * o_m2%min%no2
-        o_m3%min%nh4 = o_m1%min%nh4 * o_m2%min%nh4
-        o_m3%min%po4 = o_m1%min%po4 * o_m2%min%po4
-      end function om_mult
-            
-      !! routines for hydrograph module
-      function om_add_const (const, o_m1) result (o_m2)
+      !! subtract organic mass
+      function om_subtract (o_m1, o_m2) result (o_m3)
+        type (organic_mass), intent (in) :: o_m1
+        type (organic_mass), intent (in) :: o_m2
+        type (organic_mass) :: o_m3
+        o_m3%m = o_m1%m - o_m2%m
+        o_m3%c = o_m1%c - o_m2%c
+        o_m3%n = o_m1%n - o_m2%n
+        o_m3%p = o_m1%p - o_m2%p
+      end function om_subtract
+                           
+      !! multiply organic mass by a constant
+      function om_mult_const (const, o_m1) result (o_m2)
         real, intent (in) :: const
-        type (organic_mineral_mass), intent (in) :: o_m1
-        type (organic_mineral_mass) :: o_m2
-        o_m2%vol = const + o_m1%vol
-        o_m2%hum%m = const + o_m1%hum%m
-        o_m2%hum%c = const + o_m1%hum%c
-        o_m2%hum%n = const + o_m1%hum%n
-        o_m2%hum%p = const + o_m1%hum%p
-        o_m2%hum_act%m = const + o_m1%hum_act%m
-        o_m2%hum_act%c = const + o_m1%hum_act%c
-        o_m2%hum_act%n = const + o_m1%hum_act%n
-        o_m2%hum_act%p = const + o_m1%hum_act%p
-        o_m2%min%m = const + o_m1%min%m
-        o_m2%min%no3 = const + o_m1%min%no3
-        o_m2%min%no2 = const + o_m1%min%no2
-        o_m2%min%nh4 = const + o_m1%min%nh4
-        o_m2%min%po4 = const + o_m1%min%po4
-      end function om_add_const
+        type (organic_mass), intent (in) :: o_m1
+        type (organic_mass) :: o_m2
+        o_m2%m = const * o_m1%m
+        o_m2%c = const * o_m1%c
+        o_m2%n = const * o_m1%n
+        o_m2%p = const * o_m1%p
+      end function om_mult_const
+                          
+      !! divide organic mass by a constant
+      function om_divide (o_m1, const) result (o_m2)
+        type (organic_mass), intent (in) :: o_m1
+        real, intent (in) :: const 
+        type (organic_mass) :: o_m2
+        o_m2%m = o_m1%m / const
+        o_m2%c = o_m1%c / const
+        o_m2%n = o_m1%n / const
+        o_m2%p = o_m1%p / const
+      end function om_divide
       
-      function om_mult_const1 (const, o_m1) result (o_m2)
-        type (organic_mineral_mass), intent (in) :: o_m1
-        real, intent (in) :: const
-        type (organic_mineral_mass) :: o_m2
-        o_m2%vol = const * o_m1%vol
-        o_m2%hum%m = const * o_m1%hum%m
-        o_m2%hum%c = const * o_m1%hum%c
-        o_m2%hum%n = const * o_m1%hum%n
-        o_m2%hum%p = const * o_m1%hum%p
-        o_m2%hum_act%m = const * o_m1%hum_act%m
-        o_m2%hum_act%c = const * o_m1%hum_act%c
-        o_m2%hum_act%n = const * o_m1%hum_act%n
-        o_m2%hum_act%p = const * o_m1%hum_act%p
-        o_m2%min%m = const * o_m1%min%m
-        o_m2%min%no3 = const * o_m1%min%no3
-        o_m2%min%no2 = const * o_m1%min%no2
-        o_m2%min%nh4 = const * o_m1%min%nh4
-        o_m2%min%po4 = const * o_m1%min%po4
-      end function om_mult_const1
-      
-      function om_div_const (o_m1,const) result (o_m2)
-        type (organic_mineral_mass), intent (in) :: o_m1
-        real, intent (in) :: const
-        type (organic_mineral_mass) :: o_m2
-        o_m2%vol = o_m1%vol / const
-        o_m2%hum%m = o_m1%hum%m / const
-        o_m2%hum%c = o_m1%hum%c / const
-        o_m2%hum%n = o_m1%hum%n / const
-        o_m2%hum%p = o_m1%hum%p / const
-        o_m2%hum_act%m = o_m1%hum_act%m / const
-        o_m2%hum_act%c = o_m1%hum_act%c / const
-        o_m2%hum_act%n = o_m1%hum_act%n / const
-        o_m2%hum_act%p = o_m1%hum_act%p / const
-        o_m2%min%m = o_m1%min%m / const
-        o_m2%min%no3 = o_m1%min%no3 / const
-        o_m2%min%no2 = o_m1%min%no2 / const
-        o_m2%min%nh4 = o_m1%min%nh4 / const
-        o_m2%min%po4 = o_m1%min%po4 / const
-      end function om_div_const
-            
-      !function to convert m^3-> mm and kg(or t)->kg(or t)/ha
-      function om_div_conv (o_m1,const) result (o_m2)
-        type (organic_mineral_mass), intent (in) :: o_m1
-        real, intent (in) :: const  !ha
-        type (organic_mineral_mass) :: o_m2
-        o_m2%vol = o_m1%vol / (10. * const)
-        o_m2%hum%m = o_m1%hum%m / const
-        o_m2%hum%c = o_m1%hum%c / const
-        o_m2%hum%n = o_m1%hum%n / const
-        o_m2%hum%p = o_m1%hum%p / const
-        o_m2%hum_act%m = o_m1%hum_act%m / const
-        o_m2%hum_act%c = o_m1%hum_act%c / const
-        o_m2%hum_act%n = o_m1%hum_act%n / const
-        o_m2%hum_act%p = o_m1%hum_act%p / const
-        o_m2%min%m = o_m1%min%m / const
-        o_m2%min%no3 = o_m1%min%no3 / const
-        o_m2%min%no2 = o_m1%min%no2 / const
-        o_m2%min%nh4 = o_m1%min%nh4 / const
-        o_m2%min%po4 = o_m1%min%po4 / const
-      end function om_div_conv
-      
-      !function to set dr to a constant
- !     function om_constant (o_m1, const)
- !       type (organic_mineral_mass) :: o_m1
- !       real, intent (in) :: const
- !       o_m1%vol = const
- !       o_m1%hum%m = const
- !       o_m1%hum%c = const
- !       o_m1%hum%n = const
- !       o_m1%hum%p = const
- !       o_m1%hum_act%m = const
- !       o_m1%hum_act%c = const
- !       o_m1%hum_act%n = const
- !       o_m1%hum_act%p = const
- !       o_m1%min%m = const
- !       o_m1%min%no3 = const
- !       o_m1%min%no2 = const
- !       o_m1%min%nh4 = const
- !       o_m1%min%po4 = const
- !     end function om_constant
+
       
       end module organic_mineral_mass_module 

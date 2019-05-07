@@ -208,8 +208,7 @@
          hlt(i)%phu = .9 * phutot
          hlt(i)%phu = Max(500., hlt(i)%phu)
          
-         if (pldb(iplt)%typ == "warm_annual_legume" .or. pldb(iplt)%typ == "cold_annual_legume" .or.   &
-             pldb(iplt)%typ == "warm_annual" .or. pldb(iplt)%typ == "cold_annual") then
+         if (pldb(iplt)%typ == "warm_annual" .or. pldb(iplt)%typ == "cold_annual") then
            hlt(i)%phu = Min(2000., hlt(i)%phu)
          end if
 

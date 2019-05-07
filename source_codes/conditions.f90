@@ -15,6 +15,7 @@
       use hydrograph_module
       use output_landscape_module
       use aquifer_module
+      use organic_mineral_mass_module
 
       implicit none
 
@@ -200,6 +201,7 @@
           ob_num = d_tbl%cond(ic)%ob_num
           if (ob_num == 0) ob_num = ob_cur
           
+          targ_val = 0.
           select case (d_tbl%cond(ic)%lim_var)
           case ("wp")   !wilting point
             targ_val = 0.
@@ -367,12 +369,12 @@
         case ("biomass")
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "<") then
-              if (pcom(ob_num)%ab_gr_com%mass > d_tbl%cond(ic)%lim_const) then
+              if (pl_mass(ob_num)%ab_gr_com%m > d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if
             if (d_tbl%alt(ic,ialt) == ">") then
-              if (pcom(ob_num)%ab_gr_com%mass < d_tbl%cond(ic)%lim_const) then
+              if (pl_mass(ob_num)%ab_gr_com%m < d_tbl%cond(ic)%lim_const) then
                 d_tbl%act_hit(ialt) = "n"
               end if
             end if

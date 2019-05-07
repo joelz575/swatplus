@@ -12,17 +12,16 @@
       
       integer :: j              !none               |HRU number
       integer :: idp            !                   |
-      real :: rto               !none               |ratio of current years of growth:years to maturity of perennial
       real :: biomxyr
                
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
       
       !keep biomass below maximum - excess to residue (need to include c, n and p adjustments)
-      biomxyr = rto * pldb(idp)%bmx_peren * 1000.  !t/ha -> kg/ha
-      if (biomxyr > 1.e-6 .and. pcom(j)%plm(ipl)%mass > biomxyr) then
-        rsd1(j)%tot(ipl)%m = pcom(j)%plm(ipl)%mass - biomxyr
-        pcom(j)%plm(ipl)%mass = biomxyr
+      biomxyr = pldb(idp)%bmx_peren * 1000.  !t/ha -> kg/ha
+      if (biomxyr > 1.e-6 .and. pl_mass(j)%tot(ipl)%m > biomxyr) then
+        rsd1(j)%tot(ipl)%m = pl_mass(j)%tot(ipl)%m - biomxyr
+        pl_mass(j)%tot(ipl)%m = biomxyr
       end if
 
       return

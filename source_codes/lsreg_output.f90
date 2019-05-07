@@ -9,6 +9,7 @@
       use hru_module, only : hru, ihru, ipl
       use plant_module
       use output_landscape_module
+      use organic_mineral_mass_module
       
       implicit none
       
@@ -328,14 +329,11 @@
            do ipl = 1, pcom(j)%npl
              idp = pcom(j)%plcur(ipl)%idplt
              if (pcom(j)%plcur(ipl)%harv_num > 0) then 
-               pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield /           &
-                                         pcom(j)%plcur(ipl)%harv_num
+               pl_mass(j)%yield_tot(ipl) = pl_mass(j)%yield_tot(ipl) / float(pcom(j)%plcur(ipl)%harv_num)
              endif
-            write (4428,103) time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm,   &
-                                                 pcom(j)%plcur(ipl)%yield
+            write (4428,103) time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm, pcom(j)%plcur(ipl)
             if (pco%csvout == "y") then
-              write (4429,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm,   &
-                                                 pcom(j)%plcur(ipl)%yield 
+              write (4429,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm, pcom(j)%plcur(ipl)
             end if
            end do
          end if

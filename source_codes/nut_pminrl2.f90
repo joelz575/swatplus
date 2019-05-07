@@ -20,13 +20,10 @@
       integer :: j                      !none          |HRU number
       integer :: l                      !none          |counter 
       real :: rto                       !              |
-      real :: rmn1                      !kg P/ha       |amount of phosphorus moving from the solution
-                                        !              |mineral to the active mineral pool in the
-                                        !              |soil layer
-      real :: rmp1                      !kg P/ha       |
+      real :: rmp1                      !kg P/ha       |amount of phosphorus moving from the solution
+                                        !              |mineral to the active mineral pool in the soil layer
       real :: roc                       !kg P/ha       |amount of phosphorus moving from the active
-                                        !              |mineral to the stable mineral pool in the 
-                                        !              |soil layer
+                                        !              |mineral to the stable mineral pool in the soil layer
       real :: wetness                   !              |
       real :: base                      !              |
       real :: vara                      !		       |Intermediate Variable
@@ -86,11 +83,11 @@
 
 	   !! Calculate P balance
 		rto = bsn_prm%psp / (1.-bsn_prm%psp)
-		rmn1 = soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto !! P imbalance
+		rmp1 = soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto !! P imbalance
 
 	  !! Move P between the soluble and active pools based on Vadas et al., 2006
-		if (rmn1 >= 0.) then !! Net movement from soluble to active	
-		  rmn1 = Max(rmn1, (-1 * soil1(j)%mp(l)%lab))
+		if (rmp1 >= 0.) then !! Net movement from soluble to active	
+		  rmp1 = Max(rmp1, (-1 * soil1(j)%mp(l)%lab))
 		!! Calculate Dynamic Coefficant		
           vara = 0.918 * (exp(-4.603 * bsn_prm%psp))          
 		  varb = (-0.238 * ALOG(vara)) - 1.126
@@ -102,20 +99,20 @@
 		  !! limit rate coeff from 0.05 to .5 helps on day 1 when a_days is zero
 		  if (arate > 0.5) arate  = 0.5
 		  if (arate < 0.1) arate  = 0.1
-		  rmn1 = (arate) * rmn1		
+		  rmp1 = (arate) * rmp1		
 	    soil(j)%ly(l)%a_days = soil(j)%ly(l)%a_days  + 1 !! add a day to the imbalance counter
 	    soil(j)%ly(l)%b_days = 0
           End if
 
-		if (rmn1 < 0.) then !! Net movement from Active to Soluble 		
-		  rmn1 = Min(rmn1, soil1(j)%mp(l)%act)	
+		if (rmp1 < 0.) then !! Net movement from Active to Soluble 		
+		  rmp1 = Min(rmp1, soil1(j)%mp(l)%act)	
 		  !! Calculate Dynamic Coefficant
 		  base = (-1.08 * bsn_prm%psp) + 0.79
 		  varc = base * (exp (-0.29))
 	       !! limit varc from 0.1 to 1
 		  if (varc > 1.0) varc  = 1.0
 		  if (varc < 0.1) varc  = 0.1
-          rmn1 = rmn1 * varc
+          rmp1 = rmp1 * varc
 		  soil(j)%ly(l)%a_days = 0
 		  soil(j)%ly(l)%b_days = soil(j)%ly(l)%b_days  + 1 !! add a day to the imbalance counter
         End if
@@ -138,8 +135,7 @@
 		 if (soil(j)%ly(l)%ssp_store > 0.) then
 		    ssp = (ssp + soil(j)%ly(l)%ssp_store * 99.)/100.
 		 end if
-		  	
-	   roc = 0.
+
          roc = ssp * (soil1(j)%mp(l)%act + soil1(j)%mp(l)%act * rto) 
 		 roc = roc - soil1(j)%mp(l)%sta
 		 roc = as_p_coeff * roc 
@@ -150,7 +146,7 @@
          wetness = (soil(j)%phys(l)%st/soil(j)%phys(l)%fc) !! range from 0-1 1 = field cap
 		 if (wetness >1.)  wetness = 1.
 		 if (wetness <0.25)  wetness = 0.25 
-		 rmn1 = rmn1 * wetness
+		 rmp1 = rmp1 * wetness
 		 roc  = roc  * wetness
 	  
 !! If total P is greater than 10,000 mg/kg do not allow transformations at all
@@ -158,14 +154,14 @@
 	      !! Allow P Transformations
 		  soil1(j)%mp(l)%sta = soil1(j)%mp(l)%sta + roc
 		  if (soil1(j)%mp(l)%sta < 0.) soil1(j)%mp(l)%sta = 0.
-		  soil1(j)%mp(l)%act = soil1(j)%mp(l)%act - roc + rmn1
+		  soil1(j)%mp(l)%act = soil1(j)%mp(l)%act - roc + rmp1
 		  if (soil1(j)%mp(l)%act < 0.) soil1(j)%mp(l)%act = 0.
-		  soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - rmn1
+		  soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - rmp1
 		  if (soil1(j)%mp(l)%lab < 0.) soil1(j)%mp(l)%lab = 0.
 	   end if
 
 !! Add water soluble P pool assume 1:5 ratio based on sharpley 2005 et al
-	soil(j)%ly(l)%watp = soil1(j)%mp(l)%lab / 5
+	soil(j)%ly(l)%watp = soil1(j)%mp(l)%lab / 5.
     
     hnb_d(j)%lab_min_p = hnb_d(j)%lab_min_p + rmp1
     hnb_d(j)%act_sta_p = hnb_d(j)%act_sta_p + roc

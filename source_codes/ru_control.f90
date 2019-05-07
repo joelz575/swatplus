@@ -26,7 +26,6 @@
       integer :: ielem                   !none        |counter
       integer :: ise                     !none        |counter
       integer :: iob                     !            |
-      integer :: idr                     !none        |points to dr"s in delratio.dat 
       integer :: isd
       integer :: ihtypno                 !            |
       real :: ef                         !            | 
@@ -77,31 +76,30 @@
         sumarea = sumarea + ob(iob)%area_ha
         
         !define delivery ratio - all variables are hyd_output type
-        idr = ru_elem(ise)%idr
-        if (idr > 0) then
-          !input dr from sub_dr.dat
-          delrto = ru_dr(idr)
-        else
-          !calculated dr = f(tconc element/ tconc sub)
-          delrto = ru_elem(ise)%dr(0)
-        end if
+
+        !calculated dr = f(tconc element/ tconc sub)
+        delrto = ru_elem(ise)%dr
 
         if (ru_elem(ielem)%obtyp == "exc") then
-        !! compute hyds for export coefficients-ht1==surface,ht2==groundwater
-          ht1 = exco(ob(iob)%props) ** ru_dr(ru_elem(ise)%idr)
+          !! compute hyds for export coefficients-ht1==surface,ht2==groundwater
+          ht1 = exco(ob(iob)%props) ** delrto
           ht2 = hz
           if (ob(iob)%area_ha > .01) then
             !per area units - mm, t/ha, kg/ha (ie hru, apex)
-            ef = ru_elem(ise)%frac * ru(iru)%da_km2 /                   &
-                                                     (ob(iob)%area_ha / 100.)
+            ef = ru_elem(ise)%frac * ru(iru)%da_km2 / (ob(iob)%area_ha / 100.)
             ht1 = ef * ht1
-            !ht2 = exco(ob(iob)%props2) ** dr(ru_elem(ise)%idr)
           end if
           
         else
-
-          !define expansion factor to surface/soil and recharge
-          ef = ru_elem(ise)%frac * ru(iru)%da_km2 / (ob(iob)%area_ha / 100.)
+          !! for routing units, channels, reservoir, and recall objects use fraction
+          ef = ru_elem(ise)%frac
+          !! for hru's use define expansion factor to surface/soil and recharge
+          if (ob(iob)%typ == "hru" .or. ob(iob)%typ == "hru_lte") then
+            !! if frac is 1.0, then the hru is not part of ru and use entire hru output
+            if (ef < .99999) then
+              ef = ef * ru(iru)%da_km2 / (ob(iob)%area_ha / 100.)
+            end if
+          end if
           
           !compute all hyd"s needed for routing
           do ihtypno = 1, ob(iob)%nhyds

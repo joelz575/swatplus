@@ -3,7 +3,7 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine zeros all array values
 
-      use hru_module, only : clayld,harveff,   &
+      use hru_module, only : clayld,   &
        hru,lagyld,ndeat,ovrlnd,par,sagyld,sanyld,  &
        sedyld,silyld,smx,snotmp,surf_bs,twash,wrt
 
@@ -14,8 +14,6 @@
       real :: zdb                   !mm               |division term from net pesticide equation
 
       cklsp = 0.
-
-      harveff = 0.
 
       ovrlnd = 0.
 

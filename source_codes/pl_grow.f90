@@ -17,8 +17,13 @@
       real :: resnew            !                   |  
 
       j = ihru
+        
+      call pl_nut_demand
 
       do ipl = 1, pcom(j)%npl
+        !! zero biomass increase and nutrient uptake
+        pl_mass_up = plt_mass_z
+        
         !! check for start and end of dormancy of temp-based growth plant
         idp = pcom(j)%plcur(ipl)%idplt
         if (pldb(idp)%trig == "temp_gro") then
@@ -29,20 +34,13 @@
         if (pcom(j)%plcur(ipl)%idorm == "n" .and. pcom(j)%plcur(ipl)%gro == "y") then
 
           call pl_biomass_gro
-        
+
           call pl_root_gro
 
           call pl_leaf_gro
+          
           call pl_leaf_senes         
-             
-          !! leaf drop for moisture based growth plants - any time of year
-          if (pldb(idp)%trig == "moisture_gro") then
-            !! assume 
-            resnew = (pcom(j)%plcur(ipl)%leaf_tov / pldb(idp)%blai) * pcom(j)%leaf(ipl)%mass
-            resnew_n = pcom(j)%plcur(ipl)%leaf_tov * pcom(j)%leaf(ipl)%nmass
-            call pl_leaf_drop (resnew, resnew_n)
-          end if
-   
+
           call pl_seed_gro
           
           if (time%end_yr == 1) call pl_mortality

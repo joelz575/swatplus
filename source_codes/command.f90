@@ -151,7 +151,7 @@
               !object is in a subbasin
               ielem = ob(icmd)%elem
               iru = ob(icmd)%ru(1)  !can only be in one subbasin if routing over
-              conv = 100. * ru(iru)%da_km2 * ru_elem(ielem)%frac
+              conv = 100. * ru(iru)%da_km2  !* ru_elem(ielem)%frac
             else
               conv = ob(icmd)%area_ha
             end if

@@ -16,7 +16,6 @@
 !!    esco(:)      |none          |soil evaporation compensation factor
 !!    ihru         |none          |HRU number
 !!    sno_hru(:)   |mm H2O        |amount of water in snow in HRU on current day
-!!    sol_cov(:)   |kg/ha         |amount of residue on soil surface
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -40,7 +39,7 @@
  
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, tmpav, canstor, sno_hru, sol_cov, ihru, canev, ep_max,  &
+      use hru_module, only : hru, tmpav, canstor, sno_hru, ihru, canev, ep_max,  &
          es_day, pet_day, snoev
       use soil_module
       use plant_module
@@ -78,6 +77,7 @@
       real :: evz                !              | 
       real :: sev                !mm H2O        |amount of evaporation from soil layer
       real :: expo               !              |
+      real :: cover              !kg/ha         |soil cover
       integer :: ly              !none          |counter                               
 
       j = ihru
@@ -121,10 +121,11 @@
         eaj = 0.
         es_max = 0.
         eos1 = 0.
+        cover = pl_mass(j)%ab_gr_com%m + rsd1(j)%tot_com%m
         if (sno_hru(j) >= 0.5) then
           eaj = 0.5
         else
-          eaj = Exp(cej * (sol_cov(j)+ 0.1))
+          eaj = Exp(cej * (cover + 0.1))
         end if
         es_max = pet * eaj * (1.-hru(j)%water_fr)
         eos1 = pet / (es_max + ep_max + 1.e-10)

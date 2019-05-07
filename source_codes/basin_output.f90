@@ -18,7 +18,7 @@
         do ihru = 1, sp_ob%hru
           iihru = lsu_elem(ihru)%obtypno
           if (lsu_elem(iihru)%bsn_frac > 1.e-12) then
-              const = lsu_elem(iihru)%bsn_frac    !only have / operator set up
+            const = lsu_elem(iihru)%bsn_frac
             if (lsu_elem(iihru)%obtyp == "hru") then
               bwb_d = bwb_d + hwb_d(iihru) * const
               bnb_d = bnb_d + hnb_d(iihru) * const
@@ -32,6 +32,7 @@
         do ihru = 1, sp_ob%hru_lte
           iihru = lsu_elem(ihru)%obtypno
           if (lsu_elem(iihru)%bsn_frac > 1.e-12) then
+            const = lsu_elem(iihru)%bsn_frac
             if (lsu_elem(iihru)%obtyp == "hlt") then
               !const = lsu_elem(iihru)%bsn_frac
               bwb_d = bwb_d + hltwb_d(iihru) * const

@@ -26,8 +26,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : hru, hru_db, ihru, ipl, isol, mlyr, mpst,   &
-         sol_cov, wfsh, sol_plt_ini
+      use hru_module, only : hru, hru_db, ihru, ipl, isol, mlyr, mpst, wfsh, sol_plt_ini
       use soil_module
       use plant_module
       use pathogen_data_module

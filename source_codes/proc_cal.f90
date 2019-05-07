@@ -1,6 +1,7 @@
       subroutine proc_cal
     
       use hydrograph_module
+      use calibration_data_module
    
       implicit none
       
@@ -38,7 +39,7 @@
       call ch_read_orders_cal
       call ch_read_parms_cal
       
-      call calsoft_init
+      if (cal_soft == "y" .or. cal_hard == "y") call cal_allo_init
 
 	  return
       

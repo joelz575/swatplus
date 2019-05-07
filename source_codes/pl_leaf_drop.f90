@@ -144,9 +144,9 @@
         rsd1(j)%tot(ipl)%n = resnew * pcom(j)%plm(ipl)%n_fr + rsd1(j)%tot(ipl)%n
         rsd1(j)%tot(ipl)%p = resnew * pcom(j)%plm(ipl)%p_fr + rsd1(j)%tot(ipl)%p
         
-        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - resnew
-        pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - resnew * pcom(j)%plm(ipl)%n_fr
-        pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - resnew * pcom(j)%plm(ipl)%p_fr
+        pl_mass(j)%tot(ipl)%m = pl_mass(j)%tot(ipl)%m - resnew
+        pl_mass(j)%tot(ipl)%n = pl_mass(j)%tot(ipl)%n - resnew * pcom(j)%plm(ipl)%n_fr
+        pl_mass(j)%tot(ipl)%p = pl_mass(j)%tot(ipl)%p - resnew * pcom(j)%plm(ipl)%p_fr
         
         !pcom(j)%plstr(ipl)%strsw = 1.
         !pcom(j)%plg(ipl)%lai = pldb(idp)%alai_min

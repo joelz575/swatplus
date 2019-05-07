@@ -281,7 +281,7 @@
       ch_d(jrch)%tloss = rttlc_d / 10000.  
       ch_d(jrch)%sed_in = ob(icmd)%hin%sed   
       ch_d(jrch)%sed_out = sedrch              
-      ch_d(jrch)%sed_conc = sedcon             
+      ch_d(jrch)%sed_conc = sedrch / (ch_d(jrch)%flo_in + .01)
       ch_d(jrch)%orgn_in = ob(icmd)%hin%orgn   
       ch_d(jrch)%orgn_out = ob(icmd)%hd(1)%orgn              
       ch_d(jrch)%orgp_in = ob(icmd)%hin%sedp    

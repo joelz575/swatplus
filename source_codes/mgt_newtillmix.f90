@@ -157,7 +157,7 @@
           smix(8) = smix(8) + soil1(jj)%tot(l)%n * WW1
           smix(9) = smix(9) + soil1(jj)%tot(l)%p * WW1
           smix(10) = smix(10) + soil1(jj)%mp(l)%sta * WW1
-          smix(11) = smix(11) + soil(jj)%ly(l)%rsd * WW1
+          smix(11) = smix(11) + soil1(jj)%tot(l)%m * WW1
           smix(12) = smix(12) + soil1(jj)%man(l)%c * WW1
           smix(13) = smix(13) + soil1(jj)%man(l)%n * WW1
           smix(14) = smix(14) + soil1(jj)%man(l)%p * WW1
@@ -210,8 +210,8 @@
             soil1(jj)%tot(l)%n = soil1(jj)%tot(l)%n * WW3 + smix(8) * WW4
             soil1(jj)%tot(l)%p = soil1(jj)%tot(l)%p * WW3 + smix(9)*WW4
             soil1(jj)%mp(l)%sta = soil1(jj)%mp(l)%sta * WW3+smix(10) * WW4
-            soil(jj)%ly(l)%rsd = soil(jj)%ly(l)%rsd * WW3 + smix(11)*WW4
-            if (soil(jj)%ly(l)%rsd < 1.e-10) soil(jj)%ly(l)%rsd = 1.e-10
+            soil1(jj)%tot(l)%m = soil1(jj)%tot(l)%m * WW3 + smix(11)*WW4
+            if (soil1(jj)%tot(l)%m < 1.e-10) soil1(jj)%tot(l)%m = 1.e-10
             soil1(jj)%man(l)%c = soil1(jj)%man(l)%c * WW3 + smix(12)*WW4
             soil1(jj)%man(l)%n = soil1(jj)%man(l)%n * WW3 + smix(13)*WW4
             soil1(jj)%man(l)%p = soil1(jj)%man(l)%p * WW3 + smix(14)*WW4

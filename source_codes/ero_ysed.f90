@@ -12,7 +12,6 @@
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
 !!    peakr       |m^3/s         |peak runoff rate
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
-!!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
 !!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -36,7 +35,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, usle_cfac, cklsp, surfq, sedyld, sanyld, silyld, clayld, lagyld, sagyld,  &
-         sno_hru, ihru, peakr
+         sno_hru, ihru, peakr, usle_ei
       use soil_module
       
       implicit none
@@ -44,7 +43,6 @@
       integer :: j           !none                   |HRU number
       real :: c              !                       |
       real :: usle           !!metric tons/ha        | daily soil loss predicted with USLE equation
-      real :: usle_ei        !100(ft-tn in)/(acre-hr)|USLE rainfall erosion index 
 
       j = ihru
       

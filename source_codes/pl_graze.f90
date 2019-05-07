@@ -14,14 +14,8 @@
       integer :: j         !none        |HRU number
       integer :: l         !none        |number of soil layer that manure applied
       integer :: it        !none        |manure/fertilizer id from fertilizer.frt
-      real :: gc           !            |
-      real :: gc1          !            |
-      real :: swf          !            |
-      real :: frt_t        !            |
-      real :: xx           !none        |variable to hold intermediate calculation
-                           !            |result
-      real :: dmi          !kg/ha       |biomass in HRU prior to grazing
-      real :: dmii         !kg/ha       |biomass prior to trampling
+      real :: xx           !none        |variable to hold intermediate calculation result
+      real :: dmi          !kg/ha       |biomass in HRU prior to grazing and trampling
       real :: zz           !none        |variable to hold intermediate calculation
                            !            |result
       real :: yz
@@ -32,104 +26,84 @@
       real :: x8           !            |organic carbon applied (kg C/ha)   
       real :: x10          !frac        |the fraction of carbon in fertilizer that is allocated to metabolic litter C pool
       real :: x1           !            |fertlizer applied to layer (kg/ha)
-      real :: sol_min_n    !            |
-      real :: sf           !frac        |fraction of mineral n sorbed to litter: 0.05 for surface litter, 0.1 for belowground litter 
-      real :: rlr          !frac        |fraction of lignin in the added residue
-      real :: rln          !            |
-      real :: resnew_ne    !            |
-      real :: resnew_n     !            |
-      real :: resnew       !            |  
+      real :: rln          !            | 
       real :: orgc_f       !frac        |fraction of organic carbon in fertilizer
-      real :: lsf          !frac        |fraction of the litter that is structural
-      real :: lmf          !frac        |fraction of the litter that is metabolic 
       integer :: ipl       !none        |counter
-      real :: clg          !            |
       real :: manure_kg
+      real :: eat_plant     !frac       |fraction of above ground biomass of each plant eaten
+      real :: eat_seed      !frac       |fraction of seed of each plant eaten
+      real :: eat_leaf      !frac       |fraction of leaf of each plant eaten
+      real :: eat_stem      !frac       |fraction of stem of each plant eaten
+      real :: tramp_plant   !frac       |fraction of above ground biomass of each plant trampled
+      real :: tramp_seed    !frac       |fraction of seed of each plant trampled
+      real :: tramp_leaf    !frac       |fraction of leaf of each plant trampled
+      real :: tramp_stem    !frac       |fraction of stem of each plant trampled
 
       j = ihru
 
-        do ipl = 1, pcom(j)%npl
-        !! determine new biomass in HRU
-        dmi = pcom(j)%plm(ipl)%mass
-        !! for now the amount eaten is evenly divided by the number of plants
-        !! later we can add preferences - by animal type or simply by n and p content
-        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - graze%eat / pcom(j)%npl
- 
-        !!add by zhang
-        !!=================
-        if (bsn_cc%cswat == 2) then
-            cbn_loss(j)%emitc_d = cbn_loss(j)%emitc_d + dmi - pcom(j)%plm(ipl)%mass
-        end if
-        !!add by zhang
-        !!=================        
+      !! graze only if adequate biomass in HRU
+      if (pl_mass(j)%ab_gr_com%m < graze%biomin) return
+            
+      do ipl = 1, pcom(j)%npl
+        !! set initial biomass before eating and trampling
+        dmi = pl_mass(j)%ab_gr(ipl)%m
+        if (dmi < 1.e-6) exit
         
-        !! adjust nutrient content of biomass
-        pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - (dmi -         &     
-              pcom(j)%plm(ipl)%mass) * pcom(j)%plm(ipl)%n_fr
-        pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - (dmi -   &
-              pcom(j)%plm(ipl)%mass) * pcom(j)%plm(ipl)%p_fr
-        if (pcom(j)%plm(ipl)%nmass < 0.) pcom(j)%plm(ipl)%nmass = 0.
-        if (pcom(ihru)%plm(ipl)%pmass < 0.) pcom(ihru)%plm(ipl)%pmass = 0.
+        !! remove biomass eaten - assume evenly divided by biomass of plant
+        !! later we can add preferences - by animal type or simply by n and p content
+        eat_plant =  graze%eat / pl_mass(j)%ab_gr_com%m
+        eat_plant = amin1 (eat_plant, 1.)
+        eat_seed = eat_plant * pl_mass(j)%seed(ipl)%m / pl_mass(j)%ab_gr(ipl)%m
+        eat_leaf = eat_plant * pl_mass(j)%leaf(ipl)%m / pl_mass(j)%ab_gr(ipl)%m
+        eat_stem = eat_plant * pl_mass(j)%stem(ipl)%m / pl_mass(j)%ab_gr(ipl)%m
+        graz_plant = eat_plant * pl_mass(j)%ab_gr(ipl)
+        graz_seed = eat_seed * pl_mass(j)%seed(ipl)
+        graz_leaf = eat_leaf * pl_mass(j)%leaf(ipl)
+        graz_stem = eat_stem * pl_mass(j)%stem(ipl)
+        
+        !! remove biomass and organics from plant pools
+        !! update remaining plant organic pools
+        pl_mass(j)%seed(ipl) = pl_mass(j)%seed(ipl) - graz_seed
+        pl_mass(j)%leaf(ipl) = pl_mass(j)%leaf(ipl) - graz_leaf
+        pl_mass(j)%stem(ipl) = pl_mass(j)%stem(ipl) - graz_stem
+        pl_mass(j)%tot(ipl) = pl_mass(j)%tot(ipl) - graz_plant
+        pl_mass(j)%ab_gr(ipl) = pl_mass(j)%ab_gr(ipl) - graz_plant
 
-        !! remove trampled biomass and add to residue
-        dmii = pcom(j)%plm(ipl)%mass
-        pcom(j)%plm(ipl)%mass = pcom(j)%plm(ipl)%mass - graze%tramp / pcom(j)%npl
-        if (pcom(j)%plm(ipl)%mass < 0.)  then
-          rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m + dmii
-          pcom(j)%plm(ipl)%mass = 0.
-          !!add by zhang
-          if (bsn_cc%cswat == 2) then
-            cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + dmii - pcom(j)%plm(ipl)%mass
-          end if         
-        else
-          rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m + graze%tramp   
-          !!add by zhang
-          if (bsn_cc%cswat == 2) then
-            cbn_loss(j)%rsdc_d = cbn_loss(j)%rsdc_d + graze%tramp
-          end if                           
-        endif
-        rsd1(j)%tot(ipl)%m = Max(rsd1(j)%tot(ipl)%m, 0.)
-        pcom(j)%plm(ipl)%mass = Max(pcom(j)%plm(ipl)%mass, 0.)
-
-        !! adjust nutrient content of residue and biomass for trampling
-        pcom(j)%plm(ipl)%nmass = pcom(j)%plm(ipl)%nmass - (dmii -        & 
-               pcom(j)%plm(ipl)%mass) * pcom(j)%plm(ipl)%n_fr
-        pcom(ihru)%plm(ipl)%pmass = pcom(ihru)%plm(ipl)%pmass - (dmii -  &
-             pcom(j)%plm(ipl)%mass) * pcom(j)%plm(ipl)%p_fr
-        if (pcom(j)%plm(ipl)%nmass < 0.) pcom(j)%plm(ipl)%nmass = 0.
-        if (pcom(ihru)%plm(ipl)%pmass < 0.) pcom(ihru)%plm(ipl)%pmass=0.
-        if (dmii - pcom(j)%plm(ipl)%mass > 0.) then
-          rsd1(j)%tot(1)%n = (dmii - pcom(j)%plm(ipl)%mass) *          &
-            pcom(j)%plm(ipl)%n_fr + rsd1(j)%tot(1)%n
-
-          resnew = (dmii - pcom(j)%plm(ipl)%mass) 
-          resnew_n = (dmii - pcom(j)%plm(ipl)%mass) * pcom(j)%plm(ipl)%n_fr
-          call pl_leaf_drop (resnew, resnew_n)
-
-          rsd1(j)%tot(1)%p = (dmii - pcom(j)%plm(ipl)%mass) *            &
-             pcom(j)%plm(ipl)%p_fr + rsd1(j)%tot(1)%p 
-        end if
+        !! remove biomass trampled - assume evenly divided by biomass of plant
+        tramp_plant = graze%tramp / pl_mass(j)%ab_gr_com%m
+        tramp_plant = amin1 (tramp_plant, 1.)
+        tramp_seed = tramp_plant * pl_mass(j)%seed(ipl)%m / pl_mass(j)%ab_gr(ipl)%m
+        tramp_leaf = tramp_plant * pl_mass(j)%leaf(ipl)%m / pl_mass(j)%ab_gr(ipl)%m
+        tramp_stem = tramp_plant * pl_mass(j)%stem(ipl)%m / pl_mass(j)%ab_gr(ipl)%m
+        graz_plant = tramp_plant * pl_mass(j)%ab_gr(ipl)
+        graz_seed = tramp_seed * pl_mass(j)%seed(ipl)
+        graz_leaf = tramp_leaf * pl_mass(j)%leaf(ipl)
+        graz_stem = tramp_stem * pl_mass(j)%stem(ipl)
+        
+        !! remove biomass and organics from plant pools
+        !! update remaining plant organic pools
+        pl_mass(j)%seed(ipl) = pl_mass(j)%seed(ipl) - graz_seed
+        pl_mass(j)%leaf(ipl) = pl_mass(j)%leaf(ipl) - graz_leaf
+        pl_mass(j)%stem(ipl) = pl_mass(j)%stem(ipl) - graz_stem
+        pl_mass(j)%tot(ipl) = pl_mass(j)%tot(ipl) - graz_plant
+        pl_mass(j)%ab_gr(ipl) = pl_mass(j)%ab_gr(ipl) - graz_plant
 
         !! reset leaf area index and fraction of growing season
         if (dmi > 1.) then
-          pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai *                  &
-             pcom(j)%plm(ipl)%mass / dmi
-          pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc *        &
-             pcom(j)%plm(ipl)%mass / dmi
+          pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai * pl_mass(j)%ab_gr(ipl)%m / dmi
+          pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc * pl_mass(j)%ab_gr(ipl)%m / dmi
         else
           pcom(j)%plg(ipl)%lai = 0.05
           pcom(j)%plcur(ipl)%phuacc = 0.
         endif
 
-        end do    !! plant loop
-        
+      end do    !! plant loop
         
         !! apply manure
         it = graze%manure_id
         manure_kg = graze%eat * graze%manure
         if (manure_kg > 0.) then 
           l = 1
-          
           if (bsn_cc%cswat == 0) then
 
           soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 + manure_kg *      &
@@ -197,7 +171,6 @@
                        fertdb(it)%fminp
           soil1(j)%tot(l)%p = soil1(j)%tot(l)%p + manure_kg *       &   
                        fertdb(it)%forgp  
-          
           end if
 
         end if

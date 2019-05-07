@@ -28,6 +28,8 @@
             if (eof < 0) exit
             imax = imax + 1
           end do
+          
+          db_mx%dr = imax
         
           allocate (dr_db(imax))
           rewind (107)

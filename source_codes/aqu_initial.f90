@@ -52,7 +52,20 @@
         aqu_d(iaq)%minp = aqudb(iaqdb)%minp
         aqu_d(iaq)%orgn = aqudb(iaqdb)%orgn
         aqu_d(iaq)%orgp = aqudb(iaqdb)%orgp
+        aqu_d(iaq)%rchrg = 0.
+        aqu_d(iaq)%seep = 0.
+        aqu_d(iaq)%revap = 0.
+        aqu_d(iaq)%rchrg_n = 0.
+        aqu_d(iaq)%nloss = 0.
+        aqu_d(iaq)%no3gw = 0.
+        aqu_d(iaq)%seepno3 = 0.
+        aqu_d(iaq)%flo_cha = 0.
+        aqu_d(iaq)%flo_res = 0.
+        aqu_d(iaq)%flo_ls = 0
       end do
+      
+      !! set initial parameters for calibration runs
+      aqu_om_init = aqu_d
 
       return
       end subroutine aqu_initial         

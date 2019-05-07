@@ -19,11 +19,11 @@
       end type plant_growth
       
       type plant_mass
-        character(len=4) :: cpnm      !! N/A              |4 letter char code represents organic name
-        real :: mass = 0.             !!kg/ha             |biomass
-        real :: cmass = 0.            !!kg/ha             |carbon mass
-        real :: nmass = 0.            !!kg/ha             |nitrogen mass
-        real :: pmass = 0.            !!kg/ha             |phosphorus mass
+        !character(len=4) :: cpnm      !! N/A              |4 letter char code represents organic name
+        !real :: mass = 0.             !!kg/ha             |biomass
+        !real :: cmass = 0.            !!kg/ha             |carbon mass
+        !real :: nmass = 0.            !!kg/ha             |nitrogen mass
+        !real :: pmass = 0.            !!kg/ha             |phosphorus mass
         real :: c_fr = 0.             !!none              |carbon fraction
         real :: n_fr = 0.             !!none              |nitrogen fraction
         real :: p_fr = 0.             !!none              |phosphorus fraction
@@ -45,7 +45,6 @@
         real :: phumat = 0.             !! C            |heat units to maturity
         real :: phuacc = 0.             !! fraction     |fraction of plant heatunit accumulated
         real :: laimx_pop = 0.          !!
-        real :: yield = 0.              !! kg/ha        |land cover/crop yield (dry weight)
         integer :: harv_num = 0         !!              |number of harvest operations
         integer :: curyr_mat = 1        !! 
         integer :: curyr_gro = 1        !!
@@ -96,17 +95,6 @@
        type (plant_stress), dimension(:), allocatable :: plstr  !!plant stress variables
        type (plant_status), dimension(:), allocatable :: plcur  !!plant status variables
        type (plant_mass), dimension(:), allocatable :: plm      !kg/ha            |total biomass for individual plant in community
-       type (plant_mass), dimension(:), allocatable :: ab_gr    !kg/ha            |above ground biomass for individual plant in community
-       type (plant_mass), dimension(:), allocatable :: leaf     !kg/ha            |leaf mass for individual plant in community
-       type (plant_mass), dimension(:), allocatable :: stem     !kg/ha            |wood/stalk mass for individual plant in community
-       type (plant_mass), dimension(:), allocatable :: root     !kg/ha            |root mass for individual plant in community (by soil layer)
-       type (plant_mass), dimension(:), allocatable :: seed     !kg/ha            |seed (grain) mass for individual plant in community
-       type (plant_mass) :: tot_com                             !kg/ha            |total biomass for entire community
-       type (plant_mass) :: ab_gr_com                           !kg/ha            |above ground mass for entire community
-       type (plant_mass) :: leaf_com                            !kg/ha            |leaf mass for entire community
-       type (plant_mass) :: stem_com                            !kg/ha            |wood/stalk mass for entire community
-       type (plant_mass) :: root_com                            !kg/ha            |root mass for entire community
-       type (plant_mass) :: seed_com                            !kg/ha            |seed (grain) mass for entire community
       end type plant_community
       type (plant_community), dimension (:), allocatable :: pcom
       type (plant_community), dimension (:), allocatable :: pcom_init
@@ -132,36 +120,4 @@
       end type plant_carbon
       type (plant_carbon) :: c_frac
             
-      interface operator (*)
-        module procedure om_mult_const
-      end interface 
-                       
-      interface operator (+)
-        module procedure om_add
-      end interface 
-                   
-     contains
-               
-      !! routines for hydrograph module
-      function om_mult_const (const, o_m1) result (o_m2)
-        real, intent (in) :: const
-        type (plant_mass), intent (in) :: o_m1
-        type (plant_mass) :: o_m2
-        o_m2%mass = const * o_m1%mass
-        o_m2%cmass = const * o_m1%cmass
-        o_m2%nmass = const * o_m1%nmass
-        o_m2%pmass = const * o_m1%pmass
-      end function om_mult_const
-              
-      !! routines for hydrograph module
-      function om_add (o_m1, o_m2) result (o_m3)
-        type (plant_mass), intent (in) :: o_m1
-        type (plant_mass), intent (in) :: o_m2
-        type (plant_mass) :: o_m3
-        o_m3%mass = o_m1%mass + o_m2%mass
-        o_m3%cmass = o_m1%cmass + o_m2%cmass
-        o_m3%nmass = o_m1%nmass + o_m2%nmass
-        o_m3%pmass = o_m1%pmass + o_m2%pmass
-      end function om_add
-
      end module plant_module

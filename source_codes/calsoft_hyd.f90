@@ -77,11 +77,13 @@
                   lscal(ireg)%lum(ilum)%prm_lim%cn = 1.
                 end if
 
+            !! re-initialize all objects
+            call re_initialize
+
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st surface runoff calibration and rerun
-                call hru_re_initialize (iihru)
                 cn2(iihru) = cn2(iihru) + chg_val
                 cn2(iihru) = amin1 (cn2(iihru), ls_prms(1)%up)
                 cn2(iihru) = Max (cn2(iihru), ls_prms(1)%lo)
@@ -143,12 +145,14 @@
                   lscal(ireg)%lum(ilum)%prm_lim%cn = 1.
                 end if
             
+            !! re-initialize all objects
+            call re_initialize
+
             !check all hru"s for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
               if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
                 !set parms for 1st surface runoff calibration and rerun
-                call hru_re_initialize (iihru)
                 cn2(iihru) = cn2(iihru) + chg_val
                 cn2(iihru) = amin1 (cn2(iihru), ls_prms(1)%up)
                 cn2(iihru) = Max (cn2(iihru), ls_prms(1)%lo)
@@ -238,10 +242,10 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
-        ! re-initialize all hru data
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! 1st esco adjustment 
         if (isim > 0) then
           cal_sim =  " first esco adj "
@@ -303,11 +307,10 @@
           end if
           end do
           end do
-          
-          ! re-initialize all hru data
-          do iihru = 1, sp_ob%hru
-            call hru_re_initialize (iihru)
-          end do
+
+          !! re-initialize all objects
+          call re_initialize
+
           !zero plant calibration data in case plants are calibrated
           do ireg = 1, db_mx%plcal_reg
             do ilum = 1, plcal(ireg)%lum_num
@@ -316,10 +319,10 @@
               plcal(ireg)%lum(ilum)%aa = plcal_z
             end do
           end do
-          ! re-initialize all hru data
-          do iihru = 1, sp_ob%hru
-            call hru_re_initialize (iihru)
-          end do
+          
+          !! re-initialize all objects
+          call re_initialize
+
           ! et adjustment 
           if (isim > 0) then
             cal_sim =  " esco adj "
@@ -384,10 +387,10 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
-        ! re-initialize all hru data
-          do iihru = 1, sp_ob%hru
-            call hru_re_initialize (iihru)
-          end do
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! 1st lat_len adjustment 
         if (isim > 0) then
           cal_sim =  " first lat_len adj "
@@ -454,10 +457,10 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
-        ! re-initialize all hru data
-          do iihru = 1, sp_ob%hru
-            call hru_re_initialize (iihru)
-          end do
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! lat_len adjustment for lateral soil flow
         if (isim > 0) then
           cal_sim =  " lat_len adj "
@@ -532,10 +535,10 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
-        ! re-initialize all hru data
-          do iihru = 1, sp_ob%hru
-            call hru_re_initialize (iihru)
-          end do
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! 1st perco adjustment 
         if (isim > 0) then
           cal_sim =  " first perco adj "
@@ -612,10 +615,10 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
-        ! re-initialize all hru data
-          do iihru = 1, sp_ob%hru
-            call hru_re_initialize (iihru)
-          end do
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! perco adjustment 
         if (isim > 0) then
           cal_sim =  " perco adj "
@@ -681,11 +684,10 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
-        ! re-initialize all hru data
-          do iihru = 1, sp_ob%hru
-            call hru_re_initialize (iihru)
-          end do
-          
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! 1st cn3_swf adjustment 
         if (isim > 0) then
           cal_sim =  " first cn3_swf adj "
@@ -753,10 +755,10 @@
             plcal(ireg)%lum(ilum)%aa = plcal_z
           end do
         end do
-        ! re-initialize all hru data
-          do iihru = 1, sp_ob%hru
-            call hru_re_initialize (iihru)
-          end do
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! cn3_swf adjustment
         if (isim > 0) then
           cal_sim =  " cn3_swf adj "

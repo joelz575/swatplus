@@ -8,17 +8,9 @@
       
       integer :: ihru        !none      |counter
 
-      !! re-initialize all hru's
-      do ihru = 1, sp_ob%hru
-        call hru_re_initialize (ihru)
-      end do
-      !! re-initialize channel, reservoir, aquifer arrays
-      ch_stor = ch_om_water_init
-      res = res_om_init
-      aqu_om_init = aqu_om_init
-      
-      !! adjust parameters
-      
+      !! re-initialize all objects
+      call re_initialize
+
       !! rerun model
       cal_sim = " hard calibration simulation "
       call time_control

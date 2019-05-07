@@ -66,9 +66,9 @@
          mpcom = pcomdb(icom)%plants_com
          allocate (pcomdb(icom)%pl(mpcom))
          do iplt = 1, mpcom
-           read (113,*,iostat=eof) pcomdb(icom)%pl(iplt)%cpnm, pcomdb(icom)%pl(iplt)%igro,          &
-             pcomdb(icom)%pl(iplt)%lai, pcomdb(icom)%pl(iplt)%bioms, pcomdb(icom)%pl(iplt)%phuacc,  &
-             pcomdb(icom)%pl(iplt)%pop, pcomdb(icom)%pl(iplt)%yrmat, pcomdb(icom)%pl(iplt)%rsdin
+           read (113,*,iostat=eof) pcomdb(icom)%pl(iplt)%cpnm, pcomdb(icom)%pl(iplt)%igro,              &
+             pcomdb(icom)%pl(iplt)%lai, pcomdb(icom)%pl(iplt)%bioms, pcomdb(icom)%pl(iplt)%phuacc,      &
+             pcomdb(icom)%pl(iplt)%pop, pcomdb(icom)%pl(iplt)%fr_yrmat, pcomdb(icom)%pl(iplt)%rsdin
            if (eof < 0) exit
 
           do ipldb = 1, db_mx%plantparm

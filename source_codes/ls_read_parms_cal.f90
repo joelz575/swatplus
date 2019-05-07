@@ -30,16 +30,16 @@
          if (eof < 0) exit
          exit
        enddo
-       
+           
+       db_mx%lscal_prms = mlsp
+      
        do i = 1, mlsp
          read (107,*,iostat=eof) ls_prms(i)%name, ls_prms(i)%chg_typ, ls_prms(i)%neg, ls_prms(i)%pos, ls_prms(i)%lo, ls_prms(i)%up
          if (eof < 0) exit 
        end do
 
       end if	   
-    
-      db_mx%lscal_prms = mlsp
-      
+
       close(107)
       return
       end subroutine ls_read_lsparms_cal

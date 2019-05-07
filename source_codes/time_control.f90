@@ -59,8 +59,6 @@
       integer :: j                   !none          |counter
       integer :: julian_day          !none          |counter
       integer :: id                  !              |
-      real :: dtot                   !              |
-      real :: dorm_flag              !              |
       integer :: isched              !              |
       integer :: iwst                !              |
       integer :: ich                 !none          |counter
@@ -167,8 +165,6 @@
           !! initialize variables at beginning of day for hru's
           if (sp_ob%hru > 0) call sim_initday
 
-          dtot = dtot + 1.
-
           if (time%yrs > pco%nyskip) ndmo(time%mo) = ndmo(time%mo) + 1
 
           call climate_control      !! read in/generate weather
@@ -190,7 +186,6 @@
           !call water_allocation
 
           call command              !! command loop 
-
         
           ! reset base0 heat units and yr_skip at end of year for southern hemisphere
           ! near winter solstace (winter solstice is around June 22)
@@ -199,8 +194,15 @@
               iob = sp_ob1%hru + ihru - 1
               iwst = ob(iob)%wst
               if (wst(iwst)%lat < 0) then
-                 phubase(ihru) = 0.
-                 yr_skip(ihru) = 0
+                phubase(ihru) = 0.
+                yr_skip(ihru) = 0
+                isched = hru(j)%mgt_ops
+                if (isched > 0 .and. sched(isched)%num_ops > 0) then
+                  if (sched(isched)%mgt_ops(hru(j)%cur_op)%op == "skip") hru(j)%cur_op = hru(j)%cur_op + 1
+                  if (hru(j)%cur_op > sched(isched)%num_ops) then
+                    hru(j)%cur_op = 1
+                  end if
+                end if
               end if
             end do
           end if
@@ -268,10 +270,18 @@
 
           ! reset base0 heat units and yr_skip at end of year for northern hemisphere
           ! on December 31 (winter solstice is around December 22)
-          iwst = ob(j)%wst
+          iob = sp_ob1%hru + ihru - 1
+          iwst = ob(iob)%wst
           if (wst(iwst)%lat >= 0) then
             phubase(j) = 0.
             yr_skip(j) = 0
+            isched = hru(j)%mgt_ops
+            if (isched > 0 .and. sched(isched)%num_ops > 0) then
+              if (sched(isched)%mgt_ops(hru(j)%cur_op)%op == "skip") hru(j)%cur_op = hru(j)%cur_op + 1
+              if (hru(j)%cur_op > sched(isched)%num_ops) then
+                hru(j)%cur_op = 1
+              end if
+            end if
           end if
         end do      
 

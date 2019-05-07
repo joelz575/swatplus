@@ -4,7 +4,7 @@
 !!    this subroutine calls subroutines which read input data for the 
 !!    databases and the HRUs
 
-        use hru_module, only : hru, sol_cov, sol_plt_ini
+        use hru_module, only : hru, sol_plt_ini
         use soil_module
         use organic_mineral_mass_module
         use constituent_mass_module

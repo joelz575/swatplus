@@ -219,7 +219,7 @@
           rmn1 = 0.
           rmp = 0.
           if (k <= 2) then
-            r4 = .58 * soil(j)%ly(k)%rsd
+            r4 = .58 * soil1(j)%tot(k)%m
             if (soil1(j)%tot(k)%n + soil1(j)%mn(k)%no3 > 1.e-4) then
               cnr = r4 / (soil1(j)%tot(k)%n  + soil1(j)%mn(k)%no3)
               if (cnr > 500.) cnr = 500.
@@ -249,10 +249,10 @@
             end if
             decr = Max(bsn_prm%decr_min, decr)
             decr = Min(decr, 1.)
-            soil(j)%ly(k)%rsd = Max(1.e-6, soil(j)%ly(k)%rsd)
-            rdc = decr * soil(j)%ly(k)%rsd
-            soil(j)%ly(k)%rsd = soil(j)%ly(k)%rsd - rdc
-            if (soil(j)%ly(k)%rsd < 0.) soil(j)%ly(k)%rsd = 0.
+            soil1(j)%tot(k)%m = Max(1.e-6, soil1(j)%tot(k)%m)
+            rdc = decr * soil1(j)%tot(k)%m
+            soil1(j)%tot(k)%m = soil1(j)%tot(k)%m - rdc
+            if (soil1(j)%tot(k)%m < 0.) soil1(j)%tot(k)%m = 0.
             rmn1 = decr * (soil1(j)%str(k)%n + soil1(j)%lig(k)%n + soil1(j)%meta(k)%n)
             soil1(j)%tot(k)%p = Max(1.e-6, soil1(j)%tot(k)%p)
             rmp = decr * (soil1(j)%str(k)%p + soil1(j)%lig(k)%p + soil1(j)%meta(k)%p)

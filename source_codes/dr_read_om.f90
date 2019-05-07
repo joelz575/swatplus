@@ -56,7 +56,7 @@
       end if
       
       ! xwalk with dr file to get sequential number
-      do idr = 1, db_mx%dr_om
+      do idr = 1, db_mx%dr
         do idr_om = 1, db_mx%dr_om
           if (dr_db(idr)%om_file == dr_om_name(idr_om)) then
             dr_om_num(idr) = idr_om

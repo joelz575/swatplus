@@ -16,68 +16,36 @@
       integer :: k                     !none           |counter
       integer, intent (in) :: jj       !none           |counter
       integer, intent (in) :: iplant   !               |plant number xwalked from hlt_db()%plant and plants.plt
-      real :: resnew                   !               | 
-      real :: resnew_n                 !               | 
-      integer :: orgc_f                !fraction       |fraction of organic carbon in fertilizer
-      real :: rtresnew                 !               |
-      real :: ff1                      !               |
-      real :: ff2                      !               |
-      real :: yieldn                   !               |
-      real :: yieldp                   !               |  
-      real :: xx                       !varies         |variable to hold calculation results 
-      real :: rln                      !               | 
-      real :: rlr                      !fraction       |fraction of lignin in the added residue
-      real :: l                        !none           |counter  
-      real :: rtfr                     !none           |root fraction
-      integer :: hiad1                 !none           |actual harvest index (adj for water/growth)
-      integer :: icmd                  !               |
-
-      resnew = 0.
-      resnew_n = 0.
+      integer :: ly                    !none           |soil layer
 
       j = jj
       ipl = iplant
 
-	  !! 22 January 2008	
-      resnew = pcom(j)%plm(ipl)%mass * (1. - pcom(j)%plg(ipl)%root_frac)
-	  rtresnew = pcom(j)%plm(ipl)%mass * pcom(j)%plg(ipl)%root_frac
-	  call pl_rootfr
-
-	  !! update residue, N, P on soil surface
-      ff1 = (1 - hiad1) / (1 - hiad1 + pcom(j)%root(ipl)%mass)
-      rsd1(j)%tot(ipl)%m = resnew + rsd1(j)%tot(ipl)%m
+      !! update root fractions in each layer
+      call pl_rootfr
       
-      rsd1(j)%tot(ipl)%n = rsd1(j)%tot(ipl)%n + ff1 *     &
-                                  (pcom(j)%plm(ipl)%nmass - yieldn)
-      rsd1(j)%tot(ipl)%p = rsd1(j)%tot(ipl)%p + ff1 *     & 
-                                  (pcom(j)%plm(ipl)%pmass - yieldp)
-      rsd1(j)%tot(ipl)%m = Max(rsd1(j)%tot(ipl)%m, 0.)
-	  rsd1(j)%tot(ipl)%n = Max(rsd1(j)%tot(ipl)%n, 0.)
-	  rsd1(j)%tot(ipl)%p = Max(rsd1(j)%tot(ipl)%p, 0.)
+      !! allocate dead roots, N, P to soil layers
+	  do ly = 1, soil(j)%nly
+	      soil1(j)%tot(ly) = soil(j)%ly(ly)%rtfr * pl_mass(j)%root_com + soil1(j)%tot(ly)
+      end do
       
-      resnew = resnew
-      resnew_n = ff1 * (pcom(j)%plm(ipl)%nmass- yieldn)
-      call pl_leaf_drop (resnew, resnew_n)
+      !! add above ground mass to residue pool
+      rsd1(j)%tot(1) = pl_mass(j)%ab_gr(ipl) + rsd1(j)%tot(1)
 
-	!! allocate dead roots, N, P to soil layers
-	do l = 1, soil(j)%nly
-	 soil(j)%ly(l)%rsd = soil(j)%ly(l)%rsd + soil(j)%ly(l)%rtfr * rtresnew
-	 soil1(j)%tot(l)%n = soil1(j)%tot(l)%n + soil(j)%ly(l)%rtfr *            &
-          pcom(j)%plm(ipl)%nmass * pcom(j)%root(ipl)%mass
-	 soil1(j)%tot(l)%p = soil1(j)%tot(l)%p + soil(j)%ly(l)%rtfr *          &
-          pcom(ihru)%plm(ipl)%pmass * pcom(j)%root(ipl)%mass
-     
-     resnew = soil(j)%ly(l)%rtfr * rtresnew 
-     resnew_n = soil(j)%ly(l)%rtfr * ff2 * (pcom(j)%plm(ipl)%nmass - yieldn)
-     call pl_leaf_drop (resnew, resnew_n)
-	end do
+      !! zero all plant mass
+      pl_mass(j)%tot(ipl) = plt_mass_z
+      pl_mass(j)%ab_gr(ipl) = plt_mass_z
+      pl_mass(j)%leaf(ipl) = plt_mass_z
+      pl_mass(j)%stem(ipl) = plt_mass_z
+      pl_mass(j)%seed(ipl) = plt_mass_z
+      pl_mass(j)%root(ipl) = plt_mass_z
+      
+      do k = 1, cs_db%num_pests
+        cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) !+ cs_pl(j)%pest(k)
+        cs_pl(j)%pest(k) = 0.
+      end do
 
-        do k = 1, cs_db%num_pests
-           cs_soil(j)%ly(1)%pest(k) = cs_soil(j)%ly(1)%pest(k) !+ cs_pl(j)%pest(k)
-           cs_pl(j)%pest(k) = 0.
-        end do
-
-	!! reset variables
+	  !! reset plant variables
       pcom(j)%plg(ipl) = plgz
       pcom(j)%plm(ipl) = plmz
       pcom(j)%plstr(ipl) = plstrz
@@ -87,7 +55,5 @@
       pcom(j)%plcur(ipl)%phuacc = 0.
       pcom(j)%plcur(ipl)%curyr_mat = 1
 
-	  rtfr = 0. ! Resetting roots fraction per layer array
-	 
       return
       end subroutine mgt_killop

@@ -66,6 +66,7 @@
       type (hyd_output) :: bru_d, bru_m, bru_y, bru_a
       type (hyd_output) :: binhyd_d
       type (hyd_output) :: hz
+      type (hyd_output) :: dr1
       type (hyd_output), dimension(:),allocatable :: hcnst
       type (hyd_output), dimension(:),allocatable :: hhr
       type (hyd_output) :: ht1, ht2, ht3, ht4, ht5, delrto
@@ -340,11 +341,9 @@
         integer :: obj = 1              !object number
         character (len=3) :: obtyp      !object type- 1=hru, 2=hru_lte, 11=export coef, etc
         integer :: obtypno = 0          !2-number of hru_lte"s or 1st hru_lte command
-        !character (len=3) :: htyp       !hydrograph type (1=total, 2=surface, etc)
-        !integer :: htypno               !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
         real :: frac = 0                !fraction of element in ru (expansion factor)
-        integer :: idr = 0               !points to dr"s in delratio.dat
-        type (hyd_output), dimension (:), allocatable :: dr    !calculated del ratios for element
+        character(len=16) :: dr_name    !name of dr in delratio.del
+        type (hyd_output) :: dr         !calculated (or input in delratio.del) dr's for element
       end type routing_unit_elements
       type (routing_unit_elements), dimension(:), allocatable :: ru_elem
       
@@ -389,8 +388,7 @@
       
       !export coefficient is hyd_output type but not part of an object 
       type (hyd_output), dimension(:), allocatable :: dr          !delivery ratio for objects- chan, res, lu
-      type (hyd_output), dimension(:), allocatable :: ru_dr      !delivery ratio for subbasin elements
-      
+
       !delevery ratio is hyd_output type but not part of an object 
       type (hyd_output), dimension(:), allocatable :: exco        !export coefficient
 

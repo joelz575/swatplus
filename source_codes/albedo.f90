@@ -6,7 +6,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
-!!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -18,24 +17,25 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
-!!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
 
-
-      use hru_module, only : sol_cov, sno_hru, ihru, albday
+      use hru_module, only : sno_hru, ihru, albday
       use soil_module
       use plant_module
+      use organic_mineral_mass_module
       
       implicit none
         
       real :: cej       !none           |constant
       real :: eaj       !none           |soil cover index      
       integer :: j      ! none          |HRU number
+      real :: cover     !kg/ha          |soil cover
       
       j = ihru
 
 !! calculate albedo
       cej = -5.e-5
-      eaj = Exp(cej * (sol_cov(j) + .1))   !! equation 2.2.16 in SWAT manual
+      cover = pl_mass(j)%ab_gr_com%m + rsd1(j)%tot_com%m
+      eaj = Exp(cej * (cover + .1))   !! equation 2.2.16 in SWAT manual
 
       if (sno_hru(j) <= .5) then
         !! equation 2.2.14 in SWAT manual

@@ -10,7 +10,6 @@
 !!    albday      |none          |albedo of ground for day
 !!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
-!!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
 !!    tmp_an(:)   |deg C         |average annual air temperature
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -29,36 +28,32 @@
 
       use climate_module
       use septic_data_module
-      use hru_module, only : sno_hru, hru_ra, iseptic, ihru, sol_cov, tmpav, tmx, tmn, i_sep, iwgen,  &
-         albday, isep 
+      use hru_module, only : sno_hru, hru_ra, iseptic, ihru, tmpav, tmx, tmn, i_sep, iwgen, albday, isep 
       use soil_module
       use time_module
+      use organic_mineral_mass_module
       
       implicit none
 
       integer :: j               !none          |HRU number
       integer :: k               !none          |counter
-      real :: f                  !none          |variable to hold intermediate calculation 
-                                 !              |result
+      real :: f                  !none          |variable to hold intermediate calculation result
       real :: dp                 !mm            |maximum damping depth
       real :: ww                 !none          |variable to hold intermediate calculation
       real :: b                  !none          |variable to hold intermediate calculation
-      real :: wc                 !none          |scaling factor for soil water impact on daily
-                                 !              |damping depth
+      real :: wc                 !none          |scaling factor for soil water impact on daily damping depth
       real :: dd                 !mm            |damping depth for day
       real :: xx                 !none          |variable to hold intermediate calculation
       real :: st0                !MJ/m^2        |radiation hitting soil surface on day
       real :: tlag               !none          |lag coefficient for soil temperature
       real :: df                 !none          |depth factor
-      real :: zd                 !none          |ratio of depth at center of layer to
-                                 !              |damping depth 
+      real :: zd                 !none          |ratio of depth at center of layer to damping depth 
       real :: bcv                !none          |lagging factor for cover
       real :: tbare              !deg C         |temperature of bare soil surface
-      real :: tcov               !deg C         |temperature of soil surface corrected for
-                                 !              |cover
+      real :: tcov               !deg C         |temperature of soil surface corrected for cover
       real :: tmp_srf            !deg C         |temperature of soil surface
+      real :: cover              !kg/ha         |soil cover
 
-      j = 0
       j = ihru
 
       tlag = 0.8
@@ -89,12 +84,10 @@
       f = Exp(b * ((1. - wc) / (1. + wc))**2)
       dd = f * dp
 
-
 !! calculate lagging factor for soil cover impact on soil surface temp
 !! SWAT manual equation 2.3.11
-      bcv = 0.
-      bcv = sol_cov(j) /                                                &                                                
-                       (sol_cov(j) + Exp(7.563 - 1.297e-4 * sol_cov(j)))
+      cover = pl_mass(j)%ab_gr_com%m + rsd1(j)%tot_com%m
+      bcv = cover / (cover + Exp(7.563 - 1.297e-4 * cover))
       if (sno_hru(j) /= 0.) then
         if (sno_hru(j) <= 120.) then
           xx = 0.

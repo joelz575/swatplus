@@ -3,7 +3,7 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine initializes the values for some of the arrays 
 
-      use hru_module, only : bio_min,brt,bss,canstor,cn2,cumei,   &
+      use hru_module, only : brt,bss,canstor,cn2,cumei,   &
        cumeira,cumrai,cumrt,dormhr,filterw,grz_days,  &
        hru,igrz, isep,isep_ly,iseptic,itb,        &
        latno3,orgn_con,orgp_con,par,phubase,ranrns_hru,     &
@@ -12,7 +12,6 @@
 
       implicit none
 
-      real :: dorm_flag                   !                   |
       integer :: iop                      !none               !counter
       real :: pltnfr                      !kg N/kg biomass    |nitrogen uptake parameter normal fraction
                                           !                   |of N in crop biomass at emergence 
@@ -29,7 +28,6 @@
       cumrt = 0.
       ranrns_hru = 20.
 !    Drainmod tile equations  01/2006
-      bio_min = 0.
       brt = 0.
       bss = 0.
       canstor = 0.
@@ -37,7 +35,6 @@
 !!    Initialization by balaji
       cn2 = 0.
       dormhr = 0.
-      dorm_flag = 0
       eo_30d = 0.
       filterw = 0.
 

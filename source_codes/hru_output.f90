@@ -7,6 +7,7 @@
       use basin_module
       use output_landscape_module
       use hydrograph_module, only : sp_ob1, ob
+      use organic_mineral_mass_module
       
       implicit none
       
@@ -185,14 +186,11 @@
            do ipl = 1, pcom(j)%npl
              idp = pcom(j)%plcur(ipl)%idplt
              if (pcom(j)%plcur(ipl)%harv_num > 0) then 
-               pcom(j)%plcur(ipl)%yield = pcom(j)%plcur(ipl)%yield /           &
-                                         pcom(j)%plcur(ipl)%harv_num
+               pl_mass(j)%yield_tot(ipl) = pl_mass(j)%yield_tot(ipl) / float(pcom(j)%plcur(ipl)%harv_num)
              endif
-            write (4008,103) time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm,   &
-                                                 pcom(j)%plcur(ipl)%yield
+            write (4008,103) time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm, pl_mass(j)%yield_tot(ipl)
             if (pco%csvout == "y") then
-              write (4009,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm,   &
-                                                 pcom(j)%plcur(ipl)%yield 
+              write (4009,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm, pl_mass(j)%yield_tot(ipl) 
             end if
            end do
          end if
@@ -201,7 +199,7 @@
 100   format (4i6,2i8,2x,a,28f12.3)
 101   format (4i6,2i8,2x,a,20f12.3)
 102   format (4i6,2i8,2x,a,20f12.3)
-103   format (4i6,i8,4x,a,5x,f12.3)
+103   format (4i6,i8,4x,a,5x,4f12.3)
 104   format (4i6,2i8,2x,a8,4f12.3,23f17.3)
        
       end subroutine hru_output

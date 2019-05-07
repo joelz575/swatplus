@@ -87,17 +87,10 @@
           end if
           end do
         end do
-        !initialize hru and hru_lte
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
-        do iihru = 1, sp_ob%hru_lte
-          hlt_init(iihru) = hlt(iihru)
-        end do
-        !initialize swat deg channel data
-        do iihru = 1, sp_ob%hru_lte
-          sdch_init(iihru) = sd_ch(iihru)
-        end do
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! 1st cover adjustment 
         if (isim > 0) then
           write (4601,*) " first cover adj "
@@ -153,17 +146,10 @@
             end if
           end do
         end do
-        !initialize hru and hru_lte
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
-        do iihru = 1, sp_ob%hru_lte
-          hlt_init(iihru) = hlt(iihru)
-        end do
-        !initialize swat deg channel data
-        do iihru = 1, sp_ob%hru_lte
-          sdch_init(iihru) = sd_ch(iihru)
-        end do
+        
+        !! re-initialize all objects
+        call re_initialize
+
         ! cover adjustment
         if (isim > 0) then
           write (4601,*) " cover adj "
@@ -215,17 +201,10 @@
           end if
           end do
         end do
-        !initialize hru and hru_lte
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
-        do iihru = 1, sp_ob%hru_lte
-          hlt_init(iihru) = hlt(iihru)
-        end do
-        !initialize swat deg channel data
-        do iihru = 1, sp_ob%hru_lte
-          sdch_init(iihru) = sd_ch(iihru)
-        end do
+                
+        !! re-initialize all objects
+        call re_initialize
+
         ! 1st bank shear coefficient adjustment 
         if (isim > 0) then
           write (4601,*) " first bank shear coeff adj "
@@ -281,17 +260,10 @@
             end if
           end do
         end do
-        !initialize hru and hru_lte
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
-        do iihru = 1, sp_ob%hru_lte
-          hlt_init(iihru) = hlt(iihru)
-        end do
-        !initialize swat deg channel data
-        do iihru = 1, sp_ob%hru_lte
-          sdch_init(iihru) = sd_ch(iihru)
-        end do
+                
+        !! re-initialize all objects
+        call re_initialize
+
         ! bank shear coefficient adjustment
         if (isim > 0) then
           write (4601,*) " bank shear coeff adj "
@@ -343,17 +315,10 @@
           end if
           end do
         end do
-        !initialize hru and hru_lte
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
-        do iihru = 1, sp_ob%hru_lte
-          hlt_init(iihru) = hlt(iihru)
-        end do
-        !initialize swat deg channel data
-        do iihru = 1, sp_ob%hru_lte
-          sdch_init(iihru) = sd_ch(iihru)
-        end do
+                
+        !! re-initialize all objects
+        call re_initialize
+
         ! 1st erodibility adjustment 
         if (isim > 0) then
           write (4601,*) " first erodibility adj "
@@ -409,17 +374,10 @@
             end if
           end do
         end do
-        !initialize hru and hru_lte
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
-        do iihru = 1, sp_ob%hru_lte
-          hlt_init(iihru) = hlt(iihru)
-        end do
-        !initialize swat deg channel data
-        do iihru = 1, sp_ob%hru_lte
-          sdch_init(iihru) = sd_ch(iihru)
-        end do
+                
+        !! re-initialize all objects
+        call re_initialize
+
         ! erodibility adjustment
         if (isim > 0) then
           write (4601,*) " erodibility adj "
@@ -473,16 +431,10 @@
           end do
         end do
         !initialize hru and hru_lte
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
-        do iihru = 1, sp_ob%hru_lte
-          hlt_init(iihru) = hlt(iihru)
-        end do
-        !initialize swat deg channel data
-        do iihru = 1, sp_ob%hru_lte
-          sdch_init(iihru) = sd_ch(iihru)
-        end do
+                
+        !! re-initialize all objects
+        call re_initialize
+
         ! 1st erodibility adjustment 
         if (isim > 0) then
           write (4601,*) " first head cut erodibility adj "
@@ -540,17 +492,10 @@
             end if
           end do
         end do
-        !initialize hru and hru_lte
-        do iihru = 1, sp_ob%hru
-          call hru_re_initialize (iihru)
-        end do
-        do iihru = 1, sp_ob%hru_lte
-          hlt_init(iihru) = hlt(iihru)
-        end do
-        !initialize swat deg channel data
-        do iihru = 1, sp_ob%hru_lte
-          sdch_init(iihru) = sd_ch(iihru)
-        end do
+                
+        !! re-initialize all objects
+        call re_initialize
+
         ! erodibility adjustment
         if (isim > 0) then
           write (4601,*) " head cut erodibility adj "

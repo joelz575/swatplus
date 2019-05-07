@@ -20,8 +20,7 @@
       real :: ch_l                 !             | 
       real :: t_ch                 !hr           |time for flow entering the farthest upstream 
                                    !             |channel to reach the subbasin outlet
-      real :: sumn                 !kg N/ha      |total amount of nitrate stored in soil profile
-          
+
      ! compute weighted Mannings n for each subbasin
       do iru = 1, sp_ob%ru
         ru_n(iru) = 0.
@@ -72,7 +71,6 @@
         else
           brt(ihru) = 1. - Exp(-bsn_prm%surlag / tconc(ihru))
         endif
-        sumn = sumn + hru(ihru)%luse%ovn * hru(ihru)%km
       end do
       
      return

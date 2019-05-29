@@ -81,8 +81,12 @@
       type (hyd_output) :: resz
       
       type (hyd_output), dimension(:),allocatable :: om_init_water
-      type (hyd_output), dimension(:),allocatable :: ch_stor
       type (hyd_output), dimension(:),allocatable :: ch_om_water_init
+      type (hyd_output), dimension(:),allocatable :: ch_stor
+      type (hyd_output), dimension(:),allocatable :: ch_stor_m
+      type (hyd_output), dimension(:),allocatable :: ch_stor_y
+      type (hyd_output), dimension(:),allocatable :: ch_stor_a
+      type (hyd_output) :: chaz
       
       type (hyd_output), dimension(:), allocatable, save :: res_in_d
       type (hyd_output), dimension(:), allocatable, save :: res_in_m
@@ -123,6 +127,10 @@
       type (hyd_output), dimension(:), allocatable, save :: ch_in_m
       type (hyd_output), dimension(:), allocatable, save :: ch_in_y
       type (hyd_output), dimension(:), allocatable, save :: ch_in_a
+      type (hyd_output) :: bch_stor_d
+      type (hyd_output) :: bch_stor_m
+      type (hyd_output) :: bch_stor_y
+      type (hyd_output) :: bch_stor_a
       type (hyd_output) :: bch_in_d
       type (hyd_output) :: bch_in_m
       type (hyd_output) :: bch_in_y
@@ -414,7 +422,126 @@
       end type hyd_header
       type (hyd_header) :: hyd_hdr
       
-        type hyd_header_units  !pts (point source)/deposition/ru (routing_unit) files output uses this units header
+       type hyd_stor_header        
+        character (len=17) :: flo_stor  =    "         flo_stor"      !! ha-m         |volume of water        
+        character (len=15) :: sed_stor  =    "       sed_stor"        !! metric tons  |sediment
+        character (len=15) :: orgn_stor =    "      orgn_stor"        !! kg N         |organic N
+        character (len=15) :: sedp_stor =    "      sedp_stor"        !! kg P         |organic P
+        character (len=15) :: no3_stor  =    "       no3_stor"        !! kg N         |NO3-N
+        character (len=15) :: solp_stor =    "      solp_stor"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla_stor =    "      chla_stor"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3_stor  =    "       nh3_stor"        !! kg N         |NH3
+        character (len=15) :: no2_stor  =    "       no2_stor"        !! kg N         |NO2
+        character (len=15) :: cbod_stor =    "      cbod_stor"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox_stor  =    "       dox_stor"        !! kg           |dissolved oxygen
+        character (len=15) :: san_stor  =    "       san_stor"        !! tons         |detached sand
+        character (len=15) :: sil_stor  =    "       sil_stor"        !! tons         |detached silt
+        character (len=15) :: cla_stor  =    "       cla_stor"        !! tons         |detached clay
+        character (len=15) :: sag_stor  =    "       sag_stor"        !! tons         |detached small ag
+        character (len=15) :: lag_stor  =    "       lag_stor"        !! tons         |detached large ag
+        character (len=15) :: grv_stor  =    "       grv_stor"        !! tons         |gravel
+        character (len=15) :: temp_stor =    "      temp_stor"        !! deg c        |temperature
+      end type hyd_stor_header
+      type (hyd_stor_header) :: hyd_stor_hdr
+      
+      type hyd_in_header        
+        character (len=15) :: flo_in  =    "         flo_in"      !! ha-m         |volume of water           
+        character (len=15) :: sed_in  =    "         sed_in"        !! metric tons  |sediment
+        character (len=15) :: orgn_in =    "        orgn_in"        !! kg N         |organic N
+        character (len=15) :: sedp_in =    "        sedp_in"        !! kg P         |organic P
+        character (len=15) :: no3_in  =    "         no3_in"        !! kg N         |NO3-N
+        character (len=15) :: solp_in =    "        solp_in"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla_in =    "        chla_in"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3_in  =    "         nh3_in"        !! kg N         |NH3
+        character (len=15) :: no2_in  =    "         no2_in"        !! kg N         |NO2
+        character (len=15) :: cbod_in =    "        cbod_in"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox_in  =    "         dox_in"        !! kg           |dissolved oxygen
+        character (len=15) :: san_in  =    "         san_in"        !! tons         |detached sand
+        character (len=15) :: sil_in  =    "         sil_in"        !! tons         |detached silt
+        character (len=15) :: cla_in  =    "         cla_in"        !! tons         |detached clay
+        character (len=15) :: sag_in  =    "         sag_in"        !! tons         |detached small ag
+        character (len=15) :: lag_in  =    "         lag_in"        !! tons         |detached large ag
+        character (len=15) :: grv_in  =    "         grv_in"        !! tons         |gravel
+        character (len=15) :: temp_in =    "        temp_in"        !! deg c        |temperature
+      end type hyd_in_header
+      type (hyd_in_header) :: hyd_in_hdr
+      
+    type hyd_out_header        
+        character (len=15) :: flo_out  =    "        flo_out"      !! ha-m         |volume of water       
+        character (len=15) :: sed_out  =    "        sed_out"        !! metric tons  |sediment
+        character (len=15) :: orgn_out =    "       orgn_out"        !! kg N         |organic N
+        character (len=15) :: sedp_out =    "       sedp_out"        !! kg P         |organic P
+        character (len=15) :: no3_out  =    "        no3_out"        !! kg N         |NO3-N
+        character (len=15) :: solp_out =    "       solp_out"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla_out =    "       chla_out"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3_out  =    "        nh3_out"        !! kg N         |NH3
+        character (len=15) :: no2_out  =    "        no2_out"        !! kg N         |NO2
+        character (len=15) :: cbod_out =    "       cbod_out"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox_out  =    "        dox_out"        !! kg           |dissolved oxygen
+        character (len=15) :: san_out  =    "        san_out"        !! tons         |detached sand
+        character (len=15) :: sil_out  =    "        sil_out"        !! tons         |detached silt
+        character (len=15) :: cla_out  =    "        cla_out"        !! tons         |detached clay
+        character (len=15) :: sag_out  =    "        sag_out"        !! tons         |detached small ag
+        character (len=15) :: lag_out  =    "        lag_out"        !! tons         |detached large ag
+        character (len=15) :: grv_out  =    "        grv_out"        !! tons         |gravel
+        character (len=15) :: temp_out =    "       temp_out"        !! deg c        |temperature
+      end type hyd_out_header
+      type (hyd_out_header) :: hyd_out_hdr
+      
+      
+      type ch_watbod_header 
+        character (len=6) :: day           = "      "
+        character (len=6) :: mo            = "      "
+        character (len=6) :: day_mo        = "      "
+        character (len=6) :: yrc           = "      "
+        character (len=8) :: isd           = "        "                                            
+        character (len=8) :: id            = "        "       
+        character (len=15) :: name         = "              " 
+        character (len=15) :: area_ha      = '          area'
+        character (len=15) :: precip       = '        precip'
+        character (len=15) :: evap         = '          evap'
+        character (len=15) :: seep         = '          seep'
+      end type ch_watbod_header
+      type (ch_watbod_header) :: ch_watbod_hdr
+      
+      type ch_watbod_header_units
+        character (len=6) :: day           = "  jday"
+        character (len=6) :: mo            = "   mon"
+        character (len=6) :: day_mo        = "   day"
+        character (len=6) :: yrc           = "    yr"
+        character (len=8) :: isd           = "   unit "                                            
+        character (len=8) :: id            = " gis_id "      
+        character (len=15) :: name         = " name         "      
+        character (len=15) :: area_ha      = '            ha'
+        character (len=15) :: precip       = '          ha-m'
+        character (len=15) :: evap         = '          ha-m'
+        character (len=15) :: seep         = '          ha-m'
+      end type ch_watbod_header_units
+      type (ch_watbod_header_units) :: ch_watbod_hdr_units
+      
+      type hyd_header_units1
+        character (len=15) :: flo    =  "           ha-m"      !! m^3          |volume of water
+        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
+        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
+        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
+        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
+        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
+        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
+        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
+        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
+        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
+        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
+        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
+        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature
+      end type hyd_header_units1
+      type (hyd_header_units1) :: hyd_hdr_units1 
+      
+       type hyd_header_units  !pts (point source)/deposition/ru (routing_unit) files output uses this units header
         character (len=11) :: day    =  "           "
         character (len=12) :: mo     =  "            "
         character (len=12) :: day_mo =  "            "

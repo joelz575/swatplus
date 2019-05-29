@@ -53,6 +53,9 @@
           lai_drop = amax1 (0., lai_drop)
           leaf_drop = lai_drop * pl_mass(j)%leaf(ipl)
           rsd1(j)%tot(ipl) = rsd1(j)%tot(ipl) + leaf_drop
+          if (j==1 .and. rsd1(j)%tot(ipl)%n > 100) then
+            iob = 1
+          end if
           pl_mass(j)%leaf(ipl) = pl_mass(j)%leaf(ipl) - leaf_drop
         end if
       end if

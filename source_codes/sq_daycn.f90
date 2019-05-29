@@ -27,7 +27,7 @@
                         !              |calculation result
       real :: r2        !none          |retention parameter in CN equation
       real :: surfqimp  !mm H2O        |surface runoff from impervious area
-      real :: ulu       !              |
+      integer :: ulu    !              |
 
       j = ihru
 
@@ -35,6 +35,7 @@
       bb = .2 * r2
       pb = precip_eff - bb
 
+      surfq(j) = 0.
       if (pb > 0.) then
         surfq(j) = pb * pb / (precip_eff + .8 * r2)
       end if

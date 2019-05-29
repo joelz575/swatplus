@@ -33,7 +33,7 @@
       hnb_d(j)%lab_min_p = 0.
       hnb_d(j)%act_sta_p = 0.
 
-      rto = bsn_prm%psp / (1.-bsn_prm%psp)
+      rto = bsn_prm%psp / (1. - bsn_prm%psp)
 
       do l = 1, soil(j)%nly
         rmp1 = (soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto)

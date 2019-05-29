@@ -158,6 +158,7 @@
         if (bsn_cc%rte == 0) call ch_rtday
         if (bsn_cc%rte == 1) call ch_rtmusk
 
+        ben_area = ch_hyd(jhyd)%l *ch_hyd(jhyd)%w 
         if (bsn_cc%wq == 1)  call ch_watqual3
         
         ob(icmd)%hd(1)%orgn = ch(jrch)%organicn * rtwtr /1000.
@@ -176,9 +177,9 @@
         if (ch_sed(jsed)%eqn == 3) call ch_rtsed_Molinas_Wu
         if (ch_sed(jsed)%eqn == 4) call ch_rtsed_yangsand
 
-        if (cs_db%num_pests > 0) then
-          call ch_rtpest 
-        end if
+!        if (cs_db%num_pests > 0) then
+!          call ch_rtpest 
+!        end if
         
         rtwtr_d = rtwtr
         rttlc_d = rttlc

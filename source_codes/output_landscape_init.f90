@@ -467,7 +467,7 @@
       end if  
       
 !!!  Water Balance
-      if (db_mx%lsu_out > 0 .and. time%step == 0) then   
+      if (db_mx%lsu_out > 0 .and. time%step == 0) then   !! Water Balance  
         if (pco%wb_lsu%d == "y") then
           open (2140,file="lsunit_wb_day.txt",recl = 1500)
           write (2140,*) bsn%name, prog

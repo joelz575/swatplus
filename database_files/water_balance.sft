@@ -1,0 +1,6 @@
+water_balance.sft
+   1
+NAME   NLUM 
+basin   1  
+  NAME      SRR	    	LFR	PCR	ETR      TFR      SED     ORGN     ORGP      NO3     SOLP
+  null	    0.10	0.05	0.05    0.70  	 0.10     0.10     0.00     0.00     0.00     0.00

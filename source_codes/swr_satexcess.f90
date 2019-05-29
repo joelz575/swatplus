@@ -115,6 +115,7 @@
         if (soil(j)%phys(j1)%st - soil(j)%phys(j1)%ul > 1.e-4) then
           sepday = sepday + (soil(j)%phys(j1)%st - soil(j)%phys(j1)%ul)
           soil(j)%phys(j1)%st = soil(j)%phys(j1)%ul
+          soil(j)%phys(j1+1)%st = soil(j)%phys(j1+1)%st + sepday
         end if
       else
 

@@ -51,7 +51,7 @@
         !! -> sor mass/sol mass = Kd * (kg sed)/(L water) --> sol mass/tot mass = 1 / (1 + Kd * (kg sed)/(L water))
         !! water column --> kg sed/L water = t/m3 = t / (m3 - (t * m3/t)) --> sedvol = sed/particle density(2.65)
         sedmass_watervol = (res(jres)%sed) / (res(jres)%flo - (res(jres)%sed / 2.65))
-        kd = pestdb(jpst)%koc * res_sed(jres)%carbon / 100.
+        kd = pestdb(jpst)%koc * res_sed(jsed)%carbon / 100.
         fd1 = 1. / (1. + kd * sedmass_watervol)
         fd1 = amin1 (1., fd1)
         fp1 = 1. - fd1

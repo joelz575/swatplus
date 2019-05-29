@@ -31,6 +31,7 @@
             
             rto = amin1(1.0, rto ** .5)
             ru_elem(ielem)%dr = rto .add. hz
+            ru_elem(ielem)%dr%flo = 1.
           end if
           if (ru_elem(ielem)%dr_name == "full") then
             ru_elem(ielem)%dr = 1. .add. hz

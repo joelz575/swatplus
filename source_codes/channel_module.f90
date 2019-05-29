@@ -6,6 +6,7 @@
       integer :: jsed    !units         |description 
       integer :: jnut    !units         |description
       real :: rttime     !hr            |reach travel time
+      real :: ben_area   !m2            |benthic area (bottom sediments)
       real :: rchdep     !m             |depth of flow on day
       real :: rtevp      !m^3 H2O       |evaporation from reach on day
       real :: rttlc      !m^3 H2O       |transmission losses from reach on day

@@ -9,6 +9,7 @@
       use channel_module
       use ch_pesticide_module
       use climate_module
+      use water_body_module
     
       implicit none     
     
@@ -103,7 +104,10 @@
       
       !! set ht1 to incoming hydrograph
       ht1 = ob(icmd)%hin
-      chsd_d(ich)%flo_in = ht1%flo / 86400.
+      chsd_d(ich)%flo_in = ht1%flo / 86400.     !flow for morphology output
+      ch_in_d(ich) = ht1                        !set inflow om hydrograph
+      ch_in_d(ich)%flo = ht1%flo / 86400.       !flow for om output
+      
       !! if connected to aquifer - add flow
       if (sd_ch(ich)%aqu_link > 0) then
         iaq = sd_ch(ich)%aqu_link
@@ -116,18 +120,16 @@
       end if
       hcs1 = obcs(icmd)%hin
       
-      !! set incoming flow and sediment
-      if (ht1%flo < 1.e-6) then
-        ht2 = hz
-        peakrate = 0.
-      else
+      !! set outgoing flow and sediment - ht2
+      ht2 = hz
+      peakrate = 0.
       hyd_rad = 0.
       timeint = 0.
 
       !assume triangular hydrograph
       peakrate = 2. * ht1%flo / (1.5 * sd_chd(isd_db)%tc)
       peakrate = peakrate / 60.   !convert min to sec
-      
+      if (peakrate > 1.e-9) then
          !! compute changes in channel dimensions
           chside = sd_chd(isd_db)%chss
           b = sd_ch(ich)%chw
@@ -139,7 +141,7 @@
           a = b * sd_ch(ich)%chd + chside * sd_ch(ich)%chd * sd_ch(ich)%chd
           rh = a / p
           sd_ch_vel(ich)%area = a
-          sd_ch_vel(ich)%vel_bf = Qman(a,rh,sd_chd(isd_db)%chn,sd_ch(ich)%chs)
+          sd_ch_vel(ich)%vel_bf = Qman (a, rh, sd_chd(isd_db)%chn, sd_ch(ich)%chs)
   
           IF (peakrate > sd_ch_vel(ich)%vel_bf) THEN
           !! OVERBANK FLOOD
@@ -156,7 +158,7 @@
             DO WHILE (sdti < peakrate)
               rchdep = rchdep + 0.01
               rcharea = (sd_ch_vel(ich)%wid_btm + chside * rchdep) * rchdep
-              p=sd_ch_vel(ich)%wid_btm + 2. * rchdep*Sqrt(1. + chside *chside)
+              p = sd_ch_vel(ich)%wid_btm + 2. * rchdep * Sqrt (1. + chside *chside)
               rh = rcharea / p
               sdti = Qman(rcharea, rh, sd_chd(isd_db)%chn, sd_ch(ich)%chs)
               !need to save hydraulic radius and time for each flow interval for downcutting and widening
@@ -166,7 +168,7 @@
                 timeint(ivalint) = (tb_pr - tb) / 3600.   !sec to hr
                 tb_pr = tb
                 ivalint = ivalint + 1
-                valint = float (ivalint) / float(maxint)
+                valint = float (ivalint) / float (maxint)
               end if
             END DO
             
@@ -283,7 +285,7 @@
         pr_ratio = (sd_ch(ich)%chl - sd_ch(ich)%hc_len / 1000.) / sd_ch(ich)%chl
         pr_ratio = Max(pr_ratio, 0.)
         
-        !new q*qp (m3 * m3/s) equation for entire runoff event
+        !! new q*qp (m3 * m3/s) equation for entire runoff event
         qmm = ht1%flo / (10. * ob(icmd)%area_ha)
         if (qmm > 3.) then
           qh = (ht1%flo / 86400.) ** .5 * sd_chd(isd_db)%hc_hgt ** .225
@@ -363,66 +365,67 @@
           sd_ch(ich)%chs = MAX(sd_chd(isd_db)%chseq, sd_ch(ich)%chs)
 
         end if
-        
-        if (bsn_cc%wq == 1) then
-         !! use modified qual-2e routines
-         ht3 = ht1
-         call hyd_convert_mass_to_conc (ht3)
-         jnut = sd_dat(ich)%nut
-         call ch_watqual4
-         !! convert mass to concentration
-         call hyd_convert_conc_to_mass (ht2)
-         
-         !! compute nutrient losses using 2-stage ditch model
-         !call sd_channel_nutrients
-        end if
-        !! convert concentrations from qual-2e back to mass
-        !call hyd_convert_mass (ht3)
-        
-        !! route constituents
-        idb = ob(icmd)%props
-        jrch = ich
-        call ch_rtpest
-        call ch_rtpath
 
-      END IF
-          
       !! compute sediment leaving the channel
 	  washld = (1. - sd_chd(isd_db)%bedldcoef) * ht1%sed
 	  sedout = washld + hc_sed + deg_btm + deg_bank
       dep = bedld - deg_btm - deg_bank
       ht2%sed = sedout
-      
-      !! output_channel
-      chsd_d(ich)%flo = ht2%flo / 86400.  !adjust if overbank flooding is moved to landscape
-      chsd_d(ich)%peakr = peakrate 
-      chsd_d(ich)%sed_in = ob(icmd)%hin%sed
-      chsd_d(ich)%sed_out = sedout
-      chsd_d(ich)%washld = washld
-      chsd_d(ich)%bedld = bedld
-      chsd_d(ich)%dep = dep
-      chsd_d(ich)%deg_btm = deg_btm
-      chsd_d(ich)%deg_bank = deg_bank
-      chsd_d(ich)%hc_sed = hc_sed
-      chsd_d(ich)%width = sd_ch(ich)%chw
-      chsd_d(ich)%depth = sd_ch(ich)%chd
-      chsd_d(ich)%slope = sd_ch(ich)%chs
-      chsd_d(ich)%deg_btm_m = erode_btm
-      chsd_d(ich)%deg_bank_m = erode_bank
-      chsd_d(ich)%hc_m = hc
-      
+
       !! set values for outflow hydrograph
-      !! calculate flow velocity
+      !! calculate flow velocity and travel time
+      idb = ob(icmd)%props
+      jrch = ich
       vc = 0.001
       if (rcharea > 1.e-4 .and. ht1%flo > 1.e-4) then
         vc = peakrate / rcharea
         if (vc > sd_ch_vel(ich)%celerity_bf) vc = sd_ch_vel(ich)%celerity_bf
+        rttime = sd_ch(jhyd)%chl * 1000. / (3600. * vc)
+        if (time%step == 0) rt_delt = 1.
+        if (bsn_cc%wq == 1) then
+          !! use modified qual-2e routines
+          ht3 = ht1
+          call hyd_convert_mass_to_conc (ht3)
+          jnut = sd_dat(ich)%nut
+          ben_area = sd_ch(ich)%chw * sd_ch(ich)%chl
+          call ch_watqual4
+          !! convert mass to concentration
+          call hyd_convert_conc_to_mass (ht2)
+         
+          !! compute nutrient losses using 2-stage ditch model
+          !call sd_channel_nutrients
+        end if
+
+        !! route constituents
+        call ch_rtpest
+        call ch_rtpath
       end if
-
-      !! calculate velocity and travel time
-      !vc = sdti / rcharea
-      rttime = sd_ch(jhyd)%chl * 1000. / (3600. * vc)
-
+      
+      end if    ! peakrate > 0
+      
+      !! compute water balance - precip, evap and seep
+      !! km * m * 1000 m/km * ha/10000 m2 = ha
+      ch_wat_d(ich)%area_ha = sd_ch(ich)%chl * sd_ch(ich)%chw / 10.
+      !! mm * ha * m/1000 mm = ha-m
+      ch_wat_d(ich)%precip = wst(iwst)%weat%precip * ch_wat_d(ich)%area_ha / 1000.
+      ch_wat_d(ich)%evap = bsn_prm%evrch * wst(iwst)%weat%pet * ch_wat_d(ich)%area_ha / 1000.
+      ch_wat_d(ich)%seep = 24. * sd_chd(isd_db)%chk * ch_wat_d(ich)%area_ha / 1000.
+      ht1%flo = ht1%flo + 10. * ch_wat_d(ich)%precip      !ha-m * 10 = m3
+      !! subtract evaporation
+      if (ht1%flo < 10. * ch_wat_d(ich)%evap) then
+        ch_wat_d(ich)%evap = ht1%flo / 10.      !m3 -> ha-m
+        ht1%flo = 0.
+      else
+        ht1%flo = ht1%flo - 10. * ch_wat_d(ich)%evap
+      end if
+      !! subtract seepage
+      if (ht1%flo < 10. * ch_wat_d(ich)%seep) then
+        ch_wat_d(ich)%seep = ht1%flo / 10.      !m3 -> ha-m
+        ht1%flo = 0.
+      else
+        ht1%flo = ht1%flo - 10. * ch_wat_d(ich)%seep
+      end if
+      
       !! calculate hydrograph leaving reach and storage in channel
       if (time%step == 0) rt_delt = 1.
       det = 24.* rt_delt
@@ -450,7 +453,29 @@
       if (cs_db%num_pests > 0) then
         obcs(icmd)%hd(1)%pest = hcs2%pest
       end if
-
+      
+      !! output channel organic-mineral
+      ch_out_d(ich) = ht2                       !set inflow om hydrograph
+      ch_out_d(ich)%flo = ht2%flo / 86400.      !flow for om output
+      
+      !! output channel morphology
+      chsd_d(ich)%flo = ht2%flo / 86400.        !adjust if overbank flooding is moved to landscape
+      chsd_d(ich)%peakr = peakrate 
+      chsd_d(ich)%sed_in = ob(icmd)%hin%sed
+      chsd_d(ich)%sed_out = sedout
+      chsd_d(ich)%washld = washld
+      chsd_d(ich)%bedld = bedld
+      chsd_d(ich)%dep = dep
+      chsd_d(ich)%deg_btm = deg_btm
+      chsd_d(ich)%deg_bank = deg_bank
+      chsd_d(ich)%hc_sed = hc_sed
+      chsd_d(ich)%width = sd_ch(ich)%chw
+      chsd_d(ich)%depth = sd_ch(ich)%chd
+      chsd_d(ich)%slope = sd_ch(ich)%chs
+      chsd_d(ich)%deg_btm_m = erode_btm
+      chsd_d(ich)%deg_bank_m = erode_bank
+      chsd_d(ich)%hc_m = hc
+      
       !! set pesticide output variables
       do ipest = 1, cs_db%num_pests
         chpst_d(ich)%pest(ipest)%tot_in = obcs(icmd)%hin%pest(ipest)

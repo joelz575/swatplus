@@ -24,21 +24,27 @@
  
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
  
-      real :: tres, tdel, prock, term_m, cprev, cint
-      
-      help1=1/tres-prock
-      help2=exp(-tdel*help1)
-      help3=cint/tres+term_m
-      help4=help3/help1
-      term1=cprev*help2
-      term2=help4*(1-help2)
-      yy=term1+term2
-      wq_semianalyt = term1+term2
+      real, intent (in) :: tres
+      real, intent (in) :: tdel
+      real, intent (in) :: prock
+      real, intent (in) :: term_m
+      real, intent (in) :: cprev
+      real, intent (in) :: cint
+      real :: help1, help2, help3, help4, term1, term2, yy
+
+      help1 = 1. / tres - prock
+      help2 = exp(-tdel * help1)
+      help3 = cint / tres + term_m
+      help4 = help3 / help1
+      term1 = cprev * help2
+      term2 = help4 * (1. - help2)
+      yy = term1 + term2
+      wq_semianalyt = term1 + term2
 
       return
       end function
       
-     function wq_k2m(t1, t2, tk, c1, c2)
+     function wq_k2m (t1, t2, tk, c1, c2)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    This function solves a semi-analytic solution for the QUAL2E equations (cfr Befekadu Woldegiorgis).
@@ -63,16 +69,21 @@
 !!    Intrinsic: Exp
  
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
- 
-      real :: t1, t2, tk, tm, c1, c2
+
+      real, intent (in) :: t1
+      real, intent (in) :: t2
+      real, intent (in) :: tk
+      real, intent (in) :: c1
+      real, intent (in) :: c2
+      real :: h1, h2, help, tm, h3
       
-         h1= wq_semianalyt(t1,t2,0.,0.,c1,c2)
-         h2=wq_semianalyt(t1,t2,0.,tk,c1,c2)
-         help=exp(-t2/t1)
+      h1 = wq_semianalyt (t1, t2, 0., 0., c1, c2)
+      h2 = wq_semianalyt (t1, t2, 0., tk, c1, c2)
+      help = exp(-t2 / t1)
          
-         tm=(h2-c1*help)/(t1*(1-help))-c2/t1
-         h3=wq_semianalyt(t1,t2,tm,0.,c1,c2)
-         wq_k2m=tm
+      tm = (h2 - c1 * help) / (t1 * (1. - help)) - c2 / t1
+      h3 = wq_semianalyt (t1, t2, tm, 0., c1, c2)
+      wq_k2m = tm
 
       return
       end function

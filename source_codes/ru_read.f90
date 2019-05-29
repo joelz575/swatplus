@@ -47,62 +47,51 @@
         allocate (ru_m(sp_ob%ru))
         allocate (ru_y(sp_ob%ru))
         allocate (ru_a(sp_ob%ru))
-        
+        allocate (ru_tc(0:sp_ob%ru))
+        allocate (ru_n(0:sp_ob%ru))
+        allocate (uhs(0:sp_ob%ru,time%step+1))
+        allocate (hyd_flo(time%step+1))
+        allocate (itsb(sp_ob%ru))
+
+        hyd_flo = 0.
+        uhs = 0
+
         rewind (107)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header
         if (eof < 0) exit
 
-      !! read subbasin parameters
+        !! read subbasin parameters
         do iru = 1, mru_db
           read (107,*,iostat=eof) i
           if (eof < 0) exit
           backspace (107)
           read (107,*,iostat=eof) k, ru(i)%name, ru(i)%dbsc
           if (eof < 0) exit
-        end do
-     
-      !! read spatial input to each subbasin (ie hru fractions)
 
-      allocate (ru_tc(0:sp_ob%ru))
-      allocate (ru_n(0:sp_ob%ru))
-      allocate (uhs(0:sp_ob%ru,time%step+1))
-      allocate (hyd_flo(time%step+1))
-      allocate (itsb(sp_ob%ru))
-
-      hyd_flo = 0.
-      uhs = 0
-
-      !! need a hyd_output name for sub_dr to xwalk
-!      do ith = 1, db_mx%topo
-!        if (ru(i)%dbsc%elem_dr == topo_db(ith)%name) then
-!             ru(i)%dbs%elem_dr = ith
-!        exit
-!        end if
-!      end do
-            
-      do ith = 1, db_mx%topo
-        if (ru(i)%dbsc%toposub_db == topo_db(ith)%name) then
-          ru(i)%dbs%toposub_db = ith
-          exit
-        end if
-        !if (ru(i)%dbs%toposub_db == 0) write (9001,*) ru(i)%dbsc%toposub_db, " not found (ru-toposub)" 
-      end do
+          do ith = 1, db_mx%topo
+            if (ru(i)%dbsc%toposub_db == topo_db(ith)%name) then
+              ru(i)%dbs%toposub_db = ith
+              exit
+            end if
+            ! if (ru(i)%dbs%toposub_db == 0) write (9001,*) ru(i)%dbsc%toposub_db, " not found (ru-toposub)" 
+          end do
       
-      do ith = 1, db_mx%field
-        if (ru(i)%dbsc%field_db == field_db(ith)%name) then
-          ru(i)%dbs%field_db = ith
-          exit
-        end if
-        !if (ru(i)%dbs%field_db == 0) write (9001,*) ru(i)%dbsc%field_db, " not found (ru-field_db)"
-      end do
+          do ith = 1, db_mx%field
+            if (ru(i)%dbsc%field_db == field_db(ith)%name) then
+              ru(i)%dbs%field_db = ith
+              exit
+            end if
+            ! if (ru(i)%dbs%field_db == 0) write (9001,*) ru(i)%dbsc%field_db, " not found (ru-field_db)"
+          end do
+        end do      ! iru = 1, mru_db
 
       
       close(107)
       exit
-      enddo
-      endif      
+      end do
+      end if      
 
       return
       end subroutine ru_read

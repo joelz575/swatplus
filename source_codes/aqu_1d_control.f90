@@ -76,6 +76,9 @@
 
       !! compute nitrate recharge into the aquifer
       aqu_d(iaq)%rchrg_n = ob(icmd)%hin%no3 / (10. * ob(icmd)%area_ha)
+      if (ob(icmd)%hin%no3 > 1.) then
+        ii = 1
+      end if
       aqu_d(iaq)%no3 = aqu_d(iaq)%no3 + aqu_d(iaq)%rchrg_n
       aqu_prm(iaq)%rchrgn_prev = aqu_d(iaq)%rchrg_n
       
@@ -137,6 +140,8 @@
       do iout = 1, ob(iob_out)%src_tot
         select case (ob(iob_out)%obtyp_out(iout))
         case ("cha")
+          aqu_d(iaq)%flo_cha = aqu_d(iaq)%flo_cha + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
+        case ("sdc")
           aqu_d(iaq)%flo_cha = aqu_d(iaq)%flo_cha + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
         case ("res")
           aqu_d(iaq)%flo_res = aqu_d(iaq)%flo_res + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)

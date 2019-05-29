@@ -85,6 +85,15 @@
             end if
           end do
           
+          !! allocate and read the conditions
+          nconds = cal_upd(i)%conds
+          if (nconds > 0) then
+            allocate (cal_upd(i)%cond(nconds))
+            do icond = 1, nconds
+              read (107,*,iostat=eof) cal_upd(i)%cond(icond)
+            end do
+          end if
+        
           !!if no objects are specified - check all of them
           if (cal_upd(i)%num_tot == 0) then
             ipar = cal_upd(i)%num_db
@@ -128,15 +137,10 @@
             cal_upd(i)%num = defunit_num
             cal_upd(i)%num_elem = ielem1
             deallocate (defunit_num)
-        nconds = cal_upd(i)%conds
-        allocate (cal_upd(i)%cond(nconds))
-        do icond = 1, nconds
-          read (107,*,iostat=eof) cal_upd(i)%cond(icond)
-        end do 
-        
-        end if
-      end do
-      exit
+            
+          end if
+        end do
+        exit
          
       end do     
       end if

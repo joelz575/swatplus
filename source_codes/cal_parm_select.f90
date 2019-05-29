@@ -34,22 +34,23 @@
       
       implicit none
 
-      character(len=16), intent (in) :: chg_parm              !                |               
-      character(len=16), intent (in) :: chg_typ               !variable        |type of change (absval, abschg, pctchg)
-      real, intent (in) :: chg_val                            !                |      
-      real, intent (in) :: absmin                             !                |minimum range for variable 
-      real, intent (in) :: absmax                             !                |maximum change for variable
-      integer, intent (in) :: ielem                           !                | 
-      integer, intent (in) :: num_db                          !                | 
-      integer, intent (in) :: ly                              !                |
-      integer :: nly                                          !                |
-      real :: dep_below_soil                                  !                |
-      real :: alpha                                           !                | 
-      real :: exp                                             !                | 
-      real :: delay                                           !                | 
-      real :: c_val                                           !                | 
-      real :: abmax                                           !                | 
-      real :: chg_par                                         !variable        |new parameter value
+      character(len=16), intent (in) :: chg_parm            !                |               
+      character(len=16), intent (in) :: chg_typ             !variable        |type of change (absval, abschg, pctchg)
+      real, intent (in) :: chg_val                          !                |      
+      real, intent (in) :: absmin                           !                |minimum range for variable 
+      real, intent (in) :: absmax                           !                |maximum change for variable
+      integer, intent (in) :: ielem                         !                | 
+      integer, intent (in) :: num_db                        !                | 
+      integer, intent (in) :: ly                            !                |
+      integer :: nly                                        !                |
+      real :: dep_below_soil                                !                |
+      real :: alpha                                         !                | 
+      real :: exp                                           !                | 
+      real :: delay                                         !                | 
+      real :: c_val                                         !                | 
+      real :: abmax                                         !                | 
+      real :: chg_par                                       !variable        |new parameter value
+      real :: perc_ln_func                                  !none       |function to convert perco to perc_lim
       
 
       select case (chg_parm)
@@ -90,6 +91,7 @@
       case ("lat_ttime")
         hru(ielem)%hyd%lat_ttime = chg_par(hru(ielem)%hyd%lat_ttime,      &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        hru(ielem)%hyd%lat_ttime = 1. - Exp(-1. / hru(ielem)%hyd%lat_ttime)
             
       case ("lat_sed")
         hru(ielem)%hyd%lat_sed = chg_par (hru(ielem)%hyd%lat_sed,         & 
@@ -126,6 +128,13 @@
       case ("perco")
         hru(ielem)%hyd%perco = chg_par (hru(ielem)%hyd%perco,           &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        if (hru(ielem)%hyd%perco > 1.e-9) then
+          perc_ln_func = 1.0052 * log(-log(hru(ielem)%hyd%perco - 1.e-6)) + 5.6862
+          hru(ielem)%hyd%perco_lim = exp(-perc_ln_func)
+          hru(ielem)%hyd%perco_lim = amin1 (1., hru(ielem)%hyd%perco_lim)
+        else
+          hru(ielem)%hyd%perco_lim = 0.
+        end if
         
       case ("lat_orgn")
         hru(ielem)%hyd%lat_orgn = chg_par (hru(ielem)%hyd%lat_orgn,     &
@@ -691,7 +700,7 @@
 
          case ("alpha")
             aqu_prm(ielem)%alpha = chg_par(aqu_prm(ielem)%alpha, ielem, chg_typ, chg_val, absmin, absmax, num_db)
-            aqu_prm(ielem)%alpha_e = Exp(-alpha)
+            aqu_prm(ielem)%alpha_e = Exp(-aqu_prm(ielem)%alpha)
 
          case ("bf_max")
             aqu_prm(ielem)%bf_max = chg_par(aqu_prm(ielem)%bf_max, ielem, chg_typ, chg_val, absmin, absmax, num_db)

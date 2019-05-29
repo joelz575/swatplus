@@ -279,6 +279,7 @@
         end do
                 
         do jrch = 1, sp_ob%chandeg
+          call sd_chanmorph_output (jrch)
           call sd_channel_output (jrch)
           if (cs_db%num_tot > 0) then 
             call cha_pesticide_output (jrch)   
@@ -317,8 +318,9 @@
         if (db_mx%aqu_elem > 0) call basin_aquifer_output
         if (sp_ob%res > 0) call basin_reservoir_output
         if (sp_ob%chan > 0) call basin_channel_output
+        if (sp_ob%chandeg > 0) call basin_chanmorph_output
         if (sp_ob%chandeg > 0) call basin_sdchannel_output
-        !if (sp_ob%recall > 0) call basin_recall_output   !!! all recall outputs need to be addressed
+        if (sp_ob%recall > 0) call basin_recall_output   !!! all recall outputs need to be addressed
         call soil_nutcarb_output
         !call lsreg_output
         !call region_aquifer_output

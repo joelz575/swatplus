@@ -11,6 +11,7 @@
       use constituent_mass_module
       use pesticide_data_module
       use pathogen_data_module
+      use water_body_module
 
       implicit none
       
@@ -47,6 +48,21 @@
       allocate (ch_water(0:sp_ob%chandeg))
       allocate (ch_benthic(0:sp_ob%chandeg))
       allocate (ch_stor(0:sp_ob%chandeg))
+      allocate (ch_stor_m(0:sp_ob%chandeg))
+      allocate (ch_stor_y(0:sp_ob%chandeg))
+      allocate (ch_stor_a(0:sp_ob%chandeg))
+      allocate (ch_wat_d(0:sp_ob%chandeg))
+      allocate (ch_wat_m(0:sp_ob%chandeg))
+      allocate (ch_wat_y(0:sp_ob%chandeg))
+      allocate (ch_wat_a(0:sp_ob%chandeg))
+      allocate (ch_in_d(0:sp_ob%chandeg))
+      allocate (ch_in_m(0:sp_ob%chandeg))
+      allocate (ch_in_y(0:sp_ob%chandeg))
+      allocate (ch_in_a(0:sp_ob%chandeg))
+      allocate (ch_out_d(0:sp_ob%chandeg))
+      allocate (ch_out_m(0:sp_ob%chandeg))
+      allocate (ch_out_y(0:sp_ob%chandeg))
+      allocate (ch_out_a(0:sp_ob%chandeg))
       allocate (ch_om_water_init(0:sp_ob%chandeg))
       allocate (chpst_d(0:sp_ob%chandeg))
       allocate (chpst_m(0:sp_ob%chandeg))

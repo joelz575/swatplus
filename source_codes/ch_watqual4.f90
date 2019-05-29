@@ -20,18 +20,19 @@
 
       !! calculate flow duration
       tday = rttime / 24.0
+      tday = amin1 (1., tday)
 
       !! benthic sources/losses in mg   
-      rs2_s =  Theta(ch_nut(jnut)%rs2,thrs2,wtmp)*ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
-      rs3_s =  Theta(ch_nut(jnut)%rs3,thrs3,wtmp)*ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
-      rk4_s =  Theta(ch_nut(jnut)%rk4,thrk4,wtmp)*ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
+      rs2_s =  Theta(ch_nut(jnut)%rs2,thrs2,wtmp) * ben_area    !ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
+      rs3_s =  Theta(ch_nut(jnut)%rs3,thrs3,wtmp) * ben_area    !ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
+      rk4_s =  Theta(ch_nut(jnut)%rk4,thrk4,wtmp) * ben_area    !ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
 
       !! ht3 = concentration of incoming nutrients
       if (ht3%flo > 0.) then
-        disoxin = disoxin - rk4_s / ht3%flo
-        disoxin = max (0., disoxin)
-        dispin = dispin + rs2_s / ht3%flo 
-        ammoin = ammoin + rs3_s / ht3%flo
+        disoxin = ht3%dox - rk4_s / ht3%flo
+        disoxin = amax1 (0., disoxin)
+        dispin = ht3%solp + rs2_s / ht3%flo 
+        ammoin = ht3%nh3 + rs3_s / ht3%flo
 
         !! calculate temperature in stream Stefan and Preudhomme. 1993.  Stream temperature estimation 
         !! from air temperature.  Water Res. Bull. p. 27-45 SWAT manual equation 2.3.13
@@ -112,13 +113,15 @@
         end if
 
         !! calculate algal biomass concentration at end of day (phytoplanktonic algae) QUAL2E equation III-2
-        factm = 0.
-        algcon = 1000. * ch(jrch)%chlora / ch_nut(jnut)%ai0
+        factk = Theta(gra,thgra,wtmp) - Theta(ch_nut(jnut)%rhoq, thrho, wtmp)
+        algcon = 1000. * ht3%cla / ch_nut(jnut)%ai0
         alg_m1 = wq_semianalyt (tday, rt_delt, 0., factk, algcon, algin)
          
-        factk = Theta(gra,thgra,wtmp) - Theta(ch_nut(jnut)%rhoq, thrho, wtmp)
         alg_m = wq_semianalyt (tday, rt_delt, 0., factk, algcon, algin)
-        alg_m2 = alg_m-alg_m1
+        alg_m2 = alg_m - alg_m1
+        !! calculate fraction of algal nitrogen uptake from ammonia pool QUAL2E equation III-18
+        f1 = ch_nut(jnut)%p_n * ch_stor(jrch)%nh3 / (ch_nut(jnut)%p_n * ch_stor(jrch)%nh3 +       &
+                          (1. - ch_nut(jnut)%p_n) * ch_stor(jrch)%no3 + 1.e-6)
         alg_no3_m = -alg_m * (1. - f1) * ch_nut(jnut)%ai1
         alg_nh4_m = -alg_m * f1 * ch_nut(jnut)%ai1
         alg_P_m = -alg_m * ch_nut(jnut)%ai2
@@ -155,11 +158,11 @@
         !! QUAL2E section 3.3.1 equation III-16
         bc1_k = Theta(ch_nut(jnut)%bc1,thbc1,wtmp)
         bc3_k = Theta(ch_nut(jnut)%bc3,thbc3,wtmp) 
-        rs4_k=0.
-        if (rchept > 0.001)  rs4_k = Theta (ch_nut(jnut)%rs4, thrs4, wtmp) / rchdep   
+        rs4_k = 0.
+        if (rchdep > 0.001)  rs4_k = Theta (ch_nut(jnut)%rs4, thrs4, wtmp) / rchdep   
 
         bc3_m = wq_k2m (tday, rt_delt, -bc3_k, ch_stor(jrch)%orgn, ht3%orgn)
-        factk =-rs4_k
+        factk = -rs4_k
         factm = bc3_m
         ht2%orgn = wq_semianalyt (tday, rt_delt, factm, factk, ch_stor(jrch)%orgn, ht3%orgn)
         if (ht2%orgn <0.) ht2%orgn = 0.
@@ -172,34 +175,29 @@
         alg_m_o2 = ch_nut(jnut)%ai4 * alg_m2 + ch_nut(jnut)%ai3 * alg_m1
      
         factk = - rk2_k
-        factm = rk1_m + rk2_m - rk4_m + bc1_m * ch_nut(jnut)%ai5 + bc2_m * ch_nut(jnut)%ai6
+        bc2_k = -Theta (ch_nut(jnut)%bc2, thbc2, wtmp)
+        bc1_m = wq_k2m (tday, rt_delt, factk, ch_stor(jrch)%nh3, ht3%nh3)
+        bc2_m = wq_k2m (tday, rt_delt, bc2_k, ch_stor(jrch)%no2, ht3%no2)
+        factm = rk1_m + rk2_m - rs4_k + bc1_m * ch_nut(jnut)%ai5 + bc2_m * ch_nut(jnut)%ai6
         ht2%dox = wq_semianalyt (tday, rt_delt, factm, factk, ch_stor(jrch)%dox, ht3%dox)
         if (ht2%dox <0.) ht2%dox = 0.
           
         !! end oxygen calculations        
 
-        !! calculate fraction of algal nitrogen uptake from ammonia pool QUAL2E equation III-18
-        f1 = ch_nut(jnut)%p_n * ch_stor(jrch)%nh3 / (ch_nut(jnut)%p_n * ch_stor(jrch)%nh3 +       &
-                          (1. - ch_nut(jnut)%p_n) * ch_stor(jrch)%no3 + 1.e-6)
-
         !! calculate ammonia nitrogen concentration at end of day QUAL2E section 3.3.2 equation III-17
         factk = -bc1_k
-        bc1_m = wq_k2m (tday, rt_delt, factk, ch_stor(jrch)%nh3, ht3%nh3)
         factm = bc1_m - bc3_m 
         ht2%nh3 = wq_semianalyt (tday, rt_delt, factm, 0., ch_stor(jrch)%nh3, ht3%nh3)
         if (ht2%nh3 < 1.e-6) ht2%nh3 = 0.
   
         !! calculate concentration of nitrite at end of day QUAL2E section 3.3.3 equation III-19
-        bc2_k = -Theta (ch_nut(jnut)%bc2, thbc2, wtmp)
-        bc2_m = wq_k2m (tday, rt_delt, bc2_k, ch_stor(jrch)%no2, ht3%no2)
- 
         factm = -bc1_m + bc2_m
         ht2%no2 = wq_semianalyt (tday, rt_delt, factm, 0., ch_stor(jrch)%no2, ht3%no2)
         if (ht2%no2 < 1.e-6) ht2%no2 = 0.
 
         !! calculate nitrate concentration at end of day QUAL2E section 3.3.4 equation III-20
         factk = 0.
-        factm = -bc2_m + alg_m_no3
+        factm = -bc2_m + ht3%no3
         
         ht2%no3 = wq_semianalyt (tday, rt_delt, factm, 0., ch_stor(jrch)%no3, ht3%no3)
         if (ht2%no3 < 1.e-6) ht2%no3 = 0.
@@ -210,7 +208,7 @@
         bc4_k = Theta (ch_nut(jnut)%bc4, thbc4,wtmp)
         bc4_m = wq_k2m (tday, rt_delt, -bc4_k, ch_stor(jrch)%sedp, ht3%sedp) 
         rs5_k = 0.
-        if (rchept > 0.001) rs5_k = Theta (ch_nut(jnut)%rs5, thrs5, wtmp) / rchdep 
+        if (rchdep > 0.001) rs5_k = Theta (ch_nut(jnut)%rs5, thrs5, wtmp) / rchdep 
 
         factk = -rs5_k
         factm = bc4_m 
@@ -220,7 +218,7 @@
     
         !! calculate dissolved phosphorus concentration at end of day QUAL2E section 3.4.2 equation III-25
         factk = 0.
-        factm = -bc4_m + ch_nut(jnut)%ai2 *alg 
+        factm = -bc4_m + ch_nut(jnut)%ai2 * alg_m
         ht2%solp = wq_semianalyt (tday, rt_delt, factm, 0., ch_stor(jrch)%solp, ht3%solp)
         if (ht2%solp < 1.e-6) ht2%solp = 0.
         !! end phosphorus calculations

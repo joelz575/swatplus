@@ -38,7 +38,7 @@
       integer :: icrop       !none      |land cover code
       integer :: j           !none      |hru number
       integer :: l           !none      |counter (soil layer)
-      integer :: ir          !none      |flag to denote bottom of root zone reached
+      real :: root_depth     !mm        |root depth
       real :: uapl           !kg P/ha   |amount of phosphorus removed from layer
       real :: gx             !mm        |lowest depth in layer from which nitrogen
                              !          |may be removed
@@ -53,21 +53,17 @@
       j = ihru
 
       pcom(j)%plstr(ipl)%strsp = 1.
-      ir = 0
       if (uapd(ipl) < 1.e-6) return
 
       do l = 1, soil(j)%nly
-        if (ir > 0) exit
-
+        root_depth = amax1 (10., pcom(j)%plg(ipl)%root_dep)
         if (pcom(j)%plg(ipl)%root_dep <= soil(j)%phys(l)%d) then
-          gx = pcom(j)%plg(ipl)%root_dep
-          ir = 1
+          exit
         else
           gx = soil(j)%phys(l)%d
         end if
 
-        upmx = uapd(ipl) * rto_solp * (1. - Exp(-bsn_prm%p_updis * gx /  &
-                            pcom(j)%plg(ipl)%root_dep)) / uptake%p_norm
+        upmx = uapd(ipl) * rto_solp * (1. - Exp(-bsn_prm%p_updis * gx / root_depth)) / uptake%p_norm
         uapl = Min(upmx - pplnt(j), soil1(j)%mp(l)%lab)
         pplnt(j) = pplnt(j) + uapl
         soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab - uapl
@@ -77,7 +73,7 @@
       pl_mass(j)%tot(ipl)%p = pl_mass(j)%tot(ipl)%p + pplnt(j)
       pl_mass_up%p = pplnt(j)
 
-!! compute phosphorus stress
+      !! compute phosphorus stress
       call nuts(pl_mass(j)%tot(ipl)%p, up2(ipl), pcom(j)%plstr(ipl)%strsp)
 
       return

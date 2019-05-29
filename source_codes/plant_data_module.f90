@@ -15,7 +15,7 @@
                                          !                  |moisture_gro
                                          !                  |temp_gro
         real :: nfix_co                  !none              |n fixation coefficient (0.5 legume; 0 non-legume)
-        integer :: days_mat = 110.       !days              |days to maturity - if zero use hu for entire growing season
+        integer :: days_mat = 110        !days              |days to maturity - if zero use hu for entire growing season
         real :: bio_e = 15.0             !(kg/ha/(MJ/m**2)  |biomass-energy ratio
         real :: hvsti = 0.76             !(kg/ha)/(kg/ha)   |harvest index: crop yield/aboveground biomass
         real :: blai = 5.0               !none              |max (potential) leaf area index

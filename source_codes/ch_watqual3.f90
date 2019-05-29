@@ -376,7 +376,7 @@
          bc1_k = Theta(ch_nut(jnut)%bc1,thbc1,wtmp)
          bc3_k = Theta(ch_nut(jnut)%bc3,thbc3,wtmp) 
          rs4_k=0.
-         if (rchept > 0.001)  rs4_k = Theta (ch_nut(jnut)%rs4, thrs4, wtmp) / rchdep   
+         if (rchdep > 0.001)  rs4_k = Theta (ch_nut(jnut)%rs4, thrs4, wtmp) / rchdep   
 
          bc3_m = wq_k2m (tday, rt_delt, -bc3_k, orgncon, orgnin)
          factk =-rs4_k
@@ -433,7 +433,7 @@
          ch(jrch)%nitriten = 0. 
          bc4_m = wq_k2m(tday,rt_delt,-bc4_k,orgpcon,orgpin) 
          rs5_k=0.
-         if (rchept > 0.001) rs5_k = Theta(ch_nut(jnut)%rs5,thrs5,wtmp) / rchdep 
+         if (rchdep > 0.001) rs5_k = Theta(ch_nut(jnut)%rs5,thrs5,wtmp) / rchdep 
 
         factk=-rs5_k
         factm =bc4_m 

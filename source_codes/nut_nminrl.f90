@@ -140,6 +140,9 @@
 
           rsd1(j)%tot(ipl)%p = rsd1(j)%tot(ipl)%p - rmp
           rsd1(j)%tot(ipl)%n  = Max(1.e-6, rsd1(j)%tot(ipl)%n)
+          if (j==1 .and. rsd1(j)%tot(ipl)%n > 100) then
+            decr = 0.05
+          end if
           rsd1(j)%tot(ipl)%n  = rsd1(j)%tot(ipl)%n  - rmn1
           rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + .8 * rmn1
           soil1(j)%hs(1)%n = soil1(j)%hs(1)%n + .2 * rmn1

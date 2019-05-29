@@ -90,26 +90,7 @@
       !soil profile object - dimensioned to number of hrus, using the hru pointer
       type (residue_mass1), dimension(:), allocatable :: rsd1
       type (residue_mass1), dimension(:), allocatable :: rsd1_init
-      
-      type plant_community_mass1
-        character (len=4) :: name                                !                 |same as plant_community object
-        !live biomass
-        type (organic_mass), dimension(:), allocatable :: tot    !kg/ha            |total biomass for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: ab_gr  !kg/ha            |above ground vegetative mass for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: leaf   !kg/ha            |leaf mass for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: wood   !kg/ha            |wood/stalk mass for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: grain  !kg/ha            |grain mass for individual plant in community
-        type (organic_mass), dimension(:), allocatable :: root   !kg/ha            |root mass for individual plant in community (frac by soil layer)
-        type (organic_mass) :: tot_com                           !kg/ha            |total biomass for entire plant community
-        type (organic_mass) :: ab_gr_com                         !kg/ha            |above ground vegetative mass for entire plant community
-        type (organic_mass) :: leaf_com                          !kg/ha            |leaf mass for entire plant community
-        type (organic_mass) :: wood_com                          !kg/ha            |wood/stalk mass for entire plant community
-        type (organic_mass) :: grain_com                         !kg/ha            |grain mass for entire plant community
-        type (organic_mass) :: root_com                          !kg/ha            |root mass for entire plant community
-      end type plant_community_mass1
-      !plant community object - dimensioned to number of hrus, using the hru pointer
-      type (plant_community_mass1), dimension(:), allocatable :: plnt1
-            
+
       type plant_community_mass
        character(len=4) :: name
        type (organic_mass), dimension(:), allocatable :: tot        !kg/ha      |total biomass for individual plant in community

@@ -9,7 +9,7 @@
         write (2612,*) bsn%name, prog
         write (2612,*) mgt_hdr
         write (2612,*) mgt_hdr_unt1
-        write (9000,*) "MGT                 mgt_out.txt"
+        write (9000,*) "MGT                       mgt_out.txt"
       end if
           
       return

@@ -35,18 +35,19 @@
       integer :: icn     !none          |counter
       integer :: j       !none          |HRU number
       real :: r2         !none          |retention parameter in CN equation
-      real :: xx         !none          |variable used to store intermediate
-                         !              |calculation result
-                         
+      real :: sw_fac     !none          |variable used to store intermediate value of soil water factor
+
       j = ihru
 
-      xx = wrt(1,j) - wrt(2,j) * soil(j)%sw
-      if (xx < -20.) xx = -20.
-      if (xx > 20.) xx = 20.
+      sw_fac = wrt(1,j) - wrt(2,j) * soil(j)%sw
+      if (sw_fac < -20.) sw_fac = -20.
+      if (sw_fac > 20.) sw_fac = 20.
 
       !! traditional CN method (function of soil water)
-      if ((soil(j)%sw + Exp(xx)) > 0.001) then
-        r2 = smx(j) * (1. - soil(j)%sw / (soil(j)%sw + Exp(xx)))
+      if ((soil(j)%sw + Exp(sw_fac)) > 0.001) then
+        r2 = smx(j) * (1. - soil(j)%sw / (soil(j)%sw + Exp(sw_fac)))
+      else
+        r2 = smx(j)
       end if
 
       if (soil(j)%phys(2)%tmp <= 0.) r2 = smx(j) * (1. - Exp(- bsn_prm%cn_froz * r2))

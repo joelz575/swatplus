@@ -168,7 +168,7 @@
             if (xx < 1.) xx = 1.
             hru(j)%hyd%lat_ttime = 1. - Exp(-1./xx)
         else
-          hru(j)%hyd%lat_ttime = 1. - Exp(-1./hru(j)%hyd%lat_ttime)
+          hru(j)%hyd%lat_ttime = 1. - Exp(-1. / hru(j)%hyd%lat_ttime)
         end if
 
         isdr = hru(j)%tiledrain

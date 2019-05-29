@@ -84,8 +84,10 @@
             select case (cal_parms(num_db)%ob_typ)
             case ("sol")
               !! check layers for soil variables
-              if (cal_upd(ichg_par)%lyr1 <= 0) cal_lyr1 = 1
-              if (cal_upd(ichg_par)%lyr2 <= 0) cal_lyr2 = soil(ielem)%nly
+              cal_lyr1 = cal_upd(ichg_par)%lyr1
+              cal_lyr1 = Max (cal_lyr1, 1)
+              cal_lyr2 = cal_upd(ichg_par)%lyr2
+              if (cal_lyr2 <= 0) cal_lyr2 = soil(ielem)%nly
               cal_lyr2 = Min (cal_lyr2, soil(ielem)%nly)
               do lyr = cal_lyr1, cal_lyr2
                 call cal_parm_select (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)

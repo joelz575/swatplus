@@ -237,7 +237,7 @@
       c4 = 0.
 
 !! Compute water leaving reach on day
-	   if (time%yrs == 1 .and. i == time%day_start) then
+	   if (time%yrs == 1 .and. time%day == time%day_start) then
 	     ch(jrch)%flwin = ch(jrch)%rchstor
 	     ch(jrch)%flwout = ch(jrch)%rchstor
 	   end if

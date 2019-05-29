@@ -48,8 +48,8 @@
       integer :: j           !none      |hru number
       integer :: l           !none      |counter (soil layer)
       real :: uno3l          !kg N/ha   |plant nitrogen demand
-      integer :: ir          !none      |flag to denote bottom of root zone reached
       integer :: idp         !          |       
+      real :: root_depth     !mm        |root depth
       real :: unmx           !kg N/ha   |maximum amount of nitrogen that can be 
                              !          |removed from soil layer
       real :: gx             !mm        |lowest depth in layer from which nitrogen
@@ -65,28 +65,24 @@
 
       idp = pcom(j)%plcur(ipl)%idplt
       pcom(j)%plstr(ipl)%strsn = 1.
-      ir = 0
       if (uno3d(ipl) < 1.e-6) return
 
       do l = 1, soil(j)%nly
-        if (ir > 0) exit
-
-        gx = 0.
+        root_depth = amax1 (10., pcom(j)%plg(ipl)%root_dep)
         if (pcom(j)%plg(ipl)%root_dep <= soil(j)%phys(l)%d) then
-          gx = pcom(j)%plg(ipl)%root_dep
-          ir = 1
+          exit
         else
           gx = soil(j)%phys(l)%d
         end if
 
-        unmx = uno3d(ipl) * rto_no3 * (1. - Exp(-bsn_prm%n_updis * gx / pcom(j)%plg(ipl)%root_dep)) / uptake%n_norm
+        unmx = uno3d(ipl) * rto_no3 * (1. - Exp(-bsn_prm%n_updis * gx / root_depth)) / uptake%n_norm
         uno3l = Min(unmx - nplnt(j), soil1(j)%mn(l)%no3)
         nplnt(j) = nplnt(j) + uno3l 
         soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 - uno3l
       end do
       if (nplnt(j) < 0.) nplnt(j) = 0.
 
-!! if crop is a legume, call nitrogen fixation routine
+      !! if crop is a legume, call nitrogen fixation routine
       if (pldb(idp)%nfix_co > 1.e-6) then
         call pl_nfix
       end if
@@ -95,7 +91,7 @@
       pl_mass(j)%tot(ipl)%n = pl_mass(j)%tot(ipl)%n + nplnt(j)
       pl_mass_up%n = nplnt(j)
  
-!! compute nitrogen stress
+      !! compute nitrogen stress
 
       if (pldb(idp)%nfix_co > 1.e-6) then
         pcom(j)%plstr(ipl)%strsn = 1.

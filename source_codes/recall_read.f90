@@ -26,7 +26,6 @@
       integer :: ii                   !none       |counter
       integer :: i                    !           |
       integer :: iexco_om
-      integer :: iexco
 
       eof = 0
       imax = 0
@@ -128,7 +127,7 @@
         !! xwalk with exco file to get sequential number
         do iexco_om = 1, db_mx%exco_om
           if (exco_db(iexco_om)%name == recall(i)%filename) then
-            recall(i)%hd(1,1) = exco(iexco)
+            recall(i)%hd(1,1) = exco(iexco_om)
             exit
           end if
         end do

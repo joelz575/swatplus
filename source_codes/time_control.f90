@@ -48,11 +48,12 @@
       use sd_channel_module
       use hru_lte_module
       use basin_module
-      use hydrograph_module, only : sp_ob, sp_ob1, ob
+      use hydrograph_module, only : sp_ob, sp_ob1, ob, chaz, ch_stor_y, ch_in_y, ch_out_y
       use output_landscape_module
       use conditional_module
       use constituent_mass_module
       use output_ls_pesticide_module
+      use water_body_module
       
       implicit none
       
@@ -237,6 +238,10 @@
         do ich = 1, sp_ob%chandeg
           !! zero yearly balances after using them in soft data calibration (was in sd_channel_output)
           chsd_y(ich) = chsdz
+          ch_stor_y(ich) = chaz
+          ch_in_y(ich) = chaz
+          ch_out_y(ich) = chaz
+          ch_wat_y(ich) = wbodz
         end do
         
         do j = 1, sp_ob%hru
@@ -270,7 +275,7 @@
 
           ! reset base0 heat units and yr_skip at end of year for northern hemisphere
           ! on December 31 (winter solstice is around December 22)
-          iob = sp_ob1%hru + ihru - 1
+          iob = sp_ob1%hru + j - 1
           iwst = ob(iob)%wst
           if (wst(iwst)%lat >= 0) then
             phubase(j) = 0.

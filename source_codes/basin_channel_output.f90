@@ -11,6 +11,7 @@
       integer :: jrch   !          |
       
       bch_d = chz
+      jrch = 1
 
       !! sum all channel output
       do ich = 1, sp_ob%chan

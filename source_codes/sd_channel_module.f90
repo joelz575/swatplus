@@ -183,6 +183,10 @@
       interface operator (/)
         module procedure chsd_div
       end interface
+              
+      interface operator (//)
+        module procedure chsd_ave
+      end interface
         
       interface operator (*)
         module procedure chsd_mult
@@ -219,10 +223,10 @@
         type (sd_ch_output), intent (in) :: ch1
         real, intent (in) :: const
         type (sd_ch_output) :: ch2
-        ch2%flo_in = ch1%flo_in / const
-        ch2%aqu_in = ch1%aqu_in / const
-        ch2%flo = ch1%flo / const
-        ch2%peakr = ch1%peakr / const
+        ch2%flo_in = ch1%flo_in
+        ch2%aqu_in = ch1%aqu_in
+        ch2%flo = ch1%flo
+        ch2%peakr = ch1%peakr
         ch2%sed_in = ch1%sed_in / const
         ch2%sed_out = ch1%sed_out / const
         ch2%washld = ch1%washld / const
@@ -231,13 +235,37 @@
         ch2%deg_btm = ch1%deg_btm / const
         ch2%deg_bank = ch1%deg_bank / const
         ch2%hc_sed = ch1%hc_sed / const
+        ch2%width = ch1%width
+        ch2%depth = ch1%depth
+        ch2%slope = ch1%slope
+        ch2%deg_btm_m = ch1%deg_btm_m
+        ch2%deg_bank_m = ch1%deg_bank_m
+        ch2%hc_m = ch1%hc_m
+      end function chsd_div
+            
+      function chsd_ave (ch1,const) result (ch2)
+        type (sd_ch_output), intent (in) :: ch1
+        real, intent (in) :: const
+        type (sd_ch_output) :: ch2
+        ch2%flo_in = ch1%flo_in / const
+        ch2%aqu_in = ch1%aqu_in / const
+        ch2%flo = ch1%flo / const
+        ch2%peakr = ch1%peakr / const
+        ch2%sed_in = ch1%sed_in
+        ch2%sed_out = ch1%sed_out
+        ch2%washld = ch1%washld
+        ch2%bedld = ch1%bedld
+        ch2%dep = ch1%dep
+        ch2%deg_btm = ch1%deg_btm
+        ch2%deg_bank = ch1%deg_bank
+        ch2%hc_sed = ch1%hc_sed
         ch2%width = ch1%width / const
         ch2%depth = ch1%depth / const
         ch2%slope = ch1%slope / const
         ch2%deg_btm_m = ch1%deg_btm_m / const
         ch2%deg_bank_m = ch1%deg_bank_m / const
         ch2%hc_m = ch1%hc_m / const
-      end function chsd_div
+      end function chsd_ave
       
       function chsd_mult (const, chn1) result (chn2)
         type (sd_ch_output), intent (in) :: chn1

@@ -80,7 +80,7 @@
         !calculated dr = f(tconc element/ tconc sub)
         delrto = ru_elem(ise)%dr
 
-        if (ru_elem(ielem)%obtyp == "exc") then
+        if (ru_elem(ise)%obtyp == "exc") then
           !! compute hyds for export coefficients-ht1==surface,ht2==groundwater
           ht1 = exco(ob(iob)%props) ** delrto
           ht2 = hz
@@ -103,17 +103,23 @@
           
           !compute all hyd"s needed for routing
           do ihtypno = 1, ob(iob)%nhyds
-            ht1 = ob(iob)%hd(ihtypno) ** delrto
+            if (ihtypno /=2) then
+              !! apply dr to tot, surf, lat and tile
+              ht1 = ob(iob)%hd(ihtypno) ** delrto
+            else
+              !! don't apply dr to recharge
+              ht1 = ob(iob)%hd(ihtypno)
+            end if
             ht1 = ef * ht1
             ob(icmd)%hd(ihtypno) = ob(icmd)%hd(ihtypno) + ht1
             ru_d(iru) = ru_d(iru) + ht1
           end do
           
-        end if      !ru_elem(ielem)%obtyp == "exc"
+        end if      !ru_elem(ise)%obtyp == "exc"
   
         ! sum subdaily hydrographs for each object
         if (time%step > 0) then
-          select case (ru_elem(ielem)%obtyp)
+          select case (ru_elem(ise)%obtyp)
           case ("hru")
             do ii = 1, time%step
               hyd_flo(ii) = hyd_flo(ii) + hhsurfq(ihru,ii) * ru_elem(ise)%frac * delrto%flo * cnv_m3

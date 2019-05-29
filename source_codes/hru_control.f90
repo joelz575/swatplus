@@ -197,7 +197,11 @@
 
         !! wetland processes
         hru(j)%water_fr = 0.
-        if (ires > 0) call stor_surf
+        if (ires > 0) then
+          call stor_surf
+        else
+          wet(j)%flo = 0.
+        end if
  
         !! ht2%sed==sediment routed across hru from surface runon
         sedyld(j) = sedyld(j) + ht2%sed
@@ -284,7 +288,7 @@
 	    end if
 
         call nut_nitvol
-        if (bsn_cc%sol_P_model == 1) then
+        if (bsn_cc%sol_P_model == 0) then
             call nut_pminrl
         else
             call nut_pminrl2
@@ -391,7 +395,12 @@
         end if
 
         !! compute water yield for HRU - ht2%flo is outflow from routed runon
+        !! wet()%flo is outflow from wetland - or total saturation excess if no wetland
+        qday = qday + wet(j)%flo
         qdr(j) = qday + latq(j) + qtile + ht2%flo
+        surfq(j) = surfq(j) + wet(j)%flo
+        wet(j)%flo = 0.
+        
         if (qdr(j) < 0.) qdr(j) = 0.
         if (qdr(j) > 0.) then
           qdfr = qday / qdr(j)
@@ -436,6 +445,13 @@
           if (ob(iob_out)%htyp_out(iout) == "lat" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%latq_cha = hwb_d(j)%latq_cha + latq(j) * ob(iob_out)%frac_out(iout)
           end if
+        case ("sdc")
+          if (ob(iob_out)%htyp_out(iout) == "sur" .or. ob(iob_out)%htyp_out(iout) == "tot") then
+            hwb_d(j)%surq_cha = hwb_d(j)%surq_cha + surfq(j) * ob(iob_out)%frac_out(iout)
+          end if
+          if (ob(iob_out)%htyp_out(iout) == "lat" .or. ob(iob_out)%htyp_out(iout) == "tot") then
+            hwb_d(j)%latq_cha = hwb_d(j)%latq_cha + latq(j) * ob(iob_out)%frac_out(iout)
+          end if
         case ("res")
           if (ob(iob_out)%htyp_out(iout) == "sur" .or. ob(iob_out)%htyp_out(iout) == "tot") then
             hwb_d(j)%surq_res = hwb_d(j)%surq_res + surfq(j) * ob(iob_out)%frac_out(iout)
@@ -473,12 +489,12 @@
         hwb_d(j)%snomlt = snomlt
         hwb_d(j)%surq_gen = qday
         hwb_d(j)%latq = latq(j)
+        if (j==1 .and. qday > 1.) then
+          iru = 0
+        end if
         !hwb_d(j)%rchrg =  rchrg(j)
         hwb_d(j)%wateryld = qdr(j)
         hwb_d(j)%perc = sepbtm(j)
-        if (sepbtm(j) > 70.) then
-          iru = 0
-        end if
         hwb_d(j)%et = etday
         hwb_d(j)%tloss = tloss
         hwb_d(j)%eplant = ep_day

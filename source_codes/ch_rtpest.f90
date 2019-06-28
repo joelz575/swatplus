@@ -239,11 +239,11 @@
         if (pest_init > 1.e-12) then
           pest_end = sedpstmass * pestcp(jpst)%decay_b
           sedpstmass = pest_end
-          chpst%pest(jrch)%react_bot = pest_init - pest_end
+          chpst%pest(ipest)%react_bot = pest_init - pest_end
         end if
 
         !! set new pesticide mass of (in + store) after processes
-        if (rchwtr + wtrin > 1.e-6) then
+        if (wtrin > 1.e-6) then
           hcs1%pest(ipest) = chpstmass
         else
           sedpstmass = sedpstmass + chpstmass

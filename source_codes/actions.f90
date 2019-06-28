@@ -452,7 +452,7 @@
                            
           !tile flow control for saturated buffers
           case ("flow_control") !! set flow fractions to buffer tile and direct to channel
-            icon = d_tbl%act(iac)%ob_num
+            j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             select case (d_tbl%act(iac)%option)
             case ("min_flo")    

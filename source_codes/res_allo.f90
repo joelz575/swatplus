@@ -5,6 +5,7 @@
       use res_pesticide_module
       use hydrograph_module
       use constituent_mass_module
+      use water_body_module
       
       implicit none     
 
@@ -23,10 +24,10 @@
       allocate (res_out_m(mres))
       allocate (res_out_y(mres))
       allocate (res_out_a(mres))
-      allocate (res_om_d(mres))
-      allocate (res_om_m(mres))
-      allocate (res_om_y(mres))
-      allocate (res_om_a(mres))
+      allocate (res_wat_d(mres))
+      allocate (res_wat_m(mres))
+      allocate (res_wat_y(mres))
+      allocate (res_wat_a(mres))
       allocate (res_water(mres))
       allocate (res_benthic(mres))
       allocate (respst_d(mres))

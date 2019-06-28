@@ -7,6 +7,8 @@
       use plant_module
       use carbon_module
       use organic_mineral_mass_module
+      use climate_module
+      use hydrograph_module
       
       implicit none 
       
@@ -17,7 +19,8 @@
                                 !                   |concentration
       real :: rto               !none               |ratio of current years of growth:years to maturity of perennial
       integer :: idp            !                   |
-  
+      integer :: iob            !                   |
+
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
       rto = 1.
@@ -43,6 +46,12 @@
           end if
 
           beadj = pldb(idp)%bio_e
+          
+          !! adjust radiation-use efficiency for day length
+          iob = hru(j)%obj_no
+          iwst = ob(iob)%wst
+          beadj = beadj * wst(iwst)%weat%daylength / 12.
+          
           bioday = beadj * par(ipl)
           if (bioday < 0.) bioday = 0.
                     

@@ -92,18 +92,18 @@
             
       type reservoir_nut_data
         character(len=16) :: name
-        integer :: ires1          !none          |beg of mid-year nutrient settling "season"
-        integer :: ires2          !none          |end of mid-year nutrient settling "season"
-        real :: nsetlr1               !m/day         |nit settling rate for mid-year period (read in as m/year and converted to m/day)
-        real :: nsetlr2               !m/day         |nit settling rate for remainder of year (read in as m/year and converted to m/day)
-        real :: psetlr1               !m/day         |phos settling rate for mid-year period (read in as m/year and converted to m/day)
-        real :: psetlr2               !m/day         |phos settling rate for remainder of year (read in as m/year and converted to m/day)
-        real :: chlar = 1.            !none          |chlorophyll-a production coeff for res
-        real :: seccir = 1.0          !none          |water clarity coeff for res
-        real :: theta_n = 1.          !none          |temperature adjustment for nitrogen loss (settling)
-        real :: theta_p = 1.          !none          |temperature adjustment for phosphorus loss (settling)
-        real :: conc_nmin = .1        !ppm           |minimum nitrogen concentration for settling
-        real :: conc_pmin = .01       !ppm           |minimum phosphorus concentration for settling
+        integer :: ires1            !none       |beg of mid-year nutrient settling "season"
+        integer :: ires2            !none       |end of mid-year nutrient settling "season"
+        real :: nsetlr1             !frac       |nit mass loss rate for mid-year period 
+        real :: nsetlr2             !frac       |nit mass loss rate for remainder of year
+        real :: psetlr1             !frac       |phos mass loss rate for mid-year period
+        real :: psetlr2             !frac       |phos mass loss rate for remainder of year
+        real :: chlar = 1.          !none       |chlorophyll-a production coeff for res
+        real :: seccir = 1.0        !none       |water clarity coeff for res
+        real :: theta_n = 1.        !none       |temperature adjustment for nitrogen loss (settling)
+        real :: theta_p = 1.        !none       |temperature adjustment for phosphorus loss (settling)
+        real :: conc_nmin = .1      !ppm        |minimum nitrogen concentration for settling
+        real :: conc_pmin = .01     !ppm        |minimum phosphorus concentration for settling
       end type reservoir_nut_data
       type (reservoir_nut_data), dimension(:), allocatable :: res_nut
           

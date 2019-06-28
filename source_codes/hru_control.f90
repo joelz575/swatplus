@@ -198,7 +198,7 @@
         !! wetland processes
         hru(j)%water_fr = 0.
         if (ires > 0) then
-          call stor_surf
+          call wetland_control
         else
           wet(j)%flo = 0.
         end if
@@ -394,12 +394,12 @@
           call smp_bmpfixed
         end if
 
-        !! compute water yield for HRU - ht2%flo is outflow from routed runon
-        !! wet()%flo is outflow from wetland - or total saturation excess if no wetland
-        qday = qday + wet(j)%flo
+        !! compute water yield for HRU - ht2%flo is outflow from wetland
+        !! or total saturation excess if no wetland
+        qday = qday + ht2%flo
         qdr(j) = qday + latq(j) + qtile + ht2%flo
-        surfq(j) = surfq(j) + wet(j)%flo
-        wet(j)%flo = 0.
+        surfq(j) = surfq(j) + ht2%flo
+        ht2%flo = 0.
         
         if (qdr(j) < 0.) qdr(j) = 0.
         if (qdr(j) > 0.) then

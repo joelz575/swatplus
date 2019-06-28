@@ -1,19 +1,21 @@
-      subroutine res_nutrient (jres, inut)
+      subroutine res_nutrient (jres, inut, iob)
 
       use reservoir_data_module
       use time_module
       use reservoir_module
-      use hydrograph_module, only : res
+      use hydrograph_module, only : res, resz, ob, ht2, wbody
+      use climate_module
       
       implicit none      
       
-      !integer :: iseas
+      integer, intent (in) :: iob
       real :: nitrok             !              |
       real :: phosk              !              |
       real :: tpco               !              |
       real :: chlaco             !              |
       integer :: jres            !none          |reservoir number
       integer :: inut            !none          |counter
+      integer :: iwst            !none          |weather station number
       real :: nsetlr             !              |
       real :: psetlr             !              |
       real :: conc_n             !              |
@@ -23,17 +25,10 @@
 
       !! if reservoir volume less than 1 m^3, set all nutrient levels to
       !! zero and perform no nutrient calculations
-      if (res(jres)%flo < 1.) then
-        res(jres)%orgn = 0.
-        res(jres)%sedp = 0.
-        res(jres)%no3 = 0.
-        res(jres)%nh3 = 0.
-        res(jres)%no2 = 0.
-        res(jres)%solp = 0.
-        res(jres)%chla = 0.
-        res_om_d(jres)%seci = 0.
+      if (wbody%flo < 1.e-6) then
+        wbody = resz
+        return
       end if
-      if (res(jres)%flo < 1.) return
 
       !! if reservoir volume greater than 1 m^3, perform nutrient calculations
       if (time%mo >= res_nut(inut)%ires1 .and. time%mo <= res_nut(inut)%ires2) then
@@ -44,63 +39,61 @@
         psetlr = res_nut(inut)%psetlr2
       endif
 
-      !! n and p concentrations
-      conc_n = (res(jres)%orgn + res(jres)%no3 + res(jres)%nh3 + res(jres)%no2) / res(jres)%flo
-      conc_p = (res(jres)%sedp + res(jres)%solp) / res(jres)%flo
+      !! n and p concentrations kg/m3 * kg/1000 t * 1000000 ppp = 1000
+      conc_n = 1000. * (wbody%orgn + wbody%no3 + wbody%nh3 + wbody%no2) / wbody%flo
+      conc_p = 1000. * (wbody%sedp + wbody%solp) / wbody%flo
       
       !! new inputs thetn, thetap, conc_pmin, conc_nmin
-      !! new equations from Charles Ikenberry for wetlands
-      nitrok = 10000. * res_om_d(jres)%area_ha * (conc_n - res_nut(inut)%conc_nmin) * Theta(nsetlr, res_nut(inut)%theta_n, tair_av)
-      nitrok = Min(nitrok, 1.)
-      phosk = 10000. * res_om_d(jres)%area_ha * (conc_p - res_nut(inut)%conc_pmin) * Theta(psetlr, res_nut(inut)%theta_p, tair_av)
-      phosk = Min(phosk, 1.)
+      !! Ikenberry wetland eqs modified - not function of area - fraction of difference in concentrations
+      iwst = ob(iob)%wst
+      nitrok = (conc_n - res_nut(inut)%conc_nmin) * Theta(nsetlr, res_nut(inut)%theta_n, wst(iwst)%weat%tave)
+      nitrok = amin1 (nitrok, 1.)
+      nitrok = amax1 (nitrok, 0.)
+      phosk = (conc_p - res_nut(inut)%conc_pmin) * Theta(psetlr, res_nut(inut)%theta_p, wst(iwst)%weat%tave)
+      phosk = amin1 (phosk, 1.)
+      phosk = amax1 (phosk, 0.)
 
       !! remove nutrients from reservoir by settling
       !! other part of equation 29.1.3 in SWAT manual
-      res(jres)%solp = res(jres)%solp * (1. - phosk)
-      res(jres)%sedp = res(jres)%sedp * (1. - phosk)
-      res(jres)%orgn = res(jres)%orgn * (1. - nitrok)
-      res(jres)%no3 = res(jres)%no3 * (1. - nitrok)
-      res(jres)%nh3 = res(jres)%nh3 * (1. - nitrok)
-      res(jres)%no2 = res(jres)%no2 * (1. - nitrok)
+      wbody%solp = wbody%solp * (1. - phosk)
+      wbody%sedp = wbody%sedp * (1. - phosk)
+      wbody%orgn = wbody%orgn * (1. - nitrok)
+      wbody%no3 = wbody%no3 * (1. - nitrok)
+      wbody%nh3 = wbody%nh3 * (1. - nitrok)
+      wbody%no2 = wbody%no2 * (1. - nitrok)
 
       !! calculate chlorophyll-a and water clarity
       chlaco = 0.
-      res(jres)%chla = 0.
-      res_om_d(jres)%seci = 0.
-      tpco = 1.e+6 * (res(jres)%solp + res(jres)%sedp) / (res(jres)%flo + resflwo)
+      wbody%chla = 0.
+      tpco = 1.e+6 * (wbody%solp + wbody%sedp) / (wbody%flo + ht2%flo)
       if (tpco > 1.e-4) then
         !! equation 29.1.6 in SWAT manual
         chlaco = res_nut(inut)%chlar * 0.551 * (tpco**0.76)
-        res(jres)%chla = chlaco * (res(jres)%flo + resflwo) * 1.e-6
+        wbody%chla = chlaco * (wbody%flo + ht2%flo) * 1.e-6
       endif
-      if (chlaco > 1.e-4) then
-        !! equation 29.1.8 in SWAT manual
-        res_om_d(jres)%seci = res_nut(inut)%seccir * 6.35 * (chlaco ** (-0.473))
-      endif
+      !res_ob(jres)%seci = 0.
+      !if (chlaco > 1.e-4) then
+      !  !! equation 29.1.8 in SWAT manual
+      !  res_ob(jres)%seci = res_nut(inut)%seccir * 6.35 * (chlaco ** (-0.473))
+      !endif
+
+      !! check nutrient masses greater than zero
+      wbody%no3 = amax1 (wbody%no3, 0.0)
+      wbody%orgn = amax1 (wbody%orgn, 0.0)
+      wbody%sedp = amax1 (wbody%sedp, 0.0)
+      wbody%solp = amax1 (wbody%solp, 0.0)
+      wbody%chla = amax1 (wbody%chla, 0.0)
+      wbody%nh3 = amax1 (wbody%nh3, 0.0)
+      wbody%no2 = amax1 (wbody%no2, 0.0)
 
       !! calculate amount of nutrients leaving reservoir
-      if (res(jres)%no3 < 1.e-4) res(jres)%no3 = 0.0
-      if (res(jres)%orgn < 1.e-4) res(jres)%orgn = 0.0
-      if (res(jres)%sedp < 1.e-4) res(jres)%sedp = 0.0
-      if (res(jres)%solp < 1.e-4) res(jres)%solp = 0.0
-      if (res(jres)%chla < 1.e-4) res(jres)%chla = 0.0
-      if (res(jres)%nh3 < 1.e-4) res(jres)%nh3 = 0.0
-      if (res(jres)%no2 < 1.e-4) res(jres)%no2 = 0.0
-      resno3o = res(jres)%no3 * resflwo / (res(jres)%flo + resflwo)
-      resorgno = res(jres)%orgn * resflwo / (res(jres)%flo + resflwo)
-      resorgpo = res(jres)%sedp * resflwo / (res(jres)%flo + resflwo)
-      ressolpo = res(jres)%solp * resflwo / (res(jres)%flo + resflwo)
-      reschlao = res(jres)%chla * resflwo / (res(jres)%flo + resflwo)
-      resnh3o = res(jres)%nh3 * resflwo / (res(jres)%flo + resflwo)
-      resno2o = res(jres)%no2 * resflwo / (res(jres)%flo + resflwo)
-      res(jres)%orgn = res(jres)%orgn - resorgno
-      res(jres)%sedp = res(jres)%sedp - resorgpo
-      res(jres)%no3 = res(jres)%no3 - resno3o
-      res(jres)%nh3 = res(jres)%nh3 - resnh3o
-      res(jres)%no2 = res(jres)%no2 - resno2o
-      res(jres)%solp = res(jres)%solp - ressolpo
-      res(jres)%chla = res(jres)%chla - reschlao
+      ht2%no3 = wbody%no3 * ht2%flo / (wbody%flo + ht2%flo)
+      ht2%orgn = wbody%orgn * ht2%flo / (wbody%flo + ht2%flo)
+      ht2%sedp = wbody%sedp * ht2%flo / (wbody%flo + ht2%flo)
+      ht2%solp = wbody%solp * ht2%flo / (wbody%flo + ht2%flo)
+      ht2%chla = wbody%chla * ht2%flo / (wbody%flo + ht2%flo)
+      ht2%nh3 = wbody%nh3 * ht2%flo / (wbody%flo + ht2%flo)
+      ht2%no2 = wbody%no2 * ht2%flo / (wbody%flo + ht2%flo)
 
       return
       end subroutine res_nutrient

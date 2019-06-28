@@ -6,7 +6,6 @@
       use hydrograph_module
       
       implicit none
-      
       integer, intent (in) :: ichan         !             |
       integer :: iob                        !             |
       real :: const                         !             |

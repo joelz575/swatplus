@@ -67,7 +67,7 @@
       real :: rdc           !              |
       real :: wdn           !kg N/ha       |amount of nitrogen lost from nitrate pool in
                             !              |layer due to denitrification
-      real :: cdg           !cdg         |none          |soil temperature factor
+      real :: cdg           !none          |soil temperature factor
       real :: sut           !none          |soil water factor
       real :: nactfr        !none          |nitrogen active pool fraction. The fraction
                             !              |of organic nitrogen in the active pool. 
@@ -271,13 +271,12 @@
             hnb_d(j)%rsd_nitorg_n = hnb_d(j)%rsd_nitorg_n + rmn1
             hnb_d(j)%rsd_laborg_p = hnb_d(j)%rsd_laborg_p + rmp
           end if
-          
-          !! septic changes 1/28/09 gsm
+
           !!  compute denitrification
           wdn = 0.   
 	      if (i_sep(j) /= k .or. sep(isep)%opt  /= 1) then
 	        if (sut >= bsn_prm%sdnco) then
-	          wdn = soil1(j)%mn(k)%no3 * (1.-Exp(-bsn_prm%cdn * cdg * soil1(j)%tot(k)%c))
+	          wdn = soil1(j)%mn(k)%no3 * (1.-Exp(-bsn_prm%cdn * cdg * soil1(j)%cbn(k) / 100.))
 	        else
 	          wdn = 0.
 	        endif

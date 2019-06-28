@@ -9,7 +9,7 @@
       implicit none
       
       !integer, intent (in) :: jrch    !units         |description 
-      integer :: iob                  !              |
+      integer :: iob                   !              |
       
       iob = sp_ob1%chandeg + jrch - 1
              

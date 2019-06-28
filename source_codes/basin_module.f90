@@ -116,7 +116,7 @@
         real :: trnsrch             !! fraction of transmission losses from main channel that enter
                                     !!  deep aquifer
         real :: evrch = 0.60        !! reach evaporation adjustment factor
-        real :: open_var1           !! variable not used
+        real :: scoef = 1.0         !! channel storage coefficient (0-1)
         real :: cdn = 1.40          !! denitrification expoential rate coefficient        
         real :: sdnco = 1.30        !! denitrification threshold frac of field cap
         real :: bact_swf = 0.15     !! frac of manure containing active colony forming units
@@ -177,8 +177,8 @@
         character(len=1) :: dbout  = "    n"         !!  code to print database (db) files n=no print; y=print;
         character(len=1) :: cdfout = "    n"         !!  code to print netcdf (cdf) files n=no print; y=print;
       ! OTHER OUTPUTS
-        character(len=1) :: snutc  = "    n"         !!  soils nutrients carbon output
-        character(len=1) :: mgtout = "    n"         !!  management output file (mgt.out)
+        character(len=1) :: snutc  = "    a"         !!  soils nutrients carbon output (default ave annual-d,m,y,a input)
+        character(len=1) :: mgtout = "    n"         !!  management output file (mgt.out) (default ave annual-d,m,y,a input)
         character(len=1) :: hydcon = "    n"         !!  hydrograph connect output file (hydcon.out)
         character(len=1) :: fdcout = "    n"         !!  flow duration curve output n=no print; avann=print;
       ! BASIN

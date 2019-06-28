@@ -15,6 +15,7 @@
       use ru_module
       use hydrograph_module
       use time_module
+      use constituent_mass_module
       
       implicit none 
       
@@ -40,6 +41,7 @@
       real :: rto                        !none        |cloud cover factor
       integer :: iadj                    !            | 
       integer :: istep                   !            |
+      integer :: ipest                   !            |
       real :: sumflo_day                 !            |
       real :: ratio                      !frac        |fraction change in precipitation due to 
                                          !            |elevation changes
@@ -57,6 +59,13 @@
       ob(icmd)%hd(3) = hz
       ob(icmd)%hd(4) = hz
       ob(icmd)%hd(5) = hz
+      if (cs_db%num_tot > 0) then
+        obcs(icmd)%hd(1) = hin_csz
+        obcs(icmd)%hd(2) = hin_csz
+        obcs(icmd)%hd(3) = hin_csz
+        obcs(icmd)%hd(4) = hin_csz
+        obcs(icmd)%hd(5) = hin_csz
+      end if
       
       sumfrac = 0.
       sumarea = 0.
@@ -106,13 +115,24 @@
             if (ihtypno /=2) then
               !! apply dr to tot, surf, lat and tile
               ht1 = ob(iob)%hd(ihtypno) ** delrto
+              do ipest = 1, cs_db%num_pests
+                hcs1%pest(ipest) = obcs(iob)%hd(ihtypno)%pest(ipest)    !* delrto - don't apply dr to pests
+              end do
             else
               !! don't apply dr to recharge
               ht1 = ob(iob)%hd(ihtypno)
+              !! set constituents
+              do ipest = 1, cs_db%num_pests
+                hcs1%pest(ipest) = obcs(iob)%hd(ihtypno)%pest(ipest)
+              end do
             end if
             ht1 = ef * ht1
             ob(icmd)%hd(ihtypno) = ob(icmd)%hd(ihtypno) + ht1
             ru_d(iru) = ru_d(iru) + ht1
+            !! set constituents
+            do ipest = 1, cs_db%num_pests
+              obcs(icmd)%hd(ihtypno)%pest(ipest) = obcs(icmd)%hd(ihtypno)%pest(ipest) + hcs1%pest(ipest)
+            end do
           end do
           
         end if      !ru_elem(ise)%obtyp == "exc"

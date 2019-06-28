@@ -113,8 +113,10 @@
         iob = sp_ob1%ru + iru - 1
         ob(iob)%ru_tot = 0
         read (107,*,iostat=eof) numb, namedum, nspu
-        
         if (eof < 0) exit
+        
+        ru_def(iru)%num_tot = 0                     !! Linux initialization issue (Srin)
+        
         if (nspu > 0) then
           backspace (107)
           allocate (elem_cnt(nspu))

@@ -5,6 +5,7 @@
       use hydrograph_module
       use climate_module, only : wst
       use maximum_data_module
+      use constituent_mass_module
       
       implicit none
       
@@ -27,6 +28,13 @@
       iwst = ob(icmd)%wst
       stor_init = aqu_d(iaq)%stor
       
+      ob(icmd)%hd(1) = hz
+      ob(icmd)%hd(2) = hz
+      if (cs_db%num_tot > 0) then
+        obcs(icmd)%hd(1) = hin_csz
+        obcs(icmd)%hd(2) = hin_csz
+      end if
+
       !convert from m^3 to mm
       aqu_d(iaq)%rchrg = ob(icmd)%hin%flo / (10. * ob(icmd)%area_ha)
       
@@ -54,6 +62,8 @@
       !! compute seepage through aquifer and subtract from storage
       aqu_d(iaq)%seep = aqu_d(iaq)%rchrg * aqudb(iaqdb)%seep
       aqu_d(iaq)%seep = amin1 (aqu_d(iaq)%seep, aqu_d(iaq)%stor)
+      ob(icmd)%hd(2)%flo = 10. * aqu_d(iaq)%seep * ob(icmd)%area_ha
+      
       aqu_d(iaq)%stor = aqu_d(iaq)%stor - aqu_d(iaq)%seep
       
       !! compute revap (deep root uptake from aquifer) and subtract from storage
@@ -99,11 +109,13 @@
       aqu_d(iaq)%seepno3 = conc_no3 * aqu_d(iaq)%seep
       aqu_d(iaq)%seepno3 = amin1(aqu_d(iaq)%seepno3, aqu_d(iaq)%no3)
       aqu_d(iaq)%no3 = aqu_d(iaq)%no3 - aqu_d(iaq)%seepno3
+      ob(icmd)%hd(2)%no3 = aqu_d(iaq)%seepno3
       
       !! compute mineral p flow from aquifer - m^3 * ppm * 1000 kg/m^3 = 1/1000
       aqu_d(iaq)%minp = ob(icmd)%hin%flo * aqudb(iaqdb)%minp / 1000.
-      !! set hydrograph flow from aquifer- convert mm to m3
-      ob(icmd)%hd(1)%sedp = 10. * aqu_d(iaq)%flo * ob(icmd)%area_ha
+      !! set hydrograph soluble p from aquifer- convert kg/ha to m3
+      ob(icmd)%hd(1)%solp = 10. * aqu_d(iaq)%minp * ob(icmd)%area_ha
+      ob(icmd)%hd(1)%solp = ob(icmd)%hin%flo * aqudb(iaqdb)%minp / 1000.
 
       !! compute fraction of flow to each channel in the aquifer
       !! if connected to aquifer - add flow
@@ -131,7 +143,7 @@
         aq_ch(iaq)%hd = ob(icmd)%hd(1)
       end if
 
-      ! compute outflow objects (flow to channels, reservoirs, or landscape)
+      ! compute outflow objects (flow to channels, reservoirs, or aquifer)
       ! if flow from hru is directly routed
       iob_out = icmd
       aqu_d(iaq)%flo_cha = 0.

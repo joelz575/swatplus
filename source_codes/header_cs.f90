@@ -447,8 +447,8 @@
             if (pco%csvout == "y") then
               open (2771,file="hydout_salts_aa.csv",recl=800)
                 write (9000,*) "HYDOUT_SALTS              hydout_salts_aa.csv"
-                write (2755,*) bsn%name, prog
-                write (2755,*) csout_hyd_hdr, (cs_salt_solsor(isalt), isalt = 1, cs_db%num_salts)
+                write (2771,*) bsn%name, prog
+                write (2771,*) csout_hyd_hdr, (cs_salt_solsor(isalt), isalt = 1, cs_db%num_salts)
             end if
         end if
       end if         !! end average annual - HYDOUT     

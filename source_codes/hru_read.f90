@@ -68,7 +68,7 @@
         read (113,*,iostat=eof) k, hru_db(i)%dbsc
         if (eof < 0) exit
 
-          do ilum = 1, db_mx%landuse
+         do ilum = 1, db_mx%landuse
             if (hru_db(i)%dbsc%land_use_mgt == lum(ilum)%name) then
                hru_db(i)%dbs%land_use_mgt = ilum
             exit

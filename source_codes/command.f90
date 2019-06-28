@@ -216,6 +216,10 @@
               
               rec_d(irec) = ob(icmd)%hd(1)
 
+              if (cs_db%num_tot > 0) then
+                obcs(icmd)%hd(1) = hin_csz
+              end if
+
           !case ("exco")   ! export coefficient hyds are set at start
 
           case ("dr")   ! delivery ratios
@@ -264,6 +268,9 @@
         
         do ihru = 1, sp_ob%hru
           call hru_output (ihru)
+          if (hru(ihru)%dbs%surf_stor > 0) then
+            call wetland_output(ihru)
+          end if
           if (cs_db%num_tot > 0) then 
             call hru_pesticide_output (ihru)
             call hru_pathogen_output (ihru)
@@ -302,12 +309,7 @@
         do j = 1, sp_ob%recall
           call recall_output (j)
         end do
-        
-        do ires = 1, db_mx%wet_dat
-          call wetland_output(ires)
-        end do
 
-        
         call hydin_output   !if all output is no, then don"t call
         !call hcsin_output  gives allocate error
         if (sp_ob%chandeg > 0 .and. cs_db%num_pests > 0) call basin_ch_pest_output  !! nbs

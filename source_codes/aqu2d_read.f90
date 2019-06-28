@@ -25,8 +25,11 @@
       
     !!read data for aquifer elements for 2-D groundwater model
       inquire (file=in_link%aqu_cha, exist=i_exist)
-      if (i_exist /= 0 .or. in_link%aqu_cha /= "null" ) then
+      if (.not. i_exist .or. in_link%aqu_cha == "null" ) then
+        allocate (aq_ch(0:0))
+      else 
       do
+        if (eof < 0) exit
         open (107,file=in_link%aqu_cha)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit

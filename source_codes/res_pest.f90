@@ -6,9 +6,10 @@
       use reservoir_data_module
       use reservoir_module
       use res_pesticide_module
-      use hydrograph_module, only : res, ob
+      use hydrograph_module, only : res, ob, ht2
       use constituent_mass_module
       use pesticide_data_module
+      use water_body_module
       
       implicit none      
       
@@ -42,11 +43,11 @@
         jsed = res_dat(idb)%sed
         respst_d(jres)%pest(ipst)%tot_in = obcs(icmd)%hin%pest(ipst)
         tpest1 = obcs(icmd)%hin%pest(ipst) + res_water(jres)%pest(ipst)
-        bedvol = 1000. * res_om_d(jres)%area_ha * pestdb(jpst)%ben_act_dep + .01
+        bedvol = 1000. * res_wat_d(jres)%area_ha * pestdb(jpst)%ben_act_dep + .01
         tpest2 = res_benthic(jres)%pest(ipst) * bedvol
 
         !! calculate average depth of reservoir
-        depth = res(jres)%flo / (res_om_d(jres)%area_ha * 10000.)
+        depth = res(jres)%flo / (res_wat_d(jres)%area_ha * 10000.)
         !! sor conc/sol conc = Koc * frac_oc = Kd -> (sor mass/mass sed) / (sol mass/mass water) = Kd
         !! -> sor mass/sol mass = Kd * (kg sed)/(L water) --> sol mass/tot mass = 1 / (1 + Kd * (kg sed)/(L water))
         !! water column --> kg sed/L water = t/m3 = t / (m3 - (t * m3/t)) --> sedvol = sed/particle density(2.65)
@@ -149,7 +150,7 @@
         respst_d(jres)%pest(ipst)%bury = bury
 
         !! calculate soluble pesticide transported out of reservoir
-        solpesto = resflwo * fd1 * tpest1 / res(jres)%flo
+        solpesto = ht2%flo * fd1 * tpest1 / res(jres)%flo
         if (solpesto > tpest1) then
           solpesto = tpest1
           tpest1 = 0.
@@ -158,7 +159,7 @@
         end if
 
         !! calculate sorbed pesticide transported out of reservoir
-        sorpesto = resflwo * fp1 * tpest1 / res(jres)%flo
+        sorpesto = ht2%flo * fp1 * tpest1 / res(jres)%flo
         if (sorpesto > tpest1) then
           sorpesto = tpest1
           tpest1 = 0.

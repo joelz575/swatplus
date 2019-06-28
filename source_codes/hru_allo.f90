@@ -8,6 +8,7 @@
       use carbon_module
       use plant_module
       use soil_module
+      use water_body_module
       
       implicit none
 
@@ -43,10 +44,6 @@
         allocate (wet(0:imax))
         allocate (wet_om_init(0:imax))
         allocate (wet_ob(imax))
-        allocate (wet_om_d(imax))
-        allocate (wet_om_m(imax))
-        allocate (wet_om_y(imax))
-        allocate (wet_om_a(imax))
         allocate (wet_in_d(imax))
         allocate (wet_in_m(imax))
         allocate (wet_in_y(imax))
@@ -55,6 +52,10 @@
         allocate (wet_out_m(imax))
         allocate (wet_out_y(imax))
         allocate (wet_out_a(imax))
+        allocate (wet_wat_d(imax))
+        allocate (wet_wat_m(imax))
+        allocate (wet_wat_y(imax))
+        allocate (wet_wat_a(imax))
         allocate (rsd1(0:imax))
       endif
 

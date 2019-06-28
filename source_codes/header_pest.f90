@@ -149,7 +149,7 @@
             open (2820,file="reservoir_pest_day.csv",recl=800)
             write (2820,*) bsn%name, prog
             write (2820,'(*(G0.3,:","))') respest_hdr
-            write (9000,*) "RESERVOIR_PEST          reervoir_pest_day.txt.csv"
+            write (9000,*) "RESERVOIR_PEST          reservoir_pest_day.txt.csv"
           end if
       end if
       
@@ -213,7 +213,7 @@
             open (2836,file="basin_ch_pest_day.csv",recl=800)
             write (2836,*) bsn%name, prog
             write (2836,'(*(G0.3,:","))') chpest_hdr
-            write (9000,*) "BASIN_CH_PEST          reervoir_pest_day.txt.csv"
+            write (9000,*) "BASIN_CH_PEST          reservoir_pest_day.txt.csv"
           end if
        end if
       
@@ -277,7 +277,7 @@
             open (2852,file="basin_res_pest_day.csv",recl=800)
             write (2852,*) bsn%name, prog
             write (2852,'(*(G0.3,:","))') respest_hdr
-            write (9000,*) "BASIN_RES_PEST          reervoir_pest_day.txt.csv"
+            write (9000,*) "BASIN_RES_PEST          reservoir_pest_day.txt.csv"
           end if
        end if
       
@@ -341,7 +341,7 @@
             open (2868,file="basin_ls_pest_day.csv",recl=800)
             write (2868,*) bsn%name, prog
             write (2868,'(*(G0.3,:","))') pestb_hdr
-            write (9000,*) "basin_ls_pest          reervoir_pest_day.txt.csv"
+            write (9000,*) "basin_ls_pest          basin_ls_pest_day.csv"
           end if
        end if
       

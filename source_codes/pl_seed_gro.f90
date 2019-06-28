@@ -21,9 +21,20 @@
         pcom(j)%plg(ipl)%plet = pcom(j)%plg(ipl)%plet + ep_day + es_day
         pcom(j)%plg(ipl)%plpet = pcom(j)%plg(ipl)%plpet + pet_day
       end if
-
+     
       pcom(j)%plg(ipl)%hvstiadj = pldb(idp)%hvsti * 100. * pcom(j)%plcur(ipl)%phuacc /          &
                 (100. * pcom(j)%plcur(ipl)%phuacc + Exp(11.1 - 10. * pcom(j)%plcur(ipl)%phuacc))
-      
+       
+      !! adjust harvest index for temperature stress
+      !x2 = 100 *hui
+      !ajhi = hi * x2 / (x2 + Exp (11.1 - 0.1 * x2)
+      !dhi = ajhi - - ajh0
+      !x3 = t_opt - tx
+      !if (x3 < 0. .and. hui > 0.7) then
+      !  xx = Exp (8. * x3 / t_opt)
+      !  dhi = dhi * xx
+      !end if
+      !ajhi = ajhi + dhi
+
       return
       end subroutine pl_seed_gro

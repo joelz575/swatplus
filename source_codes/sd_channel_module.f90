@@ -223,9 +223,9 @@
         type (sd_ch_output), intent (in) :: ch1
         real, intent (in) :: const
         type (sd_ch_output) :: ch2
-        ch2%flo_in = ch1%flo_in
-        ch2%aqu_in = ch1%aqu_in
-        ch2%flo = ch1%flo
+        ch2%flo_in = ch1%flo_in / const
+        ch2%aqu_in = ch1%aqu_in / const
+        ch2%flo = ch1%flo / const
         ch2%peakr = ch1%peakr
         ch2%sed_in = ch1%sed_in / const
         ch2%sed_out = ch1%sed_out / const
@@ -247,9 +247,9 @@
         type (sd_ch_output), intent (in) :: ch1
         real, intent (in) :: const
         type (sd_ch_output) :: ch2
-        ch2%flo_in = ch1%flo_in / const
-        ch2%aqu_in = ch1%aqu_in / const
-        ch2%flo = ch1%flo / const
+        ch2%flo_in = ch1%flo_in
+        ch2%aqu_in = ch1%aqu_in
+        ch2%flo = ch1%flo
         ch2%peakr = ch1%peakr / const
         ch2%sed_in = ch1%sed_in
         ch2%sed_out = ch1%sed_out

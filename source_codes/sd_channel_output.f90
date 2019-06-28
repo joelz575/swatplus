@@ -14,7 +14,7 @@
 
       iob = sp_ob1%chandeg + ichan - 1
 
-      ch_stor_m(ichan) = ch_stor_m(ichan) + ch_stor(ichan)
+      !ch_stor_m(ichan) = ch_stor_m(ichan) + ch_stor(ichan)
       ch_in_m(ichan) = ch_in_m(ichan) + ch_in_d(ichan)
       ch_out_m(ichan) = ch_out_m(ichan) + ch_out_d(ichan)
       ch_wat_m(ichan) = ch_wat_m(ichan) + ch_wat_d(ichan)
@@ -31,22 +31,22 @@
 
 !!!!! monthly print
         if (time%end_mo == 1) then
-          ch_stor_y(ichan) = ch_stor_y(ichan) + ch_stor_m(ichan)
+          !ch_stor_y(ichan) = ch_stor_y(ichan) + ch_stor_m(ichan)
           ch_in_y(ichan) = ch_in_y(ichan) + ch_in_m(ichan)
           ch_out_y(ichan) = ch_out_y(ichan) + ch_out_m(ichan)
           ch_wat_y(ichan) = ch_wat_y(ichan) + ch_wat_m(ichan)
           
           const = float (ndays(time%mo + 1) - ndays(time%mo))
-          ch_stor_m(ichan) = ch_stor_m(ichan) / const           !! all storage variables are averages
+          !ch_stor_m(ichan) = ch_stor_m(ichan) / const           !! all storage variables are averages
           ch_wat_m(ichan) = ch_wat_m(ichan) // const            !! // only divides area (daily average values)
           
           if (pco%sd_chan%m == "y") then
-          write (2501,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_m(ichan), ch_stor_m(ichan), ch_in_m(ichan), ch_out_m(ichan)
+          write (2501,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_m(ichan), ch_stor(ichan), ch_in_m(ichan), ch_out_m(ichan)
           if (pco%csvout == "y") then
-            write (2505,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_m(ichan), ch_stor_m(ichan), ch_in_m(ichan), ch_out_m(ichan)
+            write (2505,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_m(ichan), ch_stor(ichan), ch_in_m(ichan), ch_out_m(ichan)
           end if
         end if
-        ch_stor_m(ichan) = chaz
+        !ch_stor_m(ichan) = chaz
         ch_in_m(ichan) = chaz
         ch_out_m(ichan) = chaz
         ch_wat_m(ichan) = wbodz
@@ -54,35 +54,35 @@
 
 !!!!! yearly print
       if (time%end_yr == 1) then
-        ch_stor_a(ichan) = ch_stor_a(ichan) + ch_stor_y(ichan)
+        !ch_stor_a(ichan) = ch_stor_a(ichan) + ch_stor_y(ichan)
         ch_in_a(ichan) = ch_in_a(ichan) + ch_in_y(ichan)
         ch_out_a(ichan) = ch_out_a(ichan) + ch_out_y(ichan)
         ch_wat_a(ichan) = ch_wat_a(ichan) + ch_wat_y(ichan)
         
         const = time%day_end_yr
-        ch_stor_y(ichan) = ch_stor_y(ichan) / const     !! all storage variables are averages
+        !ch_stor_y(ichan) = ch_stor_y(ichan) / const     !! all storage variables are averages
         ch_wat_y(ichan) = ch_wat_y(ichan) // const      !! // only divides area (daily average values)
           
         if (pco%sd_chan%y == "y") then 
-          write (2502,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_y(ichan), ch_stor_y(ichan), ch_in_y(ichan), ch_out_y(ichan)
+          write (2502,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_y(ichan), ch_stor(ichan), ch_in_y(ichan), ch_out_y(ichan)
           if (pco%csvout == "y") then
-           write (2506,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_y(ichan), ch_stor_y(ichan), ch_in_y(ichan), ch_out_y(ichan)
+           write (2506,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_y(ichan), ch_stor(ichan), ch_in_y(ichan), ch_out_y(ichan)
           end if
         end if
       end if
 
 !!!!! average annual print
       if (time%end_sim == 1) then
-        ch_stor_a(ichan) = ch_stor_a(ichan) / time%yrs_prt      !! all storage variables (averaged) must be divided by years
+        !ch_stor_a(ichan) = ch_stor_a(ichan) / time%yrs_prt      !! all storage variables (averaged) must be divided by years
         ch_in_a(ichan) = ch_in_a(ichan) / time%yrs_prt          !! all inflow and outflow varaibles (summed) are divided by years
         ch_out_a(ichan) = ch_out_a(ichan) / time%yrs_prt
         ch_wat_a(ichan) = ch_wat_a(ichan) / time%yrs_prt        !! all summed variables divided by years
         ch_wat_a(ichan) = ch_wat_a(ichan) // time%yrs_prt       !! all averaged variables divided by years
         
         if (pco%sd_chan%a == "y") then
-        write (2503,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_a(ichan), ch_stor_a(ichan), ch_in_a(ichan), ch_out_a(ichan)
+        write (2503,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_a(ichan), ch_stor(ichan), ch_in_a(ichan), ch_out_a(ichan)
         if (pco%csvout == "y") then
-          write (2507,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_a(ichan), ch_stor_a(ichan), ch_in_a(ichan), ch_out_a(ichan)
+          write (2507,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_a(ichan), ch_stor(ichan), ch_in_a(ichan), ch_out_a(ichan)
         end if
        end if
      end if 

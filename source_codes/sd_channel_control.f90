@@ -429,7 +429,7 @@
       !! calculate hydrograph leaving reach and storage in channel
       if (time%step == 0) rt_delt = 1.
       det = 24.* rt_delt
-      scoef = det / (rttime + det)
+      scoef = bsn_prm%scoef * det / (rttime + det)
       frac = 1. - scoef
       if (rttime > det) then      ! ht1 = incoming + storage
         !! travel time > timestep -- then all incoming is stored and frac of stored is routed
@@ -456,7 +456,7 @@
       
       !! output channel organic-mineral
       ch_out_d(ich) = ht2                       !set inflow om hydrograph
-      ch_out_d(ich)%flo = ht2%flo / 86400.      !flow for om output
+      ch_out_d(ich)%flo = ht2%flo / 86400.      !m3 -> m3/s
       
       !! output channel morphology
       chsd_d(ich)%flo = ht2%flo / 86400.        !adjust if overbank flooding is moved to landscape

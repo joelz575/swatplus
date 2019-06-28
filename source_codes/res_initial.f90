@@ -6,6 +6,7 @@
       use hydrograph_module
       use constituent_mass_module
       use pesticide_data_module
+      use water_body_module
       
       implicit none
       
@@ -98,7 +99,7 @@
         end do
         
         !! calculate initial surface area       
-        res_om_d(ires)%area_ha = res_ob(ires)%br1 * res(ires)%flo ** res_ob(ires)%br2
+        res_wat_d(ires)%area_ha = res_ob(ires)%br1 * res(ires)%flo ** res_ob(ires)%br2
 
       end do
       close(105)

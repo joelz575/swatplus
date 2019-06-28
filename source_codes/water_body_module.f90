@@ -10,38 +10,27 @@
       end type water_body
       type (water_body) :: wbodz
       
-      type (water_body), dimension(:),allocatable :: res_wat_d
-      type (water_body), dimension(:),allocatable :: res_wat_m
-      type (water_body), dimension(:),allocatable :: res_wat_y
-      type (water_body), dimension(:),allocatable :: res_wat_a
-      type (water_body), dimension(:),allocatable :: wet_wat_d
-      type (water_body), dimension(:),allocatable :: wet_wat_m
-      type (water_body), dimension(:),allocatable :: wet_wat_y
-      type (water_body), dimension(:),allocatable :: wet_wat_a
-      type (water_body), dimension(:),allocatable :: ch_wat_d
-      type (water_body), dimension(:),allocatable :: ch_wat_m
-      type (water_body), dimension(:),allocatable :: ch_wat_y
-      type (water_body), dimension(:),allocatable :: ch_wat_a
+      type (water_body), dimension(:), allocatable, target :: res_wat_d
+      type (water_body), dimension(:), allocatable :: res_wat_m
+      type (water_body), dimension(:), allocatable :: res_wat_y
+      type (water_body), dimension(:), allocatable :: res_wat_a
+      type (water_body), dimension(:), allocatable, target :: wet_wat_d
+      type (water_body), dimension(:), allocatable :: wet_wat_m
+      type (water_body), dimension(:), allocatable :: wet_wat_y
+      type (water_body), dimension(:), allocatable :: wet_wat_a
+      type (water_body), dimension(:), allocatable :: ch_wat_d
+      type (water_body), dimension(:), allocatable :: ch_wat_m
+      type (water_body), dimension(:), allocatable :: ch_wat_y
+      type (water_body), dimension(:), allocatable :: ch_wat_a
       type (water_body) :: bch_wat_d
       type (water_body) :: bch_wat_m
       type (water_body) :: bch_wat_y
       type (water_body) :: bch_wat_a
-
-       type water_body_hdr
-        character (len=10) :: area_ha    = " surf_area"             !ha     |water body surface area
-        character (len=10) :: precip     = "    precip"             !ha-m   |precip on the water body
-        character (len=10) :: evap       = "      evap"             !ha-m   |evaporation from the water surface
-        character (len=10) :: seep       = "      seep"             !ha-m   |seepage from bottom of water body
-      end type water_body_hdr
-      type (water_body_hdr) :: wbod_hdr
-
-       type water_body_unit
-        character (len=10) :: area_ha    = "        ha"             !ha     |water body surface area
-        character (len=10) :: precip     = "      ha-m"             !ha-m   |precip on the water body
-        character (len=10) :: evap       = "      ha-m"             !ha-m   |evaporation from the water surface
-        character (len=10) :: seep       = "      ha-m"             !ha-m   |seepage from bottom of water body
-      end type water_body_unit
-      type (water_body_unit) :: wbod_hdr2
+      type (water_body) :: bres_wat_d
+      type (water_body) :: bres_wat_m
+      type (water_body) :: bres_wat_y
+      type (water_body) :: bres_wat_a
+      type (water_body), pointer :: wbody_wb       !! used for reservoir and wetlands
 
        interface operator (+)
         module procedure watbod_add

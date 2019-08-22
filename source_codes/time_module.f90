@@ -9,6 +9,7 @@
       integer, dimension (13) :: ndays_noleap = (/0,31,59,90,120,151,181,212,243,273,304,334,365/)
       integer, dimension (12) :: ndmo = (/0,0,0,0,0,0,0,0,0,0,0,0/)     !! cumulative number of days accrued in the
       !! month since the simulation began - the array location number is the number of the month
+
       
       type time_current
         character (len=1)  :: day_print = "n"

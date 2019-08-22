@@ -38,7 +38,7 @@
 
       !! partition leaf and stem (wood/stalk) and seed (grain) mass
       leaf_mass_frac = 0.03 * pcom(j)%plg(ipl)%lai / pldb(idp)%blai     !**** 0.03 for forest - this needs to be a plant parm ****
-      seed_mass_frac = pcom(j)%plg(ipl)%hvstiadj
+      seed_mass_frac = pcom(j)%plg(ipl)%hi_adj
       stem_mass_frac = 1. - leaf_mass_frac - seed_mass_frac
       stem_mass_frac = amax1 (0., stem_mass_frac)
       pl_mass(j)%leaf(ipl)%m = leaf_mass_frac * pl_mass(j)%ab_gr(ipl)%m

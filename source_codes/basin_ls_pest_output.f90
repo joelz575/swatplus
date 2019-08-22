@@ -12,7 +12,6 @@
       implicit none
       
       integer :: ipest 
-      integer :: j
       integer :: ls
       integer :: iob
       real :: const
@@ -21,7 +20,6 @@
 !!    this subroutine outputs HRU variables on daily, monthly and annual time steps
      
       iob = sp_ob1%hru
-      j = 0
           
       !! print balance for each pesticide
       do ipest = 1, cs_db%num_pests
@@ -36,9 +34,9 @@
       !! daily print
         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%pest%d == "y") then
-             write (2864,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), bpestb_d%pest(ipest)   !! pesticide balance
+             write (2864,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_d%pest(ipest)   !! pesticide balance
              if (pco%csvout == "y") then
-               write (2868,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), bpestb_d%pest(ipest)
+               write (2868,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_d%pest(ipest)
              end if
           end if
         end if
@@ -53,9 +51,9 @@
 
           !! monthly print
            if (pco%pest%m == "y") then
-             write (2865,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), bpestb_m%pest(ipest)
+             write (2865,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_m%pest(ipest)
                if (pco%csvout == "y") then
-                 write (2869,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), bpestb_m%pest(ipest)
+                 write (2869,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_m%pest(ipest)
                end if
            end if
           
@@ -70,9 +68,9 @@
 
           !! yearly print
            if (time%end_yr == 1 .and. pco%pest%y == "y") then
-             write (2866,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), bpestb_y%pest(ipest)
+             write (2866,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_y%pest(ipest)
                if (pco%csvout == "y") then
-                 write (2870,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), bpestb_y%pest(ipest)
+                 write (2870,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_y%pest(ipest)
                end if
            end if
            
@@ -82,9 +80,9 @@
          if (time%end_sim == 1 .and. pco%pest%a == "y") then
            bpestb_a%pest(ipest) = bpestb_a%pest(ipest) / time%yrs_prt
            bpestb_a%pest(ipest) = bpestb_a%pest(ipest) // time%days_prt
-           write (2867,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), bpestb_a%pest(ipest)
+           write (2867,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_a%pest(ipest)
            if (pco%csvout == "y") then
-             write (2871,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), bpestb_a%pest(ipest)
+             write (2871,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_a%pest(ipest)
            end if
            bpestb_a%pest(ipest) = pestbz
          end if
@@ -92,6 +90,6 @@
       end do    !pesticide loop
       return
       
-100   format (4i6,2i8,2x,2a,13f12.8)      
+100   format (4i6,2a,2x,2a,13e12.4)      
 
       end subroutine basin_ls_pest_output

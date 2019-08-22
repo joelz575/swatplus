@@ -88,6 +88,6 @@
       end do    !pesticide loop
       return
       
-100   format (4i6,2i8,2x,2a,12f12.8)      
+100   format (4i6,2i8,2x,2a,12e12.4)      
 
       end subroutine hru_pesticide_output

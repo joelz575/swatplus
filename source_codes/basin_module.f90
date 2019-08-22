@@ -39,6 +39,9 @@
                                  !!   0 do not model
                                  !!   1 model (QUAL2E)
         integer :: nostress = 0  !! redefined to the sequence number  -- changed to no nutrient stress
+                                 !!   0 = all stresses applied
+                                 !!   1 = turn off all plant stress
+                                 !!   2 = turn off nutrient plant stress only
         integer :: cn = 0        !! CN method flag
                                  !!   0 = use traditional SWAT method bases CN 
                                  !!   CN on soil moisture

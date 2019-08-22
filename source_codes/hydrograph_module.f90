@@ -286,12 +286,16 @@
       
       !recall hydrograph inputs
       type recall_hydrograph_inputs
-         character (len=16) :: name
-         integer :: num = 0                    !number of elements
-         integer :: typ                        !recall type - 1=day, 2=mon, 3=year
-         character(len=16) :: filename         !filename
-         !hyd_output units are in cms and mg/L
-         type (hyd_output), dimension (:,:), allocatable :: hd     !export coefficients
+        character (len=16) :: name
+        integer :: num = 0                    !number of elements
+        integer :: typ                        !recall type - 1=day, 2=mon, 3=year
+        character(len=16) :: filename         !filename
+        !hyd_output units are in cms and mg/L
+        type (hyd_output), dimension (:,:), allocatable :: hd     !export coefficients
+        integer :: start_ts             !! start timestep of point source file
+        integer :: start_yr             !! start year of point source file
+        integer :: end_ts               !! end timestep of point source file
+        integer :: end_yr               !! end year of point source file
       end type recall_hydrograph_inputs
       type (recall_hydrograph_inputs),dimension(:),allocatable:: recall
 
@@ -324,7 +328,7 @@
         integer :: hru_lte = 5      !1=total 2=recharge 3=surface 4=lateral 5= tile
         integer :: ru = 5           !1=total 2=recharge 3=surface 4=lateral 5= tile
         integer :: modflow = 1      !1=total
-        integer :: aqu = 2          !1=return flow 3= deep perc
+        integer :: aqu = 2          !1=return flow 2=deep perc
         integer :: chan = 3         !1=total 2=recharge 3=overbank
         integer :: res = 2          !1=total 2=recharge 
         integer :: recall = 1       !1=total
@@ -333,7 +337,7 @@
         integer :: pump = 1         !1=total
         integer :: outlet = 1       !1=total
         integer :: chandeg = 3      !1=total 2=recharge 3=overbank
-        integer :: aqu2d = 2        !1=return flow 3= deep perc
+        integer :: aqu2d = 2        !1=return flow 3=deep perc
         integer :: herd = 1
         integer :: wro = 1
       end type object_total_hydrographs

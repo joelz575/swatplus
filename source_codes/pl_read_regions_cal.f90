@@ -4,6 +4,7 @@
       use maximum_data_module
       use calibration_data_module
       use hydrograph_module
+      use hru_module, only : hru
       
       implicit none 
 
@@ -19,17 +20,17 @@
       integer :: isp                  !none       |counter 
       integer :: ielem1               !none       |counter 
       integer :: ii                   !none       |counter  
-      integer :: ihru                 !none       |counter   
+      integer :: ihru                 !none       |counter 
+      integer :: iihru                !none       |counter 
       integer :: ilum_mx              !           | 
       integer :: ilum                 !none       |counter  
-      
       
       imax = 0
       mcal = 0
       mreg = 0
  
     inquire (file=in_chg%plant_gro_sft, exist=i_exist)
-    if (.not. i_exist .or. in_chg%plant_gro_sft /= "null" ) then
+    if (.not. i_exist .or. in_chg%plant_gro_sft == "null" ) then
       allocate (plcal(0:0))	
     else
       do
@@ -57,13 +58,18 @@
           allocate (plcal(i)%num(ielem1))
           plcal(i)%num = defunit_num
           plcal(i)%num_tot = ielem1
+          do ihru = 1, plcal(i)%num_tot
+            iihru = plcal(i)%num(ihru)
+            hru(iihru)%crop_reg = i
+          end do
           deallocate (defunit_num)
         else
           !!all hrus are in region
-          allocate (plcal(i)%num(sp_ob%hru_lte))
-          plcal(i)%num_tot = sp_ob%hru_lte
-          do ihru = 1, sp_ob%hru_lte
+          allocate (plcal(i)%num(sp_ob%hru))
+          plcal(i)%num_tot = sp_ob%hru
+          do ihru = 1, sp_ob%hru
             plcal(i)%num(ihru) = ihru
+            hru(ihru)%crop_reg = i
           end do      
         end if
         

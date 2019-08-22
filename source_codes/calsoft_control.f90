@@ -69,37 +69,41 @@
 	    do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
             if (abs(lscal(ireg)%lum(ilum)%prm%cn) > 1.e-6) then
-              write (5000,503) ls_prms(1)%name, ls_prms(1)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn,        & 
+              write (5000,503) ls_prms(1)%name, ls_prms(1)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn,           & 
               "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%esco) > 1.e-6) then
-              write (5000,503) ls_prms(2)%name, ls_prms(2)%chg_typ, lscal(ireg)%lum(ilum)%prm%esco,      &
+              write (5000,503) ls_prms(2)%name, ls_prms(2)%chg_typ, lscal(ireg)%lum(ilum)%prm%esco,         &
               "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%lat_len) > 1.e-6) then
-              write (5000,503) ls_prms(3)%name, ls_prms(3)%chg_typ, lscal(ireg)%lum(ilum)%prm%lat_len,   &
+              write (5000,503) ls_prms(3)%name, ls_prms(3)%chg_typ, lscal(ireg)%lum(ilum)%prm%lat_len,      &
               "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%k_lo) > 1.e-6) then
-              write (5000,503) ls_prms(4)%name, ls_prms(4)%chg_typ, lscal(ireg)%lum(ilum)%prm%k_lo,     &
+              write (5000,503) ls_prms(4)%name, ls_prms(4)%chg_typ, lscal(ireg)%lum(ilum)%prm%k_lo,         &
               "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%slope) > 1.e-6) then
-              write (5000,503) ls_prms(5)%name, ls_prms(5)%chg_typ, lscal(ireg)%lum(ilum)%prm%slope,    &
+              write (5000,503) ls_prms(5)%name, ls_prms(5)%chg_typ, lscal(ireg)%lum(ilum)%prm%slope,        &
               "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%tconc) > 1.e-6) then
-              write (5000,503) ls_prms(6)%name, ls_prms(6)%chg_typ, lscal(ireg)%lum(ilum)%prm%tconc,    &
+              write (5000,503) ls_prms(6)%name, ls_prms(6)%chg_typ, lscal(ireg)%lum(ilum)%prm%tconc,        &
               "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) then                                
-              write (5000,503) "esco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,  &
+              write (5000,503) "esco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
               "     0      0      0      0      0      0      0      0      0"
-              write (5000,503) "epco            ", ls_prms(7)%chg_typ, -lscal(ireg)%lum(ilum)%prm%etco, &
+              write (5000,503) "epco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
               "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) then
-              write (5000,503) ls_prms(8)%name, ls_prms(8)%chg_typ, lscal(ireg)%lum(ilum)%prm%perco,  &
+              write (5000,503) ls_prms(8)%name, ls_prms(8)%chg_typ, lscal(ireg)%lum(ilum)%prm%perco,        &
+              "     0      0      0      0      0      0      0      0      0"
+            end if
+            if (abs(lscal(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) then
+              write (5000,503) ls_prms(10)%name, ls_prms(10)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn3_swf,    &
               "     0      0      0      0      0      0      0      0      0"
             end if
 	      end do
@@ -126,11 +130,11 @@
 
 	    do isdh = 1, sp_ob%hru_lte
 	      idb = hlt(isdh)%props
-		  write (4999,*) hlt(isdh)%name, hlt_db(idb)%dakm2, hlt(isdh)%cn2, hlt(isdh)%cn3_swf, hlt_db(idb)%tc,     &
+		  write (4999,*) hlt(isdh)%name, hlt_db(idb)%dakm2, hlt(isdh)%cn2, hlt(isdh)%cn3_swf, hlt_db(idb)%tc,       &
 		    hlt_db(idb)%soildep, hlt(isdh)%perco, hlt_db(isdh)%slope, hlt_db(idb)%slopelen,                         &
 		    hlt(isdh)%etco, hlt_db(idb)%sy, hlt_db(idb)%abf, hlt(idb)%revapc,                                       &
 		    hlt_db(idb)%percc, hlt_db(idb)%sw, hlt_db(idb)%gw, hlt_db(idb)%gwflow,                                  &
-		    hlt_db(idb)%gwdeep, hlt_db(idb)%snow, hlt_db(idb)%xlat, hlt_db(idb)%text,                              &
+		    hlt_db(idb)%gwdeep, hlt_db(idb)%snow, hlt_db(idb)%xlat, hlt_db(idb)%text,                               &
 		    hlt_db(idb)%tropical, hlt_db(idb)%igrow1, hlt_db(idb)%igrow2, hlt_db(idb)%plant, hlt(isdh)%stress,      &
 		    hlt_db(idb)%ipet, hlt_db(idb)%irr, hlt_db(idb)%irrsrc, hlt_db(idb)%tdrain,                              &
             hlt_db(idb)%uslek, hlt_db(idb)%uslec, hlt_db(idb)%uslep, hlt_db(idb)%uslels
@@ -171,7 +175,7 @@
   400 format (2a16,i12,20f12.3)      
   500 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),10f12.3)
   502 format (a16,f12.3,i12,2(1x,a16,4f12.3),4f12.3)
-  503 format (2a16,f12.3,a)
+  503 format (2a16,f12.5,a)
   504 format (2a16,a,i6,a)
   505 format (a,f12.3,a)
       

@@ -4,15 +4,6 @@
       use calibration_data_module
    
       implicit none
-      
-      !integer :: date_time(8)           !              | 
-      !character*10 b(3)                 !              |
-      !integer :: irch                   !              |
-      !integer :: idat                   !              |
-      !integer :: isched                 !              | 
-      !integer :: iauto                  !none          |counter
-      !integer :: ictl                   !none          |counter
-      !integer :: i                      !none          |counter
    
       !read calibration data (if included)
       call cal_parm_read

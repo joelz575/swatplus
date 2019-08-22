@@ -42,7 +42,7 @@
       
         mgt = sched(isched)%mgt_ops(hru(j)%cur_op)
 
-        do while(mgt%jday > 0 .and. time%day == mgt%jday)
+        do while(mgt%mon == time%mo .and. mgt%day == time%day_mo)
           call mgt_sched (isched)
           if (sched(isched)%num_ops == 1) exit
           if (yr_skip(j) == 1) exit

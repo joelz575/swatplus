@@ -29,7 +29,7 @@
         wet_wat_m(j) = wet_wat_m(j) + wet_wat_d(j)
         wet_in_d(j) = resmz
         wet_out_d(j) = resmz
-        wet_wat_d(j) = wbodz
+        !wet_wat_d(j) = wbodz
 
 !!!!! monthly print
         if (time%end_mo == 1) then

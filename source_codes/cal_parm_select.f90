@@ -67,6 +67,7 @@
       case ("cn3_swf")
         hru(ielem)%hyd%cn3_swf = chg_par (hru(ielem)%hyd%cn3_swf,         &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        call curno (cn2(ielem), ielem)
         
       case ("usle_p")
         hru(ielem)%lumv%usle_p = chg_par (hru(ielem)%lumv%usle_p,         &

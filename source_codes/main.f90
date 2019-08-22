@@ -10,16 +10,16 @@
       use calibration_data_module
 
       implicit none
-
-      prog = " SWAT+ Jun 28 2019    MODULAR Rev 2019.59.3"
+      
+      prog = " SWAT+ Aug 21 2019    MODULAR Rev 2019.60"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 59.3          ",/,             &
+     &          "               Revision 60            ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
-      
+     
       call proc_bsn   
       call proc_date_time
       call proc_db
@@ -68,7 +68,7 @@
       else
         call time_control
       end if
-
+      
       if (cal_soft == "y") call calsoft_control
       
       if (cal_hard == "y") then

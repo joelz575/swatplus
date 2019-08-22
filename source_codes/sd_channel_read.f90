@@ -33,6 +33,8 @@
       integer :: ipath                  !none      |counter
       integer :: iom_ini                !none      |counter
       integer :: idb                    !none      |counter
+      integer :: i                      !none      |counter
+      integer :: k                      !none      |counter
       real :: bedvol                    !m^3       |volume of river bed sediment
       integer :: icon, iob, ichdat
       eof = 0
@@ -119,9 +121,9 @@
        read (105,*,iostat=eof) header
        if (eof < 0) exit
         do while (eof == 0)
-          read (105,*,iostat=eof) titldum
+          read (105,*,iostat=eof) i
           if (eof < 0) exit
-          imax = imax + 1
+          imax = Max(imax,i)
         end do
         
       db_mx%sdc_dat = imax
@@ -135,10 +137,13 @@
       if (eof < 0) exit
       
       do ichi = 1, db_mx%sdc_dat
-        read (105,*,iostat=eof) sd_dat(ichi)%name, sd_dat(ichi)%initc, sd_dat(ichi)%hydc, sd_dat(ichi)%sedc, &
-            sd_dat(ichi)%nutc
-        if (eof < 0) exit
-                         
+         read (105,*,iostat=eof) i
+         if (eof < 0) exit
+         backspace (105)
+         read (105,*,iostat=eof) k, sd_dat(i)%name, sd_dat(i)%initc, sd_dat(i)%hydc, sd_dat(i)%sedc, &
+            sd_dat(i)%nutc
+         if (eof < 0) exit
+         
         !! initialize orgaincs and minerals in water
         do isp_ini = 1, db_mx%ch_init
           if (sd_dat(ichi)%initc == ch_init(isp_ini)%name) then
@@ -221,11 +226,11 @@
         ipest_ini = sd_init(ich_ini)%pest
         do ipest = 1, cs_db%num_pests
           ipest_db = cs_db%pest_num(ipest)
-          ch_water(ich)%pest(ipest) = pest_water_ini(ipest_ini)%water(ipest)
-          ch_benthic(ich)%pest(ipest) = pest_water_ini(ipest_ini)%benthic(ipest)
-          !! calculate volume of active river bed sediment layer
+          ! mg = mg/kg * m3*1000. (kg=m3*1000.)
+          ch_water(ich)%pest(ipest) = pest_water_ini(ipest_ini)%water(ipest) * ch_stor(ich)%flo * 1000.
+          !! calculate volume of active river bed sediment layer - m3
           bedvol = sd_ch(ich)%chw *sd_ch(ich)%chl * 1000.* pestdb(ipest_ini)%ben_act_dep
-          ch_benthic(ich)%pest(ipest) = pest_water_ini(ipest_ini)%benthic(ipest) * bedvol
+          ch_benthic(ich)%pest(ipest) = pest_water_ini(ipest_ini)%benthic(ipest) * bedvol * 1000.   ! mg = mg/kg * m3*1000.
           !! calculate mixing velocity using molecular weight and porosity
           sd_ch(ich)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt ** (-.6666) * (1. - sd_chd(ich)%bd / 2.65) * (69.35 / 365)
         end do

@@ -6,21 +6,32 @@
       use climate_module, only : wst
       use maximum_data_module
       use constituent_mass_module
+      use pesticide_data_module
+      use aqu_pesticide_module
       
       implicit none
       
-      integer :: iaq            !none      |counter
-      integer :: iaqdb          !          |
-      integer :: icha           !          |
-      integer :: iob_out        !          !object type out
-      integer :: iout           !none      |counter
-      integer :: ii             !none      |counter
-      integer :: icontrib      !none      |counter
-      real :: stor_init         !          |
-      real :: conc_no3          !          |
-      real :: step              !          |
+      integer :: iaq            !none       |counter
+      integer :: iaqdb          !           |
+      integer :: icha           !           |
+      integer :: iob_out        !           !object type out
+      integer :: iout           !none       |counter
+      integer :: ii             !none       |counter
+      integer :: icontrib       !none       |counter
+      integer :: ipest          !none       |counter
+      integer :: ipest_db       !none       |pesticide number from pesticide data base
+      real :: stor_init         !           |
+      real :: conc_no3          !           |
+      real :: step              !           |
       real :: contrib_len
       real :: contrib_len_left
+      real :: pest_init         !kg/ha      |amount of pesticide present at beginning of day
+      real :: pest_end          !kg/ha      |amount of pesticide present at end of day
+      real :: flow_mm           !mm         |total flow through aquifer - return flow + seepage
+      real :: pest_kg_ha        !kg/ha      |soluble pesticide moving with flow
+      real :: conc              !kg/m3      |concentraion of pesticide in flow
+      real :: zdb1              !mm         |kd - flow factor for pesticide transport
+      real :: kd                !(mg/kg)/(mg/L) |koc * carbon
 
       !! set pointers to aquifer database and weather station
       iaq = ob(icmd)%num
@@ -143,8 +154,56 @@
         aq_ch(iaq)%hd = ob(icmd)%hd(1)
       end if
 
-      ! compute outflow objects (flow to channels, reservoirs, or aquifer)
-      ! if flow from hru is directly routed
+      !! compute pesticide transport and decay
+      do ipest = 1, cs_db%num_pests
+        ipest_db = cs_db%pest_num(ipest)
+        
+        !! add incoming pesticide to storage
+        cs_aqu(iaq)%pest(ipest) = cs_aqu(iaq)%pest(ipest) + obcs(icmd)%hin%pest(ipest)
+        
+        !! compute pesticide decay in the aquifer
+        pest_init = cs_aqu(iaq)%pest(ipest)
+        if (pest_init > 1.e-12) then
+          pest_end = pest_init * pestcp(ipest_db)%decay_s
+          cs_aqu(iaq)%pest(ipest) = pest_end
+          aqupst_d(iaq)%pest(ipest)%react = (pest_init - pest_end)
+        end if
+            
+        !! compute pesticide in aquifer flow
+        kd = pestdb(ipest_db)%koc * aqu_d(iaq)%cbn / 100.
+        !! assume specific yield = upper limit (effective vs total porosity) 
+        !! and bulk density of 2.0 (ave of rock and soil - 2.65 and 1.35)
+        !! mm = (mm/mm + (m^3/ton)*(ton/m^3)) * m * 1000.
+        zdb1 = (aqudb(iaqdb)%spyld + kd * 2.0) * aqudb(iaqdb)%flo_dist * 1000.
+
+        !! compute volume of flow through the layer - mm
+        flow_mm = aqu_d(iaq)%flo + aqu_d(iaq)%seep
+
+        !! compute concentration in the flow
+        if (cs_aqu(iaq)%pest(ipest) >= 0.0001 .and. flow_mm > 0.) then
+          pest_kg_ha =  cs_aqu(iaq)%pest(ipest) * (1. - Exp(-flow_mm / (zdb1 + 1.e-6)))
+          conc = pest_kg_ha / flow_mm
+          conc = Min (pestdb(ipest_db)%solub / 100., conc)      ! check solubility
+          pest_kg_ha = conc * flow_mm
+          if (pest_kg_ha >  cs_aqu(iaq)%pest(ipest)) pest_kg_ha = cs_aqu(iaq)%pest(ipest)
+          
+          !! return flow (1) and deep seepage (2)  kg = kg/ha * ha
+          obcs(icmd)%hd(1)%pest(ipest) = conc * aqu_d(iaq)%flo * ob(icmd)%area_ha
+          obcs(icmd)%hd(2)%pest(ipest) = conc * aqu_d(iaq)%seep * ob(icmd)%area_ha
+          cs_aqu(iaq)%pest(ipest) =  cs_aqu(iaq)%pest(ipest) - pest_kg_ha
+          aqupst_d(iaq)%pest(ipest)%sol_out = 1.e6 * pest_kg_ha * ob(icmd)%area_ha
+        endif
+      
+        !! set pesticide output variables - mg
+        aqupst_d(iaq)%pest(ipest)%tot_in = obcs(icmd)%hin%pest(ipest)
+        !! assume frsol = 1 (all soluble)
+        aqupst_d(iaq)%pest(ipest)%sol_out = 1. * obcs(icmd)%hd(1)%pest(ipest)
+        aqupst_d(iaq)%pest(ipest)%sor_out = 0.
+        aqupst_d(iaq)%pest(ipest)%stor = cs_aqu(iaq)%pest(ipest)
+      end do
+        
+      !! compute outflow objects (flow to channels, reservoirs, or aquifer)
+      !! if flow from hru is directly routed
       iob_out = icmd
       aqu_d(iaq)%flo_cha = 0.
       aqu_d(iaq)%flo_res = 0.

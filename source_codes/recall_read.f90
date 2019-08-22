@@ -26,6 +26,7 @@
       integer :: ii                   !none       |counter
       integer :: i                    !           |
       integer :: iexco_om
+      integer :: ifirst               !           |
 
       eof = 0
       imax = 0
@@ -92,11 +93,19 @@
         end select
            
         ! read and store entire year
+       ! ifirst = 0
        do 
          read (108,*,iostat=eof) iyr, istep
+         if (ifirst == 0) then
+           recall(i)%start_ts = istep
+           recall(i)%start_yr = iyr
+           ifirst = 1
+         end if
          if (eof < 0) exit
          if (iyr == time%yrc) exit
        end do
+       recall(i)%end_ts = istep
+       recall(i)%end_yr = iyr
        
        backspace (108)
        iyr_prev = iyr

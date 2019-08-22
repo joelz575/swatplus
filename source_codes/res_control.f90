@@ -19,6 +19,8 @@
       integer :: irel                 !              |
       integer :: inut                 !none          |counter
       integer :: iob                  !none          |counter
+      real :: pvol_m3
+      real :: evol_m3
 
       iob = res_ob(jres)%ob
       
@@ -42,8 +44,10 @@
           !! determine reservoir outflow
           irel = res_dat(idat)%release
           d_tbl => dtbl_res(irel)
+          pvol_m3 = res_ob(jres)%pvol
+          evol_m3 = res_ob(jres)%evol
           call conditions (ihyd)
-          call res_hydro (jres, irel, ihyd)
+          call res_hydro (jres, irel, ihyd, pvol_m3, evol_m3)
           call res_sediment (jres, ihyd, ised)
 	    else
 	      !call res_hourly

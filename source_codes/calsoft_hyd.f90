@@ -82,7 +82,7 @@
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for 1st surface runoff calibration and rerun
                 cn2(iihru) = cn2(iihru) + chg_val
                 cn2(iihru) = amin1 (cn2(iihru), ls_prms(1)%up)
@@ -140,7 +140,7 @@
                   lscal(ireg)%lum(ilum)%prm_lim%cn = 1.
                 end if
                 if (lscal(ireg)%lum(ilum)%prm%cn <= ls_prms(1)%neg) then
-                  chg_val = lscal(ireg)%lum(ilum)%prm_prev%cn - ls_prms(1)%neg
+                  chg_val = ls_prms(1)%neg - lscal(ireg)%lum(ilum)%prm_prev%cn
                   lscal(ireg)%lum(ilum)%prm%cn = ls_prms(1)%neg
                   lscal(ireg)%lum(ilum)%prm_lim%cn = 1.
                 end if
@@ -151,7 +151,7 @@
             !check all hru"s for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for 1st surface runoff calibration and rerun
                 cn2(iihru) = cn2(iihru) + chg_val
                 cn2(iihru) = amin1 (cn2(iihru), ls_prms(1)%up)
@@ -197,7 +197,7 @@
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
 
                 diff = lscal(ireg)%lum(ilum)%meas%etr * lscal(ireg)%lum(ilum)%precip_aa - lscal(ireg)%lum(ilum)%aa%etr
-                chg_val = - diff / 200.     ! increment etco .05 for every 10 mm difference
+                chg_val = - diff / 250.     ! increment etco .4 for every 100 mm difference
                 lscal(ireg)%lum(ilum)%prm_prev%etco = lscal(ireg)%lum(ilum)%prm%etco
                 lscal(ireg)%lum(ilum)%prm%etco = lscal(ireg)%lum(ilum)%prm%etco + chg_val
                 lscal(ireg)%lum(ilum)%prev%etr = lscal(ireg)%lum(ilum)%aa%etr
@@ -215,13 +215,13 @@
                            
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for 1st et calibration
                 hru(iihru)%hyd%esco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%esco = amin1 (hru(iihru)%hyd%esco, ls_prms(2)%up)
                 hru(iihru)%hyd%esco = Max (hru(iihru)%hyd%esco, ls_prms(2)%lo)
                 hru_init(iihru)%hyd%esco = hru(iihru)%hyd%esco
-                hru(iihru)%hyd%epco = hru(iihru)%hyd%epco - chg_val
+                hru(iihru)%hyd%epco = hru(iihru)%hyd%epco + chg_val
                 hru(iihru)%hyd%epco = amin1 (hru(iihru)%hyd%epco, ls_prms(2)%up)
                 hru(iihru)%hyd%epco = Max (hru(iihru)%hyd%epco, ls_prms(2)%lo)
                 hru_init(iihru)%hyd%epco = hru(iihru)%hyd%epco
@@ -282,20 +282,20 @@
                   lscal(ireg)%lum(ilum)%prm_lim%etco = 1.
                 end if
                 if (lscal(ireg)%lum(ilum)%prm%etco <= ls_prms(2)%neg) then
-                  chg_val = lscal(ireg)%lum(ilum)%prm_prev%etco - ls_prms(2)%neg
+                  chg_val = ls_prms(2)%neg - lscal(ireg)%lum(ilum)%prm_prev%etco
                   lscal(ireg)%lum(ilum)%prm%etco = ls_prms(2)%neg
                   lscal(ireg)%lum(ilum)%prm_lim%etco = 1.
                 end if
                 
             do ihru_s = 1, region(ireg)%num_tot
                 iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for et calibration
                 hru(iihru)%hyd%esco = hru(iihru)%hyd%esco + chg_val
                 hru(iihru)%hyd%esco = amin1 (hru(iihru)%hyd%esco, ls_prms(2)%up)
                 hru(iihru)%hyd%esco = Max (hru(iihru)%hyd%esco, ls_prms(2)%lo)
                 hru_init(iihru)%hyd%esco = hru(iihru)%hyd%esco
-                hru(iihru)%hyd%epco = hru(iihru)%hyd%epco - chg_val
+                hru(iihru)%hyd%epco = hru(iihru)%hyd%epco + chg_val
                 hru(iihru)%hyd%epco = amin1 (hru(iihru)%hyd%epco, ls_prms(2)%up)
                 hru(iihru)%hyd%epco = Max (hru(iihru)%hyd%epco, ls_prms(2)%lo)
                 hru_init(iihru)%hyd%epco = hru(iihru)%hyd%epco
@@ -346,7 +346,7 @@
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
 
                 diff = lscal(ireg)%lum(ilum)%meas%lfr * lscal(ireg)%lum(ilum)%precip_aa - lscal(ireg)%lum(ilum)%aa%lfr
-                chg_val = - diff        ! increment lst_len by 1 m for 1 mm difference
+                chg_val = - 2 * diff        ! increment lst_len by 2 m for 1 mm difference
                 lscal(ireg)%lum(ilum)%prm_prev%lat_len = lscal(ireg)%lum(ilum)%prm%lat_len
                 lscal(ireg)%lum(ilum)%prm%lat_len = lscal(ireg)%lum(ilum)%prm%lat_len + chg_val
                 lscal(ireg)%lum(ilum)%prev%lfr = lscal(ireg)%lum(ilum)%aa%lfr
@@ -364,9 +364,9 @@
                 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for 1st perco calibration
-                hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val * 2.
+                hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val
                 hru(iihru)%topo%lat_len = amin1 (hru(iihru)%topo%lat_len, ls_prms(3)%up)
                 hru(iihru)%topo%lat_len = Max (hru(iihru)%topo%lat_len, ls_prms(3)%lo)
                 hru_init(iihru)%topo%lat_len = hru(iihru)%topo%lat_len
@@ -434,7 +434,7 @@
             !check all hru"s for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for 1st perco calibration
                 hru(iihru)%topo%lat_len = hru(iihru)%topo%lat_len + chg_val
                 hru(iihru)%topo%lat_len = amin1 (hru(iihru)%topo%lat_len, ls_prms(3)%up)
@@ -483,7 +483,7 @@
                 lscal(ireg)%lum(ilum)%prm_prev = lscal(ireg)%lum(ilum)%prm
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
 
-                chg_val = (soft - lscal(ireg)%lum(ilum)%aa%pcr) / lscal(ireg)%lum(ilum)%aa%pcr   ! assume perco is linear
+                !chg_val = (soft - lscal(ireg)%lum(ilum)%aa%pcr) / lscal(ireg)%lum(ilum)%aa%pcr   ! assume perco is linear
                 chg_val = 0.001 * (soft - lscal(ireg)%lum(ilum)%aa%pcr)
                 lscal(ireg)%lum(ilum)%prm_prev%perco = lscal(ireg)%lum(ilum)%prm%perco 
                 lscal(ireg)%lum(ilum)%prm%perco = lscal(ireg)%lum(ilum)%prm%perco + chg_val
@@ -502,7 +502,7 @@
                 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 hru(iihru)%hyd%perco = hru(iihru)%hyd%perco + chg_val
                 hru(iihru)%hyd%perco = amin1 (hru(iihru)%hyd%perco, ls_prms(8)%up)
                 hru(iihru)%hyd%perco = Max (hru(iihru)%hyd%perco, ls_prms(8)%lo)
@@ -546,7 +546,7 @@
         end if
   
           ! adjust percolation using perco
-          do iperco = 1, 4  !iter_ind
+          do iperco = 1, 3  !iter_ind
           isim = 0
           do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
@@ -581,7 +581,7 @@
                 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%perco = hru(iihru)%hyd%perco + chg_val
                 hru(iihru)%hyd%perco = amin1 (hru(iihru)%hyd%perco, ls_prms(8)%up)
@@ -660,7 +660,7 @@
 
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%cn3_swf = hru(iihru)%hyd%cn3_swf + chg_val
                 hru(iihru)%hyd%cn3_swf = amin1 (hru(iihru)%hyd%cn3_swf, ls_prms(10)%up)
@@ -717,21 +717,21 @@
                 lscal(ireg)%lum(ilum)%prm%cn3_swf = lscal(ireg)%lum(ilum)%prm%cn3_swf + chg_val
                 lscal(ireg)%lum(ilum)%prev%srr = lscal(ireg)%lum(ilum)%aa%srr
                                 
-                if (lscal(ireg)%lum(ilum)%prm%cn3_swf >= ls_prms(1)%pos) then
-                  chg_val = ls_prms(1)%pos - lscal(ireg)%lum(ilum)%prm_prev%cn3_swf
-                  lscal(ireg)%lum(ilum)%prm%cn3_swf = ls_prms(1)%pos
+                if (lscal(ireg)%lum(ilum)%prm%cn3_swf >= ls_prms(10)%pos) then
+                  chg_val = ls_prms(10)%pos - lscal(ireg)%lum(ilum)%prm_prev%cn3_swf
+                  lscal(ireg)%lum(ilum)%prm%cn3_swf = ls_prms(10)%pos
                   lscal(ireg)%lum(ilum)%prm_lim%cn3_swf = 1.
                 end if
-                if (lscal(ireg)%lum(ilum)%prm%cn3_swf <= ls_prms(1)%neg) then
-                  chg_val = lscal(ireg)%lum(ilum)%prm_prev%cn3_swf - ls_prms(1)%neg
-                  lscal(ireg)%lum(ilum)%prm%cn3_swf = ls_prms(1)%neg
+                if (lscal(ireg)%lum(ilum)%prm%cn3_swf <= ls_prms(10)%neg) then
+                  chg_val = ls_prms(10)%neg - lscal(ireg)%lum(ilum)%prm_prev%cn3_swf
+                  lscal(ireg)%lum(ilum)%prm%cn3_swf = ls_prms(10)%neg
                   lscal(ireg)%lum(ilum)%prm_lim%cn3_swf = 1.
                 end if
             
             !check all hru"s for proper lum
             do ihru_s = 1, region(ireg)%num_tot
               iihru = region(ireg)%num(ihru_s)
-              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c) then
+              if (lscal(ireg)%lum(ilum)%meas%name == hru(iihru)%lum_group_c .or. lscal(ireg)%lum(ilum)%meas%name == "basin") then
                 !set parms for 1st perco calibration
                 hru(iihru)%hyd%cn3_swf = hru(iihru)%hyd%cn3_swf + chg_val
                 hru(iihru)%hyd%cn3_swf = amin1 (hru(iihru)%hyd%cn3_swf, ls_prms(10)%up)

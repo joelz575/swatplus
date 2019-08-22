@@ -54,8 +54,9 @@
       end type soil_profile_mass1
       
       !soil profile object - dimensioned to number of hrus, using the hru pointer
-      type (soil_profile_mass1), dimension(:), allocatable :: soil1
+      type (soil_profile_mass1), dimension(:), allocatable, target :: soil1
       type (soil_profile_mass1), dimension(:), allocatable :: soil1_init
+      type (soil_profile_mass1), pointer :: s1
       type (soil_profile_mass1), dimension(:), allocatable :: sol1
       type (organic_mass) :: soil_prof_tot                          !       |total litter pool
       type (organic_mass) :: soil_prof_str                          !       |total litter pool

@@ -114,29 +114,10 @@
             sum = epmax(ipl) * (1. - Exp(-uptake%water_dis * gx / pcom(j)%plg(ipl)%root_dep)) / uptake%water_norm
           end if
 
-          wuse = sum - sump + (sump - xx) * hru(j)%hyd%epco
+          !hru(j)%hyd%epco = 0.
+          wuse = sum - sump * hru(j)%hyd%epco
           sump = sum
 
-!!! commented aeration stress out !!!
-          !! adjust uptake if sw is greater than 90% of plant available water
-          !! aeration stress
-!         yy = air_str(idp)
-!         satco = 100. * (sol_st(k,j) / sol_ul(k,j) - yy) / (1. - yy)
-!         if (satco > 0.) then 
-!           strsa(j) = 1. - (1. - (satco / (satco + Exp(5.1 - .082 * 
-!    &                                                      satco))))
-!         else
-!           strsa(j) = 1.
-!         end if
-!         wuse = strsa(j) * wuse
-          
-!         if (iwatable(j) > 0) then
-!           yy = sol_sumfc(j) + .08 * (sol_sumul(j) - sol_sumfc(j))
-!           yy = sol_fc(k,j) + .01 * (sol_ul(k,j) - sol_fc(k,j))
-!           if (sol_sw(j) > yy) then
-!             wuse = 0.
-!           endif
-!         endif
 
           !! adjust uptake if sw is less than 25% of plant available water
           if (soil(j)%phys(k)%st < soil(j)%phys(k)%fc / 4.) then

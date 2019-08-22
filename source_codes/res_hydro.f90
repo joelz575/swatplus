@@ -1,4 +1,4 @@
-      subroutine res_hydro (jres, id, ihyd)
+      subroutine res_hydro (jres, id, ihyd, pvol_m3, evol_m3)
 
       use reservoir_data_module
       use reservoir_module
@@ -10,14 +10,16 @@
       
       implicit none
       
-      integer :: jres             !none      |hru number
+      real,  intent (in) :: pvol_m3
+      real,  intent (in) :: evol_m3
+      integer,  intent (in) :: jres             !none      |hru number
       integer :: nstep            !none      |counter
       integer :: tstep            !none      |hru number
       integer :: iac              !none      |counter 
-      integer :: id               !none      |hru number
+      integer,  intent (in) :: id               !none      |hru number
       integer :: ial              !none      |counter
       integer :: irel             !          |
-      integer :: ihyd             !          |
+      integer,  intent (in) :: ihyd             !          |
       real :: vol                 !          |
       real :: b_lo                !          |
       character(len=1) :: action  !          |
@@ -50,9 +52,9 @@
                 case ("null")
                   b_lo = 0.
                 case ("pvol")
-                  b_lo = res_ob(ihyd)%pvol
+                  b_lo = pvol_m3
                 case ("evol")
-                  b_lo = res_ob(ihyd)%evol
+                  b_lo = evol_m3
               end select
               ht2%flo = (wbody%flo - b_lo) / dtbl_res(id)%act(iac)%const
             case ("weir")

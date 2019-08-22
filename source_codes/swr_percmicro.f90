@@ -49,7 +49,7 @@
       real :: adj_lin                 !              |
 
       j = ihru
-      adjf = 1.
+      adjf = 0.5
 
       !! if temperature of layer is 0 degrees C or below
       !! there is no water flow

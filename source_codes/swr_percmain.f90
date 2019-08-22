@@ -69,7 +69,7 @@
 	  endif
 
       !back to 4 mm slug for soil routing- keeps moisture above fc
-      slug = 4.  !1000.   !this should be an input in parameters.bsn
+      slug = 1000.  !4.  !1000.   !this should be an input in parameters.bsn
       sep_left = sepday
       do                  !slug loop
         sepday = amin1(sep_left, slug)

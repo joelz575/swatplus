@@ -39,7 +39,6 @@
       allocate (cvm_com(mhru))
       allocate (blai_com(mhru))
       allocate (rsdco_plcom(mhru))
-      allocate (strsw_av(mhru))
       allocate (percn(mhru))
 
 !! septic changes added 1/28/09 gsm

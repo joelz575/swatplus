@@ -7,14 +7,21 @@
       use plant_module
       use carbon_module
       use organic_mineral_mass_module
+      use climate_module
+      USE hydrograph_module
       
       implicit none 
       
       integer :: j              !none               |HRU number
       integer :: idp            !                   |
+      real :: ajhi              !
+      real :: dhi               !
+      real :: temp_dif          !
+      real :: temp_adj          !
     
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
+      iwst = ob(j)%wst
       
       !! calculate plant ET values
       if (pcom(j)%plcur(ipl)%phuacc > 0.5 .and. pcom(j)%plcur(ipl)%phuacc < pldb(idp)%dlai) then 
@@ -22,19 +29,19 @@
         pcom(j)%plg(ipl)%plpet = pcom(j)%plg(ipl)%plpet + pet_day
       end if
      
-      pcom(j)%plg(ipl)%hvstiadj = pldb(idp)%hvsti * 100. * pcom(j)%plcur(ipl)%phuacc /          &
+      ajhi = pldb(idp)%hvsti * 100. * pcom(j)%plcur(ipl)%phuacc /          &
                 (100. * pcom(j)%plcur(ipl)%phuacc + Exp(11.1 - 10. * pcom(j)%plcur(ipl)%phuacc))
        
       !! adjust harvest index for temperature stress
-      !x2 = 100 *hui
-      !ajhi = hi * x2 / (x2 + Exp (11.1 - 0.1 * x2)
-      !dhi = ajhi - - ajh0
-      !x3 = t_opt - tx
-      !if (x3 < 0. .and. hui > 0.7) then
-      !  xx = Exp (8. * x3 / t_opt)
-      !  dhi = dhi * xx
-      !end if
-      !ajhi = ajhi + dhi
+      dhi = ajhi - pcom(j)%plg(ipl)%hi_prev
+      temp_dif = pldb(idp)%t_opt - wst(iwst)%weat%tave
+      if (temp_dif < 0. .and. pcom(j)%plcur(ipl)%phuacc > 0.7) then
+        temp_adj = Exp (8. * temp_dif / pldb(idp)%t_opt)
+        dhi = dhi * temp_adj
+      end if
+      pcom(j)%plg(ipl)%hi_adj = pcom(j)%plg(ipl)%hi_adj + dhi
+      pcom(j)%plg(ipl)%hi_adj = amax1 (0., pcom(j)%plg(ipl)%hi_adj)
+      pcom(j)%plg(ipl)%hi_prev = ajhi
 
       return
       end subroutine pl_seed_gro

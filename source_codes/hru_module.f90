@@ -209,6 +209,7 @@
         integer :: fstrip = 0
         integer :: grassww = 0
         integer :: bmpuser = 0
+        integer :: crop_reg = 0
 
         !! other data
         type (topography) :: topo
@@ -221,6 +222,7 @@
         integer :: cur_op = 1
         real :: water_fr
         real :: water_seep
+        real :: water_evap
         integer :: ich_flood
       end type hydrologic_response_unit
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
@@ -274,7 +276,7 @@
       real :: sum_solp
       real, dimension (:), allocatable :: epmax,cvm_com,blai_com
       real, dimension (:), allocatable :: rsdco_plcom, translt
-      real, dimension (:), allocatable :: strsw_av,uno3d,uapd
+      real, dimension (:), allocatable :: uno3d,uapd
       real, dimension (:), allocatable :: par,htfac,un2,up2
       integer, dimension (:), allocatable :: iseptic
      

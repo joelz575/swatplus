@@ -29,7 +29,7 @@
           wet_ob(ihru)%evol = wet_hyd(ihyd)%esa * hru(ihru)%area_ha * wet_hyd(ihyd)%edep * 10.
           wet_ob(ihru)%pvol = wet_hyd(ihyd)%psa * hru(ihru)%area_ha * wet_hyd(ihyd)%pdep * 10.
           wet_ob(ihru)%psa = wet_hyd(ihyd)%psa * hru(ihru)%area_ha 
-          wet_ob(ihru)%esa = wet_hyd(ihyd)%psa * hru(ihru)%area_ha 
+          wet_ob(ihru)%esa = wet_hyd(ihyd)%esa * hru(ihru)%area_ha 
 
           !!set initial n and p concentrations --> (ppm) * (m^3) / 1000 = kg    !! ppm = t/m^3 * 10^6
           init = wet_dat(iprop)%init

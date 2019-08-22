@@ -95,6 +95,7 @@
       integer :: inext                      !none          |counter for days for running sum
       real :: sum                           !none          |variable to hold summation results
       real :: summm_p                       !mm            |sum of precipitation over year
+      real :: summm_pet                     !mm            |sum of potential ET over year
       real :: summn_t                       !deg C         |sum of mimimum temp values over year
       real :: summx_t                       !deg C         |sum of maximum temp values over year
       real :: rnm2                          !none          |random number between 0.0 and 1.0
@@ -163,6 +164,7 @@
       summx_t = 0.
       summn_t = 0.
       summm_p = 0.
+      summm_pet = 0.
       tmin = 100.
       tmax = 0.
       do mon = 1, 12
@@ -209,6 +211,7 @@
         ho = 23.9 * wgn(iwgn)%solarav(mon) * (1. - alb) / 58.3
         aph = 1.28
         wgn_pms(iwgn)%pet(mon) = aph * ho * gma * (ndays(mon+1) - ndays(mon))
+        summm_pet = summm_pet + wgn_pms(iwgn)%pet(mon)
       end do
 
       !! initialize arrays for precip divided by pet moving sum
@@ -237,6 +240,7 @@
       end do
 
       wgn_pms(iwgn)%pcp_an = summm_p
+      wgn_pms(iwgn)%ppet_an = summm_p / summm_pet
       wgn_pms(iwgn)%tmp_an = (summx_t + summn_t) / 24.
 
       !! calculate initial temperature of soil layers
@@ -289,8 +293,6 @@
       end do
 
       !! determine precipitation category (ireg initialized to category 1)
-      xx = 0
-      xx = summm_p
       if (summm_p > 508.) wgn_pms(iwgn)%ireg = 2
       if (summm_p > 1016.) wgn_pms(iwgn)%ireg = 3
 

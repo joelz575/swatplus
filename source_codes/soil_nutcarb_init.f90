@@ -94,7 +94,7 @@
         sol1(isol)%tot(j)%m = 10000. * sol(isol)%phys(j)%thick * sol(isol)%phys(j)%bd
         sol1(isol)%tot(j)%c = sol1(isol)%tot(j)%m * sol1(isol)%cbn(j) / 100.
         sol1(isol)%tot(j)%n = sol1(isol)%tot(j)%c / 10.     !assume 10:1 C:N ratio
-        sol1(isol)%tot(j)%p = sol1(isol)%tot(j)%c / 100.    !assume 100:1 C:N ratio
+        sol1(isol)%tot(j)%p = sol1(isol)%tot(j)%c / 100.    !assume 100:1 C:P ratio
         
         !initialize passive humus pool
         sol1(isol)%hp(j)%m = frac_hum_passive * sol1(isol)%tot(j)%m

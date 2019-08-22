@@ -256,11 +256,15 @@
         end do
       end if
 
-!! Update Precip minus PET 30 day moving sum
+!! Update CMI and Precip minus PET 30 day moving sum
       ppet_mce = ppet_mce + 1
       if (ppet_mce > ppet_ndays) ppet_mce = 1
       do iwst = 1, db_mx%wst
-        !! subract the 30 day previous and add the current day precip/pet
+        !! calculate climatic moisture index - cumulative p/pet
+        if (wst(iwst)%weat%pet > 0.5) then
+          wst(iwst)%weat%ppet = wst(iwst)%weat%ppet + wst(iwst)%weat%precip / wst(iwst)%weat%pet
+        end if
+        !! subtract the 30 day previous and add the current day precip/pet
         iwgn = wst(iwst)%wco%wgn
         wgn_pms(iwgn)%precip_sum = wgn_pms(iwgn)%precip_sum + wst(iwst)%weat%precip - wgn_pms(iwgn)%precip_mce(ppet_mce)
         wgn_pms(iwgn)%pet_sum = wgn_pms(iwgn)%pet_sum + wst(iwst)%weat%pet - wgn_pms(iwgn)%pet_mce(ppet_mce)

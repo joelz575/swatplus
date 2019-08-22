@@ -4,6 +4,7 @@
       use hru_lte_module
       use maximum_data_module
       use calibration_data_module
+      use time_module
       
       implicit none
       
@@ -59,18 +60,21 @@
           !average annual for plant calibration
           do ireg = 1, db_mx%plcal_reg
             do ilu = 1, plcal(ireg)%lum_num
-              if (plcal(ireg)%lum(ilu)%nbyr > 0) then
-                !! convert back to mm, t/ha, kg/ha
-                plcal(ireg)%lum(ilu)%precip_aa = plcal(ireg)%lum(ilu)%precip_aa / plcal(ireg)%lum(ilu)%nbyr
-                plcal(ireg)%lum(ilu)%precip_aa_sav = plcal(ireg)%lum(ilu)%precip_aa
-                plcal(ireg)%lum(ilu)%aa%yield = plcal(ireg)%lum(ilu)%aa%yield / plcal(ireg)%lum(ilu)%nbyr
-                plcal(ireg)%lum(ilu)%aa%npp = plcal(ireg)%lum(ilu)%aa%npp / plcal(ireg)%lum(ilu)%nbyr
-                plcal(ireg)%lum(ilu)%aa%lai_mx = plcal(ireg)%lum(ilu)%aa%lai_mx / plcal(ireg)%lum(ilu)%nbyr
-                plcal(ireg)%lum(ilu)%aa%wstress = plcal(ireg)%lum(ilu)%aa%wstress / plcal(ireg)%lum(ilu)%nbyr
-                plcal(ireg)%lum(ilu)%aa%astress = plcal(ireg)%lum(ilu)%aa%astress / plcal(ireg)%lum(ilu)%nbyr
-                plcal(ireg)%lum(ilu)%aa%tstress = plcal(ireg)%lum(ilu)%aa%tstress / plcal(ireg)%lum(ilu)%nbyr
-                ! add nutrients
+              if (plcal(ireg)%lum(ilu)%ha > 0) then
+                plcal(ireg)%lum(ilu)%aa%yield = plcal(ireg)%lum(ilu)%sim%yield / plcal(ireg)%lum(ilu)%ha
               end if
+              !if (plcal(ireg)%lum(ilu)%nbyr > 0) then
+              !  !! convert back to mm, t/ha, kg/ha
+              !  plcal(ireg)%lum(ilu)%precip_aa = plcal(ireg)%lum(ilu)%precip_aa / plcal(ireg)%lum(ilu)%nbyr
+              !  plcal(ireg)%lum(ilu)%precip_aa_sav = plcal(ireg)%lum(ilu)%precip_aa
+              !  plcal(ireg)%lum(ilu)%aa%yield = plcal(ireg)%lum(ilu)%aa%yield / plcal(ireg)%lum(ilu)%nbyr
+              !  plcal(ireg)%lum(ilu)%aa%npp = plcal(ireg)%lum(ilu)%aa%npp / plcal(ireg)%lum(ilu)%nbyr
+              !  plcal(ireg)%lum(ilu)%aa%lai_mx = plcal(ireg)%lum(ilu)%aa%lai_mx / plcal(ireg)%lum(ilu)%nbyr
+              !  plcal(ireg)%lum(ilu)%aa%wstress = plcal(ireg)%lum(ilu)%aa%wstress / plcal(ireg)%lum(ilu)%nbyr
+              !  plcal(ireg)%lum(ilu)%aa%astress = plcal(ireg)%lum(ilu)%aa%astress / plcal(ireg)%lum(ilu)%nbyr
+              !  plcal(ireg)%lum(ilu)%aa%tstress = plcal(ireg)%lum(ilu)%aa%tstress / plcal(ireg)%lum(ilu)%nbyr
+              !  ! add nutrients
+              !end if
             end do
           end do
         end if

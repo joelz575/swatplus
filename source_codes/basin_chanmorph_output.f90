@@ -23,9 +23,9 @@
 !!!!! daily print
        if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
         if (pco%sd_chan_bsn%d == "y") then
-          write (2120,100) time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bchsd_d
+          write (2120,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bchsd_d
           if (pco%csvout == "y") then
-            write (2124,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bchsd_d
+            write (2124,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bchsd_d
           end if 
         end if 
       end if
@@ -37,9 +37,9 @@
         bchsd_m = bchsd_m // const
           
         if (pco%sd_chan_bsn%m == "y") then
-          write (2121,100) time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bchsd_m
+          write (2121,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bchsd_m
           if (pco%csvout == "y") then
-            write (2125,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bchsd_m
+            write (2125,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bchsd_m
           end if
         end if
         bchsd_m = chsdz
@@ -52,9 +52,9 @@
         bchsd_a = bchsd_a // const
         
         if (pco%sd_chan_bsn%y == "y") then 
-          write (2122,100) time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bchsd_y
+          write (2122,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bchsd_y
           if (pco%csvout == "y") then
-            write (2126,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bchsd_y
+            write (2126,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bchsd_y
           end if
         end if
         
@@ -66,13 +66,13 @@
         bchsd_a = bchsd_a / time%yrs_prt
         bchsd_a = bchsd_a // time%days_prt
         
-        write (2123,100) time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bchsd_a
+        write (2123,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bchsd_a
         if (pco%csvout == "y") then
-          write (2127,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, "     1", bsn%name, bchsd_a
+          write (2127,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bchsd_a
         end if
       end if
 
-100   format (4i6,i8,2x,a,2x,a17,60(1x,e14.4))
+100   format (4i6,2x,2a,2x,a17,60(1x,e14.4))
 
       return
       

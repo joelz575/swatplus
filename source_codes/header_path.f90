@@ -18,7 +18,7 @@
             open (2794,file="hru_path_day.csv",recl=800)
             write (2794,*) bsn%name, prog
             write (2794,'(*(G0.3,:","))') pathb_hdr
-            write (9000,*) "HRU_PATH                  hru_path_day.txt.csv"
+            write (9000,*) "HRU_PATH                  hru_path_day.csv"
           end if
       end if
       
@@ -33,7 +33,7 @@
             open (2795,file="hru_path_mon.csv",recl=800)
             write (2795,*) bsn%name, prog
             write (2795,'(*(G0.3,:","))') pathb_hdr
-            write (9000,*) "HRU_PATH                  hru_path_mon.txt.csv"
+            write (9000,*) "HRU_PATH                  hru_path_mon.csv"
           end if
       end if
       
@@ -48,7 +48,7 @@
             open (2796,file="hru_path_yr.csv",recl=800)
             write (2796,*) bsn%name, prog
             write (2796,'(*(G0.3,:","))') pathb_hdr
-            write (9000,*) "HRU_PATH                  hru_path_yr.txt.csv"
+            write (9000,*) "HRU_PATH                  hru_path_yr.csv"
           end if
       end if
       
@@ -63,7 +63,7 @@
             open (2797,file="hru_path_aa.csv",recl=800)
             write (2797,*) bsn%name, prog
             write (2797,'(*(G0.3,:","))') pathb_hdr
-            write (9000,*) "HRU_PATH                  hru_path_aa.txt.csv"
+            write (9000,*) "HRU_PATH                  hru_path_aa.csv"
           end if
       end if
     

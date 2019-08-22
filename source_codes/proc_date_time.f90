@@ -2,7 +2,7 @@
      
       implicit none
       
-      integer :: date_time(8)           !              | 
+      integer :: date_time(8)           !              |
       character*10 b(3)                 !              |
   
       call DATE_AND_TIME (b(1), b(2), b(3), date_time)

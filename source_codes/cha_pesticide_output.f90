@@ -23,7 +23,7 @@
 
       j = jrch  !!! nbs
       
-      iob = sp_ob1%hru + j - 1
+      iob = sp_ob1%chandeg + j - 1
           
       !! print balance for each pesticide
       do ipest = 1, cs_db%num_pests
@@ -78,7 +78,7 @@
 !!!!! average annual print
          if (time%end_sim == 1 .and. pco%pest%a == "y") then
            chpst_a(j)%pest(ipest) = chpst_a(j)%pest(ipest) / time%yrs_prt
-           chpst_a(j)%pest(ipest) = chpst_a(j)%pest(ipest) // time%days_prt
+           chpst_a(j)%pest(ipest) = chpst_a(j)%pest(ipest) // time%yrs_prt
            write (2811,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_a(j)%pest(ipest)
            if (pco%csvout == "y") then
              write (2815,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_a(j)%pest(ipest)
@@ -89,6 +89,6 @@
       end do    !pesticide loop
       return
       
-100   format (4i6,2i8,2x,2a,13f12.8)      
+100   format (4i6,2i8,2x,2a,12e12.4)      
 
       end subroutine cha_pesticide_output

@@ -73,8 +73,8 @@
         real :: k = .01           !mm/hr         |hydraulic conductivity of the wetland bottom
         real :: evrsv = .7        !none          |wetland evap coeff
         real :: acoef = 1.        !none          |vol-surface area coefficient for hru impoundment
-        real :: bcoef = 1         !none          |vol-depth coefficient for hru impoundment
-        real :: ccoef = 1         !none          |vol-depth coefficient for hru impoundment
+        real :: bcoef = 1.        !none          |vol-depth coefficient for hru impoundment
+        real :: ccoef = 1.        !none          |vol-depth coefficient for hru impoundment
         real :: frac = .5         !none          |fraction of hru that drains into impoundment
       end type wetland_hyd_data
       type (wetland_hyd_data), dimension(:), allocatable :: wet_hyd

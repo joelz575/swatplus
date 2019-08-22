@@ -53,6 +53,7 @@
         real :: pcpdays = 0.                    !!               |days of precip in year
         real :: tmp_an = 0.                     !!               |average annual air temperature
         real :: pcp_an = 0.                     !!               |average annual precipitation
+        real :: ppet_an = 0.                    !!               |average annual precip/pet
         real :: precip_sum = 0.                 !!               |30 day sum of PET (mm)
         real :: pet_sum = 0.                    !!               |30 day sum of PRECIP (mm)
         real, dimension (12) :: pcf = 0.        !!               |normalization factor for precipitation
@@ -83,7 +84,8 @@
         real :: windsp
         real :: pet
         real :: wndir
-        real :: phubase0                                    !! deg C        |base 0 heat units from Jan 1
+        real :: phubase0                                    !! deg C        |cumulative base 0 heat units
+        real :: ppet                                        !! mm/mm        |climatic moisture index - cumulative p/pet
         real :: daylength                                   !! hr           |day length
         real :: precip_half_hr                              !! frac         |fraction of total rainfall on day that occurs
                                                             !!              |during 0.5h highest intensity rainfall

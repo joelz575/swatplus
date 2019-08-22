@@ -17,6 +17,6 @@ bermudagrass             0.410  0.300  0.480   Bermudagrass
 forest_light             0.400  0.300  0.500   Forest_light_fair
 forest_med               0.600  0.500  0.700   Forest_medimum_good
 forest_heavy             0.800  0.700  0.900   Forest_heavy
-urban_asphalt            0.110  0.110  0.110   Urban_asphalt
+urban_asphalt            0.011  0.011  0.011   Urban_asphalt
 urban_concrete           0.012  0.012  0.012   Urban_concrete
 urban_rubble             0.024  0.024  0.024   Urban_rubble

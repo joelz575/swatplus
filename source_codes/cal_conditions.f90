@@ -117,9 +117,7 @@
                     end do
                   end do
                 end do
-              case ("perco")
-              !! set depth to impermeable layer
-                hru(ielem)%hyd%perco = cal_upd(ichg_par)%cond(ic)%targ
+
               end select
               
             end select

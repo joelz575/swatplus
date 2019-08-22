@@ -57,6 +57,10 @@
         hru(ihru)%hyd%biomix = hyd_db(ihyd_db)%biomix
         hru(ihru)%hyd%lat_orgn = hyd_db(ihyd_db)%lat_orgn
         hru(ihru)%hyd%lat_orgp = hyd_db(ihyd_db)%lat_orgp
+        hru(ihru)%hyd%harg_pet = hyd_db(ihyd_db)%harg_pet
+        if (hru(ihru)%hyd%harg_pet < 1.e-6) hru(ihru)%hyd%harg_pet = .0023
+        !hru(ihru)%hyd%harg_pet = .0023
+        
         ! set field data
         hru(ihru)%field%length = field_db(ifield_db)%length
         hru(ihru)%field%wid = field_db(ifield_db)%wid

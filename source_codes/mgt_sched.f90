@@ -13,6 +13,7 @@
       use time_module
       use constituent_mass_module
       use organic_mineral_mass_module
+      use calibration_data_module
       
       implicit none
       
@@ -32,6 +33,8 @@
       integer :: iburn             !none     |burn type from fire data base
       integer :: ifertop           !frac     |surface application fraction from chem app data base
       integer :: iplt_bsn
+      integer :: ireg
+      integer :: ilum
       real :: fr_curb              !none     |availability factor, the fraction of the 
                                    !         |curb length that is sweepable
       real :: biomass              !         |
@@ -129,7 +132,17 @@
                 !! sum basin crop yields and area harvested
                 iplt_bsn = pcom(j)%plcur(ipl)%bsn_num
                 bsn_crop_yld(iplt_bsn)%area_ha = bsn_crop_yld(iplt_bsn)%area_ha + hru(j)%area_ha
-                bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + yield * hru(j)%area_ha / 1000.
+                bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + pl_yield%m * hru(j)%area_ha / 1000.
+                !! sum regional crop yields for soft calibration
+                if (hru(j)%crop_reg > 0) then
+                ireg = hru(j)%crop_reg
+                  do ilum = 1, plcal(ireg)%lum_num
+                    if (plcal(ireg)%lum(ilum)%meas%name == mgt%op_char) then
+                      plcal(ireg)%lum(ilum)%ha = plcal(ireg)%lum(ilum)%ha + hru(j)%area_ha
+                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha / 1000.
+                    end if
+                  end do
+                end if
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == "y") then
@@ -190,6 +203,14 @@
                 iplt_bsn = pcom(j)%plcur(ipl)%bsn_num
                 bsn_crop_yld(iplt_bsn)%area_ha = bsn_crop_yld(iplt_bsn)%area_ha + hru(j)%area_ha
                 bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + yield * hru(j)%area_ha / 1000.
+                !! sum regional crop yields for soft calibration
+                ireg = hru(j)%crop_reg
+                do ilum = 1, plcal(ireg)%lum_num
+                  if (plcal(ireg)%lum(ilum)%meas%name == mgt%op_char) then
+                    plcal(ireg)%lum(ilum)%ha = plcal(ireg)%lum(ilum)%ha + hru(j)%area_ha
+                    plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha / 1000.
+                  end if
+                end do
             
                 idp = pcom(j)%plcur(ipl)%idplt
                 if (pco%mgtout == "y") then

@@ -79,11 +79,13 @@
             end do
             
             !! initial pesticides
-            do ics = 1, db_mx%pestw_ini
-              if (aqu_init_dat_c(ini)%pest == pest_init_name(ics)) then
+            do ics = 1, db_mx%pest_ini
+              if (aqu_init_dat_c(ini)%pest == pest_soil_ini(ics)%name) then
                 !! initialize pesticides in aquifer water and benthic from input data
                 do ipest = 1, cs_db%num_pests
-                  cs_aqu(iaq)%pest(ipest) = pest_soil_ini(ics)%soil(ipest)
+                  !! kg/ha = mg/kg (ppm) * t/m3  * m * 10000.m2/ha * 1000kg/t * kg/1000000 mg
+                  !! assume bulk density of 2.0 t/m3
+                  cs_aqu(iaq)%pest(ipest) = pest_soil_ini(ics)%soil(ipest) * 2.0 * aqudb(idb)%dep_bot * 10.
                 end do
                 exit
               end if

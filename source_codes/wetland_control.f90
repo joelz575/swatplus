@@ -3,7 +3,7 @@
       use reservoir_data_module
       use reservoir_module
       use hru_module, only : hru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, grayld, sedminps, sedminpa,   &
-        surqno3, sedorgn, sedorgp, qdr, ihru, pet_day, qday
+        surqno3, sedorgn, sedorgp, qdr, ihru, pet_day, qday, precipday
       use conditional_module
       use climate_module
       use hydrograph_module
@@ -40,20 +40,18 @@
       integer :: inut                 !none          |counter
       integer :: ipst                 !none          |counter
       integer :: ires = 0
-      real :: wet_evap = 0.
-      real :: wet_hru_area = 0.
       real :: wet_fr = 0.
-      real :: wet_evapt = 0.
-      
+      real :: pvol_m3
+      real :: evol_m3
+
       j = ihru
       ires= hru(j)%dbs%surf_stor
       ihyd = wet_dat(ires)%hyd
       ised = wet_dat(ires)%sed
       irel = wet_dat(ires)%release
       hru(j)%water_fr = 0.
-      wet_hru_area = 0.
-      !! initialize variables for reservoir daily simulation
 
+      !! initialize variables for reservoir daily simulation
       hru(ihru)%water_seep = 0.
 
       bypass = 1. - wet_hyd(ihyd)%frac
@@ -75,18 +73,38 @@
       ht1%nh3 = 0. 
       ht1%no2 = 0.
       ht1%solp = sedminps(ihru) + sedminpa(ihru)
-
-      !calc release from decision table
+               
+      !! add precipitation - mm*ha*10.=m3 (used same area for infiltration and soil evap)
+      wet_wat_d(ihru)%precip = precipday * wet_wat_d(ihru)%area_ha * 10.
+      wet(ihru)%flo =  wet(ihru)%flo + wet_wat_d(ihru)%precip
+      
+      !! subtract evaporation and seepage - mm*ha*10.=m3
+      wet_wat_d(ihru)%evap = pet_day * wet_hyd(ihyd)%evrsv * wet_wat_d(ihru)%area_ha * 10.
+      wet_wat_d(ihru)%evap = min(wet_wat_d(ihru)%evap, wet(ihru)%flo)
+      wet(ihru)%flo =  wet(ihru)%flo - wet_wat_d(ihru)%evap
+      hru(ihru)%water_evap = wet_wat_d(ihru)%evap / (10. * hru(ihru)%area_ha)
+        
+      !! save hru(ihru)%water_seep to add to infiltration on next day
+      wet_wat_d(ihru)%seep = wet_wat_d(ihru)%area_ha * wet_hyd(ihyd)%k * 10.* 24.
+      wet_wat_d(ihru)%seep = min(wet(ihru)%flo, wet_wat_d(ihru)%seep)
+      wet(ihru)%flo = wet(ihru)%flo - hru(ihru)%water_seep
+      hru(ihru)%water_seep = wet_wat_d(ihru)%seep / (10. * hru(ihru)%area_ha)
+        
+      !! calc release from decision table
       d_tbl => dtbl_res(irel)
       wbody => wet(ihru)
       wbody_wb => wet_wat_d(ihru)
+      pvol_m3 = wet_ob(ihru)%pvol
+      evol_m3 = wet_ob(ihru)%evol
       call conditions (ihru)
-      call res_hydro (ihru, irel, ihyd)
+      call res_hydro (ihru, irel, ihyd, pvol_m3, evol_m3)
       call res_sediment (ihru, ihyd, ised)
       
+      !! subtract outflow from storage
+      wet(ihru)%flo =  wet(ihru)%flo - ht2%flo
+
       !! update surface area - solve quadratic to find new depth
-      wet_hru_area= 0.
-      wet_evap = 0.
+      wet_wat_d(ihru)%area_ha = 0.
       if (wet(ihru)%flo > 0.) then
         x1 = wet_hyd(ihyd)%bcoef ** 2 + 4. * wet_hyd(ihyd)%ccoef * (1. - wet(ihru)%flo / wet_ob(ihru)%pvol)
         if (x1 < 1.e-6) then
@@ -97,21 +115,10 @@
         end if
         wet_fr = (1. + wet_hyd(ihyd)%acoef * wet_h)
         wet_fr = min(wet_fr,1.)
-        wet_hru_area = hru(ihru)%area_ha * wet_hyd(ihyd)%psa * wet_fr
+        wet_wat_d(ihru)%area_ha = hru(ihru)%area_ha * wet_fr
                 
-        hru(ihru)%water_fr =  wet_hru_area / hru(ihru)%area_ha
-        wet_wat_d(ihru)%area_ha = wet_hru_area
-         
-        !! subtract outflow from storage
-        wet(ihru)%flo =  wet(ihru)%flo - ht2%flo
-         
-        !! compute evaporation and seepage
-        wet_evapt = pet_day * wet_hyd(ihyd)%evrsv * wet_hru_area * 10. 
-        wet_evap = min(wet_evapt, wet(ihru)%flo)
-        wet(ihru)%flo =  wet(ihru)%flo - wet_evap
-        hru(ihru)%water_seep = wet_hru_area * wet_hyd(ihyd)%k * 10.* 24.  
-        hru(ihru)%water_seep = min(wet(ihru)%flo, hru(ihru)%water_seep)
-        wet(ihru)%flo = wet(ihru)%flo - hru(ihru)%water_seep 
+        hru(ihru)%water_fr =  wet_wat_d(ihru)%area_ha / hru(ihru)%area_ha
+
       end if 
  
       !! perform reservoir nutrient balance

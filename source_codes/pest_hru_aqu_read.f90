@@ -48,10 +48,10 @@
           rewind (107)
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
+          read (107,*,iostat=eof) header
+          if (eof < 0) exit
           
           do ipesti = 1, imax
-            read (107,*,iostat=eof) header
-            if (eof < 0) exit
             read (107,*,iostat=eof) pest_soil_ini(ipesti)%name
             if (eof < 0) exit
             read (107,*,iostat=eof) titldum, pest_soil_ini(ipesti)%soil

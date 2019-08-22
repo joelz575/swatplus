@@ -41,8 +41,9 @@
       integer :: j                    !none          |counter
       integer :: ihyd                 !              |
       integer :: idr                  !              |
+      integer :: ifirst               !              |
       real :: conv                    !              |
-      real :: frac_in                 !              |
+      real :: frac_in                 !              |  
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
@@ -54,7 +55,7 @@
         end if
         
         !sum all receiving hydrographs
-        if (ob(icmd)%rcv_tot > 0) then
+        !if (ob(icmd)%rcv_tot > 0) then
           ob(icmd)%hin = hz
           ob(icmd)%hin_sur = hz
           ob(icmd)%hin_lat = hz
@@ -69,6 +70,7 @@
           if (time%step > 0) ob(icmd)%tsin(:) = hz
           ob(icmd)%peakrate = 0.
           
+          if (ob(icmd)%rcv_tot > 0) then
           do in = 1, ob(icmd)%rcv_tot
             iob = ob(icmd)%obj_in(in)
             ihyd = ob(icmd)%ihtyp_in(in)
@@ -207,9 +209,17 @@
               case (1)    !daily
                 ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
               case (2)    !monthly
-                ob(icmd)%hd(1) = recall(irec)%hd(time%mo,time%yrs)
+                if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then 
+                    ob(icmd)%hd(1) = recall(irec)%hd(time%mo,time%yrs)
+                else
+                    ob(icmd)%hd(1) = hz
+                end if
               case (3)    !annual
-                ob(icmd)%hd(1) = recall(irec)%hd(1,time%yrs)
+                if (time%yrc < recall(irec)%start_yr .or. time%yrc > recall(irec)%end_yr) then
+                  ob(icmd)%hd(1) = recall(irec)%hd(1,time%yrs)
+                else
+                  ob(icmd)%hd(1) = hz
+                end if
               case (4)    !average annual
                 ob(icmd)%hd(1) = recall(irec)%hd(1,1)
               end select
@@ -279,6 +289,9 @@
         
         do iaq = 1, sp_ob%aqu
           call aquifer_output (iaq)
+          if (cs_db%num_tot > 0) then 
+            call aqu_pesticide_output (iaq)
+          end if       
         end do
         
         do jrch = 1, sp_ob%chan
@@ -312,9 +325,10 @@
 
         call hydin_output   !if all output is no, then don"t call
         !call hcsin_output  gives allocate error
-        if (sp_ob%chandeg > 0 .and. cs_db%num_pests > 0) call basin_ch_pest_output  !! nbs
-        if (sp_ob%res > 0 .and. cs_db%num_pests > 0) call basin_res_pest_output     !! nbs
-        if (sp_ob%hru > 0 .and. cs_db%num_pests > 0) call basin_ls_pest_output      !! nbs
+        if (sp_ob%chandeg > 0 .and. cs_db%num_pests > 0) call basin_ch_pest_output  
+        if (sp_ob%res > 0 .and. cs_db%num_pests > 0) call basin_res_pest_output     
+        if (sp_ob%hru > 0 .and. cs_db%num_pests > 0) call basin_ls_pest_output
+        if (sp_ob%aqu > 0 .and. cs_db%num_pests > 0) call basin_aqu_pest_output
         if (db_mx%lsu_elem > 0) call basin_output
         if (db_mx%lsu_out > 0) call lsu_output
         if (db_mx%aqu_elem > 0) call basin_aquifer_output

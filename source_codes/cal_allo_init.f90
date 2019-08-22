@@ -29,6 +29,7 @@
       allocate (rsd1_init(0:sp_ob%hru))
       allocate (pl_mass_init(0:sp_ob%hru))
       allocate (pcom_init(0:sp_ob%hru))
+
       do iihru = 1, sp_ob%hru
         icom = hru(iihru)%plant_cov
         nplt = pcomdb(icom)%plants_com
@@ -36,6 +37,13 @@
         allocate (pcom_init(iihru)%plm(nplt)) 
         allocate (pcom_init(iihru)%plstr(nplt)) 
         allocate (pcom_init(iihru)%plcur(nplt))
+        allocate (pl_mass_init(iihru)%tot(nplt)) 
+        allocate (pl_mass_init(iihru)%ab_gr(nplt))
+        allocate (pl_mass_init(iihru)%leaf(nplt))
+        allocate (pl_mass_init(iihru)%stem(nplt))
+        allocate (pl_mass_init(iihru)%seed(nplt))
+        allocate (pl_mass_init(iihru)%root(nplt))
+        allocate (pl_mass_init(iihru)%yield_tot(nplt))
 
         isched = hru(iihru)%mgt_ops
         allocate (pcom_init(iihru)%dtbl(sched(isched)%num_autos))
@@ -63,6 +71,7 @@
         soil1_init = soil1
         rsd1_init = rsd1
         pcom_init = pcom
+        pl_mass_init = pl_mass
         wet = wet_om_init
         sno_init = sno_hru
         bss = 0.

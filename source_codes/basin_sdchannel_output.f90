@@ -9,14 +9,12 @@
       implicit none
              
       integer :: ichan      !none       |counter
-      integer :: brch       !           |
       real :: const         !           |
 
       bch_stor_d = chaz
       bch_in_d = chaz
       bch_out_d = chaz
       bch_wat_d = wbodz
-      brch = 1
 
       !! sum all channel output
       do ichan = 1, sp_ob%chandeg
@@ -33,9 +31,9 @@
        !! daily print
        if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
         if (pco%sd_chan_bsn%d == "y") then
-          write (4900,100) time%day, time%mo, time%day_mo, time%yrc, brch, "     1", bsn%name, bch_wat_d, bch_stor_d, bch_in_d, bch_out_d
+          write (4900,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_d, bch_stor_d, bch_in_d, bch_out_d
           if (pco%csvout == "y") then
-            write (4904,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, brch, "     1", bsn%name, bch_wat_d, bch_stor_d, bch_in_d, bch_out_d
+            write (4904,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_d, bch_stor_d, bch_in_d, bch_out_d
           end if 
         end if 
       end if
@@ -49,9 +47,9 @@
         bch_wat_m = bch_wat_m // const            !! // only divides area (daily average values)
 
         if (pco%sd_chan_bsn%m == "y") then
-          write (4901,100) time%day, time%mo, time%day_mo, time%yrc, brch, "     1", bsn%name, bch_wat_m, bch_stor_d, bch_in_m, bch_out_m
+          write (4901,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_m, bch_stor_d, bch_in_m, bch_out_m
           if (pco%csvout == "y") then
-            write (4905,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, brch, "     1", bsn%name, bch_wat_m, bch_stor_d, bch_in_m, bch_out_m
+            write (4905,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_m, bch_stor_d, bch_in_m, bch_out_m
           end if
         end if
         bch_in_m = chaz
@@ -68,9 +66,9 @@
         bch_wat_y = bch_wat_y // const      !! // only divides area (daily average values)
 
         if (pco%sd_chan_bsn%y == "y") then 
-          write (4902,100) time%day, time%mo, time%day_mo, time%yrc, brch, "     1", bsn%name, bch_wat_y, bch_stor_d, bch_in_y, bch_out_y
+          write (4902,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_y, bch_stor_d, bch_in_y, bch_out_y
           if (pco%csvout == "y") then
-            write (4906,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, brch, "     1", bsn%name, bch_wat_y, bch_stor_d, bch_in_y, bch_out_y
+            write (4906,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_y, bch_stor_d, bch_in_y, bch_out_y
           end if
         end if
         bch_in_y = chaz
@@ -80,17 +78,17 @@
 
       !! average annual print
       if (time%end_sim == 1 .and. pco%sd_chan_bsn%a == "y") then
-        bch_in_a = bch_in_a / time%yrs_prt          !! all inflow and outflow varaibles (summed) are divided by years
+        bch_in_a = bch_in_a / time%yrs_prt          !! all inflow and outflow variables (summed) are divided by years
         bch_out_a = bch_out_a / time%yrs_prt
         bch_wat_a = bch_wat_a / time%yrs_prt        !! all summed variables divided by years
 
-        write (4903,100) time%day, time%mo, time%day_mo, time%yrc, brch, "     1", bsn%name, bch_wat_a, bch_stor_d, bch_in_a, bch_out_a
+        write (4903,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_a, bch_stor_d, bch_in_a, bch_out_a
         if (pco%csvout == "y") then
-          write (4907,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, brch, "     1", bsn%name, bch_wat_a, bch_stor_d, bch_in_a, bch_out_a
+          write (4907,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_a, bch_stor_d, bch_in_a, bch_out_a
         end if
       end if
 
- 100   format (4i6,i8,2x,a,2x,a17,f14.4,59(1x,e14.4))
+ 100   format (4i6,2x,2a,2x,a17,f14.4,59(1x,e14.4))
       return
       
       end subroutine basin_sdchannel_output

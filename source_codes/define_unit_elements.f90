@@ -54,6 +54,7 @@
             if (ii == num_elem) then
               if (ii == 1) then
                 defunit_num(1) = elem_cnt(1)
+                ielem = 1
                 exit
               end if
               ie1 = elem_cnt(ii-1)

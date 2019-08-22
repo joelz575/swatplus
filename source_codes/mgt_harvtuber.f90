@@ -35,7 +35,7 @@
       harveff = harvop_db(iharvop)%eff
 
       !! tuber yield = harvest index * above ground biomass
-      pl_yield = pcom(j)%plg(ipl)%hvstiadj * pl_mass(j)%ab_gr(ipl)
+      pl_yield = pcom(j)%plg(ipl)%hi_adj * pl_mass(j)%ab_gr(ipl)
       
       !! assume no biomass is left
       pl_mass(j)%tot(ipl) = plt_mass_z

@@ -10,8 +10,8 @@
         real :: dep_wt = 0.         !m          |depth - mid-slope surface to water table (initial)
         real :: no3 = 0.            !ppm NO3-N  |nitrate-N concentration in aquifer (initial)
         real :: minp = 0.           !kg         |mineral phosphorus in aquifer (initial)
-        real :: orgn = 0.           !(kg/ha N)  |organic nitrogen in aquifer (initial)
-        real :: orgp = 0.           !(kg/ha P)  |organic phosphorus in aquifer (initial)
+        real :: cbn = 5.            !percent    |organic carbon in aquifer (initial)
+        real :: flo_dist = 50.      !m          |average flow distance to stream or object
         real :: bf_max = 0.         !mm         |maximum daily baseflow - when all channels are contributing
         real :: alpha = 0.          !1/days     |lag factor for groundwater recession curve
         real :: revap_co = 0.       !           |revap oefficient - evap=pet*revap_co
@@ -45,8 +45,8 @@
         real :: revap = 0.      !mm         |revap
         real :: no3 = 0.        !ppm NO3-N  |nitrate-N concentration in aquifer
         real :: minp = 0.       !kg         |mineral phosphorus from aquifer on current timestep    
-        real :: orgn = 0.  
-        real :: orgp = 0.   
+        real :: cbn = 0.        !percent    |organic carbon in aquifer (initial)  
+        real :: orgn = 0.   
         real :: rchrg_n = 0.    !           |amount of nitrate getting to the shallow aquifer  
         real :: nloss = 0. 
         real :: no3gw           !kg N/ha    |nitrate loading to reach in groundwater
@@ -168,8 +168,8 @@
        aqo3%stor = aqo1%stor + aqo2%stor
        aqo3%no3 = aqo1%no3 + aqo2%no3   
        aqo3%minp = aqo1%minp + aqo2%minp  
+       aqo3%cbn = aqo1%cbn + aqo2%cbn
        aqo3%orgn = aqo1%orgn + aqo2%orgn
-       aqo3%orgp = aqo1%orgp + aqo2%orgp
        aqo3%rchrg = aqo1%rchrg + aqo2%rchrg     
        aqo3%rchrg_n = aqo1%rchrg_n + aqo2%rchrg_n         
        aqo3%nloss = aqo1%nloss + aqo2%nloss
@@ -191,8 +191,8 @@
         aq2%stor = aq1%stor / const
         aq2%no3 = aq1%no3 / const
         aq2%minp = aq1%minp / const
+        aq2%cbn = aq1%cbn / const
         aq2%orgn = aq1%orgn / const
-        aq2%orgp = aq1%orgp / const
         aq2%rchrg = aq1%rchrg / const
         aq2%rchrg_n = aq1%rchrg_n / const
         aq2%nloss = aq1%nloss / const

@@ -3,7 +3,8 @@
       use aquifer_module  
       use hydrograph_module
       use constituent_mass_module
-      
+      use aqu_pesticide_module
+       
       implicit none
       
       character (len=500) :: header    !header for output file
@@ -26,14 +27,31 @@
       allocate (aqu_y(sp_ob%aqu))
       allocate (aqu_a(sp_ob%aqu))
       allocate (cs_aqu(sp_ob%aqu))
+      allocate (aqupst_d(sp_ob%aqu))
+      allocate (aqupst_m(sp_ob%aqu))
+      allocate (aqupst_y(sp_ob%aqu))
+      allocate (aqupst_a(sp_ob%aqu))
+
+      if (cs_db%num_pests > 0) then
+        allocate (baqupst_d%pest(cs_db%num_pests))
+        allocate (baqupst_m%pest(cs_db%num_pests))
+        allocate (baqupst_y%pest(cs_db%num_pests))
+        allocate (baqupst_a%pest(cs_db%num_pests))
+      end if
       
       do iaq = 1, sp_ob%aqu
-        !! allocate constituents
-        allocate (cs_aqu(iaq)%pest(cs_db%num_pests))
-        allocate (cs_aqu(iaq)%path(cs_db%num_paths))
-        allocate (cs_aqu(iaq)%hmet(cs_db%num_metals))
-        allocate (cs_aqu(iaq)%salt(cs_db%num_salts))
-          
+        if (cs_db%num_pests > 0) then
+          !! allocate constituents
+          allocate (cs_aqu(iaq)%pest(cs_db%num_pests))
+          allocate (aqupst_d(iaq)%pest(cs_db%num_pests))
+          allocate (aqupst_m(iaq)%pest(cs_db%num_pests))
+          allocate (aqupst_y(iaq)%pest(cs_db%num_pests))
+          allocate (aqupst_a(iaq)%pest(cs_db%num_pests))
+          allocate (cs_aqu(iaq)%path(cs_db%num_paths))
+          allocate (cs_aqu(iaq)%hmet(cs_db%num_metals))
+          allocate (cs_aqu(iaq)%salt(cs_db%num_salts))
+        end if
+              
         iob = sp_ob1%aqu + iaq - 1
         iaqdb = ob(iob)%props
 
@@ -50,8 +68,7 @@
         aqu_d(iaq)%stor = 1000. * (aqudb(iaqdb)%dep_bot - aqu_d(iaqdb)%dep_wt) * aqudb(iaqdb)%spyld
         aqu_d(iaq)%no3 = aqudb(iaqdb)%no3
         aqu_d(iaq)%minp = aqudb(iaqdb)%minp
-        aqu_d(iaq)%orgn = aqudb(iaqdb)%orgn
-        aqu_d(iaq)%orgp = aqudb(iaqdb)%orgp
+        aqu_d(iaq)%cbn = aqudb(iaqdb)%cbn
         aqu_d(iaq)%rchrg = 0.
         aqu_d(iaq)%seep = 0.
         aqu_d(iaq)%revap = 0.
@@ -63,9 +80,8 @@
         aqu_d(iaq)%flo_res = 0.
         aqu_d(iaq)%flo_ls = 0
       end do
-      
-      !! set initial parameters for calibration runs
-      aqu_om_init = aqu_d
+            
+      ! pesticides and constituents are initialized in aqu_read_init
 
       return
       end subroutine aqu_initial         

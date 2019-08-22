@@ -5,7 +5,7 @@
       
       implicit none  
 
-      real, dimension(7) :: val = 0.      !             |
+      real, dimension(time%nbyr) :: val      !             |
       real :: sum                         !             |
       integer :: iyr                      !none         |number of years
       integer :: next                     !             |
@@ -19,7 +19,7 @@
       integer :: iyr_ch                   !             | 
       
       
-
+      val = 0.
         !set linked list for daily flow duration curves
         ob(icmd)%fdc_ll(time%day)%val = ob(icmd)%hd(1)%flo
         next = ob(icmd)%fdc%mfe

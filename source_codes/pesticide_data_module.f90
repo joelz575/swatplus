@@ -9,14 +9,14 @@
         real :: foliar_hlife = 0.   !! days                 |half-life of pest on foliage
         real :: soil_hlife = 0.     !! days                 |half-life of pest in soil
         real :: solub = 0.          !! mg/L (ppm)           |solubility of chemical in water
-        real :: aq_hlife = 0.       !! 1/day                |aquatic pesticide reaction coeff
+        real :: aq_hlife = 0.       !! days                 |aquatic half-life
         real :: aq_volat = 0.       !! m/day                |aquatic volatilization coeff
         real :: mol_wt = 0.         !! g/mol                |molecular weight - to calulate mixing velocity
         real :: aq_resus = 0.       !! m/day                |aquatic resuspension velocity for pesticide sorbed to sediment
         real :: aq_settle = 0.      !! m/day                |aquatic settling velocity for pesticide sorbed to sediment
         real :: ben_act_dep = 0.    !! m                    |depth of active benthic layer
         real :: ben_bury = 0.       !! m/day                |burial velocity in benthic sediment
-        real :: ben_hlife = 0.      !! 1/day                |reaction coeff in benthic sediment
+        real :: ben_hlife = 0.      !! days                 |half-life of pest in benthic sediment
         character(len=32) :: descrip                        !pesticide description
       end type pesticide_db
       type (pesticide_db), dimension(:),allocatable, save :: pestdb

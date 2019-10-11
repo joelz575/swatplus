@@ -75,7 +75,7 @@
         real :: fixn = 0.               !kg N/ha        |amt of nit added to plant biomass via fixation on the day in HRU
         real :: denit = 0.              !kg N/ha        |amt of nit lost from nitrate pool by denit in soil profile
         !                                                    on current day in HRU
-        real :: act_nit_n = 0.          !kg N/ha        |amt of nit moving from active org to nit pool in soil profile
+        real :: act_nit_n = 0.          !kg N/ha        |amt of nit moving from active org to nitrate pool in soil profile
         !                                                    on current day in HRU 
         real :: act_sta_n = 0.          !kg N/ha        |amt of nit moving from active org to stable org pool in soil
         !                                                    profile on current day in HRU

@@ -126,7 +126,7 @@
          rto3 = 1. - s3 / hlt(i)%smx
          rtos = 1. - 2.54 / hlt(i)%smx
          
-         xi = 30. * mo - 15. 
+         xi = 30. * time%mo - 15. 
          xx = hlt_db(idb)%xlat / 57.3 
          hlt(i)%yls = SIN(xx) 
          hlt(i)%ylc = COS(xx) 

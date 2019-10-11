@@ -16,7 +16,7 @@
       real :: const            !            |  
                             
       do ilsu = 1, db_mx%lsu_out
-        ! summing HRU output for the landscape unit
+        ! summing HRU output for the landscape unit(
         do ielem = 1, lsu_out(ilsu)%num_tot
           ihru = lsu_out(ilsu)%num(ielem)
           iob = sp_ob1%ru + ilsu - 1
@@ -136,7 +136,7 @@
              end if 
            end if
            if (pco%nb_lsu%y == "y") then
-             write (2152,104) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, runb_y(ilsu)
+             write (2152,103) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, runb_y(ilsu)
              if (pco%csvout == "y") then 
                write (2156,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, runb_y(ilsu)
              end if 
@@ -172,7 +172,7 @@
       end if
       if (time%end_sim == 1 .and. pco%nb_lsu%a == "y") then
         runb_a(ilsu) = runb_a(ilsu) / time%yrs_prt
-        write (2153,104) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, runb_a(ilsu)
+        write (2153,103) time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, runb_a(ilsu)
         if (pco%csvout == "y") then 
           write (2157,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ilsu, ob(iob)%gis_id, ob(iob)%name, runb_a(ilsu)
         end if

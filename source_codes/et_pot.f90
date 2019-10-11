@@ -14,7 +14,6 @@
 !!    hru_rmx(:) |MJ/m^2         |maximum possible radiation for the day in HRU
 !!    ihru       |none           |HRU number
 !!    rhd(:)     |none           |relative humidity for the day in HRU
-!!    sno_hru(:) |mm H2O         |amount of water in snow in HRU on current day
 !!    u10(:)     |m/s            |wind speed (measured at 10 meters above 
 !!                               |surface)
 !!    vpd2(:)    |(m/s)*(1/kPa)  |rate of decline in stomatal conductance per
@@ -46,7 +45,7 @@
       use basin_module
       use hydrograph_module
       use climate_module
-      use hru_module, only : hru, u10, ihru, tmpav, rhd, sno_hru, hru_ra, hru_rmx, tmx, tmn,  &
+      use hru_module, only : hru, u10, ihru, tmpav, rhd, hru_ra, hru_rmx, tmx, tmn,  &
         albday, epmax, ipl, pet_day, vpd, ep_max
       use plant_module
       
@@ -122,7 +121,7 @@
      
        !! net radiation
          !! calculate net short-wave radiation for PET
-          if (sno_hru(j) <= .5) then
+          if (hru(j)%sno_mm <= .5) then
             ralb = hru_ra(j) * (1.0 - 0.23)
           else
             ralb = hru_ra(j) * (1.0 - 0.8)
@@ -155,7 +154,7 @@
 
        !! net radiation
          !! calculate net short-wave radiation for PET
-          if (sno_hru(j) <= .5) then
+          if (hru(j)%sno_mm <= .5) then
             ralb = hru_ra(j) * (1.0 - 0.23) 
           else
             ralb = hru_ra(j) * (1.0 - 0.8) 

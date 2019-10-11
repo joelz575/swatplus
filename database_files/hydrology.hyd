@@ -1,0 +1,11 @@
+Generated  from       Y:\HUC8_mod   8/2/20196:54:51PM
+NAME        LAT_TTIME LAT_SED CAN_MAX ESCO   EPCO  ORGN_ENRICH ORGP_ENRICH  CN3_SWF  BIO_MIX  PERCO  LAT_ORGN  LAT_ORGP  HARG_PET   LATQ_CO
+lch_lo_ro_lo	0          0     0     0.5     0         0          0         0.95     0.2    0.05       0          0     0.0023        0.01
+lch_lo_ro_md	0          0     0     0.5     0         0          0         0.30     0.2    0.05       0          0     0.0023        0.02
+lch_lo_ro_hi	0          0     0     0.5     0         0          0         0.00     0.2    0.05       0          0     0.0023        0.90
+lch_md_ro_lo	0          0     0     0.5     0         0          0         0.95     0.2    0.50       0          0     0.0023        0.01
+lch_md_ro_md	0          0     0     0.5     0         0          0         0.30     0.2    0.50       0          0     0.0023        0.02
+lch_md_ro_hi	0          0     0     0.5     0         0          0         0.00     0.2    0.50       0          0     0.0023        0.90
+lch_hi_ro_lo	0          0     0     0.5     0         0          0         0.95     0.2    0.90       0          0     0.0023        0.01
+lch_hi_ro_md	0          0     0     0.5     0         0          0         0.30     0.2    0.90       0          0     0.0023        0.02
+lch_hi_ro_hi	0          0     0     0.5     0         0          0         0.00     0.2    0.90       0          0     0.0023        0.90

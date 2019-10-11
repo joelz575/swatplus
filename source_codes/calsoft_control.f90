@@ -48,13 +48,14 @@
         icvmax = 0
         do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
+            if (abs(lscal(ireg)%lum(ilum)%petco) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%cn) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%esco) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%lat_len) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%k_lo) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%slope) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%tconc) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) icvmax = icvmax + 2
+            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%revapc) > 1.e-6) icvmax = icvmax + 1
             if (abs(lscal(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) icvmax = icvmax + 1
@@ -68,6 +69,11 @@
         !write to calibration.upd and use region and land use as conditions
 	    do ireg = 1, db_mx%lsu_reg
           do ilum = 1, region(ireg)%nlum
+            if (abs(lscal(ireg)%lum(ilum)%petco) > 1.e-6) then
+              lscal(ireg)%lum(ilum)%petco = 100. * (lscal(ireg)%lum(ilum)%petco - 1)
+              write (5000,503) "petco     ", "   pctchg     ", lscal(ireg)%lum(ilum)%petco,                 & 
+              "     0      0      0      0      0      0      0      0      0"
+            end if
             if (abs(lscal(ireg)%lum(ilum)%prm%cn) > 1.e-6) then
               write (5000,503) ls_prms(1)%name, ls_prms(1)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn,           & 
               "     0      0      0      0      0      0      0      0      0"
@@ -92,11 +98,12 @@
               write (5000,503) ls_prms(6)%name, ls_prms(6)%chg_typ, lscal(ireg)%lum(ilum)%prm%tconc,        &
               "     0      0      0      0      0      0      0      0      0"
             end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) then                                
+            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) then 
+              lscal(ireg)%lum(ilum)%prm%etco = -lscal(ireg)%lum(ilum)%prm%etco
               write (5000,503) "esco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
               "     0      0      0      0      0      0      0      0      0"
-              write (5000,503) "epco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
-              "     0      0      0      0      0      0      0      0      0"
+              !write (5000,503) "epco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
+              !"     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) then
               write (5000,503) ls_prms(8)%name, ls_prms(8)%chg_typ, lscal(ireg)%lum(ilum)%prm%perco,        &

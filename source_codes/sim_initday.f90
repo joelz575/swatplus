@@ -26,7 +26,7 @@
      
       use hru_module, only : cbodu,chl_a,clayld,cnday,doxq,etday,grayld,hhsedy,                     &
          hhsurfq,hru,hru_ra,hru_rmx,lagyld,latno3,latq,nplnt,                             &
-         par,percn,pot,pplnt,qdr,rcn,rhd,sagyld,sanyld,sedminpa,                           &
+         par,percn,pplnt,qdr,rcn,rhd,sagyld,sanyld,sedminpa,                           &
          sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,sol_sumno3,sol_sumsolp,            &
          surfq,                                &
          surqno3,surqsolp,tileno3,tmn,tmpav,tmx,u10,ubnrunoff,ubntss

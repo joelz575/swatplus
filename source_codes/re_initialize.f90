@@ -1,6 +1,6 @@
       subroutine re_initialize
     
-      use hru_module, only : hru, hru_init, sno_hru, sno_init, bss
+      use hru_module, only : hru, hru_init, bss
       use soil_module
       use plant_module
       use organic_mineral_mass_module
@@ -21,7 +21,6 @@
         pcom = pcom_init
         pl_mass = pl_mass_init
         wet = wet_om_init
-        sno_hru = sno_init
         bss = 0.
       end if
       

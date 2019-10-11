@@ -58,9 +58,7 @@
          if (bsn_prm%sig_g < 1.e-6) bsn_prm%sig_g = 0.            !! geometric std dev of part sizes for the main channel
 
          !! set additional parameters
-         uptake%water_dis = 10.0       !! the uptake distribution for water is hardwired
-                                       !! users are not allowed to modify the water
-                                       !! water uptake distribution
+         uptake%water_dis = 10.0       !! the uptake distribution for water is hardwired - users are not allowed to modify
          uptake%water_norm = 1. - exp(-uptake%water_dis)
          uptake%n_norm = 1. - exp(-bsn_prm%n_updis)
          uptake%p_norm = 1. - exp(-bsn_prm%p_updis)

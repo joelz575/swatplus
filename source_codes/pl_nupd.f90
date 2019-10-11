@@ -51,9 +51,9 @@
           Exp(plcp(idp)%nup1 - plcp(idp)%nup2 *                          &
           pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
 
-      un2(ipl) = pcom(j)%plm(ipl)%n_fr * pl_mass(j)%tot(ipl)%m
-      if (un2(ipl) < pl_mass(j)%tot(ipl)%n) un2(ipl) = pl_mass(j)%tot(ipl)%n
-      uno3d(ipl) = un2(ipl) - pl_mass(j)%tot(ipl)%n
+      un2(ipl) = pcom(j)%plm(ipl)%n_fr * pl_mass(j)%ab_gr(ipl)%m
+      if (un2(ipl) < pl_mass(j)%ab_gr(ipl)%n) un2(ipl) = pl_mass(j)%ab_gr(ipl)%n
+      uno3d(ipl) = un2(ipl) - pl_mass(j)%ab_gr(ipl)%n
       
       return 
       end subroutine pl_nupd

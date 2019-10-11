@@ -195,6 +195,7 @@
         call search (wst_n, db_mx%wst, ob(i)%wst_c, ob(i)%wst)
       end do
       
+      
       close (107)
       
       return

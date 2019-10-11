@@ -9,7 +9,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    albday      |none          |albedo of ground for day
 !!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
-!!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    tmp_an(:)   |deg C         |average annual air temperature
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -28,7 +27,7 @@
 
       use climate_module
       use septic_data_module
-      use hru_module, only : sno_hru, hru_ra, iseptic, ihru, tmpav, tmx, tmn, i_sep, iwgen, albday, isep 
+      use hru_module, only : hru, hru_ra, iseptic, ihru, tmpav, tmx, tmn, i_sep, iwgen, albday, isep 
       use soil_module
       use time_module
       use organic_mineral_mass_module
@@ -88,10 +87,10 @@
 !! SWAT manual equation 2.3.11
       cover = pl_mass(j)%ab_gr_com%m + rsd1(j)%tot_com%m
       bcv = cover / (cover + Exp(7.563 - 1.297e-4 * cover))
-      if (sno_hru(j) /= 0.) then
-        if (sno_hru(j) <= 120.) then
+      if (hru(j)%sno_mm /= 0.) then
+        if (hru(j)%sno_mm <= 120.) then
           xx = 0.
-          xx = sno_hru(j) / (sno_hru(j) + Exp(6.055 - .3002 * sno_hru(j)))
+          xx = hru(j)%sno_mm / (hru(j)%sno_mm + Exp(6.055 - .3002 * hru(j)%sno_mm))
         else
           xx = 1.
         end if

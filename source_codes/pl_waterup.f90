@@ -31,7 +31,7 @@
 !!    sum         |
 !!    sump        |
 !!    wuse        |mm H2O        |water uptake by plants in each soil layer
-!!    xx          |mm H2O        |water uptake by plants from all layers
+!!    sum_wuse    |mm H2O        |water uptake by plants from all layers
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
     
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -52,7 +52,8 @@
       integer :: ir          !none      |flag to denote bottom of root zone reached
       integer :: idp         !          |   
       real :: sum            !          |
-      real :: xx             !mm H2O    |water uptake by plants from all layers          |
+      real :: sum_wuse       !mm H2O    |water uptake by plants from all layers
+      real :: sum_wusep      !mm H2O    |previous water uptake by plants from all layers
       real :: reduc          !none      |fraction of water uptake by plants achieved
                              !          |where the reduction is caused by low water
                              !          |content
@@ -82,7 +83,8 @@
         ir = 0
         sump = 0.
         wuse = 0.
-        xx = 0.
+        sum_wuse = 0.
+        sum_wusep = 0.
  
 !!  compute aeration stress
         if (soil(j)%sw > soil(j)%sumfc) then
@@ -114,26 +116,21 @@
             sum = epmax(ipl) * (1. - Exp(-uptake%water_dis * gx / pcom(j)%plg(ipl)%root_dep)) / uptake%water_norm
           end if
 
-          !hru(j)%hyd%epco = 0.
           wuse = sum - sump * hru(j)%hyd%epco
+          wuse = amin1 (wuse, soil(j)%phys(k)%st)
+          sum_wuse = sum_wuse + wuse
+          if (sum_wuse > epmax(ipl)) then
+            wuse = epmax(ipl) - sum_wusep
+            sum_wuse = epmax(ipl)
+          end if
           sump = sum
-
-
-          !! adjust uptake if sw is less than 25% of plant available water
-          if (soil(j)%phys(k)%st < soil(j)%phys(k)%fc / 4.) then
-            reduc = Exp(5. * (4. * soil(j)%phys(k)%st / soil(j)%phys(k)%fc - 1.))
-          else
-            reduc = 1.
-          endif
-          reduc = 1.
-          wuse = wuse * reduc
+          sum_wusep = sum_wuse
 
           if (soil(j)%phys(k)%st < wuse) then
             wuse = soil(j)%phys(k)%st
           end if
 
           soil(j)%phys(k)%st = Max(1.e-6, soil(j)%phys(k)%st - wuse)
-          xx = xx + wuse
           
         end do      !! soil layer loop
         
@@ -143,8 +140,8 @@
           soil(j)%sw = soil(j)%sw + soil(j)%phys(k)%st
         end do
 
-        pcom(j)%plstr(ipl)%strsw = xx / epmax(ipl)
-        ep_day = ep_day + xx
+        pcom(j)%plstr(ipl)%strsw = sum_wuse / epmax(ipl)
+        ep_day = ep_day + sum_wuse
       end if
 
       return

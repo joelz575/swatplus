@@ -30,7 +30,7 @@
       real :: constpw
               
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!!    PRINT CODES: "avann" = average annual (always print)lum(
+!!!    PRINT CODES: "avann" = average annual (always print)
 !!                  "year"  = yearly
 !!                  "mon"   = monthly
 !!                  "day"   = daily

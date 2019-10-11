@@ -47,7 +47,7 @@
       allocate (plants_bsn(basin_plants))
       allocate (bsn_crop_yld(basin_plants))
       allocate (bsn_crop_yld_aa(basin_plants))
-      
+
       !! zero basin crop yields and harvested areas
       do ipl_bsn = 1, basin_plants
         bsn_crop_yld(ipl_bsn) = bsn_crop_yld_z

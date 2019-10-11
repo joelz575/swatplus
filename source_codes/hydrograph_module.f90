@@ -496,13 +496,13 @@
       
       
       type ch_watbod_header 
-        character (len=6) :: day           = "      "
-        character (len=6) :: mo            = "      "
-        character (len=6) :: day_mo        = "      "
-        character (len=6) :: yrc           = "      "
-        character (len=8) :: isd           = "        "                                            
-        character (len=8) :: id            = "        "       
-        character (len=15) :: name         = "              " 
+        character (len=6) :: day           = "  jday"       
+        character (len=6) :: mo            = "   mon"
+        character (len=6) :: day_mo        = "   day"
+        character (len=6) :: yrc           = "    yr"       
+        character (len=9) :: isd           = "     unit"        
+        character (len=9) :: id            = "   gis_id"       
+        character (len=15) :: name         = "   name        "   
         character (len=15) :: area_ha      = '          area'
         character (len=15) :: precip       = '        precip'
         character (len=15) :: evap         = '          evap'
@@ -511,13 +511,13 @@
       type (ch_watbod_header) :: ch_wbod_hdr
       
       type ch_watbod_header_units
-        character (len=6) :: day           = "  jday"
-        character (len=6) :: mo            = "   mon"
-        character (len=6) :: day_mo        = "   day"
-        character (len=6) :: yrc           = "    yr"
-        character (len=8) :: isd           = "   unit "                                            
-        character (len=8) :: id            = " gis_id "      
-        character (len=15) :: name         = " name         "      
+        character (len=6) :: day           = "      "
+        character (len=6) :: mo            = "      "
+        character (len=6) :: day_mo        = "      "
+        character (len=6) :: yrc           = "      "       
+        character (len=9) :: isd           = "         "                                            
+        character (len=9) :: id            = "         "       
+        character (len=15) :: name         = "              "    
         character (len=15) :: area_ha      = '            ha'
         character (len=15) :: precip       = '          ha-m'
         character (len=15) :: evap         = '          ha-m'
@@ -617,6 +617,16 @@
         character (len=6) :: otype   =  "  type"
       end type hyd_header_time
        type (hyd_header_time) :: hyd_hdr_time
+    
+      type rec_header_time                                       
+        character (len=11) :: day    =  "       jday"
+        character (len=12) :: mo     =  "         mon"
+        character (len=12) :: day_mo =  "         day"
+        character (len=13) :: yrc    =  "          yr"
+        character (len=12) :: name   =  "name        "       
+        character (len=6) ::  blank  =  "      "
+      end type rec_header_time
+       type (rec_header_time) :: rec_hdr_time
        
       type hyd_header_obj
         character (len=13) :: iotyp  =  "   objtyp   "

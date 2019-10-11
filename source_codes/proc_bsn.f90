@@ -8,7 +8,7 @@
       open (9000,file="files_out.out")
       write (9000,*) "files_out.out - OUTPUT FILES WRITTEN"      
 !!!  open diagnostics.out file to print problems with various files
-     open (9001,file="diagnostics.out")
+     open (9001,file="diagnostics.out", recl=800)
      write (9001,*) "DIAGNOSTICS.OUT FILE" 
     		
       call basin_read_objs

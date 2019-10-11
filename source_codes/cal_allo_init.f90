@@ -3,7 +3,7 @@
       use sd_channel_module
       use hru_lte_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, hru_init, ihru, sno_hru, sno_init, bss
+      use hru_module, only : hru, hru_init, ihru, bss
       use soil_module
       use plant_module
       use plant_data_module
@@ -73,7 +73,6 @@
         pcom_init = pcom
         pl_mass_init = pl_mass
         wet = wet_om_init
-        sno_init = sno_hru
         bss = 0.
       end if
       

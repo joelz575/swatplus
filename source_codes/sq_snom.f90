@@ -8,7 +8,6 @@
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ihru         |none          |HRU number
-!!    sno_hru(:)   |mm H2O        |amount of water in snow in HRU on current day
 !!    snocov1      |none          |1st shape parameter for snow cover equation
 !!                                |This parameter is determined by solving the
 !!                                |equation for 50% snow cover
@@ -22,7 +21,6 @@
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    wst(:)%weat%ts(:)  |mm H2O        |precipitation for the time step during day
-!!    sno_hru(:)   |mm H2O        |amount of water in snow in HRU on current day
 !!    snofall      |mm H2O        |amount of precipitation falling as freezing 
 !!                                |rain/snow on day in HRU
 !!    snomlt       |mm H2O        |amount of water in snow melt for the day in 
@@ -36,7 +34,7 @@
 
       use time_module
       use hydrograph_module
-      use hru_module, only : hru, snotmp, sno_hru, tmpav, tmx, ihru, precip_eff, snocov1, snocov2,  &
+      use hru_module, only : hru, snotmp, tmpav, tmx, ihru, precip_eff, snocov1, snocov2,  &
          snofall, snomlt 
       use hydrology_data_module
       use climate_module, only: wst
@@ -67,13 +65,13 @@
 
         if (tmpav(j) <= snodb(isno)%falltmp) then
           !! calculate snow fall
-          sno_hru(j) = sno_hru(j) + precip_eff
+          hru(j)%sno_mm = hru(j)%sno_mm + precip_eff
           snofall = precip_eff
           precip_eff = 0.
           if (time%step > 0) wst(iwst)%weat%ts = 0.
         endif
  
-        if (tmx(j) > snodb(isno)%melttmp .and. sno_hru(j) > 0.) then
+        if (tmx(j) > snodb(isno)%melttmp .and. hru(j)%sno_mm > 0.) then
           !! adjust melt factor for time of year
           smfac = (snodb(isno)%meltmx + snodb(isno)%meltmn) / 2. +      &     
              Sin((time%day - 81) / 58.09) *                                 &
@@ -81,16 +79,16 @@
           snomlt = smfac * (((snotmp(j)+tmx(j))/2.)-snodb(isno)%melttmp)
 
           !! adjust for areal extent of snow cover
-          if (sno_hru(j) < snodb(isno)%covmx) then
-            xx = sno_hru(j) / snodb(isno)%covmx
+          if (hru(j)%sno_mm < snodb(isno)%covmx) then
+            xx = hru(j)%sno_mm / snodb(isno)%covmx
             snocov = xx / (xx + Exp(snocov1 - snocov2 * xx))
           else
             snocov = 1.
           endif
           snomlt = snomlt * snocov
           if (snomlt < 0.) snomlt = 0.
-          if (snomlt > sno_hru(j)) snomlt = sno_hru(j)
-          sno_hru(j) = sno_hru(j) - snomlt
+          if (snomlt > hru(j)%sno_mm) snomlt = hru(j)%sno_mm
+          hru(j)%sno_mm = hru(j)%sno_mm - snomlt
           precip_eff = precip_eff + snomlt
           if (time%step > 0) then
             do ii = 1, time%step

@@ -25,13 +25,15 @@
             do ilu = 1, region(ireg)%nlum
               lscal(ireg)%lum(ilu)%ha = 0.
               lscal(ireg)%lum(ilu)%precip = 0.
+              lscal(ireg)%lum(ilu)%pet = 0.
               lscal(ireg)%lum(ilu)%sim = lscal_z  !! zero all calibration parameters
               do ihru_s = 1, region(ireg)%num_tot
                 ihru = region(ireg)%num(ihru_s)
                 if (lscal(ireg)%lum(ilu)%meas%name == hru(ihru)%lum_group_c .or. lscal(ireg)%lum(ilu)%meas%name == "basin") then
                   ha_hru = region(ireg)%hru_ha(ihru)      ! 10 * ha * mm --> m3
                   lscal(ireg)%lum(ilu)%ha = lscal(ireg)%lum(ilu)%ha + ha_hru
-                  lscal(ireg)%lum(ilu)%precip = lscal(ireg)%lum(ilu)%precip + (10. * ha_hru * hwb_y(ihru)%precip)
+                  lscal(ireg)%lum(ilu)%precip = lscal(ireg)%lum(ilu)%precip + (10. * ha_hru * hwb_y(ihru)%precip + hwb_y(ihru)%irr)
+                  lscal(ireg)%lum(ilu)%pet = lscal(ireg)%lum(ilu)%pet + (10. * ha_hru * hwb_y(ihru)%pet)
                   lscal(ireg)%lum(ilu)%sim%srr = lscal(ireg)%lum(ilu)%sim%srr + (10. * ha_hru * hwb_y(ihru)%surq_gen)
                   lscal(ireg)%lum(ilu)%sim%lfr = lscal(ireg)%lum(ilu)%sim%lfr + (10. * ha_hru * hwb_y(ihru)%latq)
                   lscal(ireg)%lum(ilu)%sim%pcr = lscal(ireg)%lum(ilu)%sim%pcr + (10. * ha_hru * hwb_y(ihru)%perc)
@@ -48,6 +50,7 @@
                 lscal(ireg)%lum(ilu)%nbyr = lscal(ireg)%lum(ilu)%nbyr + 1
                 !! convert back to mm, t/ha, kg/ha
                 lscal(ireg)%lum(ilu)%precip_aa = lscal(ireg)%lum(ilu)%precip_aa + lscal(ireg)%lum(ilu)%precip / (10. * lscal(ireg)%lum(ilu)%ha)
+                lscal(ireg)%lum(ilu)%pet_aa = lscal(ireg)%lum(ilu)%pet_aa + lscal(ireg)%lum(ilu)%pet / (10. * lscal(ireg)%lum(ilu)%ha)
                 lscal(ireg)%lum(ilu)%aa%srr = lscal(ireg)%lum(ilu)%aa%srr + lscal(ireg)%lum(ilu)%sim%srr / (10. * lscal(ireg)%lum(ilu)%ha)
                 lscal(ireg)%lum(ilu)%aa%lfr = lscal(ireg)%lum(ilu)%aa%lfr + lscal(ireg)%lum(ilu)%sim%lfr / (10. * lscal(ireg)%lum(ilu)%ha)
                 lscal(ireg)%lum(ilu)%aa%pcr = lscal(ireg)%lum(ilu)%aa%pcr + lscal(ireg)%lum(ilu)%sim%pcr / (10. * lscal(ireg)%lum(ilu)%ha)

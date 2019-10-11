@@ -74,6 +74,7 @@
       
       type weather_daily
         real :: precip
+        real :: precip_next = 0.                            !! mm           |precip generated for next day
         real :: tmax
         real :: tmin
         real :: tave
@@ -92,6 +93,7 @@
         character(len=3) :: precip_prior_day = "dry"        !!              |"dry" or "wet"
         real, dimension(:), allocatable :: ts               !! mm           |subdaily precip
       end type weather_daily
+      type (weather_daily) :: weat
             
       type weather_codes_station
         integer :: wgn = 1        !!  weather generator station number

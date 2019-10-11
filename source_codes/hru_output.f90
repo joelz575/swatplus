@@ -1,6 +1,5 @@
       subroutine hru_output(ihru)
-    
-      use hru_module, only : ipl
+
       use plant_module
       use plant_data_module
       use time_module
@@ -15,6 +14,7 @@
       integer :: idp                           !            |
       integer :: j
       integer :: iob
+      integer :: ipl
       real :: const
                          
 !!    ~ ~ ~ PURPOSE ~ ~ ~

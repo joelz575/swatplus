@@ -74,6 +74,7 @@
       !! calculate amount of surface runoff reaching main channel during day
       !! (qday) and store the remainder
       call sq_surfst
+      qday =  surfq(j)
 
       if (qday > 0.0001) then
         !! compute peak rate - peakr in m3/s  

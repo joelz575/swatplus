@@ -70,7 +70,8 @@
         if (pcpgen < .1) pcpgen = .1
       end if
 
-      wst(iwst)%weat%precip = pcpgen
+      !! precip for the next day 
+      wst(iwst)%weat%precip_next = pcpgen
 
       return
       end subroutine cli_pgen

@@ -473,13 +473,13 @@
           write (2140,*) bsn%name, prog
           write (2140,*) wb_hdr  !! subbasin
           write (2140,*) wb_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_wb_day.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_wb_day.txt"
           if (pco%csvout == "y") then 
             open (2144,file="lsunit_wb_day.csv",recl = 1500)
             write (2144,*) bsn%name, prog
             write (2144,'(*(G0.3,:,","))') wb_hdr  !! subbasin
             write (2144,'(*(G0.3,:,","))') wb_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_wb_day.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_wb_day.csv"
           end if 
         endif
     
@@ -489,13 +489,13 @@
         write (2141,*) bsn%name, prog
         write (2141,*) wb_hdr  !! subbasin
         write (2141,*) wb_hdr_units
-        write (9000,*) "ROUTING UNIT              lsunit_wb_mon.txt"
+        write (9000,*) "ROUTING_UNIT              lsunit_wb_mon.txt"
           if (pco%csvout == "y") then
             open (2145,file="lsunit_wb_mon.csv",recl = 1500)
             write (2145,*) bsn%name, prog
             write (2145,'(*(G0.3,:,","))') wb_hdr   !! subbasin
             write (2145,'(*(G0.3,:,","))') wb_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_wb_mon.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_wb_mon.csv"
           end if
         end if 
 
@@ -505,13 +505,13 @@
           write (2142,*) bsn%name, prog
           write (2142,*) wb_hdr  !! subbasin
           write (2142,*) wb_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_wb_yr.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_wb_yr.txt"
           if (pco%csvout == "y") then 
             open (2146,file="lsunit_wb_yr.csv",recl = 1500)
             write (2146,*) bsn%name, prog
             write (2146,'(*(G0.3,:,","))') wb_hdr  !! subbasin
             write (2146,'(*(G0.3,:,","))') wb_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_wb_yr.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_wb_yr.csv"
           end if 
         endif
      end if
@@ -521,13 +521,13 @@
          write (2143,*) bsn%name, prog
          write (2143,*) wb_hdr   !! subbasin
          write (2143,*) wb_hdr_units
-         write (9000,*) "ROUTING UNIT              lsunit_wb_aa.txt"
+         write (9000,*) "ROUTING_UNIT              lsunit_wb_aa.txt"
           if (pco%csvout == "y") then
            open (2147,file="lsunit_wb_aa.csv",recl = 1500)
            write (2147,*) bsn%name, prog
            write (2147,'(*(G0.3,:,","))') wb_hdr   !! subbasin
            write (2147,'(*(G0.3,:,","))') wb_hdr_units
-           write (9000,*) "ROUTING UNIT              lsunit_wb_aa.csv"
+           write (9000,*) "ROUTING_UNIT              lsunit_wb_aa.csv"
           end if
        end if
         
@@ -537,13 +537,13 @@
           write (2150,*) bsn%name, prog
           write (2150,*) nb_hdr
           write (2150,*) nb_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_nb_day.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_nb_day.txt"
           if (pco%csvout == "y") then 
             open (2154,file="lsunit_nb_day.csv",recl = 1500)
             write (2154,*) bsn%name, prog
             write (2154,'(*(G0.3,:,","))') nb_hdr
             write (2154,'(*(G0.3,:,","))') nb_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_nb_day.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_nb_day.csv"
           end if 
         endif
         
@@ -552,13 +552,13 @@
         write (2151,*) bsn%name, prog
         write (2151,*) nb_hdr
         write (2151,*) nb_hdr_units
-        write (9000,*) "ROUTING UNIT              lsunit_nb_mon.txt"
+        write (9000,*) "ROUTING_UNIT              lsunit_nb_mon.txt"
           if (pco%csvout == "y") then
             open (2155,file="lsunit_nb_mon.csv", recl = 1500)
             write (2155,*) bsn%name, prog
             write (2155,'(*(G0.3,:,","))') nb_hdr
             write (2155,'(*(G0.3,:,","))') nb_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_nb_mon.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_nb_mon.csv"
           end if
         end if
         
@@ -567,13 +567,13 @@
           write (2152,*) bsn%name, prog
           write (2152,*) nb_hdr
           write (2152,*) nb_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_nb_yr.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_nb_yr.txt"
           if (pco%csvout == "y") then 
             open (2156,file="lsunit_nb_yr.csv",recl = 1500)
             write (2156,*) bsn%name, prog
             write (2156,'(*(G0.3,:,","))') nb_hdr
             write (2156,'(*(G0.3,:,","))') nb_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_nb_yr.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_nb_yr.csv"
           end if 
         endif
         
@@ -582,13 +582,13 @@
         write (2153,*) bsn%name, prog
         write (2153,*) nb_hdr
         write (2153,*) nb_hdr_units
-        write (9000,*) "ROUTING UNIT              lsunit_nb_aa.txt"
+        write (9000,*) "ROUTING_UNIT              lsunit_nb_aa.txt"
           if (pco%csvout == "y") then
             open (2157,file="lsunit_nb_aa.csv", recl = 1500)
             write (2157,*) bsn%name, prog
             write (2157,'(*(G0.3,:,","))') nb_hdr
             write (2157,'(*(G0.3,:,","))') nb_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_nb_aa.csv"
+          write (9000,*) "ROUTING_UNIT              lsunit_nb_aa.csv"
           end if 
         end if 
 
@@ -598,13 +598,13 @@
           write (2160,*) bsn%name, prog
           write (2160,*) ls_hdr 
           write (2160,*) ls_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_ls_day.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_ls_day.txt"
           if (pco%csvout == "y") then 
             open (2164,file="lsunit_ls_day.csv",recl = 1500)
             write (2164,*) bsn%name, prog
             write (2164,'(*(G0.3,:,","))') ls_hdr    !! subbasin
             write (2164,'(*(G0.3,:,","))') ls_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_ls_day.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_ls_day.csv"
           end if 
         endif
         
@@ -613,13 +613,13 @@
         write (2161,*) bsn%name, prog
         write (2161,*) ls_hdr 
         write (2161,*) ls_hdr_units
-        write (9000,*) "ROUTING UNIT              lsunit_ls_mon.txt"
+        write (9000,*) "ROUTING_UNIT              lsunit_ls_mon.txt"
         if (pco%csvout == "y") then 
           open (2165,file="lsunit_ls_mon.csv",recl = 1500)
           write (2165,*) bsn%name, prog
           write (2165,'(*(G0.3,:,","))') ls_hdr  !! subbasin 
           write (2165,'(*(G0.3,:,","))') ls_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_ls_mon.csv"
+          write (9000,*) "ROUTING_UNIT              lsunit_ls_mon.csv"
         end if 
       end if 
         
@@ -628,13 +628,13 @@
           write (2162,*) bsn%name, prog
           write (2162,*) ls_hdr 
           write (2162,*) ls_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_ls_yr.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_ls_yr.txt"
           if (pco%csvout == "y") then 
             open (2166,file="lsunit_ls_yr.csv",recl = 1500)
             write (2166,*) bsn%name, prog
             write (2166,'(*(G0.3,:,","))') ls_hdr
             write (2166,'(*(G0.3,:,","))') ls_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_ls_yr.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_ls_yr.csv"
           end if 
        endif
         
@@ -643,13 +643,13 @@
         write (2163,*) bsn%name, prog
         write (2163,*) ls_hdr 
         write (2163,*) ls_hdr_units
-        write (9000,*) "ROUTING UNIT              lsunit_ls_aa.txt"
+        write (9000,*) "ROUTING_UNIT              lsunit_ls_aa.txt"
         if (pco%csvout == "y") then 
           open (2167,file="lsunit_ls_aa.csv",recl = 1500)
           write (2167,*) bsn%name, prog
           write (2167,'(*(G0.3,:,","))') ls_hdr
           write (2167,'(*(G0.3,:,","))') ls_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_ls_aa.csv"
+          write (9000,*) "ROUTING_UNIT              lsunit_ls_aa.csv"
         end if 
        end if
 
@@ -659,13 +659,13 @@
           write (2170,*) bsn%name, prog
           write (2170,*) pw_hdr
           write (2170,*) pw_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_pw_day.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_pw_day.txt"
           if (pco%csvout == "y") then 
             open (2174,file="lsunit_pw_day.csv",recl = 1500)
             write (2174,*) bsn%name, prog
             write (2174,'(*(G0.3,:,","))') pw_hdr 
             write (2174,'(*(G0.3,:,","))') pw_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_pw_day.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_pw_day.csv"
           end if 
         end if 
     
@@ -675,13 +675,13 @@
         write (2171,*) bsn%name, prog
         write (2171,*) pw_hdr
         write (2171,*) pw_hdr_units
-        write (9000,*) "ROUTING UNIT              lsunit_pw_mon.txt"
+        write (9000,*) "ROUTING_UNIT              lsunit_pw_mon.txt"
         if (pco%csvout == "y") then 
           open (2175,file="lsunit_pw_mon.csv",recl = 1500)
           write (2175,*) bsn%name, prog
           write (2175,'(*(G0.3,:,","))') pw_hdr
           write (2175,'(*(G0.3,:,","))') pw_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_pw_mon.csv"
+          write (9000,*) "ROUTING_UNIT              lsunit_pw_mon.csv"
         end if
        end if
         
@@ -690,13 +690,13 @@
           write (2172,*) bsn%name, prog
           write (2172,*) pw_hdr
           write (2172,*) pw_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_pw_yr.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_pw_yr.txt"
           if (pco%csvout == "y") then 
             open (2176,file="lsunit_pw_yr.csv",recl = 1500)
             write (2176,*) bsn%name, prog
             write (2176, '(*(G0.3,:,","))')pw_hdr
             write (2176,'(*(G0.3,:,","))') pw_hdr_units
-            write (9000,*) "ROUTING UNIT              lsunit_pw_yr.csv"
+            write (9000,*) "ROUTING_UNIT              lsunit_pw_yr.csv"
           end if 
         end if 
       
@@ -705,13 +705,13 @@
         write (2173,*) bsn%name, prog
         write (2173,*) pw_hdr
         write (2173,*) pw_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_pw_aa.txt"
+          write (9000,*) "ROUTING_UNIT              lsunit_pw_aa.txt"
         if (pco%csvout == "y") then 
           open (2177,file="lsunit_pw_aa.csv",recl = 1500)
           write (2177,*) bsn%name, prog
           write (2177,'(*(G0.3,:,","))') pw_hdr
           write (2177,'(*(G0.3,:,","))') pw_hdr_units
-          write (9000,*) "ROUTING UNIT              lsunit_pw_aa.csv"
+          write (9000,*) "ROUTING_UNIT              lsunit_pw_aa.csv"
         end if
      end if
       end if
@@ -965,12 +965,12 @@
       end if
 !!! CROP YIELDS
       if (sp_ob%hru > 0) then
-        open (4008,file="crop_yld_aa.out")
+        open (4008,file="crop_yld_aa.txt")
         write (4008,*) bsn%name, prog
           write (4008,1000)
-1000    format (80x,"--YIELD (kg/ha)--",/,1x," jday",1x,"  mon",1x,"  day",1x,"   yr",1x,"   unit", 1x,"PLANTNM",   &
+1000    format (76x,"--YIELD (kg/ha)--",/,1x," jday",1x,"  mon",1x,"  day",1x,"   yr",1x,"   unit", 1x,"PLANTNM",   &
                  18x,"       MASS","          C", "           N","           P")
-        write (9000,*) "CROP                      crop_yld_aa.out"
+        write (9000,*) "CROP                      crop_yld_aa.txt"
         if (pco%csvout == "y") then
             open (4009,file="crop_yld_aa.csv")
             write (4009,*) bsn%name, prog

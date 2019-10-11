@@ -39,7 +39,6 @@
       
       integer, intent (in) :: ly1     !none          |soil layer number
       integer :: j                    !none          |HRU number
-      real :: adjf                    !none          |adjustment factor for lateral flow
       real :: yy                      !mm            |depth to top of soil layer
       real :: dg                      !mm            |depth of soil layer
       real :: ho                      !none          |variable to hold intermediate calculation
@@ -49,7 +48,6 @@
       real :: adj_lin                 !              |
 
       j = ihru
-      adjf = 0.5
 
       !! if temperature of layer is 0 degrees C or below
       !! there is no water flow
@@ -59,12 +57,12 @@
       end if
 
         !! COMPUTE LATERAL FLOW USING HILLSLOPE STORAGE METHOD
-        if (soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc == 0.) then
+        if (soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc <= 0.) then
           ho = 0.
         else
           ho = 2. * sw_excess / ((soil(j)%phys(ly1)%ul - soil(j)%phys(ly1)%fc) / soil(j)%phys(ly1)%thick)
         end if
-        latlyr = adjf * ho * soil(j)%phys(ly1)%k * hru(j)%topo%slope / hru(j)%topo%lat_len * .024
+        latlyr = hru(j)%hyd%latq_co * ho * soil(j)%phys(ly1)%k * hru(j)%topo%slope / hru(j)%topo%lat_len * .024
 
       if (latlyr < 0.) latlyr = 0. 
       if (latlyr > sw_excess) latlyr = sw_excess

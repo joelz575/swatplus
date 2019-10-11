@@ -22,6 +22,8 @@
       real :: p_left            !none               |p left after seed is removed
       real :: p_frac            !none               |p fraction in remainder of plant
       real :: m_left            !none               |mass left after seed is removed
+      real :: leaf_frac_veg     !none               |fraction veg mass (stem+leaf) that is leaf
+      real :: leaf_mass_frac_veg     !none               |fraction veg mass (stem+leaf) that is leaf
            
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
@@ -36,11 +38,17 @@
       pl_mass(j)%ab_gr(ipl)%m = ab_gr_frac * pl_mass(j)%tot(ipl)%m
       pl_mass(j)%root(ipl)%m = root_frac * pl_mass(j)%tot(ipl)%m
 
-      !! partition leaf and stem (wood/stalk) and seed (grain) mass
-      leaf_mass_frac = 0.03 * pcom(j)%plg(ipl)%lai / pldb(idp)%blai     !**** 0.03 for forest - this needs to be a plant parm ****
+      !! partition leaf and stem (stalk) and seed (grain) mass
+      if (pldb(idp)%typ == "perennial") then
+        leaf_frac_veg = 0.03    !forest
+      else
+        leaf_frac_veg = 0.30    !should be plant parm
+      end if
       seed_mass_frac = pcom(j)%plg(ipl)%hi_adj
-      stem_mass_frac = 1. - leaf_mass_frac - seed_mass_frac
-      stem_mass_frac = amax1 (0., stem_mass_frac)
+      leaf_mass_frac_veg = leaf_frac_veg * pcom(j)%plg(ipl)%lai / pldb(idp)%blai
+      leaf_mass_frac = leaf_mass_frac_veg * (1. - seed_mass_frac)
+      stem_mass_frac = (1. - leaf_mass_frac_veg) * (1. - seed_mass_frac)
+      
       pl_mass(j)%leaf(ipl)%m = leaf_mass_frac * pl_mass(j)%ab_gr(ipl)%m
       pl_mass(j)%seed(ipl)%m = seed_mass_frac * pl_mass(j)%ab_gr(ipl)%m
       pl_mass(j)%stem(ipl)%m = stem_mass_frac * pl_mass(j)%ab_gr(ipl)%m
@@ -55,7 +63,7 @@
           
       !! partition n and p
       if (pldb(idp)%typ == "perennial") then
-        !! woody biomass - partition leaves and seed
+        !! partition leaves and seed (stem is woody biomass)
         pl_mass(j)%seed(ipl)%n = pldb(idp)%cnyld * pl_mass(j)%seed(ipl)%m
         n_left = pl_mass(j)%tot(ipl)%n - pl_mass(j)%seed(ipl)%n
         m_left = pl_mass(j)%leaf(ipl)%m + pl_mass(j)%stem(ipl)%m + pl_mass(j)%root(ipl)%m
@@ -75,10 +83,14 @@
           pl_mass(j)%ab_gr(ipl)%p = pl_mass(j)%seed(ipl)%p + pl_mass(j)%leaf(ipl)%p + pl_mass(j)%stem(ipl)%p
         end if
       else
-        !! annual or grass (no woody vegetation) - partition seed (grain)
+        !! annual or grass (stem is stalk) - partition seed (grain)
         pl_mass(j)%seed(ipl)%n = pldb(idp)%cnyld * pl_mass(j)%seed(ipl)%m
         !! assume same concentration in rest of plant
         n_left = pl_mass(j)%tot(ipl)%n - pl_mass(j)%seed(ipl)%n
+        if (n_left < 0.) then
+          pl_mass(j)%seed(ipl)%n = 0.9 * pl_mass(j)%tot(ipl)%n
+          n_left = 0.1 * pl_mass(j)%tot(ipl)%n
+        end if
         if (pl_mass(j)%tot(ipl)%m - pl_mass(j)%seed(ipl)%m > 1.e-6) then
           n_frac = n_left / (pl_mass(j)%tot(ipl)%m - pl_mass(j)%seed(ipl)%m)
         else
@@ -92,6 +104,10 @@
         pl_mass(j)%seed(ipl)%p = pldb(idp)%cpyld * pl_mass(j)%seed(ipl)%m
         !! assume same concentration in rest of plant
         p_left = pl_mass(j)%tot(ipl)%p - pl_mass(j)%seed(ipl)%p
+        if (p_left < 0.) then
+          pl_mass(j)%seed(ipl)%p = 0.9 * pl_mass(j)%tot(ipl)%p
+          p_left = 0.1 * pl_mass(j)%tot(ipl)%p
+        end if
         if (pl_mass(j)%tot(ipl)%m - pl_mass(j)%seed(ipl)%m > 1.e-6) then
           p_frac = p_left / (pl_mass(j)%tot(ipl)%m - pl_mass(j)%seed(ipl)%m)
         else

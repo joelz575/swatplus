@@ -10,7 +10,7 @@
         real :: dep_wt = 0.         !m          |depth - mid-slope surface to water table (initial)
         real :: no3 = 0.            !ppm NO3-N  |nitrate-N concentration in aquifer (initial)
         real :: minp = 0.           !kg         |mineral phosphorus in aquifer (initial)
-        real :: cbn = 5.            !percent    |organic carbon in aquifer (initial)
+        real :: cbn = .5            !percent    |organic carbon in aquifer (initial)
         real :: flo_dist = 50.      !m          |average flow distance to stream or object
         real :: bf_max = 0.         !mm         |maximum daily baseflow - when all channels are contributing
         real :: alpha = 0.          !1/days     |lag factor for groundwater recession curve

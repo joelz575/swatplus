@@ -15,7 +15,6 @@
 !!                                |that can occur on current day in HRU 
 !!    esco(:)      |none          |soil evaporation compensation factor
 !!    ihru         |none          |HRU number
-!!    sno_hru(:)   |mm H2O        |amount of water in snow in HRU on current day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -27,7 +26,6 @@
 !!                                |that can occur on current day in HRU
 !!    es_day       |mm H2O        |actual amount of evaporation (soil et) that
 !!                                |occurs on day in HRU
-!!    sno_hru(:)   |mm H2O        |amount of water in snow in HRU on current day
 !!    snoev        |mm H2O        |amount of water in snow lost through
 !!                                |sublimation on current day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -39,7 +37,7 @@
  
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, tmpav, canstor, sno_hru, ihru, canev, ep_max,  &
+      use hru_module, only : hru, tmpav, canstor, ihru, canev, ep_max,  &
          es_day, pet_day, snoev
       use soil_module
       use plant_module
@@ -76,6 +74,7 @@
                                  !              |in current soil layer
       real :: evz                !              | 
       real :: sev                !mm H2O        |amount of evaporation from soil layer
+      real :: sev_st             !mm H2O        |evaporation / soil water for no3 flux from layer 1 -> 2
       real :: expo               !              |
       real :: cover              !kg/ha         |soil cover
       integer :: ly              !none          |counter                               
@@ -83,7 +82,7 @@
       j = ihru
       pet = pet_day
 !!    added statements for test of real statement above
-	esd = 500.
+	esd = 500.  !soil(j)%zmx
 	etco = 0.80
 	effnup = 0.1
 
@@ -122,7 +121,7 @@
         es_max = 0.
         eos1 = 0.
         cover = pl_mass(j)%ab_gr_com%m + rsd1(j)%tot_com%m
-        if (sno_hru(j) >= 0.5) then
+        if (hru(j)%sno_mm >= 0.5) then
           eaj = 0.5
         else
           eaj = Exp(cej * (cover + 0.1))
@@ -147,16 +146,16 @@
 
         !! compute sublimation
         if (tmpav(j) > 0.) then
-          if (sno_hru(j) >= esleft) then
+          if (hru(j)%sno_mm >= esleft) then
             !! take all soil evap from snow cover
-            sno_hru(j) = sno_hru(j) - esleft
+            hru(j)%sno_mm = hru(j)%sno_mm - esleft
             snoev = snoev + esleft
             esleft = 0.
           else
             !! take all soil evap from snow cover then start taking from soil
-            esleft = esleft - sno_hru(j)
-            snoev = snoev + sno_hru(j)
-            sno_hru(j) = 0.
+            esleft = esleft - hru(j)%sno_mm
+            snoev = snoev + hru(j)%sno_mm
+            hru(j)%sno_mm = 0.
           endif
         endif
 
@@ -178,7 +177,7 @@
           !! calculate evaporation from soil layer
           evz = eosl * soil(j)%phys(ly)%d / (soil(j)%phys(ly)%d +        &
              Exp(2.374 - .00713 * soil(j)%phys(ly)%d))
-          sev = evz - evzp * hru(j)%hyd%esco
+          sev = (evz - evzp) * hru(j)%hyd%esco
           evzp = evz
           !if (soil(j)%phys(ly)%st < soil(j)%phys(ly)%fc) then
           !  xx =  2.5 * (soil(j)%phys(ly)%st - soil(j)%phys(ly)%fc) /    &
@@ -196,17 +195,19 @@
             soil(j)%phys(ly)%st = Max(1.e-6, soil(j)%phys(ly)%st - sev)
           else
             esleft = esleft - soil(j)%phys(ly)%st
+            sev = soil(j)%phys(ly)%st
             soil(j)%phys(ly)%st = 0.
           endif
         endif
 
         !! compute no3 flux from layer 2 to 1 by soil evaporation
         if (ly == 2) then
-          no3up = 0.
-          no3up =effnup * sev * soil1(j)%mn(2)%no3 / (soil(j)%phys(2)%st + 1.e-6)
+          sev_st = sev / (soil(j)%phys(2)%st + 1.e-6)
+          sev_st = amin1 (1., sev_st)
+          no3up = effnup * sev_st * soil1(j)%mn(2)%no3
           no3up = Min(no3up, soil1(j)%mn(2)%no3)
           soil1(j)%mn(2)%no3 = soil1(j)%mn(2)%no3 - no3up
-          rsd1(j)%mn%no3 = rsd1(j)%mn%no3 + no3up
+          soil1(j)%mn(1)%no3 = soil1(j)%mn(1)%no3 + no3up
         endif
 
       end do

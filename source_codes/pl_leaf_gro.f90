@@ -13,7 +13,6 @@
 !!                                  |The potential (un stressed) growth rate per
 !!                                  |unit of intercepted photosynthetically
 !!                                  |active radiation.
-!!    curyr       |none             |current year of simulation
 !!    dlai(:)     |none             |fraction of growing season when leaf
 !!                                  |area declines
 !!    ep_day      |mm H2O           |actual amount of transpiration that occurs
@@ -91,6 +90,7 @@
       
           f = pcom(j)%plcur(ipl)%phuacc / (pcom(j)%plcur(ipl)%phuacc +     &
               Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc))
+          pcom(j)%plg(ipl)%laimxfr = amin1 (f, pcom(j)%plg(ipl)%laimxfr)    !dormancy and grazing lower phuacc
           ff = f - pcom(j)%plg(ipl)%laimxfr
           pcom(j)%plg(ipl)%laimxfr = f
 
@@ -121,7 +121,8 @@
             end if
             
             if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
-            deltalai = ff * laimax * (1.0 - Exp(5.0 * (pcom(j)%plg(ipl)%lai - laimax))) * Sqrt(pcom(j)%plstr(ipl)%reg)
+            !! only apply water stress to lai            
+            deltalai = ff * laimax * (1.0 - Exp(5.0 * (pcom(j)%plg(ipl)%lai - laimax))) * Sqrt(pcom(j)%plstr(ipl)%strsw)
             !! adjust lai increment for plant competition
             sumlaiht = 0.
             do jpl = 1, pcom(j)%npl

@@ -1,16 +1,17 @@
 cal_parms.cal: written by SWAT+ editor v1.1.1 on 2019-06-11 15:14
 182
 name                       obj_typ       abs_min       abs_max             units  
-cn2                            hru      25.00000      98.00000              null  
-cn3_swf                        hru       0.00000       1.00000              null  
+cn2                            hru      35.00000      95.00000              null  
+cn3_swf                        hru      -0.20000       1.00000              null  
 usle_p                         hru       0.00000       1.00000              null  
 ovn                            hru       0.01000      30.00000              null  
 elev                           hru       0.00000    5000.00000                 m  
-slope                          hru       0.00000       1.00000               m/m  
+slope                          hru       0.00010       0.90000               m/m  
 slope_len                      hru      10.00000     150.00000                 m  
 lat_ttime                      hru       0.00000     180.00000              days  
 lat_sed                        hru       0.00000    5000.00000               g/L  
-lat_len                        hru       1.00000     300.00000                 m  
+lat_len                        hru       0.00000     150.00000                 m  
+latq_co                        hru       0.00000       1.00000              null 
 canmx                          hru       0.00000     100.00000            mm/H20  
 esco                           hru       0.00000       1.00000              null  
 epco                           hru       0.00000       1.00000              null  
@@ -19,6 +20,7 @@ erorgp                         hru       0.00000       5.00000              null
 dis_stream                     hru       0.00000  100000.00000                 m  
 biomix                         hru       0.00000       1.00000              null  
 perco                          hru       0.00000       1.00000          fraction  
+petco                          hru       0.00140       0.00320          fraction  
 lat_orgn                       hru       0.00000     200.00000              mg/l  
 lat_orgp                       hru       0.00000     200.00000              mg/l  
 field_len                      hru       0.01000       2.00000                km  

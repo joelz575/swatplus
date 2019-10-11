@@ -6,7 +6,7 @@
       use conditional_module
       use climate_module
       use time_module
-      use hru_module, only : hru, ipl
+      use hru_module, only : hru
       use soil_module
       use plant_module
       use reservoir_module
@@ -21,7 +21,7 @@
 
       integer, intent (in)  :: ob_cur         !          |
       integer :: ob_num                       !          |object number   
-      integer :: nbz=748932582                !          |
+      integer :: nbz = 748932582              !          |
       integer, dimension(1) :: seed = (/3/)   !          |
       integer :: ic                           !none      |counter
       integer :: ialt                         !none      |counter
@@ -30,6 +30,7 @@
       real :: ran_num                         !          |
       real :: aunif                           !          |
       integer :: ires                         !          |
+      integer :: ipl                          !          |
       integer :: iipl                         !          |
       real :: targ                            !          |
       integer :: pl_sum                       !none      |number of plants growing
@@ -38,6 +39,7 @@
       d_tbl%act_hit = "y"
       do ic = 1, d_tbl%conds
         select case (d_tbl%cond(ic)%var)
+            
         !water stress
         case ("w_stress")
           ob_num = d_tbl%cond(ic)%ob_num
@@ -145,7 +147,59 @@
               end if
             end if
           end do
-                        
+                         
+        !precip on current day
+        case ("precip_cur")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
+          if (d_tbl%cond(ic)%ob == "hru") then
+            iob = sp_ob1%hru + ob_num - 1
+          end if
+          if (d_tbl%cond(ic)%ob == "hlt") then
+            iob = sp_ob1%hru_lte + ob_num - 1
+          end if
+          iwst = ob(iob)%wst
+          
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (wst(iwst)%weat%precip > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (wst(iwst)%weat%precip < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                                      
+        !precip on next day day
+        case ("precip_next")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
+          if (d_tbl%cond(ic)%ob == "hru") then
+            iob = sp_ob1%hru + ob_num - 1
+          end if
+          if (d_tbl%cond(ic)%ob == "hlt") then
+            iob = sp_ob1%hru_lte + ob_num - 1
+          end if
+          iwst = ob(iob)%wst
+          
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (wst(iwst)%weat%precip_next > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (wst(iwst)%weat%precip_next < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                      
         !plants growing
         case ("plant_gro")
           ob_num = d_tbl%cond(ic)%ob_num
@@ -158,7 +212,7 @@
               end if
             end if
           end do
-                                                  
+                    
         !days since last plant
         case ("days_plant")
           ob_num = d_tbl%cond(ic)%ob_num
@@ -352,6 +406,9 @@
                           
         !current years of maturity for perennial plants
         case ("cur_yrs_mat")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "<") then
               if (pcom(ob_num)%plcur(1)%curyr_mat > d_tbl%cond(ic)%lim_const) then
@@ -365,8 +422,11 @@
             end if
           end do
                                        
-        !current years of maturity for perennial plants
+        !above ground biomass
         case ("biomass")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "<") then
               if (pl_mass(ob_num)%ab_gr_com%m > d_tbl%cond(ic)%lim_const) then
@@ -379,7 +439,43 @@
               end if
             end if
           end do
-                             
+                                                               
+        !leaf area index
+        case ("leaf_area")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (pcom(ob_num)%lai_sum > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (pcom(ob_num)%lai_sum < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                                                                         
+        !total ground cover - above ground biomass + surface residue
+        case ("ground_cov")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "<") then
+              if (pl_mass(ob_num)%ab_gr_com%m + rsd1(ob_num)%tot_com%m > d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+            if (d_tbl%alt(ic,ialt) == ">") then
+              if (pl_mass(ob_num)%ab_gr_com%m + rsd1(ob_num)%tot_com%m < d_tbl%cond(ic)%lim_const) then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                   
         !probability
         case ("prob")
           !call RANDOM_SEED ()
@@ -449,7 +545,7 @@
               end if
             end if
           end do
-            
+          
         !land use and management
         case ("land_use")
           ob_num = d_tbl%cond(ic)%ob_num

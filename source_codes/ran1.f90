@@ -4,10 +4,8 @@
 !  THIS SUBROUTINE IS FROM "NUMERICAL RECIPES" BY PRESS ET AL.
       implicit real*8 (a-h,o-z)
       dimension rqq(97)
-      parameter (m1 = 259200, ia1 = 7141, ic1 = 54773, rm1 =             &
-           3.8580247e-6)
-      parameter (m2 = 134456, ia2 = 8121, ic2 = 28411, rm2 =             &
-           7.4373773e-6)
+      parameter (m1 = 259200, ia1 = 7141, ic1 = 54773, rm1 = 3.8580247e-6)
+      parameter (m2 = 134456, ia2 = 8121, ic2 = 28411, rm2 = 7.4373773e-6)
       parameter (m3 = 243000, ia3 = 4561, ic3 = 51349)
       save
       data iff / 0 /

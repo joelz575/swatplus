@@ -16,8 +16,6 @@
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr       |none          |current year in simulation (sequence)
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
@@ -40,7 +38,7 @@
       use calibration_data_module
       use plant_data_module
       use mgt_operations_module
-      use hru_module, only : curyr, hru, ihru, ipl, phubase, yr_skip, timest
+      use hru_module, only : hru, ihru, ipl, phubase, yr_skip, timest
       use plant_module
       use time_module
       use climate_module
@@ -69,10 +67,25 @@
       integer :: ipest               !none          |counter
       integer :: date_time(8)        !              | 
       character*10 b(3)              !              |
-  
+      real :: crop_yld_t_ha          !t/ha          |annual and ave annual basin crop yields
       integer :: iob                 !              |
+      integer :: curyr               !              |
+      integer :: iwgn                !              |
+      integer :: ipg                 !              |
 
       time%yrc = time%yrc_start
+      
+      !! generate precip for the first day - %precip_next
+      if (Mod(time%yrc,4) == 0) then 
+        time%day_end_yr = ndays_leap(13)
+      else 
+        time%day_end_yr = ndays_noleap(13)
+      end if
+
+      time%yrs = 1
+      time%day = time%day_start
+      call xmon
+      call cli_precip_control (0)
 
       do curyr = 1, time%nbyr
         time%yrs = curyr
@@ -108,7 +121,7 @@
           !! tell user they are skipping more years than simulating
           time%yrs_prt = time%nbyr
         end if
-
+        
         do julian_day = time%day_start, time%day_end_yr      !! begin daily loop
           time%day = julian_day
           !! determine month and day of month - time%mo and time%day_mo
@@ -216,14 +229,18 @@
         
         !! write annual basin crop yields and harvested areas
         do iplt = 1, basin_plants
-          !write () time%yrc, plants_bsn(iplt), bsn_crop_ylds(iplt)
+          crop_yld_t_ha = bsn_crop_yld(iplt)%yield / (bsn_crop_yld(iplt)%area_ha + 1.e-6)
+          write (5100,*) time%yrc, iplt, plants_bsn(iplt), bsn_crop_yld(iplt)%area_ha,            &
+                                                bsn_crop_yld(iplt)%yield, crop_yld_t_ha
           bsn_crop_yld_aa(iplt)%area_ha = bsn_crop_yld_aa(iplt)%area_ha + bsn_crop_yld(iplt)%area_ha
           bsn_crop_yld_aa(iplt)%yield = bsn_crop_yld_aa(iplt)%yield + bsn_crop_yld(iplt)%yield
           bsn_crop_yld(iplt) = bsn_crop_yld_z
           if (time%end_sim == 1) then
+            crop_yld_t_ha = bsn_crop_yld_aa(iplt)%yield / (bsn_crop_yld_aa(iplt)%area_ha + 1.e-6)
             bsn_crop_yld_aa(iplt)%area_ha = bsn_crop_yld_aa(iplt)%area_ha / time%yrs_prt
             bsn_crop_yld_aa(iplt)%yield = bsn_crop_yld_aa(iplt)%yield / time%yrs_prt
-            !write () time%yrs_prt, plants_bsn(iplt), bsn_crop_ylds_aa(iplt)
+            write (5101,*) time%yrc, iplt, plants_bsn(iplt), bsn_crop_yld_aa(iplt)%area_ha,   &
+                                                bsn_crop_yld_aa(iplt)%yield, crop_yld_t_ha
           end if
         end do
         

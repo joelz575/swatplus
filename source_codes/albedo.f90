@@ -2,23 +2,8 @@
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates albedo in the HRU for the day
 !!
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
 
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    albday      |none          |albedo of ground for day
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
-
-      use hru_module, only : sno_hru, ihru, albday
+      use hru_module, only : hru, ihru, albday
       use soil_module
       use plant_module
       use organic_mineral_mass_module
@@ -37,7 +22,7 @@
       cover = pl_mass(j)%ab_gr_com%m + rsd1(j)%tot_com%m
       eaj = Exp(cej * (cover + .1))   !! equation 2.2.16 in SWAT manual
 
-      if (sno_hru(j) <= .5) then
+      if (hru(j)%sno_mm <= .5) then
         !! equation 2.2.14 in SWAT manual
         albday = soil(j)%ly(1)%alb
 

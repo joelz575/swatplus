@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr       |none          |current year of simulation
 !!    sedminpa(:) |kg P/ha       |amount of active mineral phosphorus sorbed to
 !!                               |sediment in surface runoff in HRU for day
 !!    sedminps(:) |kg P/ha       |amount of stable mineral phosphorus sorbed to

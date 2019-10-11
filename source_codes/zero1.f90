@@ -4,8 +4,8 @@
 !!    this subroutine initializes the values for some of the arrays 
 
       use hru_module, only : bio_bod,biom,bz_perc,cn2,fcoli,hru,i_sep,par,percp,   &
-       plqm,qstemm,rbiom,sep_tsincefail,sno_hru,                   &
-       sweepeff,swtrg,t_ov,tconc,trapeff,usle,usle_cfac,   &
+       plqm,qstemm,rbiom,sep_tsincefail,                   &
+       sweepeff,swtrg,t_ov,tconc,usle,usle_cfac,   &
        usle_ei,usle_eifac,wfsh
       
       implicit none
@@ -15,7 +15,6 @@
       real :: grwat_veg                 !                |
       real :: plq_rt                    !                |
       real :: pr_w                      !none            |probability of wet day after dry day in month 
-      real :: pst_kg                    !kg/ha           |amount of pesticide applied to HRU
       real :: rchrg                     !mm              |recharge
       real :: sedst                     !metric tons     |amount of sediment stored in reach
                                         !                |reentrained in channel sediment routing
@@ -56,11 +55,8 @@
       plq_rt = 0.
 !!  septic changes 1/29/09
       pr_w = 0.
-      pst_kg = 0.
       rchrg = 0.
-
       sedst = 0.
-      sno_hru = 0.
       sol_wp = 0.
       sweepeff = 0.
       swtrg = 0
@@ -70,7 +66,6 @@
       tnconc = 0.
       tno3conc = 0.
       tpconc = 0.
-      trapeff = 0.
       urbcoef = 0.
       urbcn2 = 0.
       usle_cfac = 0.

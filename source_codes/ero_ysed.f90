@@ -11,7 +11,6 @@
 !!                               |of the USLE C factor for the land cover)
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
 !!    peakr       |m^3/s         |peak runoff rate
-!!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -35,7 +34,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, usle_cfac, cklsp, surfq, sedyld, sanyld, silyld, clayld, lagyld, sagyld,  &
-         sno_hru, ihru, peakr, usle_ei
+         ihru, peakr, usle_ei
       use soil_module
       
       implicit none
@@ -55,12 +54,12 @@
       if (sedyld(j) < 0.) sedyld(j) = 0.
 
       !!adjust sediment yield for protection of snow cover
-      if (sno_hru(j) > 0.) then
+      if (hru(j)%sno_mm > 0.) then
         if (sedyld(j) < 1.e-6) sedyld(j) = 0.0
-      else if (sno_hru(j) > 100.) then
+      else if (hru(j)%sno_mm > 100.) then
         sedyld(j) = 0.
       else
-        sedyld(j) = sedyld(j) / Exp(sno_hru(j) * 3. / 25.4)
+        sedyld(j) = sedyld(j) / Exp(hru(j)%sno_mm * 3. / 25.4)
       end if
 
 	!!Particle size distribution of sediment yield

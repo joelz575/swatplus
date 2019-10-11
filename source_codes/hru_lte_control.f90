@@ -108,6 +108,18 @@
       tstress = 0.
       snowfall = 0.
       snowmelt = 0.
+      air = 0.
+      
+          !! compute curve number
+          xx = hlt(isd)%wrt1 - hlt(isd)%wrt2 * hlt(isd)%sw
+          if (xx < -20.) xx = -20.
+          if (xx > 20.) xx = 20.
+          if ((hlt(isd)%sw + Exp(xx)) > 0.001) then
+            r2 = hlt(isd)%smx * (1. - hlt(isd)%sw / (hlt(isd)%sw + Exp(xx)))
+          end if
+          r2 = amax1(3.,r2)
+          cn_sd = 25400. / (r2 + 254.)
+          
           IF (tave .lt.0.) THEN 
             ! IF ave temp < 0  compute snowfall    
             snowfall = precip 
@@ -124,14 +136,6 @@
               hlt(isd)%snow = hlt(isd)%snow - snowmelt
             END IF 
             
-            xx = hlt(isd)%wrt1 - hlt(isd)%wrt2 * hlt(isd)%sw
-            if (xx < -20.) xx = -20.
-            if (xx > 20.) xx = 20.
-            if ((hlt(isd)%sw + Exp(xx)) > 0.001) then
-              r2 = hlt(isd)%smx * (1. - hlt(isd)%sw / (hlt(isd)%sw + Exp(xx)))
-            end if
-            r2 = amax1(3.,r2)
-            cn_sd = 25400. / (r2 + 254.)
             precipeff = precip + snowmelt
             xx = precipeff - a1 * r2 
             IF (xx.gt.0.) THEN 
@@ -234,8 +238,7 @@
               end if
             end if
                                                                         
-            !irrigate IF water stress is < 0.7                             
-                                                                        
+            !irrigate IF water stress is < 0.8                             
             IF (hlt_db(ihlt_db)%irr > "no_irr") THEN 
               IF (ws < 0.8) THEN 
                 air = hlt(isd)%awc - hlt(isd)%sw 
@@ -414,8 +417,8 @@
         hltpw_d(isd)%tmn = tmin              !! tmn(isd)
         hltpw_d(isd)%tmpav = tave            !! tmpav(isd)
         hltpw_d(isd)%solrad = raobs          !! hru_ra(isd)
-        hltpw_d(isd)%wndspd = wndspd         !! windspeed(isd)
-        hltpw_d(isd)%rhum = rhum             !! relative humidity(isd)
+        hltpw_d(isd)%wndspd = wst(iwst)%weat%windsp         !! windspeed(isd)
+        hltpw_d(isd)%rhum = wst(iwst)%weat%rhum             !! relative humidity(isd)
         hltpw_d(isd)%phubase0 = wst(iwst)%weat%phubase0     !! base zero potential heat units
 
          !! set values for outflow hydrograph

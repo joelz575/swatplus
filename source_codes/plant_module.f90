@@ -105,7 +105,6 @@
       type (plant_stress) :: plstrz
 
       type basin_crop_yields
-        character(len=16) :: name
         real :: area_ha = 0.        !ha         |area of crop harvested
         real :: yield = 0.          !t          |yield mass removed in harvest
       end type basin_crop_yields

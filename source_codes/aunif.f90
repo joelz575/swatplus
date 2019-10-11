@@ -6,8 +6,7 @@
 !!    set to a new value.
 !!    This function implements the prime-modulus generator
 !!    xi = 16807 xi Mod(2**(31) - 1)
-!!    using code which ensures that no intermediate result uses more than
-!!    31 bits
+!!    using code which ensures that no intermediate result uses more than 31 bits
 !!    the theory behind the code is summarized in
 !!    Bratley, P., B.L. Fox and L.E. Schrage. 1983. A Guide to Simulation.
 !!        Springer-Verlag, New York. (pages 199-202)

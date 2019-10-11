@@ -7,7 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    curyr       |none          |current year in simulation (sequence)
 !!    drain_co(:) |mm/day        |drainage coefficient 
 !!    ddrain(:)   |mm            |depth of drain tube from the soil surface							 
 !!    latksatf(:) |none          |multiplication factor to determine conk(j1,j) from sol_k(j1,j) for HRU
@@ -44,7 +43,7 @@
       use basin_module
       use hydrograph_module
       use climate_module, only : wst
-      use hru_module, only : hru, ihru, wnan, stmaxd, sstmaxd, pot, surfq, etday, inflpcp, &  
+      use hru_module, only : hru, ihru, wnan, stmaxd, sstmaxd, surfq, etday, inflpcp, &  
           mlyr, precip_eff, qtile, wt_shall
       use soil_module
       use time_module
@@ -221,8 +220,6 @@
         end if
 	end if
  	qtile = dflux
-	
-!     write(222,222) curyr, time%day, hdrain, gee1, gee  !Daniel 3/1/09
-!222   format(1x,4x,i4,4x,i3,4x,3f12.3)
+
        return
        end subroutine swr_drains

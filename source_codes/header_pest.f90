@@ -208,14 +208,14 @@
       if (pco%pest%d == "y" .and. cs_db%num_tot > 0) then
         open (3000,file="basin_aqu_pest_day.txt",recl=800)
         write (3000,*) bsn%name, prog
-        write (9000,*) "BASIN AQUIFER_PEST        basin_aqu_pest_day.txt"
+        write (9000,*) "BASIN_AQUIFER_PEST        basin_aqu_pest_day.txt"
         write (3000,*) aqupest_hdr
 
           if (pco%csvout == "y") then
             open (3004,file="basin_aqu_pest_day.csv",recl=800)
             write (3004,*) bsn%name, prog
             write (3004,'(*(G0.3,:","))') aqupest_hdr
-            write (9000,*) "BASIN AQUIFER_PEST        basin_aqu_pest_day.csv"
+            write (9000,*) "BASIN_AQUIFER_PEST        basin_aqu_pest_day.csv"
           end if
       end if
       
@@ -223,14 +223,14 @@
       if (pco%pest%m == "y" .and. cs_db%num_tot > 0 ) then
         open (3001,file="basin_aqu_pest_mon.txt",recl=800)
         write (3001,*) bsn%name, prog
-        write (9000,*) "BASIN AQUIFER_PEST        basin_aqu_pest_mon.txt"
+        write (9000,*) "BASIN_AQUIFER_PEST        basin_aqu_pest_mon.txt"
         write (3001,*) aqupest_hdr
 
           if (pco%csvout == "y") then
             open (3005,file="basin_aqu_pest_mon.csv",recl=800)
             write (3005,*) bsn%name, prog
             write (3005,'(*(G0.3,:","))') aqupest_hdr
-            write (9000,*) "BASIN AQUIFER_PEST        basin_aqu_pest_mon.csv"
+            write (9000,*) "BASIN_AQUIFER_PEST        basin_aqu_pest_mon.csv"
           end if
       end if
       
@@ -238,14 +238,14 @@
       if (pco%pest%y == "y" .and. cs_db%num_tot > 0) then
         open (3002,file="basin_aqu_pest_yr.txt",recl=800)
         write (3002,*) bsn%name, prog
-        write (9000,*) "BASIN AQUIFER_PEST        basin_aqu_pest_yr.txt"
+        write (9000,*) "BASIN_AQUIFER_PEST        basin_aqu_pest_yr.txt"
         write (3002,*) aqupest_hdr
 
           if (pco%csvout == "y") then
             open (3006,file="basin_aqu_pest_yr.csv",recl=800)
             write (3006,*) bsn%name, prog
             write (3006,'(*(G0.3,:","))') aqupest_hdr
-            write (9000,*) "BASIN AQUIFER_PEST        basin_aqu_pest_yr.csv" 
+            write (9000,*) "BASIN_AQUIFER_PEST        basin_aqu_pest_yr.csv" 
           end if
       end if
       
@@ -253,14 +253,14 @@
       if (pco%pest%a == "y" .and. cs_db%num_tot > 0) then
         open (3003,file="basin_aqu_pest_aa.txt",recl=800)
         write (3003,*) bsn%name, prog
-        write (9000,*) "BASIN AQUIFER_PEST        basin_aqu_pest_aa.txt"
+        write (9000,*) "BASIN_AQUIFER_PEST        basin_aqu_pest_aa.txt"
         write (3003,*) aqupest_hdr
 
           if (pco%csvout == "y") then
             open (3007,file="basin_aqu_pest_aa.csv",recl=800)
             write (3007,*) bsn%name, prog
             write (3007,'(*(G0.3,:","))') aqupest_hdr
-            write (9000,*) "BASIN AQUIFER_PEST        basin_aqu_pest_aa.csv"
+            write (9000,*) "BASIN_AQUIFER_PEST        basin_aqu_pest_aa.csv"
           end if
       end if
      end if

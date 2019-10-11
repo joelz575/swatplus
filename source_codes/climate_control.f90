@@ -67,6 +67,7 @@
       integer :: ist              !none          |counter
       integer :: ig               !              |
       integer :: yrs_to_start     !              |
+      integer :: cur_day
       real :: ramm                !MJ/m2         |extraterrestrial radiation
       real :: xl                  !MJ/kg         |latent heat of vaporization
       real :: expo                !              | 
@@ -79,48 +80,7 @@
       character(len=1) :: out_bounds = 'n'
         
       !! Precipitation:
-      do iwst = 1, db_mx%wst
-        iwgn = wst(iwst)%wco%wgn
-        ipg = wst(iwst)%wco%pgage
-        if (wst(iwst)%wco_c%pgage == "sim") then
-          !! simulated precip
-          call cli_pgen(iwgn)
-          if (time%step > 0) call cli_pgenhr(iwgn)
-        else
-          !! measured precip
-          if (pcp(ipg)%tstep > 0) then
-          !! subdaily precip
-            wst(iwst)%weat%precip = 0.
-            do ist = 1, time%step
-              wst(iwst)%weat%ts(ist) = pcp(ipg)%tss(ist,time%day,time%yrs)
-              if (wst(iwst)%weat%ts(ist) <= -97.) then
-				!! simulate missing data
-				call cli_pgen(iwgn)
-				call cli_pgenhr(iwgn)
-				exit
-			  end if
-			  wst(iwst)%weat%precip = wst(iwst)%weat%precip + wst(iwst)%weat%ts(ist)
-            end do
-          else
-		  !! daily precip
-            out_bounds = "n"
-            call cli_bounds_check (pcp(ipg)%start_day, pcp(ipg)%start_yr,       &
-                                pcp(ipg)%end_day, pcp(ipg)%end_yr, out_bounds)
-            if (out_bounds == "y") then 
-              wst(iwst)%weat%precip = -98.
-            else
-              yrs_to_start = time%yrs - pcp(ipg)%yrs_start
-              wst(iwst)%weat%precip = pcp(ipg)%ts(time%day,yrs_to_start)
-            end if
-
-            !! simulate missing data
-            if (wst(iwst)%weat%precip <= -97.) then
-              call cli_pgen(iwgn)
-              pcp(ipg)%days_gen = pcp(ipg)%days_gen + 1
-			end if
-          end if
-        end if
-      end do
+      call cli_precip_control (1)
       
 !! Temperature: 
       do iwst = 1, db_mx%wst
@@ -131,7 +91,8 @@
         else
           ig = wst(iwst)%wco%tgage
           out_bounds = "n"
-          call cli_bounds_check (tmp(ig)%start_day, tmp(ig)%start_yr,       &
+          cur_day = time%day
+          call cli_bounds_check (cur_day, tmp(ig)%start_day, tmp(ig)%start_yr,       &
                                 tmp(ig)%end_day, tmp(ig)%end_yr, out_bounds)
           if (out_bounds == "y") then
             wst(iwst)%weat%tmax = -98.
@@ -159,7 +120,8 @@
         else
           ig = wst(iwst)%wco%sgage
           out_bounds = "n"
-          call cli_bounds_check (slr(ig)%start_day, slr(ig)%start_yr,       &
+          cur_day = time%day
+          call cli_bounds_check (cur_day, slr(ig)%start_day, slr(ig)%start_yr,       &
                                 slr(ig)%end_day, slr(ig)%end_yr, out_bounds)
           if (out_bounds == "y") then 
             wst(iwst)%weat%solrad = -98.
@@ -182,7 +144,8 @@
         else
           ig = wst(iwst)%wco%hgage
           out_bounds = "n"
-          call cli_bounds_check (hmd(ig)%start_day, hmd(ig)%start_yr,       &
+          cur_day = time%day
+          call cli_bounds_check (cur_day, hmd(ig)%start_day, hmd(ig)%start_yr,       &
                                 hmd(ig)%end_day, hmd(ig)%end_yr, out_bounds)
           if (out_bounds == "y") then 
             wst(iwst)%weat%rhum = -98.
@@ -207,7 +170,8 @@
         else
           ig = wst(iwst)%wco%wgage
           out_bounds = "n"
-          call cli_bounds_check (wnd(ig)%start_day, wnd(ig)%start_yr,       &
+          cur_day = time%day
+          call cli_bounds_check (cur_day, wnd(ig)%start_day, wnd(ig)%start_yr,       &
                                 wnd(ig)%end_day, wnd(ig)%end_yr, out_bounds)
           if (out_bounds == "y") then 
             wst(iwst)%weat%windsp = -98.

@@ -97,8 +97,9 @@
         real :: pcr = 0.    !- or m3        |percolation ratio - perc/precip
         real :: etr = 0.    !- or m3        |et ratio - et/precip
         real :: tfr = 0.    !- or m3        |tile flow ratio - tile flow/total runoff 
+        real :: pet = 0.    !- or m3        |ave annual potential et
         real :: sed = 0.    !t/ha or t      |sediment yield
-        real :: orgn = 0.   !kg/ha or kg    |organic n yield
+        !real :: orgn = 0.   !kg/ha or kg    |organic n yield
         real :: orgp = 0.   !kg/ha or kg    |organic p yield
         real :: no3 = 0.    !kg/ha or kg    |nitrate yield
         real :: solp = 0.   !kg/ha or kg    |soluble p yield
@@ -114,6 +115,9 @@
         real :: precip = 0.                                     !model precip for each land use to determine ratios
         real :: precip_aa = 0.                                  !model ave annual precip for each land use to determine ratios
         real :: precip_aa_sav = 0.                              !model ave annual precip for each land use to determine ratios for final output
+        real :: pet = 0.                                        !model precip for each land use to determine ratios
+        real :: pet_aa = 0.                                     !model ave annual precip for each land use to determine ratios
+        real :: petco = 0.                                      !potential et coefficient - linear adjustment, no iterating
         type (soft_calib_ls_processes) :: sim                   !simulated sum of soft calibration parms of each land use - m3,t,kg
         type (soft_calib_ls_processes) :: aa                    !average annual soft calibration parms of each land use - mm,t/ha,kg/ha
         type (soft_calib_ls_processes) :: prev                  !simulated sum of soft calibration parms of previous run - m3,t,kg

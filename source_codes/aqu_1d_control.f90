@@ -26,10 +26,9 @@
       real :: contrib_len
       real :: contrib_len_left
       real :: pest_init         !kg/ha      |amount of pesticide present at beginning of day
-      real :: pest_end          !kg/ha      |amount of pesticide present at end of day
       real :: flow_mm           !mm         |total flow through aquifer - return flow + seepage
-      real :: pest_kg_ha        !kg/ha      |soluble pesticide moving with flow
-      real :: conc              !kg/m3      |concentraion of pesticide in flow
+      real :: pest_kg           !kg         |soluble pesticide moving with flow
+      real :: conc              !kg/mm      |concentration of pesticide in flow
       real :: zdb1              !mm         |kd - flow factor for pesticide transport
       real :: kd                !(mg/kg)/(mg/L) |koc * carbon
 
@@ -158,15 +157,17 @@
       do ipest = 1, cs_db%num_pests
         ipest_db = cs_db%pest_num(ipest)
         
+        !! set initial pesticide at start of day
+        pest_init = cs_aqu(iaq)%pest(ipest)
+        
         !! add incoming pesticide to storage
         cs_aqu(iaq)%pest(ipest) = cs_aqu(iaq)%pest(ipest) + obcs(icmd)%hin%pest(ipest)
         
         !! compute pesticide decay in the aquifer
-        pest_init = cs_aqu(iaq)%pest(ipest)
-        if (pest_init > 1.e-12) then
-          pest_end = pest_init * pestcp(ipest_db)%decay_s
-          cs_aqu(iaq)%pest(ipest) = pest_end
-          aqupst_d(iaq)%pest(ipest)%react = (pest_init - pest_end)
+        aqupst_d(iaq)%pest(ipest)%react = 0.
+        if (cs_aqu(iaq)%pest(ipest) > 1.e-12) then
+          aqupst_d(iaq)%pest(ipest)%react = cs_aqu(iaq)%pest(ipest) * (1. - pestcp(ipest_db)%decay_s)
+          cs_aqu(iaq)%pest(ipest) =  cs_aqu(iaq)%pest(ipest) * pestcp(ipest_db)%decay_s
         end if
             
         !! compute pesticide in aquifer flow
@@ -178,28 +179,32 @@
 
         !! compute volume of flow through the layer - mm
         flow_mm = aqu_d(iaq)%flo + aqu_d(iaq)%seep
+        obcs(icmd)%hd(1)%pest(ipest) = 0.
+        obcs(icmd)%hd(2)%pest(ipest) = 0.
 
         !! compute concentration in the flow
-        if (cs_aqu(iaq)%pest(ipest) >= 0.0001 .and. flow_mm > 0.) then
-          pest_kg_ha =  cs_aqu(iaq)%pest(ipest) * (1. - Exp(-flow_mm / (zdb1 + 1.e-6)))
-          conc = pest_kg_ha / flow_mm
+        if (cs_aqu(iaq)%pest(ipest) >= 1.e-12 .and. flow_mm > 0.) then
+          pest_kg =  cs_aqu(iaq)%pest(ipest) * (1. - Exp(-flow_mm / (zdb1 + 1.e-6)))
+          conc = pest_kg / flow_mm
           conc = Min (pestdb(ipest_db)%solub / 100., conc)      ! check solubility
-          pest_kg_ha = conc * flow_mm
-          if (pest_kg_ha >  cs_aqu(iaq)%pest(ipest)) pest_kg_ha = cs_aqu(iaq)%pest(ipest)
+          pest_kg = conc * flow_mm
+          if (pest_kg >  cs_aqu(iaq)%pest(ipest)) pest_kg = cs_aqu(iaq)%pest(ipest)
           
-          !! return flow (1) and deep seepage (2)  kg = kg/ha * ha
-          obcs(icmd)%hd(1)%pest(ipest) = conc * aqu_d(iaq)%flo * ob(icmd)%area_ha
-          obcs(icmd)%hd(2)%pest(ipest) = conc * aqu_d(iaq)%seep * ob(icmd)%area_ha
-          cs_aqu(iaq)%pest(ipest) =  cs_aqu(iaq)%pest(ipest) - pest_kg_ha
-          aqupst_d(iaq)%pest(ipest)%sol_out = 1.e6 * pest_kg_ha * ob(icmd)%area_ha
+          !! return flow (1) and deep seepage (2)  kg = kg/mm * mm
+          obcs(icmd)%hd(1)%pest(ipest) = pest_kg * aqu_d(iaq)%flo / flow_mm
+          obcs(icmd)%hd(2)%pest(ipest) = pest_kg * aqu_d(iaq)%seep / flow_mm
+          cs_aqu(iaq)%pest(ipest) =  cs_aqu(iaq)%pest(ipest) - pest_kg
         endif
       
-        !! set pesticide output variables - mg
+        !! set pesticide output variables - kg
         aqupst_d(iaq)%pest(ipest)%tot_in = obcs(icmd)%hin%pest(ipest)
         !! assume frsol = 1 (all soluble)
-        aqupst_d(iaq)%pest(ipest)%sol_out = 1. * obcs(icmd)%hd(1)%pest(ipest)
-        aqupst_d(iaq)%pest(ipest)%sor_out = 0.
-        aqupst_d(iaq)%pest(ipest)%stor = cs_aqu(iaq)%pest(ipest)
+        aqupst_d(iaq)%pest(ipest)%sol_flo = obcs(icmd)%hd(1)%pest(ipest)
+        aqupst_d(iaq)%pest(ipest)%sor_flo = 0.      !! all soluble - may add later
+        aqupst_d(iaq)%pest(ipest)%sol_perc = obcs(icmd)%hd(2)%pest(ipest)
+        aqupst_d(iaq)%pest(ipest)%stor_ave = cs_aqu(iaq)%pest(ipest)
+        aqupst_d(iaq)%pest(ipest)%stor_init = pest_init
+        aqupst_d(iaq)%pest(ipest)%stor_final = cs_aqu(iaq)%pest(ipest)
       end do
         
       !! compute outflow objects (flow to channels, reservoirs, or aquifer)

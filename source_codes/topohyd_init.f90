@@ -1,7 +1,7 @@
       subroutine topohyd_init
     
       use hydrograph_module, only : sp_ob, sp_ob1, ob
-      use hru_module, only : hru, hru_db, sno_hru, ihru
+      use hru_module, only : hru, hru_db, ihru
       use hydrology_data_module
       use topography_data_module
       use soil_data_module
@@ -45,6 +45,13 @@
         hru(ihru)%hyd%erorgp = hyd_db(ihyd_db)%erorgp
         hru(ihru)%hyd%cn3_swf = hyd_db(ihyd_db)%cn3_swf
         hru(ihru)%hyd%perco = hyd_db(ihyd_db)%perco
+        
+        !! try setting for tile  *********************Mike
+        if (hru(ihru)%tiledrain > 0) then
+          hru(ihru)%hyd%cn3_swf = 0.95
+          hru(ihru)%hyd%perco = 0.1
+        end if
+        
         if (hru(ihru)%hyd%perco > 1.e-9) then
           perc_ln_func = 1.0052 * log(-log(hru(ihru)%hyd%perco - 1.e-6)) + 5.6862
           hru(ihru)%hyd%perco_lim = exp(-perc_ln_func)
@@ -57,6 +64,7 @@
         hru(ihru)%hyd%biomix = hyd_db(ihyd_db)%biomix
         hru(ihru)%hyd%lat_orgn = hyd_db(ihyd_db)%lat_orgn
         hru(ihru)%hyd%lat_orgp = hyd_db(ihyd_db)%lat_orgp
+        hru(ihru)%hyd%latq_co = hyd_db(ihyd_db)%latq_co
         hru(ihru)%hyd%harg_pet = hyd_db(ihyd_db)%harg_pet
         if (hru(ihru)%hyd%harg_pet < 1.e-6) hru(ihru)%hyd%harg_pet = .0023
         !hru(ihru)%hyd%harg_pet = .0023
@@ -68,7 +76,7 @@
         hru(ihru)%topo%dep_co = topo_db(itopohd_db)%dep_co
         ! set initial snow cover
         isno = hru(ihru)%dbs%snow 
-        sno_hru(ihru) = snodb(isno)%init_mm
+        hru(ihru)%sno_mm = snodb(isno)%init_mm
       end do
       
       return

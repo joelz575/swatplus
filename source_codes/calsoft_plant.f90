@@ -68,6 +68,7 @@
                   plcal(ireg)%lum(ilum)%prm_lim%stress = 1.
                 end if
 
+                exit    !!  start debug
             do ihru_s = 1, plcal(ireg)%num_tot
               iihru = plcal(ireg)%num(ihru_s)
               if (plcal(ireg)%lum(ilum)%meas%name == hlt(ihru)%plant) then

@@ -123,8 +123,6 @@
       allocate (sed_con(mhru))
       allocate (sepbtm(mhru))
       allocate (smx(mhru))
-      allocate (sno_hru(mhru))
-      allocate (sno_init(mhru))
       allocate (snotmp(mhru))
       allocate (soln_con(mhru))
       allocate (solp_con(mhru))
@@ -142,21 +140,15 @@
       allocate (tmn(mhru))
       allocate (tmpav(mhru))
       allocate (tmx(mhru))
-      allocate (trapeff(mhru))
       allocate (twash(mhru))
       allocate (u10(mhru))
       allocate (usle_cfac(mhru))
       allocate (usle_eifac(mhru))
-      allocate (wtab(mhru))
-      allocate (wtab_mn(mhru))
-      allocate (wtab_mx(mhru))
       allocate (wfsh(mhru))
 
       allocate (bss(4,mhru))
       allocate (wrt(2,mhru))
       allocate (surf_bs(17,mhru))  
-      allocate (rfqeo_30d(30,mhru))
-      allocate (eo_30d(30,mhru))
 
 !! sj aug 09 end
 	  allocate (hhsurf_bs(2,mhru,time%step))  !! nstep changed to nstep  OCt. 18,2007

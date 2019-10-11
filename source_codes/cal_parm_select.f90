@@ -65,9 +65,12 @@
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("cn3_swf")
+        !! don't change for tile  *********************Mike
+        if (hru(ielem)%tiledrain == 0) then
         hru(ielem)%hyd%cn3_swf = chg_par (hru(ielem)%hyd%cn3_swf,         &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         call curno (cn2(ielem), ielem)
+        end if
         
       case ("usle_p")
         hru(ielem)%lumv%usle_p = chg_par (hru(ielem)%lumv%usle_p,         &
@@ -102,6 +105,10 @@
         hru(ielem)%topo%lat_len = chg_par (hru(ielem)%topo%lat_len,     &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
+      case ("latq_co")
+        hru(ielem)%hyd%latq_co = chg_par (hru(ielem)%hyd%latq_co,       &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
       case ("canmx")
         hru(ielem)%hyd%canmx = chg_par (hru(ielem)%hyd%canmx,           & 
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
@@ -127,6 +134,8 @@
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
       case ("perco")
+        !! don't change for tile  *********************Mike
+        if (hru(ielem)%tiledrain == 0) then
         hru(ielem)%hyd%perco = chg_par (hru(ielem)%hyd%perco,           &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         if (hru(ielem)%hyd%perco > 1.e-9) then
@@ -136,7 +145,12 @@
         else
           hru(ielem)%hyd%perco_lim = 0.
         end if
-        
+        end if
+                
+      case ("petco")
+        hru(ielem)%hyd%harg_pet = chg_par (hru(ielem)%hyd%harg_pet,     &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+
       case ("lat_orgn")
         hru(ielem)%hyd%lat_orgn = chg_par (hru(ielem)%hyd%lat_orgn,     &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)

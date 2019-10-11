@@ -40,8 +40,7 @@
         
       hnb_d(j)%lab_min_p = 0.
       hnb_d(j)%act_sta_p = 0.
-      
-	do l = 1, soil(j)%nly !! loop through soil layers in this HRU
+      do l = 1, soil(j)%nly !! loop through soil layers in this HRU
 	!! make sure that no zero or negative pool values come in
 	if (soil1(j)%mp(l)%lab <= 1.e-6) soil1(j)%mp(l)%lab = 1.e-6
 	if (soil1(j)%mp(l)%act <= 1.e-6) soil1(j)%mp(l)%act = 1.e-6
@@ -75,20 +74,20 @@
 
 !!***************Dynamic Active/Soluble Transformation Coeff******************
 
-	!! on day 1 just set to a value of zero
-	   if ((time%day == 1) .and. (time%yrs == 1)) then 
-           soil(j)%ly(l)%a_days = 0 !! days since P Application 
-           soil(j)%ly(l)%b_days = 0 !! days since P deficit
-	   end if	   
+	  !! on day 1 just set to a value of zero
+      if ((time%day == 1) .and. (time%yrs == 1)) then 
+        soil(j)%ly(l)%a_days = 0 !! days since P Application 
+        soil(j)%ly(l)%b_days = 0 !! days since P deficit
+      end if	   
 
-	   !! Calculate P balance
-		rto = bsn_prm%psp / (1.-bsn_prm%psp)
-		rmp1 = soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto !! P imbalance
+      !! Calculate P balance
+      rto = bsn_prm%psp / (1. - bsn_prm%psp)
+      rmp1 = soil1(j)%mp(l)%lab - soil1(j)%mp(l)%act * rto !! P imbalance
 
 	  !! Move P between the soluble and active pools based on Vadas et al., 2006
 		if (rmp1 >= 0.) then !! Net movement from soluble to active	
 		  rmp1 = Max(rmp1, (-1 * soil1(j)%mp(l)%lab))
-		!! Calculate Dynamic Coefficant		
+		  !! Calculate Dynamic Coefficant		
           vara = 0.918 * (exp(-4.603 * bsn_prm%psp))          
 		  varb = (-0.238 * ALOG(vara)) - 1.126
 		  if (soil(j)%ly(l)%a_days >0) then 
@@ -99,10 +98,10 @@
 		  !! limit rate coeff from 0.05 to .5 helps on day 1 when a_days is zero
 		  if (arate > 0.5) arate  = 0.5
 		  if (arate < 0.1) arate  = 0.1
-		  rmp1 = (arate) * rmp1		
-	    soil(j)%ly(l)%a_days = soil(j)%ly(l)%a_days  + 1 !! add a day to the imbalance counter
-	    soil(j)%ly(l)%b_days = 0
-          End if
+		  rmp1 = arate * rmp1		
+	      soil(j)%ly(l)%a_days = soil(j)%ly(l)%a_days  + 1 !! add a day to the imbalance counter
+	      soil(j)%ly(l)%b_days = 0
+        end if
 
 		if (rmp1 < 0.) then !! Net movement from Active to Soluble 		
 		  rmp1 = Min(rmp1, soil1(j)%mp(l)%act)	

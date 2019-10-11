@@ -48,26 +48,26 @@
       
       type hydrology
            character(len=13) :: name
-           real :: lat_ttime = 0.  !! lat_ttime(:)  |none          |Exponential of the lateral flow travel time
-           real :: lat_sed = 0.    !! lat_sed(:)    |g/L           |sediment concentration in lateral flow
-           real :: canmx = 0.      !! canmx(:)      |mm H2O        |maximum canopy storage
-           real :: esco = 0.       !! esco(:)       |none          |soil evaporation compensation factor
-           real :: epco = 0.       !! epco(:)       |none          |plant water uptake compensation factor (0-1)
-           real :: erorgn = 0.     !! erorgn(:)     |none          |organic N enrichment ratio, if left blank
-                                   !!                              |the model will calculate for every event
-           real :: erorgp = 0.     !! erorgp(:)     |none          |organic P enrichment ratio, if left blank
-                                   !!                              |the model will calculate for every event
-           real :: cn3_swf = 0.    !!               |none          |curve number adjustment factor - sw at cn3
-           real :: biomix = 0.     !! biomix(:)     |none          |biological mixing efficiency.
-                                   !!                              |Mixing of soil due to activity of earthworms
-                                   !!                              |and other soil biota. Mixing is performed at
-                                   !!                              |the end of every calendar year.
-           real :: perco = 0.      !!               |0-1           |percolation coefficient - linear adjustment to daily perc
+           real :: lat_ttime = 0.   !! lat_ttime(:)  |none          |Exponential of the lateral flow travel time
+           real :: lat_sed = 0.     !! lat_sed(:)    |g/L           |sediment concentration in lateral flow
+           real :: canmx = 0.       !! canmx(:)      |mm H2O        |maximum canopy storage
+           real :: esco = 0.        !! esco(:)       |none          |soil evaporation compensation factor
+           real :: epco = 0.        !! epco(:)       |none          |plant water uptake compensation factor (0-1)
+           real :: erorgn = 0.      !! erorgn(:)     |none          |organic N enrichment ratio, if left blank
+                                    !!                              |the model will calculate for every event
+           real :: erorgp = 0.      !! erorgp(:)     |none          |organic P enrichment ratio, if left blank
+                                    !!                              |the model will calculate for every event
+           real :: cn3_swf = 0.     !!               |none          |curve number adjustment factor - sw at cn3
+           real :: biomix = 0.      !! biomix(:)     |none          |biological mixing efficiency.
+                                    !!                              |Mixing of soil due to activity of earthworms
+                                    !!                              |and other soil biota. Mixing is performed at
+                                    !!                              |the end of every calendar year.
+           real :: perco = 0.       !!               |0-1           |percolation coefficient - linear adjustment to daily perc
            real :: lat_orgn = 0.
            real :: lat_orgp = 0.
            real :: harg_pet  = .0023  
-           real :: cncoef = 0.3    !!               |              |plant ET curve number coefficient
-           real :: perco_lim = 1.  !!               |              |percolation coefficient-limits perc from bottom layer
+           real :: latq_co = 0.3    !!               |              |plant ET curve number coefficient
+           real :: perco_lim = 1.   !!               |              |percolation coefficient-limits perc from bottom layer
       end type hydrology
       
       type snow_parameters
@@ -136,15 +136,15 @@
       end type hru_databases
       
       type hru_databases_char
-        character(len=16) :: name = ""
-        character(len=16) :: topo = ""
-        character(len=16) :: hyd = ""
-        character(len=16) :: soil = ""
-        character(len=16) :: land_use_mgt = ""
-        character(len=16) :: soil_plant_init = ""
-        character(len=16) :: surf_stor = ""
-        character(len=16) :: snow = ""
-        character(len=16) :: field = ""
+        character(len=25) :: name = ""
+        character(len=25) :: topo = ""
+        character(len=25) :: hyd = ""
+        character(len=25) :: soil = ""
+        character(len=25) :: land_use_mgt = ""
+        character(len=25) :: soil_plant_init = ""
+        character(len=25) :: surf_stor = ""
+        character(len=25) :: snow = ""
+        character(len=25) :: field = ""
       end type hru_databases_char
         
       type hru_parms_db
@@ -220,6 +220,7 @@
         type (subsurface_drainage_parameters) :: sdr
         type (snow_parameters) :: sno
         integer :: cur_op = 1
+        real :: sno_mm                          !mm H2O        |amount of water in snow on current day
         real :: water_fr
         real :: water_seep
         real :: water_evap
@@ -228,37 +229,6 @@
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
 
-      type pothole_dynamic
-          real :: seep = 0.
-          real :: vol = 0.            !! m**3 H2O     |current vol of water stored in the depression/impounded area
-          real :: evap = 0.
-          real :: sedin = 0.
-          real :: solp = 0.           !! kg N         |amount of soluble p in pothole water body
-          real :: solpi = 0.
-          real :: orgp = 0.           !! kg N         |amount of organic P in pothole water body
-          real :: orgpi = 0.
-          real :: orgn = 0.           !! kg N         |amount of organic N in pothole water body
-          real :: orgni = 0.
-          real :: mps = 0.            !! kg N         |amount of stable mineral pool P in pothole water body
-          real :: mpsi = 0.
-          real :: mpa = 0.            !! kg N         |amount of active mineral pool P in pothole water body
-          real :: mpai = 0.
-          real :: no3i = 0.
-          real :: sa = 0.             !! ha           |surface area of impounded water body
-          real :: volx = 0.
-          real :: flwi = 0.           !! m^3 H2O      |water entering pothole on day
-          real :: sedi = 0.           !! metric tons  |sediment entering pothole on day
-          real :: tile = 0.           !! m3/d         |average daily outflow to main channel from tile flow if drainage tiles are installed
-          real :: sed = 0.            !! metric tons  | amount of sediment in pothole water body
-          real :: no3 = 0.            !! kg N         | amount of nitrate in pothole water body
-          real :: san = 0.
-          real :: sil = 0.
-          real :: cla = 0.
-          real :: lag = 0.
-          real :: sag = 0.
-      end type pothole_dynamic
-      type (pothole_dynamic), dimension (:), allocatable :: pot
-
       
       real :: precipday         !! mm   |daily precip for the hru
       real :: precip_eff        !! mm   |daily effective precip for runoff calculations = precipday + ls_overq + snomlt - canstor
@@ -266,7 +236,7 @@
       real :: qday              !! mm   |surface runoff that reaches main channel during day in HRU                               
                                 
 !!    change per JGA 8/31/2011 gsm for output.mgt 
-      real :: yield,  pst_kg
+      real :: yield
       
 !!    new/modified arrays for plant competition
       integer :: ipl, isol
@@ -305,10 +275,8 @@
       real :: snocov1, snocov2, lyrtile
 
       real :: etday
-      integer :: myr
       integer :: mo
       integer :: ihru             !!none          |HRU number
-      integer :: curyr
       integer :: nd_30
       integer :: mpst, mlyr
 !  routing 5/3/2010 gsm per jga    
@@ -355,7 +323,7 @@
       real, dimension (:), allocatable :: smx
       real, dimension (:), allocatable :: cnday
       real, dimension (:), allocatable :: tmpav
-      real, dimension (:), allocatable :: sno_hru,sno_init,hru_ra
+      real, dimension (:), allocatable :: hru_ra
       real, dimension (:), allocatable :: tmx,tmn
       real, dimension (:), allocatable :: tconc,hru_rmx
       real, dimension (:), allocatable :: usle_cfac,usle_eifac
@@ -371,7 +339,6 @@
 !    Drainmod tile equations  08/2006
       real, dimension (:), allocatable :: surqsolp
       real, dimension (:), allocatable :: cklsp
-      real, dimension (:), allocatable :: trapeff
       real, dimension (:), allocatable :: pplnt,snotmp
       real, dimension (:), allocatable :: brt
 
@@ -385,8 +352,6 @@
       real, dimension (:), allocatable :: surfq,surqno3
       real, dimension (:), allocatable :: phubase
       real, dimension (:), allocatable :: lai_yrmx,dormhr
-      real, dimension (:), allocatable :: wtab,wtab_mn,wtab_mx
-      real, dimension (:,:), allocatable :: rfqeo_30d,eo_30d
       real, dimension (:,:), allocatable :: wrt
       real, dimension (:,:), allocatable :: bss,surf_bs  
       integer, dimension (:), allocatable :: swtrg

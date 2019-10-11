@@ -34,7 +34,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, ihru, i_sep, inflpcp, isep, latlyr, latq, lyrtile, qstemm, sepbtm, sepcrktot, sepday,   &
-         sw_excess, wt_shall, pot, qtile
+         sw_excess, wt_shall, qtile
       use soil_module
       use septic_data_module
       use hydrograph_module
@@ -106,9 +106,6 @@
         !! summary calculations
         if (j1 == soil(j)%nly) then
           sepbtm(j) = sepbtm(j) + sepday
-          if (sepday > 10.) then
-            lyrtile = 0.
-          end if
         endif
         latq(j) = latq(j) + latlyr
         qtile = qtile + lyrtile
@@ -175,10 +172,10 @@
           else
             !! Start Daniel"s tile equations modifications  01/2006
             if (bsn_cc%tdrn == 1) then
-              call swr_drains     ! compute tile flow using drainmod tile equations 
-              !! drainmod tile equations   01/2006
-            else !! compute tile flow using existing tile equations
-              call swr_origtile(d)! existing tile equations 
+              !! drainmod tile equations
+              call swr_drains           !! compute tile flow using drainmod tile equations 
+            else                        !! compute tile flow using existing tile equations
+              call swr_origtile(d)      !! existing tile equations 
 	          if(qtile < 0.) qtile = 0.
             end if 
           end if

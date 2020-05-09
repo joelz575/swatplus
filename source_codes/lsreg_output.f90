@@ -108,7 +108,8 @@
             write (4412,100) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_d(ireg)%lum(ilum)  !! waterbal
              if (pco%csvout == "y") then
-               write (4413,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+               write (4413,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, &
+                       lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_d(ireg)%lum(ilum)  !! waterbal
              end if
           end if
@@ -116,7 +117,8 @@
             write (4414,100) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_d(ireg)%lum(ilum)  !! nutrient bal
               if (pco%csvout == "y") then
-                write (4415,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                write (4415,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                        lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_d(ireg)%lum(ilum)  !! nutrient bal
               end if
           end if
@@ -124,7 +126,8 @@
             write (4416,102) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_d(ireg)%lum(ilum)  !! losses
               if (pco%csvout == "y") then
-                write (4417,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                write (4417,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                        lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_d(ireg)%lum(ilum)  !! losses
               end if
           end if
@@ -132,7 +135,8 @@
             write (4418,101) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_d(ireg)%lum(ilum)  !! plant weather 
               if (pco%csvout == "y") then 
-                write (4419,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                write (4419,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                        lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_d(ireg)%lum(ilum)  !! plant weather
               end if 
           end if
@@ -156,7 +160,8 @@
              write (4412,100) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_m(ireg)%lum(ilum)
                if (pco%csvout == "y") then
-                 write (4413,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                 write (4413,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                         lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_m(ireg)%lum(ilum)
                end if
            end if
@@ -164,7 +169,8 @@
              write (4414,100) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_m(ireg)%lum(ilum)
                if (pco%csvout == "y") then
-                 write (4415,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                 write (4415,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                         lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_m(ireg)%lum(ilum)
                end if
            end if
@@ -172,7 +178,8 @@
              write (4416,102) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_m(ireg)%lum(ilum)
                if (pco%csvout == "y") then 
-                 write (4417,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                 write (4417,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                         lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_m(ireg)%lum(ilum)
                end if
            end if
@@ -180,7 +187,8 @@
              write (4418,101) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_m(ireg)%lum(ilum)
                if (pco%csvout == "y") then 
-                 write (4419,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                 write (4419,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                         lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_m(ireg)%lum(ilum)
                end if 
            end if
@@ -213,7 +221,8 @@
              write (4412,100) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_y(ireg)%lum(ilum)
                if (pco%csvout == "y") then
-                 write (4413,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                 write (4413,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                         lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rwb_y(ireg)%lum(ilum)
                end if
            end if
@@ -221,7 +230,8 @@
              write (4414,100) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_y(ireg)%lum(ilum)
                if (pco%csvout == "y") then
-                 write (4415,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                 write (4415,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                         lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rnb_y(ireg)%lum(ilum)
                end if
            end if
@@ -229,7 +239,8 @@
              write (4416,102) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_y(ireg)%lum(ilum)
                if (pco%csvout == "y") then
-                 write (4417,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                 write (4417,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                         lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rls_y(ireg)%lum(ilum)
                end if
            end if
@@ -237,7 +248,8 @@
              write (4418,101) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_y(ireg)%lum(ilum)
                if (pco%csvout == "y") then 
-                 write (4419,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,  &
+                 write (4419,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                         lum(ilum_db)%plant_cov,  &
                  region(ireg)%lum_ha(ilum), rpw_y(ireg)%lum(ilum)
                end if 
            end if
@@ -293,7 +305,8 @@
            write (4422,100) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rnb_a(ireg)%lum(ilum)
              if (pco%csvout == "y") then 
-               write (4423,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,    &
+               write (4423,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                       lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rnb_a(ireg)%lum(ilum)
              end if
              rnb_a(ireg)%lum(ilum) = hnbz
@@ -304,7 +317,8 @@
            write (4424,101) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rls_a(ireg)%lum(ilum)
              if (pco%csvout == "y") then 
-               write (4425,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,    &
+               write (4425,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                       lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rls_a(ireg)%lum(ilum)
              end if
              rls_a(ireg)%lum(ilum) = hlsz
@@ -315,7 +329,8 @@
            write (4426,102) time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,   &
               region(ireg)%lum_ha_tot(ilum), rpw_a(ireg)%lum(ilum)
              if (pco%csvout == "y") then 
-               write (4427,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name, lum(ilum_db)%plant_cov,    &
+               write (4427,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, region(ireg)%name,&
+                       lum(ilum_db)%plant_cov,    &
               region(ireg)%lum_ha_tot(ilum), rpw_a(ireg)%lum(ilum)
              end if
              rpw_a(ireg)%lum(ilum) = hpwz
@@ -333,7 +348,8 @@
              endif
             write (4428,103) time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm, pcom(j)%plcur(ipl)
             if (pco%csvout == "y") then
-              write (4429,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm, pcom(j)%plcur(ipl)
+              write (4429,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j,pldb(idp)%plantnm,&
+                      pcom(j)%plcur(ipl)
             end if
            end do
          end if

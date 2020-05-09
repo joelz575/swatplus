@@ -18,7 +18,7 @@
         !!==============================================
         !! local variables
        !rnmn
-       !abco2   : allocation from biomass to co2; 0.6 (surface litter), 0.85–0.68*(claf + silf) (all other layers) (parton et al., 1993, 1994)
+       !abco2   : allocation from biomass to co2; 0.6 (surface litter), 0.85ï¿½0.68*(claf + silf) (all other layers) (parton et al., 1993, 1994)
        !abl     : carbon allocation from biomass to leaching; abl = (1-exp(-f/(0.01* sw+ 0.1*(kdbm)*db)) (williams, 1995)
        !abp     : allocation from biomass to passive humus; 0 (surface litter), 0.003 + 0.032*claf (all other layers) (parton et al., 1993, 1994)
        !almco2  : allocation from metabolic litter to co2; 0.6 (surface litter), 0.55 (all other layers) (parton et al., 1993, 1994)
@@ -41,7 +41,7 @@
        !cpn3    : potential n deficit resulting from the transformation of microbial biomass; calc as (pn5+pn6)-bmntp if bmntp < (pn5+pn6), otherwise = 0 (kg n ha-1 day-1)
        !cpn4    : potential n deficit resulting from the transformation of slow humus; calc as (pn7+pn8)-hsntp if hsntp < (pn7+pn8), otherwise = 0 (kg n ha-1 day-1)
        !cpn5    : potential n deficit resulting from the transformation of passive humus; calc as pn9-hpntp if hpntp < pn9, otherwise = 0 (kg n ha-1 day-1)
-       !cs      : combined factor controlling biological processes [cs = sqrt(cdg×sut)* 0.8*ox*x1), cs < 10; cs = 10, cs>=10 (williams, 1995)]
+       !cs      : combined factor controlling biological processes [cs = sqrt(cdgï¿½sut)* 0.8*ox*x1), cs < 10; cs = 10, cs>=10 (williams, 1995)]
        !dbp     : soil bulk density of plow layer (mg m-3) (not used)
        !hsctp   : potential transformation of c in slow humus (kg ha-1 day-1)
        !hsntp   : potential transformation of n in slow humus (kg ha-1 day-1)
@@ -51,7 +51,7 @@
                 !layers = 0.000012 day-1) (parton et al.,1993, 1994)
        !hsr     : rate of transformation of slow humus under optimal conditions (all layers
                 != 0.0005 day-1) (parton et al., 1993, 1994; vitousek et al., 1993)
-       !koc     : liquid–solid partition coefficient for microbial biomass (10^3 m^3 mg-1)     
+       !koc     : liquidï¿½solid partition coefficient for microbial biomass (10^3 m^3 mg-1)     
        !lmf     : fraction of the litter that is metabolic    
        !lmnf    : fraction of metabolic litter that is n (kg kg-1)  
        !lmr     : rate of transformation of metabolic litter under optimal conditions (surface =
@@ -110,7 +110,7 @@
        real :: sut               !                     |soil water control on biological processes
        real :: cdg               !                     |soil temperature control on biological processes
        real :: ox                !                     |oxygen control on biological processes with soil depth
-       real :: cs                !                     |combined factor controlling biological processes [cs = sqrt(cdg×sut)* 0.8*ox*x1), cs < 10; cs = 10, cs>=10 (williams, 1995)]
+       real :: cs                !                     |combined factor controlling biological processes [cs = sqrt(cdgï¿½sut)* 0.8*ox*x1), cs < 10; cs = 10, cs>=10 (williams, 1995)]
        real :: x1                !none                 |tillage control on residue decomposition (not used)
        real :: x3                !none                 |amount of c transformed from passive, slow, metabolic, and non-lignin structural pools to microbial pool
        real :: lmf               !frac                 |fraction of the litter that is metabolic 
@@ -324,7 +324,8 @@
           !10 cm / 1000 = 0.01m; 1 ha = 10000 m2; ton/m3; * 1000 --> final unit is kg/ha; rock fraction is considered
           sol_mass = (10) / 1000.* 10000. * soil(j)%phys(k)%bd * 1000. * (1. - soil(j)%phys(k)%rock / 100.)            
         else
-          sol_mass = (soil(j)%phys(k)%d - soil(j)%phys(k-1)%d) / 1000. * 10000. * soil(j)%phys(k)%bd * 1000. * (1- soil(j)%phys(k)%rock / 100.)
+          sol_mass = (soil(j)%phys(k)%d - soil(j)%phys(k-1)%d) / 1000. * 10000. * soil(j)%phys(k)%bd * 1000. * &
+                  (1- soil(j)%phys(k)%rock / 100.)
         end if        
          
         ! if k = 1, then using temperature, soil moisture in layer 2 to calculate decomposition factor
@@ -362,7 +363,8 @@
               if (soil(j)%phys(k)%d .le. tillage_depth(j)) then
                 till_eff = 1.6
               else if (soil(j)%phys(k-1)%d .lt. tillage_depth(j)) then
-                till_eff = 1.0 + 0.6 * (tillage_depth(j) - soil(j)%phys(k-1)%d) / (soil(j)%phys(k)%d - soil(j)%phys(k-1)%d)
+                till_eff = 1.0 + 0.6 * (tillage_depth(j) - soil(j)%phys(k-1)%d) / &
+                        (soil(j)%phys(k)%d - soil(j)%phys(k-1)%d)
               end if		         
             end if
           else
@@ -374,7 +376,8 @@
           org_con%cdg = fcgd(soil(j)%phys(k)%tmp)
 
           !!compute oxygen (ox)
-          org_con%ox = 1. - 0.8 * ((soil(j)%phys(kk)%d + soil(j)%phys(kk-1)%d) / 2) / (((soil(j)%phys(kk)%d + soil(j)%phys(kk-1)%d) / 2) +   &
+          org_con%ox = 1. - 0.8 * ((soil(j)%phys(kk)%d + soil(j)%phys(kk-1)%d) / 2) / &
+                  (((soil(j)%phys(kk)%d + soil(j)%phys(kk-1)%d) / 2) +   &
                     exp(18.40961 - 0.023683632 * ((soil(j)%phys(kk)%d + soil(j)%phys(kk-1)%d) / 2))) 
           
           !! compute combined factor
@@ -905,7 +908,8 @@
               !!update soil respiration
               !!===============================
               !!soil rspc for layer k
-              rspc = .3 * lslcta + a1co2 * (lslncta + lmcta) + org_allo%abco2 * bmcta + org_allo%asco2 * hscta + org_allo%apco2 * hpcta
+              rspc = .3 * lslcta + a1co2 * (lslncta + lmcta) + org_allo%abco2 * bmcta + org_allo%asco2 * hscta +&
+                      org_allo%apco2 * hpcta
               !!rspc_da is accounting variable summarizing co2 emissions from all soil layers
               cbn_loss(j)%rspc_d = cbn_loss(j)%rspc_d +  rspc 
               

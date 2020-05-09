@@ -261,7 +261,8 @@
                   do ilum = 1, plcal(ireg)%lum_num
                     if (plcal(ireg)%lum(ilum)%meas%name == mgt%op_char) then
                       plcal(ireg)%lum(ilum)%ha = plcal(ireg)%lum(ilum)%ha + hru(j)%area_ha
-                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha / 1000.
+                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha /&
+                              1000.
                     end if
                   end do
             
@@ -348,7 +349,8 @@
                   do ilum = 1, plcal(ireg)%lum_num
                     if (plcal(ireg)%lum(ilum)%meas%name == d_tbl%act(iac)%option) then
                       plcal(ireg)%lum(ilum)%ha = plcal(ireg)%lum(ilum)%ha + hru(j)%area_ha
-                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha / 1000.
+                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha /&
+                              1000.
                     end if
                   end do
             

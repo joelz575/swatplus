@@ -32,9 +32,11 @@
       !! daily print  (channel_path_day.txt/csv no opening for file)
         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%wb_hru%d == "y") then
-             write (2780,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpath_bal(j)%path(ipaths)   !! pathicide balance
+             write (2780,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
+                     hpath_bal(j)%path(ipaths)   !! pathicide balance
              if (pco%csvout == "y") then
-                  write (2784,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpath_bal(j)%path(ipaths)
+                  write (2784,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id,&
+                          ob(iob)%name, hpath_bal(j)%path(ipaths)
              end if
           end if
         end if
@@ -52,9 +54,11 @@
 
           !! monthly print  (channel_path_mon.txt/csv no opening for file)
            if (pco%wb_hru%m == "y") then
-             write (2781,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_m(j)%path(ipaths)
+             write (2781,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
+                     hpathb_m(j)%path(ipaths)
                if (pco%csvout == "y") then
-                 write (2785,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_m(j)%path(ipaths)
+                 write (2785,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id,&
+                         ob(iob)%name, hpathb_m(j)%path(ipaths)
                end if
            end if
           
@@ -73,9 +77,11 @@
 
           !! yearly print   (channel_path_yr.txt/csv no opening for file)
            if (time%end_yr == 1 .and. pco%wb_hru%y == "y") then
-             write (2782,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_y(j)%path(ipaths)
+             write (2782,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
+                     hpathb_y(j)%path(ipaths)
                if (pco%csvout == "y") then
-                 write (2786,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_y(j)%path(ipaths)
+                 write (2786,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id,&
+                         ob(iob)%name, hpathb_y(j)%path(ipaths)
                end if
            end if
           
@@ -84,9 +90,11 @@
 !!!!! average annual print  (channel_path_aa.txt/csv no opening for file)
          if (time%end_sim == 1 .and. pco%wb_hru%a == "y") then
            hpathb_a(j)%path(ipaths) = hpathb_a(j)%path(ipaths) / time%yrs_prt
-           write (2783,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_a(j)%path(ipaths)
+           write (2783,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
+                   hpathb_a(j)%path(ipaths)
            if (pco%csvout == "y") then
-             write (2787,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_a(j)%path(ipaths)
+             write (2787,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
+                     hpathb_a(j)%path(ipaths)
            end if
            hpathb_a(j)%path(ipaths) = pathbz
          end if

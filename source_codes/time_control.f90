@@ -35,6 +35,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use maximum_data_module
+      use tinamit_module
       use calibration_data_module
       use plant_data_module
       use mgt_operations_module
@@ -121,7 +122,7 @@
           !! tell user they are skipping more years than simulating
           time%yrs_prt = time%nbyr
         end if
-        
+!--------------------------------------------------------------------------------------------------------------------------------------------------
         do julian_day = time%day_start, time%day_end_yr      !! begin daily loop
           time%day = julian_day
           !! determine month and day of month - time%mo and time%day_mo
@@ -221,8 +222,12 @@
             end do
           end if
 
-        end do              !! end daily loop
+          !-------------------------------------------------------------------------------------------------------------
+          call recibe(cliente_obj)
+          !-------------------------------------------------------------------------------------------------------------
 
+        end do              !! end daily loop
+!--------------------------------------------------------------------------------------------------------------------------------------------------
         !! perform end-of-year processes
         
         call calsoft_sum_output

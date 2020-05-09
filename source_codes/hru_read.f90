@@ -83,7 +83,8 @@
             if (hru_db(i)%dbsc%soil_plant_init == sol_plt_ini(isp_ini)%name) then
               hru_db(i)%dbs%soil_plant_init = isp_ini
               
-            if (hru_db(i)%dbs%soil_plant_init == 0) write (9001,*) hru_db(i)%dbsc%soil_plant_init, "not found (plant.ini)" 
+            if (hru_db(i)%dbs%soil_plant_init == 0) write (9001,*) hru_db(i)%dbsc%soil_plant_init,&
+                    "not found (plant.ini)"
               
               ! initial soil nutrients (soil test)
               do ics = 1, db_mx%soiltest
@@ -158,7 +159,8 @@
             end if
          end do
          
-         if (hru_db(i)%dbs%surf_stor == 0 .and. hru_db(i)%dbsc%surf_stor /= 'null') write (9001,*) hru_db(i)%dbsc%surf_stor, "not found (wetland.wet)"
+         if (hru_db(i)%dbs%surf_stor == 0 .and. hru_db(i)%dbsc%surf_stor /= 'null') write (9001,*) &
+                 hru_db(i)%dbsc%surf_stor, "not found (wetland.wet)"
          
          do isno = 1, db_mx%sno
             if (hru_db(i)%dbsc%snow == snodb(isno)%name) then
@@ -167,7 +169,8 @@
             end if
          end do
          
-         if (hru_db(i)%dbs%snow == 0 .and. hru_db(i)%dbsc%snow /= 'null') write (9001,*) hru_db(i)%dbsc%snow, "not found (snow.sno)"
+         if (hru_db(i)%dbs%snow == 0 .and. hru_db(i)%dbsc%snow /= 'null') write (9001,*) hru_db(i)%dbsc%snow,&
+                 "not found (snow.sno)"
          
          do ifld = 1, db_mx%field
              if (hru_db(i)%dbsc%field == field_db(ifld)%name) then
@@ -176,7 +179,8 @@
             end if
          end do
          
-        if (hru_db(i)%dbs%field == 0 .and. hru_db(i)%dbsc%field /= 'null') write (9001,*) hru_db(i)%dbsc%field, "not found (field.fld)"
+        if (hru_db(i)%dbs%field == 0 .and. hru_db(i)%dbsc%field /= 'null') write (9001,*) hru_db(i)%dbsc%field,&
+                "not found (field.fld)"
 
       end do
       exit

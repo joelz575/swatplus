@@ -101,7 +101,7 @@
                 lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 
                 rmeas = lscal(ireg)%lum(ilum)%meas%sed
-                chg_val = - (lscal(ireg)%lum(ilum)%prm_prev%tconc - lscal(ireg)%lum(ilum)%prm_prev%tconc)                  &
+                chg_val = - (lscal(ireg)%lum(ilum)%prm_prev%tconc - lscal(ireg)%lum(ilum)%prm_prev%tconc) &
                             * (lscal(ireg)%lum(ilum)%aa%sed - rmeas) / (lscal(ireg)%lum(ilum)%prev%sed - rmeas)
                 chg_val = amin1 (chg_val, ls_prms(6)%pos)
                 chg_val = Max (chg_val, ls_prms(6)%neg)
@@ -152,8 +152,10 @@
                   hru(iihru)%topo%slope = Max (hru(iihru)%topo%slope, .0000001)
                   xm = 0.6 * (1. - Exp(-35.835 * hru(iihru)%topo%slope))    
                   sin_sl = Sin(Atan(hru(iihru)%topo%slope))
-                  hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
-                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p * hru(iihru)%lumv%usle_ls * 11.8
+                  hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 *&
+                          sin_sl + .065)
+                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p *&
+                          hru(iihru)%lumv%usle_ls * 11.8
                 end if
               end do
             lscal(ireg)%lum(ilum)%nbyr = 0
@@ -180,7 +182,7 @@
                   lscal(ireg)%lum(ilum)%prev = lscal(ireg)%lum(ilum)%aa
                 
                   rmeas = lscal(ireg)%lum(ilum)%meas%sed
-                  chg_val = - (lscal(ireg)%lum(ilum)%prm_prev%slope - lscal(ireg)%lum(ilum)%prm_prev%slope)                  &
+                  chg_val = - (lscal(ireg)%lum(ilum)%prm_prev%slope - lscal(ireg)%lum(ilum)%prm_prev%slope)            &
                             * (lscal(ireg)%lum(ilum)%aa%sed - rmeas) / (lscal(ireg)%lum(ilum)%prev%sed - rmeas)
                   chg_val = amin1 (chg_val, ls_prms(5)%pos)
                   chg_val = Max (chg_val, ls_prms(5)%neg)
@@ -191,8 +193,10 @@
                   hru(iihru)%topo%slope = Max (hru(iihru)%topo%slope, .0000001)
                   xm = 0.6 * (1. - Exp(-35.835 * hru(iihru)%topo%slope))    
                   sin_sl = Sin(Atan(hru(iihru)%topo%slope))
-                  hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
-                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p * hru(iihru)%lumv%usle_ls * 11.8
+                  hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 *&
+                          sin_sl + .065)
+                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p *&
+                          hru(iihru)%lumv%usle_ls * 11.8
                 end if
               end do
             lscal(ireg)%lum(ilum)%nbyr = 0

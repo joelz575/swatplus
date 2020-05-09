@@ -61,7 +61,7 @@
           real :: ammonian = 0.  ! mg N/L        |ammonia concentration in reach
           real :: bankst = 0.    ! m^3 H2O       |bank storage 
           real :: li = 0.        ! km            |initial length of main channel
-          real :: orgn = 0.      !               |organic nitrogen contribution from channel erosion 
+          real :: orgn = 0.      !               |organic nitrogen contribution from channel erosion
           real :: orgp = 0.      !               |organic phosphorus contribution from channel erosion 
           real :: si = 0.        !(m/n)          |slope of main channel
           real :: wi = 0.        !(m)            |width of main channel at top of bank

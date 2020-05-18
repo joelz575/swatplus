@@ -3,6 +3,7 @@
 ###Custom
 
 json-c
+vcpkg
 
 ### Fortran template
 # Prerequisites

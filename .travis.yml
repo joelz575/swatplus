@@ -1,43 +1,14 @@
 language: c
 sudo: true
-dist: trusty
 
 os:
   - linux
   - osx
   - windows
 
-before_install:
-    - if [[ $TRAVIS_OS_NAME == linux ]]; then
-        sudo apt-get install lazarus lcl-nogui;
-        export DISPLAY=:99.0;
-        sh -e /etc/init.d/xvfb start;
-        sleep 3;
-      elif [[ $TRAVIS_OS_NAME == osx ]]; then
-        brew update > /dev/null;
-        brew install fpc > /dev/null;
-        brew cask install fpcsrc lazarus > /dev/null;
-      else
-        git clone git://github.com/graemeg/lazarus.git;
-        cd lazarus;
-        make;
-        cd ..;
-        wget -q ftp://ftp.freepascal.org/pub/fpc/snapshot/v33/i386-win32/fpc-3.3.1.i386-win32.zip;
-        mkdir fpc;
-        unzip -q -d fpc fpc-3.3.1.i386-win32.zip;
-        export PATH="$PATH":"$PWD/fpc/bin/i386-win32/";
-
-      fi
-
 install:
-  - cd src/console
-  - if [[ $TRAVIS_OS_NAME == linux ]]; then
-      lazbuild SahysModConsole.lpr;
-    elif [[ $TRAVIS_OS_NAME == osx ]]; then
-      lazbuild SahysModConsole.lpr --widgetset=cocoa;
-    else
-      ./lazarus/lazbuild SahysModConsole.lpr;
-    fi
+  - cd source_codes
+  - install.sh
 
 script:
   - ./SahysModConsole "$PWD/test/example.inp" "$PWD/test/example.out"

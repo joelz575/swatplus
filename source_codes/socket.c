@@ -118,7 +118,7 @@ void receive_(int *client, char *contenido, char *var_nombre, int *tamano_con){
  	*contenido = ' ';
  }
 
- for(i=0; i<n)
+ //for(i=0; i<n)
 
  printf((char *)WSAGetLastError());
 

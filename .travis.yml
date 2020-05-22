@@ -8,7 +8,7 @@ os:
 
 install:
   - cd source_codes
-  - sh install.sh
+  - bash install.sh
 
 script:
   - ./SahysModConsole "$PWD/test/example.inp" "$PWD/test/example.out"

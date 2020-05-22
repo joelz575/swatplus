@@ -14,6 +14,7 @@ if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* || "$OSTYPE" == "darwi
     cmake ../json-c
     make
     make test
+    make USE_VALGRIND=0 test
     make install
    #./bootstrap-vcpkg.sh
    #./vcpkg integrate install

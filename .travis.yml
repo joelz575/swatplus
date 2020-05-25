@@ -5,8 +5,10 @@ os:
   - windows
 
 install:
-    cd src;
-    $mingw make;
+    - cd src
+    - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
+    - export PATH=$MSBUILD_PATH:$PATH
+    - make
 
 script:
   - ./SahysModConsole "$PWD/test/example.inp" "$PWD/test/example.out"

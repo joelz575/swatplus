@@ -42,16 +42,16 @@ cache:
 
 install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
-      git clone https://github.com/Microsoft/vcpkg.git
-      cd vcpkg
-      ./bootstrap-vcpkg.sh
-      ./vcpkg integrate install
+      git clone https://github.com/Microsoft/vcpkg.git;
+      cd vcpkg;
+      ./bootstrap-vcpkg.sh;
+      ./vcpkg integrate install;
       vcpkg install json-c;
     else
-      git clone https://github.com/json-c/json-c.git
-      mkdir json-c-build
-      cd json-c-build
-      cmake ../json-c
+      git clone https://github.com/json-c/json-c.git;
+      mkdir json-c-build;
+      cd json-c-build;
+      cmake ../json-c;
       sudo make install;
     fi
   - cd ..

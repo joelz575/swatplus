@@ -86,11 +86,9 @@ dir:
 #	$(FC) $(FCFLAGS) $< -c -o $@
 #
 $(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90
-	echo $(OBJS)
 	$(FC) $(FCFLAGS) $< -c -o $@
 
 $(COBJS): $(BUILDDIR)/%.o: %.c
-	echo $(COBJS)
 	$(GC) $(CCFLAGS) $< -c -o $@ $(LDFLAGS) -ljson-c
 
 $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)

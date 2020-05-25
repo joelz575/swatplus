@@ -44,7 +44,7 @@ install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
       echo "Windows";
       cd src;
-      $mingw64 make
+      $mingw64 make;
     else
       git clone https://github.com/json-c/json-c.git;
       mkdir json-c-build;

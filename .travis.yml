@@ -46,7 +46,7 @@ install:
       cd vcpkg
       ./bootstrap-vcpkg.sh
       ./vcpkg integrate install
-      vcpkg install json-c
+      vcpkg install json-c;
     else
       git clone https://github.com/json-c/json-c.git
       mkdir json-c-build

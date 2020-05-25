@@ -12,6 +12,7 @@ install:
   - cd json-c-build
   - cmake ../json-c
   - sudo make install
+  - cd ..
   - cd src
   - make
 

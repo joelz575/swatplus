@@ -5,21 +5,21 @@
 if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* || "$OSTYPE" == "darwin"* || "$OSTYPE" == "cygwin" ]]; then
     #sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     #sudo apt-get update -y
-    #sudo apt-get install g++-7 -y
-   ## sudo apt install git
-   ## sudo apt install cmake
-   ## git clone https://github.com/json-c/json-c.git
-   ## mkdir json-c-build
-   ## cd json-c-build
-   ## cmake ../json-c
-   ## make
-   ## make test
-   ## make USE_VALGRIND=0 test
-    ##make install
+   sudo apt-get install g++-7 -y
+   sudo apt install git
+   sudo apt install cmake
+   git clone https://github.com/json-c/json-c.git
+   mkdir json-c-build
+   cd json-c-build
+   cmake ../json-c
+   make
+   make test
+   make USE_VALGRIND=0 test
+   make install # always fails right here
    #./bootstrap-vcpkg.sh
    #./vcpkg integrate install
    ### sudo apt install libjson-c-dev
-   sudo apt-get install libjson-glib-1.0-0 libjson-glib-1.0-0-dev
+   #### sudo apt-get install libjson-glib-1.0-0 libjson-glib-1.0-0-dev
 else
    git clone https://github.com/Microsoft/vcpkg.git
    git clone https://github.com/json-c/json-c.git

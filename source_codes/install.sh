@@ -19,7 +19,7 @@ if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* || "$OSTYPE" == "darwi
    #./bootstrap-vcpkg.sh
    #./vcpkg integrate install
    ### sudo apt install libjson-c-dev
-   sudo apt-get install libjson-glib #libjson-glib-dev
+   sudo apt-get install libjson-glib-1.0-0 libjson-glib-1.0-0-dev
 else
    git clone https://github.com/Microsoft/vcpkg.git
    git clone https://github.com/json-c/json-c.git

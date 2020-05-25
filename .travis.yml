@@ -8,7 +8,7 @@ os:
 
 install:
     cd src;
-    mingw make;
+    $mingw make;
 
 script:
   - ./SahysModConsole "$PWD/test/example.inp" "$PWD/test/example.out"

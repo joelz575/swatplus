@@ -11,7 +11,7 @@ install:
   - mkdir json-c-build
   - cd json-c-build
   - cmake ../json-c
-  - make install
+  - sudo make install
   - cd src
   - make
 

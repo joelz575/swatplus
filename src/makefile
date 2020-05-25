@@ -7,7 +7,6 @@ GC      := gcc
 FCFLAGS = -g -ffree-line-length-none -Jbuild
 
 CCFLAGS = -g #-m64
-JSON_C_DIR= json-c
 CCFLAGS += -I/usr/local/include/json-c
 
 # link flags
@@ -81,7 +80,6 @@ dir:
 	$(FC) -c -o $@ $<
 
 #%.mod: %.f90 %.F90
-#	echo $(OBJS)
 #	$(FC) $(FCFLAGS) $< -c -o $@
 #
 $(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90

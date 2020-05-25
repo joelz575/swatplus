@@ -1,0 +1,31 @@
+language: c
+sudo: true
+
+os:
+  - linux
+  - osx
+  - windows
+
+install:
+  - cd source_codes
+  - bash install.sh
+
+script:
+  - ./SahysModConsole "$PWD/test/example.inp" "$PWD/test/example.out"
+  - if [[ -f "$PWD/test/example.out" ]]; then
+      echo "Output generated and all is well";
+    else
+      exit 1;
+    fi
+  - mkdir dist
+  - mv ./SahysModConsole "./dist/SahysModConsole-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: LzokMUmFS34CTBbLTeqKGgst8U7nPqRbKfFeGoRmafoRQsU8VcEswMzWgc/R38a78Go7c5ZAvr4518X13wLiMQd59dd5pfwZkJZVEkqR7hU/NKuieGpPSaLgKbJuLgeKhDcjZvwfxU9yX402TrzhIroHoUKZxqOgUp0YYnNha+L/OTi8xgBLEZsQ38Q53lqYM/Fo75doT4U8P7+oYHFZcDvb7pXxfwK/o7O6wQEvho+qekntRI5N4MmNRDS59EQhVqh9ZPdZ7zndGpB3NFGgpgTbFINyt7B2VlQqiOA1SsScl/WFXg7ZECO4lCsKW9XIWbmVBWMqmRLAjJ36FWz6xa704k9j39TWPDo0pMA9djzkLZMyN3K3VN2epKDVvCMLvEQPl3eKPza9CpffeuZgWBG66AHXmdkMkiFOTUGETRCb0RKiY0YZC8f+3A8eVOQZI0QvOKtEDehKxmdnv2v/Y9UU+at6DbiKDaWXtNqQW/SLqaFnvzaHRlO/V8Wonw5b3zsnRk6NJnNPbPLip2w89Pi6K5h3luFxEsBj9T/KCJCk0owXkpz5XcJ2qlzsDi7Kj7uu7qLKG1EijEzjMPw+8QNZXWB/3cN/4P2DhDrKbwqfqbboAC+nnF4CsQp/eNaCXG39Z2WphNkvtUx2A/EIEXjXm0rSdJfJpqxIADZoEII=
+  file: dist/*
+  skip_cleanup: true
+  on:
+    repo: julienmalard/Sahysmod-SourceCode
+    tags: true

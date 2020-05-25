@@ -7,8 +7,8 @@ GC      := gcc
 FCFLAGS = -g -ffree-line-length-none -Jbuild
 
 CCFLAGS = -g #-m64
-JSON_C_DIR= C:\Users\Joel\vcpkg\installed\x64-windows
-CCFLAGS += -I$(JSON_C_DIR)/include/json-c
+JSON_C_DIR= json-c
+CCFLAGS += -I/usr/local/include/json-c
 #CFLAGS = -I$(JSON_C_DIR)/include/json-c
 
 # link flags

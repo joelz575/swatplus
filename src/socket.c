@@ -4,8 +4,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
-#include <C:\Users\Joel\vcpkg\installed\x64-windows\include\json-c\json.h>
-#include <C:\Users\Joel\vcpkg\installed\x64-windows\include\json-c\json_tokener.h>
+#include <json.h>
+#include <json_tokener.h>
 #ifdef _WIN32
 	#include <WinSock2.h> // windows
 #else

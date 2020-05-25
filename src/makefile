@@ -9,7 +9,6 @@ FCFLAGS = -g -ffree-line-length-none -Jbuild
 CCFLAGS = -g #-m64
 JSON_C_DIR= json-c
 CCFLAGS += -I/usr/local/include/json-c
-#CFLAGS = -I$(JSON_C_DIR)/include/json-c
 
 # link flags
 FLFLAGS = -ffree-line-length-none -Jbuild
@@ -78,7 +77,7 @@ all: dir $(BUILDDIR)/$(EXE)
 dir:
 	mkdir -p $(BUILDDIR)
 
-%.mod:  %.f90
+%.mod:  %.f90 %.F90
 	$(FC) -c -o $@ $<
 
 #%.mod: %.f90 %.F90

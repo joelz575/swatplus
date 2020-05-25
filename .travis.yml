@@ -7,7 +7,7 @@ os:
   - windows
 
 install:
-  - cd source_codes
+  - cd src
   - bash install.sh
 
 script:

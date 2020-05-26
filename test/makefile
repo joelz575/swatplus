@@ -2,7 +2,18 @@
 FC      := gfortran
 GC      := gcc
 
-hello: hello.o
+# program name
+EXE = hello
+BUILDDIR = build
+
+
+all: dir $(BUILDDIR)/$(EXE)
+
+dir:
+	mkdir -p $(BUILDDIR)
+
+
+$(BUILDDIR)/$(EXE): hello.o
 	$(FC) -o hello hello.o
 
 hello.o: hello.f90

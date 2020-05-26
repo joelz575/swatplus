@@ -21,10 +21,7 @@ before_install:
         $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain
         ## Install more MSYS2 packages from https://packages.msys2.org/base here
         taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
-        export PATH=/C/tools/msys64/mingw64/bin:$PATH
-        echo $PATH
-        export MAKE=mingw32-make  # so that Autotools can find it
-        echo $MAKE
+        choco install make
         ;;
     esac
 
@@ -46,7 +43,7 @@ install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
       echo "Windows";
       cd src;
-      MAKE;
+      make;
     else
       git clone https://github.com/json-c/json-c.git;
       mkdir json-c-build;

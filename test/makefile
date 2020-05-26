@@ -19,7 +19,7 @@ $(BUILDDIR)/$(EXE): $(BUILDDIR)/hello.o
 	$(FC) -o $(BUILDDIR)/hello $(BUILDDIR)/hello.o
 
 $(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90
-	$(FC) $(FCFLAGS) $< -c -o $@
+	$(FC) -c -o $@ $<
 
 clean:
 	rm -r $(BUILDDIR)

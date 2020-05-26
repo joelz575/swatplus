@@ -20,7 +20,7 @@ install:
   - cmake ../json-c
   - sudo make install
   - cd ..
-  - cd src
+  - cd test
   - make
 
 script:

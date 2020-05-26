@@ -96,3 +96,4 @@ dkms.conf
 executables/
 data/
 .idea/
+json-c-build/

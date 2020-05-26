@@ -29,20 +29,18 @@ cache:
     - /C/tools/msys64
 
 install:
+  - git clone https://github.com/json-c/json-c.git
+  - mkdir json-c-build
+  - cd json-c-build
+  - cmake ../json-c
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
-      echo "Windows";
-      cd src;
-      make;
+      make install;
     else
-      git clone https://github.com/json-c/json-c.git;
-      mkdir json-c-build;
-      cd json-c-build;
-      cmake ../json-c;
       sudo make install;
-      cd ..;
-      cd src;
-      make;
     fi
+  - cd ..
+  - cd src
+  - make
 
 script:
   - ./SahysModConsole "$PWD/test/example.inp" "$PWD/test/example.out"

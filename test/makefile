@@ -2,6 +2,10 @@
 FC      := gfortran
 GC      := gcc
 
+# source files and objects
+SRCS = hello.f90
+OBJS = $(patsubst %.f90, $(BUILDDIR)/%.o, $(SRCS))
+
 # program name
 EXE = hello
 BUILDDIR = build
@@ -11,11 +15,11 @@ all: dir $(BUILDDIR)/$(EXE)
 dir:
 	mkdir -p $(BUILDDIR)
 
-$(BUILDDIR)/$(EXE): hello.o
-	$(FC) -o $(BUILDDIR)/hello hello.o
+$(BUILDDIR)/$(EXE): $(BUILDDIR)/hello.o
+	$(FC) -o $(BUILDDIR)/hello $(BUILDDIR)/hello.o
 
-hello.o: hello.f90
-	$(FC) -c hello.f90
+$(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90
+	$(FC) $(FCFLAGS) $< -c -o $@
 
 clean:
-	rm hello.o hello
+	rm -r $(BUILDDIR)

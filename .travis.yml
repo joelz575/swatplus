@@ -34,7 +34,7 @@ install:
   - cd json-c-build
   - cmake ../json-c
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
-      ;
+      make;
     else
       sudo make install;
     fi

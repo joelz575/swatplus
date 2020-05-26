@@ -22,6 +22,7 @@ before_install:
         ## Install more MSYS2 packages from https://packages.msys2.org/base here
         taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
         choco install make
+        choco install Mingw-w64
         ;;
     esac
 

@@ -37,7 +37,7 @@ $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
 	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@
 
 $(COBJS): $(BUILDDIR)/%.o: %.c
-	$(GC) $(CCFLAGS) -c $< -o $@
+	$(GC) $(CCFLAGS) -c $< -o $@ $(LDFLAGS) -ljson-c
 
 $(OBJS): $(BUILDDIR)/%.o: %.f90
 	$(FC) $(FCFLAGS) -c $< -o $@

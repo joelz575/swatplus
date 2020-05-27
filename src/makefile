@@ -62,7 +62,8 @@ SRCS = hru_module.f90 \
     urban_data_module.f90 \
     topography_data_module.f90 \
     septic_data_module.f90 \
-    soil_data_module.f90
+    soil_data_module.f90 \
+	$(wildcard *.f90 *.F90)
 
 OBJS = $(patsubst %.f90, $(BUILDDIR)/%.o, $(SRCS))
 $(info    $(SRCS))

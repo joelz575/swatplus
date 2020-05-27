@@ -12,7 +12,7 @@ CCFLAGS += -I/usr/local/include/json-c
 
 # link flags
 FLFLAGS = -ffree-line-length-none -Jbuild
-LDFLAGS+= -L$(JSON_C_DIR)/lib
+LDFLAGS += -L$(JSON_C_DIR)/lib
 
 # source files and objects
 SRCS = hru_module.f90 \

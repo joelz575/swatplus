@@ -6,6 +6,10 @@ GC      := gcc
 # compile flags
 FCFLAGS = -g -ffree-line-length-none -Jbuild
 
+CCFLAGS = -g #-m64
+JSON_C_DIR= json-c
+CCFLAGS += -I/usr/local/include/json-c
+
 # source files and objects
 SRCS = hru_module.f90 \
 	organic_mineral_mass_module.f90
@@ -29,7 +33,7 @@ $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
 	$(FC) $^ -o $@
 
 $(COBJS): $(BUILDDIR)/%.o: %.c
-	$(GC) -c $< -o $@
+	$(GC) $(CCFLAGS) -c $< -o $@
 
 $(OBJS): $(BUILDDIR)/%.o: %.f90
 	$(FC) $(FCFLAGS) -c $< -o $@

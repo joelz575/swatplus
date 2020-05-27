@@ -3,7 +3,9 @@ FC      := gfortran
 GC      := gcc
 
 # source files and objects
-SRCS = hru_module.f90
+SRCS = hru_module.f90 \
+	organic_mineral_mass_module.f90
+
 OBJS = $(patsubst %.f90, %.o, $(BUILDDIR)/$(SRCS))
 
 CSRCS = socket.c

@@ -34,7 +34,7 @@ dir:
 	mkdir -p $(BUILDDIR)
 
 $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
-	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@
+	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@ $(LDFLAGS) -ljson-c -lws2_32
 
 $(COBJS): $(BUILDDIR)/%.o: %.c
 	$(GC) $(CCFLAGS) -c $< -o $@ $(LDFLAGS) -ljson-c

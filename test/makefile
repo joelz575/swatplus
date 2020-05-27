@@ -14,8 +14,8 @@ OBJS = testF.o testC.o
 $(EXE): $(OBJS)
 	$(FC) $(OBJS) -o $@
 
-testC.o: testC.c
-	$(GC) -c testC.c
+%.o: %.c
+	$(GC) -c $<
 
 testF.o: testF.f90
 	$(FC) -c $<

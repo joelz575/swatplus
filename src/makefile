@@ -2,6 +2,10 @@
 FC      := gfortran
 GC      := gcc
 
+#ToDo: shell script, um json-c in den pfad zu bringen (mit Git) depth=1? oder eine environment variable um json-c
+# compile flags
+FCFLAGS = -g -ffree-line-length-none -Jbuild
+
 # source files and objects
 SRCS = hru_module.f90 \
 	organic_mineral_mass_module.f90
@@ -28,7 +32,7 @@ $(COBJS): $(BUILDDIR)/%.o: %.c
 	$(GC) -c $< -o $@
 
 $(OBJS): $(BUILDDIR)/%.o: %.f90
-	$(FC) -c $< -o $@
+	$(FC) $(FCFLAGS) -c $< -o $@
 
 %.mod: %.f90 %.F90
 	$(FC) -c  $< -o $@

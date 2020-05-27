@@ -30,5 +30,8 @@ $(COBJS): $(BUILDDIR)/%.o: %.c
 $(OBJS): $(BUILDDIR)/%.o: %.f90
 	$(FC) -c $< -o $@
 
+%.mod: %.f90 %.F90
+	$(FC) -c  $< -o $@
+
 clean:
 	rm -r $(BUILDDIR)

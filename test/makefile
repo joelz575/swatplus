@@ -12,13 +12,13 @@ EXE = test
 OBJS = testF.o testC.o
 
 $(EXE): $(OBJS)
-	$(FC) $(OBJS) -o test
+	$(FC) $(OBJS) -o $@
 
 testC.o: testC.c
 	$(GC) -c testC.c
 
 testF.o: testF.f90
-	$(FC) -c testF.f90
+	$(FC) -c $<
 
 clean:
 	rm -r $(OBJS) $(EXE)

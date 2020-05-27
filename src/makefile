@@ -85,10 +85,10 @@ dir:
 #	$(FC) $(FCFLAGS) $< -c -o $@
 #
 $(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90
-	$(FC) $(FCFLAGS) $< -c -o $@
+	$(FC) $(FCFLAGS) -c $< -o $@
 
 $(COBJS): $(BUILDDIR)/%.o: %.c
-	$(GC) $(CCFLAGS) $< -c -o $@ $(LDFLAGS) -ljson-c
+	$(GC) $(CCFLAGS) -c $< -o $@ $(LDFLAGS) -ljson-c
 
 $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
 	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@ $(LDFLAGS) -ljson-c -lws2_32

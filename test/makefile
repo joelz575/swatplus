@@ -12,7 +12,7 @@ EXE = test
 OBJS = testF.o testC.o
 
 $(EXE): $(OBJS)
-	$(FC) -o test testF.o testC.o
+	$(FC) -o test $(OBJS)
 
 testC.o: testC.c
 	$(GC) -c testC.c

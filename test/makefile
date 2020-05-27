@@ -18,7 +18,7 @@ $(EXE): $(OBJS) $(COBJS)
 %.o: %.c
 	$(GC) -c $<
 
-testF.o: testF.f90
+%.o: %.f90
 	$(FC) -c $<
 
 clean:

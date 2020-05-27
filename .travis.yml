@@ -2,8 +2,6 @@ language: c
 sudo: true
 
 os:
-  - linux
-  - osx
   - windows
 
 before_install:

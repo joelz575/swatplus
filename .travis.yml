@@ -21,7 +21,7 @@ install:
   - if [[ $TRAVIS_OS_NAME != windows ]]; then
       sudo make install;
     else
-      make install;
+      make;
     fi
   - cd ..
   - cd src

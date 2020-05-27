@@ -6,10 +6,11 @@ GC      := gcc
 SRCS = testF.f90
 OBJS = $(patsubst %.f90, %.o, $(SRCS))
 
+CSRCS = testC.c
+COBJS = $(patsubst %.c, %.o, $(CSRCS))
+
 # program name
 EXE = test
-
-COBJS = testC.o
 
 $(EXE): $(OBJS) $(COBJS)
 	$(FC) $(OBJS) $(COBJS) -o $@

@@ -20,8 +20,6 @@ install:
   - cmake ../json-c
   - if [[ $TRAVIS_OS_NAME != windows ]]; then
       sudo make install;
-    else
-      make;
     fi
   - cd ..
   - cd src

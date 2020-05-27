@@ -7,7 +7,7 @@ SRCS = testF.f90
 OBJS = $(patsubst %.f90, %.o, $(BUILDDIR)/$(SRCS))
 
 CSRCS = testC.c
-COBJS = $(patsubst %.c, %.o, $(CSRCS))
+COBJS = $(patsubst %.c, %.o, $(BUILDDIR)/$(CSRCS))
 
 # program name
 EXE = test
@@ -21,11 +21,11 @@ dir:
 $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
 	$(FC) $(OBJS) $(COBJS) -o $@
 
-%.o: %.c
-	$(GC) -c $<
+$(COBJS): $(BUILDDIR)/%.o: %.c
+	$(GC) -c $< -o $@
 
 $(OBJS): $(BUILDDIR)/%.o: %.f90
 	$(FC) -c $< -o $@
 
 clean:
-	rm -r $(COBJS) $(BUILDDIR)
+	rm -r $(BUILDDIR)

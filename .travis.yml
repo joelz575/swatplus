@@ -24,6 +24,6 @@ install:
   - make
 
 script:
-  - ./build/hello
+  - ./build/hello_exe
   - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
   - exit 1

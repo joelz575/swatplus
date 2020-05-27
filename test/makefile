@@ -4,22 +4,21 @@ GC      := gcc
 
 # source files and objects
 SRCS = hello.f90
-OBJS = $(patsubst %.f90, $(BUILDDIR)/%.o, $(SRCS))
+OBJS = $(patsubst %.f90, %.o, $(SRCS))
 
 # program name
-EXE = hello
-BUILDDIR = build
+EXE = test
 
-all: dir $(BUILDDIR)/$(EXE)
+OBJS = testF.o testC.o
 
-dir:
-	mkdir -p $(BUILDDIR)
+$(EXE): $(OBJS)
+	$(FC) -o test testF.o testC.o
 
-$(BUILDDIR)/$(EXE): $(BUILDDIR)/hello.o
-	$(FC) -o $(BUILDDIR)/hello $(BUILDDIR)/hello.o
+testC.o: testC.c
+	$(GC) -c testC.c
 
-$(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90
-	$(FC) -c -o $@ $<
+testF.o: testF.f90
+	$(FC) -c testF.f90
 
 clean:
-	rm -r $(BUILDDIR)
+	rm -r $(OBJS) $(EXE)

@@ -10,6 +10,10 @@ CCFLAGS = -g #-m64
 JSON_C_DIR= json-c
 CCFLAGS += -I/usr/local/include/json-c
 
+# link flags
+FLFLAGS = -ffree-line-length-none -Jbuild
+LDFLAGS += -L$(JSON_C_DIR)/lib
+
 # source files and objects
 SRCS = hru_module.f90 \
 	organic_mineral_mass_module.f90
@@ -30,7 +34,7 @@ dir:
 	mkdir -p $(BUILDDIR)
 
 $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
-	$(FC) $^ -o $@
+	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@
 
 $(COBJS): $(BUILDDIR)/%.o: %.c
 	$(GC) $(CCFLAGS) -c $< -o $@

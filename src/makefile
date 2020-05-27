@@ -66,8 +66,7 @@ SRCS = hru_module.f90 \
 	$(wildcard *.f90 *.F90)
 
 OBJS = $(patsubst %.f90, $(BUILDDIR)/%.o, $(SRCS))
-$(info    $(SRCS))
-$(info    $(OBJS))
+
 CSRCS = socket.c
 COBJS = $(patsubst %.c, $(BUILDDIR)/%.o, $(CSRCS))
 

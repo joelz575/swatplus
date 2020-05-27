@@ -9,9 +9,9 @@ OBJS = $(patsubst %.f90, %.o, $(SRCS))
 # program name
 EXE = test
 
-OBJS = testF.o testC.o
+COBJS = testC.o
 
-$(EXE): $(OBJS)
+$(EXE): $(OBJS) $(COBJS)
 	$(FC) $(OBJS) -o $@
 
 %.o: %.c

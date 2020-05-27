@@ -92,3 +92,6 @@ $(COBJS): $(BUILDDIR)/%.o: %.c
 
 $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
 	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@ $(LDFLAGS) -ljson-c -lws2_32
+
+clean:
+	rm -r build

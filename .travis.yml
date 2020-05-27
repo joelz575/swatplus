@@ -24,6 +24,9 @@ install:
   - make
 
 script:
-  - ./test
-  - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
-  - exit 1
+  - ./build/test
+  - if [[ -f "./build/test" ]]; then
+      echo "Joel all ist gut jetzt wir brauchen dienen Teste";
+    else
+      exit 1;
+  - echo

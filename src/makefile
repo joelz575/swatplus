@@ -6,10 +6,11 @@ GC      := gcc
 SRCS = hru_module.f90 \
 	organic_mineral_mass_module.f90
 
-OBJS = $(patsubst %.f90, %.o, $(BUILDDIR)/$(SRCS))
-
+OBJS = $(patsubst %.f90, $(BUILDDIR)/%.o, $(SRCS))
+$(info    $(SRCS))
+$(info    $(OBJS))
 CSRCS = socket.c
-COBJS = $(patsubst %.c, %.o, $(BUILDDIR)/$(CSRCS))
+COBJS = $(patsubst %.c, $(BUILDDIR)/%.o, $(CSRCS))
 
 # program name
 EXE = test

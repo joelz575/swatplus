@@ -7,14 +7,15 @@ GC      := gcc
 FCFLAGS = -g -ffree-line-length-none -Jbuild
 
 CCFLAGS = -g #-m64
+JSON_C_DIR= json-c
 CCFLAGS += -I/usr/local/include/json-c
 
 # link flags
 FLFLAGS = -ffree-line-length-none -Jbuild
-LDFLAGS+= -L$(JSON_C_DIR)/lib
+LDFLAGS += -L$(JSON_C_DIR)/lib
 
 # source files and objects
-SRCS =  hru_module.f90 \
+SRCS = hru_module.f90 \
 	organic_mineral_mass_module.f90 \
 	carbon_module.f90 \
 	conditional_module.f90 \
@@ -63,12 +64,14 @@ SRCS =  hru_module.f90 \
     septic_data_module.f90 \
     soil_data_module.f90 \
 	$(wildcard *.f90 *.F90)
+
 OBJS = $(patsubst %.f90, $(BUILDDIR)/%.o, $(SRCS))
-CRCS = socket.c
-COBJS = $(patsubst %.c, $(BUILDDIR)/%.o, $(CRCS))
+
+CSRCS = socket.c
+COBJS = $(patsubst %.c, $(BUILDDIR)/%.o, $(CSRCS))
 
 # program name
-EXE = swatplus
+EXE = test
 BUILDDIR = build
 
 all: dir $(BUILDDIR)/$(EXE)
@@ -76,17 +79,17 @@ all: dir $(BUILDDIR)/$(EXE)
 dir:
 	mkdir -p $(BUILDDIR)
 
-%.mod:  %.f90 %.F90
-	$(FC) -c -o $@ $<
-
-#%.mod: %.f90 %.F90
-#	$(FC) $(FCFLAGS) $< -c -o $@
-#
-$(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90
-	$(FC) $(FCFLAGS) $< -c -o $@
-
-$(COBJS): $(BUILDDIR)/%.o: %.c
-	$(GC) $(CCFLAGS) $< -c -o $@ $(LDFLAGS) -ljson-c
-
 $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
 	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@ $(LDFLAGS) -ljson-c -lws2_32
+
+$(COBJS): $(BUILDDIR)/%.o: %.c
+	$(GC) $(CCFLAGS) -c $< -o $@ $(LDFLAGS) -ljson-c
+
+$(OBJS): $(BUILDDIR)/%.o: %.f90
+	$(FC) $(FCFLAGS) -c $< -o $@
+
+%.mod: %.f90 %.F90
+	$(FC) -c  $< -o $@
+
+clean:
+	rm -r $(BUILDDIR)

@@ -22,12 +22,12 @@
    # sudo apt update
    # sudo apt-get install libjson-glib-1.0-0 libjson-glib-1.0-0-dev
 #else
-#   git clone https://github.com/Microsoft/vcpkg.git
-#   git clone https://github.com/json-c/json-c.git
-#   cd vcpkg
-#   ./bootstrap-vcpkg.sh
-#   ./vcpkg integrate install
-#   vcpkg install json-c
+   git clone https://github.com/Microsoft/vcpkg.git
+   git clone https://github.com/json-c/json-c.git
+   cd vcpkg
+   bootstrap-vcpkg.bat -disableMetrics
+   vcpkg integrate install
+   vcpkg install json-c
 #fi
 #echo "vcpkg installed successfully"
 

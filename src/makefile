@@ -2,17 +2,16 @@
 FC      := gfortran
 GC      := gcc
 
-#ToDo: shell script, um json-c in den pfad zu bringen (mit Git) depth=1? oder eine environment variable um json-c
 # compile flags
 FCFLAGS = -g -ffree-line-length-none -Jbuild
 
 CCFLAGS = -g #-m64
 JSON_C_DIR= json-c
-CCFLAGS += -I/usr/local/include/json-c
+CCFLAGS += -I/usr/local/include/json-c #fix for vcpkg
 
 # link flags
 FLFLAGS = -ffree-line-length-none -Jbuild
-LDFLAGS+= -L$(JSON_C_DIR)/lib
+LDFLAGS+= -L$(JSON_C_DIR)/lib #fix for vcpckg
 
 # source files and objects
 SRCS =  hru_module.f90 \

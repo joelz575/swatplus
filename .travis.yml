@@ -25,7 +25,7 @@ install:
        ./bootstrap-vcpkg.bat -disableMetrics;
        ./vcpkg integrate install;
         ls;
-       ./toolsrc\\msbuild.x86.release\\vcpkg.exe install json-c;
+       ./vcpkg.exe install json-c;
     fi
   - cd ..
   - cd src

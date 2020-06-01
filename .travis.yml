@@ -12,13 +12,19 @@ before_install:
     fi
 
 install:
-  - git clone https://github.com/json-c/json-c.git
-  - mkdir json-c-build
-  - cd json-c-build
-  - cmake ../json-c
-  - dir
   - if [[ $TRAVIS_OS_NAME != windows ]]; then
+      git clone https://github.com/json-c/json-c.git;
+      mkdir json-c-build;
+      cd json-c-build;
+      cmake ../json-c;
       sudo make install;
+    else
+       git clone https://github.com/Microsoft/vcpkg.git;
+       git clone https://github.com/json-c/json-c.git;
+       cd vcpkg;
+       bootstrap-vcpkg.bat;
+       vcpkg integrate install;
+       vcpkg install json-c;
     fi
   - cd ..
   - cd src

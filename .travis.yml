@@ -22,8 +22,8 @@ install:
        git clone https://github.com/Microsoft/vcpkg.git;
        git clone https://github.com/json-c/json-c.git;
        cd vcpkg;
-       ./bootstrap-vcpkg.bat;
-       vcpkg integrate install;
+       ./bootstrap-vcpkg.bat -disableMetrics;
+       ./vcpkg integrate install;
        vcpkg install json-c;
     fi
   - cd ..

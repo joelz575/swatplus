@@ -64,14 +64,12 @@ SRCS = hru_module.f90 \
     septic_data_module.f90 \
     soil_data_module.f90 \
 	$(wildcard *.f90 *.F90)
-
 OBJS = $(patsubst %.f90, $(BUILDDIR)/%.o, $(SRCS))
-
-CSRCS = socket.c
-COBJS = $(patsubst %.c, $(BUILDDIR)/%.o, $(CSRCS))
+CRCS = socket.c
+COBJS = $(patsubst %.c, $(BUILDDIR)/%.o, $(CRCS))
 
 # program name
-EXE = test
+EXE = swatplus
 BUILDDIR = build
 
 all: dir $(BUILDDIR)/$(EXE)
@@ -79,17 +77,21 @@ all: dir $(BUILDDIR)/$(EXE)
 dir:
 	mkdir -p $(BUILDDIR)
 
-$(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
-	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@ $(LDFLAGS) -ljson-c -lws2_32
+%.mod:  %.f90 %.F90
+	$(FC) -c -o $@ $<
+
+#%.mod: %.f90 %.F90
+#	echo $(OBJS)
+#	$(FC) $(FCFLAGS) $< -c -o $@
+#
+$(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90
+	$(FC) $(FCFLAGS) -c $< -o $@
 
 $(COBJS): $(BUILDDIR)/%.o: %.c
 	$(GC) $(CCFLAGS) -c $< -o $@ $(LDFLAGS) -ljson-c
 
-$(OBJS): $(BUILDDIR)/%.o: %.f90
-	$(FC) $(FCFLAGS) -c $< -o $@
-
-%.mod: %.f90 %.F90
-	$(FC) -c  $< -o $@
+$(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
+	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@ $(LDFLAGS) -ljson-c -lws2_32
 
 clean:
-	rm -r $(BUILDDIR)
+	rm -r build

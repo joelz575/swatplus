@@ -7,12 +7,16 @@ GC      := gcc
 FCFLAGS = -g -ffree-line-length-none -Jbuild
 
 CCFLAGS = -g #-m64
-if [[ "$OSTYPE" == "windows"* ]]; then
-	JSON_C_DIR= vcpkg/packages/json-c_x86-windows
-	CCFLAGS += -I$(JSON_C_DIR)/include/json-c
+if [[ "$OSTYPE" == "windows" ]]; then
+	echo 1;
+	JSON_C_DIR= vcpkg/packages/json-c_x86-windows;
+	echo 2;
+	CCFLAGS += -I$(JSON_C_DIR)/include/json-c;
+	echo 3;
 else
-	JSON_C_DIR= json-c
-	CCFLAGS += -I/usr/local/include/json-c
+	echo 4;
+	JSON_C_DIR= json-c;
+	CCFLAGS += -I/usr/local/include/json-c;
 fi
 # link flags
 FLFLAGS = -ffree-line-length-none -Jbuild

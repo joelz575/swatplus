@@ -5,13 +5,13 @@ GC      := gcc
 # compile flags
 FCFLAGS = -g -ffree-line-length-none -Jbuild
 
-CCFLAGS = -g #-m64
+#CCFLAGS = -g #-m64
 JSON_C_DIR= json-c
-CCFLAGS += -I/usr/local/include/json-c #fix for vcpkg
+#CCFLAGS += -I/usr/local/include/json-c #fix for vcpkg
 
 # link flags
-FLFLAGS = -ffree-line-length-none -Jbuild
-LDFLAGS+= -L$(JSON_C_DIR)/lib #fix for vcpckg
+#FLFLAGS = -ffree-line-length-none -Jbuild
+#LDFLAGS+= -L$(JSON_C_DIR)/lib #fix for vcpckg
 
 # source files and objects
 SRCS =  hru_module.f90 \
@@ -64,7 +64,7 @@ SRCS =  hru_module.f90 \
     soil_data_module.f90 \
 	$(wildcard *.f90 *.F90)
 OBJS = $(patsubst %.f90, $(BUILDDIR)/%.o, $(SRCS))
-CRCS = socket.c
+#CRCS = socket.c
 COBJS = $(patsubst %.c, $(BUILDDIR)/%.o, $(CRCS))
 
 # program name
@@ -86,8 +86,8 @@ dir:
 $(OBJS): $(BUILDDIR)/%.o: %.f90 %.F90
 	$(FC) $(FCFLAGS) $< -c -o $@
 
-$(COBJS): $(BUILDDIR)/%.o: %.c
-	$(GC) $(CCFLAGS) $< -c -o $@ $(LDFLAGS) -ljson-c
+#$(COBJS): $(BUILDDIR)/%.o: %.c
+#	$(GC) $(CCFLAGS) $< -c -o $@ $(LDFLAGS) -ljson-c
 
 $(BUILDDIR)/$(EXE): $(OBJS) $(COBJS)
-	$(FC) $(CCFLAGS) $(FLFLAGS) $^ -o $@ $(LDFLAGS) -ljson-c -lws2_32
+	$(FC) $(FLFLAGS) $^ -o $@

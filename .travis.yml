@@ -29,6 +29,7 @@ install:
     fi
   - cd ..
   - cd src
+  - make clean
   - make
 
 script:

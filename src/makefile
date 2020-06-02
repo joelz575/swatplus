@@ -8,15 +8,15 @@ FCFLAGS = -g -ffree-line-length-none -Jbuild
 
 CCFLAGS = -g #-m64
 ifeq ($OSTYPE, windows)
-	echo 1;
-	JSON_C_DIR= vcpkg/packages/json-c_x86-windows;
-	echo 2;
-	CCFLAGS += -I$(JSON_C_DIR)/include/json-c;
-	echo 3;
+echo 1;
+JSON_C_DIR= vcpkg/packages/json-c_x86-windows;
+echo 2;
+CCFLAGS += -I$(JSON_C_DIR)/include/json-c;
+echo 3;
 else
-	echo 4;
-	JSON_C_DIR= json-c;
-	CCFLAGS += -I/usr/local/include/json-c;
+echo 4;
+JSON_C_DIR= json-c;
+CCFLAGS += -I/usr/local/include/json-c;
 endif
 
 # link flags

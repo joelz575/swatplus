@@ -3,8 +3,6 @@ sudo: true
 
 os:
   - windows
-  - linux
-  - osx
 
 before_install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
@@ -16,7 +14,7 @@ before_install:
 install:
   - mkdir build
   - cd build
-  - cmake ../src
+  - cmake  -G "MinGW Makefiles" ../src
   - cmake --build .
 
 script:

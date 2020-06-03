@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.12)
 
 project(SwatPlus)
 
-FILE(GLOB src *.c)
+FILE(GLOB src *.f90 *.c)
 add_executable(swatplus_exe ${src} )
 
 include(ExternalProject)

@@ -20,11 +20,12 @@ install:
   - if [[ $TRAVIS_OS_NAME != windows ]]; then
       sudo make install;
     else
-      make ;
+      make;
     fi
-  - cd ..
-  - cd src
-  - make
+  - mkdir build
+  - cd build
+  - cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src
+  - cmake --build .
 
 script:
   - echo "Joel all ist gut jetzt wir brauchen dienen Teste"

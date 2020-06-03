@@ -1,5 +1,5 @@
 image:
-  - Visual Studio 2017
+  - Visual Studio 2019
 
 build: off
 
@@ -14,6 +14,5 @@ init:
 install:
   - cmd: mkdir build
   - cd build
-  - cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src
-  - cmd: ls
-  - cmd: make
+  - cmd: cmake -G "Visual Studio 15 2019" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src
+  - cmd: cmake --build .

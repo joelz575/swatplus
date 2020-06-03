@@ -15,4 +15,5 @@ install:
   - cmd: mkdir build
   - cd build
   - cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src
-  - cmd: cmake --build .
+  - cmd: ls
+  - cmd: make

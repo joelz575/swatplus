@@ -1,12 +1,17 @@
 cmake_minimum_required (VERSION 3.12)
-project(hello CXX Fortran)
-enable_testing()
 
-set(CTEST_OUTPUT_ON_FAILURE ON)
+project(SwatPlus)
 
-add_compile_options(-Wall -Wextra -Wpedantic)
+FILE(GLOB src *.c)
+add_executable(swatplus_exe ${src} )
 
-FILE(GLOB csrc *.c)
-FILE(GLOB fsrc *.f90)
+include(ExternalProject)
+set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
+ExternalProject_Add(json-c
+  GIT_REPOSITORY    https://github.com/json-c/json-c.git
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+)
+include_directories(${EXTERNAL_INSTALL_LOCATION}/include/json-c)
+link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
-add_executable(swatplus ${csrc} ${fsrc} )
+

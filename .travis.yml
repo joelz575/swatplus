@@ -16,7 +16,6 @@ install:
   - mkdir json-c-build
   - cd json-c-build
   - cmake ../json-c
-  - dir
   - if [[ $TRAVIS_OS_NAME != windows ]]; then
       sudo make install;
     else

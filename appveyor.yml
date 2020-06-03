@@ -13,7 +13,7 @@ init:
 
 install:
   - cmd: mkdir build
-  - cmd: ls
+  - cd build
   - cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src
   - sh: cmake ..
 

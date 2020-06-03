@@ -12,15 +12,6 @@ before_install:
     fi
 
 install:
-  - git clone https://github.com/json-c/json-c.git
-  - mkdir json-c-build
-  - cd json-c-build
-  - cmake ../json-c
-  - if [[ $TRAVIS_OS_NAME != windows ]]; then
-      sudo make install;
-    else
-      make;
-    fi
   - mkdir build
   - cd build
   - cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src

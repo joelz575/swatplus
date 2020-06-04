@@ -14,7 +14,7 @@ before_install:
 install:
   - mkdir build
   - cd build
-  - cmake  -G "MinGW Makefiles" ../src
+  - cmake  -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src
   - cmake --build .
 
 script:

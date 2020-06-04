@@ -1,5 +1,6 @@
 cmake_minimum_required (VERSION 3.12)
 
+enable_language(Fortran)
 project(SwatPlus)
 
 FILE(GLOB src *.f90 *.c)
@@ -14,4 +15,4 @@ ExternalProject_Add(json-c
 target_include_directories(swatplus_exe PRIVATE ${EXTERNAL_INSTALL_LOCATION}/include/json-c)
 target_link_directories(swatplus_exe PRIVATE ${EXTERNAL_INSTALL_LOCATION}/lib)
 
-
+install(TARGETS swatplus_exe DESTINATION bin)

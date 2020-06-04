@@ -11,7 +11,7 @@ ExternalProject_Add(json-c
   GIT_REPOSITORY    https://github.com/json-c/json-c.git
   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
 )
-include_directories(${EXTERNAL_INSTALL_LOCATION}/include/json-c)
-link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
+include_directories(swatplus_exe ${EXTERNAL_INSTALL_LOCATION}/include/json-c)
+link_directories(swatplus_exe ${EXTERNAL_INSTALL_LOCATION}/lib)
 
 

@@ -11,6 +11,7 @@ before_install:
       choco install make;
     elif [[ $TRAVIS_OS_NAME == linux ]]; then
       sudo apt-get install gfortran;
+      sudo apt-get install cmake;
     fi
 
 install:

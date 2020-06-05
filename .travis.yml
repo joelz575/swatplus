@@ -11,7 +11,8 @@ before_install:
       choco install make;
     elif [[ $TRAVIS_OS_NAME == linux ]]; then
       sudo apt-get install gfortran;
-      sudo apt-get install cmake=3.15.2;
+      wget https://github.com/Kitware/CMake/releases/download/v3.16.8/cmake-3.16.8-Linux-x86_64.sh;
+      sh cmake-3.16.8-Linux-x86_64.sh;
     fi
   - cmake --version
 

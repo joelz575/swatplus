@@ -11,21 +11,19 @@ before_install:
       choco install make;
     elif [[ $TRAVIS_OS_NAME == linux ]]; then
       sudo apt-get install gfortran;
+      pip install cmake --upgrade --user;
     fi
+  - cmake --version
 
 install:
-  - git clone https://github.com/json-c/json-c.git
-  - mkdir json-c-build
-  - cd json-c-build
-  - cmake ../json-c
+  - mkdir build
+  - cd build
   - if [[ $TRAVIS_OS_NAME != windows ]]; then
-      sudo make install;
+      cmake ../src;
     else
-      make;
+      cmake  -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src;
     fi
-  - cd ..
-  - cd src
-  - make
+  - cmake --build .
 
 script:
   - echo "Joel all ist gut jetzt wir brauchen dienen Teste"

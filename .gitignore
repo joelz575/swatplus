@@ -97,3 +97,4 @@ executables/
 data/
 .idea/
 json-c-build/
+build/

@@ -10,9 +10,7 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
       choco install make;
     elif [[ $TRAVIS_OS_NAME == linux ]]; then
-      sudo apt-get install gfortran;
-      wget https://github.com/Kitware/CMake/releases/download/v3.16.8/cmake-3.16.8-Linux-x86_64.sh;
-      sh cmake-3.16.8-Linux-x86_64.sh;
+      pip install cmake --upgrade;
     fi
   - cmake --version
 

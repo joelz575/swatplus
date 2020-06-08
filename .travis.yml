@@ -1,30 +1,35 @@
 language: c
 sudo: true
-
 os:
-  - linux
-  - osx
-  - windows
-
+- linux
+- osx
+- windows
 before_install:
-  - if [[ $TRAVIS_OS_NAME == windows ]]; then
-      choco install make;
-    elif [[ $TRAVIS_OS_NAME == linux ]]; then
-      sudo apt-get install gfortran;
-      pip install cmake --upgrade --user;
-    fi
-  - cmake --version
-
+- if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; elif [[ $TRAVIS_OS_NAME
+  == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user;
+  fi
+- cmake --version
 install:
-  - mkdir build
-  - cd build
-  - if [[ $TRAVIS_OS_NAME != windows ]]; then
-      cmake ../src;
-    else
-      cmake  -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src;
-    fi
-  - cmake --build .
-
+- mkdir build
+- cd build
+- if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src; else cmake  -G "MinGW Makefiles"
+  -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src; fi
+- cmake --build .
 script:
-  - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
-
+- echo "Joel all ist gut jetzt wir brauchen dienen Teste"
+- mkdir dist
+- mv ./SahysModConsole "./dist/SahysModConsole-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+after_script:
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+- node ./node_modules/grunt-cli/bin/grunt release
+deploy:
+  provider: releases
+  file: build/bin/*
+  skip_cleanup: true
+  on:
+    repo: joelz575/swatplus
+    tags: true
+env:
+  global:
+    secure: r1EsVDbCyoi/srYCzMTZJWr65o1fDPStIZRopYhwSUF4uWVr/dphJ0q52UZrDVfiOZAKJMQIhGULNTi5KcsnqpfsVZr/peP5aqUoCiIHXTDvOAiacTGhY/0hhPhZf1DcsY2gCfP2ntNY8mbqH/kIKrlJ3892jACkywxmiRl64QBg3Auws7Lnn2e2qysOXVvheH54f6uk8C+Ha/KSgakExJcK7Ga2UmxAm28D/nCYIsoBKKQ+5M39SkbCWpQGuZVeNo1Ts/PusoxeQbrwXx7/Jhq999gsID/PdqLno4Y0H0o6elaQ0wn3WziqGNVP8KYXkV1RBdLhqx2Js+blHnd5axEFMx1ZpVVM6sesNCcxdPYApC6cvC2Drx6tDBALNqGIWlGxwfdARfhYdMfOUIrKfHQKQWoBcgu6O9Y4T/wbP6IQrSvVH+zm1zLNCDNg9KzHsZCn5mO6ufUuB7wXbuj6itQPkg4GYaJuu2/Lf27owcAUc0oLBXnIBeYdS+lodRppMZcvpVpf16aEF9Qr5zZOyPjAK1ca7tYnxdUbi3VRobLHspaaozsd8F1C6gA+CVDheawC8btZsUrwD0WkxpB6D75TsZqgLSID9Qw4q7i7VDeUawUM/wq6zgtXyAfA0aDoxC8rgxCJEBlplhbnzwVMlbciIu/O/PrnTM8UH2/eaEM=

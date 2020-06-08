@@ -101,8 +101,10 @@ void receive_(int *client, char *contenido, char *var_nombre, int *tamano_con){
  struct json_object *matr;
  char json_header;
 
+
  n = tmn = recv(*client, blankBuffer, 4, 0);
 
+ //printf("hello");
  recv(*client, json_header, tmn, 0);
  parsed_json = json_tokener_parse(json_header);
  json_object_object_get_ex(parsed_json, "tipo", &tipo);

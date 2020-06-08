@@ -22,4 +22,8 @@ endif()
 
 target_include_directories(swatplus_exe PUBLIC ${json-c_SOURCE_DIR})
 
+set_target_properties(swatplus_exe PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
 install(TARGETS swatplus_exe DESTINATION bin)

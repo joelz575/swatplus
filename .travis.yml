@@ -24,7 +24,7 @@ script:
    dir dist;
   else
    mv ./build/bin/swatplus_exe "./dist/SwatPlus_exe-$TRAVIS_OS_NAME-$TRAVIS_TAG";
-   ls -R;
+   ls dist;
   fi
 
 deploy:

@@ -19,7 +19,7 @@ script:
 - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
 - cd ..
 - mkdir dist
-- mv ./build/bin/SahysModConsole "./dist/SwatPlus_exe-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+- mv ./build/bin/swatplus_exe.exe "./dist/SwatPlus_exe-$TRAVIS_OS_NAME-$TRAVIS_TAG"
 
 after_script:
 - git config credential.helper "store --file=.git/credentials"
@@ -32,3 +32,4 @@ deploy:
   file: dist/*
   on:
     repo: joelz575/swatplus
+    tags: true

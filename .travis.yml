@@ -20,20 +20,11 @@ script:
 - cd ..
 - mkdir dist
 - mv ./build/bin/swatplus_exe.exe "./dist/SwatPlus_exe-$TRAVIS_OS_NAME-$TRAVIS_TAG"
-
 deploy:
-  deploy:
-    provider: releases
-    api_key: "GITHUB OAUTH TOKEN"
-    file: "FILE TO UPLOAD"
-    skip_cleanup: true
-    on:
-      tags: true
-
-  #provider: releases
-  #skip_cleanup: true
-  #api_key:
-  #  secure: 32SAGT2RKR+4+NJX1cwMWrDt+GJ0zlzhjhZ2L5MKWJBUD3lzz37c69ZqyBWTzfpJhbUq9JEouTabRGSmy5+SH1eyUUgdw3qBXaVTEkwnMIvPoZNnO9rDEMpQM+wKz5+TRTydIw/XFr8gj+B/HkK0QZ9M0nagm/6lqtgLXdocEaGTQ2bPAzgb87xlzuqQEZwdX2HXzrUW41MC02WcUwTv2yEuSSG40t0yMOnzf76fnuvmenQxLlX5BxZl56dxEviRug+6CZgx2qE7tkP1TOCIzOb4E/EVtmTH/qJATmBYSf0X5zZw6HOaQelXJ6pkHJzpYFUXf8p+v24IzVDMfBpZnMuCTdu8xsLROQVSddN3ZT9yAieyViQIkQiDlpJQ41+c/NyDr68VEhlxZFVdDYdF6ghAWxuRA3bBsgqAFGsYY4iJOq3q0sBdbEotrVRcoInhOj1bHu1LeJOCKcRZPh7HizgqaowqMARu5VSjwOgAdFNp9OBYmwjWs8pEsDiaxm1VDYjz0PavgGx2RSMs2TQ19ikznugF8b8r+jjkyTMb41ORh/5/0gAFDB/W+QfzjHNAsrLisdnvGpWVtGi8qQSxL1e53RmhW1xJU7w4TtOHk1O4FuvHkI8IS4EHoX2Bj5xA9cqSMuammZbAVGhPAoYgXGjJk2isdfmsdmrU48xpJOA=
-  #file: dist/*
-  #on:
-  #  repo: joelz575/swatplus
+  provider: releases
+  api_key:
+    secure: oUPng4i12nd5rxB6lUJXy4wKTdrYV/fP/VoXxUT/5e5BzpdzkKAiNudz/TXkdtc27C/QRYVoN1/Xym2i7T7ZvEbD4Ot7BHWZKp5a4V5TMngyUV2gtgsaV9acMkQrWfehzuDsK2yiTiTPWrAC6ERSjJR9oYmePigOHeHi0Jy/p8gO0R/OgES1iZUINEXq26J3yaSXrFsASHR4B7Ab0D5odd3EekCg1LeMT1SAofM5ol3TgAC9KRkfa+SwfkXFnY7ZlfzgXLnAspkuP5gAca9+ctT7VsgbWBKe6nX4nLbnRX+oWuuhZiG7kZCmPU2EFnINwSEdecCvTqtWMIdmaXs7G7S8/tbr6BrV8hCIMseDxmpxu4St4hEiIwFB7zP/K4KSvwj2nleaw3BbIwmhurl7GW8P8tOY1glIJbZ4T33Cb2MWJwxu4yYrPM4bNTPXW06IL89bDmk2PuTgLLj0vQ3oYmJVGBjCgRt3IrC0yb7FtnSNa4Tn95ZY/gLCLtk5VPc95hUo/r1it4r0Yg3IuELYqIMACXA+bbihTlqCgE9r+Hoq2/JXpaBdVKErTHRXV1ZW+pRthrPFyflSEnfqVfvfU3CbYXfm14SflEi4U16gocXfEI9t8DPe9nEXazN55qYLjkhYuPDw5mn5FwM009RDV6oroTZ+9PAiRJxQLsbAfd0=
+  file: ''
+  on:
+    repo: joelz575/swatplus
+  skip_cleanup: 'true'

@@ -78,7 +78,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
  if (connect(*client, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         printf("\nConnection Failed \n");
-        //return -1;
+
     }
 
 

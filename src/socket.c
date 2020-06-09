@@ -104,7 +104,6 @@ void receive_(int *client, char *contenido, char *var_nombre, int *tamano_con){
 
  n = tmn = recv(*client, blankBuffer, 4, 0);
 
- //printf("hello");
  recv(*client, json_header, tmn, 0);
  parsed_json = json_tokener_parse(json_header);
  json_object_object_get_ex(parsed_json, "tipo", &tipo);
@@ -149,29 +148,54 @@ void receive_(int *client, char *contenido, char *var_nombre, int *tamano_con){
   //Porque tenga una connexión exitosa, podemos recibir datos del socket.
  printf("\n Am in receive now...");
  printf("\nClient obj in C: %i", *client);
+ printf("\n Am in receive now...");
  int recvRes;
-
- int length;
+ //printf("\nLength is: %i", *len);
+ int tmn;
  int n;
- n = length = read(*client,receiveBuffer, *len, 0);
+ char blankBuffer;
+ struct json_object *parsed_json;
+ struct json_object *tipo;
+ struct json_object *tamano;
+ struct json_object *var;
+ struct json_object *matr;
+ char json_header;
+
+
+ n = tmn = read(*client, blankBuffer, 4);
+
+ read(*client, json_header, tmn);
+ parsed_json = json_tokener_parse(json_header);
+ json_object_object_get_ex(parsed_json, "tipo", &tipo);
+ json_object_object_get_ex(parsed_json, "tamaño", &tamano);
+ json_object_object_get_ex(parsed_json, "var", &var);
+ json_object_object_get_ex(parsed_json, "matr", &matr);
+ tamano_con = json_object_get_int(tamano);
+ if (tamano != 0){
+ 	read(*client, *contenido, tamano_con);
+	}
+ else {
+ 	*contenido = ' ';
+ }
+ //n = length = read(*client,receiveBuffer, *len, 0);
  //printf("\nn= %d", n);
  //printf("\nlength= %d", length);
-    while (length > 0 && n < *len) {
-        length = read(*client,&receiveBuffer[n],*len - n);
-		printf("length %d",length);
-		printf("current receiveBuffer %c", receiveBuffer[n]);
+ //   while (length > 0 && n < *len) {
+ //       length = read(*client,&receiveBuffer[n],*len - n);
+//		printf("length %d",length);
+//		printf("current receiveBuffer %c", receiveBuffer[n]);
         /* FIXME: Error checking */
 
-        n += length;
-    }
+//        n += length;
+//    }
 
-    for(int i=0; i<*len; i++){
-    	printf("%c",ntohl(receiveBuffer[i]));
-    	}
+//    for(int i=0; i<*len; i++){
+//    	printf("%c",ntohl(receiveBuffer[i]));
+//    	}
 
- if (recvRes == -1){
-		printf("receive failed...");
-		}
+// if (recvRes == -1){
+//		printf("receive failed...");
+//		}
 
 
  //printf("In C function receive Buffer is...");

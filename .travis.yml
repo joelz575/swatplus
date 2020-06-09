@@ -27,4 +27,5 @@ deploy:
   file: dist/*
   on:
     repo: joelz575/swatplus
+    tags: true
   skip_cleanup: 'true'

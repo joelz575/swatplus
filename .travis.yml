@@ -17,8 +17,10 @@ install:
 - cmake --build .
 script:
 - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
+- cd ..
 - mkdir dist
-- mv ./SahysModConsole "./dist/SahysModConsole-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+- mv ./build/bin/SahysModConsole "./dist/SwatPlus_exe-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+
 after_script:
 - git config credential.helper "store --file=.git/credentials"
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
@@ -27,6 +29,6 @@ deploy:
   provider: releases
   api_key:
     secure: 32SAGT2RKR+4+NJX1cwMWrDt+GJ0zlzhjhZ2L5MKWJBUD3lzz37c69ZqyBWTzfpJhbUq9JEouTabRGSmy5+SH1eyUUgdw3qBXaVTEkwnMIvPoZNnO9rDEMpQM+wKz5+TRTydIw/XFr8gj+B/HkK0QZ9M0nagm/6lqtgLXdocEaGTQ2bPAzgb87xlzuqQEZwdX2HXzrUW41MC02WcUwTv2yEuSSG40t0yMOnzf76fnuvmenQxLlX5BxZl56dxEviRug+6CZgx2qE7tkP1TOCIzOb4E/EVtmTH/qJATmBYSf0X5zZw6HOaQelXJ6pkHJzpYFUXf8p+v24IzVDMfBpZnMuCTdu8xsLROQVSddN3ZT9yAieyViQIkQiDlpJQ41+c/NyDr68VEhlxZFVdDYdF6ghAWxuRA3bBsgqAFGsYY4iJOq3q0sBdbEotrVRcoInhOj1bHu1LeJOCKcRZPh7HizgqaowqMARu5VSjwOgAdFNp9OBYmwjWs8pEsDiaxm1VDYjz0PavgGx2RSMs2TQ19ikznugF8b8r+jjkyTMb41ORh/5/0gAFDB/W+QfzjHNAsrLisdnvGpWVtGi8qQSxL1e53RmhW1xJU7w4TtOHk1O4FuvHkI8IS4EHoX2Bj5xA9cqSMuammZbAVGhPAoYgXGjJk2isdfmsdmrU48xpJOA=
-  file: build/bin/*
+  file: dist/*
   on:
     repo: joelz575/swatplus

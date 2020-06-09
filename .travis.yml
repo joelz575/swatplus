@@ -20,6 +20,7 @@ script:
 - cd ..
 - mkdir dist
 - mv ./build/bin/swatplus_exe.exe "./dist/SwatPlus_exe-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+- dir /s
 deploy:
   provider: releases
   api_key:

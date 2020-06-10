@@ -1,31 +1,36 @@
 language: c
 sudo: true
 os:
-- linux
-- osx
-- windows
+  - linux
+  - osx
+  - windows
 before_install:
-- if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; elif [[ $TRAVIS_OS_NAME
-  == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user;
-  fi
-- cmake --version
+  - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; elif [[ $TRAVIS_OS_NAME
+    == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user;
+    fi
+  - cmake --version
 install:
-- mkdir build
-- cd build
-- if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src; else cmake  -G "MinGW Makefiles"
-  -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src; fi
-- cmake --build .
+  - mkdir build
+  - cd build
+  - if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src; else cmake  -G "MinGW Makefiles"
+    -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src; fi
+  - cmake --build .
 script:
-- echo "Joel all ist gut jetzt wir brauchen dienen Teste"
-- cd ..
-- mkdir dist
-- if [[ $TRAVIS_OS_NAME == windows ]]; then
-   mv ./build/bin/swatplus_exe.exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG";
-   dir dist;
-  else
-   mv ./build/bin/swatplus_exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG";
-   ls dist;
-  fi
+  - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
+  - cd ..
+  - if [[ $TRAVIS_OS_NAME == windows ]]; then
+      ./build/bin/swatplus_exe.exe
+    else
+      ./build/bin/swatplus_exe
+    fi
+  - mkdir dist
+  - if [[ $TRAVIS_OS_NAME == windows ]]; then
+     mv ./build/bin/swatplus_exe.exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG";
+     dir dist;
+    else
+     mv ./build/bin/swatplus_exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG";
+     ls dist;
+    fi
 
 deploy:
   provider: releases

@@ -15,7 +15,7 @@ FILE(GLOB src *.f90 *.c)
 add_executable(swatplus_exe ${src} )
 
 if(WIN32)
-	target_link_libraries(swatplus_exe json-c  ws2_32)
+	target_link_libraries(swatplus_exe ws2_32 json-c)
 else()
 	target_link_libraries(swatplus_exe json-c)
 endif()

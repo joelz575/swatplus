@@ -85,7 +85,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 #endif
 }
 
-void receive_(int *client, char *contenido, char *var_nombre, int *tamano_con){
+void receive_(int *client, char *var_nombre, char *tip_con, int *tamano_con){
  #ifdef _WIN32
  //Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  printf("\n Am in receive now...");
@@ -93,12 +93,16 @@ void receive_(int *client, char *contenido, char *var_nombre, int *tamano_con){
  //printf("\nLength is: %i", *len);
  int tmn;
  int n;
+ char tipo_com;
  char blankBuffer;
+ char contBuffer;
  struct json_object *parsed_json;
  struct json_object *tipo;
  struct json_object *tamano;
  struct json_object *var;
  struct json_object *matr;
+ struct json_object *contenido;
+ struct json_object *tipo_cont;
  char json_header;
 
 
@@ -110,18 +114,22 @@ void receive_(int *client, char *contenido, char *var_nombre, int *tamano_con){
  json_object_object_get_ex(parsed_json, "tamaño", &tamano);
  json_object_object_get_ex(parsed_json, "var", &var);
  json_object_object_get_ex(parsed_json, "matr", &matr);
- tamano_con = json_object_get_int(tamano);
+ json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
 
- if (tamano != 0){
- 	recv(*client, *contenido, tamano_con, 0);
+
+ tmn = json_object_get_int(tamano);
+ var_nombre = json_object_get_string(var);
+ tipo_com = json_object_get_string(tipo);
+
+ if (tmn != 0){
+ 	recv(*client, contBuffer, tmn, 0);
 	}
- else {
- 	*contenido = ' ';
- }
-
- //for(i=0; i<n)
 
  printf((char *)WSAGetLastError());
+ contenido = json_tokener_parse(contBuffer);
+ printf("Matrix true or false: %s\n",json_object_get_string(matr));
+ *tamano_con = json_object_array_length(contenido);
+
 
    // while (tmñ > 0 && n < *len) {
    //     length = read(*client,&receiveBuffer[n],*len - n);

@@ -13,6 +13,8 @@ module tinamit_module
     character(len = 3) :: cha_mode  ! 'cha' or 'sdc'
     integer :: Lluvia = 348 !temporary variable for debugging
     integer :: Bosques = 67 !temporary variables for debugging
+    logical dynamic
+    integer :: dias = 1
 contains
 
     subroutine abre (arg1, arg2, cliente_obj)
@@ -33,19 +35,24 @@ contains
         CAll opensocket(port_num, host_num, cliente_obj)
         print *, "cliente_obj=", cliente_obj
         !print *, "calibration is running...."
+        !consider calling recibe to obtain initial values
     end subroutine
 
     subroutine recibe (cliente_obj)
         integer cliente_obj
+        character(len = 1) :: temp_receiveBuffer
         character(len = :), allocatable :: receiveBuffer
-        character(len = :), allocatable :: var
-        character(len = 1) :: temp_receiveBuffer = " "
+        character(len = 6) :: var
+        character(len = 4) :: type_contents
+        integer :: size_contents
+        real :: temp_mat_receiveBuffer
+        real, allocatable :: mat_receiveBuffer
 
         receiveBuffer = ""
         print *, "Receive Buffer set to ''"
         do
-            call receive(cliente_obj, receiveBuffer, var)
-            print *, "temp receive Buffer in fortran: ", receiveBuffer
+            call receive(cliente_obj, var, type_contents, size_contents)
+            print *, "receive Buffer in fortran: ", receiveBuffer
 
             if(temp_receiveBuffer== ';'.and.(receiveBuffer == "")) then
                 cycle

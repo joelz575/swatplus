@@ -24,7 +24,11 @@
 
       call get_command_argument(1, arg1)
       call get_command_argument(2, arg2)
-      call abre(arg1, arg2, cliente_obj)
+      dynamic = ((TRIM(arg1)/='').AND.(TRIM(arg2)/=''))
+      if (dynamic) then
+        call abre(arg1, arg2, cliente_obj)
+      end if
+
       call proc_bsn
       print *, "proc_bsn"
       call proc_date_time

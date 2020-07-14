@@ -11,11 +11,11 @@ This repository is (mostly) a clone of the official SWAT+ one available [here](h
 
 We will always try to keep this repostitory as up to date as possible compared to the main SWAT+ code. Pull requests are welcome!
 
-# How to compile
+## How to compile
 If you feel like recompiling SWAT+ from source yourself (what could possibly go wrong?), you will need `CMake`. Check the
 `.travis.yml` file for an example of how it works on Windows versus Linux/OSX.
 
-# Dynamic linking
+## Dynamic linking
 SWAT+ (as well as SWAT, and nearly all other hydrological models) do not support dynamic linking at runtime. 
 In other words, if you wanted to connect a SWAT+ model with another model (e.g., an agriculture, landuse,
 system dynamics, or groundwater model) *dynamically*, with output from one becoming the input for

@@ -19,9 +19,9 @@ script:
   - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
   - cd ..
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
-      ./build/bin/swatplus_exe.exe
+      ./build/bin/swatplus_exe.exe;
     else
-      ./build/bin/swatplus_exe
+      ./build/bin/swatplus_exe;
     fi
   - mkdir dist
   - if [[ $TRAVIS_OS_NAME == windows ]]; then

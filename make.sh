@@ -1,6 +1,8 @@
+WHERE GCC
+WHERE FCC
 mkdir build
 cd build
-if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src;
-else cmake  -G "MinGW Makefiles" -A x64 DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src; fi
+cmake .
+cmake   -G "MinGW Makefiles" -D CMAKE_C_COMPILER='C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/gcc.exe' DCMAKE_FFLAGS=-m64 DCMAKE_SH="CMAKE_SH-NOTFOUND"  ../src
 cmake --build .
-#-DCMAKE_GENERATOR_PLATFORM=x64
+cmd /k

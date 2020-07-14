@@ -406,7 +406,7 @@
 
             do iob = 1, sp_ob%objs
               if (ob(iob)%fired == 0 .and. ob(iob)%rcv_tot > 0) then
-                write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),  &
+                  write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),&
                                      ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
               end if 
             end do

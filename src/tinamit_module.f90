@@ -1,11 +1,10 @@
 module tinamit_module
 
-
     use landuse_data_module
-    use hru_module, ONLY: hru
-    use hru_lte_module, ONLY: hlt
-    use channel_module, ONLY: ch
-    use sd_channel_module, ONLY: sd_ch
+    use hru_module, ONLY : hru
+    use hru_lte_module, ONLY : hlt
+    use channel_module, ONLY : ch
+    use sd_channel_module, ONLY : sd_ch
 
     save
     integer cliente_obj
@@ -24,7 +23,6 @@ contains
         integer cliente_obj
         integer :: port_num
 
-
         host_num = arg2
         write (*, *) "host_num= ", host_num
         READ(arg1, '(I5)') port_num
@@ -40,231 +38,140 @@ contains
 
     subroutine recibe (cliente_obj)
         integer cliente_obj
-        character(len = 1) :: temp_receiveBuffer
-        character(len = :), allocatable :: receiveBuffer
-        character(len = 6) :: var
-        character(len = 4) :: type_contents
-        integer :: size_contents
-        real :: temp_mat_receiveBuffer
-        real, allocatable :: mat_receiveBuffer
+        !character, dimension(:, :), allocatable :: charBuffer
+        character(len = 6) :: var, command
+        character(len = 3) :: tipo_contents
+        integer :: tmn_contents
+        real, allocatable, dimension(:) :: realBuffer(:)
+        integer, allocatable, dimension(:) :: intBuffer(:)
 
-        receiveBuffer = ""
-        print *, "Receive Buffer set to ''"
-        do
-            call receive(cliente_obj, var, type_contents, size_contents)
-            print *, "receive Buffer in fortran: ", receiveBuffer
+        print *, "About to Recieve..."
 
-            if(temp_receiveBuffer== ';'.and.(receiveBuffer == "")) then
-                cycle
+        call receive (cliente_obj, var, tipo_contents, tmn_contents, intBuffer, realBuffer) !charBuffer
+        print *, "Cliente Obj: ", cliente_obj
+        print *, "Variable Name (Command Name): ", varCom
+        print *, "Content Data Type: ", tipo_contents
+        print *, "Size of contents: ", tmn_contents
+        print *, "intBuffer contents: ", intBuffer
+        print *, "realBuffer contents: ", realBuffer
 
-            elseif(temp_receiveBuffer== ';'.and.(.not.receiveBuffer == ""))then
-                exit
+        call evaluar(cliente_obj, command, var, tmn_contents, intBuffer, realBuffer)
 
-            else
-                !print *, "receive Buffer is not empty"
-                receiveBuffer = receiveBuffer // temp_receiveBuffer
-                print *, "receiveBuffer: ", receiveBuffer
-            end if
-        end do
-        call evaluar(cliente_obj, receiveBuffer)
     end subroutine recibe
 
-    subroutine evaluar (cliente_obj, receiveBuffer)
+    subroutine evaluar (cliente_obj, orden, var, tmn_contents, intBuffer, realBuffer)
 
         character(len = :), allocatable :: senderBuffer
-        character(*) :: receiveBuffer
-        character(len = 32) :: temp_senderBuffer
-        character(:), allocatable :: command, command_spec
-        character(:), allocatable :: variable_Name, variable_Spec, variable_Value
-        character(:), allocatable :: temp_s1, temp_s2
-        integer :: variable_Length, cliente_obj
+        character(*) :: var, orden
+        integer :: tmn_contents, cliente_obj
+        integer, dimension(tmn_contents) :: intBuffer
+        real, dimension(tmn_contents) :: realBuffer
 
+        print *, "Command: ", orden
 
-        !defaulting command variables, reading them and putting them into variables
-        if(.not.allocated(temp_s1)) allocate(character(len = LEN(receiveBuffer)) :: temp_s1)
-        if(.not.allocated(temp_s2)) allocate(character(len = LEN(receiveBuffer)) :: temp_s2)
-        print *, "allocated it"
-        temp_s1(1:len(receiveBuffer)) = " "
-        temp_s2(1:len(receiveBuffer)) = " "
-        call split_string(trim(receiveBuffer), len(trim(receiveBuffer)), temp_s1, temp_s2, ":")
-
-        command = trim(temp_s1)
-        command_spec = trim(temp_s2)
-        if(allocated(temp_s1)) deallocate(temp_s1)
-        if(allocated(temp_s2)) deallocate(temp_s2)
-        print *, "the split strings, command: ", command
-        print *, "the split strings, command_spec: ", command_spec
-
-        if(command == 'FIN')then
+        if(orden == 'CERRAR')then
             call closeSock(cliente_obj)
             stop
             stop
             stop
         end if
 
-        if(command == 'CORR')then
+        if(orden == 'CORRER')then
             senderBuffer = "running"
             call sendr(cliente_obj, senderBuffer)
         end if
 
-        if(trim(command) == "TOMAR")then
-            !reading the variables required
-            if(.not.allocated(temp_s1)) allocate(character(len = LEN(command_spec)) :: temp_s1)
-            if(.not.allocated(temp_s2)) allocate(character(len = LEN(command_spec)) :: temp_s2)
-
-            temp_s1(1:len(command_spec)) = " "
-            temp_s2(1:len(command_spec)) = " "
-            call split_string(trim(command_spec), len(trim(command_spec)), temp_s1, temp_s2, ":")
-            variable_Name = trim(temp_s1)
-            variable_Spec = trim(temp_s2)
-            if(allocated(temp_s1)) deallocate(temp_s1)
-            if(allocated(temp_s2)) deallocate(temp_s2)
-            print *, "the split strings, variable: ", variable_Name
-            print *, "the split strings, variable spec: ", variable_Spec
-
-            if(.not.allocated(temp_s1)) allocate(character(len = LEN(variable_Spec)) :: temp_s1)
-            if(.not.allocated(temp_s2)) allocate(character(len = LEN(variable_Spec)) :: temp_s2)
-            temp_s1(1:len(variable_Spec)) = " "
-            temp_s2(1:len(variable_Spec)) = " "
-            call split_string(trim(variable_Spec), len(trim(variable_Spec)), temp_s1, temp_s2, ":")
-            READ(temp_s1, '(I5)') variable_Length
-            variable_Value = trim(temp_s2)
-            if(allocated(temp_s1)) deallocate(temp_s1)
-            if(allocated(temp_s2)) deallocate(temp_s2)
-            print *, "the split strings, variable Length: ", variable_Length
-            print *, "the split strings, variable value: ", variable_Value
-            call tomar (cliente_obj, trim(variable_Name), variable_Length, trim(variable_Value))
+        if(trim(orden) == "TOMAR_")then
+            call tomar (cliente_obj, var, tmn_contents, intBuffer, realBuffer)
         end if
 
-        if(command == 'OBT') then
-            call obtener (cliente_obj, trim(command_spec))
+        if(orden == 'DAR___') then
+            call obtener (cliente_obj, var)
         end if
     end subroutine evaluar
 
-    subroutine tomar (cliente_obj, variable_Name, variable_Length, variable_Value)
+    subroutine tomar (cliente_obj, variable_Name, variable_Length, intBuffer, realBuffer)
 
-        character (*) :: variable_Name, variable_Value
+        character (*) :: variable_Name
         character(len = :), allocatable :: senderBuffer
         integer :: variable_Length, cliente_obj, index, i
+        integer, dimension(variable_Length) :: intBuffer
+        real, dimension(variable_Length) :: realBuffer
         integer :: f = 1
         real, allocatable, dimension(:) :: variable(:)
 
         variable_Name = trim(variable_Name)
-        variable_Value = trim(variable_Value)
         index = 0
 
-        if(1==SCAN(variable_Value, '[')) then
-
-            !allocate variable before read
-            print *, "Is an array: "
-            do  i = 2, (LEN(trim(variable_Value)) - 1)
-
-                !print *, "i is currently: ", i
-
-                !print *, "index is currently: ", index
-
-                if (.not.allocated(variable)) then
-                    allocate (variable(variable_Length))
-                    print *, "shape(variable): ", shape(variable)
-                end if
-
-                print *, "variable: ", variable
-
-                if (((variable_Value(i:i) == " ").EQV.(variable_Value(i:i)== ".")).and.index<i) then
-                    index = i + SCAN(variable_Value(i + 1:), " ")
-                    if (index == i) then
-                        index = i + SCAN(variable_Value(i + 1:), "]")-1
-                    end if
-                    print *, "current index: ", index
-                    print *, "f= ", f
-                    if(f==variable_Length)then
-                        READ(variable_Value(i:(len(trim(variable_Value)) - 1)), *) variable(f)
-                        exit
-
-                    else
-                        READ(variable_Value(i:index), *) variable(f)
-                        f = f + 1
-                    end if
-
-                end if
-
+        if (size(hru) > 1) then
+            do i = 1, size(hru)
+                print *, "hru ", i, " landuse: ", hru(i)%luse
             end do
 
-            !print *, "lum " , lum(:)
-            !print *, "lum%mgt-ops ", lum%mgt_ops(:)
-            !print *, "size(hru): ", size(hru)
+        else
+            print *, "hlt ", hlt(:)
+            print *, "hlt%cn2 ", hlt(:)%cn2
+            print *, "hlt%lsu ", hlt(:)%lsu
+        end if
 
-            if (size(hru) > 1) then
-                do i = 1, size(hru)
-                    print *, "hru ", i, " landuse: ", hru(i)%luse
-                end do
+        if (size(ch) > 0) then
+            print *, "ch(:): ", ch(:)
 
-            else
-                print *, "hlt ", hlt(:)
-                print *, "hlt%cn2 ", hlt(:)%cn2
-                print *, "hlt%lsu ", hlt(:)%lsu
-            end if
+        else
+            print *, "size(sd_ch): ", size(sd_ch)
+            do f = 1, size(sd_ch)
+                print *, "sd_ch(", f, "): ", sd_ch(f)%aqu_link_ch
 
-            if (size(ch) > 0) then
-                print *, "ch(:): ", ch(:)
+            end do
+        end if
 
-            else
-                print *, "size(sd_ch): ", size(sd_ch)
-                do f = 1,size(sd_ch)
-                    print *, "sd_ch(", f, "): ", sd_ch(f)%aqu_link_ch
-
-                end do
-            end if
-
-            select case (trim(variable_Name))
+        select case (trim(variable_Name))
             !landuse
 
             !water flow, contaminants, (P o and ao then N, K)
             !ch(:)%
-            CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
+        CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
             do i = 1, size(ch)
                 ch(i)%algae = variable(i)
 
             end do
             print *, "algae: ", ch(:)%algae
 
-            CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
+        CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
             do i = 1, size(ch)
                 ch(i)%flwin = variable(i)
                 print *, "flwin: ", ch(:)%flwin
             end do
 
-            CASE("Lluvia")           ! test variable for debugging
-                Lluvia = variable(1)
+        CASE("Lluvia")           ! test variable for debugging
+            Lluvia = variable(1)
             print *, "Lluvia: ", Lluvia
 
-            CASE("Bosques")           ! test variable for debugging
+        CASE("Bosques")           ! test variable for debugging
 
-                Bosques = variable(1)
+            Bosques = variable(1)
             print *, "Bosques: ", Bosques
 
-            CASE default
+        CASE default
             print *, "Unknown variable: ", variable_Name
 
-            end select
+        end select
 
-            senderBuffer = "recvd"
-            print *, "About to send recvd"
-            call sendr(cliente_obj, senderBuffer)
+        senderBuffer = "recvd"
+        print *, "About to send recvd"
 
-        else
-            print *, "The transmission failed data type cannot be read, '[' key expected in: ", variable_Value
-        end if
+        call sendr(cliente_obj, senderBuffer)
+
         call recibe(cliente_obj)
     end subroutine tomar
 
-    subroutine obtener (cliente_obj, command_spec)
+    subroutine obtener (cliente_obj, varNombre)
         integer :: cliente_obj
-        character (*) :: command_spec
+        character (*) :: varNombre
         character(len = :), allocatable :: senderBuffer
         character(len = 32) :: temp_senderBuffer
 
-        select case (trim(command_spec))
+        select case (trim(varNombre))
 
             !calibration/initialization
         CASE("hru_cha_mod")
@@ -549,8 +456,7 @@ contains
             senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             senderBuffer = senderBuffer // '];'
 
-
-            print *, "Unknown variable: ", command_spec
+            print *, "Unknown variable: ", varNombre
         end select
         call sendr(cliente_obj, senderBuffer)
         print *, "Sent sender buffer: "

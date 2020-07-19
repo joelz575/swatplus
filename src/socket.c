@@ -90,6 +90,8 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
 ){
  #ifdef _WIN32
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
+ 	//return
+ 	//setvbuf(stdout, NULL, _IONBF, 0);
  	printf("\n Am in receive now...");
  	printf("\n INT buffer: %i", intCont);
  	printf("\n FLOAT buffer: %f", floatCont);
@@ -116,13 +118,14 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
 	printf((char *)WSAGetLastError());
 
  	printf("About to receive json_header....\n");
- 	n = recv(*client, &json_header, (int) blankBuffer, 0);
+ 	n = recv(*client, &json_header, ((int) blankBuffer), 0);
  	printf((char *)WSAGetLastError());
  	printf("Receive Results from json_header: %i\n", n);
- 	printf("Received json-header: %s\n", json_header);
+ 	//printf("Received json-header: %s\n", (char) json_header);
  	sendr_(client, "RCVD");
 
  	parsed_json = json_tokener_parse(json_header);
+ 	printf("Parsed json: %s", json_object_get_string(parsed_json));
  	json_object_object_get_ex(parsed_json, "orden", &orden);
  	printf("Orden: ", json_object_get_string(orden));
  	//json_object_object_get_ex(parsed_json, "tamaño", &tamano);

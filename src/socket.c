@@ -64,11 +64,15 @@ void opensocket_(int *portNum, char *hostNum, int *client){
  int portNumber = *portNum;
  printf("\nHost Number in C: "); printf(hostNum);
  struct sockaddr_in serv_addr;
+
  if ((*client = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Socket creation error \n");
         //return -1;
     }
+ else{
+ 	printf("This is the client in C: %d", client);
+ }
  serv_addr.sin_family = AF_INET;
  serv_addr.sin_port = htons(portNumber);
  if(inet_pton(AF_INET, hostNum, &serv_addr.sin_addr)<=0)

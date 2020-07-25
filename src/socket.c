@@ -97,8 +97,11 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
  	//return
  	//setvbuf(stdout, NULL, _IONBF, 0);
  	printf("\n Am in receive now...");
+ 	fflush( stdout );
  	printf("\n INT buffer: %i", intCont);
+ 	fflush( stdout );
  	printf("\n FLOAT buffer: %f", floatCont);
+ 	fflush( stdout );
  	//printf("\n CHAR buffer: %s", charCont);
  	int recvRes;
  	int n;
@@ -112,39 +115,54 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
  	struct json_object *matr;
  	struct json_object *contenido;
  	struct json_object *tipo_cont;
- 	char json_header;
+ 	char json_header[20000];
 
 	printf("Just before receive line...");
+	fflush( stdout );
 	n = recv(*client, &blankBuffer, 2, 0);
 	printf("Size accoring to n variable: %d", n);
+		fflush( stdout );
 	printf("Size according to blank Buffer: %d", (int)blankBuffer);
+		fflush( stdout );
 	sendr_(client, "RCVD");
 	printf((char *)WSAGetLastError());
+		fflush( stdout );
 
  	printf("About to receive json_header....\n");
- 	n = recv(*client, &json_header, ((int) blankBuffer), 0);
+ 		fflush( stdout );
+ 	n = recv(*client, json_header, ((int) blankBuffer), 0);
  	printf((char *)WSAGetLastError());
+ 		fflush( stdout );
  	printf("Receive Results from json_header: %i\n", n);
+ 		fflush( stdout );
+ 	printf("json_header: %s\n", json_header);
+ 		fflush( stdout );
  	//printf("Received json-header: %s\n", (char) json_header);
  	sendr_(client, "RCVD");
 
  	parsed_json = json_tokener_parse(json_header);
- 	printf("Parsed json: %s", json_object_get_string(parsed_json));
+ 	printf("Parsed json: %s\n", json_object_get_string(parsed_json));
+ 		fflush( stdout );
  	json_object_object_get_ex(parsed_json, "orden", &orden);
- 	printf("Orden: ", json_object_get_string(orden));
+ 	printf("Orden: %s\n", json_object_get_string(orden));
+ 		fflush( stdout );
  	//json_object_object_get_ex(parsed_json, "tamaño", &tamano);
  	//printf(tamano);
  	json_object_object_get_ex(parsed_json, "var", &var);
- 	printf(json_object_get_string(var));
+ 	printf("%s\n", json_object_get_string(var));
+ 		fflush( stdout );
  	json_object_object_get_ex(parsed_json, "matr", &matr);
- 	printf(json_object_get_string(matr));
+ 	printf("%s\n", json_object_get_string(matr));
+ 		fflush( stdout );
  	json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
 	command = json_object_get_string(orden);
- 	printf("Received Command: %s", command);
+ 	printf("Received Command: %s\n", command);
+ 		fflush( stdout );
 
  	if(command == "TOMAR_"){
  		var_nombre = json_object_get_string(var);
- 		printf("Received Variable: %s", var_nombre);
+ 		printf("Received Variable: %s\n", var_nombre);
+ 			fflush( stdout );
 
  		tipo_contenido = json_object_get_string(tipo_cont);
 
@@ -152,7 +170,8 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
 
  		contenido = json_tokener_parse(contBuffer);
 
- 		printf("This is the matrix: %s", contenido);
+ 		printf("This is the matrix: %s\n", contenido);
+ 			fflush( stdout );
  		*tamano_con = json_object_array_length(contenido);
 
  	 	if(tamano_con != 0){
@@ -168,7 +187,7 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
  	 				intCont = (int *)malloc(sizeof(int)*0);
  	 				*floatCont = (int *) json_object_get_array(contenido);
  	 			case 'str':
- 	 				printf("Transfering Data of string types are not yet supported.");
+ 	 				printf("Transfering Data of string types are not yet supported.\n");
  	 				//charCont = (int *)malloc(sizeof(char)*((int)tamano_con));
  	 				intCont = (int *)malloc(sizeof(int)*0);
  	 				floatCont = (int *)malloc(sizeof(double)*0);
@@ -179,6 +198,7 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
  		else{
  			//charCont = (int *)malloc(sizeof(char)*0);
  			printf("No data was transferred, in the exchange.");
+ 				fflush( stdout );
  			intCont = (int *)malloc(sizeof(int)*0);
  			floatCont = (int *)malloc(sizeof(double)*0);
 		}
@@ -188,6 +208,7 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
 
 
  	printf((char *)WSAGetLastError());
+ 		fflush( stdout );
 	sendr_(client, "RCVD");
  #else
  	//Porque tenga una connexión exitosa, podemos recibir datos del socket.

@@ -406,9 +406,11 @@
 
             do iob = 1, sp_ob%objs
               if (ob(iob)%fired == 0 .and. ob(iob)%rcv_tot > 0) then
-                  write (*, *) "This is the ob array: ", ob
-                  write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),&
-                                     ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
+                  write (*, *) "This is the ob(iob) object: ", iob, ob(iob)%typ, ob(iob)%num
+                  write (*, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, &
+                          (ob(iob)%obtyp_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
+                  write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, &
+                          (ob(iob)%obtyp_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
               end if 
             end do
             write (*,1002) 

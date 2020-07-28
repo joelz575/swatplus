@@ -19,7 +19,8 @@ install:
     -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src; fi
   - cmake --build .
 script:
-  - sh swatplusTest.sh
+  - if [[ $TRAVIS_OS_NAME == linux ]]; then chmod +x swatplusTest.sh; ./swatplusTest.sh;
+  - else swatplusTest.sh; fi
   - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
   - cd ..
   - if [[ $TRAVIS_OS_NAME == windows ]]; then

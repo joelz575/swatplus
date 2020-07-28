@@ -16,6 +16,7 @@
 
 
 
+void sendr_(int *client, char *senderBuffer);
 
 void opensocket_(int *portNum, char *hostNum, int *client){
 #ifdef _WIN32

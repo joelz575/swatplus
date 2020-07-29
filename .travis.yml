@@ -5,12 +5,12 @@ os:
   - osx
   - windows
 before_install:
-  - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; choco install python; python get-pip.py;
+  - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; choco install python; python get-pip.py; choco install git -params '"/GitAndUnixToolsOnPath"';
     elif [[ $TRAVIS_OS_NAME
-    == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user; python3 --version;
+    == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user; python3 --version; sudo apt install git-all;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
       -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
-    brew doctor; brew install python3; python3 --version; alias python=python3.x; fi
+    brew doctor; brew install python3; python3 --version; alias python=python3.x; brew install git; fi
   - cmake --version
 install:
   - mkdir build

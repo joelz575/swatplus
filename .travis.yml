@@ -10,7 +10,7 @@ before_install:
     == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user; python3 --version;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
       -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
-    brew doctor; brew install python3; python3 --version; alias python=python3.x; brew install git; fi
+    brew doctor; brew install python3; python3 --version; alias python=python3.x; fi
   - cmake --version
 install:
   - mkdir build

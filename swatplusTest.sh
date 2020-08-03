@@ -1,3 +1,4 @@
+python3 -m pip install --upgrade setuptools
 python3 -m pip install git+https://github.com/joelz575/Tinamit
 #from Tinamit import test.py
 python3 test.py #has to be in swatplus not with Tinamit

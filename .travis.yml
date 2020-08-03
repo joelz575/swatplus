@@ -15,7 +15,7 @@ before_install:
 install:
   - mkdir build
   - cd build
-  - if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src; else make.sh;
+  - if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src; else ../make.sh;
     #cmake  -G "MinGW Makefiles" DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src;
     fi
   - cmake --build .

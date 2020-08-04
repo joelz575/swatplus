@@ -1,8 +1,8 @@
 #if statement for operating systems
 if [[ $TRAVIS_OS_NAME == windows ]]
 then
-python -m pip install --upgrade setuptools
-python -m pip install git+https://github.com/joelz575/Tinamit
+python -m ensurepip install --upgrade setuptools
+python -m ensurepip install git+https://github.com/joelz575/Tinamit
 python test.py
 else
 python3 -m pip install --upgrade setuptools

@@ -12,8 +12,8 @@ before_install:
     sudo apt-get update; apt-get update; apt list | grep python3.8; sudo apt-get install python3.8;
     sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1;
     sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2;
-    #sudo update-alternatives --config python3;
-    #python3 -V;
+    sudo update-alternatives --config python3;
+    python3 -V;
     sudo apt install python3-pip;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
       -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";

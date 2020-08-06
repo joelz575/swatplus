@@ -8,10 +8,7 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; choco install python;
     elif [[ $TRAVIS_OS_NAME
     == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user;
-    sudo add-apt-repository ppa:deadsnakes/ppa; sudo apt-get update; sudo apt-get install python3.8;
-    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1;
-    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2;
-    sudo update-alternatives --config python3;
+    printf '\n' | sudo add-apt-repository ppa:deadsnakes/ppa; sudo apt-get update; sudo apt-get install python3.6;
     python3 -V;
     sudo apt install python3-pip;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e

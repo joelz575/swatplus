@@ -2,6 +2,7 @@
 if [[ $TRAVIS_OS_NAME == windows ]]
 then
 python -m ensurepip
+python -m pip install setuptools
 python -m pip install --upgrade setuptools
 python -m pip install git+https://github.com/joelz575/Tinamit
 python test.py

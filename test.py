@@ -2,7 +2,7 @@ from tinamit.conect import Conectado
 from tinamit.ejemplos import obt_ejemplo
 from tinamit.envolt.bf.swat_plus.envolt import ModeloSWATPlus
 from tinamit.tiempo import Tiempo, EspecTiempo
-#import matplotlib.pyplot as plt making a push push
+#import matplotlib.pyplot as plt
 
 mdinamicasocial = obt_ejemplo('sencillo/mds_bosques.py')
 #biofisica = ModeloSWATPlus("C:\\Users\\Joel\\Documents\\Prof Adamowski\\Iximulew\\SWAT+\\New SWAT+\\LagoAtitlan\\Scenarios\\Default\\TxtInOut", connectar= True)

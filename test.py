@@ -5,7 +5,7 @@ from tinamit.envolt.bf.swat_plus.envolt import ModeloSWATPlus
 from tinamit.tiempo import Tiempo, EspecTiempo
 #import matplotlib.pyplot as plt
 
-ModeloSWATPlus.estab_conf("exe", "/build/bin/swatplus_exe.exe")
+ModeloSWATPlus.estab_conf("exe",str(os.path.dirname(os.path.realpath(__file__)))+"/build/bin/swatplus_exe.exe")
 mdinamicasocial = obt_ejemplo('sencillo/mds_bosques.mdl')
 #biofisica = ModeloSWATPlus("C:\\Users\\Joel\\Documents\\Prof Adamowski\\Iximulew\\SWAT+\\New SWAT+\\LagoAtitlan\\Scenarios\\Default\\TxtInOut", connectar= True)
 biofisica = ModeloSWATPlus(str(os.path.dirname(os.path.realpath(__file__)))+"/Trial Robit/Scenarios/Default/TxtInOut", connectar=False)

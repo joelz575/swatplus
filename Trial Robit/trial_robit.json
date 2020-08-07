@@ -1,0 +1,11 @@
+{
+	"swatplus-project": {
+		"version": "1.2.3",
+		"name": "Trial Robit",
+		"databases": {
+			"project": "Trial Robit.sqlite",
+			"datasets": "swatplus_datasets.sqlite"
+		},
+		"model": "SWAT+"
+	}
+}

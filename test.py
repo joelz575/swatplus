@@ -1,8 +1,7 @@
-import Tinamit
-from Tinamit.conect import Conectado
-from Tinamit.ejemplos import obt_ejemplo
-from Tinamit.envolt.bf.swat_plus.envolt import ModeloSWATPlus
-from Tinamit.tiempo import Tiempo, EspecTiempo
+from tinamit.conect import Conectado
+from tinamit.ejemplos import obt_ejemplo
+from tinamit.envolt.bf.swat_plus.envolt import ModeloSWATPlus
+from tinamit.tiempo import Tiempo, EspecTiempo
 #import matplotlib.pyplot as plt
 
 mdinamicasocial = obt_ejemplo('sencillo/mds_bosques.py')

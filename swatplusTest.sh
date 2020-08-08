@@ -6,6 +6,14 @@ python -m pip install setuptools
 python -m pip install --upgrade setuptools
 python -m pip install git+https://github.com/joelz575/Tinamit
 python test.py
+
+elif [[ $TRAVIS_OS_NAME == osx ]]
+then
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade setuptools
+python3 -m pip install git+https://github.com/joelz575/Tinamit
+python3 test.py
+
 else
 python3.6 -m pip install --upgrade pip
 python3.6 -m pip install --upgrade setuptools

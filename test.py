@@ -3,7 +3,7 @@ from tinamit.conect import Conectado
 from tinamit.ejemplos import obt_ejemplo
 from tinamit.envolt.bf.swat_plus.envolt import ModeloSWATPlus
 from tinamit.tiempo import Tiempo, EspecTiempo
-#import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt just another comment
 
 ModeloSWATPlus.estab_conf("exe",str(os.path.dirname(os.path.realpath(__file__)))+"/build/bin/swatplus_exe")
 mdinamicasocial = obt_ejemplo('sencillo/mds_bosques.mdl')

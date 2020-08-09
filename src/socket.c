@@ -306,7 +306,7 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
 
 	n = tmn = read(*client, blankBuffer, 4);
 
- 	read(client, json_header, (int)blankBuffer);
+ 	read(*client, json_header, (int)blankBuffer);
  	printf("Receive Results from json_header: %i\n", n);
  	fflush( stdout );
  	printf("Received json-header: %s\n", (char) json_header);

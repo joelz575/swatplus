@@ -119,7 +119,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 #endif
 }
 
-void receive_(int *client, char command, char *var_nombre, char *tip_con, int *tamano_con, int *intCont[], float *floatCont[] //, char *charCont[]
+void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *tamano_con, int *intCont[], float *floatCont[] //, char *charCont[]
 ){
  #ifdef _WIN32
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
@@ -134,9 +134,8 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
  	//printf("\n CHAR buffer: %s", charCont);
  	int recvRes;
  	int n;
- 	char tipo_contenido;
 	char blankBuffer;
- 	char contBuffer;
+ 	char contBuffer[20000];
  	struct json_object *parsed_json;
  	struct json_object *orden;
  	//struct json_object *tamano;
@@ -184,46 +183,65 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
  	printf("%s\n", json_object_get_string(matr));
  		fflush( stdout );
  	json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
+	printf("%s\n", json_object_get_string(tipo_cont));
+	fflush(stdout);
 	command = json_object_get_string(orden);
  	printf("Received Command: %s\n", command);
  		fflush( stdout );
 
- 	if(command == "TOMAR_"){
+ 	if(strncmp(command, "TOMAR_", 6) == 0){
  		var_nombre = json_object_get_string(var);
  		printf("Received Variable: %s\n", var_nombre);
  			fflush( stdout );
 
- 		tipo_contenido = json_object_get_string(tipo_cont);
+ 		tip_con = json_object_get_string(tipo_cont);
 
- 		recv(*client, &contBuffer, 5, 0);
-
+		printf("Receiving content buffer...");
+			fflush( stdout );
+ 		recv(*client, contBuffer, 20000, 0);
+		printf("Content Received: %s\n", contBuffer);
+			fflush( stdout );
  		contenido = json_tokener_parse(contBuffer);
 
- 		printf("This is the matrix: %s\n", contenido);
+ 		printf("This is the received matrix: %s\n", json_object_get_string(contenido));
  			fflush( stdout );
- 		*tamano_con = json_object_array_length(contenido);
-
- 	 	if(tamano_con != 0){
- 			switch(tipo_contenido){
- 				case 'int':
- 	 				intCont = (int *)malloc(sizeof(int)*((int) tamano_con));
- 	 				//charCont = (int *)malloc(sizeof(char)*0);
- 	 				floatCont = (int *)malloc(sizeof(double)*0);
- 	 				*intCont = (int *) json_object_get_array(contenido);
- 	 			case 'flt':
- 	 				floatCont = (int *)malloc(sizeof(double)*((int)tamano_con));
- 	 				//charCont = (int *)malloc(sizeof(char)*0);
- 	 				intCont = (int *)malloc(sizeof(int)*0);
- 	 				*floatCont = (int *) json_object_get_array(contenido);
- 	 			case 'str':
- 	 				printf("Transfering Data of string types are not yet supported.\n");
- 	 				//charCont = (int *)malloc(sizeof(char)*((int)tamano_con));
- 	 				intCont = (int *)malloc(sizeof(int)*0);
- 	 				floatCont = (int *)malloc(sizeof(double)*0);
- 	 			default :
- 	 				exit(-1);
- 	 			}
-			}
+ 		tamano_con = json_object_array_length(contenido);
+		printf("Array length of matrix: %d\n", tamano_con);
+			fflush( stdout );
+ 	 	if(tamano_con > 0){
+ 	 		printf("Received matrix of length greater than 0...");
+ 			if(strncmp(tip_con, "int", 3) == 0){
+ 			printf("It is an int");
+ 			fflush(stdout);
+			//intCont = (int *)malloc(sizeof(int)*((int) tamano_con));
+ 	 		//charCont = (int *)malloc(sizeof(char)*0);
+ 	 		//floatCont = (int *)malloc(sizeof(double)*0);
+ 	 		memcpy(intCont, json_object_get_array(contenido), tamano_con+1);
+ 	 		//*intCont = (int *) json_object_get_array(contenido);
+ 	 		printf("int buffer in C: %d\n", intCont[0]);
+		}
+		else if( strncmp(tip_con, "flt", 3) == 0){
+			printf("It is a float");
+			fflush(stdout);
+			floatCont = (int *)malloc(sizeof(double)*((int)tamano_con));
+ 	 		//charCont = (int *)malloc(sizeof(char)*0);
+ 	 		intCont = (int *)malloc(sizeof(int)*0);
+			*floatCont = (int *) json_object_get_array(contenido);
+			printf("Json Object to array: %f", json_object_get_array(contenido)[0]);
+			//for(i = 0; i < tamano_con; i++){
+			//	floatCont[i] = json_object_array_
+			//}
+			//memcpy(floatCont, json_object_get_array(contenido), tamano_con+1);
+			printf("float buffer in C: %f\n", floatCont[0]);
+		}
+		else{
+			printf("\n\n\n\n\nInvalid type for data transfer!!\n\n\n\n\n");
+			printf("Note: Transfering Data of string types are not yet supported.\n");
+ 	 		//charCont = (int *)malloc(sizeof(char)*((int)tamano_con));
+ 	 		intCont = (int *)malloc(sizeof(int)*0);
+ 	 		floatCont = (int *)malloc(sizeof(double)*0);
+		}
+	}
  		else{
  			//charCont = (int *)malloc(sizeof(char)*0);
  			printf("No data was transferred, in the exchange.");
@@ -233,8 +251,6 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
 		}
 
  	}
-
-
 
  	printf((char *)WSAGetLastError());
  		fflush( stdout );
@@ -316,7 +332,7 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
  	printf("Received Command: %s\n", command);
  	fflush( stdout );
 
- 	if(command == "TOMAR_"){
+ 	if(strncmp(command, "TOMAR_", 6) == 0){
  		var_nombre = json_object_get_string(var);
  		printf("Received Variable: %s", var_nombre);
  		fflush( stdout );
@@ -332,31 +348,30 @@ void receive_(int *client, char command, char *var_nombre, char *tip_con, int *t
  		*tamano_con = json_object_array_length(contenido);
 
  	 	if(tamano_con != 0){
- 			switch(tipo_contenido){
- 				case 'int':
- 	 				intCont = (int *)malloc(sizeof(int)*((int) tamano_con));
- 	 				//charCont = (int *)malloc(sizeof(char)*0);
- 	 				floatCont = (int *)malloc(sizeof(double)*0);
- 	 				*intCont = (int *) json_object_get_array(contenido);
- 	 			case 'flt':
- 	 				floatCont = (int *)malloc(sizeof(double)*((int)tamano_con));
- 	 				//charCont = (int *)malloc(sizeof(char)*0);
- 	 				intCont = (int *)malloc(sizeof(int)*0);
- 	 				*floatCont = (int *) json_object_get_array(contenido);
- 	 			case 'str':
- 	 				printf("Transfering Data of string types are not yet supported.");
- 	 				fflush( stdout );
- 	 				//charCont = (int *)malloc(sizeof(char)*((int)tamano_con));
- 	 				intCont = (int *)malloc(sizeof(int)*0);
- 	 				floatCont = (int *)malloc(sizeof(double)*0);
- 	 			default :
- 	 				exit(-1);
- 	 			}
-			}
+ 			if(strncmp(tip_con, "int", 3) == 0){
+			intCont = (int *)malloc(sizeof(int)*((int) tamano_con));
+ 	 		//charCont = (int *)malloc(sizeof(char)*0);
+ 	 		floatCont = (int *)malloc(sizeof(double)*0);
+ 	 		*intCont = (int *) json_object_get_array(contenido);
+		}
+		else if( strncmp(tip_con, "flt", 3) == 0){
+			floatCont = (int *)malloc(sizeof(double)*((int)tamano_con));
+ 	 		//charCont = (int *)malloc(sizeof(char)*0);
+ 	 		intCont = (int *)malloc(sizeof(int)*0);
+			*floatCont = (int *) json_object_get_array(contenido);
+		}
+		else{
+			printf("\n\n\n\n\nInvalid type for data transfer!!\n\n\n\n\n");
+			printf("Note: Transfering Data of string types are not yet supported.\n");
+ 	 		//charCont = (int *)malloc(sizeof(char)*((int)tamano_con));
+ 	 		intCont = (int *)malloc(sizeof(int)*0);
+ 	 		floatCont = (int *)malloc(sizeof(double)*0);
+		}
+	}
  		else{
  			//charCont = (int *)malloc(sizeof(char)*0);
  			printf("No data was transferred, in the exchange.");
- 			fflush( stdout );
+ 				fflush( stdout );
  			intCont = (int *)malloc(sizeof(int)*0);
  			floatCont = (int *)malloc(sizeof(double)*0);
 		}

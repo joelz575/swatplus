@@ -8,7 +8,7 @@ from tinamit.tiempo import Tiempo, EspecTiempo
 ModeloSWATPlus.estab_conf("exe",str(os.path.dirname(os.path.realpath(__file__)))+"/build/bin/swatplus_exe")
 mdinamicasocial = obt_ejemplo('sencillo/mds_bosques.mdl')
 #biofisica = ModeloSWATPlus("C:\\Users\\Joel\\Documents\\Prof Adamowski\\Iximulew\\SWAT+\\New SWAT+\\LagoAtitlan\\Scenarios\\Default\\TxtInOut", connectar= True)
-biofisica = ModeloSWATPlus(str(os.path.dirname(os.path.realpath(__file__)))+"/Trial Robit/Scenarios/Default/TxtInOut", connectar=False)
+biofisica = ModeloSWATPlus(str(os.path.dirname(os.path.realpath(__file__)))+"/Trial Robit/Scenarios/Default/TxtInOut", connectar= True)
 
 modelo_actual = Conectado(bf=biofisica, mds=mdinamicasocial)
 

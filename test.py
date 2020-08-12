@@ -1,4 +1,5 @@
 import os
+from tinamit import IDMEnchufes
 from tinamit.conect import Conectado
 from tinamit.ejemplos import obt_ejemplo
 from tinamit.envolt.bf.swat_plus.envolt import ModeloSWATPlus

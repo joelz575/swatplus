@@ -185,6 +185,8 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
  	json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
 	printf("%s\n", json_object_get_string(tipo_cont));
 	fflush(stdout);
+
+
 	command = json_object_get_string(orden);
  	printf("Received Command: %s\n", command);
  		fflush( stdout );
@@ -196,18 +198,14 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
 
  		tip_con = json_object_get_string(tipo_cont);
 
-		printf("Receiving content buffer...");
-			fflush( stdout );
- 		recv(*client, contBuffer, 20000, 0);
-		printf("Content Received: %s\n", contBuffer);
-			fflush( stdout );
- 		contenido = json_tokener_parse(contBuffer);
+		json_object_object_get_ex(parsed_json, "contenido", &contenido);
+		printf("Content: %s\n", json_object_get_string(contenido));
+		fflush(stdout);
 
- 		printf("This is the received matrix: %s\n", json_object_get_string(contenido));
- 			fflush( stdout );
  		tamano_con = json_object_array_length(contenido);
 		printf("Array length of matrix: %d\n", tamano_con);
-			fflush( stdout );
+		fflush( stdout );
+
  	 	if(tamano_con > 0){
  	 		printf("Received matrix of length greater than 0...");
  			if(strncmp(tip_con, "int", 3) == 0){
@@ -227,7 +225,12 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
  	 		//charCont = (int *)malloc(sizeof(char)*0);
  	 		intCont = (int *)malloc(sizeof(int)*0);
 			*floatCont = (int *) json_object_get_array(contenido);
+
 			printf("Json Object to array: %f", json_object_get_array(contenido)[0]);
+			fflush(stdout);
+
+			printf("Json object array without function: %f", contenido);
+			fflush(stdout);
 			//for(i = 0; i < tamano_con; i++){
 			//	floatCont[i] = json_object_array_
 			//}

@@ -4,20 +4,20 @@ then
 #python -m ensurepip
 pip install setuptools
 pip install --upgrade setuptools
-pip install git+https://github.com/joelz575/Tinamit
+pip install git+https://github.com/julienmalard/Tinamit/tree/tinamit3
 python test.py
 
 elif [[ $TRAVIS_OS_NAME == osx ]]
 then
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade setuptools
-python3 -m pip install git+https://github.com/joelz575/Tinamit
+python3 -m pip install git+https://github.com/julienmalard/Tinamit/tree/tinamit3
 python3 test.py
 
 else
 python3.6 -m pip install --upgrade pip
 python3.6 -m pip install --upgrade setuptools
-python3.6 -m pip install git+https://github.com/joelz575/Tinamit
+python3.6 -m pip install git+https://github.com/julienmalard/Tinamit/tree/tinamit3
 #from Tinamit import test.py
 python3.6 test.py #has to be in swatplus not with Tinamit
 #cd "/home/joelz/Documents/Prof Adamowski/Iximulew/SWAT+/TRIAL/Trial Robit/Trial Robit/Scenarios/Default/TxtInOut"

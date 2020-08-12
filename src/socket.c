@@ -304,28 +304,31 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
  	printf("About to receive json_header....\n");
  	fflush( stdout );
 
-	n = tmn = read(*client, blankBuffer, 4);
+	n = read(*client, blankBuffer, 4);
 
- 	read(*client, json_header, (int)blankBuffer);
+ 	n = read(*client, json_header, (int)blankBuffer);
  	printf("Receive Results from json_header: %i\n", n);
- 	fflush( stdout );
- 	printf("Received json-header: %s\n", (char) json_header);
- 	fflush( stdout );
  	sendr_(client, "RCVD");
+ 	fflush( stdout );
+ 	printf("Received json-header: %s\n", json_header);
+ 	fflush( stdout );
+
 
  	parsed_json = json_tokener_parse(json_header);
  	printf("Parsed json: %s", json_object_get_string(parsed_json));
  	fflush( stdout );
  	json_object_object_get_ex(parsed_json, "orden", &orden);
- 	printf("Orden: ", json_object_get_string(orden));
+ 	printf("Orden: %s", json_object_get_string(orden));
  	fflush( stdout );
  	//json_object_object_get_ex(parsed_json, "tamaño", &tamano);
  	//printf(tamano);
  	json_object_object_get_ex(parsed_json, "var", &var);
- 	printf(json_object_get_string(var));
+ 	printf("Var: %s", json_object_get_string(var));
  	fflush( stdout );
  	json_object_object_get_ex(parsed_json, "matr", &matr);
- 	printf(json_object_get_string(matr));
+ 	printf("MATR: %s", json_object_get_string(matr));
+ 	fflush( stdout );
+ 	printf("Just before tipo_cont...");
  	fflush( stdout );
  	json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
 	command = json_object_get_string(orden);

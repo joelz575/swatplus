@@ -1,4 +1,5 @@
 import os
+#import IDMenchufes (create tests for incrementar, cambiar, )
 from tinamit.conect import Conectado
 from tinamit.ejemplos import obt_ejemplo
 from tinamit.envolt.bf.swat_plus.envolt import ModeloSWATPlus

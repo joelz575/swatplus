@@ -1,5 +1,5 @@
 import os
-from tinamit.tinamit3 import IDMEnchufes
+from tinamit3.idm.puertos import IDMEnchufes
 from tinamit.conect import Conectado
 from tinamit.ejemplos import obt_ejemplo
 from tinamit.envolt.bf.swat_plus.envolt import ModeloSWATPlus

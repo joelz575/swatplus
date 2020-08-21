@@ -119,8 +119,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 #endif
 }
 
-void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *tamano_con, int *intCont[], float *floatCont[] //, char *charCont[]
-){
+void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *tamano_con, int *intCont[], float *floatCont[]){
  #ifdef _WIN32
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	//return
@@ -128,7 +127,7 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
  	printf("\n Am in receive now...");
  	fflush( stdout );
  	printf("\n INT buffer: %i", intCont);
- 	printf("\n tamano_con: %i", tamano_con);
+ 	printf("\n *tamano_con: %i", *tamano_con);
  	printf("\n FLOAT buffer: %f", floatCont);
  	fflush( stdout );
  	//printf("\n CHAR buffer: %s", charCont);
@@ -205,8 +204,8 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
 
  		printf("This is the received matrix: %s\n", json_object_get_string(contenido));
  		fflush( stdout );
- 		*tamano_con = json_object_array_length(contenido);
-		printf("Array length of matrix: %d\n", tamano_con);
+ 		*tamano_con = (int *)json_object_array_length(contenido);
+		printf("Array length of matrix: %d\n", *tamano_con);
 		fflush( stdout );
  	 	if(*tamano_con > 0){
  	 		printf("Received matrix of length greater than 0...");
@@ -214,10 +213,10 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
  			tip_con = 'i';
  			printf("It is an int");
  			fflush(stdout);
-			//intCont = (int *)malloc(sizeof(int)*((int) tamano_con));
+			//intCont = (int *)malloc(sizeof(int)*((int) *tamano_con));
  	 		//charCont = (int *)malloc(sizeof(char)*0);
  	 		//floatCont = (int *)malloc(sizeof(double)*0);
- 	 		memcpy(intCont, json_object_get_array(contenido), tamano_con+1);
+ 	 		memcpy(intCont, json_object_get_array(contenido), *tamano_con+1);
  	 		//*intCont = (int *) json_object_get_array(contenido);
  	 		printf("int buffer in C: %d\n", intCont[0]);
 		    }
@@ -225,21 +224,21 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
 			tip_con = 'f';
 			printf("It is a float");
 			fflush(stdout);
-			floatCont = (int *)malloc(sizeof(double)*((int)tamano_con));
+			floatCont = (int *)malloc(sizeof(double)*((int)*tamano_con));
  	 		//charCont = (int *)malloc(sizeof(char)*0);
  	 		intCont = (int *)malloc(sizeof(int)*0);
 			*floatCont = (int *) json_object_get_array(contenido);
 			printf("Json Object to array: %f", json_object_get_array(contenido)[0]);
-			//for(i = 0; i < tamano_con; i++){
+			//for(i = 0; i < *tamano_con; i++){
 			//	floatCont[i] = json_object_array_
 			//}
-			//memcpy(floatCont, json_object_get_array(contenido), tamano_con+1);
+			//memcpy(floatCont, json_object_get_array(contenido), *tamano_con+1);
 			printf("float buffer in C: %f\n", floatCont[0]);
 		    }
 	    else{
 		    printf("\n\n\n\n\nInvalid type for data transfer!!\n\n\n\n\n");
 		    printf("Note: Transfering Data of string types are not yet supported.\n");
- 	 	    //charCont = (int *)malloc(sizeof(char)*((int)tamano_con));
+ 	 	    //charCont = (int *)malloc(sizeof(char)*((int)*tamano_con));
  	 	    intCont = (int *)malloc(sizeof(int)*0);
  		    floatCont = (int *)malloc(sizeof(double)*0);
 		}
@@ -256,7 +255,7 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
 
  	printf((char *)WSAGetLastError());
  		fflush( stdout );
- 	*tamano_con = (int *)tamano_con;
+
 	sendr_(client, "RCVD");
  #else
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
@@ -320,12 +319,12 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
  	printf("Just before tipo_cont...");
  	fflush( stdout );
  	json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
-	command = json_object_get_string(orden);
+	strncpy(command, json_object_get_string(orden),6);
  	printf("Received Command: %s\n", command);
  	fflush( stdout );
 
  	if(strncmp(command, "TOMAR_", 6) == 0){
- 		var_nombre = json_object_get_string(var);
+ 		strncpy(var_nombre, json_object_get_string(var), 6);
  		printf("Received Variable: %s\n", var_nombre);
  		printf("Tamano: %d\n", atoi((const char *) json_object_get_string(tamano)));
  		fflush( stdout );
@@ -338,23 +337,23 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
  		printf("This is the matrix: %s\n", json_object_get_string(contenido));
  		fflush( stdout );
 
- 	    tamano_con = (int *)json_object_array_length(contenido);
-        printf("This is the length of the matrix: %d\n", tamano_con);
+ 	    *tamano_con = (int *)json_object_array_length(contenido);
+        printf("This is the length of the matrix: %d\n", *tamano_con);
  		fflush( stdout );
 
- 	 	if((int)tamano_con > 0){
+ 	 	if(*tamano_con > 0){
  	 		printf("Received matrix of length greater than 0...");
  		if(strncmp(tip_con, "int", 3) == 0){
  			printf("It is an int");
  			fflush(stdout);
-			//intCont = (int *)malloc(sizeof(int)*((int) tamano_con));
+			//intCont = (int *)malloc(sizeof(int)*((int) *tamano_con));
  	 		//charCont = (int *)malloc(sizeof(char)*0);
  	 		//floatCont = (int *)malloc(sizeof(double)*0);
 
- 	 		for(i = 0; i < (int)tamano_con; i++){
+ 	 		for(i = 0; i < *tamano_con; i++){
 				intCont[i] = 2;
 			}
- 	 		//memcpy(intCont, json_object_get_array(contenido), tamano_con+1);
+ 	 		//memcpy(intCont, json_object_get_array(contenido), *tamano_con+1);
  	 		//*intCont = (int *) json_object_get_array(contenido);
  	 		printf("int buffer in C: %d\n", intCont[0]);
  	 		fflush(stdout);
@@ -362,22 +361,22 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
 		else if( strncmp(tip_con, "flt", 3) == 0){
 			printf("It is a float");
 			fflush(stdout);
-			floatCont = (int *)malloc(sizeof(double)*((int)tamano_con));
+			floatCont = (int *)malloc(sizeof(double)*((int)*tamano_con));
  	 		//charCont = (int *)malloc(sizeof(char)*0);
  	 		intCont = (int *)malloc(sizeof(int)*0);
 			//*floatCont = (int *) json_object_get_array(contenido);
 			//printf("Json Object to array: %f", json_object_get_array(contenido)[0]);
-			for(i = 0; i < (int)tamano_con; i++){
+			for(i = 0; i < (int)*tamano_con; i++){
 				floatCont[i] = 2;
 			}
-			//memcpy(floatCont, json_object_get_array(contenido), tamano_con+1);
+			//memcpy(floatCont, json_object_get_array(contenido), *tamano_con+1);
 			printf("float buffer in C: %f\n", floatCont[0]);
 			fflush(stdout);
 		}
 		else{
 			printf("\n\n\n\n\nInvalid type for data transfer!!\n\n\n\n\n");
 			printf("Note: Transfering Data of string types are not yet supported.\n");
- 	 		//charCont = (int *)malloc(sizeof(char)*((int)tamano_con));
+ 	 		//charCont = (int *)malloc(sizeof(char)*((int)*tamano_con));
  	 		intCont = (int *)malloc(sizeof(int)*0);
  	 		floatCont = (int *)malloc(sizeof(double)*0);
 		}
@@ -392,7 +391,6 @@ void receive_(int *client, char *command, char *var_nombre, char *tip_con, int *
 
  	}
 
- 	//tamano_con = *tamano_con;
 	sendr_(client, "RCVD");
  #endif
 	}

@@ -47,17 +47,19 @@ contains
 
         print *, "About to Recieve..."
         print *, "Cliente Obj: ", cliente_obj
+        print *, "Command: ", command
         print *, "Variable Name: ", var
         print *, "Content Data Type: ", tipo_contents
         print *, "Size of contents: ", tmn_contents
         print *, "intBuffer contents: ", intBuffer
         print *, "realBuffer contents: ", realBuffer
 
-        call receive (cliente_obj, var, tipo_contents, tmn_contents, intBuffer, realBuffer) !charBuffer
+        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, intBuffer, realBuffer) !charBuffer
         tmn_contents = INT(tmn_contents)
         allocate(intBuffer(tmn_contents))
         allocate(realBuffer(tmn_contents))
         print *, "Cliente Obj: ", cliente_obj
+        print *, "Command: ", command
         print *, "Variable Name: ", var
         print *, "Content Data Type: ", tipo_contents
         print *, "Size of contents: ", tmn_contents

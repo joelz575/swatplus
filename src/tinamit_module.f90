@@ -41,19 +41,28 @@ contains
         !character, dimension(:, :), allocatable :: charBuffer
         character(len = 6) :: var, command
         character(len = 3) :: tipo_contents
-        integer :: tmn_contents
+        integer tmn_contents
         real, allocatable, dimension(:) :: realBuffer(:)
         integer, allocatable, dimension(:) :: intBuffer(:)
 
         print *, "About to Recieve..."
-
-        call receive (cliente_obj, var, tipo_contents, tmn_contents, intBuffer, realBuffer) !charBuffer
         print *, "Cliente Obj: ", cliente_obj
-        print *, "Variable Name (Command Name): ", varCom
+        print *, "Variable Name: ", var
         print *, "Content Data Type: ", tipo_contents
         print *, "Size of contents: ", tmn_contents
         print *, "intBuffer contents: ", intBuffer
         print *, "realBuffer contents: ", realBuffer
+
+        call receive (cliente_obj, var, tipo_contents, tmn_contents, intBuffer, realBuffer) !charBuffer
+        tmn_contents = INT(tmn_contents)
+        allocate(intBuffer(tmn_contents))
+        allocate(realBuffer(tmn_contents))
+        print *, "Cliente Obj: ", cliente_obj
+        print *, "Variable Name: ", var
+        print *, "Content Data Type: ", tipo_contents
+        print *, "Size of contents: ", tmn_contents
+        !print *, "intBuffer contents: ", intBuffer
+        !print *, "realBuffer contents: ", realBuffer
 
         call evaluar(cliente_obj, command, var, tmn_contents, intBuffer, realBuffer)
 

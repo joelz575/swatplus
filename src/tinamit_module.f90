@@ -63,8 +63,8 @@ contains
         print *, "Variable Name: ", var
         print *, "Content Data Type: ", tipo_contents
         print *, "Size of contents: ", tmn_contents
-        !print *, "intBuffer contents: ", intBuffer
-        !print *, "realBuffer contents: ", realBuffer
+        print *, "intBuffer contents: ", intBuffer
+        print *, "realBuffer contents: ", realBuffer
 
         call evaluar(cliente_obj, command, var, tmn_contents, intBuffer, realBuffer)
 

@@ -17,6 +17,8 @@
 
 
 void sendr_(int *client, char *senderBuffer);
+void jsonSTRtoFLTarray(float floatCont[], int *arraySize, char *jsonString);
+void jsonSTRtoINTarray(int intCont[], int *arraySize, char *jsonString);
 
 void opensocket_(int *portNum, char *hostNum, int *client){
 #ifdef _WIN32
@@ -119,7 +121,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 #endif
 }
 
-void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *tamano_con, int *intCont[], float *floatCont[]){
+void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *tamano_con, int intCont[], float floatCont[]){
  #ifdef _WIN32
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	//return
@@ -329,7 +331,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  		printf("Tamano: %d\n", atoi((const char *) json_object_get_string(tamano)));
  		fflush( stdout );
 
- 		tip_con = json_object_get_string(tipo_cont);
+ 		strncpy(tip_con, json_object_get_string(tipo_cont), 3);
 
  		n = read(*client, &contBuffer, atoi((const char *) json_object_get_string(tamano)));
 
@@ -346,16 +348,13 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  		if(strncmp(tip_con, "int", 3) == 0){
  			printf("It is an int");
  			fflush(stdout);
-			//intCont = (int *)malloc(sizeof(int)*((int) *tamano_con));
+			intCont = (int *)malloc(sizeof(int)*((int) *tamano_con));
  	 		//charCont = (int *)malloc(sizeof(char)*0);
- 	 		//floatCont = (int *)malloc(sizeof(double)*0);
-
- 	 		for(i = 0; i < *tamano_con; i++){
-				intCont[i] = 2;
-			}
+ 	 		floatCont = (int *)malloc(sizeof(double)*0);
+            jsonSTRtoINTarray(intCont, &tamano_con, json_object_get_string(contenido));
  	 		//memcpy(intCont, json_object_get_array(contenido), *tamano_con+1);
  	 		//*intCont = (int *) json_object_get_array(contenido);
- 	 		printf("int buffer in C: %d\n", intCont[0]);
+ 	 		printf("1st element of int buffer in C: %d\n", intCont[0]);
  	 		fflush(stdout);
 		}
 		else if( strncmp(tip_con, "flt", 3) == 0){
@@ -366,9 +365,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	 		intCont = (int *)malloc(sizeof(int)*0);
 			//*floatCont = (int *) json_object_get_array(contenido);
 			//printf("Json Object to array: %f", json_object_get_array(contenido)[0]);
-			for(i = 0; i < (int)*tamano_con; i++){
-				floatCont[i] = 2;
-			}
+			jsonSTRtoFLTarray(&floatCont, tamano_con, json_object_get_string(contenido));
 			//memcpy(floatCont, json_object_get_array(contenido), *tamano_con+1);
 			printf("float buffer in C: %f\n", floatCont[0]);
 			fflush(stdout);
@@ -394,6 +391,65 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
 	sendr_(client, "RCVD");
  #endif
 	}
+
+void jsonSTRtoFLTarray(float floatCont[], int *arraySize, char jsonString[]){
+    int i; //counter
+    int f=0; //counter
+    int g=0; //counter
+    int current=2; //counter helper
+    char transferSTR[15] = "000000000000000";
+    printf("\nInput variables are: %f, %d, %s", floatCont[0], (*arraySize), jsonString);
+    fflush(stdout);
+    printf("\nString length of jsonString: %d", strlen(jsonString));
+    fflush(stdout);
+    printf("\ni<*arraySize && f < strlen(jsonString): %c", i < *arraySize && f < strlen(jsonString));
+    fflush(stdout);
+
+    for(i=0; i < *arraySize && f < strlen(jsonString)-1; i++){
+        f=current;
+        printf("\nCurrently here in jsonString: %c", jsonString[f]);
+        fflush(stdout);
+
+        while(jsonString[f] != ' '){
+            transferSTR[f-current] = jsonString[f];
+            f++;
+        }
+        printf("\nTransfer String: %s", transferSTR);
+        fflush(stdout);
+
+        floatCont[i] = atof(transferSTR);
+        printf("\nFloat Cont: %f", floatCont[i]);
+        fflush(stdout);
+        for(g=0; g<15; g++){
+            transferSTR[g] = '0';
+        }
+        strncpy(transferSTR, "000000000000000", 15);
+        printf("\nReset transferSTR: %s", transferSTR);
+        fflush(stdout);
+        current = f+1;
+        printf("\nCurrent: %i", current);
+        fflush(stdout);
+    }
+}
+
+void jsonSTRtoINTarray(int intCont[], int *arraySize, char *jsonString){
+    int i; //counter
+    int f; //counter
+    int g; //counter
+    int current=2; //counter helper
+    char transferSTR[15];
+
+    for(i=0; i < *arraySize && f < strlen(jsonString); i++){
+        f=current;
+        while(strncmp((const char *)jsonString[f], " ", 1) != 0){
+            transferSTR[f-current] = jsonString[f];
+            f++;
+        }
+        printf("\nTransfer String: %s", transferSTR);
+        fflush(stdout);
+        intCont[i] = (int)atoll(transferSTR);
+    }
+}
 
 void sendr_(int *client, char *senderBuffer){
 

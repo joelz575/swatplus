@@ -7,11 +7,12 @@ module tinamit_module
     use sd_channel_module, ONLY : sd_ch
 
     save
+    integer :: MAX_BUFFER_LEN = 20000
     integer cliente_obj
     character(len = 3) :: hru_mode  ! 'hru' or 'hlt'
     character(len = 3) :: cha_mode  ! 'cha' or 'sdc'
-    integer :: Lluvia = 348 !temporary variable for debugging
-    integer :: Bosques = 67 !temporary variables for debugging
+    integer :: Lluvia = 348 !***********************************************************temporary variable for debugging
+    integer :: Bosques = 67 !***********************************************************temporary variable for debugging
     logical dynamic
     integer :: dias = 1
 contains
@@ -39,9 +40,11 @@ contains
     subroutine recibe (cliente_obj)
         integer cliente_obj
         !character, dimension(:, :), allocatable :: charBuffer
-        character(len = 6) :: var, command
+        character(len = 6) :: command
+        character(len = 10) :: var = "          "
         character(len = 3) :: tipo_contents
         integer tmn_contents
+        character(len = MAX_BUFFER_LEN):: realBufferBuffer, intBufferBuffer
         real, allocatable, dimension(:) :: realBuffer(:)
         integer, allocatable, dimension(:) :: intBuffer(:)
 
@@ -54,15 +57,25 @@ contains
         print *, "intBuffer contents: ", intBuffer
         print *, "realBuffer contents: ", realBuffer
 
-        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, intBuffer, realBuffer) !charBuffer
-        tmn_contents = INT(tmn_contents)
-        allocate(intBuffer(tmn_contents))
-        allocate(realBuffer(tmn_contents))
+        intBufferBuffer = " "
+        realBufferBuffer = " "
+
+        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, intBufferBuffer, realBufferBuffer) !charBuffer
+
         print *, "Cliente Obj: ", cliente_obj
         print *, "Command: ", command
         print *, "Variable Name: ", var
         print *, "Content Data Type: ", tipo_contents
         print *, "Size of contents: ", tmn_contents
+        print *, "Json string for real array: ", trim(realBufferBuffer)
+        print *, "Json string for int array: ", trim(intBufferBuffer)
+        if(tipo_contents=="flt")then
+            allocate(realBuffer(tmn_contents))
+            call jsons2fltarray (realBuffer, tmn_contents, trim(realBufferBuffer))
+        elseif(tipo_contents=="int")then
+            allocate(intBuffer(tmn_contents))
+            call jsons2intarray (intBuffer, tmn_contents, trim(intBufferBuffer))
+        end if
         print *, "intBuffer contents: ", intBuffer
         print *, "realBuffer contents: ", realBuffer
 
@@ -109,31 +122,37 @@ contains
         integer, dimension(variable_Length) :: intBuffer
         real, dimension(variable_Length) :: realBuffer
         integer :: f = 1
-        real, allocatable, dimension(:) :: variable(:)
+        integer :: Lluvia, Bosques
+        real, dimension(:), allocatable :: variable
 
         variable_Name = trim(variable_Name)
         index = 0
 
         if (size(hru) > 1) then
-            do i = 1, size(hru)
-                print *, "hru ", i, " landuse: ", hru(i)%luse
-            end do
+            print *, "there are full hru's"
+            !do i = 1, size(hru)
+                !print *, "hru ", i, " landuse: ", hru(i)%luse
+            !end do
 
         else
-            print *, "hlt ", hlt(:)
-            print *, "hlt%cn2 ", hlt(:)%cn2
-            print *, "hlt%lsu ", hlt(:)%lsu
+            print *, "there are only lite hru's"
+            print *, "WARNING: LITE HRU'S DATA TRANSFER IS NOT SUPPORTED BY TINAMIT AT THE MOMENT, PLEASE USE FULL HRU'S"
+            !print *, "hlt ", hlt(:)
+            !print *, "hlt%cn2 ", hlt(:)%cn2
+            !print *, "hlt%lsu ", hlt(:)%lsu
         end if
 
         if (size(ch) > 0) then
-            print *, "ch(:): ", ch(:)
+            print *, "There are full channels defined"
+            !print *, "ch(:): ", ch(:)
 
         else
-            print *, "size(sd_ch): ", size(sd_ch)
-            do f = 1, size(sd_ch)
-                print *, "sd_ch(", f, "): ", sd_ch(f)%aqu_link_ch
-
-            end do
+            print *, "there are only lite channels defined"
+            print *, "WARNING: LITE CHANNEL DATA TRANSFER IS NOT SUPPORTED BY TINAMIT AT THE MOMENT, PLEASE USE FULL CHANNELS"
+            !print *, "size(sd_ch): ", size(sd_ch)
+            !do f = 1, size(sd_ch)
+            !    print *, "sd_ch(", f, "): ", sd_ch(f)%aqu_link_ch
+            !end do
         end if
 
         select case (trim(variable_Name))
@@ -143,24 +162,24 @@ contains
             !ch(:)%
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
             do i = 1, size(ch)
-                ch(i)%algae = variable(i)
-
+                ch(i)%algae = realBuffer(i)
             end do
-            print *, "algae: ", ch(:)%algae
+            print *, "algae : ", ch(:)%algae
 
         CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
             do i = 1, size(ch)
-                ch(i)%flwin = variable(i)
-                print *, "flwin: ", ch(:)%flwin
+                ch(i)%flwin = realBuffer(i)
             end do
+            print *, "flwin: ", ch(:)%flwin
 
-        CASE("Lluvia")           ! test variable for debugging
-            Lluvia = variable(1)
+        CASE("Lluvia")           !***********************************************************test variable for debugging
+            print *, "Lluvia!", Lluvia
+            Lluvia = intBuffer(1)
             print *, "Lluvia: ", Lluvia
 
-        CASE("Bosques")           ! test variable for debugging
-
-            Bosques = variable(1)
+        CASE("Bosques")          !***********************************************************test variable for debugging
+            print *, "Bosques!"
+            Bosques = intBuffer(1)
             print *, "Bosques: ", Bosques
 
         CASE default
@@ -168,10 +187,9 @@ contains
 
         end select
 
-        senderBuffer = "recvd"
-        print *, "About to send recvd"
-
-        call sendr(cliente_obj, senderBuffer)
+        !senderBuffer = "recvd"
+        !print *, "About to send recvd"
+        !call sendr(cliente_obj, senderBuffer)
 
         call recibe(cliente_obj)
     end subroutine tomar
@@ -182,219 +200,191 @@ contains
         character(len = :), allocatable :: senderBuffer
         character(len = 32) :: temp_senderBuffer
 
+        senderBuffer = "[ "
+
         select case (trim(varNombre))
 
-            !calibration/initialization
-        CASE("hru_cha_mod")
+!--------Calibration/Initialization-------------------------------------------------------------------------------------
+!        CASE("hru_cha_mod")
+!            print *, "size(hru): ", size(hru)
+!            print *, "size(hlt): ", size(hlt)
+!            if (size(hru) > 1) then
+!                senderBuffer = senderBuffer // 'hru '
+!            else
+!                senderBuffer = senderBuffer // 'hlt'
+!            end if
+!
+!            print *, "size(ch): ", size(ch)
+!            print *, "size(sd_ch)", size(sd_ch)
+!
+!            if (size(ch) > 0) then
+!                senderBuffer = senderBuffer // 'cha];'
+!            else
+!                senderBuffer = senderBuffer // 'sdc];'
+!            end if
 
-            senderBuffer = "["
+!-----------Landuse Variables-------------------------------------------------------------------------------------------
 
-            print *, "size(hru): ", size(hru)
-            print *, "size(hlt): ", size(hlt)
 
-            if (size(hru) > 1) then
-                senderBuffer = senderBuffer // 'hru '
-            else
-                senderBuffer = senderBuffer // 'hlt'
-            end if
-
-            print *, "size(ch): ", size(ch)
-            print *, "size(sd_ch)", size(sd_ch)
-
-            if (size(ch) > 0) then
-                senderBuffer = senderBuffer // 'cha];'
-            else
-                senderBuffer = senderBuffer // 'sdc];'
-            end if
-            !landuse variables
-
-            !water flow, contaminants, (P o and ao then N, K)
+!-----------Water flow, contaminants, (P o and ao then N, K)------------------------------------------------------------
             !ch(:)%
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
-            senderBuffer = "["
-
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%algae
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
-            senderBuffer = senderBuffer // ' ];'
+            senderBuffer = senderBuffer // '];'
         CASE("ammonian")        ! mg N/L        |ammonia concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%ammonian
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("bankst")          ! m^3 H2O       |bank storage
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%bankst
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("li")              ! km            |initial length of main channel
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%li
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("orgn")            !               |organic nitrogen contribution from channel erosion
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%orgn
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("orgp")            !               |organic phosphorus contribution from channel erosion
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%orgp
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("si")              !(m/n)          |slope of main channel
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%si
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("wi")              !(m)            |width of main channel at top of bank
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%wi
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("di")              !(m)            |depth of main channel from top of bank to bottom
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%di
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("chlora")          ! mg chl-a/L    |chlorophyll-a concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%chlora
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("pst_conc")        ! mg/(m**3)     |initial pesticide concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%pst_conc
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("dep_chan")        ! m             |average daily water depth in channel
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%dep_chan
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("disolvp")         ! mg P/L        |dissolved P concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%disolvp
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("drift")           ! kg            |amount of pesticide drifting onto main channel in subbasin
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%drift
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%flwin
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("flwout")          ! m^3 H2O       |flow out of reach on previous day
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%flwout
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("nitraten")        ! mg N/L        |nitrate concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%nitraten
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("nitriten")        ! mg N/L        |nitrite concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%nitriten
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("organicn")        ! mg N/L        |organic nitrogen concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%organicn
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("organicp")        ! mg P/L        |organic phosphorus concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%organicp
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("rch_bactlp")      ! # cfu/100ml   |less persistent bacteria stored in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_bactlp
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("rch_bactp")       ! # cfu/100ml   |persistent bacteria stored in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_bactp
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("rch_cbod")        ! mg O2/L       |carbonaceous biochemical oxygen demand in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_cbod
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("rch_dox")         ! mg O2/L       |dissolved oxygen concentration in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_dox
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("rchstor")         ! m^3 H2O       |water stored in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rchstor
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("sedst")           ! metric tons   |amount of sediment stored in reach
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%sedst
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
         CASE("vel_chan")        ! m/s           |average flow velocity in channel
-            senderBuffer = "["
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%vel_chan
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
@@ -462,7 +452,6 @@ contains
 
         CASE default
             !temporary section for debugging
-            senderBuffer = "["
             write(temp_senderBuffer, *) Lluvia
             senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             senderBuffer = senderBuffer // '];'

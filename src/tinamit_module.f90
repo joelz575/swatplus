@@ -49,13 +49,13 @@ contains
         integer, allocatable, dimension(:) :: intBuffer(:)
 
         print *, "About to Recieve..."
-        print *, "Cliente Obj: ", cliente_obj
-        print *, "Command: ", command
-        print *, "Variable Name: ", var
-        print *, "Content Data Type: ", tipo_contents
-        print *, "Size of contents: ", tmn_contents
-        print *, "intBuffer contents: ", intBuffer
-        print *, "realBuffer contents: ", realBuffer
+!        print *, "Cliente Obj: ", cliente_obj
+!        print *, "Command: ", command
+!        print *, "Variable Name: ", var
+!        print *, "Content Data Type: ", tipo_contents
+!        print *, "Size of contents: ", tmn_contents
+!        print *, "intBuffer contents: ", intBuffer
+!        print *, "realBuffer contents: ", realBuffer
 
         intBufferBuffer = " "
         realBufferBuffer = " "
@@ -147,7 +147,7 @@ contains
 
         else
             print *, "there are only lite channels defined"
-            print *, "WARNING: LITE CHANNEL DATA TRANSFER IS NOT SUPPORTED BY TINAMIT AT THE MOMENT, PLEASE USE FULL CHANNELS"
+            print *, "WARNING: SD CHANNEL DATA TRANSFER IS NOT SUPPORTED BY TINAMIT AT THE MOMENT, PLEASE USE FULL CHANNELS"
             !print *, "size(sd_ch): ", size(sd_ch)
             !do f = 1, size(sd_ch)
             !    print *, "sd_ch(", f, "): ", sd_ch(f)%aqu_link_ch
@@ -454,7 +454,7 @@ contains
             print *, "Unknown variable: ", varNombre
         end select
         call sendr(cliente_obj, senderBuffer)
-        print *, "Sent sender buffer: "
+        print *, "Sent sender buffer: ", senderBuffer
         call recibe(cliente_obj)
     end subroutine obtener
 

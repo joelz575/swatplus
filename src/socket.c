@@ -389,37 +389,32 @@ void jsons2fltarray_(float floatCont[], int *arraySize, char jsonString[]){
     int g=0; //counter
     int current=2; //counter helper
     char transferSTR[15] = "000000000000000";
-    printf("\nInput variables are: %f, %d, %s", floatCont[0], (*arraySize), jsonString);
-    fflush(stdout);
-    printf("\nString length of jsonString: %d", strlen(jsonString));
-    fflush(stdout);
-    printf("\ni<*arraySize && f < strlen(jsonString): %c", i < *arraySize && f < strlen(jsonString));
-    fflush(stdout);
+
 
     for(i=0; (i < *arraySize) && f < strlen(jsonString); i++){
         f=current;
-        printf("\nCurrently here in jsonString: %c", jsonString[f]);
-        fflush(stdout);
+        //printf("\nCurrently here in jsonString: %c", jsonString[f]);
+        //fflush(stdout);
 
         while(jsonString[f] != ' '){
             transferSTR[f-current] = jsonString[f];
             f++;
         }
-        printf("\nTransfer String: %s", transferSTR);
-        fflush(stdout);
+        //printf("\nTransfer String: %s", transferSTR);
+        //fflush(stdout);
 
         floatCont[i] = atof(transferSTR);
-        printf("\nFloat Cont: %f", floatCont[i]);
-        fflush(stdout);
+        //printf("\nFloat Cont: %f", floatCont[i]);
+        //fflush(stdout);
         //for(g=0; g<15; g++){
         //    transferSTR[g] = '0';
         //}
         strncpy(transferSTR, "000000000000000", 15);
-        printf("\nReset transferSTR: %s", transferSTR);
-        fflush(stdout);
+        //printf("\nReset transferSTR: %s", transferSTR);
+        //fflush(stdout);
         current = f+1;
-        printf("\nCurrent: %i", current);
-        fflush(stdout);
+        //printf("\nCurrent: %i", current);
+        //fflush(stdout);
     }
 }
 
@@ -429,36 +424,36 @@ void jsons2intarray_(int intCont[], int *arraySize, char *jsonString){
     int g=0; //counter
     int current=2; //counter helper
     char transferSTR[15] = "000000000000000";
-    printf("\nInput variables are: %f, %d, %s", intCont[0], (*arraySize), jsonString);
-    fflush(stdout);
-    printf("\nString length of jsonString: %d", strlen(jsonString));
-    fflush(stdout);
-    printf("\ni<*arraySize && f < strlen(jsonString): %c", i < *arraySize && f < strlen(jsonString));
-    fflush(stdout);
+    //printf("\nInput variables are: %f, %d, %s", intCont[0], (*arraySize), jsonString);
+    //fflush(stdout);
+    //printf("\nString length of jsonString: %d", strlen(jsonString));
+    //fflush(stdout);
+    //printf("\ni<*arraySize && f < strlen(jsonString): %c", i < *arraySize && f < strlen(jsonString));
+    //fflush(stdout);
 
     for(i=0; (i < *arraySize) && f < strlen(jsonString); i++){
         f=current;
-        printf("\nCurrently here in jsonString: %c", jsonString[f]);
-        fflush(stdout);
+      //  printf("\nCurrently here in jsonString: %c", jsonString[f]);
+      //  fflush(stdout);
 
         while(jsonString[f] != ' '){
             transferSTR[f-current] = jsonString[f];
             f++;
         }
 
-        printf("\nTransfer String: %s", transferSTR);
-        fflush(stdout);
+        //printf("\nTransfer String: %s", transferSTR);
+        //fflush(stdout);
 
         intCont[i] = (int)atoi(transferSTR);
-        printf("\nInt Cont[i]: %f", intCont[i]);
-        fflush(stdout);
+        //printf("\nInt Cont[i]: %f", intCont[i]);
+        //fflush(stdout);
 
         strncpy(transferSTR, "000000000000000", 15);
-        printf("\nReset transferSTR: %s", transferSTR);
-        fflush(stdout);
+        //printf("\nReset transferSTR: %s", transferSTR);
+        //fflush(stdout);
         current = f+1;
-        printf("\nCurrent: %i", current);
-        fflush(stdout);
+        //printf("\nCurrent: %i", current);
+        //fflush(stdout);
         }
 }
 

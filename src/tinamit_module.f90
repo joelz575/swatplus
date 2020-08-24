@@ -123,7 +123,6 @@ contains
         real, dimension(variable_Length) :: realBuffer
         integer :: f = 1
         integer :: Lluvia, Bosques
-        real, dimension(:), allocatable :: variable
 
         variable_Name = trim(variable_Name)
         index = 0
@@ -173,23 +172,19 @@ contains
             print *, "flwin: ", ch(:)%flwin
 
         CASE("Lluvia")           !***********************************************************test variable for debugging
-            print *, "Lluvia!", Lluvia
-            Lluvia = intBuffer(1)
+            print *, "Lluvia"
+            Lluvia = int(realBuffer(1))
             print *, "Lluvia: ", Lluvia
 
         CASE("Bosques")          !***********************************************************test variable for debugging
-            print *, "Bosques!"
-            Bosques = intBuffer(1)
+            print *, "Bosques"
+            Bosques = int(realBuffer(1))
             print *, "Bosques: ", Bosques
 
         CASE default
             print *, "Unknown variable: ", variable_Name
 
         end select
-
-        !senderBuffer = "recvd"
-        !print *, "About to send recvd"
-        !call sendr(cliente_obj, senderBuffer)
 
         call recibe(cliente_obj)
     end subroutine tomar

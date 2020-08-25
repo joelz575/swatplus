@@ -124,7 +124,6 @@ contains
         integer :: f = 1
         integer :: Lluvia, Bosques
 
-        variable_Name = trim(variable_Name)
         index = 0
 
         if (size(hru) > 1) then
@@ -190,13 +189,13 @@ contains
     end subroutine tomar
 
     subroutine obtener (cliente_obj, varNombre)
-        integer :: cliente_obj
         character (*) :: varNombre
+        integer :: cliente_obj
         character(len = :), allocatable :: senderBuffer
         character(len = 32) :: temp_senderBuffer
 
         senderBuffer = "[ "
-
+        print *, "Variable name in obtener: ", varNombre
         select case (trim(varNombre))
 
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
@@ -226,6 +225,7 @@ contains
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%algae
+                print *, "Temp sender_buffer: ", temp_senderBuffer
                 senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
             end do
             senderBuffer = senderBuffer // '];'
@@ -449,7 +449,7 @@ contains
             !temporary section for debugging
             write(temp_senderBuffer, *) Lluvia
             senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            senderBuffer = senderBuffer // '];'
+            senderBuffer = senderBuffer // ']'
 
             print *, "Unknown variable: ", varNombre
         end select

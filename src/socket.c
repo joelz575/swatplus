@@ -14,7 +14,9 @@
 #endif
 
 
-
+/*Note for developers:
+    Only variable names with a length of up to 32 characters are supported!
+*/
 
 void sendr_(int *client, char *senderBuffer);
 void jsonSTRtoFLTarray_(float floatCont[], int *arraySize, char *jsonString);
@@ -325,7 +327,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	//printf("Received Command: %s\n", command);
  	//fflush( stdout );
  	printf("strlen(json_object_get_string(var)): %d", strlen(json_object_get_string(var)));
-    memset(var_nombre, '\0', sizeof(var_nombre));
+    strncpy(var_nombre, "                              ", strlen(var_nombre)); //memset(var_nombre, '\0', sizeof(var_nombre));
     strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
 
  	if(strncmp(command, "TOMAR_", 6) == 0){
@@ -463,13 +465,13 @@ void sendr_(int *client, char *senderBuffer){
 
 
  int iSenderBuffer;
- printf("Sending: %s", senderBuffer);
+ printf("Sending: %s\n", senderBuffer);
  fflush(stdout);
  iSenderBuffer = strlen(senderBuffer);
  int sendRes;
  //printf("Sending now....");
  sendRes = send(*client, senderBuffer, iSenderBuffer ,0);
- printf("Send Result: %d", sendRes);
+ printf("Send Result: %d\n", sendRes);
  fflush(stdout);
  if (sendRes==-1){
 	printf("send failed...");

@@ -482,6 +482,30 @@ void sendr_(int *client, char *senderBuffer){
 
 }
 
+void sendr1_(int *client, char senderBuffer[], int length){
+ //int iSenderBuffer;
+ int i;
+ //char sizedSenderBuffer[length];
+ //for(i = 0; i<length; i++){
+ //   sizedSenderBuffer[i] = senderBuffer[i];
+ //}
+ printf("Sending: %s\n", senderBuffer);
+ fflush(stdout);
+ //iSenderBuffer = strlen(sizedSenderBuffer);
+ int sendRes;
+ //printf("Sending now....");
+ sendRes = send(*client, senderBuffer, length ,0);
+ printf("Send Result: %d\n", sendRes);
+ fflush(stdout);
+ if (sendRes==-1){
+	printf("send failed...");
+#ifdef _WIN32
+	printf((char *)WSAGetLastError());
+#endif
+		}
+
+}
+
 void closesock_(int *client){
 #ifdef _WIN32
  int closeRes;

@@ -193,7 +193,7 @@ contains
         logical :: warning = .FALSE.
         character(len = :), allocatable :: senderBuffer
         character(len = 32) :: temp_senderBuffer
-        character(len = 32) :: senderBufferLen
+        character(len =16) :: senderBufferLen
         senderBuffer = "[ "
 
         select case (trim(varNombre))
@@ -460,15 +460,15 @@ contains
             senderBuffer = "Variable not used by SWAT+ simulation: "// varNombre
         end if
 
-        i = len(senderBuffer)
+        i = len(trim(senderBuffer))
         write(senderBufferLen, *) i
         call StripSpaces(senderBufferLen)
         do i = 1, 4-len(trim(senderBufferLen))
             senderBufferLen = '0'//trim(senderBufferLen)
         end do
 
-        call sendr(cliente_obj, senderBufferLen)
-        call sendr(cliente_obj, senderBuffer)
+        call sendr1(cliente_obj, trim(senderBufferLen))
+        call sendr1(cliente_obj, trim(senderBuffer))
         print *, "Sent sender buffer: ", senderBuffer
         call recibe(cliente_obj)
     end subroutine obtener

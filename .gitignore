@@ -5,6 +5,7 @@
 json-c
 vcpkg
 
+*.out
 ### Fortran template
 # Prerequisites
 *.d

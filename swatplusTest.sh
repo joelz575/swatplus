@@ -5,13 +5,13 @@ then
 #python -m ensurepip
 python -m pip install --upgrade pip setuptools
 python -m pip install git+https://github.com/joelz575/Tinamit #Juliens tinamit3 branch verwenden
-python test.py
+python -m unittest clientTest.py
 
 elif [[ $TRAVIS_OS_NAME == osx ]]
 then
 python3 -m pip install --upgrade pip setuptools
 python3 -m pip install git+https://github.com/joelz575/Tinamit
-python3 test.py
+python3 -m unittest clientTest.py
 
 else
 python3.6 -m pip install --upgrade pip setuptools

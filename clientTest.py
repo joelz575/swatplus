@@ -1,13 +1,20 @@
-import sys
+import os
 from subprocess import Popen
 from unittest import TestCase
 
 import numpy.testing as npt
 
 from tinamit.envolt.bf.swat_plus.enchufe import ModeloEnchufe
+from tinamit.envolt.bf.swat_plus._vars import VariableEnchufe, obt_test_vars
+from tinamit.mod import VariablesMod
 
 t_final = 15
-
+variables = []
+dic_ingr = obt_test_vars()
+for nmbr, info in dic_ingr.items():
+    variables.append(
+                VariableEnchufe(nombre=nmbr, código=info["código"], unid=info["unid"], inic=info["val"], ingr=info["ingr"], egr=info["egr"]))
+    testVariables = VariablesMod(variables)
 
 class Prueba(TestCase):
 
@@ -15,8 +22,8 @@ class Prueba(TestCase):
         símismo.clientes = []
 
     def _empezar_cliente(símismo, dirección, puerto):
-        cliente = Popen(["build/bin/swatplus_exe", str(puerto), dirección#, str(t_final)
-                         ])
+        cliente = Popen([os.getcwd()+"/build/bin/swatplus_exe", str(puerto), dirección],
+                        cwd="Trial Robit/Scenarios/Default/TxtInOut")
         símismo.clientes.append(cliente)
         return cliente
 
@@ -27,8 +34,8 @@ class Prueba(TestCase):
             servidor.cerrar()
 
     def test_mandar_datos(símismo):
-        for nmbr_dts, dts in datos.items():
-            with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
+        for nmbr_dts, dts in dic_ingr.items():
+            with símismo.subTest(datos=nmbr_dts), ModeloEnchufe() as servidor:
                 símismo._empezar_cliente(servidor.dirección, servidor.puerto)
                 servidor.activar()
                 servidor.cambiar('var', dts)
@@ -37,8 +44,8 @@ class Prueba(TestCase):
                 npt.assert_equal(dts, recibido)
 
     def test_recibir_datos(símismo):
-        for nmbr_dts, dts in datos.items():
-            with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
+        for nmbr_dts, dts in dic_ingr.items():
+            with símismo.subTest(datos=nmbr_dts), ModeloEnchufe() as servidor:
                 símismo._empezar_cliente(servidor.dirección, servidor.puerto)
                 servidor.activar()
                 recibido = servidor.recibir(nmbr_dts)
@@ -46,7 +53,7 @@ class Prueba(TestCase):
 
     def test_incrementar(símismo):
         n_pasos = 5
-        with IDMEnchufes() as servidor:
+        with ModeloEnchufe() as servidor:
             símismo._empezar_cliente(servidor.dirección, servidor.puerto)
             servidor.activar()
             servidor.incrementar(n_pasos)
@@ -55,7 +62,7 @@ class Prueba(TestCase):
             símismo.assertEqual(t, n_pasos)
 
     def test_finalizar(símismo):
-        with IDMEnchufes() as servidor:
+        with ModeloEnchufe() as servidor:
             símismo._empezar_cliente(servidor.dirección, servidor.puerto)
             servidor.activar()
             servidor.finalizar()

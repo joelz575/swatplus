@@ -43,7 +43,7 @@ contains
         character(len = 6) :: command
         character(len = 10) :: var = "          "
         character(len = 3) :: tipo_contents
-        integer :: tmn_contents
+        integer :: tmn_contents, nPasos
         character(len = MAX_BUFFER_LEN):: realBufferBuffer, intBufferBuffer
         real, allocatable, dimension(:) :: realBuffer(:)
         integer, allocatable, dimension(:) :: intBuffer(:)
@@ -60,13 +60,14 @@ contains
         intBufferBuffer = " "
         realBufferBuffer = " "
 
-        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, intBufferBuffer, realBufferBuffer) !charBuffer
+        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, nPasos, intBufferBuffer, realBufferBuffer) !charBuffer
 
         print *, "Cliente Obj: ", cliente_obj
         print *, "Command: ", command
         print *, "Variable Name: ", var
         print *, "Content Data Type: ", tipo_contents
         print *, "Size of contents: ", tmn_contents
+        print *, "Number of Passes: ", nPasos
         print *, "Json string for real array: ", trim(realBufferBuffer)
         print *, "Json string for int array: ", trim(intBufferBuffer)
         if(tipo_contents=="flt")then

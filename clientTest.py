@@ -38,7 +38,7 @@ class Prueba(TestCase):
             with símismo.subTest(datos=nmbr_dts), ModeloEnchufe() as servidor:
                 símismo._empezar_cliente(servidor.dirección, servidor.puerto)
                 servidor.activar()
-                servidor.cambiar('var', dts)
+                servidor.cambiar_var(dts)
 
                 recibido = servidor.recibir('var')
                 npt.assert_equal(dts, recibido)

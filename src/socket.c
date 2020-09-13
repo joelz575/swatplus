@@ -123,7 +123,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 #endif
 }
 
-void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *tamano_con, int *pasos, char intContBuffer[], char floatContBuffer[]){
+void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *tamano_con, int *pasos, char intContBuffer[], char floatContBuffer[], char shape[]){
  #ifdef _WIN32
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	//return
@@ -288,6 +288,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	struct json_object *contenido;
  	struct json_object *tipo_cont;
  	struct json_object *n_pasos;
+ 	struct json_object *forma;
  	char json_header[2000];
 
 	//printf("Just before receive line...\n");
@@ -310,34 +311,37 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	parsed_json = json_tokener_parse(json_header);
  	//printf("Parsed json: %s", json_object_get_string(parsed_json));
  	//fflush( stdout );
- 	json_object_object_get_ex(parsed_json, "orden", &orden);
-
-	strncpy(command, json_object_get_string(orden),6);
+ 	json_object_object_get_ex(parsed_json, "tipo", &orden);
+    strncpy(command, "       ", 7);
+	strncpy(command, json_object_get_string(orden), strlen(json_object_get_string(orden)));
  	//printf("Received Command: %s\n", command);
  	//fflush( stdout );
- 	printf("strlen(json_object_get_string(var)): %d", strlen(json_object_get_string(var)));
-    strncpy(var_nombre, "                              ", strlen(var_nombre)); //memset(var_nombre, '\0', sizeof(var_nombre));
-    strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
 
- 	if(strncmp(command, "TOMAR_", 6) == 0){
- 	    //printf("Orden: %s", json_object_get_string(orden));
- 	    //fflush( stdout );
+
+ 	if(strncmp(command, "cambiar", 7) == 0){
+ 	    printf("Command: %s\n", json_object_get_string(orden));
+ 	    fflush( stdout );
+
  	    json_object_object_get_ex(parsed_json, "tamaño", &tamano);
- 	    //printf("Content size: %s", json_object_get_string(tamano));
+
  	    json_object_object_get_ex(parsed_json, "var", &var);
- 	    //printf("Var: %s", json_object_get_string(var));
- 	    //fflush( stdout );
- 	    json_object_object_get_ex(parsed_json, "matr", &matr);
- 	    //printf("MATR: %s", json_object_get_string(matr));
- 	    //fflush( stdout );
- 	    //printf("Just before tipo_cont...");
- 	    //fflush( stdout );
+ 	    printf("strlen(json_object_get_string(var)): %d\n", strlen(json_object_get_string(var)));
+        strncpy(var_nombre, "                     ", strlen(var_nombre));
+
+        strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
+
+ 	    json_object_object_get_ex(parsed_json, "forma", &forma);
+ 	    strncpy(shape, "                      ", strlen(shape));
+ 	    strncpy(shape, json_object_get_string(forma), strlen(json_object_get_string(forma)));
+
  	    json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
  		printf("Received Variable: %s\n", var_nombre);
+ 		printf("Tipo contenido: %s\n", json_object_get_string(tipo_cont));
  		printf("Tamano: %d\n", atoi((const char *) json_object_get_string(tamano)));
+ 		printf("Shape of received variable: %s\n", shape);
  		fflush( stdout );
 
- 		strncpy(tip_con, json_object_get_string(tipo_cont), 3);
+ 		strncpy(tip_con, json_object_get_string(tipo_cont), 5);
 
  		n = read(*client, &contBuffer, atoi((const char *) json_object_get_string(tamano)));
 
@@ -383,9 +387,24 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
 		}
 
  	}
- 	else if(strncmp(command, "CORRER", 6) == 0){
+ 	else if(strncmp(command, "incr  ", 4) == 0){
+ 	       printf("incr was received\n");
+ 	       fflush(stdout);
  	       json_object_object_get_ex(parsed_json, "n_pasos", &n_pasos);
  	       *pasos = atoi(json_object_get_string(n_pasos));
+ 	}
+ 	else if(strncmp(command, "cerrar", 6) == 0){
+ 	        printf("cerrar was received");
+ 	        fflush(stdout);
+ 	}
+ 	else if(strncmp(command, "leer  ", 4) == 0){
+ 	        printf("leer was received");
+ 	        fflush(stdout);
+ 	        json_object_object_get_ex(parsed_json, "var", &var);
+ 	        printf("strlen(json_object_get_string(var)): %d", strlen(json_object_get_string(var)));
+            strncpy(var_nombre, "                              ", strlen(var_nombre));
+            //memset(var_nombre, '\0', sizeof(var_nombre));
+            strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
  	}
 
 	sendr_(client, "RCVD");

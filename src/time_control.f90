@@ -55,7 +55,7 @@
       use water_body_module
       
       implicit none
-      
+
       integer :: j                   !none          |counter
       integer :: julian_day          !none          |counter
       integer :: id                  !              |
@@ -225,6 +225,7 @@
           !-------------------------------------------------------------------------------------------------------------
           if(dynamic) then
               dias = dias-1
+              print *, "Dias in time_control: ", dias
               if (dias==0) then
                     call recibe(cliente_obj)
                 end if

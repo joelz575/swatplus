@@ -1,4 +1,2 @@
  Trial_Robit               SWAT+ Oct 10 2019    MODULAR Rev 2019.60.1                                     
        year     plant_no   plant_name       harv_area(ha)    yld(t)         yld(t/ha)      
-        2013           1 agrl               1696.11292       0.00000000       0.00000000    
-        2013           2 past               0.00000000       0.00000000       0.00000000    

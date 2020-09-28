@@ -73,7 +73,6 @@
             exit
           end if
         end do
-      
         if (action == "y") then
           select case (d_tbl%act(iac)%typ)
           
@@ -169,7 +168,6 @@
               frt_kg = d_tbl%act(iac)%const           !amount applied in kg/ha
               ifertop = d_tbl%act_app(iac)            !surface application fraction from chem app data base
               call pl_fert (j, ifrt, frt_kg, ifertop)
-
               if (pco%mgtout == "y") then
                 !write (2612, *) j, time%yrc, time%mo, time%day, chemapp_db(mgt%op4)%name, "    FERT", &
                 write (2612, *) j, time%yrc, time%mo, time%day, chemapp_db(j)%name, "    FERT",       &
@@ -189,7 +187,6 @@
               idtill = d_tbl%act_app(iac)
               ipl = 1
               call mgt_newtillmix(j, 0., idtill)
-            
               if (pco%mgtout == "y") then
                 write (2612, *) j, time%yrc, time%mo, time%day, tilldb(idtill)%tillnm, "TILLAGE",    &
                     phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m,        &
@@ -247,7 +244,6 @@
                   case ("tuber")
                     call mgt_harvtuber (j, ipl, iharvop)
                   end select
-
                   !! sum yield and num. of harvest to calc ave yields
                   pl_mass(j)%yield_tot(ipl) = pl_mass(j)%yield_tot(ipl) + pl_yield
                   pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
@@ -321,7 +317,6 @@
               do ipl = 1, pcom(j)%npl
                 biomass = pl_mass(j)%tot(ipl)%m
                 if (d_tbl%act(iac)%option == pcomdb(icom)%pl(ipl)%cpnm .or. d_tbl%act(iac)%option == "all") then
-                          
                   !harvest specific type
                   select case (harvop_db(iharvop)%typ)
                   case ("biomass")    
@@ -335,7 +330,6 @@
                   end select
             
                   call mgt_killop (j, ipl)
-
                   !! sum yield and num. of harvest to calc ave yields
                   pl_mass(j)%yield_tot(ipl) = pl_mass(j)%yield_tot(ipl) + pl_yield
                   pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
@@ -347,13 +341,20 @@
                   !! sum regional crop yields for soft calibration
                   ireg = hru(j)%crop_reg
                   do ilum = 1, plcal(ireg)%lum_num
+                    print *, "ilum=", ilum
+                    print *, "plcal(ireg)%lum_num", plcal(ireg)%lum_num
+                    print *, "plcal(ireg)%lum(ilum)", &
+                            plcal(ireg)%lum(ilum)
+                    print *, "plcal(ireg)%lum(ilum)%meas", &
+                            plcal(ireg)%lum(ilum)%meas
+                    print *, "plcal(ireg)%lum(ilum)%meas%name", &
+                            plcal(ireg)%lum(ilum)%meas%name
                     if (plcal(ireg)%lum(ilum)%meas%name == d_tbl%act(iac)%option) then
                       plcal(ireg)%lum(ilum)%ha = plcal(ireg)%lum(ilum)%ha + hru(j)%area_ha
                       plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha /&
                               1000.
                     end if
                   end do
-            
                   idp = pcom(j)%plcur(ipl)%idplt
                   if (pco%mgtout == "y") then
                     write (2612, *) j, time%yrc, time%mo, time%day,  pldb(idp)%plantnm, "HARV/KILL",        &

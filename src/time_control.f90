@@ -89,6 +89,7 @@
       call cli_precip_control (0)
 
       do curyr = 1, time%nbyr
+
         time%yrs = curyr
         
         !! initialize annual variables for hru's
@@ -124,7 +125,19 @@
         end if
 !--------------------------------------------------------------------------------------------------------------------------------------------------
         do julian_day = time%day_start, time%day_end_yr      !! begin daily loop
-          time%day = julian_day
+
+      !-------------------------------------------------------------------------------------------------------------
+          if(dynamic .and. dias>0) then
+              dias = dias-1
+              print *, "Dias in time_control: ", dias
+              if (dias==0) then
+                    call recibe(cliente_obj)
+                end if
+            end if
+      !-------------------------------------------------------------------------------------------------------------
+            t=t+1 !!<-------------------------------------------keeping track of the number of days of the simulation
+
+            time%day = julian_day
           !! determine month and day of month - time%mo and time%day_mo
           call xmon
           
@@ -133,7 +146,7 @@
           call DATE_AND_TIME (b(1), b(2), b(3), date_time)
           write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc, time%yrs, time%yrc_tot,  &
                    date_time(5), date_time(6), date_time(7)
-         
+
           !! check for end of month, year and simulation
           time%end_mo = 0
           time%end_yr = 0
@@ -183,9 +196,7 @@
           if (time%yrs > pco%nyskip) ndmo(time%mo) = ndmo(time%mo) + 1
 
           call climate_control      !! read in/generate weather
-          
           call cli_atmodep_time_control     !! set array counter for atmospheric deposition
-
           !! conditional reset of land use and management
           do iupd = 1, db_mx%cond_up
             do j = 1, sp_ob%hru
@@ -199,9 +210,7 @@
 
           !! allocate water for water rights objects
           !call water_allocation
-
-          call command              !! command loop 
-        
+          call command              !! command loop
           ! reset base0 heat units and yr_skip at end of year for southern hemisphere
           ! near winter solstace (winter solstice is around June 22)
           if (time%day == 181) then
@@ -222,22 +231,12 @@
             end do
           end if
 
-          !-------------------------------------------------------------------------------------------------------------
-          if(dynamic) then
-              dias = dias-1
-              print *, "Dias in time_control: ", dias
-              if (dias==0) then
-                    call recibe(cliente_obj)
-                end if
-            end if
-          !-------------------------------------------------------------------------------------------------------------
 
         end do              !! end daily loop
 !--------------------------------------------------------------------------------------------------------------------------------------------------
         !! perform end-of-year processes
         
         call calsoft_sum_output
-        
         !! write annual basin crop yields and harvested areas
         do iplt = 1, basin_plants
           crop_yld_t_ha = bsn_crop_yld(iplt)%yield / (bsn_crop_yld(iplt)%area_ha + 1.e-6)

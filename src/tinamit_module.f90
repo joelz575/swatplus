@@ -6,6 +6,7 @@ module tinamit_module
     use channel_module, ONLY : ch
     use sd_channel_module, ONLY : sd_ch
 
+
     save
     integer :: MAX_BUFFER_LEN = 20000
     integer cliente_obj
@@ -35,7 +36,10 @@ contains
         CAll opensocket(port_num, host_num, cliente_obj)
         print *, "cliente_obj=", cliente_obj
         !print *, "calibration is running...."
-        !consider calling recibe to obtain initial values
+
+        !calling recibe to obtain initial values
+        !call recibe(cliente_obj)
+
     end subroutine
 
     subroutine recibe (cliente_obj)
@@ -86,10 +90,6 @@ contains
 
             end if
 
-        elseif (command == "incr")then
-            dias = nPasos+1
-            print *, "Number of Passes: ", nPasos
-
         elseif (command == "leer")then
 
             print *, "Variable Name: ", var
@@ -107,41 +107,44 @@ contains
 
         character(len = :), allocatable :: senderBuffer
         character(*) :: var, orden
-        integer :: tmn_contents, cliente_obj, nPasos
+        integer :: tmn_contents, cliente_obj, nPasos, t_final
         integer, dimension(tmn_contents) :: intBuffer
         real, dimension(tmn_contents) :: realBuffer
 
         print *, "Command: ", orden
 
         if(orden == 'cerrar')then
-            call closeSock(cliente_obj)
-            stop
-            stop
-            stop
-        end if
+            call closesock(cliente_obj)
+            print *, "The socket was successfully closed"
+            dynamic = .false.
 
-        if(trim(orden) == 'incr')then
-            senderBuffer = "running"
-            call sendr(cliente_obj, senderBuffer)
-        end if
+        elseif(trim(orden) == 'incr')then
+            dias = nPasos
+            print *, "Number of Passes: ", nPasos
+            !No further action required
+            !senderBuffer = "running"
+            !call sendr(cliente_obj, senderBuffer)
 
-        if(trim(orden) == 'cambiar')then
-            call tomar (cliente_obj, var, tmn_contents, intBuffer, realBuffer, nPasos)
-        end if
+        elseif(trim(orden) == 'cambiar')then
+            call tomar (cliente_obj, var, tmn_contents, intBuffer, realBuffer)
 
-        if(trim(orden) == 'leer') then
+        elseif(trim(orden) == 'leer') then
             call obtener (cliente_obj, var)
+
+        else
+            print *, "The command: ", trim(orden), "is not recognized"
+
         end if
     end subroutine evaluar
 
-    subroutine tomar (cliente_obj, variable_Name, variable_Length, intBuffer, realBuffer, nPasos)
+    subroutine tomar (cliente_obj, variable_Name, variable_Length, intBuffer, realBuffer)
         character (*) :: variable_Name
         character(len = :), allocatable :: senderBuffer
         integer :: variable_Length, cliente_obj, index, i
         integer, dimension(variable_Length) :: intBuffer
         real, dimension(variable_Length) :: realBuffer
         integer :: f = 1
-        integer :: Lluvia, Bosque, nPasos
+        integer :: Lluvia, Bosque
 
         index = 0
 
@@ -174,8 +177,6 @@ contains
 
         select case (trim(variable_Name))
             !landuse
-        CASE("t")
-            t = t + nPasos
             !water flow, contaminants, (P o and ao then N, K)
             !ch(:)%
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
@@ -212,10 +213,13 @@ contains
         character(*) :: varNombre
         integer :: cliente_obj
         logical :: warning = .FALSE.
-        character(len = :), allocatable :: senderBuffer
-        character(len = 32) :: temp_senderBuffer
-        character(len =16) :: senderBufferLen
-        senderBuffer = "[ "
+        character(len = :), allocatable :: senderBuffer, shapeBuffer
+        integer, dimension(:), allocatable :: intBuffer
+        real, dimension(:), allocatable :: floatBuffer
+        character(len = 16) :: temp_shapeBuffer, temp_senderBuffer
+        senderBuffer = ""
+        shapeBuffer = ""
+
 
         select case (trim(varNombre))
 
@@ -244,22 +248,23 @@ contains
 !-----------Water flow, contaminants, (P o and ao then N, K)------------------------------------------------------------
             !ch(:)%
         CASE("t")
-            write(temp_senderBuffer, *) t
-            call StripSpaces(temp_senderBuffer)
-            print *, "Current number of days in simulation: ", temp_senderBuffer
-            senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' ]'
+            write(temp_shapeBuffer, *) shape(t)
+            allocate(intBuffer(1))
+            call StripSpaces(temp_shapeBuffer)
+            shapeBuffer = shapeBuffer // trim(temp_shapeBuffer)
+            print *, "Current shape string: ", shapeBuffer
+            intBuffer = t
+            print *, "Current number of days in simulation: ", intBuffer
+
 
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
             warning = (size(ch) < 1)
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%algae
-                call StripSpaces(temp_senderBuffer)
-                print *, "Temp sender_buffer: ", temp_senderBuffer
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
+            allocate(floatBuffer(size(ch)))
+            floatBuffer = ch%algae
+            print *, "current floatBuffer: ", floatBuffer
 
-            senderBuffer = senderBuffer // ']'
         CASE("ammonian")        ! mg N/L        |ammonia concentration in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%ammonian
                 call StripSpaces(temp_senderBuffer)
@@ -267,6 +272,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("bankst")          ! m^3 H2O       |bank storage
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%bankst
                 call StripSpaces(temp_senderBuffer)
@@ -274,6 +280,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("li")              ! km            |initial length of main channel
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%li
                 call StripSpaces(temp_senderBuffer)
@@ -281,6 +288,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("orgn")            !               |organic nitrogen contribution from channel erosion
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%orgn
                 call StripSpaces(temp_senderBuffer)
@@ -288,6 +296,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("orgp")            !               |organic phosphorus contribution from channel erosion
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%orgp
                 call StripSpaces(temp_senderBuffer)
@@ -295,6 +304,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("si")              !(m/n)          |slope of main channel
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%si
                 call StripSpaces(temp_senderBuffer)
@@ -302,6 +312,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("wi")              !(m)            |width of main channel at top of bank
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%wi
                 call StripSpaces(temp_senderBuffer)
@@ -309,6 +320,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("di")              !(m)            |depth of main channel from top of bank to bottom
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%di
                 call StripSpaces(temp_senderBuffer)
@@ -316,6 +328,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("chlora")          ! mg chl-a/L    |chlorophyll-a concentration in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%chlora
                 call StripSpaces(temp_senderBuffer)
@@ -323,6 +336,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("pst_conc")        ! mg/(m**3)     |initial pesticide concentration in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%pst_conc
                 call StripSpaces(temp_senderBuffer)
@@ -330,6 +344,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("dep_chan")        ! m             |average daily water depth in channel
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%dep_chan
                 call StripSpaces(temp_senderBuffer)
@@ -337,6 +352,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("disolvp")         ! mg P/L        |dissolved P concentration in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%disolvp
                 call StripSpaces(temp_senderBuffer)
@@ -344,6 +360,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("drift")           ! kg            |amount of pesticide drifting onto main channel in subbasin
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%drift
                 call StripSpaces(temp_senderBuffer)
@@ -351,6 +368,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%flwin
                 call StripSpaces(temp_senderBuffer)
@@ -358,6 +376,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("flwout")          ! m^3 H2O       |flow out of reach on previous day
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%flwout
                 call StripSpaces(temp_senderBuffer)
@@ -365,6 +384,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("nitraten")        ! mg N/L        |nitrate concentration in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%nitraten
                 call StripSpaces(temp_senderBuffer)
@@ -372,6 +392,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("nitriten")        ! mg N/L        |nitrite concentration in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%nitriten
                 call StripSpaces(temp_senderBuffer)
@@ -379,6 +400,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("organicn")        ! mg N/L        |organic nitrogen concentration in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%organicn
                 call StripSpaces(temp_senderBuffer)
@@ -386,6 +408,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("organicp")        ! mg P/L        |organic phosphorus concentration in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%organicp
                 call StripSpaces(temp_senderBuffer)
@@ -393,6 +416,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("rch_bactlp")      ! # cfu/100ml   |less persistent bacteria stored in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_bactlp
                 call StripSpaces(temp_senderBuffer)
@@ -400,6 +424,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("rch_bactp")       ! # cfu/100ml   |persistent bacteria stored in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_bactp
                 call StripSpaces(temp_senderBuffer)
@@ -407,6 +432,7 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("rch_cbod")        ! mg O2/L       |carbonaceous biochemical oxygen demand in reach
+            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_cbod
                 call StripSpaces(temp_senderBuffer)
@@ -503,29 +529,28 @@ contains
 
         CASE default
             !temporary section for debugging
-            write(temp_senderBuffer, *) Lluvia
-            call StripSpaces(temp_senderBuffer)
-            senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            senderBuffer = senderBuffer // ']'
-
-            print *, "Unknown variable: ", varNombre
+            intBuffer = Lluvia
+            print *, "Unknown variable: ", varNombre, " sending Lluvia data"
         end select
 
         if(warning)then
-            senderBuffer = "Variable not used by SWAT+ simulation: "// varNombre
+            print *, "Variable not used by SWAT+ simulation: "// varNombre
+
+        elseif(.not.(SIZE(intBuffer)==0))then
+            print *, "Sending int buffer: ", intBuffer
+            print *, "int buffer size: ", SIZE(intBuffer)
+            allocate(floatBuffer(0))
+        else
+            print *, "Sending float buffer: ", floatBuffer
+            allocate(intBuffer(0))
         end if
+        if(shapeBuffer == "")then
+            shapeBuffer = "-1"
+        end if
+        call sendr1(cliente_obj, intBuffer, floatBuffer, shapeBuffer, size(intBuffer), size(floatBuffer), len(shapeBuffer))
 
-        i = len(trim(senderBuffer))
-        write(senderBufferLen, *) i
-        call StripSpaces(senderBufferLen)
-        do i = 1, 4-len(trim(senderBufferLen))
-            senderBufferLen = '0'//trim(senderBufferLen)
-        end do
-
-        call sendr1(cliente_obj, trim(senderBufferLen))
-        call sendr1(cliente_obj, trim(senderBuffer))
-        print *, "Sent sender buffer: ", senderBuffer
         call recibe(cliente_obj)
+
     end subroutine obtener
 
     subroutine StripSpaces(string)

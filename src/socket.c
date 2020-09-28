@@ -6,6 +6,7 @@
 #include <string.h>
 #include <json.h>
 #include <json_tokener.h>
+#include <stdint.h>
 #ifdef _WIN32
 	#include <WinSock2.h> // windows
 #else
@@ -299,12 +300,12 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
 	//fflush( stdout );
 	//printf("Size according to blank Buffer: %d\n", (int)blankBuffer);
 	//fflush( stdout );
-	sendr_(client, "RCVD");
+	//sendr_(client, "RCVD");
     //printf("About to receive json_header....\n");
  	//fflush( stdout );
  	n = read(*client, &json_header, (int) blankBuffer);
  	//printf("Receive Results from json_header: %i\n", n);
- 	sendr_(client, "RCVD");
+ 	//sendr_(client, "RCVD");
  	//fflush( stdout );
  	//printf("Received json-header: %s\n", json_header);
  	//fflush( stdout );
@@ -407,7 +408,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
             strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
  	}
 
-	sendr_(client, "RCVD");
+	//sendr_(client, "RCVD");
  #endif
 	}
 
@@ -506,29 +507,99 @@ void sendr_(int *client, char *senderBuffer){
 
 }
 
-void sendr1_(int *client, char senderBuffer[], int length){
- //int iSenderBuffer;
- int i;
- //char sizedSenderBuffer[length];
- //for(i = 0; i<length; i++){
- //   sizedSenderBuffer[i] = senderBuffer[i];
- //}
- printf("Sending: %s\n", senderBuffer);
- fflush(stdout);
- //iSenderBuffer = strlen(sizedSenderBuffer);
+void sendr1_(int *client, int intSenderBuffer[], float floatSenderBuffer[], char shape[], int *intLength, int *floatLength, int *shapeLen){
+ int i, n;
  int sendRes;
- //printf("Sending now....");
- sendRes = send(*client, senderBuffer, length ,0);
+ char valLen[16];
+ char tipo_cont[6] = "int";
+ char jsonEncabezadoString[2048];
+ int jsonStringLen;
+
+
+ printf("IntBuffer length: %d\n", *intLength);
+ printf("IntBuffer size: %d\n", sizeof(intSenderBuffer));
+ printf("floatBuffer length: %d\n", *floatLength);
+ printf("floatBuffer size: %d\n", sizeof(floatSenderBuffer));
+
+ if(*intLength == 0){
+    sprintf( valLen, "%d", sizeof(floatSenderBuffer));
+    strncpy(tipo_cont, "\0\0\0\0\0\0", 5);
+    strncpy(tipo_cont, "float", 5);
+    printf("Content type: %s\n", tipo_cont);
+    printf("ValLen: %s\n", valLen);
+
+ }
+ else{
+    sprintf( valLen, "%d", sizeof(intSenderBuffer));
+    printf("Content type: %s\n", tipo_cont);
+    printf("ValLen: %s\n", valLen);
+ }
+
+ strncpy(jsonEncabezadoString, "{\"tamaño\": ", 13) ;
+ strcat(jsonEncabezadoString, valLen);
+ strcat(jsonEncabezadoString, ", \"tipo_cont\": \"");
+ strcat(jsonEncabezadoString, tipo_cont);
+ strcat(jsonEncabezadoString, "\", \"forma\": \"");
+ strcat(jsonEncabezadoString, shape);
+ strcat(jsonEncabezadoString, "\"}");
+
+ printf("Content type: %s\n", tipo_cont);
+ printf("Sending encabezado: %s\n", jsonEncabezadoString);
+ printf("Sending value: %s\n", intSenderBuffer);
+ printf("Sending value: %s\n", floatSenderBuffer);
+ fflush(stdout);
+
+ i = strlen(jsonEncabezadoString);
+ printf("Sending length: %d\n", i);
+
+ sendRes = send(*client, &i, sizeof (i), 0);
+
  printf("Send Result: %d\n", sendRes);
  fflush(stdout);
+
  if (sendRes==-1){
 	printf("send failed...");
+    }
 #ifdef _WIN32
-	printf((char *)WSAGetLastError());
-#endif
-		}
 
+	printf((char *)WSAGetLastError());
+
+#endif
+
+ sendRes = send(*client, (char *)jsonEncabezadoString, strlen(jsonEncabezadoString),0);
+ printf("Send Result: %d\n", sendRes);
+ fflush(stdout);
+
+ if (sendRes==-1){
+	printf("send failed...");
+	}
+
+#ifdef _WIN32
+
+	printf((char *)WSAGetLastError());
+
+#endif
+ if(strncmp(tipo_cont, "float", 5)==0){
+    sendRes = send(*client, floatSenderBuffer, sizeof(floatSenderBuffer), 0);
+    printf("Send Result: %d\n", sendRes);
+    fflush(stdout);
+    }
+ else{
+    sendRes = send(*client, intSenderBuffer, sizeof(intSenderBuffer), 0);
+    printf("Send Result: %d\n", sendRes);
+    fflush(stdout);
+ }
+ if (sendRes==-1){
+	printf("send failed...");
+
+#ifdef _WIN32
+
+	printf((char *)WSAGetLastError());
+
+#endif
+    }
 }
+
 
 void closesock_(int *client){
 #ifdef _WIN32

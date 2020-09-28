@@ -113,7 +113,11 @@
         print *, "calhard_control"
 
       end if
-           
+
+      if(dynamic)then !<------------------------close sockets if tinamit is still connected
+            call recibe(cliente_obj)
+        end if
+
       write (*,1001)
  1001 format (/," Execution successfully completed ")
 

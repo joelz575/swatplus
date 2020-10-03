@@ -33,7 +33,6 @@
       
 
       !calibrate hydrology
-        ical_hyd = 0
         iter_all = 1
         iter_ind = 1
         

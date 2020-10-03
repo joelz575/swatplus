@@ -1,5 +1,5 @@
-      subroutine pl_partition
-      
+     subroutine pl_partition
+
       use plant_data_module
       use basin_module
       use hru_module, only : hru, uapd, uno3d, lai_yrmx, par, bioday, ep_day, es_day,              &
@@ -7,9 +7,9 @@
       use plant_module
       use carbon_module
       use organic_mineral_mass_module
-      
-      implicit none 
-      
+
+      implicit none
+
       integer :: j              !none               |HRU number
       integer :: idp            !                   |
       real :: root_frac         !none               |root mass fraction
@@ -24,19 +24,13 @@
       real :: m_left            !none               |mass left after seed is removed
       real :: leaf_frac_veg     !none               |fraction veg mass (stem+leaf) that is leaf
       real :: leaf_mass_frac_veg     !none               |fraction veg mass (stem+leaf) that is leaf
-           
+
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
-      
+
       !! update plant mass for daily biomass/c increase and n and p uptake
       pl_mass(j)%tot(ipl) = pl_mass(j)%tot(ipl) + pl_mass_up
-      
-      !! partition root and above ground biomass
       pl_mass(j)%tot(ipl)%m = Max(pl_mass(j)%tot(ipl)%m, 0.)
-      root_frac = pcom(j)%plg(ipl)%root_frac
-      ab_gr_frac = 1. - root_frac
-      pl_mass(j)%ab_gr(ipl)%m = ab_gr_frac * pl_mass(j)%tot(ipl)%m
-      pl_mass(j)%root(ipl)%m = root_frac * pl_mass(j)%tot(ipl)%m
 
       !! partition leaf and stem (stalk) and seed (grain) mass
       if (pldb(idp)%typ == "perennial") then
@@ -44,11 +38,30 @@
       else
         leaf_frac_veg = 0.30    !should be plant parm
       end if
-      seed_mass_frac = pcom(j)%plg(ipl)%hi_adj
       leaf_mass_frac_veg = leaf_frac_veg * pcom(j)%plg(ipl)%lai / pldb(idp)%blai
-      leaf_mass_frac = leaf_mass_frac_veg * (1. - seed_mass_frac)
-      stem_mass_frac = (1. - leaf_mass_frac_veg) * (1. - seed_mass_frac)
-      
+
+      !! partition root and above ground biomass for tuber crops
+      if (pldb(idp)%typ == "warm_annual_tuber" .or. pldb(idp)%typ == "cold_annual_tuber") then
+        root_frac = pcom(j)%plg(ipl)%root_frac
+        !! for tubers, the tuber (or seed) is not part of ab_gr --> tot = root + ab_gr + seed
+        !! 1. = root + ab_gr + hi * ab_gr --> solve for ab_gr
+        ab_gr_frac = (1. - root_frac) / (1. + pcom(j)%plg(ipl)%hi_adj)
+        seed_mass_frac = 1. - root_frac - ab_gr_frac
+        leaf_mass_frac = leaf_mass_frac_veg * ab_gr_frac
+        stem_mass_frac = (1. - leaf_mass_frac_veg) * ab_gr_frac
+      !end if
+      !! partition root and above ground biomass for all other annuals (above groound grain)
+      else
+      !if (pldb(idp)%typ == "warm_annual" .or. pldb(idp)%typ == "cold_annual") then
+        root_frac = pcom(j)%plg(ipl)%root_frac
+        ab_gr_frac = 1. - root_frac
+        seed_mass_frac = pcom(j)%plg(ipl)%hi_adj
+        leaf_mass_frac = leaf_mass_frac_veg * (1. - seed_mass_frac)
+        stem_mass_frac = (1. - leaf_mass_frac_veg) * (1. - seed_mass_frac)
+      end if
+
+      pl_mass(j)%ab_gr(ipl)%m = ab_gr_frac * pl_mass(j)%tot(ipl)%m
+      pl_mass(j)%root(ipl)%m = root_frac * pl_mass(j)%tot(ipl)%m
       pl_mass(j)%leaf(ipl)%m = leaf_mass_frac * pl_mass(j)%ab_gr(ipl)%m
       pl_mass(j)%seed(ipl)%m = seed_mass_frac * pl_mass(j)%ab_gr(ipl)%m
       pl_mass(j)%stem(ipl)%m = stem_mass_frac * pl_mass(j)%ab_gr(ipl)%m

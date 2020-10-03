@@ -23,7 +23,6 @@
         call plant_all_init
         call topohyd_init
         call hydro_init
-        if (db_mx%wet_dat > 0) call wet_initial
       end if
 
       call hru_lte_read

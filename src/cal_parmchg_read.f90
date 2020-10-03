@@ -108,9 +108,9 @@
               cal_upd(i)%num_elem = sp_ob%hru_lte
             case ("ru")
               cal_upd(i)%num_elem = sp_ob%ru
-            case ("gw")
+            case ("aqu")
               cal_upd(i)%num_elem = sp_ob%aqu
-            case ("rte")
+            case ("cha")
               cal_upd(i)%num_elem = sp_ob%chan
             case ("swq")
               cal_upd(i)%num_elem = sp_ob%chan

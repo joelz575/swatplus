@@ -19,11 +19,7 @@
         call res_read
         call res_initial
       end if
-      
-      ! read wetland data
-      call wet_read_hyd
-      call wet_read
-      
+
       call header_snutc
         
 	  return

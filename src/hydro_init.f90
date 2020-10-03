@@ -32,13 +32,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : dormhr, hru, i_sep, isep, isep_ly, iseptic
+      use hru_module, only : hru, sdr, dormhr, hru, i_sep, isep, isep_ly, iseptic
       use soil_module
       use plant_module
       use climate_module
       use septic_data_module
       use plant_data_module
-      use tiles_data_module
       use pesticide_data_module
       use basin_module
       use channel_module
@@ -46,46 +45,47 @@
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob, ob
       use constituent_mass_module
-      
+      use output_landscape_module
+
       implicit none
 
-      integer :: j              !none          |counter            
+      integer :: j              !none          |counter
       integer :: l              !none          |counter
-      integer :: idp            !              | 
-      real :: t_ch              !hr            |time for flow entering the farthest upstream 
+      integer :: idp            !              |
+      real :: t_ch              !hr            |time for flow entering the farthest upstream
                                 !              |channel to reach the subbasin outlet
       real :: scmx              !mm/hr         |maximum soil hydraulic conductivity
       real :: xx                !none          |variable to hold calculation result
-      real :: tsoil             !              | 
-      integer :: iob            !              | 
-      integer :: iwst           !              | 
-      integer :: iwgn           !              | 
-      real :: sffc              !              | 
+      real :: tsoil             !              |
+      integer :: iob            !              |
+      integer :: iwst           !              |
+      integer :: iwgn           !              |
+      real :: sffc              !              |
       integer :: nly            !none          |end of loop
       integer :: k              !none          |counter
       real :: plt_zmx           !              |
       integer :: ipl            !none          |counter
-      real :: plt_zmxp          !              | 
+      real :: plt_zmxp          !              |
       integer :: max            !              |
       integer :: min            !              |
       real :: dep_new           !              |
       integer :: jj             !none          |counter
       real :: solpst            !              |
       integer :: n              !              |
-      real :: wt1               !none          |conversion factor to convert kg/ha to g/t(ppm) 
-      integer :: ly             !none          |counter   
+      real :: wt1               !none          |conversion factor to convert kg/ha to g/t(ppm)
+      integer :: ly             !none          |counter
       integer :: isdr           !none          |conversion factor to convert kg/ha to g/t(ppm)
       real :: sd
       real :: dd
       real :: sdlat
-      real :: h 
+      real :: h
       real :: daylength
 
       do j = 1, sp_ob%hru
        iob = hru(j)%obj_no
        iwst = ob(iob)%wst
        iwgn = wst(iwst)%wco%wgn
-       
+
        hru(j)%lumv%usle_mult = soil(j)%phys(1)%rock * soil(j)%ly(1)%usle_k *       &
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
 
@@ -100,7 +100,7 @@
       else
         sffc = bsn_prm%ffcb
       end if
-      
+
       !! set initial soil water and temperature for each layer
       nly = soil(j)%nly
       soil(j)%sw = 0.
@@ -109,6 +109,10 @@
         soil(j)%phys(k)%st = sffc * soil(j)%phys(k)%fc
         soil(j)%sw = soil(j)%sw + soil(j)%phys(k)%st
       end do
+      hwb_d(j)%sw_init = soil(j)%sw    !store initial soil water
+      hwb_m(j)%sw_init = soil(j)%sw
+      hwb_y(j)%sw_init = soil(j)%sw
+      hwb_a(j)%sw_init = soil(j)%sw
       
       !! set day length threshold for dormancy and initial dormancy
       dormhr(j) = wgn_pms(iwgn)%daylth

@@ -102,8 +102,9 @@
               lscal(ireg)%lum(ilum)%prm%etco = -lscal(ireg)%lum(ilum)%prm%etco
               write (5000,503) "esco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
               "     0      0      0      0      0      0      0      0      0"
-              !write (5000,503) "epco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
-              !"     0      0      0      0      0      0      0      0      0"
+              lscal(ireg)%lum(ilum)%prm%etco = -0.5 * lscal(ireg)%lum(ilum)%prm%etco
+              write (5000,503) "epco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
+              "     0      0      0      0      0      0      0      0      0"
             end if
             if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) then
               write (5000,503) ls_prms(8)%name, ls_prms(8)%chg_typ, lscal(ireg)%lum(ilum)%prm%perco,        &

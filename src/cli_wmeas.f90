@@ -21,13 +21,13 @@
        eof = 0
        imax = 0
 
-      !! read all measured daily solar radiation data
+      !! read all measured daily wind data
       inquire (file=in_cli%wnd_cli, exist=i_exist)
       if (.not. i_exist .or. in_cli%wnd_cli == "null") then
          allocate (wnd(0:0))
          allocate (wnd_n(0))
       else
-      do 
+      do
         open (107,file=in_cli%wnd_cli)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
@@ -38,10 +38,10 @@
             if (eof < 0) exit
             imax = imax + 1
           end do
-          
+
       allocate (wnd(0:imax))
       allocate (wnd_n(imax))
-      
+
       rewind (107)
       read (107,*,iostat=eof) titldum
       if (eof < 0) exit
@@ -51,17 +51,17 @@
         read (107,*,iostat=eof) wnd_n(i)
         if (eof < 0) exit
       end do
-      
+
       rewind (107)
       read (107,*,iostat=eof) titldum
       if (eof < 0) exit
       read (107,*,iostat=eof) header
       if (eof < 0) exit
-      
+
       do i = 1, imax
         read (107,*,iostat = eof) wnd(i)%filename
         if (eof < 0) exit
-        
+
 !!!!!weather path code
        if (in_path_wnd%wnd == "null") then
          open (108,file = wnd(i)%filename)
@@ -69,7 +69,7 @@
         open (108,file = TRIM(ADJUSTL(in_path_wnd%wnd))//wnd(i)%filename)
        endif
 !!!!!weather path code
-        
+
         read (108,*,iostat=eof) titldum
         if (eof < 0) exit
         read (108,*,iostat=eof) header
@@ -77,17 +77,17 @@
         read (108,*,iostat=eof) wnd(i)%nbyr, wnd(i)%tstep, wnd(i)%lat, wnd(i)%long,     &
                                wnd(i)%elev
         if (eof < 0) exit
-       
+
         ! the precip time step has to be the same as time%step
         allocate (wnd(i)%ts(366,wnd(i)%nbyr))
-        
+
         ! read and save start jd and yr
         read (108,*,iostat=eof) iyr, istep
         if (eof < 0) exit
-        
+
         wnd(i)%start_day = istep
         wnd(i)%start_yr = iyr
-        
+
         backspace (108)
 
       if (iyr > time%yrc) then
@@ -96,18 +96,18 @@
         ! read and store entire year
         wnd(i)%yrs_start = 0
       end if
-      
+
         ! read and store entire year
-       do 
+       do
          read (108,*,iostat=eof) iyr, istep
          if (eof < 0) exit
          if (iyr == time%yrc .and. istep == time%day_start) exit
        end do
- 
+
        backspace (108)
        iyr_prev = iyr
        iyrs = 1
-       
+
        do
          read (108,*,iostat=eof) iyr, istep, wnd(i)%ts(istep,iyrs)
          if (eof < 0) exit
@@ -122,10 +122,10 @@
          end if
        end do
        close (108)
-      
+
        !save end jd and year
-       hmd(i)%end_day = istep
-       hmd(i)%end_yr = iyr
+       wnd(i)%end_day = istep
+       wnd(i)%end_yr = iyr
        
       end do
       close (107)

@@ -40,12 +40,12 @@
       end type topography
       
       type field
-           character(len=13) :: name = "rep field"
-           real :: length = 0.2  !!            |km            |field length for wind erosion
-           real :: wid = 0.2  !!               |km            |field width for wind erosion
-           real :: ang = 60.  !!               |deg           |field angle for wind erosion
+           character(len=13) :: name = "default"
+           real :: length = 500. !!               |m             |field length for wind erosion
+           real :: wid = 100.    !!               |m             |field width for wind erosion
+           real :: ang = 30.     !!               |deg           |field angle for wind erosion
       end type field
-      
+
       type hydrology
            character(len=13) :: name
            real :: lat_ttime = 0.   !! lat_ttime(:)  |none          |Exponential of the lateral flow travel time
@@ -65,15 +65,15 @@
            real :: perco = 0.       !!               |0-1           |percolation coefficient - linear adjustment to daily perc
            real :: lat_orgn = 0.
            real :: lat_orgp = 0.
-           real :: harg_pet  = .0023  
+           real :: harg_pet  = .0023
            real :: latq_co = 0.3    !!               |              |plant ET curve number coefficient
            real :: perco_lim = 1.   !!               |              |percolation coefficient-limits perc from bottom layer
       end type hydrology
-      
+
       type snow_parameters
          character (len=16) :: name
          real :: falltmp = 0.     !deg C         |snowfall temp
-         real :: melttmp = 0.     !deg C         |snow melt base temp 
+         real :: melttmp = 0.     !deg C         |snow melt base temp
          real :: meltmx = 0.      !mm/deg C/day  |Max melt rate for snow during year (June 21)
          real :: meltmn = 0.      !mm/deg C/day  |Min melt rate for snow during year (Dec 21)
          real :: timp             !none          |snow pack temp lag factor (0-1)
@@ -81,7 +81,8 @@
          real :: cov50 = 0.       !none          |frac of COVMX
          real :: init_mm = 0.     !mm H20        |initial snow water content at start of simulation
       end type snow_parameters
-      
+      type (snow_parameters), dimension (:), allocatable :: snodb
+
       type subsurface_drainage_parameters
         character(len=13) :: name = "default"
         real :: depth = 0.    !! |mm            |depth of drain tube from the soil surface
@@ -90,9 +91,10 @@
         real :: radius = 0.   !! |mm            |effective radius of drains
         real :: dist = 0.     !! |mm            |distance between two drain tubes or tiles
         real :: drain_co = 0. !! |mm/day        |drainage coefficient
-        real :: pumpcap = 0.  !! |mm/hr         |pump capacity 
+        real :: pumpcap = 0.  !! |mm/hr         |pump capacity
         real :: latksat = 0.  !! !na            |multiplication factor to determine lat sat hyd conductivity for profile
       end type subsurface_drainage_parameters
+      type (subsurface_drainage_parameters), dimension (:), allocatable :: sdr
               
       type landuse
           character(len=15) :: name

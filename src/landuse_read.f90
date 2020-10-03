@@ -1,10 +1,10 @@
-      subroutine landuse_read
-      
+     subroutine landuse_read
+
       use input_file_module
       use maximum_data_module
       use septic_data_module
       use plant_data_module
-      use tiles_data_module
+      use hru_module, only : hru, sdr
       use landuse_data_module
       use mgt_operations_module
       

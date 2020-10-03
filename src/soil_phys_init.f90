@@ -51,8 +51,7 @@
       
 
       if (sol(isol)%s%alb < 0.1) sol(isol)%s%alb  = 0.1
-      if (sol(isol)%s%anion_excl<=1.e-6) sol(isol)%s%anion_excl =      &      
-                                        anion_excl_bsn
+      if (sol(isol)%s%anion_excl<=1.e-6) sol(isol)%s%anion_excl = anion_excl_bsn
       if (sol(isol)%s%anion_excl >= 1.) sol(isol)%s%anion_excl = 0.99
 
       nly = sol(isol)%s%nly
@@ -60,9 +59,9 @@
         a = 50.0
         b = 20.0
         c = 5.0
-        d = 2.0           
+        d = 2.0
         nota = 10.
-        if (sol(isol)%phys(j)%k <= 0.0) then 
+        if (sol(isol)%phys(j)%k <= 0.0) then
           if (sol(isol)%s%hydgrp == "A") then
             sol(isol)%phys(j)%k = a
 	    else
@@ -74,7 +73,7 @@
 	    else
           if (sol(isol)%s%hydgrp == "D") then
             sol(isol)%phys(j)%k = d          !Claire 12/2/09
-          else 
+          else
            sol(isol)%phys(j)%k = nota
           endif
           endif
@@ -84,16 +83,17 @@
 
         if (sol(isol)%phys(j)%bd <= 1.e-6) sol(isol)%phys(j)%bd = 1.3
         if (sol(isol)%phys(j)%bd > 2.) sol(isol)%phys(j)%bd = 2.0
+        sol(isol)%phys(j)%awc = sol(isol)%phys(j)%awc + .05
         if (sol(isol)%phys(j)%awc <= 1.e-6) sol(isol)%phys(j)%awc = .005
         if (sol(isol)%phys(j)%awc >= .8) sol(isol)%phys(j)%awc = .8
         if (sol(isol)%phys(j)%rock > 98.0) sol(isol)%phys(j)%rock= 98.0
-        
+
         !! Defaults for ph and calcium mjw average of 20,000 SSURGO soils mjw rev 490
         if (sol(isol)%ly(j)%cal <= 1.e-6) sol(isol)%ly(j)%cal = 2.8
         if (sol(isol)%ly(j)%ph<= 1.e-6) sol(isol)%ly(j)%ph = 6.5
       end do
 !-------------------------------------------------------------
-  
+
       nly = sol(isol)%s%nly
 
 !!    calculate composite usle value
@@ -101,14 +101,13 @@
 
 !!    calculate water content of soil at -1.5 MPa and -0.033 MPa
       do j = 1, nly
-        sol(isol)%phys(j)%wp=0.4 * sol(isol)%phys(j)%clay *                  &
-                                            sol(isol)%phys(j)%bd / 100.
+        sol(isol)%phys(j)%wp=0.4 * sol(isol)%phys(j)%clay * sol(isol)%phys(j)%bd / 100.
         if (sol(isol)%phys(j)%wp <= 0.) sol(isol)%phys(j)%wp = .005
-         sol(isol)%phys(j)%up=sol(isol)%phys(j)%wp+sol(isol)%phys(j)%awc
-         sol(isol)%phys(j)%por = 1. - sol(isol)%phys(j)%bd / 2.65
+          sol(isol)%phys(j)%up = sol(isol)%phys(j)%wp + sol(isol)%phys(j)%awc
+          sol(isol)%phys(j)%por = 1. - sol(isol)%phys(j)%bd / 2.65
         if (sol(isol)%phys(j)%up >= sol(isol)%phys(j)%por) then
-         sol(isol)%phys(j)%up = sol(isol)%phys(j)%por - .05
-         sol(isol)%phys(j)%wp=sol(isol)%phys(j)%up-sol(isol)%phys(j)%awc
+           sol(isol)%phys(j)%up = sol(isol)%phys(j)%por - .05
+           sol(isol)%phys(j)%wp = sol(isol)%phys(j)%up - sol(isol)%phys(j)%awc
         if (sol(isol)%phys(j)%wp <= 0.) then
           sol(isol)%phys(j)%up = sol(isol)%phys(j)%por * .75
           sol(isol)%phys(j)%wp = sol(isol)%phys(j)%por * .25

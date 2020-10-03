@@ -181,7 +181,7 @@
               !if (printcode == 1) then
                 allocate (ob(i)%fdc_ll(366))
                 allocate (ob(i)%fdc_lla(time%nbyr))
-                allocate (ob(i)%fdc%p(time%nbyr))
+                allocate (ob(i)%fdc%yr(time%nbyr))
               !end if
           
             end do

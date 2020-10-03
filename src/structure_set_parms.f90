@@ -1,19 +1,18 @@
-      subroutine structure_set_parms (str_name, istr, j)
+     subroutine structure_set_parms (str_name, istr, j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine controls the simulation of the land phase of the 
+!!    this subroutine controls the simulation of the land phase of the
 !!    hydrologic cycle
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use tiles_data_module
       use mgt_operations_module
-      use hru_module, only : hru, iseptic, t_ov, tc_gwat
+      use hru_module, only : hru, sdr, iseptic, t_ov, tc_gwat
       use soil_module
-      
+
       implicit none
-    
+
       character (len=16), intent (in) :: str_name     !              |
       integer, intent (in) :: istr                    !              |
       integer, intent (in) :: j                       !none          |HRU number
@@ -24,8 +23,9 @@
       select case(str_name)
 
       case ("tiledrain")
+        hru(j)%sdr = sdr(istr)
         hru(j)%lumv%sdr_dep = sdr(istr)%depth
-        !! define soil layer that the drainage tile is in
+        !! define soil layer the drainage tile is in
         if (sdr(istr)%depth > 0) then
           do jj = 1, soil(j)%nly
             if (hru(j)%lumv%sdr_dep < soil(j)%phys(jj)%d) hru(j)%lumv%ldrain = jj
@@ -33,7 +33,7 @@
           end do
         else
           hru(j)%lumv%ldrain = 0
-        endif
+        end if
         !! setting tile lage time
         if (hru(j)%lumv%ldrain > 0 .and. sdr(istr)%lag > 0.01) then
           hru(j)%lumv%tile_ttime = 1. - Exp(-24. /sdr(istr)%lag)

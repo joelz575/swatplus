@@ -366,6 +366,7 @@
             jj = rcv_sum(kk)                                ! jj=seqential receiving number
             ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
             ob(kk)%obtyp_in(jj) = ob(i)%typ
+            ob(kk)%obtypno_in(jj) = ob(i)%num
             ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
             ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
             ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
@@ -397,33 +398,31 @@
       rcv_sum = 0
       iord = 1
       dfn_sum = 0
-      
-      do while (idone == 0)
+
+    do while (idone == 0)
         do i = 1, sp_ob%objs
-        
+
         if (iord > 1000) then
-          if (ob(i)%fired == 0) then         
+          if (ob(i)%fired == 0) then
 
             do iob = 1, sp_ob%objs
               if (ob(iob)%fired == 0 .and. ob(iob)%rcv_tot > 0) then
-                  write (*, *) "This is the ob(iob) object: ", iob, ob(iob)%typ, ob(iob)%num
-                  write (*, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, &
-                          (ob(iob)%obtyp_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
-                  write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, &
-                          (ob(iob)%obtyp_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
-              end if 
+                  kk=1
+                write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),  &
+                                    ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
+              end if
             end do
-            write (*,1002) 
-1002        format (5x,/,"ERROR - An infinite loop is detected in the connect file(s)",/, 15x, "the simulation will end",       &
-                       /, 9x, "(review diagnostics.out file for more info)",/)
-            pause   !!! stop the simulation run (ob(i)%fired == 0)
-            stop
+            write (*,1002)
+            !pause   !!! stop the simulation run (ob(i)%fired == 0)
+            !stop
+            call exit(1)
           end if
+        end if
 
-        end if        
-          !check if all incoming and defining objects have been met
-          !if not sum incoming 
-          if (rcv_sum(i) == ob(i)%rcv_tot .and.                        & 
+
+            !check if all incoming and defining objects have been met
+          !if not sum incoming
+          if (rcv_sum(i) == ob(i)%rcv_tot .and.                        &
                                       dfn_sum(i) == ob(i)%dfn_tot) then
             if (ob(i)%fired == 0) then
             ob(i)%fired = 1
@@ -435,7 +434,7 @@
               !kk = ob(i)%obj_subs(k)       !ob number of subbasin
               !dfn_sum(kk) = dfn_sum(kk) + 1
             end do
-          
+
             isrc_tot = Max(ob(i)%src_tot, 1)  !force to go through once
             do ii = 1, isrc_tot
               !! add receiving object for single objects
@@ -467,7 +466,7 @@
                   end if
                 end if
               end if
-              
+
               !! compute object order for parallelization (similar to stream order)
               if (ob(i)%rcv_tot == 0 .and. ob(i)%typ /= "ru") then
                 ob(i)%cmd_order = 1
@@ -478,13 +477,13 @@
                   ircv_ob = ob(i)%obj_in(ircv)
                   iorder = Max (iorder, ob(ircv_ob)%cmd_order)
                 end do
-                !! subbasin has to be in parallel order after elements in the subbasin 
+                !! subbasin has to be in parallel order after elements in the subbasin
                 if (ob(i)%typ == "ru" .and. ob(i)%rcv_tot == 0) then
                   iorder = 1
                 end if
                 ob(i)%cmd_order = iorder + 1
               end if
-              
+
               if (ob(i)%typ /= "exco") then   !exco"s are not commands
                 ob(i)%cmd_prev = cmd_prev
                 if (cmd_prev > 0) then
@@ -496,15 +495,15 @@
                 !rcv_sum(i) = rcv_sum(i) + 1
                 ob(i)%cmd_order = iord
               end if  !exco"s are not commands
-            
+
             end do
             end if
           end if
         end do
         iord = iord + 1
       end do
-      
-      !! set command orders for parallelization
-      ! allocate (
+
+1002  format (5x,/,"ERROR - An infinite loop is detected in the connect file(s)",/, 15x, "the simulation will end",       &
+                       /, 9x, "(review diagnostics.out file for more info)",/)
       return
       end subroutine hyd_connect

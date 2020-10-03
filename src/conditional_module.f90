@@ -2,7 +2,7 @@
     
       implicit none
     
-      integer :: ical_hyd                   !              |
+      integer :: rndseed_cond = 748932582   ! random number seed for dtbl conditional
 
       type conditions_var
         character(len=16) :: var            ! condition variable (ie volume, flow, sw, time, etc)
@@ -12,7 +12,7 @@
         character(len=2) :: lim_op          ! limit operator (*,+,-)
         real :: lim_const                   ! limit constant
       end type conditions_var
-              
+
       type actions_var
         character(len=16) :: typ            ! type of action (ie reservoir release, irrigate, fertilize, etc)
         character(len=16) :: ob             ! object variable (ie res, hru, canal, etc)
@@ -24,7 +24,7 @@
         real :: const2 = 1                  ! additional constant used for rate, days, etc
         character(len=16) :: file_pointer   ! pointer for option (ie weir equation pointer)
       end type actions_var
-       
+
       type decision_table
         character (len=16) :: name                                      ! name of the decision table
         integer :: conds                                                ! number of conditions
@@ -37,6 +37,10 @@
         character(len=1), dimension(:), allocatable :: act_hit          ! "y" if all condition alternatives (rules) are met; "n" if not
         integer, dimension(:), allocatable :: act_typ                   ! pointer to action type (ie plant, fert type, tillage implement, release type, etc)
         integer, dimension(:), allocatable :: act_app                   ! pointer to operation or application type (ie harvest.ops, chem_app.ops, wier shape, etc)
+        integer :: hru_lu = 0                                           ! number of hru's in the land_use condition(s) - used for probabilistic mgt operations or lu change
+        real :: ha_lu = 0.                                              ! area of land_use in ha
+        integer :: hru_lu_cur = 0                                       ! number of hru's in the land_use condition(s) that have currently been applied
+        real :: hru_ha_cur = 0.                                          ! area of land_use in ha that has currently been applied
       end type decision_table
       type (decision_table), dimension(:), allocatable, target :: dtbl_lum
       type (decision_table), dimension(:), allocatable, target :: dtbl_res

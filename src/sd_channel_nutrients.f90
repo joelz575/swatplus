@@ -9,7 +9,6 @@
 
       real :: no3_conc              !              |
       integer :: inut               !none          |counter
-      integer :: ifld               !              |
       integer :: istop              !              |
       real :: ch_len_inc            !              |
       real :: ch_len                !              |
@@ -18,13 +17,12 @@
       real :: srp_reduc             !              |
       real :: sed_conc              !mg/L
       real :: tp_conc               !              |
-      real :: nd_overb              !              | 
-      real :: area_m2               !              | 
+      real :: nd_overb              !              |
+      real :: area_m2               !              |
       real :: tss_conc              !              |
       real :: sedp_reduc            !              |
-     
+
       inut = 0
-      ifld = 0
       istop = 0
       ch_len_inc = rte_nut(inut)%len_inc
       ch_len = 0.
@@ -35,7 +33,7 @@
       no3_conc = ht1%no3
       sed_conc = ht1%sed
       tp_conc = ht1%sedp + ht1%solp
-      
+
       !! loop for channel increment
       do while (istop == 0)
         ch_len = ch_len + ch_len_inc
@@ -43,12 +41,12 @@
           ch_len_inc = ch_len - sd_ch(ich)%chl
           istop = 1
         end if
-        if (ob(icmd)%props > 0) then   
+        if (ob(icmd)%props > 0) then
           !! 2-stage ditch
           if (sd_ch(ich)%overbank == "ob") then
             nd_overb = nd_overb + 1
             !! over-bank full flow
-            area_m2 = ch_len_inc * field_db(ifld)%wid
+            area_m2 = ch_len_inc * 5.   !assume 5 m - should be hru(j)%field%wid
             if (no3_conc > rte_nut(inut)%no3_min_conc .and. no3_conc > 1.e-6) then
               !alog_no3 = alog(no3_conc)
               !denit_log = rte_nut(inut)%no3_slp_ob * alog(no3_conc) + rte_nut(inut)%no3_int_ob

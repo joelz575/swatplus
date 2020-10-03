@@ -111,11 +111,11 @@
         if (time%yrs > pco%nyskip) then
           res_in_d(jres) = ht1 
           res_out_d(jres) = ht2
-          res_in_d(jres)%flo = res(jres)%flo / 10000.               !m^3 -> ha-m
-          res_out_d(jres)%flo = res(jres)%flo / 10000.              !m^3 -> ha-m
-          res_wat_d(jres)%evap = res_wat_d(jres)%evap / 10000.      !m^3 -> ha-m
-          res_wat_d(jres)%seep = res_wat_d(jres)%seep / 10000.      !m^3 -> ha-m
-          res_wat_d(jres)%precip = res_wat_d(jres)%precip / 10000.    !m^3 -> ha-m
+          !res_in_d(jres)%flo = res_in_d(jres)%flo / 10000.          !m^3 -> ha-m
+          !res_out_d(jres)%flo = res_out_d(jres)%flo / 10000.        !m^3 -> ha-m
+          !res_wat_d(jres)%evap = res_wat_d(jres)%evap / 10000.      !m^3 -> ha-m
+          !res_wat_d(jres)%seep = res_wat_d(jres)%seep / 10000.      !m^3 -> ha-m
+          !res_wat_d(jres)%precip = res_wat_d(jres)%precip / 10000.  !m^3 -> ha-m
         end if             
         
       else

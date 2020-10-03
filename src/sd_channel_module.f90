@@ -13,9 +13,9 @@
         real :: chw             !m         |channel width
         real :: chd             !m         |channel depth
         real :: chs             !m/m       |channel slope
-        real :: chl             !km        |channel length
+        real :: chl             !km        |channel length (if the chl < 1m, no routing; output = 0.0)
         real :: chn             !          |channel Manning's n
-        real :: chk             !mm/h      |channel bottom conductivity
+        real :: chk             !mm/day    |channel bottom conductivity
         real :: cherod          !          |channel erodibility
         real :: cov             !0-1       |channel cover factor
         real :: hc_cov          !0-1       |head cut cover factor
@@ -43,7 +43,7 @@
         integer :: salt = 1                 !points to initial salt input file
       end type swatdeg_init_datafiles
       type (swatdeg_init_datafiles), dimension(:), allocatable :: sd_init
-            
+
       type swatdeg_datafiles
         character(len=16) :: name = ""
         character(len=16) :: initc = ""
@@ -69,6 +69,7 @@
         real :: chd = .5        !m          |channel depth
         real :: chs = .01       !m/m        |channel slope
         real :: chl = .1        !km         |channel length
+        real :: chn             !           |channel Manning's n
         real :: cov             !0-1        |channel cover factor
         real :: cherod          !           |channel erodibility
         real :: shear_bnk       !0-1        |bank shear coefficient - fraction of bottom shear

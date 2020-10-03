@@ -81,6 +81,10 @@
           do ith = 1, db_mx%field
             if (ru(i)%dbsc%field_db == field_db(ith)%name) then
               ru(i)%dbs%field_db = ith
+              ! set field data
+              ru(i)%field%length = field_db(ith)%length
+              ru(i)%field%wid = field_db(ith)%wid
+              ru(i)%field%ang = field_db(ith)%ang
               exit
             end if
             ! if (ru(i)%dbs%field_db == 0) write (9001,*) ru(i)%dbsc%field_db, " not found (ru-field_db)"

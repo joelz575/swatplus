@@ -22,7 +22,12 @@
       tday = rttime / 24.0
       tday = amin1 (1., tday)
 
-      !! benthic sources/losses in mg   
+      !! calculate temperature in stream Stefan and Preudhomme. 1993.  Stream temperature estimation
+      !! from air temperature.  Water Res. Bull. p. 27-45 SWAT manual equation 2.3.13
+      wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
+      if (wtmp <= 0.) wtmp = 0.1
+
+      !! benthic sources/losses in mg
       rs2_s =  Theta(ch_nut(jnut)%rs2,thrs2,wtmp) * ben_area    !ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
       rs3_s =  Theta(ch_nut(jnut)%rs3,thrs3,wtmp) * ben_area    !ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
       rk4_s =  Theta(ch_nut(jnut)%rk4,thrk4,wtmp) * ben_area    !ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
@@ -31,13 +36,8 @@
       if (ht3%flo > 0.) then
         disoxin = ht3%dox - rk4_s / ht3%flo
         disoxin = amax1 (0., disoxin)
-        dispin = ht3%solp + rs2_s / ht3%flo 
+        dispin = ht3%solp + rs2_s / ht3%flo
         ammoin = ht3%nh3 + rs3_s / ht3%flo
-
-        !! calculate temperature in stream Stefan and Preudhomme. 1993.  Stream temperature estimation 
-        !! from air temperature.  Water Res. Bull. p. 27-45 SWAT manual equation 2.3.13
-        wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
-        if (wtmp <= 0.) wtmp = 0.1
 
         !! calculate effective concentration of available nitrogen QUAL2E equation III-15
         cinn = ch_stor(jrch)%nh3 + ch_stor(jrch)%no3

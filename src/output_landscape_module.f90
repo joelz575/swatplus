@@ -1,7 +1,7 @@
-      module output_landscape_module
-    
-      implicit none 
-      
+     module output_landscape_module
+
+      implicit none
+
       type output_waterbal
         real :: precip = 0.           !mm H2O        |prec falling on they HRU during timestep
         real :: snofall = 0.          !mm H2O        |amt of prec falling as snow, sleet or freezing rain during timestep
@@ -16,7 +16,9 @@
         real :: esoil = 0.            !mm H2O        |actual amt of evap (from soil) that occurs during mon in HRU
         real :: surq_cont = 0.        !mm H2O        |amt of surf runoff gen during mon in HRU
         real :: cn = 0.               !none          |CN values during mon in HRU
-        real :: sw = 0.               !mm H2O        |soil water content of entire profile
+        real :: sw_init = 0.          !mm H2O        |initial soil water content of entire profile
+        real :: sw_final = 0.         !mm H2O        |final soil water content of entire profile
+        real :: sw = 0.               !mm H2O        |average soil water content of entire profile
         real :: sw_300 = 0.           !mm H2O        |soil water content of upper 300 mm
         real :: snopack = 0.          !mm            |snow pack
         real :: pet = 0.              !mm H2O        |pot et on current day in HRU
@@ -32,28 +34,28 @@
         real :: latq_res = 0.         !mm H2O        |lateral soil flow into reservoirs
         real :: latq_ls = 0.          !mm H2O        |lateral soil flow into a landscape element
       end type output_waterbal
-       
+
       type (output_waterbal), dimension (:), allocatable :: hwb_d
       type (output_waterbal), dimension (:), allocatable :: hwb_m
       type (output_waterbal), dimension (:), allocatable :: hwb_y
       type (output_waterbal), dimension (:), allocatable :: hwb_a
       type (output_waterbal) :: hwbz
-      
+
       type (output_waterbal), dimension (:), allocatable :: hltwb_d
       type (output_waterbal), dimension (:), allocatable :: hltwb_m
       type (output_waterbal), dimension (:), allocatable :: hltwb_y
       type (output_waterbal), dimension (:), allocatable :: hltwb_a
-      
+
       type (output_waterbal), dimension (:), allocatable :: ruwb_d
       type (output_waterbal), dimension (:), allocatable :: ruwb_m
       type (output_waterbal), dimension (:), allocatable :: ruwb_y
       type (output_waterbal), dimension (:), allocatable :: ruwb_a
-      
+
       type (output_waterbal) :: bwb_d
       type (output_waterbal) :: bwb_m
       type (output_waterbal) :: bwb_y
       type (output_waterbal) :: bwb_a
-      
+
       type regional_output_waterbal
         type (output_waterbal), dimension (:), allocatable :: lum
       end type regional_output_waterbal
@@ -61,8 +63,8 @@
       type (regional_output_waterbal), dimension (:), allocatable :: rwb_m
       type (regional_output_waterbal), dimension (:), allocatable :: rwb_y
       type (regional_output_waterbal), dimension (:), allocatable :: rwb_a
-      
-            
+
+
       type output_nutbal
         real :: grazn = 0.              !kg N/ha        |amt of nit added to soil in grazing on the day in HRU
         real :: grazp = 0.              !kg P/ha        |amt of phos added to soil in grazing on the day in HRU
@@ -76,7 +78,7 @@
         real :: denit = 0.              !kg N/ha        |amt of nit lost from nitrate pool by denit in soil profile
         !                                                    on current day in HRU
         real :: act_nit_n = 0.          !kg N/ha        |amt of nit moving from active org to nitrate pool in soil profile
-        !                                                    on current day in HRU 
+        !                                                    on current day in HRU
         real :: act_sta_n = 0.          !kg N/ha        |amt of nit moving from active org to stable org pool in soil
         !                                                    profile on current day in HRU
         real :: org_lab_p = 0.          !kg P/ha        |amt of phos moving from the org to labile pool in soil profile
@@ -94,22 +96,22 @@
       type (output_nutbal), dimension (:), allocatable :: hnb_y
       type (output_nutbal), dimension (:), allocatable :: hnb_a
       type (output_nutbal) :: hnbz
-      
+
       type (output_nutbal), dimension (:), allocatable :: hltnb_d
       type (output_nutbal), dimension (:), allocatable :: hltnb_m
       type (output_nutbal), dimension (:), allocatable :: hltnb_y
       type (output_nutbal), dimension (:), allocatable :: hltnb_a
-      
+
       type (output_nutbal), dimension (:), allocatable :: runb_d
       type (output_nutbal), dimension (:), allocatable :: runb_m
       type (output_nutbal), dimension (:), allocatable :: runb_y
       type (output_nutbal), dimension (:), allocatable :: runb_a
-      
+
       type (output_nutbal) :: bnb_d
       type (output_nutbal) :: bnb_m
       type (output_nutbal) :: bnb_y
       type (output_nutbal) :: bnb_a
-      
+
       type regional_output_nutbal
         type (output_nutbal), dimension (:), allocatable :: lum
       end type regional_output_nutbal
@@ -117,7 +119,7 @@
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_m
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_y
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_a
-      
+
       type output_losses
         real :: sedyld = 0.               !metric tons    | daily soil loss caused by water erosion
         real :: sedorgn = 0.              !kg N/ha        | amt of org nit in surf runoff in HRU for the day
@@ -129,28 +131,28 @@
         real :: sedmin = 0.               !
         real :: tileno3 = 0.              !kg N/ha        | NO3 in tile flow
       end type output_losses
-      
+
       type (output_losses), dimension (:), allocatable :: hls_d
       type (output_losses), dimension (:), allocatable :: hls_m
       type (output_losses), dimension (:), allocatable :: hls_y
       type (output_losses), dimension (:), allocatable :: hls_a
       type (output_losses) :: hlsz
-      
+
       type (output_losses), dimension (:), allocatable :: hltls_d
       type (output_losses), dimension (:), allocatable :: hltls_m
       type (output_losses), dimension (:), allocatable :: hltls_y
       type (output_losses), dimension (:), allocatable :: hltls_a
-      
+
       type (output_losses), dimension (:), allocatable :: ruls_d
       type (output_losses), dimension (:), allocatable :: ruls_m
       type (output_losses), dimension (:), allocatable :: ruls_y
       type (output_losses), dimension (:), allocatable :: ruls_a
-      
+
       type (output_losses) :: bls_d
       type (output_losses) :: bls_m
       type (output_losses) :: bls_y
       type (output_losses) :: bls_a
-            
+
       type regional_output_losses
         type (output_losses), dimension (:), allocatable :: lum
       end type regional_output_losses
@@ -158,16 +160,16 @@
       type (regional_output_losses), dimension (:), allocatable :: rls_m
       type (regional_output_losses), dimension (:), allocatable :: rls_y
       type (regional_output_losses), dimension (:), allocatable :: rls_a
-         
+
       type output_plantweather
         real :: lai = 0.                   !m**2/m**2     |leaf area index
-        real :: bioms = 0.                 !kg/ha         |land cover/crop biomass 
+        real :: bioms = 0.                 !kg/ha         |land cover/crop biomass
         real :: yield = 0.                 !kg/ha         |yield (dry weight) by crop type
         real :: residue = 0.               !kga/ha        |initial residue cover
         real :: sol_tmp = 0.               !deg C         |daily average temperature of soil layer
         real :: strsw = 0.                 !0-1           |water (drought) stress
         real :: strsa = 0.                 !0-1           |water (aeration) stress
-        real :: strstmp = 0.               !0-1           |temperature stress      
+        real :: strstmp = 0.               !0-1           |temperature stress
         real :: strsn = 0.                 !0-1           |nitrogen stress
         real :: strsp = 0.                 !0-1           |phosphorus stress
         real :: nplnt = 0.                 !kg N/ha       |plant uptake of nit in HRU for the day
@@ -181,28 +183,28 @@
         real :: rhum = 0.                  !              |relative humidity
         real :: phubase0 = 0.              !              |base zero potential heat units
       end type output_plantweather
-      
+
       type (output_plantweather), dimension (:), allocatable :: hpw_d
       type (output_plantweather), dimension (:), allocatable :: hpw_m
       type (output_plantweather), dimension (:), allocatable :: hpw_y
       type (output_plantweather), dimension (:), allocatable :: hpw_a
       type (output_plantweather) :: hpwz
-      
+
       type(output_plantweather), dimension (:), allocatable :: hltpw_d
       type(output_plantweather), dimension (:), allocatable :: hltpw_m
       type(output_plantweather), dimension (:), allocatable :: hltpw_y
       type(output_plantweather), dimension (:), allocatable :: hltpw_a
-      
+
       type (output_plantweather), dimension (:), allocatable :: rupw_d
       type (output_plantweather), dimension (:), allocatable :: rupw_m
       type (output_plantweather), dimension (:), allocatable :: rupw_y
       type (output_plantweather), dimension (:), allocatable :: rupw_a
-      
+
       type (output_plantweather) :: bpw_d
       type (output_plantweather) :: bpw_m
       type (output_plantweather) :: bpw_y
       type (output_plantweather) :: bpw_a
-                  
+
       type regional_output_plantweather
         type (output_plantweather), dimension (:), allocatable :: lum
       end type regional_output_plantweather
@@ -210,31 +212,33 @@
       type (regional_output_plantweather), dimension (:), allocatable :: rpw_m
       type (regional_output_plantweather), dimension (:), allocatable :: rpw_y
       type (regional_output_plantweather), dimension (:), allocatable :: rpw_a
-      
+
       type output_waterbal_header
         character (len=5) :: day         =  " jday"
         character (len=6) :: mo          =  "   mon"
         character (len=6) :: day_mo      =  "   day"
         character (len=6) :: yrc         =  "    yr"
         character (len=8) :: isd         =  "    unit"
-        character (len=8) :: id          =  "  gis_id"        
-        character (len=16) :: name       =  "  name          "        
+        character (len=8) :: id          =  "  gis_id"
+        character (len=16) :: name       =  "  name          "
         character (len=14) :: precip     =  "        precip"
         character (len=12) :: snofall    =  "     snofall"
-        character (len=12) :: snomlt     =  "      snomlt"        
-        character (len=12) :: surq_gen   =  "    surq_gen"      
-        character (len=12) :: latq       =  "        latq" 
+        character (len=12) :: snomlt     =  "      snomlt"
+        character (len=12) :: surq_gen   =  "    surq_gen"
+        character (len=12) :: latq       =  "        latq"
         character (len=12) :: wateryld   =  "    wateryld"
-        character (len=12) :: perc       =  "        perc"   
+        character (len=12) :: perc       =  "        perc"
         character (len=12) :: et         =  "          et"
         character (len=12) :: tloss      =  "       tloss"
         character (len=12) :: eplant     =  "      eplant"
         character (len=12) :: esoil      =  "       esoil"
         character (len=12) :: surq_cont  =  "   surq_cont"
         character (len=12) :: cn         =  "          cn"
-        character (len=12) :: sw         =  "          sw"
+        character (len=12) :: sw_init    =  "     sw_init"
+        character (len=12) :: sw_final   =  "    sw_final"
+        character (len=12) :: sw_ave     =  "      sw_ave"
         character (len=12) :: sw_300     =  "      sw_300"
-        character (len=12) :: snopack    =  "     snopack"   
+        character (len=12) :: snopack    =  "     snopack"
         character (len=12) :: pet        =  "         pet"
         character (len=12) :: qtile      =  "       qtile"
         character (len=12) :: irr        =  "         irr"
@@ -247,33 +251,35 @@
         character (len=12) :: latq_cha   =  "    latq_cha"
         character (len=12) :: latq_res   =  "    latq_res"
         character (len=12) :: latq_ls    =  "     latq_ls"
-      end type output_waterbal_header      
+      end type output_waterbal_header
       type (output_waterbal_header) :: wb_hdr
-      
+
       type output_waterbal_header_units
         character (len=5) :: day         =  "     "
         character (len=6) :: mo          =  "      "
         character (len=6) :: day_mo      =  "      "
         character (len=6) :: yrc         =  "      "
         character (len=8) :: isd         =  "        "
-        character (len=8) :: id          =  "        "        
-        character (len=16) :: name       =  "                "        
+        character (len=8) :: id          =  "        "
+        character (len=16) :: name       =  "                "
         character (len=14) :: precip     =  "          mm"
         character (len=12) :: snofall    =  "          mm"
-        character (len=12) :: snomlt     =  "          mm"        
-        character (len=12) :: surq_gen   =  "          mm"      
-        character (len=12) :: latq       =  "          mm" 
+        character (len=12) :: snomlt     =  "          mm"
+        character (len=12) :: surq_gen   =  "          mm"
+        character (len=12) :: latq       =  "          mm"
         character (len=12) :: wateryld   =  "          mm"
-        character (len=12) :: perc       =  "          mm"   
+        character (len=12) :: perc       =  "          mm"
         character (len=12) :: et         =  "          mm"
         character (len=12) :: tloss      =  "          mm"
         character (len=12) :: eplant     =  "          mm"
         character (len=12) :: esoil      =  "          mm"
         character (len=12) :: surq_cont  =  "          mm"
         character (len=12) :: cn         =  "         ---"
-        character (len=12) :: sw         =  "          mm"
+        character (len=12) :: sw_init    =  "          mm"
+        character (len=12) :: sw_final   =  "          mm"
+        character (len=12) :: sw_ave     =  "          mm"
         character (len=12) :: sw_300     =  "          mm"
-        character (len=12) :: snopack    =  "          mm"  
+        character (len=12) :: snopack    =  "          mm"
         character (len=12) :: pet        =  "          mm"
         character (len=12) :: qtile      =  "          mm"
         character (len=12) :: irr        =  "          mm"
@@ -286,110 +292,110 @@
         character (len=12) :: latq_cha   =  "          mm"
         character (len=12) :: latq_res   =  "          mm"
         character (len=12) :: latq_ls    =  "          mm"
-      end type output_waterbal_header_units      
+      end type output_waterbal_header_units
       type (output_waterbal_header_units) :: wb_hdr_units
-      
-       
+
+
       type output_nutbal_header
          character (len=5) :: day           =    " jday"
          character (len=6) :: mo            =    "   mon"
          character (len=6) :: day_mo        =    "   day"
          character (len=6) :: yrc           =    "    yr"
-         character (len=9) :: isd           =    "    unit " 
-         character (len=8) :: id            =    " gis_id "        
-         character (len=9) :: name          =    "    name "         
+         character (len=9) :: isd           =    "    unit "
+         character (len=8) :: id            =    " gis_id "
+         character (len=9) :: name          =    "    name "
          character(len=12) :: grazn         =    "        grzn"
-         character(len=12) :: grazp         =    "        grzp"          
-         character(len=17) :: lab_min_p     =    "        lab_min_p"     
+         character(len=12) :: grazp         =    "        grzp"
+         character(len=17) :: lab_min_p     =    "        lab_min_p"
          character(len=17) :: act_sta_p     =    "        act_sta_p"
-         character(len=17) :: fertn         =    "            fertn"       
-         character(len=17) :: fertp         =    "            fertp"       
-         character(len=17) :: fixn          =    "             fixn"       
+         character(len=17) :: fertn         =    "            fertn"
+         character(len=17) :: fertp         =    "            fertp"
+         character(len=17) :: fixn          =    "             fixn"
          character(len=17) :: denit         =    "            denit"
          character(len=17) :: act_nit_n     =    "        act_nit_n"
          character(len=17) :: act_sta_n     =    "        act_sta_n"
          character(len=17) :: org_lab_p     =    "        org_lab_p"
-         character(len=17) :: rsd_nitorg_n  =    "     rsd_nitorg_n"      
-         character(len=17) :: rsd_laborg_p  =    "     rsd_laborg_p"      
-         character(len=17) :: no3atmo =    "          no3atmo" 
+         character(len=17) :: rsd_nitorg_n  =    "     rsd_nitorg_n"
+         character(len=17) :: rsd_laborg_p  =    "     rsd_laborg_p"
+         character(len=17) :: no3atmo =    "          no3atmo"
          character(len=17) :: nh4atmo =    "          nh4atmo"
-      end type output_nutbal_header         
+      end type output_nutbal_header
       type (output_nutbal_header) :: nb_hdr
-      
+
       type output_nutbal_header_units
          character (len=5) :: day           =    "     "
          character (len=6) :: mo            =    "      "
          character (len=6) :: day_mo        =    "      "
          character (len=6) :: yrc           =    "      "
-         character (len=9) :: isd           =    "         " 
-         character (len=8) :: id            =    "        "        
-         character (len=9) :: name          =    "         "         
+         character (len=9) :: isd           =    "         "
+         character (len=8) :: id            =    "        "
+         character (len=9) :: name          =    "         "
          character(len=12) :: grazn         =    "        kgha"
-         character(len=12) :: grazp         =    "        kgha"         
-         character(len=17) :: lab_min_p     =    "             kgha"     
-         character(len=17) :: act_sta_p     =    "             kgha" 
-         character(len=17) :: fertn         =    "             kgha"        
-         character(len=17) :: fertp         =    "             kgha"        
-         character(len=17) :: fixn          =    "             kgha"        
-         character(len=17) :: denit         =    "             kgha" 
-         character(len=17) :: act_nit_n     =    "             kgha" 
-         character(len=17) :: act_sta_n     =    "             kgha" 
-         character(len=17) :: org_lab_p     =    "             kgha" 
-         character(len=17) :: rsd_nitorg_n  =    "             kgha"       
-         character(len=17) :: rsd_laborg_p  =    "             kgha"       
-         character(len=17) :: no3atmo       =    "             kgha"  
-         character(len=17) :: nh4atmo       =    "             kgha" 
-      end type output_nutbal_header_units         
+         character(len=12) :: grazp         =    "        kgha"
+         character(len=17) :: lab_min_p     =    "             kgha"
+         character(len=17) :: act_sta_p     =    "             kgha"
+         character(len=17) :: fertn         =    "             kgha"
+         character(len=17) :: fertp         =    "             kgha"
+         character(len=17) :: fixn          =    "             kgha"
+         character(len=17) :: denit         =    "             kgha"
+         character(len=17) :: act_nit_n     =    "             kgha"
+         character(len=17) :: act_sta_n     =    "             kgha"
+         character(len=17) :: org_lab_p     =    "             kgha"
+         character(len=17) :: rsd_nitorg_n  =    "             kgha"
+         character(len=17) :: rsd_laborg_p  =    "             kgha"
+         character(len=17) :: no3atmo       =    "             kgha"
+         character(len=17) :: nh4atmo       =    "             kgha"
+      end type output_nutbal_header_units
       type (output_nutbal_header_units) :: nb_hdr_units
-      
+
       type output_losses_header
         character (len=6) :: day        =  "  jday"
         character (len=6) :: mo         =  "   mon"
         character (len=6) :: day_mo     =  "   day"
         character (len=6) :: yrc        =  "    yr"
         character (len=8) :: isd        =  "   unit "
-        character (len=8) :: id         =  " gis_id "        
-        character (len=16) :: name      =  " name               "        
+        character (len=8) :: id         =  " gis_id "
+        character (len=16) :: name      =  " name               "
         character (len=12) :: sedyld    =  "      sedyld"
         character (len=12)  :: sedorgn  =  "     sedorgn"
         character (len=12)  :: sedorgp  =  "     sedorgp"
         character (len=12)  :: surqno3  =  "     surqno3"
-        character (len=12)  :: latno3   =  "     lat3no3"            
+        character (len=12)  :: latno3   =  "     lat3no3"
         character (len=12)  :: surqsolp =  "    surqsolp"
-        character (len=12)  :: usle     =  "        usle"     
+        character (len=12)  :: usle     =  "        usle"
         character (len=12)  :: sedmin   =  "      sedmin"
         character (len=12)  :: tileno3  =  "     tileno3"
-      end type output_losses_header      
+      end type output_losses_header
       type (output_losses_header) :: ls_hdr
-      
+
        type output_losses_header_units
         character (len=6) :: day        =  "      "
         character (len=6) :: mo         =  "      "
         character (len=6) :: day_mo     =  "      "
         character (len=6) :: yrc        =  "      "
         character (len=8) :: isd        =  "        "
-        character (len=8) :: id         =  "        "        
-        character (len=16) :: name      =  "                    "        
+        character (len=8) :: id         =  "        "
+        character (len=16) :: name      =  "                    "
         character (len=12) :: sedyld    =  "         tha"
         character (len=12)  :: sedorgn  =  "        kgha"
         character (len=12)  :: sedorgp  =  "        kgha"
         character (len=12)  :: surqno3  =  "        kgha"
-        character (len=12)  :: latno3   =  "        kgha"            
+        character (len=12)  :: latno3   =  "        kgha"
         character (len=12)  :: surqsolp =  "        kgha"
-        character (len=12)  :: usle     =  "        tons"     
+        character (len=12)  :: usle     =  "        tons"
         character (len=12)  :: sedmin   =  "        ----"
         character (len=12)  :: tileno3  =  "        ----"
-      end type output_losses_header_units      
+      end type output_losses_header_units
       type (output_losses_header_units) :: ls_hdr_units
-     
+
       type output_plantweather_header
         character (len=6) :: day        =  "  jday"
         character (len=6) :: mo         =  "   mon"
         character (len=6) :: day_mo     =  "   day"
         character (len=6) :: yrc        =  "    yr"
         character (len=8) :: isd        =  "   unit "
-        character (len=8) :: id         =  " gis_id "        
-        character (len=16) :: name      =  " name              "        
+        character (len=8) :: id         =  " gis_id "
+        character (len=16) :: name      =  " name              "
         character (len=13) :: lai       =  "          lai"
         character (len=12) :: bioms     =  "       bioms"
         character (len=12) :: yield     =  "       yield"
@@ -411,17 +417,17 @@
         character (len=12) :: rhum      =  "        rhum"
         character (len=12) :: phubase0  =  "     phubas0"
       end type output_plantweather_header
-      
+
       type (output_plantweather_header) :: pw_hdr
-      
+
       type output_plantweather_header_units
         character (len=6) :: day        =  "      "
         character (len=6) :: mo         =  "      "
         character (len=6) :: day_mo     =  "      "
         character (len=6) :: yrc        =  "      "
         character (len=8) :: isd        =  "        "
-        character (len=8) :: id         =  "        "        
-        character (len=16) :: name      =  "                   " 
+        character (len=8) :: id         =  "        "
+        character (len=16) :: name      =  "                   "
         character (len=13) :: lai       =  "    m**2/m**2"
         character (len=12) :: bioms     =  "        kgha"
         character (len=12) :: yield     =  "        kgha"
@@ -443,66 +449,66 @@
         character (len=12) :: rhum      =  "        frac"
         character (len=12) :: phubase0  =  "        degc"
       end type output_plantweather_header_units
-      
+
       type (output_plantweather_header_units) :: pw_hdr_units
-      
-      
+
+
       interface operator (+)
         module procedure hruout_waterbal_add
       end interface
-             
+
       interface operator (+)
         module procedure hruout_nutbal_add
       end interface
-           
+
       interface operator (+)
         module procedure hruout_losses_add
       end interface
-            
+
       interface operator (+)
         module procedure hruout_plantweather_add
       end interface
-        
+
       interface operator (/)
         module procedure hruout_waterbal_div
       end interface
-              
+
       interface operator (*)
         module procedure hruout_waterbal_mult
       end interface
-      
+
       interface operator (//)
         module procedure hruout_waterbal_ave
       end interface
-        
+
       interface operator (/)
         module procedure hruout_nutbal_div
       end interface
-                
+
       interface operator (*)
         module procedure hruout_nutbal_mult
       end interface
-        
+
       interface operator (/)
         module procedure hruout_losses_div
       end interface
-                
+
       interface operator (*)
         module procedure hruout_losses_mult
       end interface
-        
+
       interface operator (/)
         module procedure hruout_plantweather_div
         end interface
-          
+
       interface operator (//)
         module procedure hruout_plantweather_ave
         end interface
-            
+
       interface operator (*)
         module procedure hruout_plantweather_mult
         end interface
-  
+
       contains
 
       function hruout_waterbal_add (hru1, hru2) result (hru3)
@@ -522,6 +528,8 @@
         hru3%esoil = hru1%esoil + hru2%esoil
         hru3%surq_cont = hru1%surq_cont + hru2%surq_cont
         hru3%cn = hru1%cn + hru2%cn
+        hru3%sw_init = hru1%sw_init
+        hru3%sw_final = hru1%sw_final
         hru3%sw = hru1%sw + hru2%sw
         hru3%sw_300 = hru1%sw_300 + hru2%sw_300
         hru3%snopack = hru1%snopack + hru2%snopack
@@ -538,7 +546,7 @@
         hru3%latq_res = hru1%latq_res + hru2%latq_res
         hru3%latq_ls = hru1%latq_ls + hru2%latq_ls
       end function hruout_waterbal_add
-      
+
       function hruout_nutbal_add (hru1, hru2) result (hru3)
         type (output_nutbal), intent (in) :: hru1
         type (output_nutbal), intent (in) :: hru2
@@ -574,7 +582,7 @@
         hru3%sedmin = hru1%sedmin + hru2%sedmin
         hru3%tileno3 = hru1%tileno3 + hru2%tileno3
       end function hruout_losses_add
-      
+
       function hruout_plantweather_add (hru1, hru2) result (hru3)
         type (output_plantweather), intent (in) :: hru1
         type (output_plantweather), intent (in) :: hru2
@@ -615,29 +623,29 @@
         hru2%tloss = hru1%tloss / const
         hru2%eplant = hru1%eplant / const
         hru2%esoil = hru1%esoil / const
-        hru2%surq_cont = hru1%surq_cont / const 
+        hru2%surq_cont = hru1%surq_cont / const
         hru2%cn = hru1%cn
         hru2%sw = hru1%sw
         hru2%sw_300 = hru1%sw_300
         hru2%snopack = hru1%snopack
-        hru2%pet = hru1%pet / const 
-        hru2%qtile = hru1%qtile / const 
+        hru2%pet = hru1%pet / const
+        hru2%qtile = hru1%qtile / const
         hru2%irr = hru1%irr / const
-        hru2%surq_runon = hru1%surq_runon / const 
-        hru2%latq_runon = hru1%latq_runon / const 
+        hru2%surq_runon = hru1%surq_runon / const
+        hru2%latq_runon = hru1%latq_runon / const
         hru2%overbank = hru1%overbank / const
-        hru2%surq_cha = hru1%surq_cha / const 
-        hru2%surq_res = hru1%surq_res / const 
+        hru2%surq_cha = hru1%surq_cha / const
+        hru2%surq_res = hru1%surq_res / const
         hru2%surq_ls = hru1%surq_ls / const
-        hru2%latq_cha = hru1%latq_cha / const 
-        hru2%latq_res = hru1%latq_res / const 
+        hru2%latq_cha = hru1%latq_cha / const
+        hru2%latq_res = hru1%latq_res / const
         hru2%latq_ls = hru1%latq_ls / const
       end function hruout_waterbal_div
-      
+
       function hruout_waterbal_ave (hru1,const) result (hru2)
         type (output_waterbal), intent (in) :: hru1
         real, intent (in) :: const
-        type (output_waterbal) :: hru2   
+        type (output_waterbal) :: hru2
         hru2%precip = hru1%precip
         hru2%snofall = hru1%snofall
         hru2%snomlt= hru1%snomlt
@@ -651,6 +659,8 @@
         hru2%esoil = hru1%esoil
         hru2%surq_cont = hru1%surq_cont
         hru2%cn = hru1%cn / const
+        hru2%sw_init = hru1%sw_init
+        hru2%sw_final = hru1%sw_final
         hru2%sw = hru1%sw / const
         hru2%sw_300 = hru1%sw_300 / const
         hru2%snopack = hru1%snopack / const

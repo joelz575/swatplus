@@ -98,7 +98,7 @@
         real :: cmn = 0.0003        !! rate factor for mineralization on active org N
         real :: n_updis = 20.0      !! nitrogen uptake dist parm
         real :: p_updis = 20.0      !! phosphorus uptake dist parm
-        real :: nperco = 20.0       !! nitrate perc coeff (0-1)
+        real :: nperco = 0.10       !! nitrate perc coeff (0-1)
                                     !!   0 = conc of nitrate in surface runoff is zero
                                     !!   1 = perc has same conc of nitrate as surf runoff
         real :: pperco = 10.0       !! phos perc coeff (0-1)

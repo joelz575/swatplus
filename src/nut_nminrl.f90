@@ -134,7 +134,10 @@
           rdc = decr * rsd1(j)%tot(ipl)%m
           rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m - rdc
           if (rsd1(j)%tot(ipl)%m < 0.) rsd1(j)%tot(ipl)%m = 0.
-          rmn1 = decr * rsd1(j)%tot(ipl)%n 
+          rsd1(j)%tot(ipl)%c = (1. - decr) * rsd1(j)%tot(ipl)%c
+          if (rsd1(j)%tot(ipl)%c < 0.) rsd1(j)%tot(ipl)%c = 0.
+          soil1(j)%hs(1)%c = soil1(j)%hs(1)%c + decr * rsd1(j)%tot(ipl)%c
+          rmn1 = decr * rsd1(j)%tot(ipl)%n
           rsd1(j)%tot(ipl)%p = Max(1.e-6, rsd1(j)%tot(ipl)%p)
           rmp = decr * rsd1(j)%tot(ipl)%p
 

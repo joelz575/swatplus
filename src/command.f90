@@ -96,7 +96,7 @@
               else
                 ! if hyd in is not a total hyd from an hru or ru -> add the specified hyd typ 
                 select case (ob(icmd)%htyp_in(in))
-                case ("tot")   ! tile flow
+                case ("tot")   ! total flow
                   ob(icmd)%hin_sur = ob(icmd)%hin_sur + frac_in * ob(iob)%hd(ihyd)
                   !add constituents
                   if (cs_db%num_tot > 0) then
@@ -122,7 +122,7 @@
                   end if
                 end select
               end if
-              
+
             else
               ! all objects other than hru's
               ! fraction of organics
@@ -136,7 +136,7 @@
               ob(icmd)%hin_d(in) = ht1        !for hydrograph output
               obcs(icmd)%hcsin_d(in) = hcs1   !for constituent hydrograph output
             end if
-            
+
             !sum subdaily hydrographs
             if (time%step > 0) then
               do kk = 1, time%step
@@ -149,14 +149,14 @@
 
           !convert to per area basis
           if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "ru") then  !only convert hru and subbasin hyds for routing
-            if (ob(icmd)%ru_tot > 0) then
-              !object is in a subbasin
-              ielem = ob(icmd)%elem
-              iru = ob(icmd)%ru(1)  !can only be in one subbasin if routing over
-              conv = 100. * ru(iru)%da_km2  !* ru_elem(ielem)%frac
-            else
+            !if (ob(icmd)%ru_tot > 0) then
+            !  !object is in a subbasin
+            !  ielem = ob(icmd)%elem
+            !  iru = ob(icmd)%ru(1)  !can only be in one subbasin if routing over
+            !  conv = 100. * ru(iru)%da_km2  !* ru_elem(ielem)%frac
+            !else
               conv = ob(icmd)%area_ha
-            end if
+            !end if
             ob(icmd)%hin_sur = ob(icmd)%hin_sur // conv
             ob(icmd)%hin_lat = ob(icmd)%hin_lat // conv
             ob(icmd)%hin_til = ob(icmd)%hin_til // conv
@@ -166,17 +166,17 @@
         ! select the next command type
 
         select case (ob(icmd)%typ)
-            
+
           case ("hru")   ! hru
             ihru = ob(icmd)%num
             call hru_control
             if (ob(icmd)%rcv_tot > 0) call hyddep_output
-                      
+
           case ("hru_lte")   ! hru_lte
             isd = ob(icmd)%num
             call hru_lte_control (isd)
             !if (ob(icmd)%rcv_tot > 0) call hyddep_output
-            
+
           case ("ru")   ! subbasin
             iru = ob(icmd)%num
             call ru_control
@@ -184,12 +184,12 @@
 
           case ("modflow")   ! modflow
             !! call modflow (daily)  **Ryan**
-            
+
           case ("aqu")   ! aquifer
             if (ob(icmd)%dfn_tot == 0) then   !1-D use old bf recession
               call aqu_1d_control
             end if
-          
+
           case ("chan")   ! channel
             jrch = ob(icmd)%num
             jrchq = ob(icmd)%props2
@@ -201,15 +201,15 @@
             ires = ob(icmd)%num
             if (ob(icmd)%rcv_tot > 0) then
               call res_control (ires)
-            end if 
-              
+            end if
+
           case ("recall")   ! recall hydrograph
             irec = ob(icmd)%num
             select case (recall(irec)%typ)
               case (1)    !daily
                 ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
               case (2)    !monthly
-                if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then 
+                if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then
                     ob(icmd)%hd(1) = recall(irec)%hd(time%mo,time%yrs)
                 else
                     ob(icmd)%hd(1) = hz
@@ -223,7 +223,7 @@
               case (4)    !average annual
                 ob(icmd)%hd(1) = recall(irec)%hd(1,1)
               end select
-              
+
               rec_d(irec) = ob(icmd)%hd(1)
 
               if (cs_db%num_tot > 0) then
@@ -233,23 +233,31 @@
           !case ("exco")   ! export coefficient hyds are set at start
 
           case ("dr")   ! delivery ratios
-            ob(icmd)%hd(1) = ob(icmd)%hin ** dr(ob(icmd)%props) ! ** is an intrinsic function to multiply 
+            ob(icmd)%hd(1) = ob(icmd)%hin ** dr(ob(icmd)%props) ! ** is an intrinsic function to multiply
             if (cs_db%num_tot > 0) then
               idr = ob(iob)%props
-              
+
               call constit_hyd_mult (icmd, idr)
             end if
-            
+
           case ("outlet")  !outlet
             ob(icmd)%hd(1) = ob(icmd)%hin
-              
+
           case ("chandeg")  !swatdeg channel
             isdch = ob(icmd)%num
             isd_chsur = ob(icmd)%props2
-            call sd_channel_control
-            
+            if (sd_ch(isdch)%chl > 1.e-3) then
+              call sd_channel_control
+            else
+              !! artificial channel - length=0 - no transformations
+              ob(icmd)%hd(1) = ob(icmd)%hin
+              if (cs_db%num_tot > 0) then
+                obcs(icmd)%hd(1) = obcs(icmd)%hin
+              end if
+            end if
+
           end select
-        if (pco%fdcout == "y") call flow_dur_curve
+        if (pco%fdcout == "y" .and. ob(icmd)%typ == "chandeg") call flow_dur_curve
         
         !print all outflow hydrographs
         if (ob(icmd)%src_tot > 0) then

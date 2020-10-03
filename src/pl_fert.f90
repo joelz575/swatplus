@@ -174,9 +174,7 @@
       fertorgn = frt_kg * fertdb(ifrt)%forgn
       fertsolp = frt_kg * fertdb(ifrt)%fminp
       fertorgp = frt_kg * fertdb(ifrt)%forgp  
-      fertn = fertn + frt_kg * (fertdb(ifrt)%fminn +         &         
-                                                   fertdb(ifrt)%forgn)
-      fertp = fertp + frt_kg * (fertdb(ifrt)%fminp +         &         
-                                                   fertdb(ifrt)%forgp)
+      fertn = fertn + frt_kg * (fertdb(ifrt)%fminn + fertdb(ifrt)%forgn)
+      fertp = fertp + frt_kg * (fertdb(ifrt)%fminp + fertdb(ifrt)%forgp)
       return
       end subroutine pl_fert

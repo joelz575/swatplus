@@ -87,6 +87,8 @@
             pcom(j)%plstr(ipl)%strsp = 1.
             pcom(j)%plstr(ipl)%strsa = 1.
           end if
+          !pcom(j)%plstr(ipl)%strsa = 1.
+          !pcom(j)%plstr(ipl)%strsn = 1.
           !! code to turn off nutrient plant stress only
           if (bsn_cc%nostress == 2) then
             pcom(j)%plstr(ipl)%strsn = 1.

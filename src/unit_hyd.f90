@@ -64,8 +64,7 @@
       real :: xi               !              |
       real :: q                !              |
       integer :: max           !              |
-      integer :: ij            !              |
- 
+
 !!    compute unit hydrograph for computing subbasin hydrograph from direct runoff
       do j = 1, sp_ob%hru
         ql = 0.
@@ -75,12 +74,12 @@
         tp = .375 * tb                       ! time to peak flow
 	  !! convert to time step (from hr), J.Jeong March 2009
 	  tb = ceiling(tb * 60./ real(time%dtm))
-	  tp = int(tp * 60./ real(time%dtm))         
-	  
+	  tp = int(tp * 60./ real(time%dtm))
+
 	  if(tp==0) tp = 1
 	  if(tb==tp) tb = tb + 1
-	  itb(j) = int(tb) 
-        
+	  itb(j) = int(tb)
+
 	  ! Triangular Unit Hydrograph
 	  if (bsn_cc%uhyd == 0) then
 	    do i = 1, itb(j)
@@ -95,17 +94,17 @@
           ql = q
           sumq = sumq + uh(j,i)
         end do
-          
+
 		do i = 1, itb(j)
             uh(j,i) = uh(j,i) / sumq
         end do
-	  
+
 	  ! Gamma Function Unit Hydrograph
 	  elseif (bsn_cc%uhyd == 1) then
           i = 1; q = 1.
 		do while (q > 0.0001)
             xi = float(i)
-		   q = (xi / tp) ** bsn_prm%uhalpha * exp((1.- xi / tp) *             &    
+		   q = (xi / tp) ** bsn_prm%uhalpha * exp((1.- xi / tp) *             &
                           bsn_prm%uhalpha)
             q = Max(0.,q)
             uh(j,i) = (q + ql) / 2.
@@ -114,7 +113,7 @@
 	      i = i + 1
 	      if (i>3.*time%step) exit
 	    end do
-	    itb(ij) = i - 1
+	    itb(j) = i - 1
           do i = 1, itb(j)
             uh(j,i) = uh(j,i) / sumq
           end do

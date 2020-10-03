@@ -516,6 +516,7 @@
         hwb_d(j)%surq_cont = surfq(j)
         hwb_d(j)%cn = cnday(j)
         hwb_d(j)%sw = soil(j)%sw
+        hwb_d(j)%sw_final = soil(j)%sw
         hwb_d(j)%sw_300 = soil(j)%sw_300
         hwb_d(j)%snopack = hru(j)%sno_mm
         hwb_d(j)%pet = pet_day

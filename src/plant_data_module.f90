@@ -10,6 +10,8 @@
         character(len=18) :: typ         !none              |plant category
                                          !                  |warm_annual
                                          !                  |cold_annual
+                                         !                  |warm_annual_tuber
+                                         !                  |cold_annual_tuber
                                          !                  |perennial
         character(len=18) :: trig        !none              |phenology trigger
                                          !                  |moisture_gro

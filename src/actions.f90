@@ -2,12 +2,12 @@
       use conditional_module
       use climate_module
       use time_module
-      use hru_module, only : fertno3, fertnh3, fertorgn, fertorgp, fertsolp,   &
-        ihru, ipl, isol, ndeat, phubase, sol_sumno3, sol_sumsolp, hru, yield 
+      use hru_module, only : hru, fertno3, fertnh3, fertorgn, fertorgp, fertsolp,   &
+        ihru, ipl, isol, ndeat, phubase, sol_sumno3, sol_sumsolp, hru, yield
       use soil_module
       use plant_module
       use plant_data_module
-      use mgt_operations_module  
+      use mgt_operations_module
       use tillage_data_module
       use reservoir_module
       use sd_channel_module
@@ -15,7 +15,6 @@
       use basin_module
       use organic_mineral_mass_module
       use hydrograph_module
-      use tiles_data_module
       use output_landscape_module
       use conditional_module
       use constituent_mass_module
@@ -39,7 +38,7 @@
       integer :: ipst                      !         |pesticide type from pest data base
       integer :: iharvop                   !         |harvest operation type
       integer :: iihru                     !         |
-      integer :: ilu                       !         |landuse type 
+      integer :: ilu                       !         |landuse type
       integer :: j                         !none     |counter
       integer :: iob
       integer :: idp                       !         |
@@ -62,7 +61,7 @@
       real :: frac                         !         |
       real :: rto                          !         |
       real :: rto1                         !         |
-      real :: pest_kg                      !kg/ha    |amount of pesticide applied 
+      real :: pest_kg                      !kg/ha    |amount of pesticide applied
       character(len=1) :: action           !         |
 
       do iac = 1, d_tbl%acts
@@ -73,9 +72,10 @@
             exit
           end if
         end do
+
         if (action == "y") then
           select case (d_tbl%act(iac)%typ)
-          
+
           !irrigation demand - hru action
           case ("irr_demand")
             ipl = 1
@@ -84,12 +84,12 @@
 
             irrop = d_tbl%act_typ(iac)
             irrig(j)%demand = irrop_db(irrop)%amt_mm * hru(j)%area_ha / 1000.       ! ha-m = mm * ha / 1000.
-            
+
             !! if unlimited source, set irrigation applied directly to hru
             if (d_tbl%act(iac)%file_pointer == "unlim") then
               irrig(j)%applied = irrop_db(irrop)%amt_mm * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
               irrig(j)%runoff = irrop_db(irrop)%amt_mm * irrop_db(irrop)%eff * irrop_db(irrop)%surq
-              !set organics and constituents from irr.ops ! irrig(j)%water =  cs_irr(j) = 
+              !set organics and constituents from irr.ops ! irrig(j)%water =  cs_irr(j) =
               if (pco%mgtout == "y") then
                 write (2612, *) j, time%yrc, time%mo, time%day, "        ", "IRRIGATE", phubase(j),  &
                     pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, rsd1(j)%tot(ipl)%m, &
@@ -128,7 +128,7 @@
               aqu(j) = rto1 * ch_stor(j)                                    ! remainder stays in aquifer
               cs_irr(j) = rto * cs_aqu(j)                                   ! constituents in irrigation water
               cs_aqu(j) = rto1 * cs_aqu(j)                                  ! remainder stays in aquifer
-              
+
             case ("cha")
               irrig_m3 = amin1 (ch_stor(j)%flo, irrig(j)%demand)
               rto = irrig_m3 / ch_stor(j)%flo                               ! ratio of water removed from channel volume
@@ -138,7 +138,7 @@
               !ch_stor(j) = rto1 * ch_water(j)                              ! remainder stays in channel
               cs_irr(j) = rto * ch_water(j)                                 ! constituents in irrigation water
               ch_water(j) = rto1 * ch_water(j)                              ! remainder stays in channel
-              
+
             case ("res")
               irrig_m3 = amin1 (res(j)%flo, irrig(j)%demand)
               rto = irrig_m3 / res(j)%flo                                   ! ratio of water removed from res volume
@@ -148,9 +148,9 @@
               res(j) = rto1 * res(j)                                        ! remainder stays in reservoir
               cs_irr(j) = rto * res_water(j)                                ! constituents in irrigation water
               res_water(j) = rto1 * res_water(j)                            ! remainder stays in reservoir
-              
+
             end select
-                  
+
             if (pco%mgtout == "y") then
               write (2612, *) j, time%yrc, time%mo, time%day, "        ", "IRRIGATE", phubase(j),  &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, rsd1(j)%tot(ipl)%m, &
@@ -161,13 +161,14 @@
           case ("fertilize")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               ipl = 1
               ifrt = d_tbl%act_typ(iac)               !fertilizer type from fert data base
               frt_kg = d_tbl%act(iac)%const           !amount applied in kg/ha
               ifertop = d_tbl%act_app(iac)            !surface application fraction from chem app data base
               call pl_fert (j, ifrt, frt_kg, ifertop)
+
               if (pco%mgtout == "y") then
                 !write (2612, *) j, time%yrc, time%mo, time%day, chemapp_db(mgt%op4)%name, "    FERT", &
                 write (2612, *) j, time%yrc, time%mo, time%day, chemapp_db(j)%name, "    FERT",       &
@@ -182,11 +183,12 @@
           case ("till")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               idtill = d_tbl%act_app(iac)
               ipl = 1
               call mgt_newtillmix(j, 0., idtill)
+
               if (pco%mgtout == "y") then
                 write (2612, *) j, time%yrc, time%mo, time%day, tilldb(idtill)%tillnm, "TILLAGE",    &
                     phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m,        &
@@ -201,7 +203,7 @@
             if (j == 0) j = ob_cur
             icom = pcom(j)%pcomdb
             pcom(j)%days_plant = 1       !reset days since last planting
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               do ipl = 1, pcom(j)%npl
                 idp = pcomdb(icom)%pl(ipl)%db_num
@@ -218,24 +220,24 @@
               end do
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             end if
-            
+
           !harvest only
           case ("harvest")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               iharvop = d_tbl%act_typ(iac)
               icom = pcom(j)%pcomdb
               pcom(j)%days_harv = 1       !reset days since last harvest
-            
+
               do ipl = 1, pcom(j)%npl
                 biomass = pl_mass(j)%tot(ipl)%m
                 if (d_tbl%act(iac)%option == pcomdb(icom)%pl(ipl)%cpnm .or. d_tbl%act(iac)%option == "all") then
-                          
+
                   !harvest specific type
                   select case (harvop_db(iharvop)%typ)
-                  case ("biomass")    
+                  case ("biomass")
                     call mgt_harvbiomass (j, ipl, iharvop)
                   case ("grain")
                     call mgt_harvgrain (j, ipl, iharvop)
@@ -244,10 +246,11 @@
                   case ("tuber")
                     call mgt_harvtuber (j, ipl, iharvop)
                   end select
+
                   !! sum yield and num. of harvest to calc ave yields
                   pl_mass(j)%yield_tot(ipl) = pl_mass(j)%yield_tot(ipl) + pl_yield
                   pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
-                            
+
                   !! sum basin crop yields and area harvested
                   iplt_bsn = pcom(j)%plcur(ipl)%bsn_num
                   bsn_crop_yld(iplt_bsn)%area_ha = bsn_crop_yld(iplt_bsn)%area_ha + hru(j)%area_ha
@@ -257,11 +260,10 @@
                   do ilum = 1, plcal(ireg)%lum_num
                     if (plcal(ireg)%lum(ilum)%meas%name == mgt%op_char) then
                       plcal(ireg)%lum(ilum)%ha = plcal(ireg)%lum(ilum)%ha + hru(j)%area_ha
-                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha /&
-                              1000.
+                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha / 1000.
                     end if
                   end do
-            
+
                   idp = pcom(j)%plcur(ipl)%idplt
                   if (pco%mgtout == "y") then
                     write (2612, *) j, time%yrc, time%mo, time%day,  pldb(idp)%plantnm, "HARVEST",      &
@@ -269,7 +271,7 @@
                         sol_sumno3(j), sol_sumsolp(j), pl_yield%m, pcom(j)%plstr(ipl)%sum_n, &
                         pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w, &
                         pcom(j)%plstr(ipl)%sum_a
-                  end if 
+                  end if
                 end if
                 pcom(j)%plcur(ipl)%phuacc = 0.
               end do
@@ -280,7 +282,7 @@
           case ("kill")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               icom = pcom(j)%pcomdb
               do ipl = 1, pcom(j)%npl
@@ -296,30 +298,31 @@
                         sol_sumno3(j), sol_sumsolp(j), yield, pcom(j)%plstr(ipl)%sum_n,                  &
                         pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w,  &
                         pcom(j)%plstr(ipl)%sum_a
-                  end if 
+                  end if
                 end if
                 pcom(j)%plcur(ipl)%phuacc = 0.
                 phubase(j) = 0.
               end do
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             end if
-  
+
           !harvest and kill
           case ("harvest_kill")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               iharvop = d_tbl%act_typ(iac)
               icom = pcom(j)%pcomdb
               pcom(j)%days_harv = 1       !reset days since last harvest
-            
+
               do ipl = 1, pcom(j)%npl
                 biomass = pl_mass(j)%tot(ipl)%m
                 if (d_tbl%act(iac)%option == pcomdb(icom)%pl(ipl)%cpnm .or. d_tbl%act(iac)%option == "all") then
+
                   !harvest specific type
                   select case (harvop_db(iharvop)%typ)
-                  case ("biomass")    
+                  case ("biomass")
                     call mgt_harvbiomass (j, ipl, iharvop)
                   case ("grain")
                     call mgt_harvgrain (j, ipl, iharvop)
@@ -328,33 +331,26 @@
                   case ("tuber")
                     call mgt_harvtuber (j, ipl, iharvop)
                   end select
-            
+
                   call mgt_killop (j, ipl)
-                  !! sum yield and num. of harvest to calc ave yields
+
+                  !! sum yield and number of harvests to calc ave yields
                   pl_mass(j)%yield_tot(ipl) = pl_mass(j)%yield_tot(ipl) + pl_yield
                   pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
-                            
+
                   !! sum basin crop yields and area harvested
                   iplt_bsn = pcom(j)%plcur(ipl)%bsn_num
                   bsn_crop_yld(iplt_bsn)%area_ha = bsn_crop_yld(iplt_bsn)%area_ha + hru(j)%area_ha
-                  bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + yield * hru(j)%area_ha / 1000.
+                  bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + pl_yield%m * hru(j)%area_ha / 1000.
                   !! sum regional crop yields for soft calibration
                   ireg = hru(j)%crop_reg
                   do ilum = 1, plcal(ireg)%lum_num
-                    print *, "ilum=", ilum
-                    print *, "plcal(ireg)%lum_num", plcal(ireg)%lum_num
-                    print *, "plcal(ireg)%lum(ilum)", &
-                            plcal(ireg)%lum(ilum)
-                    print *, "plcal(ireg)%lum(ilum)%meas", &
-                            plcal(ireg)%lum(ilum)%meas
-                    print *, "plcal(ireg)%lum(ilum)%meas%name", &
-                            plcal(ireg)%lum(ilum)%meas%name
                     if (plcal(ireg)%lum(ilum)%meas%name == d_tbl%act(iac)%option) then
                       plcal(ireg)%lum(ilum)%ha = plcal(ireg)%lum(ilum)%ha + hru(j)%area_ha
-                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha /&
-                              1000.
+                      plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha / 1000.
                     end if
                   end do
+
                   idp = pcom(j)%plcur(ipl)%idplt
                   if (pco%mgtout == "y") then
                     write (2612, *) j, time%yrc, time%mo, time%day,  pldb(idp)%plantnm, "HARV/KILL",        &
@@ -362,26 +358,26 @@
                         sol_sumno3(j), sol_sumsolp(j), pl_yield%m, pcom(j)%plstr(ipl)%sum_n,   &
                         pcom(j)%plstr(ipl)%sum_p, pcom(j)%plstr(ipl)%sum_tmp, pcom(j)%plstr(ipl)%sum_w,     &
                         pcom(j)%plstr(ipl)%sum_a
-                  end if 
+                  end if
                 end if
                 pcom(j)%plcur(ipl)%phuacc = 0.
                 phubase(j) = 0.
               end do
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             end if
-  
+
           !reset rotation year
           case ("rot_reset")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             if (d_tbl%act(iac)%const < 1) d_tbl%act(iac)%const = 1
             pcom(j)%rot_yr = d_tbl%act(iac)%const
-              
+
           !apply pesticide
           case ("pest_apply")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               ipl = 1
               ipst = d_tbl%act_typ(iac)                                     !pesticide type from fert data base
@@ -395,8 +391,10 @@
                  rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), pest_kg
               endif
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
+              dtbl_lum(idtbl)%hru_lu_cur = dtbl_lum(idtbl)%hru_lu_cur + 1
+              dtbl_lum(idtbl)%hru_ha_cur = dtbl_lum(idtbl)%hru_ha_cur + hru(j)%area_ha
             end if
-          
+
           case ("graze")    !! grazing operation
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
@@ -404,7 +402,7 @@
             igr = d_tbl%act_typ(iac)
             graze = grazeop_db(igr)
             call pl_graze
-            
+
               !if (pco%mgtout == "y") then
               !  write (2612, *) j, time%yrc, time%mo, time%day, "         ", "    GRAZE",         &
               !    phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m,        &
@@ -416,7 +414,7 @@
           case ("grow_init")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
             hlt(j)%gro = "y"
             hlt(j)%g = 0.
             hlt(j)%alai = 0.
@@ -428,14 +426,14 @@
             !calculate yield - print lai, biomass and yield
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
               idp = hlt(j)%iplant
               if (hlt(j)%pet < 10.) then
                 wur = 100.
               else
                 wur = 100. * hlt(j)%aet / hlt(j)%pet
               endif
-              hiad1 = (pldb(idp)%hvsti - pldb(idp)%wsyf) *                            &   
+              hiad1 = (pldb(idp)%hvsti - pldb(idp)%wsyf) *                            &
                         (wur / (wur + Exp(6.13 - .0883 * wur))) + pldb(idp)%wsyf
               hiad1 = amin1 (hiad1, pldb(idp)%hvsti)
               yield = 0.8 * hlt(j)%dm * hiad1  ! * hlt(isd)%stress
@@ -457,10 +455,10 @@
           case ("drain_control") !! set drain depth for drainage water management
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
              istr = hru(j)%tiledrain
-              hru(j)%lumv%sdr_dep = d_tbl%act(iac)%const * sdr(istr)%depth
+              hru(j)%lumv%sdr_dep = d_tbl%act(iac)%const
               !if (hru(j)%lumv%sdr_dep > 0) then
               !  do jj = 1, soil(j)%nly
               !    if (hru(j)%lumv%sdr_dep < soil(j)%phys(jj)%d) hru(j)%lumv%ldrain = jj

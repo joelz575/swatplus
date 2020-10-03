@@ -1,4 +1,4 @@
-      subroutine aqu_1d_control 
+      subroutine aqu_1d_control
     
       use aquifer_module
       use time_module
@@ -49,16 +49,16 @@
       aqu_d(iaq)%rchrg = ob(icmd)%hin%flo / (10. * ob(icmd)%area_ha)
       
       !! lag recharge from bottom of soil to water table ** disabled
-      !aqu_d(iaq)%rchrg = (1. - aqu_prm(iaqdb)%delay_e) * aqu_d(iaq)%rchrg + aqu_prm(iaqdb)%delay_e * aqu_st(iaq)%rchrg_prev
-      
+      !aqu_d(iaq)%rchrg = (1. - aqu_prm(iaq)%delay_e) * aqu_d(iaq)%rchrg + aqu_prm(iaq)%delay_e * aqu_st(iaq)%rchrg_prev
+
       aqu_prm(iaq)%rchrg_prev = aqu_d(iaq)%rchrg
-      
+
       !! add recharge to aquifer storage
       aqu_d(iaq)%stor = aqu_d(iaq)%stor + aqu_d(iaq)%rchrg
-      
+
       !! compute flow and substract from storage
       if (aqu_d(iaq)%dep_wt < aqu_prm(iaq)%flo_min) then
-        aqu_d(iaq)%flo = aqu_d(iaq)%flo * aqu_prm(iaqdb)%alpha_e + aqu_d(iaq)%rchrg * (1. - aqu_prm(iaqdb)%alpha_e)
+        aqu_d(iaq)%flo = aqu_d(iaq)%flo * aqu_prm(iaq)%alpha_e + aqu_d(iaq)%rchrg * (1. - aqu_prm(iaq)%alpha_e)
         aqu_d(iaq)%flo = Max (0., aqu_d(iaq)%flo)
         aqu_d(iaq)%flo = Min (aqu_d(iaq)%stor, aqu_d(iaq)%flo)
         aqu_d(iaq)%stor = aqu_d(iaq)%stor - aqu_d(iaq)%flo
@@ -68,14 +68,14 @@
 
       !! set hydrograph flow from aquifer- convert mm to m3
       ob(icmd)%hd(1)%flo = 10. * aqu_d(iaq)%flo * ob(icmd)%area_ha
-      
+
       !! compute seepage through aquifer and subtract from storage
-      aqu_d(iaq)%seep = aqu_d(iaq)%rchrg * aqudb(iaqdb)%seep
-      aqu_d(iaq)%seep = amin1 (aqu_d(iaq)%seep, aqu_d(iaq)%stor)
-      ob(icmd)%hd(2)%flo = 10. * aqu_d(iaq)%seep * ob(icmd)%area_ha
-      
+      aqu_d(iaq)%seep = aqu_d(iaq)%rchrg * aqu_prm(iaq)%seep
+      aqu_d(iaq)%seep = amin1 (aqu_prm(iaq)%seep, aqu_d(iaq)%stor)
+      ob(icmd)%hd(2)%flo = 10. * aqu_prm(iaq)%seep * ob(icmd)%area_ha
+
       aqu_d(iaq)%stor = aqu_d(iaq)%stor - aqu_d(iaq)%seep
-      
+
       !! compute revap (deep root uptake from aquifer) and subtract from storage
       if (aqu_d(iaq)%dep_wt < aqu_prm(iaq)%revap_min) then
         aqu_d(iaq)%revap = wst(iwst)%weat%pet * aqu_prm(iaq)%revap_co
@@ -86,13 +86,8 @@
       end if
 
       !! compute groundwater depth from surface
-      aqu_d(iaq)%dep_wt = aqudb(iaqdb)%dep_bot - (aqu_d(iaq)%stor / (1000. * aqudb(iaqdb)%spyld))
+      aqu_d(iaq)%dep_wt = aqudb(iaqdb)%dep_bot - (aqu_d(iaq)%stor / (1000. * aqu_prm(iaq)%spyld))
       aqu_d(iaq)%dep_wt = amax1 (0., aqu_d(iaq)%dep_wt)
-      
-      !! compute groundwater height - datum: above bottom of channel
-      !aqu_d(iaq)%hgt = aqu_d(iaq)%hgt * aqu_prm(iaqdb)%alpha_e + aqu_d(iaq)%rchrg * (1. - aqu_prm(iaqdb)%alpha_e) /   & 
-      !                                       (800. * aqudb(iaqdb)%spyld * aqu_prm(iaq)%alpha + 1.e-6)       
-      !aqu_d(iaq)%hgt = Max(1.e-6, aqu_d(iaq)%hgt)
 
       !! compute nitrate recharge into the aquifer
       aqu_d(iaq)%rchrg_n = ob(icmd)%hin%no3 / (10. * ob(icmd)%area_ha)
@@ -101,7 +96,7 @@
       end if
       aqu_d(iaq)%no3 = aqu_d(iaq)%no3 + aqu_d(iaq)%rchrg_n
       aqu_prm(iaq)%rchrgn_prev = aqu_d(iaq)%rchrg_n
-      
+
       !! compute nitrate return flow out of aquifer
       if (aqu_d(iaq)%stor > 1.e-6) then
         conc_no3 = aqu_d(iaq)%no3 / aqu_d(iaq)%stor
@@ -112,15 +107,15 @@
       ob(icmd)%hd(1)%no3 = amin1(ob(icmd)%hd(1)%no3, aqu_d(iaq)%no3)
       aqu_d(iaq)%no3 = aqu_d(iaq)%no3 - ob(icmd)%hd(1)%no3
       aqu_d(iaq)%no3gw = ob(icmd)%hd(1)%no3
-      
+
       !revapno3 = conc * revap -- dont include nitrate uptake by plant
-      
+
       !! compute nitrate seepage out of aquifer
       aqu_d(iaq)%seepno3 = conc_no3 * aqu_d(iaq)%seep
       aqu_d(iaq)%seepno3 = amin1(aqu_d(iaq)%seepno3, aqu_d(iaq)%no3)
       aqu_d(iaq)%no3 = aqu_d(iaq)%no3 - aqu_d(iaq)%seepno3
       ob(icmd)%hd(2)%no3 = aqu_d(iaq)%seepno3
-      
+
       !! compute mineral p flow from aquifer - m^3 * ppm * 1000 kg/m^3 = 1/1000
       aqu_d(iaq)%minp = ob(icmd)%hin%flo * aqudb(iaqdb)%minp / 1000.
       !! set hydrograph soluble p from aquifer- convert kg/ha to m3
@@ -130,8 +125,8 @@
       !! compute fraction of flow to each channel in the aquifer
       !! if connected to aquifer - add flow
       if (db_mx%aqu2d > 0) then
-        contrib_len = aq_ch(iaq)%len_tot * aqu_d(iaq)%flo / aqudb(iaqdb)%bf_max
-      
+        contrib_len = aq_ch(iaq)%len_tot * aqu_d(iaq)%flo / aqu_prm(iaq)%bf_max
+
         !! find the first channel contributing
         icontrib = 0
         do icha = 1, aq_ch(iaq)%num_tot
@@ -156,26 +151,26 @@
       !! compute pesticide transport and decay
       do ipest = 1, cs_db%num_pests
         ipest_db = cs_db%pest_num(ipest)
-        
+
         !! set initial pesticide at start of day
         pest_init = cs_aqu(iaq)%pest(ipest)
-        
+
         !! add incoming pesticide to storage
         cs_aqu(iaq)%pest(ipest) = cs_aqu(iaq)%pest(ipest) + obcs(icmd)%hin%pest(ipest)
-        
+
         !! compute pesticide decay in the aquifer
         aqupst_d(iaq)%pest(ipest)%react = 0.
         if (cs_aqu(iaq)%pest(ipest) > 1.e-12) then
           aqupst_d(iaq)%pest(ipest)%react = cs_aqu(iaq)%pest(ipest) * (1. - pestcp(ipest_db)%decay_s)
           cs_aqu(iaq)%pest(ipest) =  cs_aqu(iaq)%pest(ipest) * pestcp(ipest_db)%decay_s
         end if
-            
+
         !! compute pesticide in aquifer flow
         kd = pestdb(ipest_db)%koc * aqu_d(iaq)%cbn / 100.
-        !! assume specific yield = upper limit (effective vs total porosity) 
+        !! assume specific yield = upper limit (effective vs total porosity)
         !! and bulk density of 2.0 (ave of rock and soil - 2.65 and 1.35)
         !! mm = (mm/mm + (m^3/ton)*(ton/m^3)) * m * 1000.
-        zdb1 = (aqudb(iaqdb)%spyld + kd * 2.0) * aqudb(iaqdb)%flo_dist * 1000.
+        zdb1 = (aqu_prm(iaq)%spyld + kd * 2.0) * aqudb(iaqdb)%flo_dist * 1000.
 
         !! compute volume of flow through the layer - mm
         flow_mm = aqu_d(iaq)%flo + aqu_d(iaq)%seep

@@ -34,15 +34,17 @@
       idp = pcom(j)%plcur(ipl)%idplt
       harveff = harvop_db(iharvop)%eff
 
+      !! remove seed mass from total plant mass and calculate yield
+      pl_mass(j)%tot(ipl) = pl_mass(j)%tot(ipl) - pl_mass(j)%seed(ipl)
+
       !! tuber yield = harvest index * above ground biomass
-      pl_yield = pcom(j)%plg(ipl)%hi_adj * pl_mass(j)%ab_gr(ipl)
-      
-      !! assume no biomass is left
-      pl_mass(j)%tot(ipl) = plt_mass_z
-      pl_mass(j)%ab_gr(ipl) = plt_mass_z
-      pl_mass(j)%leaf(ipl) = plt_mass_z
-      pl_mass(j)%stem(ipl) = plt_mass_z
-      pl_mass(j)%root(ipl) = plt_mass_z
+      pl_yield = harveff * pl_mass(j)%seed(ipl)
+
+      !! add remaining tuber (seed) mass to slow humus pool of soil - to preserve balances
+      harveff1 = 1. - harveff
+      soil1(j)%hs(1) = harveff1 * pl_mass(j)%seed(ipl) + soil1(j)%hs(1)
+
+      !! zero seed mass
       pl_mass(j)%seed(ipl) = plt_mass_z
 
       return

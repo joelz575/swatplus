@@ -33,7 +33,7 @@
             ru_elem(ielem)%dr = rto .add. hz
             ru_elem(ielem)%dr%flo = 1.
           end if
-          if (ru_elem(ielem)%dr_name == "full") then
+          if (ru_elem(ielem)%dr_name == "full" .or. ru_elem(ielem)%dr_name == "1") then
             ru_elem(ielem)%dr = 1. .add. hz
           end if
         end do

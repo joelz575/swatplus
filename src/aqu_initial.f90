@@ -60,6 +60,8 @@
         aqu_prm(iaq)%flo_min = aqudb(iaqdb)%flo_min
         aqu_prm(iaq)%revap_co = aqudb(iaqdb)%revap_co
         aqu_prm(iaq)%revap_min = aqudb(iaqdb)%revap_min
+        aqu_prm(iaq)%spyld = aqudb(iaqdb)%spyld
+        aqu_prm(iaq)%seep = aqudb(iaqdb)%seep
         aqu_prm(iaq)%alpha_e = Exp(-aqudb(iaqdb)%alpha)
         aqu_prm(iaq)%bf_max = aqudb(iaq)%bf_max
         aqu_prm(iaq)%nloss = Exp(-.693 / (aqudb(iaqdb)%hlife_n + .1))
@@ -80,8 +82,8 @@
         aqu_d(iaq)%flo_res = 0.
         aqu_d(iaq)%flo_ls = 0
       end do
-            
+
       ! pesticides and constituents are initialized in aqu_read_init
 
       return
-      end subroutine aqu_initial         
+      end subroutine aqu_initial

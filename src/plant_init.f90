@@ -1,4 +1,4 @@
-      subroutine plant_init (init)
+     subroutine plant_init (init)
 
       use hru_module, only : blai_com, cn2, cvm_com, hru, ihru, ipl, isol, rsdco_plcom, ilu
       use soil_module
@@ -14,40 +14,40 @@
       use urban_data_module
       use conditional_module
       use organic_mineral_mass_module
-      
+
       implicit none
-      
+
       integer, intent (in) :: init   !           |
       integer :: icom                !           |
       integer :: idp                 !           |
       integer :: j                   !none       |counter
-      integer :: ilug                !none       |counter 
+      integer :: ilug                !none       |counter
       integer :: iob                 !           |
       integer :: iwgn                !           |
-      integer :: mo                  !none       |counter 
-      integer :: iday                !none       |counter 
-      integer :: iplt                !none       |counter 
-      integer :: i                   !none       |counter  
-      integer :: icn                 !none       |counter 
-      integer :: icp                 !none       |counter 
-      integer :: ilum                !none       |counter 
-      integer :: idb                 !none       |counter 
+      integer :: mo                  !none       |counter
+      integer :: iday                !none       |counter
+      integer :: iplt                !none       |counter
+      integer :: i                   !none       |counter
+      integer :: icn                 !none       |counter
+      integer :: icp                 !none       |counter
+      integer :: ilum                !none       |counter
+      integer :: idb                 !none       |counter
       integer :: isched              !           |
-      integer :: iop                 !none       |management operation counter 
-      integer :: irot                !none       |rotation year counter 
+      integer :: iop                 !none       |management operation counter
+      integer :: irot                !none       |rotation year counter
       integer :: igrow               !none       |julian day growth begins
       integer :: iday_sum            !none       |day for southern hemisphere (182-181)
       integer :: iday_sh             !none       |julian day growth begins in souther hemisphere
       real :: phutot                 !heat unit  |total potential heat units for year (used
                                      !           |when no crop is growing)
       real :: grow_start             !           |
-      real :: grow_end               !           | 
+      real :: grow_end               !           |
       real :: tave                   !           |
       real :: phuday                 !           |
       real :: xx                     !           |
       real :: xm                     !           |
       real :: sin_sl                 !           |
-      real :: sl_len                 !           | 
+      real :: sl_len                 !           |
       real :: phu0                   !deg C      |base zero heat units for year
       real :: sd                     !radians    |solar declination: latitude at which the sun
                                      !           |is directly overhead at noon
@@ -56,7 +56,7 @@
       real :: daylength              !hours      |daylength
 
       j = ihru
-      
+
       !!assign land use pointers for the hru
         hru(j)%land_use_mgt = ilu
         hru(j)%plant_cov = lum_str(ilu)%plant_cov
@@ -85,7 +85,7 @@
           pcom(j)%npl = 0
         else
           if (init > 0) then
-            deallocate (pcom(j)%plg) 
+            deallocate (pcom(j)%plg)
             deallocate (pcom(j)%plm)
             deallocate (pl_mass(j)%tot)
             deallocate (pl_mass(j)%ab_gr)
@@ -94,24 +94,24 @@
             deallocate (pl_mass(j)%seed)
             deallocate (pl_mass(j)%root)
             deallocate (pl_mass(j)%yield_tot)
-            deallocate (pcom(j)%plstr) 
-            deallocate (pcom(j)%plcur) 
+            deallocate (pcom(j)%plstr)
+            deallocate (pcom(j)%plcur)
             deallocate (rsd1(j)%tot)
           end if
-        
+
         pcom(j)%npl = pcomdb(icom)%plants_com
         ipl = pcom(j)%npl
-        allocate (pcom(j)%plg(ipl)) 
-        allocate (pcom(j)%plm(ipl)) 
-        allocate (pl_mass(j)%tot(ipl)) 
+        allocate (pcom(j)%plg(ipl))
+        allocate (pcom(j)%plm(ipl))
+        allocate (pl_mass(j)%tot(ipl))
         allocate (pl_mass(j)%ab_gr(ipl))
         allocate (pl_mass(j)%leaf(ipl))
         allocate (pl_mass(j)%stem(ipl))
         allocate (pl_mass(j)%seed(ipl))
         allocate (pl_mass(j)%root(ipl))
         allocate (pl_mass(j)%yield_tot(ipl))
-        allocate (pcom(j)%plstr(ipl)) 
-        allocate (pcom(j)%plcur(ipl)) 
+        allocate (pcom(j)%plstr(ipl))
+        allocate (pcom(j)%plcur(ipl))
         allocate (rsd1(j)%tot(ipl))
 
         cvm_com(j) = 0.
@@ -126,9 +126,10 @@
           idp = pcomdb(icom)%pl(ipl)%db_num
           rsd1(j)%tot(ipl)%m = pcomdb(icom)%pl(ipl)%rsdin
           !set fresh organic pools--assume cn ratio = 57 and cp ratio = 300
+          rsd1(j)%tot(ipl)%c = 0.43 * rsd1(j)%tot(ipl)%m
           rsd1(j)%tot(ipl)%n = 0.43 * rsd1(j)%tot(ipl)%m / 57.
           rsd1(j)%tot(ipl)%p = 0.43 * rsd1(j)%tot(ipl)%m / 300.
-          
+
           ! set heat units to maturity
           ! first compute base0 units for entire year
           phu0 = 0.
@@ -156,7 +157,7 @@
             pcom(j)%plcur(ipl)%phumat = .95 * phutot
           else
             ! caculate planting day for summer annuals
-            if (pldb(idp)%typ == "warm_annual") then
+            if (pldb(idp)%typ == "warm_annual" .or. pldb(idp)%typ == "warm_annual_tuber") then
               iday_sum = 181
               phutot = 0.
               phu0 = 0.15 * phu0    !assume planting at 0.15 base 0 heat units

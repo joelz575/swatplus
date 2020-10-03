@@ -2,7 +2,7 @@
       
       use input_file_module
       use maximum_data_module
-      use hydrology_data_module
+      use hru_module
       
       implicit none
 

@@ -1,9 +1,9 @@
-      subroutine pl_waterup
-      
+     subroutine pl_waterup
+
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine distributes potential plant evaporation through
 !!    the root zone and calculates actual plant water use based on soil
-!!    water availability. Also estimates water stress factor.     
+!!    water availability. Also estimates water stress factor.
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -33,7 +33,7 @@
 !!    wuse        |mm H2O        |water uptake by plants in each soil layer
 !!    sum_wuse    |mm H2O        |water uptake by plants from all layers
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-    
+
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp, Max
 
@@ -44,13 +44,15 @@
       use hru_module, only : hru, ihru, epmax, ipl, ep_day, uptake
       use soil_module
       use plant_module
-      
+      use urban_data_module
+
       implicit none
-      
+
       integer :: j           !none      |hru number
-      integer :: k           !none      |counter 
+      integer :: k           !none      |counter
       integer :: ir          !none      |flag to denote bottom of root zone reached
-      integer :: idp         !          |   
+      integer :: idp         !          |
+      integer :: ulu         !          |urban land use from urban.urb
       real :: sum            !          |
       real :: sum_wuse       !mm H2O    |water uptake by plants from all layers
       real :: sum_wusep      !mm H2O    |previous water uptake by plants from all layers
@@ -61,20 +63,33 @@
       real :: gx             !mm        |lowest depth in layer from which nitrogen
                              !          |may be removed
       real :: wuse           !mm H2O    |water uptake by plants in each soil layer
-      real :: satco          !          | 
+      real :: satco          !          |
       real :: pl_aerfac      !          |
-      real :: scparm         !          |  
+      real :: scparm         !          |
       real :: uobw           !none      |water uptake normalization parameter
                              !          |This variable normalizes the water uptake so
                              !          |that the model can easily verify that uptake
                              !          |from the different soil layers sums to 1.0
       real :: ubw            !          |the uptake distribution for water is hardwired
-      real :: yy             !          | 
-      
+      real :: yy             !          |
+
 
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
 
+      !! compute aeration stress
+      if (soil(j)%sw > soil(j)%sumfc) then
+        satco = (soil(j)%sw - soil(j)%sumfc) / (soil(j)%sumul - soil(j)%sumfc)
+        pl_aerfac = .85
+        scparm = 100. * (satco - pl_aerfac) / (1.0001 - pl_aerfac)
+        if (scparm > 0.) then
+          pcom(j)%plstr(ipl)%strsa = 1. - (scparm / (scparm + Exp(2.9014 - .03867 * scparm)))
+        else
+          pcom(j)%plstr(ipl)%strsa = 1.
+        end if
+      end if
+
+      !! compute limiting water stress
       if (epmax(ipl) <= 1.e-6) then
         pcom(j)%plstr(ipl)%strsw = 1.
       else
@@ -85,20 +100,6 @@
         wuse = 0.
         sum_wuse = 0.
         sum_wusep = 0.
- 
-!!  compute aeration stress
-        if (soil(j)%sw > soil(j)%sumfc) then
-          satco=(soil(j)%sw-soil(j)%sumfc) / (soil(j)%sumul -   &
-                                                  soil(j)%sumfc)
-          pl_aerfac = .85
-          scparm = 100. * (satco - pl_aerfac) / (1.0001 - pl_aerfac)
-          if (scparm > 0.) then
-            pcom(j)%plstr(ipl)%strsa = 1. - (scparm /                    &
-              (scparm + Exp(2.9014 - .03867 * scparm)))
-          else
-            pcom(j)%plstr(ipl)%strsa = 1.
-          end if
-        end if
 
         do k = 1, soil(j)%nly
           if (ir > 0) exit
@@ -117,7 +118,11 @@
           end if
 
           wuse = sum - sump * hru(j)%hyd%epco
+          ! adjust for impervious area
+          ulu = hru(j)%luse%urb_lu
+          !wuse = wuse * urbdb(ulu)%fcimp
           wuse = amin1 (wuse, soil(j)%phys(k)%st)
+
           sum_wuse = sum_wuse + wuse
           if (sum_wuse > epmax(ipl)) then
             wuse = epmax(ipl) - sum_wusep
@@ -131,16 +136,17 @@
           end if
 
           soil(j)%phys(k)%st = Max(1.e-6, soil(j)%phys(k)%st - wuse)
-          
+
         end do      !! soil layer loop
-        
+
         !! update total soil water in profile
         soil(j)%sw = 0.
         do k = 1, soil(j)%nly
           soil(j)%sw = soil(j)%sw + soil(j)%phys(k)%st
         end do
 
-        pcom(j)%plstr(ipl)%strsw = sum_wuse / epmax(ipl)
+        !new epco adjustment requires epmax adjustment of water stress is too high
+        pcom(j)%plstr(ipl)%strsw = sum_wuse / epmax(ipl) !* hru(j)%hyd%epco)
         ep_day = ep_day + sum_wuse
       end if
 

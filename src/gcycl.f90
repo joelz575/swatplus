@@ -1,9 +1,9 @@
-      subroutine gcycl
+     subroutine gcycl
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    This subroutine initializes the random number seeds. If the user
 !!    desires a different set of random numbers for each simulation run,
-!!    the random number generator is used to reset the values of the 
+!!    the random number generator is used to reset the values of the
 !!    seeds.
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
@@ -42,26 +42,27 @@
       use climate_module
       use basin_module
       use maximum_data_module
-      
-      implicit none 
+      use conditional_module
+
+      implicit none
 
       real :: xx           !none          |dummy variable to accept function value
                            !              |which is then discarded
       real :: rn           !none          |random number between 0.0 and 1.0
-      integer :: ii        !none          |variable to hold calculated value 
+      integer :: ii        !none          |variable to hold calculated value
       integer :: j         !none          |counter
       integer :: k         !none          |counter, and variable
-      integer :: rndseed10 !none          |seed for random number generator that is 
-                           !              |used to reset other random number seeds 
-      integer :: iwgn      !none          |counter 
+      integer :: rndseed10 !none          |seed for random number generator that is
+                           !              |used to reset other random number seeds
+      integer :: iwgn      !none          |counter
       real :: aunif        !              |
-      
-      
+
+
 !!    initialize random number array locator
       idg = (/1,2,3,4,5,6,7,8,9/)
 
 !!    initialize random number seeds
-       
+
       do iwgn = 1, db_mx%wgnsta
         rndseed(1,iwgn) = 748932582
         rndseed(2,iwgn) = 1985072130
@@ -84,9 +85,12 @@
            ii = 100 * bsn_prm%igen * rn
            do k = 1, ii
              xx = Aunif(rndseed10)
-           end do  
+           end do
            rndseed(j,1) = rndseed10
         end do
+
+        !! assign random number for decision table conditional
+        rndseed_cond = rndseed10
       
         !! shuffle seeds randomly (Bratley, Fox, Schrage, p34)
         do j = 9, 1, -1

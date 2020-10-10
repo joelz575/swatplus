@@ -311,6 +311,9 @@
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
 
+            print *, "ob_cur: ", ob_cur
+            print *, "j: ", j
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               iharvop = d_tbl%act_typ(iac)
               icom = pcom(j)%pcomdb
@@ -333,7 +336,6 @@
                   end select
 
                   call mgt_killop (j, ipl)
-
                   !! sum yield and number of harvests to calc ave yields
                   pl_mass(j)%yield_tot(ipl) = pl_mass(j)%yield_tot(ipl) + pl_yield
                   pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
@@ -344,7 +346,17 @@
                   bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + pl_yield%m * hru(j)%area_ha / 1000.
                   !! sum regional crop yields for soft calibration
                   ireg = hru(j)%crop_reg
+                  print *, "j: ", j
+                  print *, "hru(j): ", hru(j)
+                  print *, "plcal(ireg)%lum_num: ", plcal(ireg)%lum_num
                   do ilum = 1, plcal(ireg)%lum_num
+                    print *, "ireg: ", ireg
+                    print *, "ilum: ", ilum
+                    !print *, "plcal(ireg)", plcal(ireg)
+                    print *, "plcal(:): ", plcal(:)
+                    print *, "plcal(ireg)%lum(ilum)", plcal(ireg)%lum(ilum)
+                    print *, "plcal(ireg)%lum(ilum)%meas", plcal(ireg)%lum(ilum)%meas
+                    print *, "plcal(ireg)%lum(ilum)%meas%name", plcal(ireg)%lum(ilum)%meas%name
                     if (plcal(ireg)%lum(ilum)%meas%name == d_tbl%act(iac)%option) then
                       plcal(ireg)%lum(ilum)%ha = plcal(ireg)%lum(ilum)%ha + hru(j)%area_ha
                       plcal(ireg)%lum(ilum)%sim%yield = plcal(ireg)%lum(ilum)%sim%yield + pl_yield%m * hru(j)%area_ha / 1000.

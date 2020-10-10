@@ -64,32 +64,6 @@ void opensocket_(int *portNum, char *hostNum, int *client){
  	*client = (int *)cliente;
 
 #else
-/* int sock = 0, valread;
-    struct sockaddr_in serv_addr;
-    char *hello = "Hello from client";
-    char buffer[1024] = {0};
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Socket creation error \n");
-        return -1;
-    }
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(portNum);
-
-    // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, hostNum, &serv_addr.sin_addr)<=0)
-    {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
-    }
-
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
-*/
  printf("C function: Opening socket");
  printf("\nPortNum in C: %i",*portNum);
  int portNumber = *portNum;
@@ -107,12 +81,8 @@ void opensocket_(int *portNum, char *hostNum, int *client){
  serv_addr.sin_family = AF_INET;
  serv_addr.sin_port = htons(portNumber);
  serv_addr.sin_addr.s_addr = inet_addr(hostNum);
- /*if(inet_pton(AF_INET, hostNum, &serv_addr.sin_addr)<=0)
-    {
-        printf("\nInvalid address/ Address not supported \n");
-        //return -1;
-    }
- */
+
+
     printf("Connecting now\n");
     fflush(stdout);
  if (connect(*client, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
@@ -126,16 +96,14 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 
 void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *tamano_con, int *pasos, char intContBuffer[], char floatContBuffer[], char shape[]){
  #ifdef _WIN32
- 	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
- 	//return
- 	//setvbuf(stdout, NULL, _IONBF, 0);
+ 	/*Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	printf("\n Am in receive now...");
  	fflush( stdout );
  	printf("\n INT buffer: %i", intCont);
  	printf("\n *tamano_con: %i", *tamano_con);
  	printf("\n FLOAT buffer: %f", floatCont);
  	fflush( stdout );
- 	//printf("\n CHAR buffer: %s", charCont);
+ 	printf("\n CHAR buffer: %s", charCont);
  	int recvRes;
  	int n;
 	char blankBuffer;
@@ -261,7 +229,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	printf((char *)WSAGetLastError());
  		fflush( stdout );
 
-	sendr_(client, "RCVD");
+	sendr_(client, "RCVD");*/
  #else
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	//return

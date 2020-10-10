@@ -22,7 +22,7 @@
       integer :: isdc        !none      |counter
       real :: cond1          !          |   
       real :: cond2          !          |   
-      
+      print *, "In calsoft_control"
       pco = pco_init
       pco%wb_bsn%a = "y"
         
@@ -31,7 +31,8 @@
         call calsoft_hyd
         !print calibrated hydrology for hru_lte
 		do ireg = 1, db_mx%lsu_reg
-           do ilum = 1, region(ireg)%nlum
+           print *, "region(ireg)%nlum: ", region(ireg)%nlum
+            do ilum = 1, region(ireg)%nlum
             lscal(ireg)%lum(ilum)%meas%srr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%srr
             lscal(ireg)%lum(ilum)%meas%lfr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%lfr
             lscal(ireg)%lum(ilum)%meas%pcr = lscal(ireg)%lum(ilum)%precip_aa_sav * lscal(ireg)%lum(ilum)%meas%pcr

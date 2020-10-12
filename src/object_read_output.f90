@@ -83,14 +83,19 @@
             case ("lat")   !lateral
                ob_out(i)%hydno = 4
             case ("til")   !tile
-               ob_out(i)%hydno = 5  
+               ob_out(i)%hydno = 5 
+            case ("sol")  !soil storage 
+               ob_out(i)%hydno = 6
             end select
          iunit = ob_out(i)%unitno
          
-         open (iunit+i,file = ob_out(i)%filename,recl=1500)
+         open (iunit+i,file = ob_out(i)%filename,recl=2000)
          write (9000,*) "OBJECT.PRT                ", ob_out(i)%filename
-         
-         write (iunit+i,*) hyd_hdr_time, hyd_hdr !! write header !H
+           if (ob_out(i)%hydno == 6) then
+              write (iunit+i,*) hyd_hdr_time, sol_hdr
+           else
+              write (iunit+i,*) hyd_hdr_time, hyd_hdr !! write header
+           end if
         enddo    
         exit
       enddo

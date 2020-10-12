@@ -18,7 +18,6 @@
       real, intent (in) :: x4       !m/m           |average slope of channel
       real :: qman                  !m^3/s or m/s  |flow rate or flow velocity
 
-      qman = 0.
       qman = x1 * x2 ** .6666 * Sqrt(x4) / x3
 
       return

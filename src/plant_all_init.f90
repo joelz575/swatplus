@@ -67,4 +67,6 @@
         end do
       end do
       
+      return
+      
       end subroutine plant_all_init

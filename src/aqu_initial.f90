@@ -82,8 +82,8 @@
         aqu_d(iaq)%flo_res = 0.
         aqu_d(iaq)%flo_ls = 0
       end do
-
+            
       ! pesticides and constituents are initialized in aqu_read_init
 
       return
-      end subroutine aqu_initial
+      end subroutine aqu_initial         

@@ -3,11 +3,11 @@
       implicit none
       
        type calibration_parameters
-        character(len=16) :: name       !         |cn2, esco, awc, etc.
-        character(len=16) :: ob_typ     !         |object type the parameter is associated with (hru, chan, res, basin, etc)
-        real :: absmin                  !         |minimum range for variable
-        real :: absmax                  !         |maximum change for variable
-        character(len=16) :: units      !         |units used for each parameter
+        character(len=16) :: name = "default"   !         |cn2, esco, awc, etc.
+        character(len=16) :: ob_typ = "plt"     !         |object type the parameter is associated with (hru, chan, res, basin, etc)
+        real :: absmin = 0.                     !         |minimum range for variable
+        real :: absmax = 1.e6                   !         |maximum change for variable
+        character(len=16) :: units = "null"     !         |units used for each parameter
       end type calibration_parameters
       type (calibration_parameters), dimension (:), allocatable :: cal_parms    !dimensioned to db_mx%cal_parms_tot
       
@@ -72,14 +72,13 @@
         real :: up                      !! upper limit of parameter
       end type soft_calib_parms
       type (soft_calib_parms), dimension(:), allocatable :: ls_prms
-      type (soft_calib_parms), dimension(:), allocatable :: pl_prms
       type (soft_calib_parms), dimension(:), allocatable :: ch_prms
-            
+
       type soft_calib_ls_adjust
         real :: cn = 0.         !+/- or 0/1       |cn2 adjustment or at limit
         real :: esco = 0.       !+/- or 0/1       |esco adjustment or at limit
         real :: lat_len = 0.    !+/- or 0/1       |lateral flow soil length adjustment or at limit
-        real :: k_lo = 0.       !+/- or 0/1       |k (lowest layer) adjustment or at limit
+        real :: petco = 0.      !+/- or 0/1       |k (lowest layer) adjustment or at limit
         real :: slope = 0.      !+/- or 0/1       |slope adjustment or at limit        
         real :: tconc = 0.      !+/- or 0/1       |time of concentration adjustment or at limit
         real :: etco = 0.       !+/- or 0/1       |etco adjustment or at limit
@@ -125,7 +124,7 @@
         type (soft_calib_ls_adjust) :: prm_prev                 !parameter adjustments used in landscape calibration
         type (soft_calib_ls_adjust) :: prm_lim                  !code if parameters are at limits
       end type ls_calib_regions
-
+            
       type soft_data_calib_landscape
         character(len=16) :: name = "default"                               !name of region - (number of regions = db_mx%lsu_reg)
         integer :: lum_num                                                  !number of land uses in each region
@@ -138,7 +137,28 @@
       end type soft_data_calib_landscape
       type (soft_data_calib_landscape), dimension(:), allocatable :: lscal  !dimension by region for hru"s
       type (soft_data_calib_landscape), dimension(:), allocatable :: lscalt !dimension by region for hru_lte"s
+            
+      type pl_parms_cal
+        character(len=16) :: var = "default"
+        character(len=16) :: name = "default"
+        real :: init_val                            !! xwalk lum()%name with lscal()%lum()%name
+        character(len=16) :: chg_typ                !! type of change (absval,abschg,pctchg)
+        real :: neg                     !! negative limit of change
+        real :: pos                     !! positive limit of change
+        real :: lo                      !! lower limit of parameter
+        real :: up                      !! upper limit of parameter
+      end type pl_parms_cal
 
+      type pl_parm_region
+        character(len=16) :: name = "default"                           !name of region - (number of regions = db_mx%lsu_reg)
+        integer :: lum_num                                              !number of land uses in each region
+        integer :: parms = 2                                            !number of plant parameters used in calibration
+        integer :: num_tot                                              !number of hru"s in each region
+        integer, dimension(:), allocatable :: num                       !hru"s that are included in the region
+        type (pl_parms_cal), dimension(:), allocatable :: prm           !dimension for land uses within a region
+      end type pl_parm_region
+      type (pl_parm_region), dimension(:), allocatable :: pl_prms       !dimension by region for hru"s
+ 
       type cataloging_units
         character(len=16) :: name = "basin"                     !name of region - (number of regions = db_mx%lsu_reg)
         real :: area_ha                                         !area of landscape cataloging unit -hectares
@@ -150,14 +170,14 @@
         integer, dimension(:), allocatable :: lum_num_tot       !db number of land use in the region each year- dimensioned by lum in database
         real, dimension(:), allocatable :: lum_ha               !area (ha) of land use in the region - dimensioned by lum in the region
         real, dimension(:), allocatable :: lum_ha_tot           !sum of area (ha) of land use in the region each year- dimensioned by lum in database
-        real, dimension(:), allocatable :: hru_ha               !area (ha) of hrus in the region
+        real, dimension(:), allocatable :: hru_ha               !area (ha) of hrus in the region 
       end type cataloging_units
       type (cataloging_units), dimension(:), allocatable :: region     !dimension by region for hru"s
       type (cataloging_units), dimension(:), allocatable :: ccu_cal    !channel cataoging unit region
       type (cataloging_units), dimension(:), allocatable :: acu_cal    !aquifer cataoging unit region
       type (cataloging_units), dimension(:), allocatable :: rcu_cal    !reservoir cataoging unit region
       type (cataloging_units), dimension(:), allocatable :: pcu_cal    !point source cataoging unit region
-
+          
       type landscape_units
         character(len=16) :: name = "basin"                     !name of region - (number of regions = db_mx%lsu_out)
         real :: area_ha                                         !area of landscape cataloging unit -hectares
@@ -174,7 +194,7 @@
       type (landscape_units), dimension(:), allocatable :: rcu_reg     !dimension by region for reservoirs
       type (landscape_units), dimension(:), allocatable :: pcu_out     !dimension by region for point sources
       type (landscape_units), dimension(:), allocatable :: pcu_reg     !dimension by region for point sources
-
+      
       type landscape_region_elements
         character(len=16) :: name
         real :: ha                      !area of reegion element -hectares
@@ -183,7 +203,7 @@
         integer :: obtypno = 0          !2-number of hru_lte"s or 1st hru_lte command
       end type landscape_region_elements
       type (landscape_region_elements), dimension(:), allocatable :: reg_elem       !landscape region elements
-
+      
       type landscape_elements
         character(len=16) :: name
         integer :: obj = 1              !object number
@@ -200,7 +220,8 @@
       type (landscape_elements), dimension(:), allocatable :: pcu_elem       !point source cataoging unit
 
       type soft_calib_pl_adjust
-        real :: stress = 0.     !+/- or 0/1     |plant stress (pest, soil, etc) or at limit
+        real :: harv_idx = 0.   !+/- or 0/1     |harvest index
+        real :: lai_pot = 0.    !+/- or 0/1     |potential leaf area index
       end type soft_calib_pl_adjust
       
       type soft_calib_pl_processes
@@ -217,7 +238,7 @@
 
       type pl_calib_regions
         character(len=16) :: name = "default"
-        integer :: lum_no                                       !xwalk lum()%name with lscal()%lum()%name
+        integer :: plant_no                                     !xwalk lum()%name with lscal()%lum()%name
         real :: ha                                              !ha of each land use
         integer :: nbyr = 0                                     !number of years the land use occurred 
         type (soft_calib_pl_processes) :: meas                  !input soft calibration parms of each land use - ratio,t/ha,kg/ha

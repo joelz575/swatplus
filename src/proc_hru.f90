@@ -13,7 +13,7 @@
         call hru_allo
         call hru_read    
         call hrudb_init
-        call topohyd_init
+        !call topohyd_init
         call soils_init
         call soiltest_all_init
         call hru_output_allo

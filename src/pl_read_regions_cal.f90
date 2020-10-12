@@ -42,15 +42,15 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         allocate (plcal(mreg))
-        print*, "mreg: ", mreg
+
       do i = 1, mreg
-        read (107,*,iostat=eof) plcal(i)%name, plcal(i)%lum_num, nspu
+
+        read (107,*,iostat=eof) plcal(i)%name, plcal(i)%lum_num, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) plcal(i)%name, plcal(i)%lum_num,  nspu, (elem_cnt(isp), isp = 1, nspu)
-
           if (eof < 0) exit
 
           call define_unit_elements (nspu, ielem1)
@@ -95,5 +95,6 @@
         
       db_mx%plcal_reg = mreg
 	  
+      close(107)
       return
       end subroutine pl_read_regions_cal

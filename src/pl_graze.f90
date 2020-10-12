@@ -90,8 +90,11 @@
 
         !! reset leaf area index and fraction of growing season
         if (dmi > 1.) then
-          pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai * pl_mass(j)%ab_gr(ipl)%m / dmi
-          pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc * pl_mass(j)%ab_gr(ipl)%m / dmi
+          !! assume lai doesn't start decreasing until 2,500 kg/ha at 1.0 lai per 1000 kg/ha
+          if (dmi < 2500.) then
+            pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%lai - graze%eat / 1000.
+            pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc * (1. - graze%eat / 1000.)
+          end if
         else
           pcom(j)%plg(ipl)%lai = 0.05
           pcom(j)%plcur(ipl)%phuacc = 0.

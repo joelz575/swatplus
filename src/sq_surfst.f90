@@ -42,7 +42,7 @@
 
       j = ihru
 
-      if (time%step == 0) then	
+      if (bsn_cc%gampt == 0) then	
         bsprev = surf_bs(1,j)
 	    surf_bs(1,j) = Max(1.e-6, surf_bs(1,j) + surfq(j))
         qday = surf_bs(1,j) * brt(j)

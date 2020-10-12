@@ -34,11 +34,9 @@
       !! daily print
         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%pest%d == "y") then
-             write (2864,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name,&
-                     cs_db%pests(ipest), bpestb_d%pest(ipest)   !! pesticide balance
+             write (2864,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_d%pest(ipest)   !! pesticide balance
              if (pco%csvout == "y") then
-               write (2868,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1",&
-                       ob(iob)%name, cs_db%pests(ipest), bpestb_d%pest(ipest)
+               write (2868,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_d%pest(ipest)
              end if
           end if
         end if
@@ -53,11 +51,9 @@
 
           !! monthly print
            if (pco%pest%m == "y") then
-             write (2865,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name,&
-                     cs_db%pests(ipest), bpestb_m%pest(ipest)
+             write (2865,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_m%pest(ipest)
                if (pco%csvout == "y") then
-                 write (2869,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1",&
-                         ob(iob)%name, cs_db%pests(ipest), bpestb_m%pest(ipest)
+                 write (2869,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_m%pest(ipest)
                end if
            end if
           
@@ -72,11 +68,9 @@
 
           !! yearly print
            if (time%end_yr == 1 .and. pco%pest%y == "y") then
-             write (2866,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name,&
-                     cs_db%pests(ipest), bpestb_y%pest(ipest)
+             write (2866,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_y%pest(ipest)
                if (pco%csvout == "y") then
-                 write (2870,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1",&
-                         ob(iob)%name, cs_db%pests(ipest), bpestb_y%pest(ipest)
+                 write (2870,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_y%pest(ipest)
                end if
            end if
            
@@ -86,11 +80,9 @@
          if (time%end_sim == 1 .and. pco%pest%a == "y") then
            bpestb_a%pest(ipest) = bpestb_a%pest(ipest) / time%yrs_prt
            bpestb_a%pest(ipest) = bpestb_a%pest(ipest) // time%days_prt
-           write (2867,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name,&
-                   cs_db%pests(ipest), bpestb_a%pest(ipest)
+           write (2867,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_a%pest(ipest)
            if (pco%csvout == "y") then
-             write (2871,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1",&
-                     ob(iob)%name, cs_db%pests(ipest), bpestb_a%pest(ipest)
+             write (2871,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", ob(iob)%name, cs_db%pests(ipest), bpestb_a%pest(ipest)
            end if
            bpestb_a%pest(ipest) = pestbz
          end if

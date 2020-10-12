@@ -68,10 +68,10 @@
         else
           er = enratio
         end if
-
+      
         conc = sedp_attach * er / wt1
         sedp = .001 * conc * sedyld(j) / hru(j)%area_ha
-
+        
         if (sedp > 1.e-9) then
           sedorgp(j) = sedp * fr_orgp
           sedminpa(j) = sedp * fr_actmin

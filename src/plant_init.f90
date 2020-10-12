@@ -1,6 +1,6 @@
-     subroutine plant_init (init)
+      subroutine plant_init (init)
 
-      use hru_module, only : blai_com, cn2, cvm_com, hru, ihru, ipl, isol, rsdco_plcom, ilu
+      use hru_module, only : cn2, cvm_com, hru, ihru, ipl, isol, rsdco_plcom, ilu
       use soil_module
       use plant_module
       use hydrograph_module
@@ -14,51 +14,53 @@
       use urban_data_module
       use conditional_module
       use organic_mineral_mass_module
-
+      
       implicit none
-
+      
       integer, intent (in) :: init   !           |
       integer :: icom                !           |
       integer :: idp                 !           |
       integer :: j                   !none       |counter
-      integer :: ilug                !none       |counter
+      integer :: ilug                !none       |counter 
       integer :: iob                 !           |
       integer :: iwgn                !           |
-      integer :: mo                  !none       |counter
-      integer :: iday                !none       |counter
-      integer :: iplt                !none       |counter
-      integer :: i                   !none       |counter
-      integer :: icn                 !none       |counter
-      integer :: icp                 !none       |counter
-      integer :: ilum                !none       |counter
-      integer :: idb                 !none       |counter
+      integer :: mo                  !none       |counter 
+      integer :: iday                !none       |counter 
+      integer :: iplt                !none       |counter 
+      integer :: i                   !none       |counter  
+      integer :: icn                 !none       |counter 
+      integer :: icp                 !none       |counter 
+      integer :: ilum                !none       |counter 
+      integer :: idb                 !none       |counter 
       integer :: isched              !           |
-      integer :: iop                 !none       |management operation counter
-      integer :: irot                !none       |rotation year counter
+      integer :: iop                 !none       |management operation counter 
+      integer :: irot                !none       |rotation year counter 
       integer :: igrow               !none       |julian day growth begins
       integer :: iday_sum            !none       |day for southern hemisphere (182-181)
       integer :: iday_sh             !none       |julian day growth begins in souther hemisphere
       real :: phutot                 !heat unit  |total potential heat units for year (used
                                      !           |when no crop is growing)
       real :: grow_start             !           |
-      real :: grow_end               !           |
+      real :: grow_end               !           | 
       real :: tave                   !           |
       real :: phuday                 !           |
       real :: xx                     !           |
       real :: xm                     !           |
       real :: sin_sl                 !           |
-      real :: sl_len                 !           |
+      real :: sl_len                 !           | 
       real :: phu0                   !deg C      |base zero heat units for year
       real :: sd                     !radians    |solar declination: latitude at which the sun
                                      !           |is directly overhead at noon
       real :: sdlat                  !none       |(-Tan(sd)*Tan(lat))
       real :: h                      !none       |Acos(-Tan(sd)*Tan(lat))
       real :: daylength              !hours      |daylength
+      real :: laimx_pop              !           |max lai given plant population
 
       j = ihru
-
+      
       !!assign land use pointers for the hru
         hru(j)%land_use_mgt = ilu
+        pcom(j)%name = lum(ilu)%plant_cov
         hru(j)%plant_cov = lum_str(ilu)%plant_cov
         hru(j)%lum_group_c = lum(ilu)%cal_group
         do ilug = 1, lum_grp%num
@@ -85,7 +87,7 @@
           pcom(j)%npl = 0
         else
           if (init > 0) then
-            deallocate (pcom(j)%plg)
+            deallocate (pcom(j)%plg) 
             deallocate (pcom(j)%plm)
             deallocate (pl_mass(j)%tot)
             deallocate (pl_mass(j)%ab_gr)
@@ -94,31 +96,31 @@
             deallocate (pl_mass(j)%seed)
             deallocate (pl_mass(j)%root)
             deallocate (pl_mass(j)%yield_tot)
-            deallocate (pcom(j)%plstr)
-            deallocate (pcom(j)%plcur)
+            deallocate (pcom(j)%plstr) 
+            deallocate (pcom(j)%plcur) 
             deallocate (rsd1(j)%tot)
           end if
-
+        
         pcom(j)%npl = pcomdb(icom)%plants_com
         ipl = pcom(j)%npl
-        allocate (pcom(j)%plg(ipl))
-        allocate (pcom(j)%plm(ipl))
-        allocate (pl_mass(j)%tot(ipl))
+        allocate (pcom(j)%plg(ipl)) 
+        allocate (pcom(j)%plm(ipl)) 
+        allocate (pl_mass(j)%tot(ipl)) 
         allocate (pl_mass(j)%ab_gr(ipl))
         allocate (pl_mass(j)%leaf(ipl))
         allocate (pl_mass(j)%stem(ipl))
         allocate (pl_mass(j)%seed(ipl))
         allocate (pl_mass(j)%root(ipl))
         allocate (pl_mass(j)%yield_tot(ipl))
-        allocate (pcom(j)%plstr(ipl))
-        allocate (pcom(j)%plcur(ipl))
+        allocate (pcom(j)%plstr(ipl)) 
+        allocate (pcom(j)%plcur(ipl)) 
         allocate (rsd1(j)%tot(ipl))
 
         cvm_com(j) = 0.
-        blai_com(j) = 0.
         rsdco_plcom(j) = 0.
         pcom(j)%pcomdb = icom
         pcom(j)%rot_yr = 1
+        pcom(j)%laimx_sum = 0.
         do ipl = 1, pcom(j)%npl
           pcom(j)%plg(ipl)%cpnm = pcomdb(icom)%pl(ipl)%cpnm
           pcom(j)%plcur(ipl)%gro = pcomdb(icom)%pl(ipl)%igro
@@ -129,7 +131,7 @@
           rsd1(j)%tot(ipl)%c = 0.43 * rsd1(j)%tot(ipl)%m
           rsd1(j)%tot(ipl)%n = 0.43 * rsd1(j)%tot(ipl)%m / 57.
           rsd1(j)%tot(ipl)%p = 0.43 * rsd1(j)%tot(ipl)%m / 300.
-
+          
           ! set heat units to maturity
           ! first compute base0 units for entire year
           phu0 = 0.
@@ -140,6 +142,7 @@
             tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
             if (tave > 0.) phu0 = phu0 + tave
           end do
+          iday_sh = 181
 
           ! if days to maturity are not input (0) - assume the plant is potentially active during entire growing season
           if (pldb(idp)%days_mat < 1.e-6) then
@@ -267,6 +270,7 @@
           pcom(j)%plg(ipl)%laimxfr = pcom(j)%plcur(ipl)%phuacc / (pcom(j)%plcur(ipl)%phuacc +     &
               Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc))
           pcom(j)%plg(ipl)%lai = pcomdb(icom)%pl(ipl)%lai
+          pcom(j)%laimx_sum = pcom(j)%laimx_sum + pcom(j)%plg(ipl)%lai
           pl_mass(j)%tot(ipl)%m = pcomdb(icom)%pl(ipl)%bioms
           pcom(j)%plcur(ipl)%curyr_mat = int (pcomdb(icom)%pl(ipl)%fr_yrmat * float(pldb(idp)%mat_yrs))
           pcom(j)%plcur(ipl)%curyr_mat = max (1, pcom(j)%plcur(ipl)%curyr_mat)
@@ -285,12 +289,14 @@
           pcom(j)%plcur(ipl)%phuacc))) + pldb(idp)%pltnfr3
            pl_mass(j)%tot(ipl)%p = pcom(j)%plm(ipl)%p_fr * pl_mass(j)%tot(ipl)%m
           if (pcom(j)%plcur(ipl)%pop_com < 1.e-6) then
-            pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai
+            laimx_pop = pldb(idp)%blai
           else
             xx = pcom(j)%plcur(ipl)%pop_com / 1001.
-            pcom(j)%plcur(ipl)%laimx_pop = pldb(idp)%blai * xx / (xx +          &
+            laimx_pop = pldb(idp)%blai * xx / (xx +          &
                     exp(pldb(idp)%pop1 - pldb(idp)%pop2 * xx))
           end if
+          pcom(j)%plcur(ipl)%harv_idx = pldb(idp)%hvsti
+          pcom(j)%plcur(ipl)%lai_pot = laimx_pop
           
           !! initialize plant mass
           call pl_root_gro
@@ -313,9 +319,7 @@
         case ("D")
           cn2(j) = cn(icn)%cn(4)
         end select
- 
-        call curno(cn2(j),j)
-        
+
         !! set p factor and slope length (ls factor)
         icp = lum_str(ilum)%cons_prac
         xm = .6 * (1. - Exp(-35.835 * hru(ihru)%topo%slope))

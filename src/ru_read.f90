@@ -49,12 +49,7 @@
         allocate (ru_a(sp_ob%ru))
         allocate (ru_tc(0:sp_ob%ru))
         allocate (ru_n(0:sp_ob%ru))
-        allocate (uhs(0:sp_ob%ru,time%step+1))
-        allocate (hyd_flo(time%step+1))
         allocate (itsb(sp_ob%ru))
-
-        hyd_flo = 0.
-        uhs = 0
 
         rewind (107)
         read (107,*,iostat=eof) titldum

@@ -36,7 +36,7 @@
         !! monthly print - AQUIFER
         if (time%end_mo == 1) then
           const = float (ndays(time%mo + 1) - ndays(time%mo))
-          baqu_m%stor = baqu_m%stor / const
+          baqu_m%stor = baqu_m%stor / const 
           baqu_m%dep_wt = baqu_m%dep_wt / const
           baqu_m%no3 = baqu_m%no3 / const
           baqu_y = baqu_y + baqu_m
@@ -58,7 +58,7 @@
           if (pco%aqu_bsn%y == "y") then
             write (2092,102) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, baqu_y
             if (pco%csvout == "y") then
-              write (2096,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, baqu_y
+              write (2096,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, baqu_y 
             end if
           end if
           !! zero yearly variables        

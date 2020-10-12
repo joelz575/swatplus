@@ -116,6 +116,10 @@
                 ob(i)%day_max = ndsave
                 allocate (ob(i)%ts(ob(i)%day_max,time%step))
                 allocate (ob(i)%tsin(time%step))
+                allocate (ob(i)%uh(ob(i)%day_max,time%step))
+                allocate (ob(i)%hyd_flo(ob(i)%day_max,time%step))
+                ob(i)%uh = 0.
+                ob(i)%hyd_flo = 0.
               end if
               read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,   &
                 ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot

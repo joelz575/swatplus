@@ -63,6 +63,9 @@
          uptake%n_norm = 1. - exp(-bsn_prm%n_updis)
          uptake%p_norm = 1. - exp(-bsn_prm%p_updis)
          
+         !! set maximum days to store hru, ru and channel output
+         bsn_prm%day_lag_mx = 2
+         
          return
           
       end subroutine basin_prm_default

@@ -23,7 +23,7 @@
       integer :: ichi                   !none      |counter
       integer :: isp_ini                !          |counter
       integer :: ics                    !none      |counter
-      integer :: inut                   !none      |counter
+      integer :: inut                   !none      |counter 
       integer :: ihydsed                !none      |counter
       integer :: idb                    !none      |counter
       integer :: i                      !none      |counter
@@ -31,9 +31,10 @@
 
       eof = 0
       imax = 0
-
+            
       !! allocate sd channel variables
       allocate (sd_ch(0:sp_ob%chandeg))
+      allocate (ch_rcurv(0:sp_ob%chandeg))
       allocate (sd_ch_vel(0:sp_ob%chandeg))
       allocate (chsd_d(0:sp_ob%chandeg))
       allocate (chsd_m(0:sp_ob%chandeg))
@@ -62,7 +63,7 @@
       allocate (chpst_m(0:sp_ob%chandeg))
       allocate (chpst_y(0:sp_ob%chandeg))
       allocate (chpst_a(0:sp_ob%chandeg))
-
+      
       if (cs_db%num_pests > 0) then
         allocate (chpst%pest(cs_db%num_pests))
         allocate (chpstz%pest(cs_db%num_pests))
@@ -74,27 +75,27 @@
           allocate (sd_ch(ich)%aq_mix(cs_db%num_pests))
           allocate (chpst_d(ich)%pest(cs_db%num_pests))
           allocate (chpst_m(ich)%pest(cs_db%num_pests))
-          allocate (chpst_y(ich)%pest(cs_db%num_pests))
+          allocate (chpst_y(ich)%pest(cs_db%num_pests))   
           allocate (chpst_a(ich)%pest(cs_db%num_pests))
           allocate (ch_water(ich)%pest(cs_db%num_pests))
           allocate (ch_benthic(ich)%pest(cs_db%num_pests))
         end do
       end if
-
+            
       if (cs_db%num_paths > 0) then
         do ich = 1, sp_ob%chandeg
           allocate (ch_water(ich)%path(cs_db%num_paths))
           allocate (ch_benthic(ich)%path(cs_db%num_paths))
         end do
       end if
-
+                  
       if (cs_db%num_metals > 0) then
         do ich = 1, sp_ob%chandeg
           allocate (ch_water(ich)%hmet(cs_db%num_metals))
           allocate (ch_benthic(ich)%hmet(cs_db%num_metals))
         end do
       end if
-
+                  
       if (cs_db%num_salts > 0) then
         do ich = 1, sp_ob%chandeg
           allocate (ch_water(ich)%salt(cs_db%num_salts))
@@ -105,7 +106,7 @@
       inquire (file=in_cha%chan_ez, exist=i_exist)
       if (.not. i_exist .or. in_cha%chan_ez == "null") then
         allocate (sd_dat(0:0))
-      else
+      else   
       do
        open (105,file=in_cha%chan_ez)
        read (105,*,iostat=eof) titldum
@@ -117,17 +118,17 @@
           if (eof < 0) exit
           imax = Max(imax,i)
         end do
-
+        
       db_mx%sdc_dat = imax
 
       allocate (sd_dat(0:imax))
-
+      
       rewind (105)
       read (105,*,iostat=eof) titldum
       if (eof < 0) exit
       read (105,*,iostat=eof) header
       if (eof < 0) exit
-
+      
       do ichi = 1, db_mx%sdc_dat
          read (105,*,iostat=eof) i
          if (eof < 0) exit
@@ -135,7 +136,7 @@
          read (105,*,iostat=eof) k, sd_dat(i)%name, sd_dat(i)%initc, sd_dat(i)%hydc, sd_dat(i)%sedc, &
             sd_dat(i)%nutc
          if (eof < 0) exit
-
+         
         !! initialize orgaincs and minerals in water
         do isp_ini = 1, db_mx%ch_init
           if (sd_dat(ichi)%initc == ch_init(isp_ini)%name) then
@@ -177,7 +178,7 @@
              end do
           end if
         end do
-
+        
           !! set hydraulic and sediment input data (all in one file now)
           do ihydsed = 1, db_mx%ch_lte
             if (sd_chd(ihydsed)%name == sd_dat(ichi)%hydc) then
@@ -185,19 +186,19 @@
               exit
             end if
           end do
-
+          
           do inut = 1, db_mx%ch_nut
             if (ch_nut(inut)%name == sd_dat(ichi)%nutc) then
               sd_dat(ichi)%nut = inut
               exit
             end if
-          end do
+          end do   
 
       end do
       close (105)
       exit
       end do
-
+      
       end if
 
       return    

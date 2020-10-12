@@ -46,7 +46,7 @@
           d_tbl => dtbl_res(irel)
           pvol_m3 = res_ob(jres)%pvol
           evol_m3 = res_ob(jres)%evol
-          call conditions (ihyd)
+          call conditions (jres, irel)
           call res_hydro (jres, irel, ihyd, pvol_m3, evol_m3)
           call res_sediment (jres, ihyd, ised)
 	    else
@@ -91,6 +91,11 @@
           res_wat_d(jres)%area_ha = 0.
         end if
 
+        !! subtract sediment leaving from reservoir
+        res(jres)%sed = res(jres)%sed - ht2%sed
+        res(jres)%sil = res(jres)%sil - ht2%sil
+        res(jres)%cla = res(jres)%cla - ht2%cla
+          
         !! perform reservoir nutrient balance
         inut = res_dat(idat)%nut
         call res_nutrient (jres, inut, iob)

@@ -1,12 +1,8 @@
       program main
 
-      use hru_module, only : hru, ihru
-      use mgt_operations_module
       use time_module
       use hydrograph_module
       use maximum_data_module
-      use conditional_module
-      use climate_module
       use calibration_data_module
       use tinamit_module, ONLY : dynamic, cliente_obj, abre, recibe
 
@@ -16,7 +12,7 @@
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "               Revision 60.2          ",/,             &
+     &          "               Revision 60.4          ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
@@ -37,21 +33,20 @@
       call dr_db_read
       call hyd_connect
       call object_read_output
+      call water_rights_read
 
       call om_water_init
       call pest_cha_res_read
       call path_cha_res_read
       call salt_cha_res_read
 
+      call proc_hru
+      call proc_cha
+      call proc_aqu
+
       !! read decision table data for conditional management
       call dtbl_lum_read
 
-      call proc_hru
-      call proc_cha
-      call proc_allo
-
-      !! read decision table data for conditional management
-      !call dtbl_lum_read
       call proc_cond
       call dtbl_res_read
       call dtbl_scen_read
@@ -67,11 +62,8 @@
       call proc_cal
       call proc_open
 
-      ! set initial soil water for basin and lsu
-      if (db_mx%lsu_elem > 0) call basin_sw_init
-
       ! compute unit hydrograph parameters for subdaily runoff
-      if (time%step > 0) call unit_hyd
+      call unit_hyd_ru_hru
 
       call dr_ru
 
@@ -102,6 +94,9 @@
         end if
 
       write (*,1001)
+      open (107,file="success.fin")
+      write (107,1001)
+
  1001 format (/," Execution successfully completed ")
 
 	  stop

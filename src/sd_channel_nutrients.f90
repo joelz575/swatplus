@@ -17,11 +17,11 @@
       real :: srp_reduc             !              |
       real :: sed_conc              !mg/L
       real :: tp_conc               !              |
-      real :: nd_overb              !              |
-      real :: area_m2               !              |
+      real :: nd_overb              !              | 
+      real :: area_m2               !              | 
       real :: tss_conc              !              |
       real :: sedp_reduc            !              |
-
+     
       inut = 0
       istop = 0
       ch_len_inc = rte_nut(inut)%len_inc
@@ -33,7 +33,7 @@
       no3_conc = ht1%no3
       sed_conc = ht1%sed
       tp_conc = ht1%sedp + ht1%solp
-
+      
       !! loop for channel increment
       do while (istop == 0)
         ch_len = ch_len + ch_len_inc
@@ -41,7 +41,7 @@
           ch_len_inc = ch_len - sd_ch(ich)%chl
           istop = 1
         end if
-        if (ob(icmd)%props > 0) then
+        if (ob(icmd)%props > 0) then   
           !! 2-stage ditch
           if (sd_ch(ich)%overbank == "ob") then
             nd_overb = nd_overb + 1

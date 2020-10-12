@@ -80,9 +80,8 @@
       isched = hru(j)%mgt_ops
       
       weat = wst(iwst)%weat
-      precip_eff = precipday
-      
       precipday = wst(iwst)%weat%precip
+      precip_eff = precipday
       tmx(j) = wst(iwst)%weat%tmax
       tmn(j) = wst(iwst)%weat%tmin
       tmpav(j) = (tmx(j) + tmn(j)) / 2.
@@ -92,7 +91,7 @@
       u10(j) = wst(iwst)%weat%windsp
       
       hru(ihru)%water_seep = 0.
-      !plt => hru(j)%pl(1)
+      irrig(j)%demand = 0.
 
       if (bsn_cc%cswat == 2) then
         if (tillage_switch(ihru) .eq. 1) then
@@ -152,7 +151,7 @@
             id = sched(isched)%num_db(iauto)
             jj = j
             d_tbl => dtbl_lum(id)
-            call conditions (jj)
+            call conditions (jj, iauto)
             call actions (jj, iob, iauto)
             
             !! if end of year, reset the one time fert application per year
@@ -168,6 +167,14 @@
           !! increment days since last plant and harvest
           pcom(j)%days_plant = pcom(j)%days_plant + 1
           pcom(j)%days_harv = pcom(j)%days_harv + 1
+          do iauto = 1, sched(isched)%num_autos
+            id = sched(isched)%num_db(iauto)
+            do iac = 1, dtbl_lum(id)%acts
+              if (pcom(j)%dtbl(iauto)%days_act(iac) > 0) then
+                pcom(j)%dtbl(iauto)%days_act(iac) = pcom(j)%dtbl(iauto)%days_act(iac) + 1
+              end if
+            end do
+          end do
         end if
         
         !! update base zero total heat units
@@ -523,6 +530,7 @@
         hwb_d(j)%qtile = qtile
         hwb_d(j)%irr = irrig(j)%applied
         irrig(j)%applied = 0.
+        irrig(j)%runoff = 0.
         hwb_d(j)%surq_runon = ls_overq
         hwb_d(j)%latq_runon = latqrunon !/ (10. * hru(j)%area_ha) 
         ! hwb_d(j)%overbank = over_flow     !overbank is not added yet
@@ -568,15 +576,6 @@
 
       !! set hydrographs for direct routing or landscape unit
       call hru_hyds
-      
-      !! check decision table for flow control - water allocation
-      if (ob(iob)%ruleset /= "null" .and. ob(iob)%ruleset /= "0") then
-        id = ob(iob)%flo_dtbl
-        jj = j
-        d_tbl => dtbl_flo(id)
-        call conditions (jj)
-        call actions (jj, iob, id)
-      end if
-
+ 
       return
       end subroutine hru_control

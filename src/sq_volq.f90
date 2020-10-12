@@ -14,13 +14,12 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use time_module
       
       implicit none
 
 !! Compute surface runoff for day
-      if (time%step == 0) then
-          call sq_daycn
+      if (bsn_cc%gampt == 0) then
+        call sq_daycn
       else
         call sq_greenampt
       end if

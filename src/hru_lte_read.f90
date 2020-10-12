@@ -134,35 +134,35 @@
          hlt(i)%plant = hlt_db(idb)%plant
          hlt(i)%stress = hlt_db(idb)%stress
          hlt(i)%soildep = hlt_db(idb)%soildep
-         hlt_db(idb)%abf = EXP(-hlt_db(idb)%abf)
+         hlt_db(idb)%abf = EXP(-hlt_db(idb)%abf) 
          qn1 = hlt_db(idb)%cn2 - (20. * (100. - hlt_db(idb)%cn2)) /        &
             (100.-hlt_db(idb)%cn2 + EXP(2.533-.063*(100.-hlt_db(idb)%cn2)))
          qn1 = Max(qn1, .4 * hlt_db(idb)%cn2)
-         qn3 = hlt_db(idb)%cn2 * EXP(.00673*(100.-hlt_db(idb)%cn2))
-         hlt(i)%smx = 254. * (100. / qn1 - 1.)
+         qn3 = hlt_db(idb)%cn2 * EXP(.00673*(100.-hlt_db(idb)%cn2)) 
+         hlt(i)%smx = 254. * (100. / qn1 - 1.) 
          s3 = 254. * (100. / qn3 - 1.)
          rto3 = 1. - s3 / hlt(i)%smx
          rtos = 1. - 2.54 / hlt(i)%smx
-
-         xi = 30. * time%mo - 15.
-         xx = hlt_db(idb)%xlat / 57.3
-         hlt(i)%yls = SIN(xx)
-         hlt(i)%ylc = COS(xx)
-         hlt(i)%phu = 2000.
-         hlt(i)%dm = 0.
-         hlt(i)%alai = .15
-         hlt(i)%g = 0.
-
+         
+         xi = 30. * time%mo - 15. 
+         xx = hlt_db(idb)%xlat / 57.3 
+         hlt(i)%yls = SIN(xx) 
+         hlt(i)%ylc = COS(xx) 
+         hlt(i)%phu = 2000. 
+         hlt(i)%dm = 0. 
+         hlt(i)%alai = .15 
+         hlt(i)%g = 0. 
+                 
          !crosswalk plant with plants.plt
          do ipl = 1, db_mx%plantparm
             if (hlt_db(idb)%plant == pldb(ipl)%plantnm) then
               hlt(i)%iplant = ipl
               exit
-            end if
+            end if 
          end do
-
+         
          if (hlt(i)%iplant == 0) write (9001,*) hlt_db(idb)%plant, "not found (plants.plt)"
-
+        
       !crosswalk
          do istart = 1, db_mx%dtbl_lum
             if (hlt_db(idb)%igrow1 == dtbl_lum(istart)%name) then
@@ -170,9 +170,9 @@
               exit
             endif
          end do
-
+         
         if (hlt(i)%start == 0) write (9001,*) hlt_db(idb)%igrow1, " entry in (hru-lte.hru) not found in (lum.dtl)"
-
+         
       !crosswalk
          do iend = 1, db_mx%dtbl_lum
             if (hlt_db(idb)%igrow2 == dtbl_lum(iend)%name) then
@@ -180,9 +180,9 @@
               exit
             endif
          end do
-
+         
         if (hlt(i)%end == 0) write (9001,*) hlt_db(idb)%igrow2, " entry in (hru-lte.hru) not found in (lum.dtl)"
-
+         
          !compute heat units from growing season and weather generator
          iwst = ob(icmd)%wst
          iwgn = wst(iwst)%wco%wgn
@@ -212,7 +212,7 @@
                  phutot = phutot + phuday
                end if
              end if
-           else
+           else 
              if (iday > grow_start .or. iday < grow_end) then
                tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
                phuday = tave - pldb(iplt)%t_base
@@ -225,7 +225,7 @@
          ! change from growing season to time to maturity
          hlt(i)%phu = .9 * phutot
          hlt(i)%phu = Max(500., hlt(i)%phu)
-
+         
          if (pldb(iplt)%typ == "warm_annual" .or. pldb(iplt)%typ == "cold_annual" .or.  &
              pldb(iplt)%typ == "warm_annual_tuber" .or. pldb(iplt)%typ == "cold_annual_tuber") then
            hlt(i)%phu = Min(2000., hlt(i)%phu)
@@ -242,15 +242,15 @@
 !     !      calculate composite usle value
          hlt(i)%uslefac = hlt_db(idb)%uslek * hlt_db(idb)%uslep *           &
            hlt_db(idb)%uslels * hlt_db(idb)%uslec * 11.8
-
+         
         ! compute time of concentration using Kirpich equation
         IF (hlt_db(idb)%tc < 1.e-6) THEN
          ch_len = hlt_db(idb)%dakm2
          ch_sl = hlt_db(idb)%slope
-         hlt_db(idb)%tc = .0078 * (ch_len * 3210.) ** .77 * sd_sl        &
+         hlt_db(idb)%tc = .0078 * (ch_len * 3210.) ** .77 * sd_sl        &   
                                                         ** (-.385)
         END IF
-
+        
         !! xwalk with soil_lte
         do itext = 1, 12
           if (soil_lte(itext)%texture == hlt_db(idb)%text) then
@@ -259,7 +259,7 @@
             hlt(i)%sc = soil_lte(itext)%scon
             hlt(i)%sw = hlt_db(idb)%sw * hlt(i)%awc
             hltwb_d(i)%sw_init = hlt(i)%sw
-            hlt(i)%hk = (hlt(i)%por - hlt(i)%awc) / hlt(i)%sc
+            hlt(i)%hk = (hlt(i)%por - hlt(i)%awc) / hlt(i)%sc   
             hlt(i)%hk = Max(2., hlt(i)%hk)
             sumul = hlt(i)%por
             sumfc = hlt(i)%awc + hlt_db(idb)%cn3_swf * (sumul - hlt(i)%awc)
@@ -267,7 +267,7 @@
             call ascrv(rto3, rtos, sumfc, sumul, hlt(i)%wrt1, hlt(i)%wrt2)
           end if
         end do
-
+        
             hlt_db(idb)%tc = hlt_db(idb)%tc * 60.     !!min to seconds
         end do
 

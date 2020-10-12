@@ -1,4 +1,4 @@
-subroutine time_control
+      subroutine time_control
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine contains the loops governing the modeling of processes
@@ -29,7 +29,7 @@ subroutine time_control
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Mod, Real
-!!    SWAT: sim_inityr, std3, xmon, sim_initday, clicon, command
+!!    SWAT: std3, xmon, sim_initday, clicon, command
 !!    SWAT: writed, writem, tillmix
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -71,10 +71,13 @@ subroutine time_control
       character*10 b(3)              !              |
       real :: crop_yld_t_ha          !t/ha          |annual and ave annual basin crop yields
       real :: sw_init
+      real :: sno_init
       integer :: iob                 !              |
       integer :: curyr               !              |
       integer :: iwgn                !              |
       integer :: ipg                 !              |
+      integer :: ireg                !              |
+      integer :: ilu                 !              |
 
       time%yrc = time%yrc_start
 
@@ -91,10 +94,12 @@ subroutine time_control
       call cli_precip_control (0)
 
       do curyr = 1, time%nbyr
-        time%yrs = curyr
+    !!!!!  uncomment next two lines for RELEASE version only (Srin/Karim)
+          !call DATE_AND_TIME (b(1), b(2), b(3), date_time)
+          !write (*,1235) cal_sim, time%yrc
+    !1235 format (1x, a, 2x, i4)
 
-        !! initialize annual variables for hru's
-        if (sp_ob%hru > 0) call sim_inityr
+        time%yrs = curyr
 
         !! determine beginning and ending dates of simulation in current year
         if (Mod(time%yrc,4) == 0) then
@@ -125,8 +130,17 @@ subroutine time_control
           time%yrs_prt = time%nbyr
         end if
 
+        !! set initial soil water for hru, basin and lsu - for checking water balance
+        if (pco%sw_init == "n") then
+          if (time%yrs > pco%nyskip) then
+            call basin_sw_init
+            pco%sw_init = "y"  !! won't reset again
+          end if
+        end if
+
         do julian_day = time%day_start, time%day_end_yr      !! begin daily loop
-!---------------------------------------Code for Tinamit----------------------------------------------------------------
+
+            !---------------------------------------Code for Tinamit----------------------------------------------------------------
           if(dynamic .and. dias>0) then
               dias = dias-1
               print *, "Dias in time_control: ", dias
@@ -135,7 +149,7 @@ subroutine time_control
                 end if
             end if
           t=t+1 !!<-------------------------------------------keeping track of the number of days of the simulation
-!-----------------------------------------------------------------------------------------------------------------------
+            !-----------------------------------------------------------------------------------------------------------------------
 
 
           time%day = julian_day
@@ -143,6 +157,7 @@ subroutine time_control
           call xmon
 
           time%yrc_tot = time%yrc_end - time%yrc_start + 1
+          !! Uncomment next three lines for DEBUG version only
 
           call DATE_AND_TIME (b(1), b(2), b(3), date_time)
           write (*,1234) cal_sim, time%mo, time%day_mo, time%yrc, time%yrs, time%yrc_tot,  &
@@ -206,7 +221,7 @@ subroutine time_control
               iob = sp_ob1%hru + j - 1
               id = upd_cond(iupd)%cond_num
               d_tbl => dtbl_scen(id)
-              call conditions (j)
+              call conditions (j, id)
               call actions (j, iob, id)
             end do
           end do
@@ -243,6 +258,7 @@ subroutine time_control
         call calsoft_sum_output
 
         !! write annual basin crop yields and harvested areas
+        if (sp_ob%hru > 0) then
         do iplt = 1, basin_plants
           crop_yld_t_ha = bsn_crop_yld(iplt)%yield / (bsn_crop_yld(iplt)%area_ha + 1.e-6)
           write (5100,*) time%yrc, iplt, plants_bsn(iplt), bsn_crop_yld(iplt)%area_ha,            &
@@ -256,8 +272,10 @@ subroutine time_control
             bsn_crop_yld_aa(iplt)%yield = bsn_crop_yld_aa(iplt)%yield / time%yrs_prt
             write (5101,*) time%yrc, iplt, plants_bsn(iplt), bsn_crop_yld_aa(iplt)%area_ha,   &
                                                 bsn_crop_yld_aa(iplt)%yield, crop_yld_t_ha
+            bsn_crop_yld_aa(iplt) = bsn_crop_yld_z
           end if
         end do
+        end if
 
         do j = 1, sp_ob%hru_lte
           !! zero yearly balances after using them in soft data calibration (was in hru_lte_output)
@@ -279,8 +297,10 @@ subroutine time_control
         do j = 1, sp_ob%hru
           !! zero yearly balances after using them in soft data calibration (was in hru_output)
           sw_init = hwb_y(j)%sw_init
+          sno_init = hwb_y(j)%sno_init
           hwb_y(j) = hwbz
           hwb_y(j)%sw_init = sw_init
+          hwb_y(j)%sno_init = sno_init
           hnb_y(j) = hnbz
           hpw_y(j) = hpwz
           hls_y(j) = hlsz

@@ -22,11 +22,9 @@
 !!!!! daily print
        if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
         if (pco%sd_chan%d == "y") then
-          write (2500,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name,&
-                  ch_wat_d(ichan), ch_stor(ichan), ch_in_d(ichan), ch_out_d(ichan)
+          write (2500,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_d(ichan), ch_stor(ichan), ch_in_d(ichan), ch_out_d(ichan)
            if (pco%csvout == "y") then
-             write (2504,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id,&
-                     ob(iob)%name, ch_wat_d(ichan), ch_stor(ichan), ch_in_d(ichan), ch_out_d(ichan)
+             write (2504,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_d(ichan), ch_stor(ichan), ch_in_d(ichan), ch_out_d(ichan)
            end if
         end if
       end if
@@ -43,11 +41,9 @@
           ch_wat_m(ichan) = ch_wat_m(ichan) // const            !! // only divides area (daily average values)
           
           if (pco%sd_chan%m == "y") then
-          write (2501,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name,&
-                  ch_wat_m(ichan), ch_stor(ichan), ch_in_m(ichan), ch_out_m(ichan)
+          write (2501,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_m(ichan), ch_stor(ichan), ch_in_m(ichan), ch_out_m(ichan)
           if (pco%csvout == "y") then
-            write (2505,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id,&
-                    ob(iob)%name, ch_wat_m(ichan), ch_stor(ichan), ch_in_m(ichan), ch_out_m(ichan)
+            write (2505,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_m(ichan), ch_stor(ichan), ch_in_m(ichan), ch_out_m(ichan)
           end if
         end if
         !ch_stor_m(ichan) = chaz
@@ -68,11 +64,9 @@
         ch_wat_y(ichan) = ch_wat_y(ichan) // const      !! // only divides area (daily average values)
           
         if (pco%sd_chan%y == "y") then 
-          write (2502,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name,&
-                  ch_wat_y(ichan), ch_stor(ichan), ch_in_y(ichan), ch_out_y(ichan)
+          write (2502,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_y(ichan), ch_stor(ichan), ch_in_y(ichan), ch_out_y(ichan)
           if (pco%csvout == "y") then
-           write (2506,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name,&
-                   ch_wat_y(ichan), ch_stor(ichan), ch_in_y(ichan), ch_out_y(ichan)
+           write (2506,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_y(ichan), ch_stor(ichan), ch_in_y(ichan), ch_out_y(ichan)
           end if
         end if
       end if
@@ -86,11 +80,9 @@
         ch_wat_a(ichan) = ch_wat_a(ichan) // time%yrs_prt       !! all averaged variables divided by years
         
         if (pco%sd_chan%a == "y") then
-        write (2503,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name,&
-                ch_wat_a(ichan), ch_stor(ichan), ch_in_a(ichan), ch_out_a(ichan)
+        write (2503,100) time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_a(ichan), ch_stor(ichan), ch_in_a(ichan), ch_out_a(ichan)
         if (pco%csvout == "y") then
-          write (2507,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name,&
-                  ch_wat_a(ichan), ch_stor(ichan), ch_in_a(ichan), ch_out_a(ichan)
+          write (2507,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ichan, ob(iob)%gis_id, ob(iob)%name, ch_wat_a(ichan), ch_stor(ichan), ch_in_a(ichan), ch_out_a(ichan)
         end if
        end if
      end if 

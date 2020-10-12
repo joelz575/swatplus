@@ -100,6 +100,8 @@
             select case (cal_parms(ipar)%ob_typ)
             case ("hru")
               cal_upd(i)%num_elem = sp_ob%hru
+            case ("plt")
+              cal_upd(i)%num_elem = sp_ob%hru
             case ("lyr")
               cal_upd(i)%num_elem = sp_ob%hru
             case ("sol")

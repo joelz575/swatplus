@@ -40,7 +40,7 @@
         ru(iru)%da_km2 = ob(iob)%area_ha / 100.
         ru_n(iru) = ru_n(iru) / ru(iru)%da_km2
         ith = ru(iru)%dbs%toposub_db
-        !if (ith > 0 .and. ichan > 0) then
+        !if (ith > 0 .and. ichan > 0) then                  
         ! compute tc for the subbasin
           tov = .0556 * (topo_db(ith)%slope_len * ru_n(iru)) ** .6 /     &
                                               (topo_db(ith)%slope + .0001) ** .3
@@ -49,9 +49,9 @@
           ch_l = ru(iru)%field%length / 1000.
           t_ch = .62 * ch_l * ch_n**.75 / (ru(iru)%da_km2**.125 * ch_slope**.375)
           ru_tc(iru) = tov + t_ch
-        !end if
+        !end if                                             
       end do
-
+      
       !!compute time of concentration (sum of overland and channel times)
       do ihru = 1, sp_ob%hru
         ith = hru(ihru)%dbs%topo

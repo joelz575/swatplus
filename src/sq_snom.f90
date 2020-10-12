@@ -37,19 +37,19 @@
       use hru_module, only : hru, snotmp, tmpav, tmx, ihru, precip_eff, snocov1, snocov2,  &
          snofall, snomlt 
       use climate_module, only: wst
-
+      
       implicit none
 
       integer :: ib      !none          |counter
       integer :: j       !none          |HRU number
-      real :: sum        !mm H2O        |snow water content in HRU on current day
+      real :: sum        !mm H2O        |snow water content in HRU on current day 
       real :: smp        !mm H2O        |precipitation on current day for HRU
       real :: smfac      !              |
-      real :: smleb      !mm H2O        |amount of snow melt in elevation band on
+      real :: smleb      !mm H2O        |amount of snow melt in elevation band on 
                          !              |current day
       real :: xx         !none          |ratio of amount of current day"s snow water
                          !              |content to the minimum amount needed to
-                         !              |cover ground completely
+                         !              |cover ground completely 
       real :: snocov     !none          |fraction of HRU area covered with snow
       integer :: ii      !none          |counter
 
@@ -67,7 +67,7 @@
           precip_eff = 0.
           if (time%step > 0) wst(iwst)%weat%ts = 0.
         endif
-
+ 
         if (tmx(j) > hru(j)%sno%melttmp .and. hru(j)%sno_mm > 0.) then
           !! adjust melt factor for time of year
           smfac = (hru(j)%sno%meltmx + hru(j)%sno%meltmn) / 2. + Sin((time%day - 81) / 58.09) *     &

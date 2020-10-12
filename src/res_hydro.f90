@@ -1,4 +1,4 @@
-     subroutine res_hydro (jres, id, ihyd, pvol_m3, evol_m3)
+      subroutine res_hydro (jres, id, ihyd, pvol_m3, evol_m3)
 
       use reservoir_data_module
       use reservoir_module
@@ -7,15 +7,15 @@
       use time_module
       use hydrograph_module
       use water_body_module
-
+      
       implicit none
-
+      
       real,  intent (in) :: pvol_m3
       real,  intent (in) :: evol_m3
       integer,  intent (in) :: jres             !none      |hru number
       integer :: nstep            !none      |counter
       integer :: tstep            !none      |hru number
-      integer :: iac              !none      |counter
+      integer :: iac              !none      |counter 
       integer :: ic              !none      |counter
       integer,  intent (in) :: id               !none      |hru number
       integer :: ial              !none      |counter
@@ -26,13 +26,13 @@
       character(len=1) :: action  !          |
       real :: res_h               !          |
 
-
+      
       !! store initial values
       vol = wbody%flo
       nstep = 1
 
       do tstep = 1, nstep
-
+          
         !calc release from decision table
         do iac = 1, dtbl_res(id)%acts
           action = "n"
@@ -42,13 +42,13 @@
               exit
             end if
           end do
-
+          
           !condition is met - set the release rate
           if (action == "y") then
             select case (dtbl_res(id)%act(iac)%option)
             case ("rate")
               ht2%flo = dtbl_res(id)%act(iac)%const * 86400.
-
+              
             case ("days")
               select case (dtbl_res(id)%act(iac)%file_pointer)
                 case ("null")
@@ -59,7 +59,7 @@
                   b_lo = evol_m3
               end select
               ht2%flo = (wbody%flo - b_lo) / dtbl_res(id)%act(iac)%const
-
+              
             case ("dyrt")
               !for base volume for drawdown days, use condition associated with action
               select case (dtbl_res(id)%act(iac)%file_pointer)
@@ -84,10 +84,10 @@
                 b_lo = (evol_m3 - pvol_m3) / d_tbl%cond(ic)%lim_const
               end select
               ht2%flo = (wbody%flo - b_lo) / dtbl_res(id)%act(iac)%const + dtbl_res(id)%act(iac)%const2 / 100.
-
+              
             case ("weir")
               ht2%flo = res_weir(ihyd)%c * res_weir(ihyd)%k * res_weir(ihyd)%w * (res_h ** 1.5)
-
+              
             case ("meas")
               irel = int(dtbl_res(id)%act(iac)%const)
               select case (recall(irel)%typ)
@@ -99,7 +99,7 @@
                 ht2%flo = recall(irel)%hd(1,time%yrs)%flo
               end select
             end select
-
+            
           end if
         end do    ! iac
 

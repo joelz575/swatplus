@@ -1,7 +1,7 @@
-     subroutine structure_set_parms (str_name, istr, j)
+      subroutine structure_set_parms (str_name, istr, j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine controls the simulation of the land phase of the
+!!    this subroutine controls the simulation of the land phase of the 
 !!    hydrologic cycle
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -10,9 +10,9 @@
       use mgt_operations_module
       use hru_module, only : hru, sdr, iseptic, t_ov, tc_gwat
       use soil_module
-
+      
       implicit none
-
+    
       character (len=16), intent (in) :: str_name     !              |
       integer, intent (in) :: istr                    !              |
       integer, intent (in) :: j                       !none          |HRU number
@@ -41,7 +41,7 @@
           hru(j)%lumv%tile_ttime = 0.
         end if
 
-      case ("filter")
+      case ("fstrip")
         hru(j)%lumv%vfsi = filtstrip_db(istr)%vfsi
         hru(j)%lumv%vfsratio = filtstrip_db(istr)%vfsratio
         hru(j)%lumv%vfscon = filtstrip_db(istr)%vfscon

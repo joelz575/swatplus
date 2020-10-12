@@ -32,7 +32,6 @@
           db_mx%dr = imax
         
           allocate (dr_db(imax))
-          print *, "allocated dr db imax"
           rewind (107)
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
@@ -50,15 +49,10 @@
 
       ! read delivery ratio data for all constituent types
       call dr_read_om
-      print *, "dr read om"
       if (cs_db%num_pests > 0) call dr_read_pest
-      print *, "dr read pest"
       if (cs_db%num_paths > 0) call dr_path_read
-      print *, "dr path read"
       if (cs_db%num_metals > 0) call dr_read_hmet
-      print *, "dr read hmet"
       if (cs_db%num_salts > 0) call dr_read_salt
-      print *, "dr read salt"
       
       return
       end subroutine dr_db_read

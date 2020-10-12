@@ -2,7 +2,7 @@
       
       use plant_data_module
       use basin_module
-      use hru_module, only : hru, uapd, uno3d, lai_yrmx, par, bioday, ep_day, es_day,              &
+      use hru_module, only : hru, uapd, uno3d, par, bioday, ep_day, es_day,              &
          ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, uapd_tot, uno3d_tot, vpd
       use plant_module
       use carbon_module
@@ -50,7 +50,7 @@
           !! adjust radiation-use efficiency for day length
           iob = hru(j)%obj_no
           iwst = ob(iob)%wst
-          beadj = beadj * wst(iwst)%weat%daylength / 12.
+          beadj = beadj * wst(iwst)%weat%daylength / 14.    !Jimmy used 12,
           
           bioday = beadj * par(ipl)
           if (bioday < 0.) bioday = 0.

@@ -34,7 +34,7 @@
           read (107,*,iostat=eof) mchg_par
           if (eof < 0) exit
           
-          allocate (cal_parms(mchg_par))
+          allocate (cal_parms(0:mchg_par))
 
           read (107,*,iostat=eof) header
           if (eof < 0) exit

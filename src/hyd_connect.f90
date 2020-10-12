@@ -11,6 +11,7 @@
       use organic_mineral_mass_module
       use constituent_mass_module
       use ru_module
+      use basin_module
       
       implicit none
       
@@ -133,35 +134,35 @@
 
       !read connect file for hrus
       if (sp_ob%hru > 0) then
-        call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, hd_tot%hru, 2)     
+        call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, hd_tot%hru, bsn_prm%day_lag_mx)     
       end if
       
       !read connect file for hru_lte"s
       if (sp_ob%hru_lte > 0) then
-        call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, hd_tot%hru_lte, 2) 
+        call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, hd_tot%hru_lte, bsn_prm%day_lag_mx) 
       end if
       
       !read connect file for routing units
       if (sp_ob%ru > 0) then
-        call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, hd_tot%ru, 2)
+        call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, hd_tot%ru, bsn_prm%day_lag_mx)
         call ru_read
         call ru_read_elements
       end if
         
       !read connect file for modflow
       if (sp_ob%modflow > 0) then
-        call hyd_read_connect(in_con%modflow_con, "modflow ", sp_ob1%modflow, sp_ob%modflow, hd_tot%modflow, 0)
+        call hyd_read_connect(in_con%modflow_con, "modflow ", sp_ob1%modflow, sp_ob%modflow, hd_tot%modflow, 1)
       end if
                      
       !read connect file for aquifer (1-D)
       if (sp_ob%aqu > 0) then
-        call hyd_read_connect(in_con%aqu_con, "aqu     ", sp_ob1%aqu, sp_ob%aqu, hd_tot%aqu, 0)
+        call hyd_read_connect(in_con%aqu_con, "aqu     ", sp_ob1%aqu, sp_ob%aqu, hd_tot%aqu, 1)
         call aqu2d_read
       end if
                   
       !read connect file for channels
       if (sp_ob%chan > 0) then
-        call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, hd_tot%chan, 3) 
+        call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, hd_tot%chan, bsn_prm%day_lag_mx) 
         call overbank_read
         call channel_surf_link
       end if
@@ -173,29 +174,29 @@
                 
       !read connect file for recalls
       if (sp_ob%recall > 0) then
-        call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 0) 
+        call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 1) 
         call recall_read
       end if
                 
       !read connect file for export coefficients
       if (sp_ob%exco > 0) then
-        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 0) 
+        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 1) 
       endif
                   
       !read connect file for delivery ratio
       if (sp_ob%dr > 0) then
-        call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 0) 
+        call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 1) 
         call dr_db_read
       end if
                   
       !read connect file for outlet
       if (sp_ob%outlet > 0) then
-        call hyd_read_connect(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, hd_tot%outlet, 0)
+        call hyd_read_connect(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, hd_tot%outlet, bsn_prm%day_lag_mx)
       end if
           
       !read connect file for swat-deg channels
       if (sp_ob%chandeg > 0) then
-        call hyd_read_connect(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, 3)
+        call hyd_read_connect(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, bsn_prm%day_lag_mx)
         call overbank_read
       end if
 
@@ -333,6 +334,14 @@
           allocate (ob(i)%htyp_in(nspu))
           allocate (ob(i)%ihtyp_in(nspu))
           allocate (ob(i)%frac_in(nspu))
+          allocate (ob(i)%hin_uh(nspu))
+          !! allocate unit hyd for all incoming hyd's
+          do ii = 1, nspu
+            allocate (ob(i)%hin_uh(ii)%uh(bsn_prm%day_lag_mx,time%step))
+            allocate (ob(i)%hin_uh(ii)%hyd_flo(bsn_prm%day_lag_mx,time%step))
+            ob(i)%hin_uh(ii)%uh = 0.
+            ob(i)%hin_uh(ii)%hyd_flo = 0.
+          end do
           allocate (ob(i)%hin_d(nspu))
           allocate (ob(i)%hin_m(nspu))
           allocate (ob(i)%hin_y(nspu))
@@ -398,31 +407,31 @@
       rcv_sum = 0
       iord = 1
       dfn_sum = 0
-
+      
     do while (idone == 0)
         do i = 1, sp_ob%objs
-
+        
         if (iord > 1000) then
-          if (ob(i)%fired == 0) then
+          if (ob(i)%fired == 0) then         
 
             do iob = 1, sp_ob%objs
               if (ob(iob)%fired == 0 .and. ob(iob)%rcv_tot > 0) then
                   kk=1
                 write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),  &
                                     ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
-              end if
+              end if 
             end do
             write (*,1002)
             !pause   !!! stop the simulation run (ob(i)%fired == 0)
             !stop
             call exit(1)
           end if
-        end if
-
-
+        end if 
+   
+      
             !check if all incoming and defining objects have been met
-          !if not sum incoming
-          if (rcv_sum(i) == ob(i)%rcv_tot .and.                        &
+          !if not sum incoming 
+          if (rcv_sum(i) == ob(i)%rcv_tot .and.                        & 
                                       dfn_sum(i) == ob(i)%dfn_tot) then
             if (ob(i)%fired == 0) then
             ob(i)%fired = 1
@@ -434,7 +443,7 @@
               !kk = ob(i)%obj_subs(k)       !ob number of subbasin
               !dfn_sum(kk) = dfn_sum(kk) + 1
             end do
-
+          
             isrc_tot = Max(ob(i)%src_tot, 1)  !force to go through once
             do ii = 1, isrc_tot
               !! add receiving object for single objects
@@ -466,7 +475,7 @@
                   end if
                 end if
               end if
-
+              
               !! compute object order for parallelization (similar to stream order)
               if (ob(i)%rcv_tot == 0 .and. ob(i)%typ /= "ru") then
                 ob(i)%cmd_order = 1
@@ -477,13 +486,13 @@
                   ircv_ob = ob(i)%obj_in(ircv)
                   iorder = Max (iorder, ob(ircv_ob)%cmd_order)
                 end do
-                !! subbasin has to be in parallel order after elements in the subbasin
+                !! subbasin has to be in parallel order after elements in the subbasin 
                 if (ob(i)%typ == "ru" .and. ob(i)%rcv_tot == 0) then
                   iorder = 1
                 end if
                 ob(i)%cmd_order = iorder + 1
               end if
-
+              
               if (ob(i)%typ /= "exco") then   !exco"s are not commands
                 ob(i)%cmd_prev = cmd_prev
                 if (cmd_prev > 0) then
@@ -495,14 +504,14 @@
                 !rcv_sum(i) = rcv_sum(i) + 1
                 ob(i)%cmd_order = iord
               end if  !exco"s are not commands
-
+            
             end do
             end if
           end if
         end do
         iord = iord + 1
       end do
-
+      
 1002  format (5x,/,"ERROR - An infinite loop is detected in the connect file(s)",/, 15x, "the simulation will end",       &
                        /, 9x, "(review diagnostics.out file for more info)",/)
       return

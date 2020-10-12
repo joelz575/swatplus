@@ -19,7 +19,7 @@
         ii = 0
         ch_sur(ics)%dep(ii) = sd_chd(isdc)%chd
         ch_sur(ics)%wid(ii) = sd_chd(isdc)%chw
-        ch_sur(ics)%flood_volmx(ii) = sd_chd(isdc)%chw *                  &
+        ch_sur(ics)%flood_volmx(ii) = sd_chd(isdc)%chw *                  & 
                              sd_chd(isdc)%chd * sd_chd(isdc)%chl * 1000.
         do ii = 1, ch_sur(ics)%num
           iobtyp = ch_sur(ics)%obtyp(ii)     !object type
@@ -29,7 +29,7 @@
             iob = ob(i)%obj_out(ii)
             ob(iob)%flood_ch_lnk = ics   !pointer back to channel-hru link
             ob(iob)%flood_ch_elem = ii   !pointer to landscape element - 1 nearest to channel
-
+            
             ihru = ch_sur(ics)%obtypno(ii)
 
             !set depth, width, flood volume max
@@ -38,7 +38,7 @@
             ch_sur(ics)%wid(ii) = ch_sur(ics)%wid(ii-1) +                 &
                                                 2. * hru(ihru)%field%wid
             ch_sur(ics)%flood_volmx(ii)= ch_sur(ics)%flood_volmx(ii-1) +  &
-              (ch_sur(ics)%wid(ii-1) * (ch_sur(ics)%dep(ii) -             &
+              (ch_sur(ics)%wid(ii-1) * (ch_sur(ics)%dep(ii) -             & 
               ch_sur(ics)%dep(ii-1)) + (2. * ch_sur(ics)%wid(ii) ** 2 *   &
               hru(ihru)%topo%slope)) * sd_chd(ics)%chl * 1000.
           case ("hlt")   !hru_lte
@@ -46,7 +46,7 @@
           case ("ru")   !subbasin
             ob(i)%obj_out(ii) = sp_ob1%ru + ob(i)%obtypno_out(ii) - 1
             iob = ob(i)%obj_out(ii)
-
+            
             iru = ch_sur(ics)%obtypno(ii)
 
             !set depth, width, flood volume max

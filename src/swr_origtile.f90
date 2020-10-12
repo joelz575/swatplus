@@ -5,7 +5,7 @@
 
       use hru_module, only : hru, ihru, qtile, sw_excess, wt_shall
       use soil_module
-
+      
       implicit none
 
       integer :: j                          !none       |HRU number
@@ -17,6 +17,8 @@
 
       if (soil(j)%sw > soil(j)%sumfc) then
         sw_excess = (wt_above_tile / wt_shall) * (soil(j)%sw - soil(j)%sumfc)
+        !! (wt_above_btm - tile_above_btm) / wt_above_btm * (sw - fc)
+        sw_excess = (wt_shall - wt_above_tile) / wt_shall * (soil(j)%sw - soil(j)%sumfc)
         qtile = sw_excess * (1. - Exp(-24. / hru(j)%sdr%time))
         qtile = amin1(qtile, hru(j)%sdr%drain_co)
       else

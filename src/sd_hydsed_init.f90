@@ -1,5 +1,5 @@
-     subroutine sd_hydsed_init
-
+      subroutine sd_hydsed_init
+      
       use input_file_module
       use sd_channel_module
       use channel_velocity_module
@@ -7,12 +7,12 @@
       use hydrograph_module
       use constituent_mass_module
       use pesticide_data_module
-
-      implicit none
+      
+      implicit none      
 
       real :: kh
       integer :: idb                  !             |
-      integer :: i                    !none         |counter
+      integer :: i                    !none         |counter  
       integer :: icon, iob, ichdat
       integer :: ich_ini                !none      |counter
       integer :: iom_ini                !none      |counter
@@ -21,7 +21,10 @@
       integer :: ipath_ini              !none      |counter
       integer :: ipest                  !none      |counter
       integer :: ipath                  !none      |counter
-
+      integer :: idat
+      integer :: i_dep                  !none      |counter
+      integer :: ifp_dep                !none      |counter
+      
       real :: aa                      !none         |area/area=1 (used to calculate velocity with
                                       !             |Manning"s equation)
       real :: a                       !m^2          |cross-sectional area of channel
@@ -40,11 +43,19 @@
       real :: tt1                     !km s/m       |time coefficient for specified depth
       real :: tt2                     !km s/m       |time coefficient for bankfull depth
       real :: qq1                     !m^3/s        |flow rate for a specified depth
-      real :: bedvol                    !m^3       |volume of river bed sediment
-
+      real :: bedvol                  !m^3          |volume of river bed sediment
+      
+      real :: dep                     !             |
+      real :: area                    !             |
+      real :: a_bf                    !             |
+      real :: p_bf                    !             |
+      real :: flo_rate                !             |
+      real :: vel                     !             |
+      
       do i = 1, sp_ob%chandeg
         icmd = sp_ob1%chandeg + i - 1
-        idb = ob(icmd)%props
+        idat = ob(icmd)%props
+        idb = sd_dat(idat)%hyd
         sd_ch(i)%name = sd_chd(idb)%name
         sd_ch(i)%order = sd_chd(idb)%order
         sd_ch(i)%chw = sd_chd(idb)%chw
@@ -54,14 +65,14 @@
         sd_ch(i)%chn = sd_chd(idb)%chn
         sd_ch(i)%cherod = sd_chd(idb)%cherod
         sd_ch(i)%cov = sd_chd(idb)%cov
-        sd_ch(i)%shear_bnk = sd_chd(idb)%shear_bnk
+        !sd_ch(i)%shear_bnk = sd_chd(idb)%shear_bnk
         sd_ch(i)%hc_len = sd_chd(idb)%hc_ini
         sd_ch(i)%hc_hgt = sd_chd(idb)%hc_hgt
-
+          
         !! compute headcut parameters
         kh = sd_chd(idb)%hc_kh
         if (kh > 1.e-6) then
-          sd_ch(i)%hc_co = .37 * (17.83 + 16.56 * kh - 15. * sd_chd(idb)%hc_cov)
+          sd_ch(i)%hc_co = .37 * (17.83 + 16.56 * kh - 15. * sd_chd(idb)%cov)
           sd_ch(i)%hc_co = amax1 (0., sd_ch(i)%hc_co)
         else
           sd_ch(i)%hc_co = 0.
@@ -84,17 +95,54 @@
         sd_ch_vel(i)%wid_btm = b
         sd_ch_vel(i)%dep_bf = sd_ch(i)%chd
 
-        !! compute flow and travel time at bankfull depth
-        p = b + 2. * sd_ch(i)%chd * Sqrt(chside * chside + 1.)
-        a = b * sd_ch(i)%chd + chside * sd_ch(i)%chd * sd_ch(i)%chd
-        rh = a / p
+        !! compute rating curve at 0.1, 0.5 and 1.0 times bankfull depth
+        do i_dep = 1, 2
+          if (i_dep == 1) dep = 0.1 * sd_ch(i)%chd
+          if (i_dep == 2) dep = sd_ch(i)%chd
+          !! c^2=a^2+b^2 - a=dep; a/b=slope; b^2=a^2/slope^2
+          p = b + 2. * Sqrt(dep ** 2 * (1. + 1. / (chside ** 2)))
+          a = b * dep + dep / chside
+          rh = a / p
+          ch_rcurv(i)%elev(i_dep)%dep = dep
+          ch_rcurv(i)%elev(i_dep)%area = a
+          !! save bankfull depth and area for flood plain calculations
+          if (i_dep == 2) then
+            p_bf = p
+            a_bf = a
+          end if
+          ch_rcurv(i)%elev(i_dep)%flo_rate = Qman(a, rh, sd_ch(i)%chn, sd_ch(i)%chs)
+          ch_rcurv(i)%elev(i_dep)%vol = a * sd_ch(i)%chl * 1000.
+          vel = Qman(1., rh, sd_ch(i)%chn, sd_ch(i)%chs)
+          ch_rcurv(i)%elev(i_dep)%celerity = vel * 5. / 3.
+          ch_rcurv(i)%elev(i_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)
+          ch_rcurv(i)%elev(i_dep)%stor_dis = sd_ch(i)%chl / (3.6 * ch_rcurv(i)%elev(i_dep)%celerity)
+        end do
+        
+        !! compute rating curve at 2 times bankfull depth (flood plain)
+        do i_dep = 1, 1
+          !! dep = depth above bankfull
+          if (i_dep == 1) dep = sd_ch(i)%chd
+          p = p_bf + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_chd(idb)%fps ** 2)))
+          a = a_bf + b * dep + dep / sd_chd(idb)%fps
+          rh = a / p
+          ifp_dep = i_dep + 2
+          ch_rcurv(i)%elev(ifp_dep)%dep = dep
+          ch_rcurv(i)%elev(ifp_dep)%area = a
+          ch_rcurv(i)%elev(ifp_dep)%flo_rate = Qman(a, rh, sd_chd(idb)%fpn, sd_ch(i)%chs)
+          ch_rcurv(i)%elev(ifp_dep)%vol = a * sd_ch(i)%chl * 1000.
+          vel = Qman(1., rh, sd_chd(idb)%fpn, sd_ch(i)%chs)
+          ch_rcurv(i)%elev(ifp_dep)%celerity = vel * 5. / 3.
+          ch_rcurv(i)%elev(ifp_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)
+          ch_rcurv(i)%elev(ifp_dep)%stor_dis = sd_ch(i)%chl / (3.6 * ch_rcurv(i)%elev(ifp_dep)%celerity)
+        end do
+        
         sd_ch_vel(i)%area = a
         sd_ch_vel(i)%vel_bf = Qman(a, rh, sd_ch(i)%chn, sd_ch(i)%chs)
         sd_ch_vel(i)%velav_bf = Qman(aa, rh, sd_ch(i)%chn, sd_ch(i)%chs)
         sd_ch_vel(i)%celerity_bf = sd_ch_vel(i)%velav_bf * 5. / 3.
         sd_ch_vel(i)%st_dis = sd_ch(i)%chl / sd_ch_vel(i)%celerity_bf / 3.6
         tt2 = sd_ch(i)%chl * a / sd_ch_vel(i)%vel_bf
-
+  
         !! compute flow and travel time at 1.2 bankfull depth
         d = 1.2 * sd_ch(i)%chd
         a = a + (sd_ch(i)%chw * sd_ch(i)%chd + fps * (sd_ch(i)%chd - sd_ch(i)%chd) ** 2)
@@ -112,10 +160,10 @@
         tt1 = sd_ch(i)%chl * a / qq1
         sd_ch_vel(i)%vel_1bf = Qman(aa, rh, sd_ch(i)%chn, sd_ch(i)%chs)
         sd_ch_vel(i)%celerity_1bf = sd_ch_vel(i)%vel_1bf * 5. / 3.
-        sd_ch_vel(i)%stor_dis_1bf = sd_ch(i)%chl / sd_ch_vel(i)%celerity_1bf / 3.6
+        sd_ch_vel(i)%stor_dis_1bf = sd_ch(i)%chl / sd_ch_vel(i)%celerity_1bf / 3.6 
       end do
-
-
+      
+      
       ! initialize organics-minerals in channel water and benthic from input data
       do ich = 1, sp_ob%chandeg
         ! only initialize storage for real channels (length > 1 m)
@@ -125,12 +173,19 @@
           ich_ini = sd_dat(ichdat)%init
           iom_ini = sd_init(ich_ini)%org_min
           ch_stor(ich) = om_init_water(iom_ini)
+          
+          !! initial volume is frac of flow depth - frac*m*m*km*1000. = m3
+          ch_stor(ich)%flo = om_init_water(iom_ini)%flo * sd_ch(ich)%chd * sd_ch(ich)%chw * sd_ch(ich)%chl * 1000.
+          
+          !! convert concentration to mass
+          call hyd_convert_conc_to_mass (ch_stor(ich))
+          
           ch_om_water_init(ich) = ch_stor(ich)
         else
           ch_stor(ich) = hz
         end if
       end do
-
+      
       ! initialize pesticides in channel water and benthic from input data
       do ich = 1, sp_ob%chandeg
         iob = sp_ob1%chandeg + ich - 1
@@ -148,7 +203,7 @@
           sd_ch(ich)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt ** (-.6666) * (1. - sd_chd(ich)%bd / 2.65) * (69.35 / 365)
         end do
       end do
-
+      
       ! initialize pathogens in channel water and benthic from input data
       do ich = 1, sp_ob%chandeg
         iob = sp_ob1%chandeg + ich - 1

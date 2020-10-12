@@ -135,7 +135,7 @@
       !! drainmod tile equations   08/11/2006
       if (soil(j)%phys(2)%tmp > 0.) then   !Daniel 1/29/09
         por_air = 0.9
-        d = soil(j)%zmx - hru(j)%lumv%sdr_dep
+        d = soil(j)%zmx - hru(j)%lumv%sdr_dep   !distance above water table
         !! drainmod wt_shall equations   10/23/2006
         if (bsn_cc%wtdn == 0) then !compute wt_shall using original eq-Daniel 10/23/06
           if (soil(j)%sw > soil(j)%sumfc) then
@@ -174,8 +174,8 @@
             if (bsn_cc%tdrn == 1) then
               !! drainmod tile equations
               call swr_drains           !! compute tile flow using drainmod tile equations 
-            else                        !! compute tile flow using existing tile equations
-              call swr_origtile(d)      !! existing tile equations 
+            else                        
+              call swr_origtile(d)      !! compute tile flow using existing tile equations 
 	          if(qtile < 0.) qtile = 0.
             end if 
           end if

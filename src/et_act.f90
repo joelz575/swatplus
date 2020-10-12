@@ -1,5 +1,5 @@
-     subroutine et_act
-
+      subroutine et_act
+      
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates potential plant transpiration for Priestley-
 !!    Taylor and Hargreaves ET methods, and potential and actual soil
@@ -12,7 +12,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    canstor(:)   |mm H2O        |amount of water held in canopy storage
 !!    ep_max       |mm H2O        |maximum amount of transpiration (plant et)
-!!                                |that can occur on current day in HRU
+!!                                |that can occur on current day in HRU 
 !!    esco(:)      |none          |soil evaporation compensation factor
 !!    ihru         |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -34,14 +34,14 @@
 !!    SWAT: Expo
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
+ 
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : hru, tmpav, canstor, ihru, canev, ep_max,  &
          es_day, pet_day, snoev
       use soil_module
       use plant_module
-
+      
       implicit none
 
       integer :: j               !none          |HRU number
@@ -51,17 +51,17 @@
       real :: esd                !mm            |maximum soil depth from which evaporation
                                  !              |is allowed to occur
       real :: etco               !              |
-      real :: effnup             !              !
-      real :: no3up              !kg N/ha       |amount of nitrate moving upward in profile
+      real :: effnup             !              ! 
+      real :: no3up              !kg N/ha       |amount of nitrate moving upward in profile 
       real :: es_max             !mm H2O        |maximum amount of evaporation (soil et)
                                  !              |that can occur on current day in HRU
       real :: eos1               !none          |variable to hold intermediate calculation
                                  !              |result
-      real :: xx                 !none          |variable to hold intermediate calculation
+      real :: xx                 !none          |variable to hold intermediate calculation 
                                  !              |result
       real :: cej                !              |
       real :: eaj                !none          |weighting factor to adjust PET for impact of
-                                 !              |plant cover
+                                 !              |plant cover    
       real :: pet                !mm H2O        |amount of PET remaining after water stored
                                  !              |in canopy is evaporated
       real :: esleft             !mm H2O        |potenial soil evap that is still available
@@ -72,12 +72,12 @@
                                  !              |from soil profile
       real :: dep                !mm            |soil depth from which evaporation will occur
                                  !              |in current soil layer
-      real :: evz                !              |
+      real :: evz                !              | 
       real :: sev                !mm H2O        |amount of evaporation from soil layer
       real :: sev_st             !mm H2O        |evaporation / soil water for no3 flux from layer 1 -> 2
       real :: expo               !              |
       real :: cover              !kg/ha         |soil cover
-      integer :: ly              !none          |counter
+      integer :: ly              !none          |counter                               
 
       j = ihru
       pet = pet_day
@@ -140,11 +140,11 @@
             ep_max = pet * ep_max / (es_max + ep_max)
           end if
         end if
-
+        
         !! adjust es_max and ep_max for impervous urban cover
         !es_max = 0.5 * es_max
         !ep_max = 0.5 * ep_max
-
+          
         !! initialize soil evaporation variables
         esleft = es_max
 
@@ -175,13 +175,13 @@
         else
           dep = soil(j)%phys(ly-1)%d
         endif
-
+        
         if (dep < esd) then
-          !hru(j)%hyd%esco = 0.
+          !hru(j)%hyd%esco = 1.  !***jga
           !! calculate evaporation from soil layer
           evz = eosl * soil(j)%phys(ly)%d / (soil(j)%phys(ly)%d +        &
              Exp(2.374 - .00713 * soil(j)%phys(ly)%d))
-          sev = evz - evzp * hru(j)%hyd%esco
+          sev = evz - evzp * (1. - hru(j)%hyd%esco)
           evzp = evz
           !if (soil(j)%phys(ly)%st < soil(j)%phys(ly)%fc) then
           !  xx =  2.5 * (soil(j)%phys(ly)%st - soil(j)%phys(ly)%fc) /    &

@@ -7,8 +7,6 @@
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    nstep       |none          |max number of time steps per day
-!!    nstep       |none          |number of rainfall time steps for day
 !!    wst(:)%weat%ts(:)  |mm H2O        |precipitation for the time step during day
 !!    swtrg(:)    |none          |rainfall event flag:
 !!                               |  0: no rainfall event over midnight

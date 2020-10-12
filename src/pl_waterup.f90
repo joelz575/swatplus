@@ -1,9 +1,9 @@
-     subroutine pl_waterup
-
+      subroutine pl_waterup
+      
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine distributes potential plant evaporation through
 !!    the root zone and calculates actual plant water use based on soil
-!!    water availability. Also estimates water stress factor.
+!!    water availability. Also estimates water stress factor.     
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -33,7 +33,7 @@
 !!    wuse        |mm H2O        |water uptake by plants in each soil layer
 !!    sum_wuse    |mm H2O        |water uptake by plants from all layers
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
+    
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp, Max
 
@@ -45,13 +45,13 @@
       use soil_module
       use plant_module
       use urban_data_module
-
+      
       implicit none
-
+      
       integer :: j           !none      |hru number
-      integer :: k           !none      |counter
+      integer :: k           !none      |counter 
       integer :: ir          !none      |flag to denote bottom of root zone reached
-      integer :: idp         !          |
+      integer :: idp         !          | 
       integer :: ulu         !          |urban land use from urban.urb
       real :: sum            !          |
       real :: sum_wuse       !mm H2O    |water uptake by plants from all layers
@@ -63,20 +63,20 @@
       real :: gx             !mm        |lowest depth in layer from which nitrogen
                              !          |may be removed
       real :: wuse           !mm H2O    |water uptake by plants in each soil layer
-      real :: satco          !          |
+      real :: satco          !          | 
       real :: pl_aerfac      !          |
-      real :: scparm         !          |
+      real :: scparm         !          |  
       real :: uobw           !none      |water uptake normalization parameter
                              !          |This variable normalizes the water uptake so
                              !          |that the model can easily verify that uptake
                              !          |from the different soil layers sums to 1.0
       real :: ubw            !          |the uptake distribution for water is hardwired
-      real :: yy             !          |
-
+      real :: yy             !          | 
+      
 
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
-
+       
       !! compute aeration stress
       if (soil(j)%sw > soil(j)%sumfc) then
         satco = (soil(j)%sw - soil(j)%sumfc) / (soil(j)%sumul - soil(j)%sumfc)
@@ -117,12 +117,12 @@
             sum = epmax(ipl) * (1. - Exp(-uptake%water_dis * gx / pcom(j)%plg(ipl)%root_dep)) / uptake%water_norm
           end if
 
-          wuse = sum - sump * hru(j)%hyd%epco
+          wuse = sum - sump * (1. - hru(j)%hyd%epco)
           ! adjust for impervious area
           ulu = hru(j)%luse%urb_lu
           !wuse = wuse * urbdb(ulu)%fcimp
           wuse = amin1 (wuse, soil(j)%phys(k)%st)
-
+          
           sum_wuse = sum_wuse + wuse
           if (sum_wuse > epmax(ipl)) then
             wuse = epmax(ipl) - sum_wusep
@@ -136,9 +136,9 @@
           end if
 
           soil(j)%phys(k)%st = Max(1.e-6, soil(j)%phys(k)%st - wuse)
-
+          
         end do      !! soil layer loop
-
+        
         !! update total soil water in profile
         soil(j)%sw = 0.
         do k = 1, soil(j)%nly

@@ -12,31 +12,31 @@
       use constituent_mass_module
       use hydrograph_module, only : sp_ob
       use hru_module, only : hru
-
+      
       implicit none
-
+                  
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header of file
       character (len=13) :: file
       integer :: eof                  !           |end of file
-      integer :: i                    !none       |counter
+      integer :: i                    !none       |counter 
       integer :: mdtbl                !none       |ending of loop
-      integer :: ic                   !none       |counter
-      integer :: ial                  !none       |counter
-      integer :: iac                  !none       !counter
+      integer :: ic                   !none       |counter 
+      integer :: ial                  !none       |counter 
+      integer :: iac                  !none       !counter 
       logical :: i_exist              !none       |check to determine if file exists
       integer :: idb                  !none       |counter
       integer :: ilum                 !none       |counter
       integer :: iburn                !none       |counter
       integer :: ihru                 !none       |counter
-
+      
       mdtbl = 0
       eof = 0
-
+      
       !! read all data from hydrol.dat
       inquire (file=in_cond%dtbl_lum, exist=i_exist)
       if (.not. i_exist .or. in_cond%dtbl_lum == "null") then
-        allocate (dtbl_lum(0:0))
+        allocate (dtbl_lum(0:0)) 
       else
         do
           open (107,file=in_cond%dtbl_lum)
@@ -54,13 +54,14 @@
             read (107,*,iostat=eof) dtbl_lum(i)%name, dtbl_lum(i)%conds, dtbl_lum(i)%alts, dtbl_lum(i)%acts
             if (eof < 0) exit
             allocate (dtbl_lum(i)%cond(dtbl_lum(i)%conds))
+            allocate (dtbl_lum(i)%con_act(dtbl_lum(i)%conds))
             allocate (dtbl_lum(i)%alt(dtbl_lum(i)%conds,dtbl_lum(i)%alts))
             allocate (dtbl_lum(i)%act(dtbl_lum(i)%acts))
             allocate (dtbl_lum(i)%act_hit(dtbl_lum(i)%alts))
             allocate (dtbl_lum(i)%act_typ(dtbl_lum(i)%acts))
             allocate (dtbl_lum(i)%act_app(dtbl_lum(i)%acts))
             allocate (dtbl_lum(i)%act_outcomes(dtbl_lum(i)%acts,dtbl_lum(i)%alts))
-
+            
             !read conditions and condition alternatives
             read (107,*,iostat=eof) header
             if (eof < 0) exit
@@ -68,8 +69,8 @@
               read (107,*,iostat=eof) dtbl_lum(i)%cond(ic), (dtbl_lum(i)%alt(ic,ial), ial = 1, dtbl_lum(i)%alts)
               if (eof < 0) exit
             end do
-
-            !if land_use conditional variable, determine number of hru's and areas (used for probabilistic operations
+            
+            !if land_use conditional variable, determine number of hru's and areas (used for probabilistic operations)
             dtbl_lum(i)%hru_lu = 0
             dtbl_lum(i)%ha_lu = 0.
             do ic = 1, dtbl_lum(i)%conds
@@ -81,7 +82,7 @@
                   end if
                 end do
               end if
-            end do
+            end do      ! ic
                         
             !read actions and action outcomes
             read (107,*,iostat=eof) header
@@ -176,9 +177,17 @@
                   end do
                 end select
                 
-            end do
+                !xwalk conditions and actions for days since last action
+                do ic = 1, dtbl_lum(i)%conds
+                  if (dtbl_lum(i)%cond(ic)%lim_var == dtbl_lum(i)%act(iac)%name) then
+                    dtbl_lum(i)%con_act(ic) = iac
+                  end if
+                end do      ! ic
+                
+            end do      ! iac
             
-          end do
+          end do        ! mdtbl
+          
           db_mx%dtbl_lum = mdtbl
           exit
         end do

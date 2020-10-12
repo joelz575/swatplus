@@ -12,8 +12,6 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    elevp(:)    |m             |elevation of precipitation gage station
 !!    elevt(:)    |m             |elevation of temperature gage station
-!!    nstep       |none          |number of lines of rainfall data for each
-!!                               |day
 !!    welev(:)    |m             |elevation of weather station used to compile
 !!                               |weather generator data
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

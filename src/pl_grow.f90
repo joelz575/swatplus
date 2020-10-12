@@ -2,7 +2,7 @@
       
       use plant_data_module
       use basin_module
-      use hru_module, only : hru, uapd, uno3d, lai_yrmx, par, bioday, ep_day, es_day,              &
+      use hru_module, only : hru, uapd, uno3d, par, bioday, ep_day, es_day,              &
          ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, uapd_tot, uno3d_tot, vpd
       use plant_module
       use carbon_module
@@ -43,11 +43,12 @@
 
           call pl_seed_gro
           
-          if (time%end_yr == 1) call pl_mortality
-
           call pl_partition
 
         end if
+        
+        if (time%end_yr == 1) call pl_mortality
+
       end do    ! loop for number of plants
       
       return

@@ -53,7 +53,7 @@
         character(len=16) :: hydgrp = ""    !! NA            hydrologic soil group
         character(len=16) :: texture = ""
         integer ::  nly  = 0               !! none          number of soil layers 
-        type (soil_physical_properties),dimension (:), allocatable::phys
+        type (soil_physical_properties),dimension (:), allocatable:: phys
         type (soilayer), dimension (:), allocatable :: ly
         real, dimension(:),allocatable :: pest              !! kg/ha    total pesticide in the soil profile
         real :: zmx = 0.                   !! mm            maximum rooting depth in soil

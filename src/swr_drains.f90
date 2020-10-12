@@ -42,42 +42,42 @@
       use basin_module
       use hydrograph_module
       use climate_module, only : wst
-      use hru_module, only : hru, ihru, wnan, stmaxd, sstmaxd, surfq, etday, inflpcp, &
+      use hru_module, only : hru, ihru, wnan, stmaxd, sstmaxd, surfq, etday, inflpcp, &  
           mlyr, precip_eff, qtile, wt_shall
       use soil_module
       use time_module
       use reservoir_module
-
+      
       implicit none
 
       integer :: j1              !none          |counter
-      integer :: j               !none          |HRU number
+      integer :: j               !none          |HRU number 
       integer :: m               !none          |counter
       real:: cone                !mm/hr         |effective saturated lateral conductivity - based
                                  !              |on water table depth and conk/sol_k of layers
-      real:: depth               !mm            |actual depth from surface to impermeable layer
+      real:: depth               !mm            |actual depth from surface to impermeable layer 
       real:: dg                  !mm            |depth of soil layer
-      real:: ad                  !              |
+      real:: ad                  !              | 
       real:: ap                  !              |
       real:: hdrain              !mm            |equivalent depth from water surface in drain tube to
                                  !              |impermeable layer
       real:: gee                 !none          |factor -g- in Kirkham equation
       real:: e                   !              |
-      real:: gee1                !              |
-      real:: gee2                !              |
-      real:: gee3                !              |
+      real:: gee1                !              | 
+      real:: gee2                !              | 
+      real:: gee3                !              | 
       real:: pi	                 !              |
       real:: k2                  !              |
       real:: k3                  !              |
       real:: k4                  !              |
       real:: k5                  !              |
       real:: k6                  !              |
-      real :: y1                 !mm            |dummy variable for dtwt
+      real :: y1                 !mm            |dummy variable for dtwt 
       integer :: isdr            !              |
       real :: above              !mm            |depth of top layer considered
-      integer :: nlayer          !none          |number of layers to be used to determine cone
+      integer :: nlayer          !none          |number of layers to be used to determine cone 
       real :: x                  !              |
-      real :: sum                !              |
+      real :: sum                !              | 
       real :: deep               !mm            |total thickness of saturated zone
       real :: xx                 !              |
       real :: hdmin              !              |
@@ -85,35 +85,35 @@
                                  !              |can move to the tile drain tube
       real :: stor               !mm            |surface storage for the day in a given HRU
       real :: dflux              !mm/hr         |drainage flux
-      real :: em                 !mm            |distance from water level in the drains to water table
+      real :: em                 !mm            |distance from water level in the drains to water table 
                                  !              |at midpoint: em is negative during subirrigation
       real :: ddranp             !              |
       real :: dot                !mm            |actual depth from impermeable layer to water level
                                  !              |above drain during subsurface irrigation
-
+   
       !! initialize variables
 
       j = ihru
       isdr = hru(j)%tiledrain
       wnan = 0
-      y1 = soil(j)%zmx - wt_shall
+      y1 = soil(j)%zmx - wt_shall 
       if (y1 > soil(j)%zmx) y1 = soil(j)%zmx
       above = 0.
       pi = 22./7.
       gee1 =0.
 
-!! find number of soil layers
+!! find number of soil layers 
       do j1 = 1, mlyr
-        if(soil(j)%phys(j1)%d > 0.) nlayer = j1
+        if(soil(j)%phys(j1)%d > 0.) nlayer = j1	    
       end do
 
 !! find effective lateral hydraulic conductivity for the profile in hru j
       do j1 = 1, nlayer
-        if(y1 > soil(j)%phys(j1)%d) then
+        if(y1 > soil(j)%phys(j1)%d) then  
           wnan(j1) = 0.
         else
-	    wnan(j1) = soil(j)%phys(j1)%d - y1
-	    x = soil(j)%phys(j1)%d -  above
+	    wnan(j1) = soil(j)%phys(j1)%d - y1  
+	    x = soil(j)%phys(j1)%d -  above  
           if(wnan(j1) > x) wnan(j1) = x
 	  end if
 	  above = soil(j)%phys(j1)%d
@@ -175,16 +175,16 @@
       depth = hru(j)%lumv%sdr_dep + hdrain
       hdmin = depth - hru(j)%lumv%sdr_dep
       if (bsn_cc%smax == 1) then
-        call swr_depstor ! dynamic stmaxd(j): compute current HRU stmaxd based
+        call swr_depstor ! dynamic stmaxd(j): compute current HRU stmaxd based 
 	           ! on cumulative rainfall and cum. intensity
 	else
 	  stmaxd(j) = sstmaxd(j)
-	end if
+	end if 
       storro = 0.2 * stmaxd(j) !surface storage that must be filled before surface
                    !water can move to the tile drain tube
       !! Determine surface storage for the day in a given HRU (stor)
         !initialize stor on the beginning day of simulation, Daniel 9/20/2007
-      if (time%yrs == 1 .and. time%day == time%day_start) then
+      if (time%yrs == 1 .and. time%day == time%day_start) then 
         stor= 0.
       end if
       if (wet_ob(j)%area_ha <= 0.) then ! determine stor
@@ -198,16 +198,16 @@
         dflux= (12.56637 * 24.0 * cone* (depth - hdrain + stor)) / (gee * hru(j)%sdr%dist) !eq.10
         if (dflux > hru(j)%sdr%drain_co) dflux = hru(j)%sdr%drain_co !eq.11
       else
-!	subirrigation flux
+!	subirrigation flux 
         em = depth - y1 - hdrain
         if(em < -1.0) then
 !!          ddranp=ddrain(j)-1.0
           ddranp = hru(j)%lumv%sdr_dep - 1.0
           dot = hdrain + soil(j)%zmx - depth
-          dflux = 4.0 * 24.0 * cone * em * hdrain * (2.0 + em / dot) / hru(j)%sdr%dist**2
+          dflux = 4.0 * 24.0 * cone * em * hdrain * (2.0 + em / dot) / hru(j)%sdr%dist**2 
           if ((depth-hdrain) >= ddranp) dflux = 0.
           if (abs(dflux) > hru(j)%sdr%pumpcap) then
-            dflux = - hru(j)%sdr%pumpcap * 24.0
+            dflux = - hru(j)%sdr%pumpcap * 24.0 
           end if
 !	drainage flux - for WT below the surface and for ponded depths < storro (S1)
         else

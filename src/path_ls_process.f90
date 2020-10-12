@@ -46,12 +46,10 @@
         !! compute pathogen die-off and re-growth in surface soil layer
         sol_ini = cs_soil(j)%ly(1)%path(ipath)
         sol_die_gro = path_db(ipath_db)%do_soln - path_db(ipath_db)%gr_soln
-        cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) * Exp(-Theta(sol_die_gro, path_db(ipath_db)%t_adj,&
-                tmpav(j)))   &
+        cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) * Exp(-Theta(sol_die_gro, path_db(ipath_db)%t_adj, tmpav(j)))   &
                                               - path_db(ipath_db)%conc_min
         cs_soil(j)%ly(1)%path(ipath) = Max(0., cs_soil(j)%ly(1)%path(ipath))
-        if (cs_soil(j)%ly(1)%path(ipath) < path_db(ipath_db)%conc_min) cs_soil(j)%ly(1)%path(ipath) = &
-                path_db(ipath_db)%conc_min
+        if (cs_soil(j)%ly(1)%path(ipath) < path_db(ipath_db)%conc_min) cs_soil(j)%ly(1)%path(ipath) = path_db(ipath_db)%conc_min
 
         bacdiegrosol_out = sol_ini - cs_soil(j)%ly(1)%path(ipath)
         bacdiegroplt_out = pl_ini - cs_pl(j)%path(ipath)

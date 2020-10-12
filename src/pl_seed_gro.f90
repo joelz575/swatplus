@@ -2,7 +2,7 @@
       
       use plant_data_module
       use basin_module
-      use hru_module, only : hru, uapd, uno3d, lai_yrmx, par, bioday, ep_day, es_day,              &
+      use hru_module, only : hru, uapd, uno3d, par, bioday, ep_day, es_day,              &
          ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, uapd_tot, uno3d_tot, vpd
       use plant_module
       use carbon_module
@@ -29,7 +29,7 @@
         pcom(j)%plg(ipl)%plpet = pcom(j)%plg(ipl)%plpet + pet_day
       end if
      
-      ajhi = pldb(idp)%hvsti * 100. * pcom(j)%plcur(ipl)%phuacc /          &
+      ajhi = pcom(j)%plcur(ipl)%harv_idx * 100. * pcom(j)%plcur(ipl)%phuacc /          &
                 (100. * pcom(j)%plcur(ipl)%phuacc + Exp(11.1 - 10. * pcom(j)%plcur(ipl)%phuacc))
        
       !! adjust harvest index for temperature stress

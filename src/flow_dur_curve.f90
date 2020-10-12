@@ -15,7 +15,7 @@
       integer :: nprob                    !             |
       integer :: iday                     !             |
       integer :: mfe                      !             |
-      integer :: iyr_ch                   !             |
+      integer :: iyr_ch                   !             | 
 
         !set linked list for daily flow duration curves
         ob(icmd)%fdc_ll(time%day)%val = ob(icmd)%hd(1)%flo
@@ -40,7 +40,7 @@
           ob(icmd)%fdc%mle = time%day
         end if
         !set linked list for daily flow duration curves
-
+        
         !save flow duration curve probabilities for the year
         if (time%end_yr == 1) then
           sum = 0.
@@ -67,9 +67,9 @@
           ob(icmd)%fdc%mfe = 1
           ob(icmd)%fdc%mle = 1
         end if
-
+        
         !save flow duration curve probabilities for the year
-
+        
         !master duration curve from annual curves (median)
         if (time%end_sim == 1) then
           do nprob = 1, fdc_npts
@@ -100,7 +100,7 @@
                 ob(icmd)%fdc%mle = iyr
               end if
             end do    !iyr
-
+          
           !calc mean, abs max and min
           sum = 0.
           do iyr = 1, time%nbyr
@@ -109,7 +109,7 @@
             ob(icmd)%fdc%p_md%min = amin1 (ob(icmd)%fdc%p_md%min, ob(icmd)%fdc%yr(iyr)%min)
           end do
           ob(icmd)%fdc%p_md%mean = sum / time%nbyr
-
+          
           !calc probabilities
           next = ob(icmd)%fdc%mfe
           do iyr = 1, time%nbyr
@@ -128,17 +128,16 @@
             iprv = next
             next = ob(icmd)%fdc_lla(next)%next
           end do    !iyr
-
+          
           end do    !nprob
-
+          
           !convert to mm -- m3 * 1 / ha * ha/ 10,000 m3 * 1,000 mm/m = mm
           !normalize by dividing by mean flow in mm
           ob(icmd)%fdc%p_md%mean = ob(icmd)%fdc%p_md%mean / ob(icmd)%area_ha / 10.
           ob(icmd)%fdc%p_md%p = ob(icmd)%fdc%p_md%p / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
           ob(icmd)%fdc%p_md%max = ob(icmd)%fdc%p_md%max / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
           ob(icmd)%fdc%p_md%min = ob(icmd)%fdc%p_md%min / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
-          write (6000,*) ob(icmd)%typ, ob(icmd)%props, ob(icmd)%area_ha, ob(icmd)%fdc%p_md%mean, ob(icmd)%fdc%p_md%max,&
-                  ob(icmd)%fdc%p_md%p, ob(icmd)%fdc%p_md%min
+          write (6000,*) ob(icmd)%typ, ob(icmd)%props, ob(icmd)%area_ha, ob(icmd)%fdc%p_md%mean, ob(icmd)%fdc%p_md%max, ob(icmd)%fdc%p_md%p, ob(icmd)%fdc%p_md%min
         end if
                
         !master duration curve from annual curves (median)

@@ -6,14 +6,11 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    mhyd        |none          |max number of hydrographs
-!!    nstep       |none          |max number of time steps per day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
       use hru_module      
       use time_module
       use hydrograph_module
       use constituent_mass_module
-      
 !! initialize variables    
       mhyd = 1  !!added for jaehak vars
       mhru = sp_ob%hru
@@ -37,7 +34,6 @@
 
 !!    arrays for plant communities
       allocate (cvm_com(mhru))
-      allocate (blai_com(mhru))
       allocate (rsdco_plcom(mhru))
       allocate (percn(mhru))
 
@@ -55,8 +51,7 @@
       allocate (itb(mhru))
       
       if (time%step > 0) allocate (hhqday(mhru,time%step))
-      allocate (uh(mhru,time%step+1))
-
+      
  !!  added per JGA for Srini by gsm 9/8/2011
  !! arrays for mangement output (output.mgt)  
       allocate (sol_sumno3(mhru))
@@ -91,7 +86,6 @@
       allocate (yr_skip(mhru))
       allocate (isweep(mhru))
       allocate (phusw(mhru))
-      allocate (lai_yrmx(mhru))
       allocate (latno3(mhru))
       allocate (latq(mhru))
       allocate (ndeat(mhru))
@@ -151,7 +145,7 @@
       allocate (surf_bs(17,mhru))  
 
 !! sj aug 09 end
-	  allocate (hhsurf_bs(2,mhru,time%step))  !! nstep changed to nstep  OCt. 18,2007
+	  allocate (hhsurf_bs(2,mhru,time%step))
       allocate (ubnrunoff(time%step),ubntss(time%step))
 
 !! Arrays for subdaily erosion modeling by Jaehak Jeong

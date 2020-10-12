@@ -187,7 +187,7 @@
             ! istart points to rule set in d_table
             istart = hlt(isd)%start
             d_tbl => dtbl_lum(istart)
-            call conditions (isd)
+            call conditions (isd, istart)
             call actions (isd, icmd, istart)
           end if
           
@@ -199,7 +199,7 @@
             ! iend points to rule set in d_table
             iend = hlt(isd)%end
             d_tbl => dtbl_lum(iend)
-            call conditions (isd)
+            call conditions (isd, icmd)
             call actions (isd, icmd, iend)
           end if
 

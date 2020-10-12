@@ -45,7 +45,6 @@
         character(len=1) :: idorm = "n" !! none         |dormancy status code; 'n'=land cover growing 'y'=land cover dormant
         real :: phumat = 0.             !! C            |heat units to maturity
         real :: phuacc = 0.             !! fraction     |fraction of plant heatunit accumulated
-        real :: laimx_pop = 0.          !!
         integer :: harv_num = 0         !!              |number of harvest operations
         integer :: curyr_mat = 1        !! 
         integer :: curyr_gro = 1        !!
@@ -53,6 +52,8 @@
         integer :: monsoon_init = 0     !! julian day   |monsoon initiation period
         integer :: days_senes = 0.      !! mm           |days since scenesence began (for moisture growth perennials)
         real :: leaf_tov = 0.           !! none         |leaf turnover rate - decline in lai and leaf biomass
+        real :: lai_pot = 0.           !! mm               |root depth
+        real :: harv_idx = 0.          !! kg/ha            |root fraction of total plant mass
       end type plant_status
       
       type plant_stress
@@ -76,7 +77,8 @@
       end type plant_stress
       
       type auto_operations
-        integer, dimension(:), allocatable :: num_actions      !! current number of actions - reset on January 1 
+        integer, dimension(:), allocatable :: num_actions       !! current number of actions - reset on January 1 
+        integer, dimension(:), allocatable :: days_act          !! days since the action specified in lim_const
       end type auto_operations
       
       type plant_community
@@ -91,6 +93,7 @@
                                         !!               |   1 = in monsoon period but new growth not triggered
        real :: cht_mx = 0.              !! m             |height of tallest plant in community for pet calculation
        real :: lai_sum = 0.             !! m/m           |sum of lai for each plant
+       real :: laimx_sum = 0.           !! m/m           |sum of maximum lai for each plant - for canopy interception
        type (auto_operations), dimension(:), allocatable :: dtbl               !!d_tble action - to limit number of actions per year 
        type (plant_growth), dimension(:), allocatable :: plg    !!plant growth variables
        type (plant_stress), dimension(:), allocatable :: plstr  !!plant stress variables

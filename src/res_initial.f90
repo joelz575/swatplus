@@ -15,7 +15,6 @@
       integer :: ihyd        !none          |counter 
       integer :: ised        !none          |counter 
       integer :: lnvol       !              |
-      integer :: iires       !              | 
       real :: resdif         !              |
       integer :: i           !none          |counter
       integer :: idat        !none          |counter
@@ -48,7 +47,7 @@
             res_ob(ires)%br2 = 0.9
             res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
           else
-            res_ob(ires)%br1 = (res_ob(ires)%esa / res_ob(ires)%evol) ** res_ob(iires)%br2
+            res_ob(ires)%br1 = (res_ob(ires)%esa / res_ob(ires)%evol) ** res_ob(ires)%br2
           end if  
         else
           res_ob(ires)%br2 = 0.9

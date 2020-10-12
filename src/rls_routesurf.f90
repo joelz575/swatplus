@@ -15,9 +15,9 @@
       use hru_module, only : hru, ihru, usle_cfac, ls_overq, precip_eff
       use hydrograph_module
       !use topography_data_module
-
+      
       implicit none
-
+      
       integer :: j              !            |
       integer :: iob            !            |
       integer :: ifield         !            |
@@ -30,9 +30,9 @@
 !!    compute infiltration from surface runon to next landscape unit
       ls_overq = ob(iob)%hin_sur%flo        !/ (10. * hru(j)%area_ha)   ! m3/10*ha = mm
       precip_eff = precip_eff + ls_overq
-
+      
 !!    compute infiltration from surface runon to next landscape unit
-      !ls_overq = ob(iob)%hin%flo    !/ (10. * hru(j)%area_ha)
+      !ls_overq = ob(iob)%hin%flo    !/ (10. * hru(j)%area_ha) 
       !if (ls_overq > 1.e-6) then
       !  qs = ls_overq / 24.   !mm/hr
       !  vs = (qs ** .4) * (hru(j)%topo%slope ** .3) / (hru(j)%luse%ovn ** .6)
@@ -46,7 +46,7 @@
       !  ht1%flo = inflrout
       !  ht2%flo = ls_overq - inflrout
       !end if
-
+      
 !!    sediment deposition across the landscape
       sed = ob(iob)%hin_sur%sed / hru(j)%area_ha
       !! use surface runoff (mm) for eiq - m3/(10 * ha) = mm

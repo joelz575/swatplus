@@ -1,0 +1,19 @@
+Atmodep_file example - annual
+NUM_STA     TIMESTEP       MO_INIT       YR_INIT     NUM_AA
+      3           aa             0             0          0
+atmo_1	  
+     0.35                (NH4_RF) 
+	 3.24                (NO3_RF)
+	 0.13                (NH4_DRY)
+	 0.12                (NO3_DRY)
+atmo_2	  
+     0.35                (NH4_RF) 
+	 3.24                (NO3_RF)
+	 0.13                (NH4_DRY)
+	 0.12                (NO3_DRY)	 
+atmo_3	  
+     0.35                (NH4_RF) 
+	 3.24                (NO3_RF)
+	 0.13                (NH4_DRY)
+	 0.12                (NO3_DRY)
+

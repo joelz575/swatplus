@@ -1,0 +1,3 @@
+wetland.wet: Wetland properties 
+    NUMB         NAME       INIT     	  HYD     	        REL     	      SED      	        NUT              PST
+       1 	surf_stor  high_init	surf_stor           wetland	        sw_us_med      southeast_us       default_us       

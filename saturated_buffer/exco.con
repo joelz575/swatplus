@@ -1,0 +1,5 @@
+crap_exco.con: export coefficient								
+NUMB	NAME	 GIS_ID   AREA_HA     LAT     LONG     ELEV	EXCO    WST   CONSTIT    OVERFLOW RULESET  OUT_TOT    OBTYP_OUT  OBTYPNO_OUT	HTYP_OUT   FRAC_OUT
+1	   exco1   1        8.55     0.0      0.0      0.0	   1      1         0           0       1        1       dr          1                 tot       1.
+2	   exco2   2        8.55     0.0      0.0      0.0	   2      2         0           0       1        1       dr          1                 tot       1.
+ 

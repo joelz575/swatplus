@@ -1,0 +1,4 @@
+rout_unit.ele
+ NUMB    NAME        OBTYP  OBTYPNO   FRAC      DR
+   1   hru1          hru        1     0.5        0
+   2   hru2          hru        2     0.5        0

@@ -1,0 +1,4 @@
+initial.cha   Nutrient and Constituent initial amounts in water bodies
+  NAME		ORG-MIN		PESTICIDES	PATHOGENS	HEAVY_METALS	SALTS
+ low_init	  low_init      null		null		null		null
+ high_init	  high_init     null		null		null		null

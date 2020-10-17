@@ -1,0 +1,4 @@
+dr_pest
+            aatrex_sol  aatrex_sor  banvel_sol  banvel_sor  prowl_sol  prowl_sor  roundup_sol  roundup_sor
+dr_pest1      .125        .100         .90           .80        .70        .60        .50          .40
+dr_pest2      .225        .110         .99           .88        .77        .66        .55          .44

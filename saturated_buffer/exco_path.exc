@@ -1,0 +1,4 @@
+exco_path
+            fecals_sol  fecals_sor  e_coli_sol  e_coli_sor
+exco_path1    12.5        100           90           80
+exco_path2    22.5        110           99           88

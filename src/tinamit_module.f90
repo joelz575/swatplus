@@ -55,13 +55,6 @@ contains
         integer, allocatable, dimension(:) :: intBuffer(:)
 
         print *, "About to Recieve..."
-!        print *, "Cliente Obj: ", cliente_obj
-!        print *, "Command: ", command
-!        print *, "Variable Name: ", var
-!        print *, "Content Data Type: ", tipo_contents
-!        print *, "Size of contents: ", tmn_contents
-!        print *, "intBuffer contents: ", intBuffer
-!        print *, "realBuffer contents: ", realBuffer
 
         intBufferBuffer = " "
         realBufferBuffer = " "
@@ -122,8 +115,6 @@ contains
             dias = nPasos
             print *, "Number of Passes: ", nPasos
             !No further action required
-            !senderBuffer = "running"
-            !call sendr(cliente_obj, senderBuffer)
 
         elseif(trim(orden) == 'cambiar')then
             call tomar (cliente_obj, var, tmn_contents, intBuffer, realBuffer)
@@ -534,7 +525,7 @@ contains
         end select
 
         if(warning)then
-            print *, "Variable not used by SWAT+ simulation: "// varNombre
+            print *, "Variable not used by SWAT+ simulation: ", varNombre
 
         elseif(.not.(SIZE(intBuffer)==0))then
             print *, "Sending int buffer: ", intBuffer
@@ -547,7 +538,7 @@ contains
         if(shapeBuffer == "")then
             shapeBuffer = "-1"
         end if
-        call sendr1(cliente_obj, intBuffer, floatBuffer, shapeBuffer, size(intBuffer), size(floatBuffer), len(shapeBuffer))
+        call sendr(cliente_obj, intBuffer, floatBuffer, trim(shapeBuffer), size(intBuffer), size(floatBuffer), len(shapeBuffer))
 
         call recibe(cliente_obj)
 

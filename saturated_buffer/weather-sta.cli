@@ -1,0 +1,4 @@
+weather-sta.cli
+NAME          WGN        PGAGE        TGAGE       SGAGE   HGAGE   WGAGE   WNDIR  ATMODEP
+wea1        wgn001   mentone.pcp    mentone.tmp       sim     sim     sim    null     atmo_2
+wea2        wgn001   warsaw.pcp     warsaw.tmp        sim     sim     sim    null     atmo_3

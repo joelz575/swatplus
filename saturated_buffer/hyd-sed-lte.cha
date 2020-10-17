@@ -1,0 +1,5 @@
+hyd-sed-lte.cha
+NAME          ORDER    CHW     CHD     CHS     CHL     CHN     CHK  CHEROD   CHCOV   WD_RTO  CHSEQ     D50   CLAY    CARBON    BD    CHSS     BEDLD    TC    SHEAR_BNK   HC_KH    HC_HGT   HC_INI
+1st_stage     ditch     4.0    0.50   0.005     0.6    0.10       1    0.01   0.005   0.005   0.001      12   30.0     0.04   1.5     0.5      0.50   120.    0.75        0.2        0.0     0.0
+Gully_hru2    gully     5.5    0.71   0.007       8    0.05       1    0.01   0.005   0.005   0.001      12   30.0     0.04   1.5     0.5      0.50   120.    0.75        0.2        0.4     0.0
+First_Ord1    first     6.5    0.71   0.007       8    0.05       1    0.01   0.005   0.005   0.001      12   30.0     0.04   1.5     0.5      0.50   120.    0.75        0.05       0.5     0.0

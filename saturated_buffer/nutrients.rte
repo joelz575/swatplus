@@ -1,0 +1,3 @@
+nutrients.rte : Channel properties
+NAME     LEN_INC NO3_SLP   NO3_INT NO3_SLP   NO3_INT  NO3_SLP   NO3_INT TURB_SLP  TURB_INT    TSS_SLP    TSS_INT     TP_SLP       TP_INT  SRP_SLP SLP_INT TURB_TSS_SLP  NO3_MIN_CONC	TP_MIN_CONC  TSS_MIN_CONC  SRP_MIN_CONC
+ret_nut1   250	 0.3524    0.1880   0.2639   1.3719   0.3524    0.1880  0.000076  -0.00031   0.000035   0.000108   0.000051   0.00000046    0.646   0.207            0           .05	        .06	            5	       .015

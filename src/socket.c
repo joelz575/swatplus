@@ -409,7 +409,40 @@ void jsons2fltarray_(float floatCont[], int *arraySize, char jsonString[]){
         //fflush(stdout);
     }
 }
+void string2intarray_(int intCont[], int *arraySize, char *string){
+    int i=0; //counter
+    int f=0; //counter
+    int g=0; //counter
+    int current=2; //counter helper
+    char transferSTR[15] = "000000000000000";
 
+
+
+    for(i=0; (i < *arraySize) && f < strlen(string); i++){
+        f=current;
+      //  printf("\nCurrently here in jsonString: %c", jsonString[f]);
+      //  fflush(stdout);
+
+        while(string[f] != ','){
+            transferSTR[f-current] = string[f];
+            f++;
+        }
+
+        //printf("\nTransfer String: %s", transferSTR);
+        //fflush(stdout);
+
+        intCont[i] = (int)atoi(transferSTR);
+        //printf("\nInt Cont[i]: %f", intCont[i]);
+        //fflush(stdout);
+
+        strncpy(transferSTR, "000000000000000", 15);
+        //printf("\nReset transferSTR: %s", transferSTR);
+        //fflush(stdout);
+        current = f+1;
+        //printf("\nCurrent: %i", current);
+        //fflush(stdout);
+        }
+}
 void jsons2intarray_(int intCont[], int *arraySize, char *jsonString){
     int i=0; //counter
     int f=0; //counter
@@ -506,8 +539,8 @@ void sendr_(int *client, int intSenderBuffer[], float floatSenderBuffer[], char 
 
  printf("Content type: %s\n", tipo_cont);
  printf("Sending encabezado: %s\n", jsonEncabezadoString);
- printf("Sending value: %s\n", intSenderBuffer);
- printf("Sending value: %s\n", floatSenderBuffer);
+ printf("Sending int value: %s\n", intSenderBuffer);
+ printf("Sending float value: %s\n", floatSenderBuffer);
  fflush(stdout);
 
  i = strlen(jsonEncabezadoString);

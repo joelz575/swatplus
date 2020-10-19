@@ -12,8 +12,9 @@ module tinamit_module
     integer cliente_obj
     character(len = 3) :: hru_mode  ! 'hru' or 'hlt'
     character(len = 3) :: cha_mode  ! 'cha' or 'sdc'
-    integer :: Lluvia = 348 !***********************************************************temporary variable for debugging
-    integer :: Bosque = 67 !***********************************************************temporary variable for debugging
+    integer, allocatable, dimension(:) :: entero(:), entero_negativo(:)!*******testing variable*******************************
+    real, allocatable, dimension(:) :: decimal(:), decimal_negativo(:) !*******testing variable*******************************
+    integer, allocatable,dimension(:,:,:) :: multidim(:,:,:) !******************testing variable*******************************
     logical dynamic
     integer :: dias = 1
     integer :: t = 0
@@ -48,18 +49,18 @@ contains
         character(len = 7) :: command
         character(len = 10) :: var = "          "
         character(len = 5) :: tipo_contents
-        integer :: tmn_contents, nPasos
-        character(len = 20) :: shape = "                    "
+        integer :: tmn_contents, nPasos, i, tmn_shape
+        character(len = 20) :: shapeBuffer = "                    "
         character(len = MAX_BUFFER_LEN):: realBufferBuffer, intBufferBuffer
         real, allocatable, dimension(:) :: realBuffer(:)
-        integer, allocatable, dimension(:) :: intBuffer(:)
+        integer, allocatable, dimension(:) :: intBuffer(:), shape(:)
 
         print *, "About to Recieve..."
 
         intBufferBuffer = " "
         realBufferBuffer = " "
-
-        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, nPasos, intBufferBuffer, realBufferBuffer, shape) !charBuffer
+        tmn_shape = 1
+        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, nPasos, intBufferBuffer, realBufferBuffer, shapeBuffer) !charBuffer
 
         print *, "Cliente Obj: ", cliente_obj
         print *, "Command: ", command
@@ -69,7 +70,14 @@ contains
             print *, "Size of contents: ", tmn_contents
             print *, "Json string for real array: ", trim(realBufferBuffer)
             print *, "Json string for int array: ", trim(intBufferBuffer)
-            print*, "Shape for int array: ", shape
+            print*, "Shape buffer for array: ", shapeBuffer
+            do i = 2,len(trim(shapeBuffer))
+                if (shapeBuffer(i-1:i) == ",")then
+                    tmn_shape = tmn_shape+1
+                end if
+            end do
+            call string2intarray (shape, tmn_shape, shapeBuffer)
+            print*, "Shape of array: ", shape
 
             if(tipo_contents=="flt")then
 
@@ -92,15 +100,16 @@ contains
         print *, "intBuffer contents: ", intBuffer
         print *, "realBuffer contents: ", realBuffer
 
-        call evaluar(cliente_obj, command, var, tmn_contents, intBuffer, realBuffer, nPasos)
+        call evaluar(cliente_obj, command, var, tmn_contents, shape(1), intBuffer, realBuffer, nPasos)
 
     end subroutine recibe
 
-    subroutine evaluar (cliente_obj, orden, var, tmn_contents, intBuffer, realBuffer, nPasos)
+    subroutine evaluar (cliente_obj, orden, var, tmn_contents, shape1, intBuffer, realBuffer, nPasos)
 
         character(len = :), allocatable :: senderBuffer
         character(*) :: var, orden
-        integer :: tmn_contents, cliente_obj, nPasos, t_final
+        integer :: cliente_obj, nPasos, t_final, tmn_contents
+        integer :: shape1
         integer, dimension(tmn_contents) :: intBuffer
         real, dimension(tmn_contents) :: realBuffer
 
@@ -117,7 +126,7 @@ contains
             !No further action required
 
         elseif(trim(orden) == 'cambiar')then
-            call tomar (cliente_obj, var, tmn_contents, intBuffer, realBuffer)
+            call tomar (cliente_obj, var, tmn_contents, shape1, intBuffer, realBuffer)
 
         elseif(trim(orden) == 'leer') then
             call obtener (cliente_obj, var)
@@ -128,16 +137,19 @@ contains
         end if
     end subroutine evaluar
 
-    subroutine tomar (cliente_obj, variable_Name, variable_Length, intBuffer, realBuffer)
+    subroutine tomar (cliente_obj, variable_Name, variable_Length, shape1, intBuffer, realBuffer)
         character (*) :: variable_Name
         character(len = :), allocatable :: senderBuffer
-        integer :: variable_Length, cliente_obj, index, i
+        integer :: cliente_obj, index, i, variable_Length
+        integer :: shape1
         integer, dimension(variable_Length) :: intBuffer
         real, dimension(variable_Length) :: realBuffer
         integer :: f = 1
-        integer :: Lluvia, Bosque
 
-        index = 0
+
+        !integer, allocatable, dimension(:) :: entero, entero_negativo!***testing variable*******************************
+        !real, allocatable, dimension(:) :: decimal, decimal_negativo !***testing variable*******************************
+        !integer, allocatable,dimension(:,:,:) :: multidim !**************testing variable*******************************
 
         if (size(hru) > 1) then
             print *, "there are full hru's"
@@ -182,18 +194,29 @@ contains
             end do
             print *, "flwin: ", ch(:)%flwin
 
-        CASE("Lluvia")           !***********************************************************test variable for debugging
-            print *, "Lluvia"
-            Lluvia = int(realBuffer(1))
-            print *, "Lluvia: ", Lluvia
-
-        CASE("Bosque")          !***********************************************************test variable for debugging
-            print *, "Bosque"
-            Bosque = int(realBuffer(1))
-            print *, "Bosque: ", Bosque
-
         CASE default
-            print *, "Unknown variable: ", variable_Name
+            print *, "Unused variable: ", variable_Name
+            !----------Checking for testing variables-----------------------------!
+            select case(trim(variable_Name))
+                case("entero")
+                    allocate(entero(shape1))
+                    entero = intBuffer
+                case("decimal")
+                    allocate(decimal(shape1))
+                    decimal = realBuffer
+                case("entero negativo")
+                    allocate(entero_negativo(shape1))
+                    entero_negativo = intBuffer
+                case("decimal negativo")
+                    allocate(decimal_negativo(shape1))
+                    decimal_negativo = realBuffer
+                case("multidim")
+                    !allocate(multidim(shape))
+                    print *, "Multidimensional Arrays are not yet supported"
+                case default
+                    print *, variable_Name, " is not a testing variable, this variable is not used by the simulation."
+            end select
+
 
         end select
 

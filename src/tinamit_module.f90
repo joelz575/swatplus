@@ -559,7 +559,7 @@ contains
             allocate(intBuffer(0))
         end if
         if(shapeBuffer == "")then
-            shapeBuffer = "-1"
+            shapeBuffer = "  "
         end if
         call sendr(cliente_obj, intBuffer, floatBuffer, trim(shapeBuffer), size(intBuffer), size(floatBuffer), len(shapeBuffer))
 

@@ -525,6 +525,7 @@ void sendr_(int *client, int intSenderBuffer[], float floatSenderBuffer[], char 
 
  else{
     sprintf( valLen, "%d", sizeof(intSenderBuffer));
+    sprintf(shape, "%d", -1);
     printf("Content type: %s\n", tipo_cont);
     printf("ValLen: %s\n", valLen);
  }

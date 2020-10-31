@@ -14,7 +14,7 @@ module tinamit_module
     character(len = 3) :: cha_mode  ! 'cha' or 'sdc'
     integer, allocatable, dimension(:) :: entero(:), entero_negativo(:)!*******testing variable*******************************
     real, allocatable, dimension(:) :: decimal(:), decimal_negativo(:) !*******testing variable*******************************
-    integer, allocatable,dimension(:,:,:) :: multidim(:,:,:) !******************testing variable*******************************
+    integer, allocatable,dimension(:,:,:) :: multidim(:,:,:) !*****************testing variable*******************************
     logical dynamic
     integer :: dias = 1
     integer :: t = 0
@@ -561,6 +561,7 @@ contains
         if(shapeBuffer == "")then
             shapeBuffer = "  "
         end if
+        print *, "Int buffer is currently on line 564: ", intBuffer
         call sendr(cliente_obj, intBuffer, floatBuffer, trim(shapeBuffer), size(intBuffer), size(floatBuffer), len(shapeBuffer))
 
         call recibe(cliente_obj)

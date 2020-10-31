@@ -503,44 +503,57 @@ void sendr_(int *client, char *senderBuffer){
 
 }*/
 
-void sendr_(int *client, int intSenderBuffer[], float floatSenderBuffer[], char shape[], int *intLength, int *floatLength, int *shapeLen){
- int i, n;
+void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char shape[], int *intLength, int *floatLength, int *shapeLen){
+ int i, n,y;
  int sendRes;
  char valLen[16];
  char tipo_cont[6] = "int";
  char jsonEncabezadoString[2048];
  int jsonStringLen;
+ char intbufferBytes[sizeof(intSenderBuffer)];
 
+ sprintf(intbufferBytes, "%p", intSenderBuffer);
+ printf("These are the intbufferBytes: %s\n",intbufferBytes);
 
  printf("IntBuffer length: %d\n", *intLength);
  printf("floatBuffer length: %d\n", *floatLength);
 
  if(*floatLength != 0){
     sprintf( valLen, "%d", sizeof(floatSenderBuffer));
+    sprintf(shape, "%d", -1);
     strncpy(tipo_cont, "\0\0\0\0\0\0", 5);
     strncpy(tipo_cont, "float", 5);
     printf("Content type: %s\n", tipo_cont);
-    printf("ValLen: %s\n", valLen);
+    printf("Float ValLen: %s\n", valLen);
  }
 
  else{
+
     sprintf( valLen, "%d", sizeof(intSenderBuffer));
     sprintf(shape, "%d", -1);
     printf("Content type: %s\n", tipo_cont);
-    printf("ValLen: %s\n", valLen);
+    printf("Int ValLen: %s\n", valLen);
  }
 
  strncpy(jsonEncabezadoString, "{\"tamaño\": ", 13) ;
  strcat(jsonEncabezadoString, valLen);
  strcat(jsonEncabezadoString, ", \"tipo_cont\": \"");
  strcat(jsonEncabezadoString, tipo_cont);
- strcat(jsonEncabezadoString, "\", \"forma\": \"");
+ strcat(jsonEncabezadoString, "\", \"forma\": ");
  strcat(jsonEncabezadoString, shape);
- strcat(jsonEncabezadoString, "\"}");
+ strcat(jsonEncabezadoString, "}");
 
  printf("Content type: %s\n", tipo_cont);
  printf("Sending encabezado: %s\n", jsonEncabezadoString);
- printf("Sending int value: %s\n", intSenderBuffer);
+ for (y = 0; y<8; y++){
+    printf("Sending int value: %d\n", intSenderBuffer[y]);
+    if(y > *intLength-1){
+        intSenderBuffer[y] = 0;
+    }
+    printf("Sending int value: %d\n", intSenderBuffer[y]);
+    printf("In slot y: %d\n", y);
+ }
+
  printf("Sending float value: %s\n", floatSenderBuffer);
  fflush(stdout);
 

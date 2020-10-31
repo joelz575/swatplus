@@ -99,6 +99,5 @@
 
  1001 format (/," Execution successfully completed ")
 
-	  stop
 
       end

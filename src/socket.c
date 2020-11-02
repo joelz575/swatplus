@@ -240,6 +240,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	//printf("\n FLOAT buffer: %s", floatContBuffer);
  	//fflush( stdout );
  	//printf("\n CHAR buffer: %s", charCont);
+ 	unsigned char *trial;
  	int recvRes;
  	//printf("\nLength is: %i", *len);
  	int tmn;
@@ -309,45 +310,60 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
 
  		strncpy(tip_con, json_object_get_string(tipo_cont), 5);
 
- 		n = read(*client, &contBuffer, atoi((const char *) json_object_get_string(tamano)));
-
- 		contenido = json_tokener_parse(contBuffer);
+ 		//n = read(*client, &contBuffer, atoi((const char *) json_object_get_string(tamano)));
+        //printf("contentBuffer, %s", contBuffer);
+ 		//contenido = json_tokener_parse(contBuffer);
  		//printf("This is the matrix: %s\n", json_object_get_string(contenido));
  		//fflush( stdout );
 
- 	    *tamano_con = (int *)json_object_array_length(contenido);
+ 	    //*tamano_con = (int *)json_object_array_length(contenido);
         //printf("This is the length of the matrix: %d\n", *tamano_con);
  		//fflush( stdout );
 
- 	 	if(*tamano_con > 0){
- 	 		//printf("Received matrix of length greater than 0...");
+ 	 	if(atoi((const char *) json_object_get_string(tamano)) > 0){
+ 	 		printf("Received matrix of length greater than 0...");
  		if(strncmp(tip_con, "int", 3) == 0){
- 			//printf("It is an int");
- 			//fflush(stdout);
-			strncpy(intContBuffer, json_object_get_string(contenido), strlen(json_object_get_string(contenido)));
+
+ 			trial = malloc(atoi((const char *) json_object_get_string(tamano)) * sizeof(unsigned char));
+
+ 			printf("It is an int");
+ 			fflush(stdout);
+ 			i=0;
+			while(n>0 && i< atoi((const char *) json_object_get_string(tamano))){
+                n = read(*client, &contBuffer[i], 1);
+                trial[i] = contBuffer[i];
+                intContBuffer[i] = trial[i];
+                i+=n;
+            }
+            //strncpy(intContBuffer, json_object_get_string(contenido), strlen(json_object_get_string(contenido)));
 			strncpy(floatContBuffer, " ", 1);
- 	 		//printf("int buffer in C: %s\n", intContBuffer);
- 	 		//fflush(stdout);
+			printf("contBuffer: %s\n", contBuffer);
+			printf("trial buffer in c: %s\n", trial);
+ 	 		printf("int buffer in C: %s\n", intContBuffer);
+ 	 		fflush(stdout);
 		}
 		else if( strncmp(tip_con, "flt", 3) == 0){
-			//printf("It is a float");
- 			//fflush(stdout);
-			strncpy(floatContBuffer, json_object_get_string(contenido), strlen(json_object_get_string(contenido)));
+			printf("It is a float");
+ 			fflush(stdout);
+			for(int i = 0; i<atoi((const char *) json_object_get_string(tamano)); i++){
+                n = read(*client, &contBuffer, 1);
+                floatContBuffer[i] = contBuffer;
+            }
+			//strncpy(floatContBuffer, json_object_get_string(contenido), strlen(json_object_get_string(contenido)));
 			strncpy(intContBuffer, " ", 1);
- 	 		//printf("float buffer in C: %s\n", floatContBuffer);
- 	 		//fflush(stdout);
+ 	 		printf("float buffer in C: %s\n", floatContBuffer);
+ 	 		fflush(stdout);
 		}
 		else{
-			//printf("\n\n\n\n\nInvalid type for data transfer!!\n\n\n\n\n");
-			//printf("Note: Transfering Data of string types are not yet supported.\n");
+			printf("\n\n\n\n\nInvalid type for data transfer!!\n\n\n\n\n");
+			printf("Note: Transfering Data of string types are not yet supported.\n");
  	 		strncpy(intContBuffer, " ", 1);
  	 		strncpy(floatContBuffer, " ", 1);
 		}
 	}
  		else{
- 			//charCont = (int *)malloc(sizeof(char)*0);
- 			//printf("No data was transferred, in the exchange.");
- 			//fflush( stdout );
+ 			printf("No data was transferred, in the exchange.");
+ 			fflush( stdout );
  			strncpy(intContBuffer, " ", 1);
  	 		strncpy(floatContBuffer, " ", 1);
 		}
@@ -449,6 +465,7 @@ void jsons2intarray_(int intCont[], int *arraySize, char *jsonString){
     int g=0; //counter
     int current=2; //counter helper
     char transferSTR[15] = "000000000000000";
+
     //printf("\nInput variables are: %f, %d, %s", intCont[0], (*arraySize), jsonString);
     //fflush(stdout);
     //printf("\nString length of jsonString: %d", strlen(jsonString));
@@ -481,6 +498,21 @@ void jsons2intarray_(int intCont[], int *arraySize, char *jsonString){
         //fflush(stdout);
         }
 }
+void byte2intarray_(int *intCont, int *arraySize, char *byteString){
+    int i=0; //counter
+
+    printf("byte string: %s", byteString);
+    printf("sizeof(intCont): %d", sizeof(intCont));
+    fflush(stdout);
+
+    for (i = 0; i<sizeof(intCont); i++){
+        printf("Int value @ %d: %d\n",i, intCont[i]);
+        intCont[i] = byteString[i];
+        printf("Int value @ %d: %d\n",i, intCont[i]);
+        printf("In slot i: %d\n", i);
+    }
+
+}
 /*
 void sendr_(int *client, char *senderBuffer){
 
@@ -504,7 +536,7 @@ void sendr_(int *client, char *senderBuffer){
 }*/
 
 void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char shape[], int *intLength, int *floatLength, int *shapeLen){
- int i, n,y;
+ int i,n,y;
  int sendRes;
  char valLen[16];
  char tipo_cont[6] = "int";
@@ -545,7 +577,7 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
 
  printf("Content type: %s\n", tipo_cont);
  printf("Sending encabezado: %s\n", jsonEncabezadoString);
- for (y = 0; y<8; y++){
+ for (y = 0; y<sizeof(intSenderBuffer); y++){
     printf("Sending int value: %d\n", intSenderBuffer[y]);
     if(y > *intLength-1){
         intSenderBuffer[y] = 0;

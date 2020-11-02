@@ -49,11 +49,11 @@ contains
         character(len = 7) :: command
         character(len = 10) :: var = "          "
         character(len = 5) :: tipo_contents
-        integer :: tmn_contents, nPasos, i, tmn_shape
+        integer :: tmn_contents, nPasos, i, tmn_shape, shape
         character(len = 20) :: shapeBuffer = "                    "
         character(len = MAX_BUFFER_LEN):: realBufferBuffer, intBufferBuffer
         real, allocatable, dimension(:) :: realBuffer(:)
-        integer, allocatable, dimension(:) :: intBuffer(:), shape(:)
+        integer, allocatable, dimension(:) :: intBuffer(:)
 
         print *, "About to Recieve..."
 
@@ -76,18 +76,23 @@ contains
                     tmn_shape = tmn_shape+1
                 end if
             end do
-            call string2intarray (shape, tmn_shape, shapeBuffer)
+            print *, "size for shape is: ", tmn_shape
+            !allocate(shape(1))
+            !call string2intarray (shape, tmn_shape, shapeBuffer)
+            shape = 5
             print*, "Shape of array: ", shape
 
             if(tipo_contents=="flt")then
+                print *, "about to allocate realBuffer"
+                allocate(realBuffer(shape))
+                call jsons2fltarray (realBuffer, shape, trim(realBufferBuffer))
 
-                allocate(realBuffer(tmn_contents))
-                call jsons2fltarray (realBuffer, tmn_contents, trim(realBufferBuffer))
-
-            elseif(tipo_contents=="int")then
-
-                allocate(intBuffer(tmn_contents))
-                call jsons2intarray (intBuffer, tmn_contents, trim(intBufferBuffer))
+            elseif(tipo_contents=="int".or.tipo_contents=="int64")then
+                print *, "about to allocate intBuffer"
+                allocate(intBuffer(shape))
+                print *, "allocated intBuffer, about to fill it, shape is: ", shape, ", intBuffer is: ", intBuffer, ", intBufferBuffer is: ", trim(intBufferBuffer)
+                call byte2intarray(intBuffer, shape, trim(intBufferBuffer))
+                !call jsons2intarray (intBuffer, shape, trim(intBufferBuffer))
 
             end if
 
@@ -100,7 +105,7 @@ contains
         print *, "intBuffer contents: ", intBuffer
         print *, "realBuffer contents: ", realBuffer
 
-        call evaluar(cliente_obj, command, var, tmn_contents, shape(1), intBuffer, realBuffer, nPasos)
+        call evaluar(cliente_obj, command, var, tmn_contents, shape, intBuffer, realBuffer, nPasos)
 
     end subroutine recibe
 

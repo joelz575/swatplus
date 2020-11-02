@@ -4,7 +4,7 @@ from unittest import TestCase
 
 import numpy.testing as npt
 
-from .ejemplo_cliente import datos ####SELBER SCHREIBEN
+from .ejemplo_cliente import datos
 from tinamit.idm.puertos import IDMEnchufes
 
 t_final = 731
@@ -37,6 +37,7 @@ class PruebaIDM(TestCase):
             with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
                 símismo._empezar_cliente(servidor.dirección, servidor.puerto)
                 servidor.activar()
+                print("going to send this data: ", dts)
                 servidor.cambiar('var', dts)
 
                 recibido = servidor.recibir('var')

@@ -34,3 +34,6 @@ For instance, when in the SWAT+ project directory, running
 `$ SwatPlus -d 12345`
 
 will execute SWAT+ in dynamic mode on port `12345`.
+
+## License
+The license provided here, naturally, only applies to our original work on DynamicSWAT+ (such as `src/CMakeLists.txt`, `src/tinamit_module.f90` and `src/socket.c`) and not to the rest of the original SWAT+ code. For information on SWAT+ code licensing, please contact the SWAT+ team directly.

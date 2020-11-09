@@ -1,3 +1,1 @@
- Trial_Robit               SWAT+ Oct 10 2019    MODULAR Rev 2019.60.1                                     
-  jday   mon   day    yr    unit  gis_id     name         grzn        grzp        lab_min_p        act_sta_p            fertn            fertp             fixn            denit        act_nit_n        act_sta_n        org_lab_p     rsd_nitorg_n     rsd_laborg_p          no3atmo          nh4atmo
-                                                          kgha        kgha             kgha             kgha             kgha             kgha             kgha             kgha             kgha             kgha             kgha             kgha             kgha             kgha             kgha
+ Trial_Robit               SWAT+ Feb 26 2020    MODULAR Rev 2020.60.2                                     

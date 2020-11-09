@@ -1,3 +1,1 @@
- Trial_Robit               SWAT+ Oct 10 2019    MODULAR Rev 2019.60.1                                     
-        jday         mon         day          yr name                            flo            sed           orgn           sedp            no3           solp           chla            nh3            no2           cbod            dox            san            sil            cla            sag            lag            grv           temp
-                                                                               m^3/s          mtons            kgN            kgP            kgN            kgP             kg            kgN            kgN             kg             kg           tons           tons           tons           tons           tons           tons           degc
+ Trial_Robit               SWAT+ Feb 26 2020    MODULAR Rev 2020.60.2                                     

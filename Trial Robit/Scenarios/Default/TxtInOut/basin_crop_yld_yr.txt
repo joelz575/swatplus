@@ -1,2 +1,1 @@
- Trial_Robit               SWAT+ Oct 10 2019    MODULAR Rev 2019.60.1                                     
-       year     plant_no   plant_name       harv_area(ha)    yld(t)         yld(t/ha)      
+ Trial_Robit               SWAT+ Feb 26 2020    MODULAR Rev 2020.60.2                                     

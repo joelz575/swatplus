@@ -1,3 +1,1 @@
- Trial_Robit               SWAT+ Oct 10 2019    MODULAR Rev 2019.60.1                                     
-                                                                            --YIELD (kg/ha)--
-  jday   mon   day    yr    unit PLANTNM                         MASS          C           N           P
+ Trial_Robit               SWAT+ Feb 26 2020    MODULAR Rev 2020.60.2                                     

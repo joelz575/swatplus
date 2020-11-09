@@ -60,7 +60,7 @@ contains
         intBufferBuffer = " "
         realBufferBuffer = " "
         tmn_shape = 1
-        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, nPasos, intBufferBuffer, realBufferBuffer, shapeBuffer) !charBuffer
+        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, nPasos, shapeBuffer) !charBuffer
 
         print *, "Cliente Obj: ", cliente_obj
         print *, "Command: ", command
@@ -68,8 +68,6 @@ contains
             print *, "Variable Name: ", var
             print *, "Content Data Type: ", tipo_contents
             print *, "Size of contents: ", tmn_contents
-            print *, "Json string for real array: ", trim(realBufferBuffer)
-            print *, "Json string for int array: ", trim(intBufferBuffer)
             print*, "Shape buffer for array: ", shapeBuffer
             do i = 2,len(trim(shapeBuffer))
                 if (shapeBuffer(i-1:i) == ",")then
@@ -85,13 +83,13 @@ contains
             if(tipo_contents=="flt")then
                 print *, "about to allocate realBuffer"
                 allocate(realBuffer(shape))
-                call jsons2fltarray (realBuffer, shape, trim(realBufferBuffer))
+                call recvfloat (cliente_obj, realBuffer, shape)
 
             elseif(tipo_contents=="int".or.tipo_contents=="int64")then
                 print *, "about to allocate intBuffer"
                 allocate(intBuffer(shape))
                 print *, "allocated intBuffer, about to fill it, shape is: ", shape, ", intBuffer is: ", intBuffer, ", intBufferBuffer is: ", trim(intBufferBuffer)
-                call byte2intarray(intBuffer, shape, trim(intBufferBuffer))
+                call recvint (cliente_obj, intBuffer, shape)
                 !call jsons2intarray (intBuffer, shape, trim(intBufferBuffer))
 
             end if

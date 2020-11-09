@@ -1,3 +1,1 @@
- Trial_Robit               SWAT+ Oct 10 2019    MODULAR Rev 2019.60.1                                     
-   jday   mon   day    yr   unit  gis_id  name                     lai       bioms       yield     residue     sol_tmp       strsw       strsa     strstmp       strsn       strsp        nplt       percn       pplnt         tmx         tmn       tmpav     solarad      wndspd        rhum     phubas0
-                                                             m**2/m**2        kgha        kgha        kgha        degc         ---         ---         ---         ---         ---        kgha        kgha        kgha        degc        degc        degc      mj/m^2         m/s        frac        degc
+ Trial_Robit               SWAT+ Feb 26 2020    MODULAR Rev 2020.60.2                                     

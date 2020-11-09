@@ -96,7 +96,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 
 void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *tamano_con, int *pasos, char shape[]){
  #ifdef _WIN32
- 	/*Cuando tenga una connexión exitosa, podemos recibir datos del socket.
+ 	Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	int recvRes;
  	int n;
 	char blankBuffer;
@@ -115,56 +115,6 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
 
  	n = recv(*client, json_header, ((int) blankBuffer), 0);
 
- 	parsed_json = json_tokener_parse(json_header);
-
- 	json_object_object_get_ex(parsed_json, "orden", &orden);
- 	json_object_object_get_ex(parsed_json, "tamaño", &tamano);
- 	json_object_object_get_ex(parsed_json, "var", &var);
- 	json_object_object_get_ex(parsed_json, "matr", &matr);
- 	json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
-	command = json_object_get_string(orden);
-
- 	if(strncmp(command, "TOMAR_", 6) == 0){
- 		var_nombre = json_object_get_string(var);
-
- 		tip_con = json_object_get_string(tipo_cont);
-
- 		recv(*client, contBuffer, 20000, 0);
- 		contenido = json_tokener_parse(contBuffer);
- 		*tamano_con = (int *)json_object_array_length(contenido);
-
- 	 	if(*tamano_con > 0){
- 			if(strncmp(tip_con, "int", 3) == 0){
- 			tip_con = 'i';
-			//intCont = (int *)malloc(sizeof(int)*((int) *tamano_con));
- 	 		//charCont = (int *)malloc(sizeof(char)*0);
- 	 		//floatCont = (int *)malloc(sizeof(double)*0);
- 	 		//*intCont = (int *) json_object_get_array(contenido);
-		    }
-		    else if( strncmp(tip_con, "flt", 3) == 0){
-			tip_con = 'f';
-			floatCont = (int *)malloc(sizeof(double)*((int)*tamano_con));
- 	 		//charCont = (int *)malloc(sizeof(char)*0);
- 	 		intCont = (int *)malloc(sizeof(int)*0);
-			*floatCont = (int *) json_object_get_array(contenido);
-			printf("Json Object to array: %f", json_object_get_array(contenido)[0]);
-			//for(i = 0; i < *tamano_con; i++){
-			//	floatCont[i] = json_object_array_
-			//}
-			//memcpy(floatCont, json_object_get_array(contenido), *tamano_con+1);
-		    }
-	    else{
-		    intCont = (int *)malloc(sizeof(int)*0);
- 		    floatCont = (int *)malloc(sizeof(double)*0);
-		}
-	}
- 		else{
- 			intCont = (int *)malloc(sizeof(int)*0);
- 			floatCont = (int *)malloc(sizeof(double)*0);
-		}
-
- 	}
-*/
  #else
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
 
@@ -174,7 +124,6 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	int i;
  	char tipo_contenido;
 	char blankBuffer;
- 	char contBuffer[20000];
  	struct json_object *parsed_json;
  	struct json_object *orden;
  	struct json_object *tamano;
@@ -186,30 +135,15 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	struct json_object *forma;
  	char json_header[2000];
 
-	//printf("Just before receive line...\n");
-	//fflush( stdout );
-
 	n = read(*client, &blankBuffer, 4);
-    //printf("Size accoring to n variable: %d\n", n);
-	//fflush( stdout );
-	//printf("Size according to blank Buffer: %d\n", (int)blankBuffer);
-	//fflush( stdout );
 
  	n = read(*client, &json_header, (int) blankBuffer);
- 	//printf("Receive Results from json_header: %i\n", n);
- 	//fflush( stdout );
- 	//printf("Received json-header: %s\n", json_header);
- 	//fflush( stdout );
-
+ #endif
  	parsed_json = json_tokener_parse(json_header);
- 	//printf("Parsed json: %s", json_object_get_string(parsed_json));
- 	//fflush( stdout );
+
  	json_object_object_get_ex(parsed_json, "tipo", &orden);
     strncpy(command, "       ", 7);
 	strncpy(command, json_object_get_string(orden), strlen(json_object_get_string(orden)));
- 	//printf("Received Command: %s\n", command);
- 	//fflush( stdout );
-
 
  	if(strncmp(command, "cambiar", 7) == 0){
  	    printf("Command: %s\n", json_object_get_string(orden));
@@ -218,9 +152,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	    json_object_object_get_ex(parsed_json, "tamaño", &tamano);
 
  	    json_object_object_get_ex(parsed_json, "var", &var);
- 	    printf("strlen(json_object_get_string(var)): %d\n", strlen(json_object_get_string(var)));
-        strncpy(var_nombre, "                     ", strlen(var_nombre));
-
+ 	    strncpy(var_nombre, "                     ", strlen(var_nombre));
         strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
 
  	    json_object_object_get_ex(parsed_json, "forma", &forma);
@@ -228,34 +160,25 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	    strncpy(shape, json_object_get_string(forma), strlen(json_object_get_string(forma)));
 
  	    json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
- 		printf("Received Variable: %s\n", var_nombre);
- 		printf("Tipo contenido: %s\n", json_object_get_string(tipo_cont));
+
  		tmn = atoi((const char *) json_object_get_string(tamano));
- 		printf("Tamano: %d\n", tmn);
- 		printf("Shape of received variable: %s\n", shape);
- 		fflush( stdout );
+
  		strncpy(tip_con, json_object_get_string(tipo_cont), 5);
  	}
  	else if(strncmp(command, "incr  ", 4) == 0){
  	       printf("incr was received\n");
- 	       fflush(stdout);
  	       json_object_object_get_ex(parsed_json, "n_pasos", &n_pasos);
  	       *pasos = atoi(json_object_get_string(n_pasos));
  	}
  	else if(strncmp(command, "cerrar", 6) == 0){
  	        printf("cerrar was received");
- 	        fflush(stdout);
  	}
  	else if(strncmp(command, "leer  ", 4) == 0){
  	        printf("leer was received");
- 	        fflush(stdout);
  	        json_object_object_get_ex(parsed_json, "var", &var);
- 	        printf("strlen(json_object_get_string(var)): %d", strlen(json_object_get_string(var)));
-            strncpy(var_nombre, "                              ", strlen(var_nombre));
-            //memset(var_nombre, '\0', sizeof(var_nombre));
+ 	        strncpy(var_nombre, "                              ", strlen(var_nombre));
             strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
  	}
- #endif
 }
 
 void recvint_(int *client, int *intCont, int *arraySize){
@@ -301,7 +224,6 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
     sprintf(shape, "%d", -1);
     strncpy(tipo_cont, "\0\0\0\0\0\0", 5);
     strncpy(tipo_cont, "float", 5);
-    printf("Content type: %s\n", tipo_cont);
     printf("Float ValLen: %s\n", valLen);
  }
 
@@ -309,7 +231,6 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
 
     sprintf( valLen, "%d", sizeof(intSenderBuffer));
     sprintf(shape, "%d", -1);
-    printf("Content type: %s\n", tipo_cont);
     printf("Int ValLen: %s\n", valLen);
  }
 
@@ -321,10 +242,8 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
  strcat(jsonEncabezadoString, shape);
  strcat(jsonEncabezadoString, "}");
 
- printf("Content type: %s\n", tipo_cont);
  printf("Sending encabezado: %s\n", jsonEncabezadoString);
  for (y = 0; y<sizeof(intSenderBuffer); y++){
-    printf("Sending int value: %d\n", intSenderBuffer[y]);
     if(y > *intLength-1){
         intSenderBuffer[y] = 0;
     }
@@ -340,9 +259,6 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
 
  sendRes = send(*client, &i, sizeof (i), 0);
 
- printf("Send Result: %d\n", sendRes);
- fflush(stdout);
-
  if (sendRes==-1){
 	printf("send failed...");
     }
@@ -353,8 +269,6 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
 #endif
 
  sendRes = send(*client, (char *)jsonEncabezadoString, strlen(jsonEncabezadoString),0);
- printf("Send Result: %d\n", sendRes);
- fflush(stdout);
 
  if (sendRes==-1){
 	printf("send failed...");
@@ -367,13 +281,9 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
 #endif
  if(strncmp(tipo_cont, "float", 5)==0){
     sendRes = send(*client, floatSenderBuffer, sizeof(floatSenderBuffer), 0);
-    printf("Float content Send Result: %d\n", sendRes);
-    fflush(stdout);
     }
  else{
     sendRes = send(*client, intSenderBuffer, sizeof(intSenderBuffer), 0);
-    printf("Int content Send Result: %d\n", sendRes);
-    fflush(stdout);
  }
  if (sendRes==-1){
 	printf("send failed...");

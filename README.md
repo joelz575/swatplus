@@ -5,7 +5,7 @@ A SWAT+ Model repository (almost) clone.
 [![Build Status](https://travis-ci.com/joelz575/swatplus.svg?branch=master)](https://travis-ci.com/joelz575/swatplus)
 
 This repository is (mostly) a clone of the official SWAT+ one available [here](https://bitbucket.org/blacklandgrasslandmodels/modular_swatplus/src/master/). A few major differences are:
-* We only store source code in the git repository. This means that documentation, compiled executables, and example data are **not** included. It also means that you will not download a git repo over 1 GB in size when you clone it.
+* We only store source code in the git repository. This means that documentation, compiled executables, and example data are **not** included. It also means that you will not accidently download a git repo over 1 GB in size when you try to clone it.
 * Releases for MacOS, Windows and Linux are all automatically compiled and published in the releases tab (magic!)
 * Added option for dynamic model linking (documentation to follow)
 
@@ -34,3 +34,6 @@ For instance, when in the SWAT+ project directory, running
 `$ SwatPlus -d 12345`
 
 will execute SWAT+ in dynamic mode on port `12345`.
+
+## License
+The AGPL license provided here, naturally, only applies to our original work on DynamicSWAT+ (such as `src/CMakeLists.txt`, `src/tinamit_module.f90` and `src/socket.c`) and not to the rest of the original SWAT+ code. For information on SWAT+ code licensing, please contact the SWAT+ team directly.

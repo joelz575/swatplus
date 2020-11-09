@@ -49,8 +49,7 @@ contains
         character(len = 7) :: command
         character(len = 10) :: var = "          "
         character(len = 5) :: tipo_contents
-        integer :: tmn_contents, nPasos, i, tmn_shape, shape
-        character(len = 20) :: shapeBuffer = "                    "
+        integer :: tmn_contents, nPasos, i, shape
         character(len = MAX_BUFFER_LEN):: realBufferBuffer, intBufferBuffer
         real, allocatable, dimension(:) :: realBuffer(:)
         integer, allocatable, dimension(:) :: intBuffer(:)
@@ -60,24 +59,13 @@ contains
         intBufferBuffer = " "
         realBufferBuffer = " "
         tmn_shape = 1
-        call receive (cliente_obj, command, var, tipo_contents, tmn_contents, nPasos, shapeBuffer) !charBuffer
+        call receive (cliente_obj, command, var, tipo_contents, nPasos, shape) !charBuffer
 
         print *, "Cliente Obj: ", cliente_obj
         print *, "Command: ", command
         if (command == "cambiar")then
             print *, "Variable Name: ", var
             print *, "Content Data Type: ", tipo_contents
-            print *, "Size of contents: ", tmn_contents
-            print*, "Shape buffer for array: ", shapeBuffer
-            do i = 2,len(trim(shapeBuffer))
-                if (shapeBuffer(i-1:i) == ",")then
-                    tmn_shape = tmn_shape+1
-                end if
-            end do
-            print *, "size for shape is: ", tmn_shape
-            !allocate(shape(1))
-            !call string2intarray (shape, tmn_shape, shapeBuffer)
-            shape = 5
             print*, "Shape of array: ", shape
 
             if(tipo_contents=="flt")then

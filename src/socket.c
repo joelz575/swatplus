@@ -94,12 +94,13 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 #endif
 }
 
-void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *tamano_con, int *pasos, char shape[]){
+void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *pasos, int *shape){
  #ifdef _WIN32
  	Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	int recvRes;
  	int n;
 	char blankBuffer;
+	char *shapeBuffer;
  	char contBuffer[20000];
  	struct json_object *parsed_json;
  	struct json_object *orden;
@@ -124,6 +125,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	int i;
  	char tipo_contenido;
 	char blankBuffer;
+	char *shapeBuffer;
  	struct json_object *parsed_json;
  	struct json_object *orden;
  	struct json_object *tamano;
@@ -156,8 +158,11 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
         strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
 
  	    json_object_object_get_ex(parsed_json, "forma", &forma);
- 	    strncpy(shape, "                      ", strlen(shape));
- 	    strncpy(shape, json_object_get_string(forma), strlen(json_object_get_string(forma)));
+ 	    printf("\n\n\n\nforma: %s\n\n\n\n\n\n\n", json_object_get_string(forma));
+ 	    shapeBuffer = malloc((strlen(json_object_get_string(forma))-2) * sizeof *shapeBuffer);
+ 	    strncpy(shapeBuffer, json_object_get_string(forma)+1, strlen(json_object_get_string(forma))-2);
+ 	    *shape = atoi(shapeBuffer);
+ 	    printf("shape: ", *shape);
 
  	    json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
 

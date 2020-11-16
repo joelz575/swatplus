@@ -76,7 +76,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
         //return -1;
     }
  else{
-    printf("This is the client in C: %d\n", client);
+    printf("This is the client in C: %ls\n", client);
  }
  serv_addr.sin_family = AF_INET;
  serv_addr.sin_port = htons(portNumber);
@@ -162,7 +162,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	    shapeBuffer = malloc((strlen(json_object_get_string(forma))-2) * sizeof *shapeBuffer);
  	    strncpy(shapeBuffer, json_object_get_string(forma)+1, strlen(json_object_get_string(forma))-2);
  	    *shape = atoi(shapeBuffer);
- 	    printf("shape: ", *shape);
+ 	    printf("shape: %d", *shape);
 
  	    json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
 
@@ -213,7 +213,7 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
  int i,n,y;
  int sendRes;
  char valLen[16];
- char tipo_cont[6] = "int";
+ char tipo_cont[6] = "int32";
  char jsonEncabezadoString[2048];
  int jsonStringLen;
  char intbufferBytes[sizeof(intSenderBuffer)];
@@ -234,7 +234,7 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
 
  else{
 
-    sprintf( valLen, "%d", sizeof(intSenderBuffer));
+    sprintf( valLen, "%d", sizeof(int)* (*intLength));
     sprintf(shape, "%d", -1);
     printf("Int ValLen: %s\n", valLen);
  }
@@ -248,7 +248,7 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
  strcat(jsonEncabezadoString, "}");
 
  printf("Sending encabezado: %s\n", jsonEncabezadoString);
- for (y = 0; y<sizeof(intSenderBuffer); y++){
+ for (y = 0; y<(sizeof(int)* (*intLength)); y++){
     if(y > *intLength-1){
         intSenderBuffer[y] = 0;
     }
@@ -256,7 +256,7 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
     printf("In slot y: %d\n", y);
  }
 
- printf("Sending float value: %s\n", floatSenderBuffer);
+ printf("Sending float value: %f\n", floatSenderBuffer);
  fflush(stdout);
 
  i = strlen(jsonEncabezadoString);
@@ -288,7 +288,7 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
     sendRes = send(*client, floatSenderBuffer, sizeof(floatSenderBuffer), 0);
     }
  else{
-    sendRes = send(*client, intSenderBuffer, sizeof(intSenderBuffer), 0);
+    sendRes = send(*client, intSenderBuffer, (sizeof(int)* (*intLength)), 0);
  }
  if (sendRes==-1){
 	printf("send failed...");

@@ -14,17 +14,15 @@ module tinamit_module
     character(len = 3) :: cha_mode  ! 'cha' or 'sdc'
     integer, allocatable, dimension(:) :: entero(:), entero_negativo(:)!*******testing variable*******************************
     real, allocatable, dimension(:) :: decimal(:), decimal_negativo(:) !*******testing variable*******************************
-    integer, allocatable,dimension(:,:,:) :: multidim(:,:,:) !*****************testing variable*******************************
     logical dynamic
     integer :: dias = 1
     integer :: t = 0
 contains
 
-    subroutine abre (arg1, arg2, cliente_obj)
+    subroutine abre (arg1, arg2)
 
         character(len = 32), intent(in) :: arg1, arg2
         character(len = 256) :: host_num
-        integer cliente_obj
         integer :: port_num
 
         host_num = arg2
@@ -36,18 +34,13 @@ contains
         write(*, *) 'Opening Socket now...'
         CAll opensocket(port_num, host_num, cliente_obj)
         print *, "cliente_obj=", cliente_obj
-        !print *, "calibration is running...."
-
-        !calling recibe to obtain initial values
-        !call recibe(cliente_obj)
 
     end subroutine
 
-    subroutine recibe (cliente_obj)
-        integer cliente_obj
+    subroutine recibe ()
         !character, dimension(:, :), allocatable :: charBuffer
         character(len = 7) :: command
-        character(len = 10) :: var = "          "
+        character(len = 15) :: var = "               "
         character(len = 5) :: tipo_contents
         integer :: tmn_contents, nPasos, i, shape
         character(len = MAX_BUFFER_LEN):: realBufferBuffer, intBufferBuffer
@@ -91,18 +84,18 @@ contains
         print *, "intBuffer contents: ", intBuffer
         print *, "realBuffer contents: ", realBuffer
 
-        call evaluar(cliente_obj, command, var, tmn_contents, shape, intBuffer, realBuffer, nPasos)
+        call evaluar(command, var, shape, intBuffer, realBuffer, nPasos)
 
     end subroutine recibe
 
-    subroutine evaluar (cliente_obj, orden, var, tmn_contents, shape1, intBuffer, realBuffer, nPasos)
+    subroutine evaluar (orden, var, shape, intBuffer, realBuffer, nPasos)
 
         character(len = :), allocatable :: senderBuffer
         character(*) :: var, orden
-        integer :: cliente_obj, nPasos, t_final, tmn_contents
-        integer :: shape1
-        integer, dimension(tmn_contents) :: intBuffer
-        real, dimension(tmn_contents) :: realBuffer
+        integer :: nPasos, t_final
+        integer :: shape
+        integer, dimension(shape) :: intBuffer
+        real, dimension(shape) :: realBuffer
 
         print *, "Command: ", orden
 
@@ -116,11 +109,12 @@ contains
             print *, "Number of Passes: ", nPasos
             !No further action required
 
-        elseif(trim(orden) == 'cambiar')then
-            call tomar (cliente_obj, var, tmn_contents, shape1, intBuffer, realBuffer)
+        elseif(orden == 'cambiar')then
+            call tomar (var, shape, intBuffer, realBuffer)
 
-        elseif(trim(orden) == 'leer') then
-            call obtener (cliente_obj, var)
+        elseif(orden == 'leer') then
+            print *, "In evaluar"
+            call obtener (var)
 
         else
             print *, "The command: ", trim(orden), "is not recognized"
@@ -128,13 +122,13 @@ contains
         end if
     end subroutine evaluar
 
-    subroutine tomar (cliente_obj, variable_Name, variable_Length, shape1, intBuffer, realBuffer)
+    subroutine tomar (variable_Name, shape, intBuffer, realBuffer)
         character (*) :: variable_Name
         character(len = :), allocatable :: senderBuffer
-        integer :: cliente_obj, index, i, variable_Length
-        integer :: shape1
-        integer, dimension(variable_Length) :: intBuffer
-        real, dimension(variable_Length) :: realBuffer
+        integer :: index, i
+        integer :: shape
+        integer, dimension(shape) :: intBuffer
+        real, dimension(shape) :: realBuffer
         integer :: f = 1
 
 
@@ -190,16 +184,16 @@ contains
             !----------Checking for testing variables-----------------------------!
             select case(trim(variable_Name))
                 case("entero")
-                    allocate(entero(shape1))
+                    allocate(entero(shape))
                     entero = intBuffer
                 case("decimal")
-                    allocate(decimal(shape1))
+                    allocate(decimal(shape))
                     decimal = realBuffer
                 case("entero negativo")
-                    allocate(entero_negativo(shape1))
+                    allocate(entero_negativo(shape))
                     entero_negativo = intBuffer
                 case("decimal negativo")
-                    allocate(decimal_negativo(shape1))
+                    allocate(decimal_negativo(shape))
                     decimal_negativo = realBuffer
                 case("multidim")
                     !allocate(multidim(shape))
@@ -211,12 +205,11 @@ contains
 
         end select
 
-        call recibe(cliente_obj)
+        call recibe()
     end subroutine tomar
 
-    subroutine obtener (cliente_obj, varNombre)
+    subroutine obtener (varNombre)
         character(*) :: varNombre
-        integer :: cliente_obj
         logical :: warning = .FALSE.
         character(len = :), allocatable :: senderBuffer, shapeBuffer
         integer, dimension(:), allocatable :: intBuffer
@@ -225,7 +218,7 @@ contains
         senderBuffer = ""
         shapeBuffer = ""
 
-
+        print *, "Var nombre in obtener: ", varNombre
         select case (trim(varNombre))
 
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
@@ -533,9 +526,30 @@ contains
         CASE("bactlp")
 
         CASE default
-            !temporary section for debugging
-            intBuffer = Lluvia
-            print *, "Unknown variable: ", varNombre, " sending Lluvia data"
+            print *, "Unknown variable: ", varNombre, " checking whether it is a testing variable..."
+            !----------Checking for testing variables-----------------------------!
+            select case(trim(varNombre))
+                case("entero")
+                    print *, 'Testing variable entero detected: ', entero
+                    allocate(intBuffer(size(entero)))
+                    intBuffer = entero
+                case("decimal")
+                    print *, 'Testing variable decimal detected: ', decimal
+                    allocate(floatBuffer(size(decimal)))
+                    floatBuffer = decimal
+                case("entero negativo")
+                    print *, 'Testing variable entero_negativo detected: ', entero_negativo
+                    allocate(intBuffer(size(entero_negativo)))
+                    intBuffer = entero_negativo
+                case("decimal negativo")
+                    print *, 'Testing variable decimal_negativo detected: ', decimal_negativo
+                    allocate(floatBuffer(size(decimal_negativo)))
+                    floatBuffer = decimal_negativo
+                case("multidim")
+                    print *, "Multidimensional Arrays are not yet supported"
+                case default
+                    print *, variable_Name, " is not a testing variable and this variable is not used by the simulation."
+            end select
         end select
 
         if(warning)then
@@ -555,7 +569,7 @@ contains
         print *, "Int buffer is currently on line 564: ", intBuffer
         call sendr(cliente_obj, intBuffer, floatBuffer, trim(shapeBuffer), size(intBuffer), size(floatBuffer), len(shapeBuffer))
 
-        call recibe(cliente_obj)
+        call recibe()
 
     end subroutine obtener
 

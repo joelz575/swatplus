@@ -145,7 +145,7 @@
               dias = dias-1
               print *, "Dias in time_control: ", dias
               if (dias==0) then
-                    call recibe(cliente_obj)
+                    call recibe()
                 end if
             end if
           t=t+1 !!<-------------------------------------------keeping track of the number of days of the simulation

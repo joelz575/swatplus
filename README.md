@@ -24,16 +24,16 @@ Unfortunately, SWAT+ has a lot of internal state variables (such as water balanc
 to output files, nor can be specified in input files...
 
 That is why Dynamic SWAT+ was invented. Run normally, it behaves exactly like SWAT+ (we hope).
-However, by specifying the `-d` option at runtime, you can now tell SWAT+ to pause after a specific
+However, by specifying `port` and `host` arguments at runtime, you can now tell SWAT+ to pause after a specific
 amount of time and exchange data with a different model according to the `Tinamït` data
 exchange specification (disclaimer: in progress). When the model is given the signal
 to continue, simulation will resume exactly where it left off.
 
 For instance, when in the SWAT+ project directory, running
 
-`$ SwatPlus -d 12345`
+`$ SwatPlus 12345 127.0.0.1`
 
-will execute SWAT+ in dynamic mode on port `12345`.
+will execute SWAT+ in dynamic mode on port `12345` on the local machine.
 
 ## License
 The AGPL license provided here, naturally, only applies to our original work on DynamicSWAT+ (such as `src/CMakeLists.txt`, `src/tinamit_module.f90` and `src/socket.c`) and not to the rest of the original SWAT+ code. For information on SWAT+ code licensing, please contact the SWAT+ team directly.

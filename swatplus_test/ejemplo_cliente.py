@@ -10,8 +10,8 @@ datos = {
     'entero': np.arange(5, dtype=int),
     'decimal': np.arange(0, 5, 0.5),
     'entero negativo': np.arange(-5, 5, dtype=int),
-    'decimal negativo': np.arange(-5, 5, 0.5),
-    'multidim': np.arange(2 * 3 * 5).reshape((2, 3, 5))
+    'decimal negativo': np.arange(-5, 5, 0.5)#,
+    #'multidim': np.arange(2 * 3 * 5).reshape((2, 3, 5))
 }
 
 

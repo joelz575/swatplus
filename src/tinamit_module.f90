@@ -40,17 +40,14 @@ contains
     subroutine recibe ()
         !character, dimension(:, :), allocatable :: charBuffer
         character(len = 7) :: command
-        character(len = 15) :: var = "               "
+        character(len = 16) :: var = "                "
         character(len = 5) :: tipo_contents
         integer :: tmn_contents, nPasos, i, shape
-        character(len = MAX_BUFFER_LEN):: realBufferBuffer, intBufferBuffer
         real, allocatable, dimension(:) :: realBuffer(:)
         integer, allocatable, dimension(:) :: intBuffer(:)
 
         print *, "About to Recieve..."
 
-        intBufferBuffer = " "
-        realBufferBuffer = " "
         tmn_shape = 1
         call receive (cliente_obj, command, var, tipo_contents, nPasos, shape) !charBuffer
 
@@ -61,7 +58,7 @@ contains
             print *, "Content Data Type: ", tipo_contents
             print*, "Shape of array: ", shape
 
-            if(tipo_contents=="flt")then
+            if(tipo_contents=="float")then
                 print *, "about to allocate realBuffer"
                 allocate(realBuffer(shape))
                 call recvfloat (cliente_obj, realBuffer, shape)
@@ -69,9 +66,7 @@ contains
             elseif(tipo_contents=="int".or.tipo_contents=="int64")then
                 print *, "about to allocate intBuffer"
                 allocate(intBuffer(shape))
-                print *, "allocated intBuffer, about to fill it, shape is: ", shape, ", intBuffer is: ", intBuffer, ", intBufferBuffer is: ", trim(intBufferBuffer)
                 call recvint (cliente_obj, intBuffer, shape)
-                !call jsons2intarray (intBuffer, shape, trim(intBufferBuffer))
 
             end if
 
@@ -566,7 +561,6 @@ contains
         if(shapeBuffer == "")then
             shapeBuffer = "  "
         end if
-        print *, "Int buffer is currently on line 564: ", intBuffer
         call sendr(cliente_obj, intBuffer, floatBuffer, trim(shapeBuffer), size(intBuffer), size(floatBuffer), len(shapeBuffer))
 
         call recibe()

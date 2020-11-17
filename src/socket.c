@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <float.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -187,48 +188,57 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
 }
 
 void recvint_(int *client, int *intCont, int *arraySize){
-    int64_t int64Buffer [*arraySize];
-    int n;
-    int i;
+    int64_t int64Cont [*arraySize];
+    int n, i;
     int tmn = *arraySize * sizeof(int64_t);
-    n = recv(*client, &int64Buffer, tmn, 0 );
+    n = recv(*client, &int64Cont, tmn, 0 );
    for(i = 0; i<*arraySize; i++){
-        if (int64Buffer[i]-INT_MIN <= (int64_t)INT_MAX-INT_MIN){
-           intCont[i] = int64Buffer[i];
+        if (int64Cont[i]-INT_MIN <= (int64_t)INT_MAX-INT_MIN){
+           intCont[i] = int64Cont[i];
             }
         else{
-            printf("Error transferring int values, probably too large\n");
+            printf("Error transferring int values, int values probably out of bounds for C int\n");
             printf("The error occured in the slot: %d\n", i);
         }
     }
 }
 
 void recvfloat_(int *client, float *floatCont, int *arraySize){
-    int n;
-    int tmn = *arraySize * sizeof(float);
-    n = recv(*client, &floatCont, tmn, 0 );
+
+    double doubleCont [*arraySize];
+    int n, i;
+    int tmn = *arraySize * sizeof(double);
+    n = recv(*client, &doubleCont, tmn, 0 );
+    for(i = 0; i<*arraySize; i++){
+        if (doubleCont[i]-FLT_MIN <= (double)FLT_MAX-FLT_MIN){
+           floatCont[i] = doubleCont[i];
+            }
+        else{
+            printf("Error transferring float values, float values probably out of bounds for C float\n");
+            printf("The error occured in the slot: %d\n", i);
+        }
+    }
 }
 
-void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char shape[], int *intLength, int *floatLength, int *shapeLen){
+void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char shape[], int *intLength, int *floatLength, int *shapeLen){
  int i,n,y;
  int sendRes;
  char valLen[16];
- char tipo_cont[6] = "int32";
+ char tipo_cont[8] = "int32";
  char jsonEncabezadoString[2048];
  int jsonStringLen;
  char intbufferBytes[sizeof(intSenderBuffer)];
 
  sprintf(intbufferBytes, "%p", intSenderBuffer);
- printf("These are the intbufferBytes: %s\n",intbufferBytes);
 
  printf("IntBuffer length: %d\n", *intLength);
  printf("floatBuffer length: %d\n", *floatLength);
 
  if(*floatLength != 0){
-    sprintf( valLen, "%d", sizeof(floatSenderBuffer));
+    sprintf( valLen, "%d", sizeof(float)* (*floatLength));
     sprintf(shape, "%d", -1);
-    strncpy(tipo_cont, "\0\0\0\0\0\0", 5);
-    strncpy(tipo_cont, "float", 5);
+    strncpy(tipo_cont, "\0\0\0\0\0\0\0\0", 7);
+    strncpy(tipo_cont, "float32", 7);
     printf("Float ValLen: %s\n", valLen);
  }
 
@@ -256,8 +266,13 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
     printf("In slot y: %d\n", y);
  }
 
- printf("Sending float value: %f\n", floatSenderBuffer);
- fflush(stdout);
+ for (y = 0; y<(sizeof(float)* (*floatLength)); y++){
+    //if(y > *floatLength-1){
+    //    floatSenderBuffer[y] = 0;
+    //}
+    printf("Sending float value: %f\n", floatSenderBuffer[y]);
+    printf("In slot y: %d\n", y);
+ }
 
  i = strlen(jsonEncabezadoString);
  printf("Sending length: %d\n", i);
@@ -285,7 +300,7 @@ void sendr_(int *client, int *intSenderBuffer, double *floatSenderBuffer, char s
 
 #endif
  if(strncmp(tipo_cont, "float", 5)==0){
-    sendRes = send(*client, floatSenderBuffer, sizeof(floatSenderBuffer), 0);
+    sendRes = send(*client, floatSenderBuffer, (sizeof(float)* (*floatLength)), 0);
     }
  else{
     sendRes = send(*client, intSenderBuffer, (sizeof(int)* (*intLength)), 0);

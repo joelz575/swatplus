@@ -24,7 +24,6 @@ install:
   - cd ..
 script:
   - if [[ $TRAVIS_OS_NAME == linux ]]; then chmod +x swatplusTest.sh; ./swatplusTest.sh; else sh swatplusTest.sh; fi
-  - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
       cd 'Trial Robit/Scenarios/Default/TxtInOut'
       ../../../.././build/bin/swatplus_exe.exe;

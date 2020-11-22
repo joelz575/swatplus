@@ -13,7 +13,7 @@ before_install:
     sudo apt install python3-pip;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
       -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
-    brew doctor; brew install python3; brew upgrade python@3.8; python3 --version; alias python=python3.x; fi
+    brew doctor; brew install python3; brew upgrade python@3.8; python3 --version; alias python=python3.8; fi
   - cmake --version
 install:
   - mkdir build

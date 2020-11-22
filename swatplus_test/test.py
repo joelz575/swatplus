@@ -43,13 +43,13 @@ class PruebaIDM(TestCase):
                 recibido = servidor.recibir(nmbr_dts)
                 npt.assert_equal(dts, recibido)
 
-    #def test_recibir_datos(símismo):
-    #    for nmbr_dts, dts in datos.items():
-    #        with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
-    #            símismo._empezar_cliente(servidor.dirección, servidor.puerto)
-    #            servidor.activar()
-    #            recibido = servidor.recibir(nmbr_dts)
-    #            npt.assert_equal(dts, recibido)
+    def test_recibir_datos(símismo):
+        for nmbr_dts, dts in datos.items():
+            with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
+                símismo._empezar_cliente(servidor.dirección, servidor.puerto)
+                servidor.activar()
+                recibido = servidor.recibir(nmbr_dts)
+            npt.assert_equal(dts, recibido)
 
     def test_incrementar(símismo):
         n_pasos = 5

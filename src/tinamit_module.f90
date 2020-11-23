@@ -13,7 +13,11 @@ module tinamit_module
     character(len = 3) :: hru_mode  ! 'hru' or 'hlt'
     character(len = 3) :: cha_mode  ! 'cha' or 'sdc'
     integer, allocatable, dimension(:) :: entero(:), entero_negativo(:)!*******testing variable*******************************
-    real, allocatable, dimension(:) :: decimal(:), decimal_negativo(:) !*******testing variable*******************************
+    real, allocatable, dimension(:) :: decimal(:), decimal_negativo(:)!*******testing variable*******************************
+    integer, dimension(5) :: leer_entero = [0,1,2,3,10]
+    integer, dimension(10) :: leer_entero_negativo = [-10,-3,-2,-1,0,1,2,3,4,5]
+    real, dimension(5) :: leer_decimal = [0.5,1.0,1.5,2.0,2.5]
+    real, dimension(10) :: leer_decimal_negativo = [-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0]
     logical dynamic
     integer :: dias = 1
     integer :: t = 0
@@ -40,7 +44,7 @@ contains
     subroutine recibe ()
         !character, dimension(:, :), allocatable :: charBuffer
         character(len = 7) :: command
-        character(len = 16) :: var = "                "
+        character(len = 21) :: var = "                     "
         character(len = 5) :: tipo_contents
         integer :: tmn_contents, nPasos, i, shape
         real, allocatable, dimension(:) :: realBuffer(:)
@@ -179,16 +183,16 @@ contains
             !----------Checking for testing variables-----------------------------!
             select case(trim(variable_Name))
                 case("entero")
-                    allocate(entero(shape))
+                    if(.not.allocated(entero)) allocate(entero(shape))
                     entero = intBuffer
                 case("decimal")
-                    allocate(decimal(shape))
+                    if(.not.allocated(decimal)) allocate(decimal(shape))
                     decimal = realBuffer
                 case("entero negativo")
-                    allocate(entero_negativo(shape))
+                    if(.not.allocated(entero_negativo)) allocate(entero_negativo(shape))
                     entero_negativo = intBuffer
                 case("decimal negativo")
-                    allocate(decimal_negativo(shape))
+                    if(.not.allocated(decimal_negativo)) allocate(decimal_negativo(shape))
                     decimal_negativo = realBuffer
                 case("multidim")
                     !allocate(multidim(shape))
@@ -526,24 +530,74 @@ contains
             select case(trim(varNombre))
                 case("entero")
                     print *, 'Testing variable entero detected: ', entero
+                    if(allocated(intBuffer)) deallocate(intBuffer)
+                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(intBuffer(size(entero)))
+                    allocate(floatBuffer(0))
                     intBuffer = entero
+
                 case("decimal")
                     print *, 'Testing variable decimal detected: ', decimal
+                    if(allocated(intBuffer)) deallocate(intBuffer)
+                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(floatBuffer(size(decimal)))
+                    allocate(intBuffer(0))
                     floatBuffer = decimal
+
                 case("entero negativo")
                     print *, 'Testing variable entero_negativo detected: ', entero_negativo
+                    if(allocated(intBuffer)) deallocate(intBuffer)
+                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(intBuffer(size(entero_negativo)))
+                    allocate(floatBuffer(0))
                     intBuffer = entero_negativo
+
                 case("decimal negativo")
                     print *, 'Testing variable decimal_negativo detected: ', decimal_negativo
+                    if(allocated(intBuffer)) deallocate(intBuffer)
+                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(floatBuffer(size(decimal_negativo)))
+                    allocate(intBuffer(0))
                     floatBuffer = decimal_negativo
+
                 case("multidim")
                     print *, "Multidimensional Arrays are not yet supported"
+
+                case("leer entero")
+                    print *, 'Testing variable leer_entero detected: ', leer_entero
+                    if(allocated(intBuffer)) deallocate(intBuffer)
+                    if(allocated(floatBuffer)) deallocate(floatBuffer)
+                    allocate(intBuffer(size(leer_entero)))
+                    allocate(floatBuffer(0))
+                    intBuffer = leer_entero
+
+                case("leer decimal")
+                    print *, 'Testing variable leer_decimal detected: ', leer_decimal
+                    if(allocated(intBuffer)) deallocate(intBuffer)
+                    if(allocated(floatBuffer)) deallocate(floatBuffer)
+                    allocate(floatBuffer(size(leer_decimal)))
+                    allocate(intBuffer(0))
+                    floatBuffer = leer_decimal
+
+                case("leer entero negativo")
+                    print *, 'Testing variable leer_entero_negativo detected: ', leer_entero_negativo
+                    if(allocated(intBuffer)) deallocate(intBuffer)
+                    if(allocated(floatBuffer)) deallocate(floatBuffer)
+                    allocate(intBuffer(size(leer_entero_negativo)))
+                    allocate(floatBuffer(0))
+                    intBuffer = leer_entero_negativo
+
+                case("leer decimal negativo")
+                    print *, 'Testing variable leer_decimal_negativo detected: ', leer_decimal_negativo
+                    if(allocated(intBuffer)) deallocate(intBuffer)
+                    if(allocated(floatBuffer)) deallocate(floatBuffer)
+                    allocate(floatBuffer(size(leer_decimal_negativo)))
+                    allocate(intBuffer(0))
+                    floatBuffer = leer_decimal_negativo
+
                 case default
-                    print *, variable_Name, " is not a testing variable and this variable is not used by the simulation."
+                    print *, trim(varNombre), " is not a testing variable and this variable is not used by the simulation."
+
             end select
         end select
 
@@ -553,10 +607,10 @@ contains
         elseif(.not.(SIZE(intBuffer)==0))then
             print *, "Sending int buffer: ", intBuffer
             print *, "int buffer size: ", SIZE(intBuffer)
-            allocate(floatBuffer(0))
+            if(.not.allocated(floatBuffer)) allocate(floatBuffer(0))
         else
             print *, "Sending float buffer: ", floatBuffer
-            allocate(intBuffer(0))
+            if(.not.allocated(intBuffer)) allocate(intBuffer(0))
         end if
         if(shapeBuffer == "")then
             shapeBuffer = "  "

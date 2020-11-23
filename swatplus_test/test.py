@@ -4,7 +4,8 @@ from unittest import TestCase
 
 import numpy.testing as npt
 
-from .ejemplo_cliente import datos
+from swatplus_test.ejemplo_cliente import datos, leer_datos
+
 from tinamit.idm.puertos import IDMEnchufes
 
 t_final = 731
@@ -39,17 +40,18 @@ class PruebaIDM(TestCase):
                 servidor.activar()
                 print("going to send this data: ", dts)
                 servidor.cambiar(nmbr_dts, dts)
-
                 recibido = servidor.recibir(nmbr_dts)
                 npt.assert_equal(dts, recibido)
 
     def test_recibir_datos(símismo):
-        for nmbr_dts, dts in datos.items():
+        for nmbr_dts, dts in leer_datos.items():
             with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
                 símismo._empezar_cliente(servidor.dirección, servidor.puerto)
                 servidor.activar()
                 recibido = servidor.recibir(nmbr_dts)
-            npt.assert_equal(dts, recibido)
+                print("receiving ", nmbr_dts)
+                print("received ", recibido)
+                npt.assert_equal(dts, recibido)
 
     def test_incrementar(símismo):
         n_pasos = 5

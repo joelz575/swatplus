@@ -10,10 +10,14 @@ datos = {
     'entero': np.arange(5, dtype=int),
     'decimal': np.arange(0, 5, 0.5),
     'entero negativo': np.arange(-5, 5, dtype=int),
-    'decimal negativo': np.arange(-5, 5, 0.5)#,
-    #'multidim': np.arange(2 * 3 * 5).reshape((2, 3, 5))
+    'decimal negativo': np.arange(-5, 5, 0.5)
 }
-
+leer_datos = {
+    'leer entero': np.array([0, 1, 2, 3, 10]),
+    'leer decimal': np.array([0.5, 1.0, 1.5, 2.0, 2.5]),
+    'leer entero negativo': np.array([-10, -3, -2, -1, 0, 1, 2, 3, 4, 5]),
+    'leer decimal negativo': np.array([-2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0])
+}
 
 def cliente_puertos(dirección, puerto, t_final):
     t_final = int(t_final)

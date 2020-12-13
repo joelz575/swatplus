@@ -526,12 +526,13 @@ contains
 
         CASE default
             print *, "Unknown variable: ", varNombre, " checking whether it is a testing variable..."
+            if(allocated(intBuffer)) deallocate(intBuffer)
+            if(allocated(floatBuffer)) deallocate(floatBuffer)
             !----------Checking for testing variables-----------------------------!
             select case(trim(varNombre))
                 case("entero")
                     print *, 'Testing variable entero detected: ', entero
-                    if(allocated(intBuffer)) deallocate(intBuffer)
-                    if(allocated(floatBuffer)) deallocate(floatBuffer)
+
                     allocate(intBuffer(size(entero)))
                     allocate(floatBuffer(0))
                     intBuffer = entero

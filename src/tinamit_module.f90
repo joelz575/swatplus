@@ -258,7 +258,7 @@ contains
             !ch(:)%
         CASE("t")
             print *, "current day: ", t
-            allocate(intBuffer(size(t)))
+            allocate(intBuffer(1))
             allocate(floatBuffer(0))
             intBuffer = t
 
@@ -373,7 +373,7 @@ contains
             floatBuffer = sd_ch%hc_hgt
 
         case("sd_stor")
-            real :: stor            !m3         |water stored in reach at end of the day
+            !m3         |water stored in reach at end of the day
             print *, "SD stor: ", sd_ch%stor
             allocate(floatBuffer(size(sd_ch%stor)))
             allocate(intBuffer(0))
@@ -381,17 +381,12 @@ contains
 
         case("sd_kd")
             !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
-            print *, "SD kd: ", sd_ch%kd
-            allocate(floatBuffer(size(sd_ch%kd)))
-            allocate(intBuffer(0))
-            floatBuffer = sd_ch%kd
+            print *, "SD kd is not yet supported"
+
 
         case("sd_aq_mix")
             ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
-            print *, "SD aq mix: ", sd_ch%aq_mix
-            allocate(floatBuffer(size(sd_ch%aq_mix)))
-            allocate(intBuffer(0))
-            floatBuffer = sd_ch%aq_mix
+            print *, "SD aq mix is not yet supported"
 
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
             print *, "Channel algae: ", ch%algae

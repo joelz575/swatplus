@@ -4,7 +4,7 @@ NYSKIP              DAY_START        YRC_START            DAY_END             YR
 AA_NUMINT
 0
 CSV                 DB             NETCDF
-n                     n                 n
+y                     n                 n
 SOIL_NUT_CARB       MGT            HYDCON            FDC	
             n         n                 n              n	
 OBJECTS                           DAILY             MONTHLY              YEARLY               AVANN
@@ -35,11 +35,11 @@ hru_nb                                n                   n                   n 
 hru_ls                                n                   n                   n                   n
 hru_pw                                n                   n                   n                   n
 hru-lte_wb                            y                   n                   y                   n
-hru-lte_nb                            n                   n                   y                   n
-hru-lte_ls                            n                   n                   y                   n
-hru-lte_pw                            n                   n                   y                   n
-channel                               n                   n                   n                   n
-channel_sd                            n                   n                   y                   n
+hru-lte_nb                            y                   n                   y                   n
+hru-lte_ls                            y                   n                   y                   n
+hru-lte_pw                            y                   n                   y                   n
+channel                               y                   n                   n                   n
+channel_sd                            y                   n                   y                   n
 aquifer                               n                   n                   n                   n
 reservoir                             n                   n                   n                   n
 recall	                              n                   n                   n                   n

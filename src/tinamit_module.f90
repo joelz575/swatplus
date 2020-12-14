@@ -218,7 +218,19 @@ contains
         shapeBuffer = ""
 
         print *, "Var nombre in obtener: ", varNombre
+        print *, "size(hru): ", size(hru)
+        print *, "size(hlt): ", size(hlt)
+        print *, "size(ch): ", size(ch)
+        print *, "size(sd_ch)", size(sd_ch)
+
+        if(allocated(intBuffer)) deallocate(intBuffer)
+        if(allocated(floatBuffer)) deallocate(floatBuffer)
+
         select case (trim(varNombre))
+
+
+
+
 
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
 !        CASE("hru_cha_mod")
@@ -245,37 +257,160 @@ contains
 !-----------Water flow, contaminants, (P o and ao then N, K)------------------------------------------------------------
             !ch(:)%
         CASE("t")
-            write(temp_shapeBuffer, *) shape(t)
-            allocate(intBuffer(1))
-            call StripSpaces(temp_shapeBuffer)
-            shapeBuffer = shapeBuffer // trim(temp_shapeBuffer)
-            print *, "Current shape string: ", shapeBuffer
+            print *, "current day: ", t
+            allocate(intBuffer(size(t)))
+            allocate(floatBuffer(0))
             intBuffer = t
-            print *, "Current number of days in simulation: ", intBuffer
 
+!-----------SD-Channel Variables----------------------------------------------------------------------------------------
+        case("sd_props")
+            print *, "SD channel props: ", sd_ch%props
+            allocate(intBuffer(size(entero)))
+            allocate(floatBuffer(0))
+            intBuffer = sd_ch%props
+
+        case("sd_obj_no")
+            print *, "SD channel obj_no: ", sd_ch%obj_no
+            allocate(intBuffer(size(sd_ch%obj_no)))
+            allocate(floatBuffer(0))
+            intBuffer = sd_ch%obj_no
+
+        case("sd_aqu_link")
+            !aquifer the channel is linked to
+            print *, "SD channel aqu link: ", sd_ch%aqu_link
+            allocate(intBuffer(size(sd_ch%aqu_link)))
+            allocate(floatBuffer(0))
+            intBuffer = sd_ch%aqu_link
+
+        case("sd_aqu_link_ch")
+            !sequential channel number in the aquifer
+            print *, "SD channel props: ", sd_ch%aqu_link_ch
+            allocate(intBuffer(size(sd_ch%aqu_link_ch)))
+            allocate(floatBuffer(0))
+            intBuffer = sd_ch%aqu_link_ch
+        case("sd_chw")
+            !m          |channel width
+            print *, "SD chw: ", sd_ch%chw
+            allocate(floatBuffer(size(sd_ch%chw)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%chw
+
+        case("sd_chd")
+            !m          |channel depth
+            print *, "SD chd: ", sd_ch%chd
+            allocate(floatBuffer(size(sd_ch%chd)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%chd
+
+        case("sd_chs")
+            !m/m        |channel slope
+            print *, "SD chs: ", sd_ch%chs
+            allocate(floatBuffer(size(sd_ch%chs)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%chs
+
+        case("sd_chl")
+            !km         |channel length
+            print *, "SD chl: ", sd_ch%chl
+            allocate(floatBuffer(size(sd_ch%chl)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%chl
+
+        case("sd_chn")
+            !           |channel Manning's n
+            print *, "SD chn: ", sd_ch%chn
+            allocate(floatBuffer(size(sd_ch%chn)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%chn
+
+        case("sd_cov")
+            !0-1        |channel cover factor
+            print *, "SD cov: ", sd_ch%cov
+            allocate(floatBuffer(size(sd_ch%cov)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%cov
+
+        case("sd_cherod")
+            !           |channel erodibility
+            print *, "SD cherod: ", sd_ch%cherod
+            allocate(floatBuffer(size(sd_ch%cherod)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%cherod
+
+        case("sd_shear_bnk")
+            !0-1        |bank shear coefficient - fraction of bottom shear
+            print *, "SD shear bnk: ", sd_ch%shear_bnk
+            allocate(floatBuffer(size(sd_ch%shear_bnk)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%shear_bnk
+
+        case("sd_hc_erod")
+            !           |headcut erodibility
+            print *, "SD hc_erod: ", sd_ch%hc_erod
+            allocate(floatBuffer(size(sd_ch%hc_erod)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%hc_erod
+
+        case("sd_hc_co")
+            !m/m        |proportionality coefficient for head cut
+            print *, "SD hc co: ", sd_ch%hc_co
+            allocate(floatBuffer(size(sd_ch%hc_co)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%hc_co
+
+        case("sd_hc_len")
+            !m          |length of head cut
+            print *, "SD hc_len: ", sd_ch%hc_len
+            allocate(floatBuffer(size(sd_ch%hc_len)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%hc_len
+
+        case("sd_hc_hgt")
+            !m          |headcut height
+            print *, "SD hc_hgt: ", sd_ch%hc_hgt
+            allocate(floatBuffer(size(sd_ch%hc_hgt)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%hc_hgt
+
+        case("sd_stor")
+            real :: stor            !m3         |water stored in reach at end of the day
+            print *, "SD stor: ", sd_ch%stor
+            allocate(floatBuffer(size(sd_ch%stor)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%stor
+
+        case("sd_kd")
+            !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+            print *, "SD kd: ", sd_ch%kd
+            allocate(floatBuffer(size(sd_ch%kd)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%kd
+
+        case("sd_aq_mix")
+            ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+            print *, "SD aq mix: ", sd_ch%aq_mix
+            allocate(floatBuffer(size(sd_ch%aq_mix)))
+            allocate(intBuffer(0))
+            floatBuffer = sd_ch%aq_mix
 
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
-            warning = (size(ch) < 1)
-            allocate(floatBuffer(size(ch)))
+            print *, "Channel algae: ", ch%algae
+            allocate(floatBuffer(size(ch%algae)))
+            allocate(intBuffer(0))
             floatBuffer = ch%algae
-            print *, "current floatBuffer: ", floatBuffer
 
         CASE("ammonian")        ! mg N/L        |ammonia concentration in reach
-            warning = (size(ch) < 1)
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%ammonian
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel ammonian: ", ch%ammonian
+            allocate(floatBuffer(size(ch%ammonian)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%ammonian
+
         CASE("bankst")          ! m^3 H2O       |bank storage
-            warning = (size(ch) < 1)
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%bankst
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel bankst: ", ch%bankst
+            allocate(floatBuffer(size(ch%bankst)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bankst
+
         CASE("li")              ! km            |initial length of main channel
             warning = (size(ch) < 1)
             do i = 1, size(ch)
@@ -539,24 +674,18 @@ contains
 
                 case("decimal")
                     print *, 'Testing variable decimal detected: ', decimal
-                    if(allocated(intBuffer)) deallocate(intBuffer)
-                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(floatBuffer(size(decimal)))
                     allocate(intBuffer(0))
                     floatBuffer = decimal
 
                 case("entero negativo")
                     print *, 'Testing variable entero_negativo detected: ', entero_negativo
-                    if(allocated(intBuffer)) deallocate(intBuffer)
-                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(intBuffer(size(entero_negativo)))
                     allocate(floatBuffer(0))
                     intBuffer = entero_negativo
 
                 case("decimal negativo")
                     print *, 'Testing variable decimal_negativo detected: ', decimal_negativo
-                    if(allocated(intBuffer)) deallocate(intBuffer)
-                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(floatBuffer(size(decimal_negativo)))
                     allocate(intBuffer(0))
                     floatBuffer = decimal_negativo
@@ -566,32 +695,24 @@ contains
 
                 case("leer entero")
                     print *, 'Testing variable leer_entero detected: ', leer_entero
-                    if(allocated(intBuffer)) deallocate(intBuffer)
-                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(intBuffer(size(leer_entero)))
                     allocate(floatBuffer(0))
                     intBuffer = leer_entero
 
                 case("leer decimal")
                     print *, 'Testing variable leer_decimal detected: ', leer_decimal
-                    if(allocated(intBuffer)) deallocate(intBuffer)
-                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(floatBuffer(size(leer_decimal)))
                     allocate(intBuffer(0))
                     floatBuffer = leer_decimal
 
                 case("leer entero negativo")
                     print *, 'Testing variable leer_entero_negativo detected: ', leer_entero_negativo
-                    if(allocated(intBuffer)) deallocate(intBuffer)
-                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(intBuffer(size(leer_entero_negativo)))
                     allocate(floatBuffer(0))
                     intBuffer = leer_entero_negativo
 
                 case("leer decimal negativo")
                     print *, 'Testing variable leer_decimal_negativo detected: ', leer_decimal_negativo
-                    if(allocated(intBuffer)) deallocate(intBuffer)
-                    if(allocated(floatBuffer)) deallocate(floatBuffer)
                     allocate(floatBuffer(size(leer_decimal_negativo)))
                     allocate(intBuffer(0))
                     floatBuffer = leer_decimal_negativo

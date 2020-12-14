@@ -265,7 +265,7 @@ contains
 !-----------SD-Channel Variables----------------------------------------------------------------------------------------
         case("sd_props")
             print *, "SD channel props: ", sd_ch%props
-            allocate(intBuffer(size(entero)))
+            allocate(intBuffer(size(sd_ch%props)))
             allocate(floatBuffer(0))
             intBuffer = sd_ch%props
 
@@ -388,6 +388,271 @@ contains
             ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
             print *, "SD aq mix is not yet supported"
 
+!-----------Lite HRU Variables------------------------------------------------------------------------------------------
+        case("lte_props")
+            print *, "HLT props: ", hlt%props
+            allocate(intBuffer(size(hlt%props)))
+            allocate(floatBuffer(0))
+            intBuffer = hlt%props
+
+        case("lte_obj_no")
+            print *, "HLT obj_no: ", hlt%obj_no
+            allocate(intBuffer(size(hlt%obj_no)))
+            allocate(floatBuffer(0))
+            intBuffer = hlt%obj_no
+
+        case("lte_plant")
+            !character(len=16) :: plant
+            !              |plant type (as listed in plants.plt)
+            print *, "lte_plant is not yet supported for transfer as it is a character value but we are looking into it"
+
+        case("lte_iplant")
+            !              |plant number xwalked from hlt_db()%plant and plants.plt
+            print *, "HLT iplant: ", hlt%iplant
+            allocate(intBuffer(size(hlt%iplant)))
+            allocate(floatBuffer(0))
+            intBuffer = hlt%iplant
+
+        case("lte_km2")
+            !km^2          |drainage area
+            print *, "HLT km2: ", hlt%km2
+            allocate(floatBuffer(size(hlt%km2)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%km2
+
+        case("lte_cn2")
+            !              |condition II curve number (used in calibration)
+            print *, "HLT cn2: ", hlt%cn2
+            allocate(floatBuffer(size(hlt%cn2)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%cn2
+
+        case("lte_cn3_swf")
+            !none          |soil water factor for cn3 (used in calibration)
+            print *, "HLT cn3_swf: ", hlt%cn3_swf
+            allocate(floatBuffer(size(hlt%cn3_swf)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%cn3_swf
+
+        case("lte_soildep")                                     !              |0 = fc; 1 = saturation (porosity)
+            !mm            |soil profile depth
+            print *, "HLT soildep: ", hlt%soildep
+            allocate(floatBuffer(size(hlt%soildep)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%soildep
+
+        case("lte_etco")
+            !              |et coefficient - use with pet and aet (used in calibration)
+            print *, "HLT etco: ", hlt%etco
+            allocate(floatBuffer(size(hlt%etco)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%etco
+
+        case("lte_revapc")
+            !m/m           |revap from aquifer (used in calibration)
+            print *, "HLT revapc: ", hlt%revapc
+            allocate(floatBuffer(size(hlt%revapc)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%revapc
+
+        case("lte_perco")
+            !              |soil percolation coefficient (used in calibration)
+            print *, "HLT perco: ", hlt%perco
+            allocate(floatBuffer(size(hlt%perco)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%perco
+
+        case("lte_tdrain")
+            !hr            |design subsurface tile drain time (used in calibration)
+            print *, "HLT tdrain: ", hlt%tdrain
+            allocate(floatBuffer(size(hlt%tdrain)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%tdrain
+
+        case("lte_stress")
+            !frac          |plant stress - pest, root restriction, soil quality, nutrient,
+            print *, "HLT stress: ", hlt%stress
+            allocate(floatBuffer(size(hlt%stress)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%stress
+
+        case("lte_uslefac")
+            !              |USLE slope length factor
+            print *, "HLT uslefac: ", hlt%uslefac
+            allocate(floatBuffer(size(hlt%uslefac)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%uslefac
+
+        case("lte_wrt1")
+            print *, "HLT wrt1: ", hlt%wrt1
+            allocate(floatBuffer(size(hlt%wrt1)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%wrt1
+
+        case("lte_wrt2")
+            print *, "HLT wrt2: ", hlt%wrt2
+            allocate(floatBuffer(size(hlt%wrt2)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%wrt2
+
+        case("lte_smx")
+            print *, "HLT smx: ", hlt%smx
+            allocate(floatBuffer(size(hlt%smx)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%smx
+
+        case("lte_hk")
+            print *, "HLT hk: ", hlt%hk
+            allocate(floatBuffer(size(hlt%hk)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%hk
+
+        case("lte_yls")
+            print *, "HLT yls: ", hlt%yls
+            allocate(floatBuffer(size(hlt%yls)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%yls
+
+        case("lte_ylc")
+            print *, "HLT ylc: ", hlt%ylc
+            allocate(floatBuffer(size(hlt%ylc)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%ylc
+
+        case("lte_awc")
+            !mm/mm        |available water capacity of soil
+            print *, "HLT awc: ", hlt%awc
+            allocate(floatBuffer(size(hlt%awc)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%awc
+
+        case("lte_g")
+            print *, "HLT g: ", hlt%g
+            allocate(floatBuffer(size(hlt%g)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%g
+
+        case("lte_hufh")
+            print *, "HLT hufh: ", hlt%hufh
+            allocate(floatBuffer(size(hlt%hufh)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%hufh
+
+        case("lte_phu")
+            print *, "HLT phu: ", hlt%phu
+            allocate(floatBuffer(size(hlt%phu)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%phu
+
+        case("lte_por")
+            print *, "HLT por: ", hlt%por
+            allocate(floatBuffer(size(hlt%por)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%por
+
+        case("lte_sc")
+            print *, "HLT sc: ", hlt%sc
+            allocate(floatBuffer(size(hlt%sc)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%sc
+
+        case("lte_sw")
+            !mm/mm         |initial soil water storage
+            print *, "HLT sw: ", hlt%sw
+            allocate(floatBuffer(size(hlt%sw)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%sw
+
+        case("lte_gw")
+            !mm            |initial shallow aquifer storage
+            print *, "HLT gw: ", hlt%gw
+            allocate(floatBuffer(size(hlt%gw)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%gw
+
+        case("lte_snow")
+            !mm            |initial water content of snow
+            print *, "HLT snow: ", hlt%snow
+            allocate(floatBuffer(size(hlt%snow)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%snow
+
+        case("lte_gwflow")
+            !mm            |initial groundwater flow
+            print *, "HLT gwflow: ", hlt%gwflow
+            allocate(floatBuffer(size(hlt%gwflow)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%gwflow
+
+        case("lte_dm")
+            !t/ha          |plant biomass
+            print *, "HLT dm: ", hlt%dm
+            allocate(floatBuffer(size(hlt%dm)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%dm
+
+        case("lte_alai")
+            !              |leaf area index
+            print *, "HLT alai: ", hlt%alai
+            allocate(floatBuffer(size(hlt%alai)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%alai
+
+        case("lte_yield")
+            !t/ha          |plant yield
+            print *, "HLT yield: ", hlt%yield
+            allocate(floatBuffer(size(hlt%yield)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%yield
+
+        case("lte_npp")
+            !t/ha          |net primary productivity
+            print *, "HLT npp: ", hlt%npp
+            allocate(floatBuffer(size(hlt%npp)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%npp
+
+        case("lte_lai_mx")
+            !              |maximum leaf area index
+            print *, "HLT lai_mx: ", hlt%lai_mx
+            allocate(floatBuffer(size(hlt%lai_mx)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%lai_mx
+
+        case("lte_gwdeep")
+            !mm            |deep aquifer storage
+            print *, "HLT gwdeep: ", hlt%gwdeep
+            allocate(floatBuffer(size(hlt%gwdeep)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%gwdeep
+
+        case("lte_aet")
+            !mm            |sum of actual et during growing season (for hi water stress)
+            print *, "HLT aet: ", hlt%aet
+            allocate(floatBuffer(size(hlt%aet)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%aet
+
+        case("lte_pet")
+            !mm            |sum of potential et during growing season (for hi water stress)
+            print *, "HLT pet: ", hlt%pet
+            allocate(floatBuffer(size(hlt%pet)))
+            allocate(intBuffer(0))
+            floatBuffer = hlt%pet
+
+        case("lte_start")
+            print *, "HLT start: ", hlt%start
+            allocate(intBuffer(size(hlt%start)))
+            allocate(floatBuffer(0))
+            intBuffer = hlt%start
+
+        case("lte_end")
+            print *, "HLT end: ", hlt%end
+            allocate(intBuffer(size(hlt%end)))
+            allocate(floatBuffer(0))
+            intBuffer = hlt%end
+
+!-------Channel Variables-----------------------------------------------------------------------------------------------
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
             print *, "Channel algae: ", ch%algae
             allocate(floatBuffer(size(ch%algae)))

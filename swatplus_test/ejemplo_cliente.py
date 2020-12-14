@@ -32,6 +32,52 @@ leer_datos = {
     'sd_stor': np.array([0.0, 0.0]),       #m3         |water stored in reach at end of the day
     #'sd_kd' : np.array([1.0, 1.0]),        #           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
     #'sd_aq_mix' : np.array([1.0, 1.0])     # m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+    #'name': ,
+    'lte_props': np.array([0]),
+    'lte_obj_no': np.array([0]),
+    #character(len=16) :: lsu             #              |landscape unit - character
+    #character(len=16) :: region          #              |region - character
+    #character(len=16) :: plant           #              |plant type (as listed in plants.plt)
+    'lte_iplant': np.array([0]),                  #              |plant number xwalked from hlt_db()%plant and plants.plt
+    'lte_km2': np.array([0.0]),                     #km^2          |drainage area
+    'lte_cn2': np.array([0.0]),                     #              |condition II curve number (used in calibration)
+    'lte_cn3_swf': np.array([0.0]),                #none          |soil water factor for cn3 (used in calibration)
+    #              |0 = fc; 1 = saturation (porosity)
+    'lte_soildep': np.array([0.0]),                #mm            |soil profile depth
+    'lte_etco': np.array([0.0]),                    #              |et coefficient - use with pet and aet (used in calibration)
+    'lte_revapc': np.array([0.0]),                  #m/m           |revap from aquifer (used in calibration)
+    'lte_perco': np.array([0.0]),                  #              |soil percolation coefficient (used in calibration)
+    'lte_tdrain': np.array([0.0]),                  #hr            |design subsurface tile drain time (used in calibration)
+    'lte_stress': np.array([0.0]),                  #frac          |plant stress - pest, root restriction, soil quality, nutrient,
+    #              |(non water, temp) (used in calibration)
+    'lte_uslefac': np.array([0.0]),                 #              |USLE slope length factor
+    'lte_wrt1': np.array([0.0]),
+    'lte_wrt2': np.array([0.0]),
+    'lte_smx': np.array([0.0]),
+    'lte_hk': np.array([0.0]),
+    'lte_yls': np.array([0.0]),
+    'lte_ylc': np.array([0.0]),
+    'lte_awc': np.array([0.0]),                    #mm/mm        |available water capacity of soil
+    'lte_g': np.array([0.0]),
+    'lte_hufh': np.array([0.0]),
+    'lte_phu': np.array([0.0]),
+    'lte_por': np.array([0.0]),
+    'lte_sc': np.array([0.0]),
+    'lte_sw': np.array([0.0]),                      #mm/mm         |initial soil water storage
+    'lte_gw': np.array([0.0]),                      #mm            |initial shallow aquifer storage
+    'lte_snow': np.array([0.0]),                    #mm            |initial water content of snow
+    'lte_gwflow': np.array([0.0]),                  #mm            |initial groundwater flow
+    #character(len=1) :: gro = "n"        #              |y=plant growing; n=not growing;
+    'lte_dm': np.array([0.0]),                     #t/ha          |plant biomass
+    'lte_alai': np.array([0.0]),                    #              |leaf area index
+    'lte_yield': np.array([0.0]),                   #t/ha          |plant yield
+    'lte_npp': np.array([0.0]),                     #t/ha          |net primary productivity
+    'lte_lai_mx': np.array([0.0]),                 #              |maximum leaf area index
+    'lte_gwdeep': np.array([0.0]),                 #mm            |deep aquifer storage
+    'lte_aet': np.array([0.0]),                     #mm            |sum of actual et during growing season (for hi water stress)
+    'lte_pet': np.array([0.0]),                     #mm            |sum of potential et during growing season (for hi water stress)
+    'lte_start': np.array([0]),
+    'lte_end': np.array([0]),
 }
 
 def cliente_puertos(dirección, puerto, t_final):

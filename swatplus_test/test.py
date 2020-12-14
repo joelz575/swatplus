@@ -51,7 +51,8 @@ class PruebaIDM(TestCase):
                 recibido = servidor.recibir(nmbr_dts)
                 print("receiving ", nmbr_dts)
                 print("received ", recibido)
-                npt.assert_equal(dts, recibido)
+                #npt.assert_equal(dts, recibido)
+                npt.assert_almost_equal(dts, recibido) # equal to 7 decimal places
 
     def test_incrementar(símismo):
         n_pasos = 5

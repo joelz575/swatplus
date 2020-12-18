@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <float.h>
 #include <limits.h>
+#include <math.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -199,6 +200,8 @@ void recvint_(int *client, int *intCont, int *arraySize){
         else{
             printf("Error transferring int values, int values probably out of bounds for C int\n");
             printf("The error occured in the slot: %d\n", i);
+            printf("The value will be replaced using NaN");
+            intCont[i] = NAN;
         }
     }
 }
@@ -216,6 +219,8 @@ void recvfloat_(int *client, float *floatCont, int *arraySize){
         else{
             printf("Error transferring float values, float values probably out of bounds for C float\n");
             printf("The error occured in the slot: %d\n", i);
+            printf("The value will be replaced using NaN");
+            floatCont[i] = NAN;
         }
     }
 }

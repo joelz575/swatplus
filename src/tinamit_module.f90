@@ -51,7 +51,6 @@ contains
         integer, allocatable, dimension(:) :: intBuffer(:)
 
         print *, "About to Recieve..."
-
         tmn_shape = 1
         call receive (cliente_obj, command, var, tipo_contents, nPasos, shape) !charBuffer
 
@@ -121,32 +120,19 @@ contains
         end if
     end subroutine evaluar
 
-    subroutine tomar (variable_Name, shape, intBuffer, realBuffer)
+    subroutine tomar (variable_Name, shape, intBuffer, floatBuffer)
         character (*) :: variable_Name
         character(len = :), allocatable :: senderBuffer
         integer :: index, i
         integer :: shape
         integer, dimension(shape) :: intBuffer
-        real, dimension(shape) :: realBuffer
+        real, dimension(shape) :: floatBuffer
         integer :: f = 1
-
-
-        !integer, allocatable, dimension(:) :: entero, entero_negativo!***testing variable*******************************
-        !real, allocatable, dimension(:) :: decimal, decimal_negativo !***testing variable*******************************
-        !integer, allocatable,dimension(:,:,:) :: multidim !**************testing variable*******************************
 
         if (size(hru) > 1) then
             print *, "there are full hru's"
-            !do i = 1, size(hru)
-                !print *, "hru ", i, " landuse: ", hru(i)%luse
-            !end do
-
         else
             print *, "there are only lite hru's"
-            print *, "WARNING: LITE HRU'S DATA TRANSFER IS NOT SUPPORTED BY TINAMIT AT THE MOMENT, PLEASE USE FULL HRU'S"
-            !print *, "hlt ", hlt(:)
-            !print *, "hlt%cn2 ", hlt(:)%cn2
-            !print *, "hlt%lsu ", hlt(:)%lsu
         end if
 
         if (size(ch) > 0) then
@@ -166,40 +152,432 @@ contains
             !landuse
             !water flow, contaminants, (P o and ao then N, K)
             !ch(:)%
+        !-----------SD-Channel Variables----------------------------------------------------------------------------------------
+        case("sd_props")
+            !if(.not.allocated(sd_ch%props)) allocate(sd_ch%props(shape))
+            print *, "SD props before: ", sd_ch%props
+            sd_ch%props = intBuffer
+            print *, "SD props after: ", sd_ch%props
+
+        case("sd_obj_no")
+            !if(.not.allocated(sd_ch%obj_no)) allocate(sd_ch%obj_no(shape))
+            print *, "SD obj_no before: ", sd_ch%obj_no
+            sd_ch%obj_no = intBuffer
+            print *, "SD obj_no after: ", sd_ch%obj_no
+
+        case("sd_aqu_link")
+            !aquifer the channel is linked to
+            !if(.not.allocated(sd_ch%aqu_link)) allocate(sd_ch%aqu_link(shape))
+            print *, "SD aqu_link before: ", sd_ch%aqu_link
+            sd_ch%aqu_link = intBuffer
+            print *, "SD aqu_link after: ", sd_ch%aqu_link
+
+        case("sd_aqu_link_ch")
+            !sequential channel number in the aquifer
+            !if(.not.allocated(sd_ch%aqu_link_ch)) allocate(sd_ch%aqu_link_ch(shape))
+            print *, "SD aqu_link_ch before: ", sd_ch%aqu_link_ch
+            sd_ch%aqu_link_ch = intBuffer
+            print *, "SD aqu_link_ch after: ", sd_ch%aqu_link_ch
+        case("sd_chw")
+            !m          |channel width
+            !if(.not.allocated(sd_ch%chw)) allocate(sd_ch%chw(shape))
+            print *, "SD chw before: ", sd_ch%chw
+            sd_ch%chw = floatBuffer
+            print *, "SD chw after: ", sd_ch%chw
+
+        case("sd_chd")
+            !m          |channel depth
+            !if(.not.allocated(sd_ch%chd)) allocate(sd_ch%chd(shape))
+            print *, "SD chd before: ", sd_ch%chd
+            sd_ch%chd = floatBuffer
+            print *, "SD chd after: ", sd_ch%chd
+
+        case("sd_chs")
+            !m/m        |channel slope
+            !if(.not.allocated(sd_ch%chs)) allocate(sd_ch%chs(shape))
+            print *, "SD chs before: ", sd_ch%chs
+            sd_ch%chs = floatBuffer
+            print *, "SD chs after: ", sd_ch%chs
+
+        case("sd_chl")
+            !km         |channel length
+            !if(.not.allocated(sd_ch%chl)) allocate(sd_ch%chl(shape))
+            print *, "SD chl before: ", sd_ch%chl
+            sd_ch%chl = floatBuffer
+            print *, "SD chl after: ", sd_ch%chl
+
+        case("sd_chn")
+            !           |channel Manning's n
+            !if(.not.allocated(sd_ch%chn)) allocate(sd_ch%chn(shape))
+            print *, "SD chn before: ", sd_ch%chn
+            sd_ch%chn = floatBuffer
+            print *, "after: ", sd_ch%chn
+
+        case("sd_cov")
+            !0-1        |channel cover factor
+            !if(.not.allocated(sd_ch%cov)) allocate(sd_ch%cov(shape))
+            print *, "SD cov before: ", sd_ch%cov
+            sd_ch%cov = floatBuffer
+            print *, "after: ", sd_ch%cov
+
+        case("sd_cherod")
+            !           |channel erodibility
+            !if(.not.allocated(sd_ch%cherod)) allocate(sd_ch%cherod(shape))
+            print *, "SD cherod before: ", sd_ch%cherod
+            sd_ch%cherod = floatBuffer
+            print *, "after: ", sd_ch%cherod
+
+        case("sd_shear_bnk")
+            !0-1        |bank shear coefficient - fraction of bottom shear
+            !if(.not.allocated(sd_ch%shear_bnk)) allocate(sd_ch%shear_bnk(shape))
+            print *, "SD shear_bnk before: ", sd_ch%shear_bnk
+            sd_ch%shear_bnk = floatBuffer
+            print *, "after: ", sd_ch%shear_bnk
+
+        case("sd_hc_erod")
+            !           |headcut erodibility
+            !if(.not.allocated(sd_ch%hc_erod)) allocate(sd_ch%hc_erod(shape))
+            print *, "SD hc_erod before: ", sd_ch%hc_erod
+            sd_ch%hc_erod = floatBuffer
+            print *, "after: ", sd_ch%hc_erod
+
+        case("sd_hc_co")
+            !m/m        |proportionality coefficient for head cut
+            !if(.not.allocated(sd_ch%hc_co)) allocate(sd_ch%hc_co(shape))
+            print *, "SD hc_co before: ", sd_ch%hc_co
+            sd_ch%hc_co = floatBuffer
+            print *, "after: ", sd_ch%hc_co
+
+        case("sd_hc_len")
+            !m          |length of head cut
+            !if(.not.allocated(sd_ch%hc_len)) allocate(sd_ch%hc_len(shape))
+            print *, "SD hc_len before: ", sd_ch%hc_len
+            sd_ch%hc_len = floatBuffer
+            print *, "after: ", sd_ch%hc_len
+
+        case("sd_hc_hgt")
+            !m          |headcut height
+            !if(.not.allocated(sd_ch%hc_hgt)) allocate(sd_ch%hc_hgt(shape))
+            print *, "SD hc_hgt before: ", sd_ch%hc_hgt
+            sd_ch%hc_hgt = floatBuffer
+            print *, "after: ", sd_ch%hc_hgt
+
+        case("sd_stor")
+            !m3         |water stored in reach at end of the day
+            !if(.not.allocated(sd_ch%stor)) allocate(sd_ch%stor(shape))
+            print *, "SD stor before: ", sd_ch%stor
+            sd_ch%stor = floatBuffer
+            print *, "after: ", sd_ch%stor
+
+        case("sd_kd")
+            !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+            print *, "SD kd is not yet supported"
+
+
+        case("sd_aq_mix")
+            ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
+            print *, "SD aq mix is not yet supported"
+
+!-----------Lite HRU Variables------------------------------------------------------------------------------------------
+        case("lte_props")
+            !if(.not.allocated(hlt%props)) allocate(hlt%props(shape))
+            print *, "HLT props before: ", hlt%props
+            hlt%props = intBuffer
+            print *, "HLT props after: ", hlt%props
+
+        case("lte_obj_no")
+            !if(.not.allocated(hlt%obj_no)) allocate(hlt%obj_no(shape))
+            print *, "HLT obj_no before: ", hlt%obj_no
+            hlt%obj_no = intBuffer
+            print *, "HLT obj_no after: ", hlt%obj_no
+
+        case("lte_plant")
+            !character(len=16) :: plant
+            !              |plant type (as listed in plants.plt)
+            print *, "lte_plant is not yet supported for transfer as it is a character value, use iplant instead."
+            print *, "lte_plant will then be updated accordinly"
+
+        case("lte_iplant")
+            !              |plant number xwalked from hlt_db()%plant and plants.plt
+            !if(.not.allocated(hlt%iplant)) allocate(hlt%iplant(shape))
+            print *, "HLT iplant before: ", hlt%iplant
+            hlt%iplant = intBuffer
+            print *, "HLT iplant after: ", hlt%iplant
+
+        case("lte_km2")
+            !km^2          |drainage area
+            !if(.not.allocated(hlt%km2)) allocate(hlt%km2(shape))
+            print *, "HLT km2 before: ", hlt%km2
+            hlt%km2 = floatBuffer
+            print *, "after: ", hlt%km2
+
+        case("lte_cn2")
+            !              |condition II curve number (used in calibration)
+            !if(.not.allocated(hlt%cn2)) allocate(hlt%cn2(shape))
+            print *, "HLT cn2 before: ", hlt%cn2
+            hlt%cn2 = floatBuffer
+            print *, "after: ", hlt%cn2
+
+        case("lte_cn3_swf")
+            !none          |soil water factor for cn3 (used in calibration)
+            !if(.not.allocated(hlt%cn3_swf)) allocate(hlt%cn3_swf(shape))
+            print *, "HLT cn3_swf before: ", hlt%cn3_swf
+            hlt%cn3_swf = floatBuffer
+            print *, "after: ", hlt%cn3_swf
+
+        case("lte_soildep")                                     !              |0 = fc; 1 = saturation (porosity)
+            !mm            |soil profile depth
+            !if(.not.allocated(hlt%soildep)) allocate(hlt%soildep(shape))
+            print *, "HLT soildep before: ", hlt%soildep
+            hlt%soildep = floatBuffer
+            print *, "after: ", hlt%soildep
+
+        case("lte_etco")
+            !              |et coefficient - use with pet and aet (used in calibration)
+            !if(.not.allocated(hlt%etco)) allocate(hlt%etco(shape))
+            print *, "HLT etco before: ", hlt%etco
+            hlt%etco = floatBuffer
+            print *, "after: ", hlt%etco
+
+        case("lte_revapc")
+            !m/m           |revap from aquifer (used in calibration)
+            !if(.not.allocated(hlt%revapc)) allocate(hlt%revapc(shape))
+            print *, "HLT revapc before: ", hlt%revapc
+            hlt%revapc = floatBuffer
+            print *, "after: ", hlt%revapc
+
+        case("lte_perco")
+            !              |soil percolation coefficient (used in calibration)
+            !if(.not.allocated(hlt%perco)) allocate(hlt%perco(shape))
+            print *, "HLT perco before: ", hlt%perco
+            hlt%perco = floatBuffer
+            print *, "after: ", hlt%perco
+
+        case("lte_tdrain")
+            !hr            |design subsurface tile drain time (used in calibration)
+            !if(.not.allocated(hlt%tdrain)) allocate(hlt%tdrain(shape))
+            print *, "HLT tdrain before: ", hlt%tdrain
+            hlt%tdrain = floatBuffer
+            print *, "after: ", hlt%tdrain
+
+        case("lte_stress")
+            !frac          |plant stress - pest, root restriction, soil quality, nutrient,
+            !if(.not.allocated(hlt%stress)) allocate(hlt%stress(shape))
+            print *, "HLT stress before: ", hlt%stress
+            hlt%stress = floatBuffer
+            print *, "after: ", hlt%stress
+
+        case("lte_uslefac")
+            !              |USLE slope length factor
+            !if(.not.allocated(hlt%uslefac)) allocate(hlt%uslefac(shape))
+            print *, "HLT ulsefac before: ", hlt%uslefac
+            hlt%uslefac = floatBuffer
+            print *, "after: ", hlt%uslefac
+
+        case("lte_wrt1")
+            !if(.not.allocated(hlt%wrt1)) allocate(hlt%wrt1(shape))
+            print *, "HLT wrt1 before: ", hlt%wrt1
+            hlt%wrt1 = floatBuffer
+            print *, "after: ", hlt%wrt1
+
+        case("lte_wrt2")
+            !if(.not.allocated(hlt%wrt2)) allocate(hlt%wrt2(shape))
+            print *, "HLT wrt2 before: ", hlt%wrt2
+            hlt%wrt2 = floatBuffer
+            print *, "after: ", hlt%wrt2
+
+        case("lte_smx")
+            !if(.not.allocated(hlt%smx)) allocate(hlt%smx(shape))
+            print *, "HLT smx before: ", hlt%smx
+            hlt%smx = floatBuffer
+            print *, "after: ", hlt%smx
+
+        case("lte_hk")
+            !if(.not.allocated(hlt%hk)) allocate(hlt%hk(shape))
+            print *, "HLT hk before: ", hlt%hk
+            hlt%hk = floatBuffer
+            print *, "after: ", hlt%hk
+
+        case("lte_yls")
+            !if(.not.allocated(hlt%yls)) allocate(hlt%yls(shape))
+            print *, "HLT yls before: ", hlt%yls
+            hlt%yls = floatBuffer
+            print *, "after: ", hlt%yls
+
+        case("lte_ylc")
+            !if(.not.allocated(hlt%ylc)) allocate(hlt%ylc(shape))
+            print *, "HLT ylc before: ", hlt%ylc
+            hlt%ylc = floatBuffer
+            print *, "after: ", hlt%ylc
+
+        case("lte_awc")
+            !mm/mm        |available water capacity of soil
+            !if(.not.allocated(hlt%awc)) allocate(hlt%awc(shape))
+            print *, "HLT awc before: ", hlt%awc
+            hlt%awc = floatBuffer
+            print *, "after: ", hlt%awc
+
+        case("lte_g")
+            !if(.not.allocated(hlt%g)) allocate(hlt%g(shape))
+            print *, "HLT g before: ", hlt%g
+            hlt%g = floatBuffer
+            print *, "after: ", hlt%g
+
+        case("lte_hufh")
+            !if(.not.allocated(hlt%hufh)) allocate(hlt%hufh(shape))
+            print *, "HLT hufh before: ", hlt%hufh
+            hlt%hufh = floatBuffer
+            print *, "after: ", hlt%hufh
+
+        case("lte_phu")
+            !if(.not.allocated(hlt%phu)) allocate(hlt%phu(shape))
+            print *, "HLT phu before: ", hlt%phu
+            hlt%phu = floatBuffer
+            print *, "after: ", hlt%phu
+
+        case("lte_por")
+            !if(.not.allocated(hlt%por)) allocate(hlt%por(shape))
+            print *, "HLT por before: ", hlt%por
+            hlt%por = floatBuffer
+            print *, "after: ", hlt%por
+
+        case("lte_sc")
+            !if(.not.allocated(hlt%sc)) allocate(hlt%sc(shape))
+            print *, "HLT sc before: ", hlt%sc
+            hlt%sc = floatBuffer
+            print *, "after: ", hlt%sc
+
+        case("lte_sw")
+            !mm/mm         |initial soil water storage
+            !if(.not.allocated(hlt%sw)) allocate(hlt%sw(shape))
+            print *, "HLT sw before: ", hlt%sw
+            hlt%sw = floatBuffer
+            print *, "after: ", hlt%sw
+
+        case("lte_gw")
+            !mm            |initial shallow aquifer storage
+            !if(.not.allocated(hlt%gw)) allocate(hlt%gw(shape))
+            print *, "HLT gw before: ", hlt%gw
+            hlt%gw = floatBuffer
+            print *, "after: ", hlt%gw
+
+        case("lte_snow")
+            !mm            |initial water content of snow
+            !if(.not.allocated(hlt%snow)) allocate(hlt%snow(shape))
+            print *, "HLT snow before: ", hlt%snow
+            hlt%snow = floatBuffer
+            print *, "after: ", hlt%snow
+
+        case("lte_gwflow")
+            !mm            |initial groundwater flow
+            !if(.not.allocated(hlt%gwflow)) allocate(hlt%gwflow(shape))
+            print *, "HLT gwflow before: ", hlt%gwflow
+            hlt%gwflow = floatBuffer
+            print *, "after: ", hlt%gwflow
+
+        case("lte_dm")
+            !t/ha          |plant biomass
+            !if(.not.allocated(hlt%dm)) allocate(hlt%dm(shape))
+            print *, "HLT dm before: ", hlt%dm
+            hlt%dm = floatBuffer
+            print *, "after: ", hlt%dm
+
+        case("lte_alai")
+            !              |leaf area index
+            !if(.not.allocated(hlt%alai)) allocate(hlt%alai(shape))
+            print *, "HLT alai before: ", hlt%alai
+            hlt%alai = floatBuffer
+            print *, "after: ", hlt%alai
+
+        case("lte_yield")
+            !t/ha          |plant yield
+            !if(.not.allocated(hlt%yield)) allocate(hlt%yield(shape))
+            print *, "HLT yield before: ", hlt%yield
+            hlt%yield = floatBuffer
+            print *, "after: ", hlt%yield
+
+        case("lte_npp")
+            !t/ha          |net primary productivity
+            !if(.not.allocated(hlt%npp)) allocate(hlt%npp(shape))
+            print *, "HLT npp before: ", hlt%npp
+            hlt%npp = floatBuffer
+            print *, "after: ", hlt%npp
+
+        case("lte_lai_mx")
+            !              |maximum leaf area index
+            !if(.not.allocated(hlt%lai_mx)) allocate(hlt%lai_mx(shape))
+            print *, "HLT lai_mx before: ", hlt%lai_mx
+            hlt%lai_mx = floatBuffer
+            print *, "after: ", hlt%lai_mx
+
+        case("lte_gwdeep")
+            !mm            |deep aquifer storage
+            !if(.not.allocated(hlt%gwdeep)) allocate(hlt%gwdeep(shape))
+            print *, "HLT gwdeep before: ", hlt%gwdeep
+            hlt%gwdeep = floatBuffer
+            print *, "after: ", hlt%gwdeep
+
+        case("lte_aet")
+            !mm            |sum of actual et during growing season (for hi water stress)
+            !if(.not.allocated(hlt%aet)) allocate(hlt%aet(shape))
+            print *, "HLT aet before: ", hlt%aet
+            hlt%aet = floatBuffer
+            print *, "after: ", hlt%aet
+
+        case("lte_pet")
+            !mm            |sum of potential et during growing season (for hi water stress)
+            !if(.not.allocated(hlt%pet)) allocate(hlt%pet(shape))
+            print *, "HLT pet before: ", hlt%pet
+            hlt%pet = floatBuffer
+            print *, "after: ", hlt%pet
+
+        case("lte_start")
+            !if(.not.allocated(hlt%start)) allocate(hlt%start(shape))
+            print *, "HLT start before: ", hlt%start
+            hlt%start = intBuffer
+            print *, "HLT start after: ", hlt%start
+
+        case("lte_end")
+            !if(.not.allocated(hlt%end)) allocate(hlt%end(shape))
+            print *, "HLT end before: ", hlt%end
+            hlt%end = intBuffer
+            print *, "HLT end after: ", hlt%end
+
+!-------Channel Variables-----------------------------------------------------------------------------------------------
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
             do i = 1, size(ch)
-                ch(i)%algae = realBuffer(i)
+                ch(i)%algae = floatBuffer(i)
             end do
             print *, "algae : ", ch(:)%algae
 
         CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
             do i = 1, size(ch)
-                ch(i)%flwin = realBuffer(i)
+                ch(i)%flwin = floatBuffer(i)
             end do
             print *, "flwin: ", ch(:)%flwin
 
         CASE default
             print *, "Unused variable: ", variable_Name
             !----------Checking for testing variables-----------------------------!
-            select case(trim(variable_Name))
-                case("entero")
-                    if(.not.allocated(entero)) allocate(entero(shape))
-                    entero = intBuffer
-                case("decimal")
-                    if(.not.allocated(decimal)) allocate(decimal(shape))
-                    decimal = realBuffer
-                case("entero negativo")
-                    if(.not.allocated(entero_negativo)) allocate(entero_negativo(shape))
-                    entero_negativo = intBuffer
-                case("decimal negativo")
-                    if(.not.allocated(decimal_negativo)) allocate(decimal_negativo(shape))
-                    decimal_negativo = realBuffer
-                case("multidim")
-                    !allocate(multidim(shape))
-                    print *, "Multidimensional Arrays are not yet supported"
-                case default
-                    print *, variable_Name, " is not a testing variable, this variable is not used by the simulation."
-            end select
+            !select case(trim(variable_Name))
+            !    case("entero")
+            !        if(.not.allocated(entero)) allocate(entero(shape))
+            !        entero = intBuffer
+            !    case("decimal")
+            !        if(.not.allocated(decimal)) allocate(decimal(shape))
+            !        decimal = floatBuffer
+            !    case("entero negativo")
+            !        if(.not.allocated(entero_negativo)) allocate(entero_negativo(shape))
+            !        entero_negativo = intBuffer
+            !    case("decimal negativo")
+            !        if(.not.allocated(decimal_negativo)) allocate(decimal_negativo(shape))
+            !        decimal_negativo = realBuffer
+            !    case("multidim")
+            !        !allocate(multidim(shape))
+            !        print *, "Multidimensional Arrays are not yet supported"
+            !    case default
+            !        print *, variable_Name, " is not a testing variable, this variable is not used by the simulation."
+            !end select
 
 
         end select
@@ -227,10 +605,6 @@ contains
         if(allocated(floatBuffer)) deallocate(floatBuffer)
 
         select case (trim(varNombre))
-
-
-
-
 
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
 !        CASE("hru_cha_mod")
@@ -924,63 +1298,63 @@ contains
             if(allocated(intBuffer)) deallocate(intBuffer)
             if(allocated(floatBuffer)) deallocate(floatBuffer)
             !----------Checking for testing variables-----------------------------!
-            select case(trim(varNombre))
-                case("entero")
-                    print *, 'Testing variable entero detected: ', entero
+            !select case(trim(varNombre))
+            !    case("entero")
+            !        print *, 'Testing variable entero detected: ', entero
 
-                    allocate(intBuffer(size(entero)))
-                    allocate(floatBuffer(0))
-                    intBuffer = entero
+            !        allocate(intBuffer(size(entero)))
+            !        allocate(floatBuffer(0))
+            !        intBuffer = entero
 
-                case("decimal")
-                    print *, 'Testing variable decimal detected: ', decimal
-                    allocate(floatBuffer(size(decimal)))
-                    allocate(intBuffer(0))
-                    floatBuffer = decimal
+            !    case("decimal")
+            !        print *, 'Testing variable decimal detected: ', decimal
+            !        allocate(floatBuffer(size(decimal)))
+            !        allocate(intBuffer(0))
+            !        floatBuffer = decimal
 
-                case("entero negativo")
-                    print *, 'Testing variable entero_negativo detected: ', entero_negativo
-                    allocate(intBuffer(size(entero_negativo)))
-                    allocate(floatBuffer(0))
-                    intBuffer = entero_negativo
+            !    case("entero negativo")
+            !        print *, 'Testing variable entero_negativo detected: ', entero_negativo
+            !        allocate(intBuffer(size(entero_negativo)))
+            !        allocate(floatBuffer(0))
+            !        intBuffer = entero_negativo
 
-                case("decimal negativo")
-                    print *, 'Testing variable decimal_negativo detected: ', decimal_negativo
-                    allocate(floatBuffer(size(decimal_negativo)))
-                    allocate(intBuffer(0))
-                    floatBuffer = decimal_negativo
+            !    case("decimal negativo")
+            !        print *, 'Testing variable decimal_negativo detected: ', decimal_negativo
+            !        allocate(floatBuffer(size(decimal_negativo)))
+            !        allocate(intBuffer(0))
+            !        floatBuffer = decimal_negativo
 
-                case("multidim")
-                    print *, "Multidimensional Arrays are not yet supported"
+            !    case("multidim")
+            !        print *, "Multidimensional Arrays are not yet supported"
 
-                case("leer entero")
-                    print *, 'Testing variable leer_entero detected: ', leer_entero
-                    allocate(intBuffer(size(leer_entero)))
-                    allocate(floatBuffer(0))
-                    intBuffer = leer_entero
+            !    case("leer entero")
+            !        print *, 'Testing variable leer_entero detected: ', leer_entero
+            !        allocate(intBuffer(size(leer_entero)))
+            !        allocate(floatBuffer(0))
+            !        intBuffer = leer_entero
 
-                case("leer decimal")
-                    print *, 'Testing variable leer_decimal detected: ', leer_decimal
-                    allocate(floatBuffer(size(leer_decimal)))
-                    allocate(intBuffer(0))
-                    floatBuffer = leer_decimal
+            !    case("leer decimal")
+            !        print *, 'Testing variable leer_decimal detected: ', leer_decimal
+            !        allocate(floatBuffer(size(leer_decimal)))
+            !        allocate(intBuffer(0))
+            !        floatBuffer = leer_decimal
 
-                case("leer entero negativo")
-                    print *, 'Testing variable leer_entero_negativo detected: ', leer_entero_negativo
-                    allocate(intBuffer(size(leer_entero_negativo)))
-                    allocate(floatBuffer(0))
-                    intBuffer = leer_entero_negativo
+            !    case("leer entero negativo")
+            !        print *, 'Testing variable leer_entero_negativo detected: ', leer_entero_negativo
+            !        allocate(intBuffer(size(leer_entero_negativo)))
+            !        allocate(floatBuffer(0))
+            !        intBuffer = leer_entero_negativo
 
-                case("leer decimal negativo")
-                    print *, 'Testing variable leer_decimal_negativo detected: ', leer_decimal_negativo
-                    allocate(floatBuffer(size(leer_decimal_negativo)))
-                    allocate(intBuffer(0))
-                    floatBuffer = leer_decimal_negativo
+            !    case("leer decimal negativo")
+            !        print *, 'Testing variable leer_decimal_negativo detected: ', leer_decimal_negativo
+            !        allocate(floatBuffer(size(leer_decimal_negativo)))
+            !        allocate(intBuffer(0))
+            !        floatBuffer = leer_decimal_negativo
 
-                case default
-                    print *, trim(varNombre), " is not a testing variable and this variable is not used by the simulation."
+            !    case default
+            !        print *, trim(varNombre), " is not a testing variable and this variable is not used by the simulation."
 
-            end select
+            !end select
         end select
 
         if(warning)then

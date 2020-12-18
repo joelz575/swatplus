@@ -6,18 +6,9 @@ module tinamit_module
     use channel_module, ONLY : ch
     use sd_channel_module, ONLY : sd_ch
 
-
     save
     integer :: MAX_BUFFER_LEN = 20000
     integer cliente_obj
-    character(len = 3) :: hru_mode  ! 'hru' or 'hlt'
-    character(len = 3) :: cha_mode  ! 'cha' or 'sdc'
-    integer, allocatable, dimension(:) :: entero(:), entero_negativo(:)!*******testing variable*******************************
-    real, allocatable, dimension(:) :: decimal(:), decimal_negativo(:)!*******testing variable*******************************
-    integer, dimension(5) :: leer_entero = [0,1,2,3,10]
-    integer, dimension(10) :: leer_entero_negativo = [-10,-3,-2,-1,0,1,2,3,4,5]
-    real, dimension(5) :: leer_decimal = [0.5,1.0,1.5,2.0,2.5]
-    real, dimension(10) :: leer_decimal_negativo = [-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0]
     logical dynamic
     integer :: dias = 1
     integer :: t = 0
@@ -137,21 +128,12 @@ contains
 
         if (size(ch) > 0) then
             print *, "There are full channels defined"
-            !print *, "ch(:): ", ch(:)
-
         else
             print *, "there are only lite channels defined"
-            print *, "WARNING: SD CHANNEL DATA TRANSFER IS NOT SUPPORTED BY TINAMIT AT THE MOMENT, PLEASE USE FULL CHANNELS"
-            !print *, "size(sd_ch): ", size(sd_ch)
-            !do f = 1, size(sd_ch)
-            !    print *, "sd_ch(", f, "): ", sd_ch(f)%aqu_link_ch
-            !end do
+
         end if
 
         select case (trim(variable_Name))
-            !landuse
-            !water flow, contaminants, (P o and ao then N, K)
-            !ch(:)%
         !-----------SD-Channel Variables----------------------------------------------------------------------------------------
         case("sd_props")
             !if(.not.allocated(sd_ch%props)) allocate(sd_ch%props(shape))
@@ -558,28 +540,6 @@ contains
 
         CASE default
             print *, "Unused variable: ", variable_Name
-            !----------Checking for testing variables-----------------------------!
-            !select case(trim(variable_Name))
-            !    case("entero")
-            !        if(.not.allocated(entero)) allocate(entero(shape))
-            !        entero = intBuffer
-            !    case("decimal")
-            !        if(.not.allocated(decimal)) allocate(decimal(shape))
-            !        decimal = floatBuffer
-            !    case("entero negativo")
-            !        if(.not.allocated(entero_negativo)) allocate(entero_negativo(shape))
-            !        entero_negativo = intBuffer
-            !    case("decimal negativo")
-            !        if(.not.allocated(decimal_negativo)) allocate(decimal_negativo(shape))
-            !        decimal_negativo = realBuffer
-            !    case("multidim")
-            !        !allocate(multidim(shape))
-            !        print *, "Multidimensional Arrays are not yet supported"
-            !    case default
-            !        print *, variable_Name, " is not a testing variable, this variable is not used by the simulation."
-            !end select
-
-
         end select
 
         call recibe()
@@ -587,7 +547,6 @@ contains
 
     subroutine obtener (varNombre)
         character(*) :: varNombre
-        logical :: warning = .FALSE.
         character(len = :), allocatable :: senderBuffer, shapeBuffer
         integer, dimension(:), allocatable :: intBuffer
         real, dimension(:), allocatable :: floatBuffer
@@ -607,23 +566,6 @@ contains
         select case (trim(varNombre))
 
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
-!        CASE("hru_cha_mod")
-!            print *, "size(hru): ", size(hru)
-!            print *, "size(hlt): ", size(hlt)
-!            if (size(hru) > 1) then
-!                senderBuffer = senderBuffer // 'hru '
-!            else
-!                senderBuffer = senderBuffer // 'hlt'
-!            end if
-!
-!            print *, "size(ch): ", size(ch)
-!            print *, "size(sd_ch)", size(sd_ch)
-!
-!            if (size(ch) > 0) then
-!                senderBuffer = senderBuffer // 'cha]'
-!            else
-!                senderBuffer = senderBuffer // 'sdc]'
-!            end if
 
 !-----------Landuse Variables-------------------------------------------------------------------------------------------
 
@@ -1046,7 +988,6 @@ contains
             floatBuffer = ch%bankst
 
         CASE("li")              ! km            |initial length of main channel
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%li
                 call StripSpaces(temp_senderBuffer)
@@ -1054,7 +995,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("orgn")            !               |organic nitrogen contribution from channel erosion
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%orgn
                 call StripSpaces(temp_senderBuffer)
@@ -1062,7 +1002,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("orgp")            !               |organic phosphorus contribution from channel erosion
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%orgp
                 call StripSpaces(temp_senderBuffer)
@@ -1070,7 +1009,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("si")              !(m/n)          |slope of main channel
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%si
                 call StripSpaces(temp_senderBuffer)
@@ -1078,7 +1016,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("wi")              !(m)            |width of main channel at top of bank
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%wi
                 call StripSpaces(temp_senderBuffer)
@@ -1086,7 +1023,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("di")              !(m)            |depth of main channel from top of bank to bottom
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%di
                 call StripSpaces(temp_senderBuffer)
@@ -1094,7 +1030,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("chlora")          ! mg chl-a/L    |chlorophyll-a concentration in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%chlora
                 call StripSpaces(temp_senderBuffer)
@@ -1102,7 +1037,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("pst_conc")        ! mg/(m**3)     |initial pesticide concentration in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%pst_conc
                 call StripSpaces(temp_senderBuffer)
@@ -1110,7 +1044,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("dep_chan")        ! m             |average daily water depth in channel
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%dep_chan
                 call StripSpaces(temp_senderBuffer)
@@ -1118,7 +1051,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("disolvp")         ! mg P/L        |dissolved P concentration in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%disolvp
                 call StripSpaces(temp_senderBuffer)
@@ -1126,7 +1058,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("drift")           ! kg            |amount of pesticide drifting onto main channel in subbasin
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%drift
                 call StripSpaces(temp_senderBuffer)
@@ -1134,7 +1065,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%flwin
                 call StripSpaces(temp_senderBuffer)
@@ -1142,7 +1072,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("flwout")          ! m^3 H2O       |flow out of reach on previous day
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%flwout
                 call StripSpaces(temp_senderBuffer)
@@ -1150,7 +1079,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("nitraten")        ! mg N/L        |nitrate concentration in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%nitraten
                 call StripSpaces(temp_senderBuffer)
@@ -1158,7 +1086,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("nitriten")        ! mg N/L        |nitrite concentration in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%nitriten
                 call StripSpaces(temp_senderBuffer)
@@ -1166,7 +1093,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("organicn")        ! mg N/L        |organic nitrogen concentration in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%organicn
                 call StripSpaces(temp_senderBuffer)
@@ -1174,7 +1100,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("organicp")        ! mg P/L        |organic phosphorus concentration in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%organicp
                 call StripSpaces(temp_senderBuffer)
@@ -1182,7 +1107,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("rch_bactlp")      ! # cfu/100ml   |less persistent bacteria stored in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_bactlp
                 call StripSpaces(temp_senderBuffer)
@@ -1190,7 +1114,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("rch_bactp")       ! # cfu/100ml   |persistent bacteria stored in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_bactp
                 call StripSpaces(temp_senderBuffer)
@@ -1198,7 +1121,6 @@ contains
             end do
             senderBuffer = senderBuffer // ']'
         CASE("rch_cbod")        ! mg O2/L       |carbonaceous biochemical oxygen demand in reach
-            warning = (size(ch) < 1)
             do i = 1, size(ch)
                 write(temp_senderBuffer, *) ch(i)%rch_cbod
                 call StripSpaces(temp_senderBuffer)
@@ -1295,72 +1217,10 @@ contains
 
         CASE default
             print *, "Unknown variable: ", varNombre, " checking whether it is a testing variable..."
-            if(allocated(intBuffer)) deallocate(intBuffer)
-            if(allocated(floatBuffer)) deallocate(floatBuffer)
-            !----------Checking for testing variables-----------------------------!
-            !select case(trim(varNombre))
-            !    case("entero")
-            !        print *, 'Testing variable entero detected: ', entero
 
-            !        allocate(intBuffer(size(entero)))
-            !        allocate(floatBuffer(0))
-            !        intBuffer = entero
-
-            !    case("decimal")
-            !        print *, 'Testing variable decimal detected: ', decimal
-            !        allocate(floatBuffer(size(decimal)))
-            !        allocate(intBuffer(0))
-            !        floatBuffer = decimal
-
-            !    case("entero negativo")
-            !        print *, 'Testing variable entero_negativo detected: ', entero_negativo
-            !        allocate(intBuffer(size(entero_negativo)))
-            !        allocate(floatBuffer(0))
-            !        intBuffer = entero_negativo
-
-            !    case("decimal negativo")
-            !        print *, 'Testing variable decimal_negativo detected: ', decimal_negativo
-            !        allocate(floatBuffer(size(decimal_negativo)))
-            !        allocate(intBuffer(0))
-            !        floatBuffer = decimal_negativo
-
-            !    case("multidim")
-            !        print *, "Multidimensional Arrays are not yet supported"
-
-            !    case("leer entero")
-            !        print *, 'Testing variable leer_entero detected: ', leer_entero
-            !        allocate(intBuffer(size(leer_entero)))
-            !        allocate(floatBuffer(0))
-            !        intBuffer = leer_entero
-
-            !    case("leer decimal")
-            !        print *, 'Testing variable leer_decimal detected: ', leer_decimal
-            !        allocate(floatBuffer(size(leer_decimal)))
-            !        allocate(intBuffer(0))
-            !        floatBuffer = leer_decimal
-
-            !    case("leer entero negativo")
-            !        print *, 'Testing variable leer_entero_negativo detected: ', leer_entero_negativo
-            !        allocate(intBuffer(size(leer_entero_negativo)))
-            !        allocate(floatBuffer(0))
-            !        intBuffer = leer_entero_negativo
-
-            !    case("leer decimal negativo")
-            !        print *, 'Testing variable leer_decimal_negativo detected: ', leer_decimal_negativo
-            !        allocate(floatBuffer(size(leer_decimal_negativo)))
-            !        allocate(intBuffer(0))
-            !        floatBuffer = leer_decimal_negativo
-
-            !    case default
-            !        print *, trim(varNombre), " is not a testing variable and this variable is not used by the simulation."
-
-            !end select
         end select
 
-        if(warning)then
-            print *, "Variable not used by SWAT+ simulation: ", varNombre
-
-        elseif(.not.(SIZE(intBuffer)==0))then
+        if(.not.(SIZE(intBuffer)==0))then
             print *, "Sending int buffer: ", intBuffer
             print *, "int buffer size: ", SIZE(intBuffer)
             if(.not.allocated(floatBuffer)) allocate(floatBuffer(0))

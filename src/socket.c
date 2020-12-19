@@ -236,9 +236,6 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
 
  sprintf(intbufferBytes, "%p", intSenderBuffer);
 
- printf("IntBuffer length: %d\n", *intLength);
- printf("floatBuffer length: %d\n", *floatLength);
-
  if(*floatLength != 0){
     sprintf( valLen, "%d", sizeof(float)* (*floatLength));
     sprintf(shape, "%d", -1);
@@ -267,20 +264,15 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
     if(y > *intLength-1){
         intSenderBuffer[y] = 0;
     }
-    printf("Sending int value: %d\n", intSenderBuffer[y]);
-    printf("In slot y: %d\n", y);
  }
 
- for (y = 0; y<(sizeof(float)* (*floatLength)); y++){
+ //for (y = 0; y<(sizeof(float)* (*floatLength)); y++){
     //if(y > *floatLength-1){
     //    floatSenderBuffer[y] = 0;
     //}
-    printf("Sending float value: %f\n", floatSenderBuffer[y]);
-    printf("In slot y: %d\n", y);
- }
+ //}
 
  i = strlen(jsonEncabezadoString);
- printf("Sending length: %d\n", i);
 
  sendRes = send(*client, &i, sizeof (i), 0);
 

@@ -137,119 +137,86 @@ contains
         !-----------SD-Channel Variables----------------------------------------------------------------------------------------
         case("sd_props")
             !if(.not.allocated(sd_ch%props)) allocate(sd_ch%props(shape))
-            print *, "SD props before: ", sd_ch%props
             sd_ch%props = intBuffer
-            print *, "SD props after: ", sd_ch%props
 
         case("sd_obj_no")
             !if(.not.allocated(sd_ch%obj_no)) allocate(sd_ch%obj_no(shape))
-            print *, "SD obj_no before: ", sd_ch%obj_no
             sd_ch%obj_no = intBuffer
-            print *, "SD obj_no after: ", sd_ch%obj_no
 
         case("sd_aqu_link")
             !aquifer the channel is linked to
             !if(.not.allocated(sd_ch%aqu_link)) allocate(sd_ch%aqu_link(shape))
-            print *, "SD aqu_link before: ", sd_ch%aqu_link
             sd_ch%aqu_link = intBuffer
-            print *, "SD aqu_link after: ", sd_ch%aqu_link
 
         case("sd_aqu_link_ch")
             !sequential channel number in the aquifer
             !if(.not.allocated(sd_ch%aqu_link_ch)) allocate(sd_ch%aqu_link_ch(shape))
-            print *, "SD aqu_link_ch before: ", sd_ch%aqu_link_ch
             sd_ch%aqu_link_ch = intBuffer
-            print *, "SD aqu_link_ch after: ", sd_ch%aqu_link_ch
+
         case("sd_chw")
             !m          |channel width
             !if(.not.allocated(sd_ch%chw)) allocate(sd_ch%chw(shape))
-            print *, "SD chw before: ", sd_ch%chw
             sd_ch%chw = floatBuffer
-            print *, "SD chw after: ", sd_ch%chw
 
         case("sd_chd")
             !m          |channel depth
             !if(.not.allocated(sd_ch%chd)) allocate(sd_ch%chd(shape))
-            print *, "SD chd before: ", sd_ch%chd
             sd_ch%chd = floatBuffer
-            print *, "SD chd after: ", sd_ch%chd
 
         case("sd_chs")
             !m/m        |channel slope
             !if(.not.allocated(sd_ch%chs)) allocate(sd_ch%chs(shape))
-            print *, "SD chs before: ", sd_ch%chs
             sd_ch%chs = floatBuffer
-            print *, "SD chs after: ", sd_ch%chs
 
         case("sd_chl")
             !km         |channel length
             !if(.not.allocated(sd_ch%chl)) allocate(sd_ch%chl(shape))
-            print *, "SD chl before: ", sd_ch%chl
             sd_ch%chl = floatBuffer
-            print *, "SD chl after: ", sd_ch%chl
 
         case("sd_chn")
             !           |channel Manning's n
             !if(.not.allocated(sd_ch%chn)) allocate(sd_ch%chn(shape))
-            print *, "SD chn before: ", sd_ch%chn
             sd_ch%chn = floatBuffer
-            print *, "after: ", sd_ch%chn
 
         case("sd_cov")
             !0-1        |channel cover factor
             !if(.not.allocated(sd_ch%cov)) allocate(sd_ch%cov(shape))
-            print *, "SD cov before: ", sd_ch%cov
             sd_ch%cov = floatBuffer
-            print *, "after: ", sd_ch%cov
 
         case("sd_cherod")
             !           |channel erodibility
             !if(.not.allocated(sd_ch%cherod)) allocate(sd_ch%cherod(shape))
-            print *, "SD cherod before: ", sd_ch%cherod
             sd_ch%cherod = floatBuffer
-            print *, "after: ", sd_ch%cherod
 
         case("sd_shear_bnk")
             !0-1        |bank shear coefficient - fraction of bottom shear
             !if(.not.allocated(sd_ch%shear_bnk)) allocate(sd_ch%shear_bnk(shape))
-            print *, "SD shear_bnk before: ", sd_ch%shear_bnk
             sd_ch%shear_bnk = floatBuffer
-            print *, "after: ", sd_ch%shear_bnk
 
         case("sd_hc_erod")
             !           |headcut erodibility
             !if(.not.allocated(sd_ch%hc_erod)) allocate(sd_ch%hc_erod(shape))
-            print *, "SD hc_erod before: ", sd_ch%hc_erod
             sd_ch%hc_erod = floatBuffer
-            print *, "after: ", sd_ch%hc_erod
 
         case("sd_hc_co")
             !m/m        |proportionality coefficient for head cut
             !if(.not.allocated(sd_ch%hc_co)) allocate(sd_ch%hc_co(shape))
-            print *, "SD hc_co before: ", sd_ch%hc_co
             sd_ch%hc_co = floatBuffer
-            print *, "after: ", sd_ch%hc_co
 
         case("sd_hc_len")
             !m          |length of head cut
             !if(.not.allocated(sd_ch%hc_len)) allocate(sd_ch%hc_len(shape))
-            print *, "SD hc_len before: ", sd_ch%hc_len
             sd_ch%hc_len = floatBuffer
-            print *, "after: ", sd_ch%hc_len
 
         case("sd_hc_hgt")
             !m          |headcut height
             !if(.not.allocated(sd_ch%hc_hgt)) allocate(sd_ch%hc_hgt(shape))
-            print *, "SD hc_hgt before: ", sd_ch%hc_hgt
             sd_ch%hc_hgt = floatBuffer
-            print *, "after: ", sd_ch%hc_hgt
 
         case("sd_stor")
             !m3         |water stored in reach at end of the day
             !if(.not.allocated(sd_ch%stor)) allocate(sd_ch%stor(shape))
-            print *, "SD stor before: ", sd_ch%stor
             sd_ch%stor = floatBuffer
-            print *, "after: ", sd_ch%stor
 
         case("sd_kd")
             !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
@@ -263,15 +230,11 @@ contains
 !-----------Lite HRU Variables------------------------------------------------------------------------------------------
         case("lte_props")
             !if(.not.allocated(hlt%props)) allocate(hlt%props(shape))
-            print *, "HLT props before: ", hlt%props
             hlt%props = intBuffer
-            print *, "HLT props after: ", hlt%props
 
         case("lte_obj_no")
             !if(.not.allocated(hlt%obj_no)) allocate(hlt%obj_no(shape))
-            print *, "HLT obj_no before: ", hlt%obj_no
             hlt%obj_no = intBuffer
-            print *, "HLT obj_no after: ", hlt%obj_no
 
         case("lte_plant")
             !character(len=16) :: plant
@@ -282,261 +245,185 @@ contains
         case("lte_iplant")
             !              |plant number xwalked from hlt_db()%plant and plants.plt
             !if(.not.allocated(hlt%iplant)) allocate(hlt%iplant(shape))
-            print *, "HLT iplant before: ", hlt%iplant
             hlt%iplant = intBuffer
-            print *, "HLT iplant after: ", hlt%iplant
 
         case("lte_km2")
             !km^2          |drainage area
             !if(.not.allocated(hlt%km2)) allocate(hlt%km2(shape))
-            print *, "HLT km2 before: ", hlt%km2
             hlt%km2 = floatBuffer
-            print *, "after: ", hlt%km2
 
         case("lte_cn2")
             !              |condition II curve number (used in calibration)
             !if(.not.allocated(hlt%cn2)) allocate(hlt%cn2(shape))
-            print *, "HLT cn2 before: ", hlt%cn2
             hlt%cn2 = floatBuffer
-            print *, "after: ", hlt%cn2
 
         case("lte_cn3_swf")
             !none          |soil water factor for cn3 (used in calibration)
             !if(.not.allocated(hlt%cn3_swf)) allocate(hlt%cn3_swf(shape))
-            print *, "HLT cn3_swf before: ", hlt%cn3_swf
             hlt%cn3_swf = floatBuffer
-            print *, "after: ", hlt%cn3_swf
 
         case("lte_soildep")                                     !              |0 = fc; 1 = saturation (porosity)
             !mm            |soil profile depth
             !if(.not.allocated(hlt%soildep)) allocate(hlt%soildep(shape))
-            print *, "HLT soildep before: ", hlt%soildep
             hlt%soildep = floatBuffer
-            print *, "after: ", hlt%soildep
 
         case("lte_etco")
             !              |et coefficient - use with pet and aet (used in calibration)
             !if(.not.allocated(hlt%etco)) allocate(hlt%etco(shape))
-            print *, "HLT etco before: ", hlt%etco
             hlt%etco = floatBuffer
-            print *, "after: ", hlt%etco
 
         case("lte_revapc")
             !m/m           |revap from aquifer (used in calibration)
             !if(.not.allocated(hlt%revapc)) allocate(hlt%revapc(shape))
-            print *, "HLT revapc before: ", hlt%revapc
             hlt%revapc = floatBuffer
-            print *, "after: ", hlt%revapc
 
         case("lte_perco")
             !              |soil percolation coefficient (used in calibration)
             !if(.not.allocated(hlt%perco)) allocate(hlt%perco(shape))
-            print *, "HLT perco before: ", hlt%perco
             hlt%perco = floatBuffer
-            print *, "after: ", hlt%perco
 
         case("lte_tdrain")
             !hr            |design subsurface tile drain time (used in calibration)
             !if(.not.allocated(hlt%tdrain)) allocate(hlt%tdrain(shape))
-            print *, "HLT tdrain before: ", hlt%tdrain
             hlt%tdrain = floatBuffer
-            print *, "after: ", hlt%tdrain
 
         case("lte_stress")
             !frac          |plant stress - pest, root restriction, soil quality, nutrient,
             !if(.not.allocated(hlt%stress)) allocate(hlt%stress(shape))
-            print *, "HLT stress before: ", hlt%stress
             hlt%stress = floatBuffer
-            print *, "after: ", hlt%stress
 
         case("lte_uslefac")
             !              |USLE slope length factor
             !if(.not.allocated(hlt%uslefac)) allocate(hlt%uslefac(shape))
-            print *, "HLT ulsefac before: ", hlt%uslefac
             hlt%uslefac = floatBuffer
-            print *, "after: ", hlt%uslefac
 
         case("lte_wrt1")
             !if(.not.allocated(hlt%wrt1)) allocate(hlt%wrt1(shape))
-            print *, "HLT wrt1 before: ", hlt%wrt1
             hlt%wrt1 = floatBuffer
-            print *, "after: ", hlt%wrt1
 
         case("lte_wrt2")
             !if(.not.allocated(hlt%wrt2)) allocate(hlt%wrt2(shape))
-            print *, "HLT wrt2 before: ", hlt%wrt2
             hlt%wrt2 = floatBuffer
-            print *, "after: ", hlt%wrt2
 
         case("lte_smx")
             !if(.not.allocated(hlt%smx)) allocate(hlt%smx(shape))
-            print *, "HLT smx before: ", hlt%smx
             hlt%smx = floatBuffer
-            print *, "after: ", hlt%smx
 
         case("lte_hk")
             !if(.not.allocated(hlt%hk)) allocate(hlt%hk(shape))
-            print *, "HLT hk before: ", hlt%hk
             hlt%hk = floatBuffer
-            print *, "after: ", hlt%hk
 
         case("lte_yls")
             !if(.not.allocated(hlt%yls)) allocate(hlt%yls(shape))
-            print *, "HLT yls before: ", hlt%yls
             hlt%yls = floatBuffer
-            print *, "after: ", hlt%yls
 
         case("lte_ylc")
             !if(.not.allocated(hlt%ylc)) allocate(hlt%ylc(shape))
-            print *, "HLT ylc before: ", hlt%ylc
             hlt%ylc = floatBuffer
-            print *, "after: ", hlt%ylc
 
         case("lte_awc")
             !mm/mm        |available water capacity of soil
             !if(.not.allocated(hlt%awc)) allocate(hlt%awc(shape))
-            print *, "HLT awc before: ", hlt%awc
             hlt%awc = floatBuffer
-            print *, "after: ", hlt%awc
 
         case("lte_g")
             !if(.not.allocated(hlt%g)) allocate(hlt%g(shape))
-            print *, "HLT g before: ", hlt%g
             hlt%g = floatBuffer
-            print *, "after: ", hlt%g
 
         case("lte_hufh")
             !if(.not.allocated(hlt%hufh)) allocate(hlt%hufh(shape))
-            print *, "HLT hufh before: ", hlt%hufh
             hlt%hufh = floatBuffer
-            print *, "after: ", hlt%hufh
 
         case("lte_phu")
             !if(.not.allocated(hlt%phu)) allocate(hlt%phu(shape))
-            print *, "HLT phu before: ", hlt%phu
             hlt%phu = floatBuffer
-            print *, "after: ", hlt%phu
 
         case("lte_por")
             !if(.not.allocated(hlt%por)) allocate(hlt%por(shape))
-            print *, "HLT por before: ", hlt%por
             hlt%por = floatBuffer
-            print *, "after: ", hlt%por
 
         case("lte_sc")
             !if(.not.allocated(hlt%sc)) allocate(hlt%sc(shape))
-            print *, "HLT sc before: ", hlt%sc
             hlt%sc = floatBuffer
-            print *, "after: ", hlt%sc
 
         case("lte_sw")
             !mm/mm         |initial soil water storage
             !if(.not.allocated(hlt%sw)) allocate(hlt%sw(shape))
-            print *, "HLT sw before: ", hlt%sw
             hlt%sw = floatBuffer
-            print *, "after: ", hlt%sw
 
         case("lte_gw")
             !mm            |initial shallow aquifer storage
             !if(.not.allocated(hlt%gw)) allocate(hlt%gw(shape))
-            print *, "HLT gw before: ", hlt%gw
             hlt%gw = floatBuffer
-            print *, "after: ", hlt%gw
 
         case("lte_snow")
             !mm            |initial water content of snow
             !if(.not.allocated(hlt%snow)) allocate(hlt%snow(shape))
-            print *, "HLT snow before: ", hlt%snow
             hlt%snow = floatBuffer
-            print *, "after: ", hlt%snow
 
         case("lte_gwflow")
             !mm            |initial groundwater flow
             !if(.not.allocated(hlt%gwflow)) allocate(hlt%gwflow(shape))
-            print *, "HLT gwflow before: ", hlt%gwflow
             hlt%gwflow = floatBuffer
-            print *, "after: ", hlt%gwflow
 
         case("lte_dm")
             !t/ha          |plant biomass
             !if(.not.allocated(hlt%dm)) allocate(hlt%dm(shape))
-            print *, "HLT dm before: ", hlt%dm
             hlt%dm = floatBuffer
-            print *, "after: ", hlt%dm
 
         case("lte_alai")
             !              |leaf area index
             !if(.not.allocated(hlt%alai)) allocate(hlt%alai(shape))
-            print *, "HLT alai before: ", hlt%alai
             hlt%alai = floatBuffer
-            print *, "after: ", hlt%alai
 
         case("lte_yield")
             !t/ha          |plant yield
             !if(.not.allocated(hlt%yield)) allocate(hlt%yield(shape))
-            print *, "HLT yield before: ", hlt%yield
             hlt%yield = floatBuffer
-            print *, "after: ", hlt%yield
 
         case("lte_npp")
             !t/ha          |net primary productivity
             !if(.not.allocated(hlt%npp)) allocate(hlt%npp(shape))
-            print *, "HLT npp before: ", hlt%npp
             hlt%npp = floatBuffer
-            print *, "after: ", hlt%npp
 
         case("lte_lai_mx")
             !              |maximum leaf area index
             !if(.not.allocated(hlt%lai_mx)) allocate(hlt%lai_mx(shape))
-            print *, "HLT lai_mx before: ", hlt%lai_mx
             hlt%lai_mx = floatBuffer
-            print *, "after: ", hlt%lai_mx
 
         case("lte_gwdeep")
             !mm            |deep aquifer storage
             !if(.not.allocated(hlt%gwdeep)) allocate(hlt%gwdeep(shape))
-            print *, "HLT gwdeep before: ", hlt%gwdeep
             hlt%gwdeep = floatBuffer
-            print *, "after: ", hlt%gwdeep
 
         case("lte_aet")
             !mm            |sum of actual et during growing season (for hi water stress)
             !if(.not.allocated(hlt%aet)) allocate(hlt%aet(shape))
-            print *, "HLT aet before: ", hlt%aet
             hlt%aet = floatBuffer
-            print *, "after: ", hlt%aet
 
         case("lte_pet")
             !mm            |sum of potential et during growing season (for hi water stress)
             !if(.not.allocated(hlt%pet)) allocate(hlt%pet(shape))
-            print *, "HLT pet before: ", hlt%pet
             hlt%pet = floatBuffer
-            print *, "after: ", hlt%pet
 
         case("lte_start")
             !if(.not.allocated(hlt%start)) allocate(hlt%start(shape))
-            print *, "HLT start before: ", hlt%start
             hlt%start = intBuffer
-            print *, "HLT start after: ", hlt%start
 
         case("lte_end")
             !if(.not.allocated(hlt%end)) allocate(hlt%end(shape))
-            print *, "HLT end before: ", hlt%end
             hlt%end = intBuffer
-            print *, "HLT end after: ", hlt%end
 
 !-------Channel Variables-----------------------------------------------------------------------------------------------
         CASE("algae")           ! mg alg/L      |algal biomass concentration in reach
-            do i = 1, size(ch)
-                ch(i)%algae = floatBuffer(i)
-            end do
-            print *, "algae : ", ch(:)%algae
+            print *, "CH algae before: ", ch%algae
+            ch%algae = floatBuffer
+            print *, "CH algae after: ", ch%algae
 
         CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
-            do i = 1, size(ch)
-                ch(i)%flwin = floatBuffer(i)
-            end do
-            print *, "flwin: ", ch(:)%flwin
+            print *, "CH algae before: ", ch%flwin
+            ch%flwin = floatBuffer
+            print *, "CH algae after: ", ch%flwin
 
         CASE default
             print *, "Unused variable: ", variable_Name
@@ -555,10 +442,10 @@ contains
         shapeBuffer = ""
 
         print *, "Var nombre in obtener: ", varNombre
-        print *, "size(hru): ", size(hru)
-        print *, "size(hlt): ", size(hlt)
-        print *, "size(ch): ", size(ch)
-        print *, "size(sd_ch)", size(sd_ch)
+        !print *, "size(hru): ", size(hru)
+        !print *, "size(hlt): ", size(hlt)
+        !print *, "size(ch): ", size(ch)
+        !print *, "size(sd_ch)", size(sd_ch)
 
         if(allocated(intBuffer)) deallocate(intBuffer)
         if(allocated(floatBuffer)) deallocate(floatBuffer)
@@ -573,47 +460,40 @@ contains
 !-----------Water flow, contaminants, (P o and ao then N, K)------------------------------------------------------------
             !ch(:)%
         CASE("t")
-            print *, "current day: ", t
             allocate(intBuffer(1))
             allocate(floatBuffer(0))
             intBuffer = t
 
 !-----------SD-Channel Variables----------------------------------------------------------------------------------------
         case("sd_props")
-            print *, "SD channel props: ", sd_ch%props
             allocate(intBuffer(size(sd_ch%props)))
             allocate(floatBuffer(0))
             intBuffer = sd_ch%props
 
         case("sd_obj_no")
-            print *, "SD channel obj_no: ", sd_ch%obj_no
             allocate(intBuffer(size(sd_ch%obj_no)))
             allocate(floatBuffer(0))
             intBuffer = sd_ch%obj_no
 
         case("sd_aqu_link")
             !aquifer the channel is linked to
-            print *, "SD channel aqu link: ", sd_ch%aqu_link
             allocate(intBuffer(size(sd_ch%aqu_link)))
             allocate(floatBuffer(0))
             intBuffer = sd_ch%aqu_link
 
         case("sd_aqu_link_ch")
             !sequential channel number in the aquifer
-            print *, "SD channel props: ", sd_ch%aqu_link_ch
             allocate(intBuffer(size(sd_ch%aqu_link_ch)))
             allocate(floatBuffer(0))
             intBuffer = sd_ch%aqu_link_ch
         case("sd_chw")
             !m          |channel width
-            print *, "SD chw: ", sd_ch%chw
             allocate(floatBuffer(size(sd_ch%chw)))
             allocate(intBuffer(0))
             floatBuffer = sd_ch%chw
 
         case("sd_chd")
             !m          |channel depth
-            print *, "SD chd: ", sd_ch%chd
             allocate(floatBuffer(size(sd_ch%chd)))
             allocate(intBuffer(0))
             floatBuffer = sd_ch%chd
@@ -718,8 +598,7 @@ contains
             intBuffer = hlt%obj_no
 
         case("lte_plant")
-            !character(len=16) :: plant
-            !              |plant type (as listed in plants.plt)
+            !character(len=16) :: plant         !   |plant type (as listed in plants.plt)
             print *, "lte_plant is not yet supported for transfer as it is a character value but we are looking into it"
 
         case("lte_iplant")
@@ -988,232 +867,468 @@ contains
             floatBuffer = ch%bankst
 
         CASE("li")              ! km            |initial length of main channel
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%li
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel li: ", ch%li
+            allocate(floatBuffer(size(ch%li)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%li
+
         CASE("orgn")            !               |organic nitrogen contribution from channel erosion
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%orgn
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel orgn: ", ch%orgn
+            allocate(floatBuffer(size(ch%orgn)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%orgn
+
         CASE("orgp")            !               |organic phosphorus contribution from channel erosion
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%orgp
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel orgp: ", ch%orgp
+            allocate(floatBuffer(size(ch%orgp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%orgp
+
         CASE("si")              !(m/n)          |slope of main channel
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%si
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel bankst: ", ch%si
+            allocate(floatBuffer(size(ch%si)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%si
+
         CASE("wi")              !(m)            |width of main channel at top of bank
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%wi
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel wi: ", ch%wi
+            allocate(floatBuffer(size(ch%wi)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%wi
+
         CASE("di")              !(m)            |depth of main channel from top of bank to bottom
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%di
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel bankst: ", ch%di
+            allocate(floatBuffer(size(ch%di)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%di
+
         CASE("chlora")          ! mg chl-a/L    |chlorophyll-a concentration in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%chlora
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel bankst: ", ch%chlora
+            allocate(floatBuffer(size(ch%chlora)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%chlora
+
         CASE("pst_conc")        ! mg/(m**3)     |initial pesticide concentration in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%pst_conc
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel pst_conc: ", ch%pst_conc
+            allocate(floatBuffer(size(ch%pst_conc)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%pst_conc
+
         CASE("dep_chan")        ! m             |average daily water depth in channel
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%dep_chan
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel dep_chan: ", ch%dep_chan
+            allocate(floatBuffer(size(ch%dep_chan)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%dep_chan
+
         CASE("disolvp")         ! mg P/L        |dissolved P concentration in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%disolvp
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel disolvp: ", ch%disolvp
+            allocate(floatBuffer(size(ch%disolvp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%disolvp
+
         CASE("drift")           ! kg            |amount of pesticide drifting onto main channel in subbasin
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%drift
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel drift: ", ch%drift
+            allocate(floatBuffer(size(ch%drift)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%drift
+
         CASE("flwin")           ! m^3 H2O       |flow into reach on previous day
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%flwin
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel flwin: ", ch%flwin
+            allocate(floatBuffer(size(ch%flwin)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%flwin
+
         CASE("flwout")          ! m^3 H2O       |flow out of reach on previous day
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%flwout
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel flwout: ", ch%flwout
+            allocate(floatBuffer(size(ch%flwout)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%flwout
+
         CASE("nitraten")        ! mg N/L        |nitrate concentration in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%nitraten
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel nitraten: ", ch%nitraten
+            allocate(floatBuffer(size(ch%nitraten)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%nitraten
+
         CASE("nitriten")        ! mg N/L        |nitrite concentration in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%nitriten
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel nitriten: ", ch%nitriten
+            allocate(floatBuffer(size(ch%nitriten)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%nitriten
+
         CASE("organicn")        ! mg N/L        |organic nitrogen concentration in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%organicn
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel organicn: ", ch%organicn
+            allocate(floatBuffer(size(ch%organicn)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%organicn
+
         CASE("organicp")        ! mg P/L        |organic phosphorus concentration in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%organicp
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel organicp: ", ch%organicp
+            allocate(floatBuffer(size(ch%organicp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%organicp
+
         CASE("rch_bactlp")      ! # cfu/100ml   |less persistent bacteria stored in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%rch_bactlp
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel rch_bactlp: ", ch%rch_bactlp
+            allocate(floatBuffer(size(ch%rch_bactlp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%rch_bactlp
+
         CASE("rch_bactp")       ! # cfu/100ml   |persistent bacteria stored in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%rch_bactp
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel rch_bactp: ", ch%rch_bactp
+            allocate(floatBuffer(size(ch%rch_bactp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%rch_bactp
+
         CASE("rch_cbod")        ! mg O2/L       |carbonaceous biochemical oxygen demand in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%rch_cbod
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel rch_cbod: ", ch%rch_cbod
+            allocate(floatBuffer(size(ch%rch_cbod)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%rch_cbod
+
         CASE("rch_dox")         ! mg O2/L       |dissolved oxygen concentration in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%rch_dox
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel rch_dox: ", ch%rch_dox
+            allocate(floatBuffer(size(ch%rch_dox)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%rch_dox
+
         CASE("rchstor")         ! m^3 H2O       |water stored in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%rchstor
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel rchstor: ", ch%rchstor
+            allocate(floatBuffer(size(ch%rchstor)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%rchstor
+
         CASE("sedst")           ! metric tons   |amount of sediment stored in reach
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%sedst
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel sedst: ", ch%sedst
+            allocate(floatBuffer(size(ch%sedst)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%sedst
+
         CASE("vel_chan")        ! m/s           |average flow velocity in channel
-            do i = 1, size(ch)
-                write(temp_senderBuffer, *) ch(i)%vel_chan
-                call StripSpaces(temp_senderBuffer)
-                senderBuffer = senderBuffer // trim(temp_senderBuffer) // ' '
-            end do
-            senderBuffer = senderBuffer // ']'
+            print *, "Channel vel_chan: ", ch%vel_chan
+            allocate(floatBuffer(size(ch%vel_chan)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%vel_chan
+
         CASE("bed_san")
+            print *, "Channel bed_san: ", ch%bed_san
+            allocate(floatBuffer(size(ch%bed_san)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bed_san
 
         CASE("bed_sil")
+            print *, "Channel bed_sil: ", ch%bed_sil
+            allocate(floatBuffer(size(ch%bed_sil)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bed_sil
 
         CASE("bed_cla")
+            print *, "Channel flwin: ", ch%bed_cla
+            allocate(floatBuffer(size(ch%bed_cla)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bed_cla
 
         CASE("bed_gra")
+            print *, "Channel bed_gra: ", ch%bed_gra
+            allocate(floatBuffer(size(ch%bed_gra)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bed_gra
 
         CASE("bnk_san")
+            print *, "Channel bnk_san: ", ch%bnk_san
+            allocate(floatBuffer(size(ch%bnk_san)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bnk_san
 
         CASE("bnk_sil")
+            print *, "Channel bnk_sil: ", ch%bnk_sil
+            allocate(floatBuffer(size(ch%bnk_sil)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bnk_sil
 
         CASE("bnk_cla")
+            print *, "Channel bnk_cla: ", ch%bnk_cla
+            allocate(floatBuffer(size(ch%bnk_cla)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bnk_cla
 
         CASE("bnk_gra")
+            print *, "Channel bnk_gra: ", ch%bnk_gra
+            allocate(floatBuffer(size(ch%bnk_gra)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bnk_gra
 
         CASE("depfp")
+            print *, "Channel depfp: ", ch%depfp
+            allocate(floatBuffer(size(ch%depfp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depfp
 
         CASE("depprfp")
+            print *, "Channel depprfp: ", ch%depprfp
+            allocate(floatBuffer(size(ch%depprfp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depprfp
 
         CASE("depsilfp")
+            print *, "Channel depsilfp: ", ch%depsilfp
+            allocate(floatBuffer(size(ch%depsilfp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depsilfp
 
         CASE("depclafp")
+            print *, "Channel depclafp: ", ch%depclafp
+            allocate(floatBuffer(size(ch%depclafp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depclafp
 
         CASE("depch")
+            print *, "Channel depch: ", ch%depch
+            allocate(floatBuffer(size(ch%depch)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depch
 
         CASE("depprch")
+            print *, "Channel depprch: ", ch%depprch
+            allocate(floatBuffer(size(ch%depprch)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depprch
 
         CASE("depsanch")
+            print *, "Channel depsanch: ", ch%depsanch
+            allocate(floatBuffer(size(ch%depsanch)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depsanch
 
         CASE("depsilch")
+            print *, "Channel depsilch: ", ch%depsilch
+            allocate(floatBuffer(size(ch%depsilch)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depsilch
 
         CASE("depclach")
+            print *, "Channel depclach: ", ch%depclach
+            allocate(floatBuffer(size(ch%depclach)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depclach
 
         CASE("depsagch")
+            print *, "Channel depsagch: ", ch%depsagch
+            allocate(floatBuffer(size(ch%depsagch)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depsagch
 
         CASE("deplagch")
+            print *, "Channel deplagch: ", ch%deplagch
+            allocate(floatBuffer(size(ch%deplagch)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%deplagch
 
         CASE("depgrach")
+            print *, "Channel depgrach: ", ch%depgrach
+            allocate(floatBuffer(size(ch%depgrach)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%depgrach
 
         CASE("sanst")
+            print *, "Channel sanst: ", ch%sanst
+            allocate(floatBuffer(size(ch%sanst)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%sanst
 
         CASE("silst")
+            print *, "Channel silst: ", ch%silst
+            allocate(floatBuffer(size(ch%silst)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%silst
 
         CASE("clast")
+            print *, "Channel clast: ", ch%clast
+            allocate(floatBuffer(size(ch%clast)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%clast
 
         CASE("sagst")
+            print *, "Channel sagst: ", ch%sagst
+            allocate(floatBuffer(size(ch%sagst)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%sagst
 
         CASE("lagst")
+            print *, "Channel lagst: ", ch%lagst
+            allocate(floatBuffer(size(ch%lagst)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%lagst
 
         CASE("grast")
+            print *, "Channel grast: ", ch%grast
+            allocate(floatBuffer(size(ch%grast)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%grast
 
         CASE("wattemp")
+            print *, "Channel wattemp: ", ch%wattemp
+            allocate(floatBuffer(size(ch%wattemp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%wattemp
 
         CASE("bactp")
+            print *, "Channel bactp: ", ch%bactp
+            allocate(floatBuffer(size(ch%bactp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bactp
 
         CASE("chfloodvol")
+            print *, "Channel chfloodvol: ", ch%chfloodvol
+            allocate(floatBuffer(size(ch%chfloodvol)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%chfloodvol
 
         CASE("bactlp")
+            print *, "Channel bactlp: ", ch%bactlp
+            allocate(floatBuffer(size(ch%bactlp)))
+            allocate(intBuffer(0))
+            floatBuffer = ch%bactlp
+
+!-------HRU Variables---------------------------------------------------------------------------------------------------
+        case("hru_obj_no")
+            print *, "HRU obj_no: ", hru%obj_no
+            allocate(intBuffer(size(hru%obj_no)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%obj_no
+
+        case("hru_area_ha")
+            print *, "HRU area_ha: ", hru%area_ha
+            allocate(floatBuffer(size(hru%area_ha)))
+            allocate(intBuffer(0))
+            floatBuffer = hru%area_ha
+
+        case("hru_km")
+            print *, "HRU km: ", hru%km
+            allocate(floatBuffer(size(hru%km)))
+            allocate(intBuffer(0))
+            floatBuffer = hru%km
+
+        case("hru_surf_stor")
+            !points to res() for surface storage
+            print *, "HRU surf_stor: ", hru%surf_stor
+            allocate(intBuffer(size(hru%surf_stor)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%surf_stor
+
+        case("hru_land_use_mgt")
+            print *, "HRU land_use_mgt: ", hru%land_use_mgt
+            allocate(intBuffer(size(hru%land_use_mgt)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%land_use_mgt
+
+        !    character(len=16) :: land_use_mgt_c
+
+        case("hru_lum_group")
+            print *, "HRU lum_group: ", hru%lum_group
+            allocate(intBuffer(size(hru%lum_group)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%lum_group
+
+        !    character(len=16) :: lum_group_c        !land use group for soft cal and output
+
+        !    character(len=16) :: region
+
+        case("hru_plant_cov")
+            print *, "HRU plant_cov: ", hru%plant_cov
+            allocate(intBuffer(size(hru%plant_cov)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%plant_cov
+
+        case("hru_mgt_ops")
+            print *, "HRU mgt_ops: ", hru%mgt_ops
+            allocate(intBuffer(size(hru%mgt_ops)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%mgt_ops
+
+        case("hru_tiledrain")
+            print *, "HRU tiledrain: ", hru%tiledrain
+            allocate(intBuffer(size(hru%tiledrain)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%tiledrain
+
+        case("hru_septic")
+            print *, "HRU septic: ", hru%septic
+            allocate(intBuffer(size(hru%septic)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%septic
+
+        case("hru_fstrip")
+            print *, "HRU fstrip: ", hru%fstrip
+            allocate(intBuffer(size(hru%fstrip)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%fstrip
+
+        case("hru_grassww")
+            print *, "HRU grassww: ", hru%grassww
+            allocate(intBuffer(size(hru%grassww)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%grassww
+
+        case("hru_bmpuser")
+            print *, "HRU bmpuser: ", hru%bmpuser
+            allocate(intBuffer(size(hru%bmpuser)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%bmpuser
+
+        case("hru_crop_reg")
+            print *, "HRU crop_reg: ", hru%crop_reg
+            allocate(intBuffer(size(hru%crop_reg)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%crop_reg
+
+        case("hru_cur_op")
+            print *, "HRU cur_op: ", hru%cur_op
+            allocate(intBuffer(size(hru%cur_op)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%cur_op
+
+        case("hru_sno_mm")
+            !mm H2O        |amount of water in snow on current day
+            print *, "HRU sno_mm: ", hru%sno_mm
+            allocate(floatBuffer(size(hru%sno_mm)))
+            allocate(intBuffer(0))
+            floatBuffer = hru%sno_mm
+
+        case("hru_water_fr")
+            print *, "HRU water_fr: ", hru%water_fr
+            allocate(floatBuffer(size(hru%water_fr)))
+            allocate(intBuffer(0))
+            floatBuffer = hru%water_fr
+
+        case("hru_water_seep")
+            print *, "HRU water_seep: ", hru%water_seep
+            allocate(floatBuffer(size(hru%water_seep)))
+            allocate(intBuffer(0))
+            floatBuffer = hru%water_seep
+
+        case("hru_water_evap")
+            print *, "HRU water_evap: ", hru%water_evap
+            allocate(floatBuffer(size(hru%water_evap)))
+            allocate(intBuffer(0))
+            floatBuffer = hru%water_evap
+
+        case("hru_ich_flood")
+            print *, "HRU ich_flood: ", hru%ich_flood
+            allocate(intBuffer(size(hru%ich_flood)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%ich_flood
+
+        !type (topography) :: topo
+        !type (field) :: field
+        !type (hydrology) :: hyd
+        !type (landuse) :: luse
+        !type (land_use_mgt_variables) :: lumv
+        !type (subsurface_drainage_parameters) :: sdr
+        !type (snow_parameters) :: sno
+        !type (hru_databases) :: dbs             !database pointers
+        !type (hru_databases_char) :: dbsc       !database pointers
+        !type (hru_parms_db) :: parms            !calibration parameters
 
         CASE default
             print *, "Unknown variable: ", varNombre, " checking whether it is a testing variable..."
@@ -1236,28 +1351,5 @@ contains
         call recibe()
 
     end subroutine obtener
-
-    subroutine StripSpaces(string)
-    character(len=*) :: string
-    integer :: stringLen
-    integer :: last, actual
-
-    stringLen = len (string)
-    last = 1
-    actual = 1
-
-    do while (actual < stringLen)
-        if (string(last:last) == ' ') then
-            actual = actual + 1
-            string(last:last) = string(actual:actual)
-            string(actual:actual) = ' '
-        else
-            last = last + 1
-            if (actual < last) &
-                actual = last
-        endif
-    end do
-
-    end subroutine
 
 end module tinamit_module

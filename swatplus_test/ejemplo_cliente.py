@@ -140,6 +140,39 @@ leer_datos = {
     'lte_pet': np.array([0.0]),                     #mm            |sum of potential et during growing season (for hi water stress)
     'lte_start': np.array([0]),
     'lte_end': np.array([0]),
+    #"hru_obj_no": np.array([0]),
+    #'hru_area_ha': np.array([0.0]),
+    #'hru_km': np.array([0.0]),
+    #"hru_surf_stor": np.array([0]),                    #points to res() for surface storage
+    #"hru_land_use_mgt": np.array([0]),
+    #"hru_lum_group": np.array([0]),
+    #"hru_plant_cov": np.array([0]),
+    #"hru_mgt_ops": np.array([0]),
+    #"hru_tiledrain": np.array([0]),
+    #"hru_septic": np.array([0]),
+    #"hru_fstrip": np.array([0]),
+    #"hru_grassww": np.array([0]),
+    #"hru_bmpuser": np.array([0]),
+    #"hru_crop_reg": np.array([0]),
+    #"hru_cur_op": np.array([1]),
+    #'hru_sno_mm': np.array([0.0]),                          #mm H2O        |amount of water in snow on current day
+    #'hru_water_fr': np.array([0.0]),
+    #'hru_water_seep': np.array([0.0]),
+    #'hru_water_evap': np.array([0.0]),
+    #"hru_ich_flood": np.array([0]),
+
+    # other data
+    #type(topography):: topo
+    #type(field):: field
+    #type(hydrology):: hyd
+    #type(landuse):: luse
+    #type(land_use_mgt_variables):: lumv
+    #type(subsurface_drainage_parameters):: sdr
+    #type(snow_parameters):: sno
+    #type(hru_databases):: dbs  # database pointers
+    #type(hru_databases_char):: dbsc  # database pointers
+    #type(hru_parms_db):: parms  # calibration parameters
+
 }
 
 def cliente_puertos(dirección, puerto, t_final):

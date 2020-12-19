@@ -102,13 +102,13 @@ contains
             call tomar (var, shape, intBuffer, realBuffer)
 
         elseif(orden == 'leer') then
-            print *, "In evaluar"
             call obtener (var)
 
         else
             print *, "The command: ", trim(orden), "is not recognized"
 
         end if
+
     end subroutine evaluar
 
     subroutine tomar (variable_Name, shape, intBuffer, floatBuffer)

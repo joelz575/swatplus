@@ -46,6 +46,32 @@ class PruebaIDM(TestCase):
                 npt.assert_almost_equal(dts, recibido, 5)
                 # equal to 5 decimal places
 
+    def test_mandar_datos_y_correr(símismo):
+        npasos = 5
+        check_t = 0
+        t = 0
+
+        with IDMEnchufes() as servidor:
+            símismo._empezar_cliente(servidor.dirección, servidor.puerto)
+            servidor.activar()
+            while t < t_final:
+                for nmbr_dts, dts in datos.items():
+                    with símismo.subTest(datos=nmbr_dts):
+                        print("going to send this data: ", dts)
+                        servidor.cambiar(nmbr_dts, dts)
+                        recibido = servidor.recibir(nmbr_dts)
+                        # npt.assert_almost_equal(dts, recibido)
+                        # equal to 7 decimal places
+                        npt.assert_almost_equal(dts, recibido, 5)
+                        # equal to 5 decimal places
+
+                servidor.incrementar(npasos)
+                t = servidor.recibir('t')
+                check_t = check_t + npasos
+                npt.assert_equal(check_t, t)
+
+
+
     def test_recibir_datos(símismo):
         for nmbr_dts, dts in leer_datos.items():
             with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:

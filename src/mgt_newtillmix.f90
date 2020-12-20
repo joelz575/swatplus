@@ -18,16 +18,10 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bmix        |none          |biological mixing efficiency: this 
-!!                               |number is zero for tillage operations
-!!    dg          |mm            |depth of soil layer
-!!    nl          |none          |number of layers being mixed
-!!    thtill(:)   |none          |fraction of soil layer that is mixed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Min, Max
-!!    SWAT: curno 
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -50,11 +44,8 @@
       !CB 12/2/09 nl and a are not used.
       real :: emix                     !none           |mixing efficiency
       real :: dtil                     !mm             |depth of mixing
-      real :: XX                       !varies         |variable to hold calculation results
-      real :: WW1                      !               |
-      real :: WW2                      !               |
-      real :: WW3                      !               |
-      real :: WW4                      !               |
+      real :: frac_mixed               !               |
+      real :: frac_non_mixed           !               |
       real :: maxmix                   !none           | maximum mixing eff to preserve specified minimum residue cover
       !!by zhang
       !!=============   
@@ -64,18 +55,15 @@
       !!changed the dimension from 22 + npmx to 22 + npmx + 12
       !!by zhang
       !!=============
-      real :: sol_mass(soil(jj)%nly)    !              | 
-      real :: sol_thick(soil(jj)%nly)   !              |
+      real :: sol_mass(soil(jj)%nly)    !              |mass of the soil layer
       real :: sol_msm(soil(jj)%nly)     !              |sol_mass mixed
       real :: sol_msn(soil(jj)%nly)     !              |sol_mass not mixed 
+      real :: frac_dep(soil(jj)%nly)    !              |fraction of soil layer in tillage depth
 
       npmx = cs_db%num_pests
 
-      XX = 0.
-      WW1 = 0.
-      WW2 = 0.
-      WW3 = 0.
-      WW4 = 0.
+      frac_mixed = 0.
+      frac_non_mixed = 0.
       emix = 0.
       dtil = 0.
       if (bmix > 1.e-6) then
@@ -102,7 +90,6 @@
 
       smix = 0.
       sol_mass = 0.
-      sol_thick = 0.
       sol_msm = 0.
       sol_msn = 0.
 
@@ -112,15 +99,8 @@
 	  end if
 
       do l = 1, soil(jj)%nly
-        if ( l == 1) then
-          sol_thick(l) = soil(jj)%phys(l)%d
-        else	
-          sol_thick(l) = soil(jj)%phys(l)%d - soil(jj)%phys(l-1)%d
-        end if
-	
-      sol_mass(l) = (sol_thick(l) / 1000.) * 10000. *                    &
-          soil(jj)%phys(1)%bd * 1000. * (1.- soil(jj)%phys(l)%rock/ 100.)
-
+        sol_mass(l) = (soil(jj)%phys(l)%thick / 1000.) * 10000. *                    &
+            soil(jj)%phys(1)%bd * 1000. * (1.- soil(jj)%phys(l)%rock/ 100.)
       end do
 
       smix = 0.
@@ -134,123 +114,118 @@
             !! msm = mass of soil mixed for the layer
             !! msn = mass of soil not mixed for the layer		
             sol_msm(l) = emix * sol_mass(l)	
-            sol_msn(l) = sol_mass(l) - sol_msm(l)	
-          else if (soil(jj)%phys(l)%d > dtil .AND. soil(jj)%phys(l-1)%d < dtil) then 
-            sol_msm(l) = emix * sol_mass(l) * (dtil - soil(jj)%phys(l-1)%d) / sol_thick(l)
-            sol_msn(l) =  sol_mass(l) -  sol_msm(l)
+            sol_msn(l) = sol_mass(l) - sol_msm(l)
+            frac_dep(l) = soil(jj)%phys(l)%thick / dtil
+          else if (soil(jj)%phys(l)%d > dtil .and. soil(jj)%phys(l-1)%d < dtil) then 
+            sol_msm(l) = emix * sol_mass(l) * (dtil - soil(jj)%phys(l-1)%d) / soil(jj)%phys(l)%thick
+            sol_msn(l) =  sol_mass(l) - sol_msm(l)
+            frac_dep(l) = (dtil - soil(jj)%phys(l-1)%d) / dtil
           else
             sol_msm(l) = 0.
             sol_msn(l) = sol_mass(l)
+            frac_dep(l) = 0.
           end if
 
-          !! calculate the mass or concentration of each mixed element 
-          !! mass based mixing
-          WW1 = sol_msm(l)/(sol_msm(l) + sol_msn(l))
-          smix(1) = smix(1) + soil1(jj)%mn(l)%no3 * WW1
-          smix(2) = smix(2) + soil1(jj)%hp(l)%n * WW1
-          smix(3) = smix(3) + soil1(jj)%mn(l)%nh4 * WW1
-          smix(4) = smix(4) + soil1(jj)%mp(l)%lab * WW1
-          smix(5) = smix(5) + soil1(jj)%hp(l)%p * WW1
-          smix(6) = smix(6) + soil1(jj)%hs(l)%n * WW1
-          smix(7) = smix(7) + soil1(jj)%mp(l)%act * WW1
-          smix(8) = smix(8) + soil1(jj)%tot(l)%n * WW1
-          smix(9) = smix(9) + soil1(jj)%tot(l)%p * WW1
-          smix(10) = smix(10) + soil1(jj)%mp(l)%sta * WW1
-          smix(11) = smix(11) + soil1(jj)%tot(l)%m * WW1
-          smix(12) = smix(12) + soil1(jj)%man(l)%c * WW1
-          smix(13) = smix(13) + soil1(jj)%man(l)%n * WW1
-          smix(14) = smix(14) + soil1(jj)%man(l)%p * WW1
-
-		!! concentration based mixing
-          WW2 = XX + sol_msm(l)
-          smix(15) = (XX * smix(15) + soil1(jj)%tot(l)%c * sol_msm(l))/WW2
-          smix(16) = (XX * smix(16) + soil1(jj)%tot(l)%n * sol_msm(l))/WW2
-          smix(17) = (XX * smix(17) + soil(jj)%phys(l)%clay * sol_msm(l))/WW2
-          smix(18) = (XX * smix(18) + soil(jj)%phys(l)%silt * sol_msm(l))/WW2
-          smix(19)=(XX*smix(19)+soil(jj)%phys(l)%sand*sol_msm(l))/WW2
+          !! calculate the mass each mixed element
+          frac_mixed = sol_msm(l) / sol_mass(l)
+          
+          smix(1) = smix(1) + soil1(jj)%mn(l)%no3 * frac_mixed
+          smix(2) = smix(2) + soil1(jj)%hp(l)%n * frac_mixed
+          smix(3) = smix(3) + soil1(jj)%mn(l)%nh4 * frac_mixed
+          smix(4) = smix(4) + soil1(jj)%mp(l)%lab * frac_mixed
+          smix(5) = smix(5) + soil1(jj)%hp(l)%p * frac_mixed
+          smix(6) = smix(6) + soil1(jj)%hs(l)%n * frac_mixed
+          smix(7) = smix(7) + soil1(jj)%mp(l)%act * frac_mixed
+          smix(8) = smix(8) + soil1(jj)%tot(l)%n * frac_mixed
+          smix(9) = smix(9) + soil1(jj)%tot(l)%p * frac_mixed
+          smix(10) = smix(10) + soil1(jj)%mp(l)%sta * frac_mixed
+          smix(11) = smix(11) + soil1(jj)%tot(l)%m * frac_mixed
+          smix(12) = smix(12) + soil1(jj)%man(l)%c * frac_mixed
+          smix(13) = smix(13) + soil1(jj)%man(l)%n * frac_mixed
+          smix(14) = smix(14) + soil1(jj)%man(l)%p * frac_mixed
+          smix(15) = smix(15) + soil1(jj)%tot(l)%c * frac_mixed
+          smix(16) = smix(16) + soil1(jj)%tot(l)%n * frac_mixed
+          !! sand, silt and clay are % so take weighted ave by depth
+          smix(17) = smix(17) + soil(jj)%phys(l)%clay * frac_dep(l)
+          smix(18) = smix(18) + soil(jj)%phys(l)%silt * frac_dep(l)
+          smix(19) = smix(19) + soil(jj)%phys(l)%sand * frac_dep(l)
 
             !!by zhang
             !!============== 
             if (bsn_cc%cswat == 2) then         
-	        smix(20+npmx+1) = smix(20+npmx+1) + soil1(jj)%str(l)%c * WW1
-	        smix(20+npmx+2) = smix(20+npmx+2) + soil1(jj)%lig(l)%c * WW1
-	        smix(20+npmx+3) = smix(20+npmx+3) + soil1(jj)%lig(l)%n* WW1
-	        smix(20+npmx+4) = smix(20+npmx+4) + soil1(jj)%meta(l)%c * WW1
-	        smix(20+npmx+5) = smix(20+npmx+5) + soil1(jj)%meta(l)%m * WW1
-	        smix(20+npmx+6) = smix(20+npmx+6) + soil1(jj)%lig(l)%m * WW1
-	        smix(20+npmx+7) = smix(20+npmx+7) + soil1(jj)%str(l)%m * WW1  
+	        smix(20+npmx+1) = smix(20+npmx+1) + soil1(jj)%str(l)%c * frac_mixed
+	        smix(20+npmx+2) = smix(20+npmx+2) + soil1(jj)%lig(l)%c * frac_mixed
+	        smix(20+npmx+3) = smix(20+npmx+3) + soil1(jj)%lig(l)%n* frac_mixed
+	        smix(20+npmx+4) = smix(20+npmx+4) + soil1(jj)%meta(l)%c * frac_mixed
+	        smix(20+npmx+5) = smix(20+npmx+5) + soil1(jj)%meta(l)%m * frac_mixed
+	        smix(20+npmx+6) = smix(20+npmx+6) + soil1(jj)%lig(l)%m * frac_mixed
+	        smix(20+npmx+7) = smix(20+npmx+7) + soil1(jj)%str(l)%m * frac_mixed  
 	        
-	        smix(20+npmx+8) = smix(20+npmx+8) + soil1(jj)%str(l)%n * WW1
-	        smix(20+npmx+9) = smix(20+npmx+9) + soil1(jj)%meta(l)%n * WW1
-	        smix(20+npmx+10) = smix(20+npmx+10) +soil1(jj)%microb(l)%n* WW1
-	        smix(20+npmx+11) = smix(20+npmx+11) + soil1(jj)%hs(l)%n * WW1
-	        smix(20+npmx+12) = smix(20+npmx+12) + soil1(jj)%hp(l)%n * WW1  
+	        smix(20+npmx+8) = smix(20+npmx+8) + soil1(jj)%str(l)%n * frac_mixed
+	        smix(20+npmx+9) = smix(20+npmx+9) + soil1(jj)%meta(l)%n * frac_mixed
+	        smix(20+npmx+10) = smix(20+npmx+10) +soil1(jj)%microb(l)%n* frac_mixed
+	        smix(20+npmx+11) = smix(20+npmx+11) + soil1(jj)%hs(l)%n * frac_mixed
+	        smix(20+npmx+12) = smix(20+npmx+12) + soil1(jj)%hp(l)%n * frac_mixed  
 	      end if
             !!by zhang 	
             !!=============
-			
-          XX = XX + sol_msm(l)
-
         end do
+     
+          !! sand, silt and clay are % so divide by tillage depth
+          smix(17) = smix(17) / dtil
+          smix(18) = smix(18) / dtil
+          smix(19) = smix(19) / dtil
 
           do l = 1, soil(jj)%nly
 			
             ! reconstitute each soil layer 
-            WW3 = sol_msn(l) / sol_mass(l)
-            WW4 = sol_msm(l) / XX
-
-            soil1(jj)%mn(l)%no3 = soil1(jj)%mn(l)%no3 * WW3 + smix(1) * WW4
-            soil1(jj)%hp(l)%n = soil1(jj)%hp(l)%n * WW3 + smix(2) * WW4
-            soil1(jj)%mn(l)%nh4 = soil1(jj)%mn(l)%nh4 * WW3 + smix(3) * WW4
-            soil1(jj)%mp(l)%lab = soil1(jj)%mp(l)%lab * WW3+smix(4) * WW4
-            soil1(jj)%hp(l)%p = soil1(jj)%hp(l)%p * WW3 + smix(5) * WW4
-            soil1(jj)%hs(l)%n = soil1(jj)%hs(l)%n * WW3+smix(6) * WW4
-            soil1(jj)%mp(l)%act = soil1(jj)%mp(l)%act * WW3+smix(7) * WW4
-            soil1(jj)%tot(l)%n = soil1(jj)%tot(l)%n * WW3 + smix(8) * WW4
-            soil1(jj)%tot(l)%p = soil1(jj)%tot(l)%p * WW3 + smix(9)*WW4
-            soil1(jj)%mp(l)%sta = soil1(jj)%mp(l)%sta * WW3+smix(10) * WW4
-            soil1(jj)%tot(l)%m = soil1(jj)%tot(l)%m * WW3 + smix(11)*WW4
-            if (soil1(jj)%tot(l)%m < 1.e-10) soil1(jj)%tot(l)%m = 1.e-10
-            soil1(jj)%man(l)%c = soil1(jj)%man(l)%c * WW3 + smix(12)*WW4
-            soil1(jj)%man(l)%n = soil1(jj)%man(l)%n * WW3 + smix(13)*WW4
-            soil1(jj)%man(l)%p = soil1(jj)%man(l)%p * WW3 + smix(14)*WW4
-
-            soil1(jj)%tot(l)%c = (soil1(jj)%tot(l)%c * sol_msn(l)+smix(15)    &
-                 * sol_msm(l)) / sol_mass(l)
-            soil1(jj)%tot(l)%n  = (soil1(jj)%tot(l)%n * sol_msn(l)+smix(16)     &
-                 * sol_msm(l)) / sol_mass(l)
-            soil(jj)%phys(l)%clay = (soil(jj)%phys(l)%clay                  &
-                 * sol_msn(l)+smix(17) * sol_msm(l)) / sol_mass(l)
-            soil(jj)%phys(l)%silt = (soil(jj)%phys(l)%silt                  &
-                 * sol_msn(l)+smix(18) * sol_msm(l)) / sol_mass(l)
-            soil(jj)%phys(l)%sand = (soil(jj)%phys(l)%sand                  &
-                 * sol_msn(l) + smix(19) * sol_msm(l)) / sol_mass(l)
+            frac_non_mixed = sol_msn(l) / sol_mass(l)
+            
+            soil1(jj)%mn(l)%no3 = soil1(jj)%mn(l)%no3 * frac_non_mixed + smix(1) * frac_dep(l)
+            soil1(jj)%hp(l)%n = soil1(jj)%hp(l)%n * frac_non_mixed + smix(2) * frac_dep(l)
+            soil1(jj)%mn(l)%nh4 = soil1(jj)%mn(l)%nh4 * frac_non_mixed + smix(3) * frac_dep(l)
+            soil1(jj)%mp(l)%lab = soil1(jj)%mp(l)%lab * frac_non_mixed + smix(4) * frac_dep(l)
+            soil1(jj)%hp(l)%p = soil1(jj)%hp(l)%p * frac_non_mixed + smix(5) * frac_dep(l)
+            soil1(jj)%hs(l)%n = soil1(jj)%hs(l)%n * frac_non_mixed + smix(6) * frac_dep(l)
+            soil1(jj)%mp(l)%act = soil1(jj)%mp(l)%act * frac_non_mixed + smix(7) * frac_dep(l)
+            soil1(jj)%tot(l)%n = soil1(jj)%tot(l)%n * frac_non_mixed + smix(8) * frac_dep(l)
+            soil1(jj)%tot(l)%p = soil1(jj)%tot(l)%p * frac_non_mixed + smix(9) * frac_dep(l)
+            soil1(jj)%mp(l)%sta = soil1(jj)%mp(l)%sta * frac_non_mixed + smix(10) * frac_dep(l)
+            soil1(jj)%tot(l)%m = soil1(jj)%tot(l)%m * frac_non_mixed + smix(11) * frac_dep(l)
+            soil1(jj)%man(l)%c = soil1(jj)%man(l)%c * frac_non_mixed + smix(12) * frac_dep(l)
+            soil1(jj)%man(l)%n = soil1(jj)%man(l)%n * frac_non_mixed + smix(13) * frac_dep(l)
+            soil1(jj)%man(l)%p = soil1(jj)%man(l)%p * frac_non_mixed + smix(14) * frac_dep(l)
+            soil1(jj)%tot(l)%c = soil1(jj)%tot(l)%c * frac_non_mixed + smix(15) * frac_dep(l)
+            
+            soil(jj)%phys(l)%clay = soil(jj)%phys(l)%clay * frac_non_mixed + smix(17) * frac_mixed
+            soil(jj)%phys(l)%silt = soil(jj)%phys(l)%silt * frac_non_mixed + smix(18) * frac_mixed
+            soil(jj)%phys(l)%sand = soil(jj)%phys(l)%sand * frac_non_mixed + smix(19) * frac_mixed
 
             do k = 1, npmx
-              cs_soil(jj)%ly(l)%pest(k) = cs_soil(jj)%ly(l)%pest(k) * WW3 + smix(20+k) * WW4
+              cs_soil(jj)%ly(l)%pest(k) = cs_soil(jj)%ly(l)%pest(k) * frac_non_mixed + smix(20+k) * frac_dep(l)
             end do
 
-             if (bsn_cc%cswat == 2) then
-      soil1(jj)%str(l)%c = soil1(jj)%str(l)%c * WW3+smix(20+npmx+1) * WW4
-      soil1(jj)%lig(l)%c = soil1(jj)%lig(l)%c * WW3 + smix(20+npmx+2) * WW4
-      soil1(jj)%lig(l)%n = soil1(jj)%lig(l)%n * WW3 + smix(20+npmx+3) * WW4
-      soil1(jj)%meta(l)%c = soil1(jj)%meta(l)%c * WW3 + smix(20+npmx+4) * WW4
-      soil1(jj)%meta(l)%m = soil1(jj)%meta(l)%m * WW3 + smix(20+npmx+5) * WW4
-      soil1(jj)%lig(l)%m = soil1(jj)%lig(l)%m * WW3 + smix(20+npmx+6) * WW4
-       soil1(jj)%str(l)%m = soil1(jj)%str(l)%m * WW3 + smix(20+npmx+7)* WW4
-       soil1(jj)%str(l)%n = soil1(jj)%str(l)%n * WW3 + smix(20+npmx+8) * WW4
-       soil1(jj)%meta(l)%n = soil1(jj)%meta(l)%n * WW3 + smix(20+npmx+9) * WW4
-       soil1(jj)%microb(l)%n = soil1(jj)%microb(l)%n * WW3 + smix(20 + npmx + 10) * WW4
-       soil1(jj)%hs(l)%n = soil1(jj)%hs(l)%n * WW3 + smix(20 + npmx + 11) * WW4
-       soil1(jj)%hp(l)%n = soil1(jj)%hp(l)%n * WW3 + smix(20 + npmx+12) * WW4
-             end if
+            if (bsn_cc%cswat == 2) then
+            soil1(jj)%str(l)%c = soil1(jj)%str(l)%c * frac_non_mixed + smix(20+npmx+1) * frac_dep(l)
+            soil1(jj)%lig(l)%c = soil1(jj)%lig(l)%c * frac_non_mixed + smix(20+npmx+2) * frac_dep(l)
+            soil1(jj)%lig(l)%n = soil1(jj)%lig(l)%n * frac_non_mixed + smix(20+npmx+3) * frac_dep(l)
+            soil1(jj)%meta(l)%c = soil1(jj)%meta(l)%c * frac_non_mixed + smix(20+npmx+4) * frac_dep(l)
+            soil1(jj)%meta(l)%m = soil1(jj)%meta(l)%m * frac_non_mixed + smix(20+npmx+5) * frac_dep(l)
+            soil1(jj)%lig(l)%m = soil1(jj)%lig(l)%m * frac_non_mixed + smix(20+npmx+6) * frac_dep(l)
+            soil1(jj)%str(l)%m = soil1(jj)%str(l)%m * frac_non_mixed + smix(20+npmx+7)* frac_dep(l)
+            soil1(jj)%str(l)%n = soil1(jj)%str(l)%n * frac_non_mixed + smix(20+npmx+8) * frac_dep(l)
+            soil1(jj)%meta(l)%n = soil1(jj)%meta(l)%n * frac_non_mixed + smix(20+npmx+9) * frac_dep(l)
+            soil1(jj)%microb(l)%n = soil1(jj)%microb(l)%n * frac_non_mixed + smix(20 + npmx + 10) * frac_dep(l)
+            soil1(jj)%hs(l)%n = soil1(jj)%hs(l)%n * frac_non_mixed + smix(20 + npmx + 11) * frac_dep(l)
+            soil1(jj)%hp(l)%n = soil1(jj)%hp(l)%n * frac_non_mixed + smix(20 + npmx+12) * frac_dep(l)
+            end if
             !!by zhang 
             !!==============
 
 	  end do
 	
         if (bsn_cc%cswat == 1) then
-            call mgt_tillfactor(jj,bmix,emix,dtil,sol_thick)
+            call mgt_tillfactor(jj,bmix,emix,dtil)
         end if
       end if
 

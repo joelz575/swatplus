@@ -226,6 +226,7 @@
         real :: water_fr
         real :: water_seep
         real :: water_evap
+        real :: strsa
         integer :: ich_flood
       end type hydrologic_response_unit
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru

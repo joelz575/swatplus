@@ -83,9 +83,9 @@
         sp_ob1%ru = nspu
         nspu = sp_ob%ru + nspu
       end if
-      if (sp_ob%modflow > 0) then     ! 4==modflow
-        sp_ob1%modflow = nspu
-        nspu = sp_ob%modflow + nspu
+      if (sp_ob%gwflow > 0) then     ! 4==gwflow
+        sp_ob1%gwflow = nspu
+        nspu = sp_ob%gwflow + nspu
       end if
       if (sp_ob%aqu > 0) then         ! 5==aquifer
         sp_ob1%aqu = nspu
@@ -148,11 +148,6 @@
         call ru_read
         call ru_read_elements
       end if
-        
-      !read connect file for modflow
-      if (sp_ob%modflow > 0) then
-        call hyd_read_connect(in_con%modflow_con, "modflow ", sp_ob1%modflow, sp_ob%modflow, hd_tot%modflow, 1)
-      end if
                      
       !read connect file for aquifer (1-D)
       if (sp_ob%aqu > 0) then
@@ -199,6 +194,14 @@
         call hyd_read_connect(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, bsn_prm%day_lag_mx)
         call overbank_read
       end if
+      
+      !read connect file for gwflow
+      if (sp_ob%gwflow > 0) then
+        call hyd_read_connect(in_con%gwflow_con, "gwflow  ", sp_ob1%gwflow, sp_ob%gwflow, hd_tot%gwflow, 1)
+        call gwflow_read
+      end if
+      
+      
 
       !! for each hru or defining unit, set all subbasins that contain it 
         do i = 1, sp_ob%objs
@@ -245,8 +248,8 @@
                 iob = ru_elem(ielem)%obj
                 ob(iob)%rcv_tot = ob(iob)%rcv_tot + 1
               end do
-            case ("mfl")   !modflow
-              ob(i)%obj_out(ii) = sp_ob1%modflow+ob(i)%obtypno_out(ii)-1
+            case ("gwflow")   !gwflow
+              ob(i)%obj_out(ii) = sp_ob1%gwflow+ob(i)%obtypno_out(ii)-1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
             case ("aqu")   !aquifer

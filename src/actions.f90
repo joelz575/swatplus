@@ -3,7 +3,7 @@
       use climate_module
       use time_module
       use aquifer_module
-      use hru_module, only : hru, fertno3, fertnh3, fertorgn, fertorgp, fertsolp,   &
+      use hru_module, only : hru, cn2, fertno3, fertnh3, fertorgn, fertorgp, fertsolp,   &
         ihru, ipl, isol, ndeat, phubase, sol_sumno3, sol_sumsolp, hru, yield 
       use soil_module
       use plant_module
@@ -70,6 +70,7 @@
       real :: pest_kg                      !kg/ha    |amount of pesticide applied 
       real :: irr_mm
       real :: vol_avail
+      real :: chg_par                      !variable |new parameter value
       character(len=1) :: action           !         |
 
       do iac = 1, d_tbl%acts
@@ -308,6 +309,9 @@
                 if (d_tbl%act(iac)%option == pcomdb(icom)%pl(ipl)%cpnm) then
                   pcom(j)%plcur(ipl)%gro = "y"
                   pcom(j)%plcur(ipl)%idorm = "n"
+                  if (d_tbl%act_app(iac) > 0) then
+                    call mgt_transplant (d_tbl%act_app(iac))
+                  end if
                 if (pco%mgtout == "y") then
                   write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm, "    PLANT",   &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(ihru)%sw,                     &
@@ -679,6 +683,17 @@
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             end if
           
+          !update curve number
+          case ("cn_update")
+            j = d_tbl%act(iac)%ob_num
+            if (j == 0) j = ob_cur
+            
+            if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
+              cn2(j) = chg_par (cn2(j), j, d_tbl%act(iac)%option, d_tbl%act(iac)%const, 35., 95., 0)
+              call curno (cn2(j), j)
+            end if
+            pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
+              
           !herd management - move the herd
           case ("herd")
 

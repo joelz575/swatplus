@@ -5,7 +5,7 @@
       use tillage_data_module
       use basin_module
       use hydrograph_module
-      use hru_module, only : hru, ihru, phubase, ndeat, igrz, grz_days,    &
+      use hru_module, only : hru, ihru, cn2, phubase, ndeat, igrz, grz_days,    &
         yr_skip, sol_sumno3, sol_sumsolp, fertnh3, fertno3, fertorgn,  &
         fertorgp, fertsolp, ipl, sweepeff, yr_skip, yield
       use soil_module
@@ -41,6 +41,7 @@
       real :: amt_mm               !         |
       real :: frt_kg               !kg/ha    |amount of fertilizer applied
       real :: pest_kg              !kg/ha    |amount of pesticide applied 
+      real :: chg_par              !variable |new parameter value
 
       j = ihru
       
@@ -70,6 +71,9 @@
               if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 pcom(j)%plcur(ipl)%gro = "y"
                 pcom(j)%plcur(ipl)%idorm = "n"
+                if (mgt%op4 > 0) then
+                    call mgt_transplant (mgt%op4)
+                  end if
                 if (pco%mgtout ==  "y") then
                   write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,  "    PLANT ", &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc,  soil(j)%sw,                          &
@@ -299,7 +303,20 @@
             !    phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m,        &
             !    rsd1(j)%tot(ipl)%m, sol_sumno3(j), sol_sumsolp(j), grazeop_db(mgt%op1)%eat, grazeop_db(mgt%op1)%manure
             !endif
+ 
+          case ("cnup")   !! fertilizer operation
+            ipl = 1
+            ifertop = mgt%op4                       !surface application fraction from chem app data base
+            
+            cn2(j) = chg_par (cn2(j), j, mgt%op_char, mgt%op3, 35., 95., 0)
+            call curno (cn2(j), j)
 
+            if (pco%mgtout == "y") then
+              write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    CNUP ", &
+                phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m,           &
+                rsd1(j)%tot_com%m, sol_sumno3(j), sol_sumsolp(j), mgt%op3, cn2(j)
+            endif
+ 
           case ("burn")   !! burning
             iburn = mgt%op1                 !burn type from fire data base
             do ipl = 1, pcom(j)%npl

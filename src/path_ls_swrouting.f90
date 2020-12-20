@@ -8,7 +8,7 @@
       
       implicit none
 
-      real :: j             !none          |hru number
+      integer :: j          !none          |hru number
       integer :: ipath      !none          |pathogen counter
       integer :: ipath_db   !none          |pathogen number from data file
       integer :: isp_ini    !none          |soil-plant initialization number from data file

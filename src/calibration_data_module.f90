@@ -98,9 +98,9 @@
         real :: tfr = 0.    !- or m3        |tile flow ratio - tile flow/total runoff 
         real :: pet = 0.    !- or m3        |ave annual potential et
         real :: sed = 0.    !t/ha or t      |sediment yield
-        !real :: orgn = 0.   !kg/ha or kg    |organic n yield
-        real :: orgp = 0.   !kg/ha or kg    |organic p yield
-        real :: no3 = 0.    !kg/ha or kg    |nitrate yield
+        !real :: orgn = 0.  !kg/ha or kg    |organic n yield
+        real :: wyr = 0.    !- or m3        |water yield ratio - total water yield/precip
+        real :: bfr = 0.    !- or m3        |base flow ratio - base flow/precip - lat+prec+tile
         real :: solp = 0.   !kg/ha or kg    |soluble p yield
       end type soft_calib_ls_processes
       type (soft_calib_ls_processes) :: lscal_z  !to zero values
@@ -220,8 +220,10 @@
       type (landscape_elements), dimension(:), allocatable :: pcu_elem       !point source cataoging unit
 
       type soft_calib_pl_adjust
-        real :: harv_idx = 0.   !+/- or 0/1     |harvest index
-        real :: lai_pot = 0.    !+/- or 0/1     |potential leaf area index
+        real :: epco = 0.               !+/- or 0/1     ||plant water uptake compensation factor (0-1)
+        real :: pest_stress = -1.e-9    !+/- or 0/1     |pest stress - insect/disease
+        real :: harv_idx = 0.           !+/- or 0/1     |harvest index
+        real :: lai_pot = 0.            !+/- or 0/1     |potential leaf area index
       end type soft_calib_pl_adjust
       
       type soft_calib_pl_processes
@@ -251,6 +253,8 @@
         type (soft_calib_pl_adjust) :: prm                      !parameter adjustments used in landscape calibration
         type (soft_calib_pl_adjust) :: prm_prev                 !parameter adjustments used in landscape calibration
         type (soft_calib_pl_adjust) :: prm_lim                  !code if parameters are at limits
+        type (soft_calib_pl_adjust) :: prm_uplim                !parameter adjustments used in landscape calibration
+        type (soft_calib_pl_adjust) :: prm_lowlim               !code if parameters are at limits
       end type pl_calib_regions
       
       type soft_data_calib_plant

@@ -57,6 +57,9 @@
       !-----------------------------------------------------------------------------------------------------------------
       implicit none
 
+      !rtb floodplain
+      !integer :: flood_count
+
       integer :: j                   !none          |counter
       integer :: julian_day          !none          |counter
       integer :: id                  !              |
@@ -227,9 +230,17 @@
           end do
 
           !! allocate water for water rights objects
-          !call water_allocation
+          if (db_mx%wallo_db > 0) call water_allocation     !***jga
+
+
+          !rtb floodplain
+          !flood_freq = 0
 
           call command              !! command loop
+
+          !rtb floodplain - output array of floodplain flags
+          !write(5555,1235) (flood_freq(flood_count),flood_count=1,2407)
+
 
           ! reset base0 heat units and yr_skip at end of year for southern hemisphere
           ! near winter solstace (winter solstice is around June 22)

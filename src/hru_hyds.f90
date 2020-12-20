@@ -53,6 +53,7 @@
       ob(icmd)%hd(3)%cla = clayld(j)                  !! detached clay
       ob(icmd)%hd(3)%sag = sagyld(j)                  !! detached small aggregates
       ob(icmd)%hd(3)%lag = lagyld(j)                  !! detached large aggregates
+      
       !set constituents
       do ipest = 1, cs_db%num_pests
         obcs(icmd)%hd(3)%pest(ipest) = (hpestb_d(j)%pest(ipest)%surq + hpestb_d(j)%pest(ipest)%sed) * cnv_kg

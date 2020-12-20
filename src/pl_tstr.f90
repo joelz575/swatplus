@@ -64,6 +64,14 @@
         if(tmn(j)<=wgn_pms(iwgen)%tmp_an-15.)pcom(j)%plstr(ipl)%strst=0.
 
       end if
+      
+      !! APEX temperature stress equation
+      rto = (tmpav(j) - pldb(idp)%t_base) / (pldb(idp)%t_opt - pldb(idp)%t_base)
+      if (rto > 0. .or. rto < 2.) then
+        pcom(j)%plstr(ipl)%strst = Sin(1.5707 * rto)
+      else
+        pcom(j)%plstr(ipl)%strst = 0.
+      end if
 
       return
       end subroutine pl_tstr

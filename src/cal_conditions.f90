@@ -61,7 +61,7 @@
             case ("plant")      !for hru
               do ipl = 1, pcom(ielem)%npl
                 pl_find = "n"
-                if (cal_upd(ichg_par)%cond(ic)%targc == pcom(ielem)%plg(ipl)%cpnm) then
+                if (cal_upd(ichg_par)%cond(ic)%targc == pcom(ielem)%pl(ipl)) then
                   pl_find = "y"
                 end if
                   if (pl_find == "n") cond_met = "n"
@@ -86,7 +86,8 @@
           end do    ! ic - conditions
 
           if (cond_met == "y") then
-            if (cal_parms(num_db)%ob_typ /= "sol" .and. cal_parms(num_db)%ob_typ /= "cli" .and. cal_parms(num_db)%ob_typ /= "plt") then
+            if (cal_parms(num_db)%ob_typ /= "sol" .and. cal_parms(num_db)%ob_typ /= "cli" .and. &
+              cal_parms(num_db)%ob_typ /= "plt") then
               call cal_parm_select (ielem, lyr, chg_parm, chg_typ, chg_val, absmin, absmax, num_db)
             end if
             select case (cal_parms(num_db)%ob_typ)
@@ -107,13 +108,14 @@
               case ("lai_pot")
                 do ipl = 1, pcom(ielem)%npl
                   do ic = 1, cal_upd(ichg_par)%conds
-                    if (cal_upd(ichg_par)%cond(ic)%targc == pcom(ielem)%plg(ipl)%cpnm) then
+                    if (cal_upd(ichg_par)%cond(ic)%targc == pcom(ielem)%pl(ipl)) then
                       ireg = hru(ielem)%crop_reg
                       do ilum = 1, plcal(ireg)%lum_num
-                        if (pl_prms(1)%prm(ilum)%name == pcom(ielem)%plg(ipl)%cpnm) then
+                        if (pl_prms(1)%prm(ilum)%name == pcom(ielem)%pl(ipl)) then
                           absmin = pl_prms(1)%prm(ilum)%lo
                           absmax = pl_prms(1)%prm(ilum)%up
-                          pcom(ielem)%plcur(ipl)%lai_pot = chg_par (pcom(ielem)%plcur(ipl)%lai_pot, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                          pcom(ielem)%plcur(ipl)%lai_pot = chg_par (pcom(ielem)%plcur(ipl)%lai_pot, ielem, chg_typ, chg_val, &
+                            absmin, absmax, num_db)
                         end if
                       end do
                     end if
@@ -122,13 +124,14 @@
               case ("harv_idx")
                 do ipl = 1, pcom(ielem)%npl
                   do ic = 1, cal_upd(ichg_par)%conds
-                    if (cal_upd(ichg_par)%cond(ic)%targc == pcom(ielem)%plg(ipl)%cpnm) then
+                    if (cal_upd(ichg_par)%cond(ic)%targc == pcom(ielem)%pl(ipl)) then
                       ireg = hru(ielem)%crop_reg
                       do ilum = 1, plcal(ireg)%lum_num
-                        if (pl_prms(1)%prm(ilum)%name == pcom(ielem)%plg(ipl)%cpnm) then
+                        if (pl_prms(1)%prm(ilum)%name == pcom(ielem)%pl(ipl)) then
                           absmin = pl_prms(1)%prm(ilum+nvar)%lo
                           absmax = pl_prms(1)%prm(ilum+nvar)%up
-                          pcom(ielem)%plcur(ipl)%harv_idx = chg_par (pcom(ielem)%plcur(ipl)%harv_idx, ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                          pcom(ielem)%plcur(ipl)%harv_idx = chg_par (pcom(ielem)%plcur(ipl)%harv_idx, ielem, chg_typ, chg_val, &
+                            absmin, absmax, num_db)
                         end if
                       end do
                     end if

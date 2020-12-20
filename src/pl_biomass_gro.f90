@@ -20,9 +20,13 @@
       real :: rto               !none               |ratio of current years of growth:years to maturity of perennial
       integer :: idp            !                   |
       integer :: iob            !                   |
+      integer :: iwgn
+      real :: ppet
 
       j = ihru
       idp = pcom(j)%plcur(ipl)%idplt
+      iwst = ob(j)%wst
+      iwgn = wst(iwst)%wco%wgn
       rto = 1.
  
         !! if plant hasn't reached maturity
@@ -30,7 +34,7 @@
 
           !! calculate optimal biomass
           !! adjust radiation-use efficiency for CO2
-          if (hru(j)%parms%co2 > 330.) then
+          if (hru(j)%parms%co2 > 350.) then
             beadj = 100. * hru(j)%parms%co2 / (hru(j)%parms%co2 +        &
                 Exp(plcp(idp)%ruc1 - hru(j)%parms%co2 * plcp(idp)%ruc2))
           else
@@ -45,12 +49,12 @@
             beadj = Max(beadj, 0.27 * pldb(idp)%bio_e)
           end if
 
-          beadj = pldb(idp)%bio_e
+          !beadj = pldb(idp)%bio_e
           
           !! adjust radiation-use efficiency for day length
           iob = hru(j)%obj_no
           iwst = ob(iob)%wst
-          beadj = beadj * wst(iwst)%weat%daylength / 14.    !Jimmy used 12,
+          !beadj = beadj * wst(iwst)%weat%daylength / 16.    !Jimmy used 12,
           
           bioday = beadj * par(ipl)
           if (bioday < 0.) bioday = 0.
@@ -79,6 +83,16 @@
           call pl_nup
           call pl_pup
 
+          !! try water stress as function of precip/pet
+          !ppet = wgn_pms(iwgn)%precip_sum / wgn_pms(iwgn)%pet_sum
+          !if (ppet < 0.5) then
+          !  pcom(j)%plstr(ipl)%strsw = sin(1.507 * ppet)
+          !else
+          !  pcom(j)%plstr(ipl)%strsw = 1.
+          !end if
+          !pcom(j)%plstr(ipl)%strsw = amax1 (0., pcom(j)%plstr(ipl)%strsw)
+          !pcom(j)%plstr(ipl)%strsw = amin1 (1., pcom(j)%plstr(ipl)%strsw)
+          
           !! code to turn off all plant stress
           if (bsn_cc%nostress == 1) then
             pcom(j)%plstr(ipl)%strsw = 1.
@@ -103,7 +117,7 @@
 
           pl_mass_up%m = bioday * pcom(j)%plstr(ipl)%reg
           pl_mass_up%c = 0.42 * bioday * pcom(j)%plstr(ipl)%reg
-                                      
+                
           !! increase in plant c
           if (bsn_cc%cswat == 2) then
             cbn_loss(j)%nppc_d = cbn_loss(j)%nppc_d + bioday * pcom(j)%plstr(ipl)%reg * 0.42

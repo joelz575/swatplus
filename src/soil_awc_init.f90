@@ -90,7 +90,8 @@
         soil(isol)%phys(ly)%wpmm = soil(isol)%phys(ly)%wp * soil(isol)%phys(ly)%thick
         soil(isol)%sumwp = soil(isol)%sumwp + soil(isol)%phys(ly)%wpmm
         soil(isol)%phys(ly)%crdep = soil(isol)%crk * 0.916 * Exp(-.0012 * soil(isol)%phys(ly)%d) * soil(isol)%phys(ly)%thick
-        soil(isol)%ly(ly)%volcr = soil(isol)%phys(ly)%crdep * (soil(isol)%phys(ly)%fc - soil(isol)%phys(ly)%st) / (soil(isol)%phys(ly)%fc)
+        soil(isol)%ly(ly)%volcr = soil(isol)%phys(ly)%crdep * (soil(isol)%phys(ly)%fc - soil(isol)%phys(ly)%st) / &
+            (soil(isol)%phys(ly)%fc)
         depth_prev = soil(isol)%phys(ly)%d
       end do
       !! initialize water table depth and soil water for Daniel

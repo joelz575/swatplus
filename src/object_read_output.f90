@@ -55,6 +55,7 @@
           select case (ob_out(i)%obtyp)
             case ("hru")   !hru
               ob_out(i)%objno = sp_ob1%hru + ob_out(i)%obtypno - 1
+              if (ob_out(i)%obtypno == 0) ob_out(i)%objno = 0
             case ("hlt")   !hru_lte
               ob_out(i)%objno = sp_ob1%hru_lte + ob_out(i)%obtypno - 1
             case ("ru")   !hru
@@ -84,17 +85,17 @@
                ob_out(i)%hydno = 4
             case ("til")   !tile
                ob_out(i)%hydno = 5 
-            case ("sol")  !soil storage 
+            case ("sol")  !soil moisture by layer 
                ob_out(i)%hydno = 6
             end select
          iunit = ob_out(i)%unitno
          
          open (iunit+i,file = ob_out(i)%filename,recl=2000)
-         write (9000,*) "OBJECT.PRT                ", ob_out(i)%filename
+         !write (iunit+i,*) "OBJECT.PRT                ", ob_out(i)%filename
            if (ob_out(i)%hydno == 6) then
               write (iunit+i,*) hyd_hdr_time, sol_hdr
            else
-              write (iunit+i,*) hyd_hdr_time, hyd_hdr !! write header
+             write (iunit+i,*) hyd_hdr_time, hyd_hdr !! write header
            end if
         enddo    
         exit

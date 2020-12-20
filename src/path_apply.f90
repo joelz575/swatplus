@@ -26,7 +26,7 @@
       real :: gc1          !          |
       integer :: ipath     !none      |counter
       integer :: ipath_db  !          |pathogen type from pathogens.pth data input file
-      real :: j            !          |
+      integer :: j         !          |
       
       gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
       if (gc < 0.) gc = 0.

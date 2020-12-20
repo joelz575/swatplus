@@ -24,6 +24,7 @@
       use basin_module
       use maximum_data_module
       use output_landscape_module, only : hnb_d
+      use gwflow_module
       
       implicit none
 
@@ -47,6 +48,11 @@
       integer :: ob_num               !              |
       real :: conv                    !              |
       real :: frac_in                 !              |
+      integer dum
+      integer :: i_mfl !rtb gwflow; counter
+      real :: sum
+            
+      sum = 0.
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
@@ -123,6 +129,12 @@
                   if (cs_db%num_tot > 0) then
                     obcs(icmd)%hin_til = obcs(icmd)%hin_til + frac_in * obcs(iob)%hd(ihyd)
                   end if
+                case ("aqu")   ! aquifer inflow
+                  ob(icmd)%hin_aqu = ob(icmd)%hin_aqu + frac_in * ob(iob)%hd(ihyd)
+                  !add constituents
+                  if (cs_db%num_tot > 0) then
+                    obcs(icmd)%hin_aqu = obcs(icmd)%hin_aqu + frac_in * obcs(iob)%hd(ihyd)
+                  end if
                 end select
               end if
               
@@ -181,6 +193,7 @@
         end if
 
         ! select the next command type
+
         select case (ob(icmd)%typ)
             
           case ("hru")   ! hru
@@ -198,8 +211,12 @@
             call ru_control
             if (ob(icmd)%rcv_tot > 0) call hyddep_output
 
-          case ("modflow")   ! modflow
-            !! call modflow (daily)  **Ryan**
+          case ("gwflow")   ! gwflow
+            call gwflow_simulate
+            do i_mfl = 1,sp_ob%gwflow
+              icmd = icmd + 1
+            enddo
+            icmd = icmd - 1
             
           case ("aqu")   ! aquifer
             if (ob(icmd)%dfn_tot == 0) then   !1-D use old bf recession
@@ -335,6 +352,11 @@
       !! print all output files
       if (time%yrs > pco%nyskip .and. time%step == 0) then
         call obj_output
+        
+        !! print water allocation output
+        do iwro =1, db_mx%wallo_db
+          call water_allocation_output (iwro)
+        end do
         
         do isd = 1, sp_ob%hru_lte
           call hru_lte_output (isd)

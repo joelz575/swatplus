@@ -110,9 +110,13 @@
       
       !call ch_rtmusk
       !call ch_rthr
-      
+              
+      !call sd_channel_sediment (time%step)
+        
       !! set ht1 to incoming hydrograph
       ht1 = ob(icmd)%hin
+      ht1%temp = 5.0 + 0.75 * wst(iwst)%weat%tave
+      wtemp = 5.0 + 0.75 * wst(iwst)%weat%tave
 
       !! if connected to aquifer - add flow
       if (sd_ch(ich)%aqu_link > 0) then
@@ -299,7 +303,7 @@
         !! edge-of-field to trib (assuming rectangular shape and constant tc)
         pr_ratio = (sd_ch(ich)%chl - sd_ch(ich)%hc_len / 1000.) / sd_ch(ich)%chl
         pr_ratio = Max(pr_ratio, 0.)
-        
+
         !! new q*qp (m3 * m3/s) equation for entire runoff event
         qmm = ht1%flo / (10. * ob(icmd)%area_ha)
         if (qmm > 3.) then
@@ -327,7 +331,7 @@
           perim_bank = 2. * ((sd_ch(ich)%chd ** 2) * (1. + sd_chd(isd_db)%chss ** 2)) ** 0.5
           perim_bed = sd_ch(ich)%chw
           tw = perim_bed + 2. * sd_chd(isd_db)%chss * rchdep
-          s_bank = 1.77 * (perim_bed / perim_bank + 1.5) ** - 1.4
+          s_bank = 1.77 * (perim_bed / perim_bank + 1.5) ** (-1.4)
           !! assume bank shear is 75% of bottom shear
           shear_bank = shear_btm * 0.75     !sd_ch(ich)%shear_bnk * s_bank * (tw * perim_bed) / (2. * perim_bank)
           if (sd_chd(isd_db)%clay >= 10.) then
@@ -467,21 +471,23 @@
       scoef = amax1 (0., scoef)
       scoef = amin1 (1., scoef)
       frac = 1. - scoef
-      if (rttime > det) then      ! ht1 = incoming + storage
-        !! travel time > timestep -- then all incoming is stored and frac of stored is routed
-        ht2 = scoef * ch_stor(ich)
-        ch_stor(ich) = frac * ch_stor(ich) + ht2
-        hcs2 = scoef * ch_water(ich)
-        ch_water(ich) = frac * ch_water(ich) + hcs1
-      else
+      !scoef = 1.
+      !frac = 0.
+      !if (rttime > det) then      ! ht1 = incoming + storage
+      !  !! travel time > timestep -- then all incoming is stored and frac of stored is routed
+      !  ht2 = scoef * ch_stor(ich)
+      !  ch_stor(ich) = frac * ch_stor(ich) + ht1
+      !  hcs2 = scoef * ch_water(ich)
+      !  ch_water(ich) = frac * ch_water(ich) + hcs1
+      !else
         !! travel time < timestep -- route all stored and frac of incoming
-        ht2 = scoef * ht2
+        ht2 = scoef * ht1
         ht2 = ht2 + ch_stor(ich)
-        ch_stor(ich) = frac * ht2
+        ch_stor(ich) = frac * ht1
         hcs2 = scoef * hcs1
         hcs2 = hcs2 + ch_water(ich)
         ch_water(ich) = frac * hcs1
-      end if
+      !end if
 
       !! check decision table for flow control - water allocation
       if (ob(icmd)%ruleset /= "null" .and. ob(icmd)%ruleset /= "0") then
@@ -493,6 +499,8 @@
 
       ob(icmd)%hd(1) = ht2
       ob(icmd)%hd(1)%temp = 5. + .75 * wst(iwst)%weat%tave
+      ht2%temp = 5. + .75 * wst(iwst)%weat%tave
+      ch_stor(ich)%temp = 5. + .75 * wst(iwst)%weat%tave
       
       if (cs_db%num_pests > 0) then
         obcs(icmd)%hd(1)%pest = hcs2%pest

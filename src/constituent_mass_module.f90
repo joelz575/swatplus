@@ -118,6 +118,7 @@
         type (constituent_mass) :: hin_sur
         type (constituent_mass) :: hin_lat
         type (constituent_mass) :: hin_til
+        type (constituent_mass) :: hin_aqu
         type (constituent_mass), dimension(:), allocatable :: hcsin_d
         type (constituent_mass), dimension(:), allocatable :: hcsin_m
         type (constituent_mass), dimension(:), allocatable :: hcsin_y

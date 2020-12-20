@@ -65,6 +65,10 @@
            
         allocate (sd_chd(0:imax))
         
+        !rtb floodplain
+        !allocate(flood_freq(imax))
+        !flood_freq = 0
+
         rewind (1)
         read (1,*,iostat=eof) titldum
         if (eof < 0) exit

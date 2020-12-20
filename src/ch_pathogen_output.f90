@@ -34,7 +34,8 @@
           if (pco%wb_hru%d == "y") then
              write (2780,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpath_bal(j)%path(ipaths)   !! pathicide balance
              if (pco%csvout == "y") then
-                  write (2784,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpath_bal(j)%path(ipaths)
+                  write (2784,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                    hpath_bal(j)%path(ipaths)
              end if
           end if
         end if
@@ -54,7 +55,8 @@
            if (pco%wb_hru%m == "y") then
              write (2781,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_m(j)%path(ipaths)
                if (pco%csvout == "y") then
-                 write (2785,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_m(j)%path(ipaths)
+                 write (2785,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                   hpathb_m(j)%path(ipaths)
                end if
            end if
           
@@ -75,7 +77,8 @@
            if (time%end_yr == 1 .and. pco%wb_hru%y == "y") then
              write (2782,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_y(j)%path(ipaths)
                if (pco%csvout == "y") then
-                 write (2786,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_y(j)%path(ipaths)
+                 write (2786,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                    hpathb_y(j)%path(ipaths)
                end if
            end if
           

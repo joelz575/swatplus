@@ -62,17 +62,23 @@
                if (db_mx%wgnsta > 0) call search (wgn_n, db_mx%wgnsta, wst(i)%wco_c%wgn, wst(i)%wco%wgn)
                if (wst(i)%wco%wgn == 0 .and. wst(i)%wco_c%wgn /= "sim") write (9001,*) wst(i)%wco_c%wgn, "file not found (wgn)"
                if (db_mx%pcpfiles > 0) call search (pcp_n, db_mx%pcpfiles, wst(i)%wco_c%pgage, wst(i)%wco%pgage)
-               if (wst(i)%wco%pgage == 0 .and. wst(i)%wco_c%pgage /= "sim") write (9001,*) wst(i)%wco_c%pgage, "file not found (pgage)"
+               if (wst(i)%wco%pgage == 0 .and. wst(i)%wco_c%pgage /= "sim") write (9001,*) &
+                    wst(i)%wco_c%pgage,"file not found (pgage)"
                if (db_mx%tmpfiles > 0) call search (tmp_n, db_mx%tmpfiles, wst(i)%wco_c%tgage, wst(i)%wco%tgage)
-               if (wst(i)%wco%tgage == 0 .and. wst(i)%wco_c%tgage /= "sim") write (9001,*) wst(i)%wco_c%tgage, "file not found (tgage)"
+               if (wst(i)%wco%tgage == 0 .and. wst(i)%wco_c%tgage /= "sim") write (9001,*) &
+                    wst(i)%wco_c%tgage, "file not found (tgage)"
                if (db_mx%slrfiles > 0) call search (slr_n, db_mx%slrfiles, wst(i)%wco_c%sgage, wst(i)%wco%sgage)
-               if (wst(i)%wco%sgage == 0 .and. wst(i)%wco_c%sgage /= "sim") write (9001,*) wst(i)%wco_c%sgage, "file not found (sgage)"
+               if (wst(i)%wco%sgage == 0 .and. wst(i)%wco_c%sgage /= "sim") write (9001,*) &
+                    wst(i)%wco_c%sgage, "file not found (sgage)"
                if (db_mx%rhfiles > 0) call search (hmd_n, db_mx%rhfiles, wst(i)%wco_c%hgage, wst(i)%wco%hgage) 
-               if (wst(i)%wco%hgage == 0 .and. wst(i)%wco_c%hgage /= "sim") write (9001,*) wst(i)%wco_c%hgage, "file not found (hgage)"
+               if (wst(i)%wco%hgage == 0 .and. wst(i)%wco_c%hgage /= "sim") write (9001,*) &
+                    wst(i)%wco_c%hgage, "file not found (hgage)"
                if (db_mx%wndfiles > 0) call search (wnd_n, db_mx%wndfiles, wst(i)%wco_c%wgage, wst(i)%wco%wgage)  
-               if (wst(i)%wco%wgage == 0 .and. wst(i)%wco_c%wgage /= "sim" ) write (9001,*) wst(i)%wco_c%wgage, "file not found (wgage)"
+               if (wst(i)%wco%wgage == 0 .and. wst(i)%wco_c%wgage /= "sim" ) write (9001,*) &
+                    wst(i)%wco_c%wgage, "file not found (wgage)"
                if (db_mx%atmodep > 0) call search (atmo_n, db_mx%atmodep, wst(i)%wco_c%atmodep, wst(i)%wco%atmodep)  
-               if (wst(i)%wco%atmodep == 0 .and. wst(i)%wco_c%atmodep /= "null" ) write (9001,*) wst(i)%wco_c%atmodep, "file not found (atmodep)"
+               if (wst(i)%wco%atmodep == 0 .and. wst(i)%wco_c%atmodep /= "null" ) write (9001,*) &
+                    wst(i)%wco_c%atmodep, "file not found (atmodep)"
                
                 if (eof < 0) exit  
             end do

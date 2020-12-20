@@ -205,6 +205,7 @@
              if (pco%csvout == "y") then 
                write (2047,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpw_a(j)
              end if
+             hru(j)%strsa = hpw_a(j)%strsa
              hpw_a(j) = hpwz
          end if
 

@@ -211,7 +211,7 @@
             end if
           end do
                       
-        !plants growing
+        !plant growing
         case ("plant_gro")
           ob_num = d_tbl%cond(ic)%ob_num
           if (ob_num == 0) ob_num = ob_cur
@@ -223,7 +223,24 @@
               end if
             end if
           end do
-                    
+                                    
+        !specific plant growing
+        case ("plant_name_gro")
+          ob_num = d_tbl%cond(ic)%ob_num
+          if (ob_num == 0) ob_num = ob_cur
+          do iipl = 1, pcom(ob_num)%npl
+            if (d_tbl%cond(ic)%lim_var == pcom(ob_num)%name) then
+              ipl = iipl
+            end if
+          end do
+          do ialt = 1, d_tbl%alts
+            if (d_tbl%alt(ic,ialt) == "=") then    !determine if growing (y) or not (n)
+              if (pcom(ob_num)%plcur(ipl)%gro == "n") then
+                d_tbl%act_hit(ialt) = "n"
+              end if
+            end if
+          end do
+                         
         !days since last plant
         case ("days_plant")
           ob_num = d_tbl%cond(ic)%ob_num

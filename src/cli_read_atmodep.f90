@@ -34,7 +34,8 @@
           if (eof < 0) exit
           read (127,*,iostat=eof) header
           if (eof < 0) exit
-          read (127,*,iostat=eof) atmodep_cont%num_sta, atmodep_cont%timestep, atmodep_cont%mo_init, atmodep_cont%yr_init, atmodep_cont%num
+          read (127,*,iostat=eof) atmodep_cont%num_sta, atmodep_cont%timestep, atmodep_cont%mo_init, atmodep_cont%yr_init, &
+             atmodep_cont%num
           if (eof < 0) exit
           
           ! set array pointer to first year and month

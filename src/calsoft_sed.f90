@@ -152,8 +152,9 @@
                   hru(iihru)%topo%slope = Max (hru(iihru)%topo%slope, .0000001)
                   xm = 0.6 * (1. - Exp(-35.835 * hru(iihru)%topo%slope))    
                   sin_sl = Sin(Atan(hru(iihru)%topo%slope))
-                  hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
-                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p * hru(iihru)%lumv%usle_ls * 11.8
+                  hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 * sin_sl +.065)
+                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p * &
+                    hru(iihru)%lumv%usle_ls * 11.8
                 end if
               end do
             lscal(ireg)%lum(ilum)%nbyr = 0
@@ -191,8 +192,9 @@
                   hru(iihru)%topo%slope = Max (hru(iihru)%topo%slope, .0000001)
                   xm = 0.6 * (1. - Exp(-35.835 * hru(iihru)%topo%slope))    
                   sin_sl = Sin(Atan(hru(iihru)%topo%slope))
-                  hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 * sin_sl + .065)
-                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p * hru(iihru)%lumv%usle_ls * 11.8
+                  hru(iihru)%lumv%usle_ls = (hru(iihru)%topo%slope / 22.128) ** xm * (65.41 * sin_sl * sin_sl + 4.56 * sin_sl +.065)
+                  hru(iihru)%lumv%usle_mult = soil(iihru)%phys(1)%rock * soil(iihru)%usle_k * hru(iihru)%lumv%usle_p * &
+                    hru(iihru)%lumv%usle_ls * 11.8
                 end if
               end do
             lscal(ireg)%lum(ilum)%nbyr = 0

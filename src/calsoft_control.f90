@@ -34,7 +34,8 @@
 
       !calibrate hydrology for hru
       if (cal_codes%hyd_hru == "y") then
-        call calsoft_hyd
+        !call calsoft_hyd
+        call calsoft_hyd_bfr
         !print calibrated hydrology for hru_lte
 		do ireg = 1, db_mx%lsu_reg
            do ilum = 1, region(ireg)%nlum
@@ -107,36 +108,6 @@
         call calsoft_chsed
       end if
 
-      !loop through to find the number of variable updates for calibration.upd from soft calibration
-      icvmax = 0
-      if (cal_codes%hyd_hru == "y") then
-        do ireg = 1, db_mx%lsu_reg
-          do ilum = 1, region(ireg)%nlum
-            if (abs(lscal(ireg)%lum(ilum)%petco) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%cn) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%esco) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%lat_len) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%petco) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%slope) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%tconc) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%revapc) > 1.e-6) icvmax = icvmax + 1
-            if (abs(lscal(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) icvmax = icvmax + 1
-          end do 
-        end do
-      end if
-      
-      if (cal_codes%plt == "y") then
-        do ireg = 1, db_mx%plcal_reg
-          do ilum = 1, plcal(ireg)%lum_num
-            !! plant parms
-            if (abs(plcal(ireg)%lum(ilum)%prm%lai_pot) > 1.e-6) icvmax = icvmax + 1
-            if (abs(plcal(ireg)%lum(ilum)%prm%harv_idx) > 1.e-6) icvmax = icvmax + 1
-          end do
-        end do
-      end if
-                  
       if (cal_codes%chsed == "y") then
         do ireg = 1, db_mx%ch_reg
           do iord = 1, chcal(ireg)%ord_num
@@ -146,90 +117,26 @@
         end do
       end if
            
-      !! write output to hydrology-cal.hyd      
-      write (5001,*) " hydrology-cal.hyd developed from soft data calibration"
-      write (5001,*) " NAME LAT_TTIME LAT_SED CAN_MAX  ESCO  EPCO ORGN_ENRICH ORGP_ENRICH CN3_SWF &
-                                               BIO_MIX PERCO LAT_ORGN LAT_ORGP HARG_PET LATQ_CO"
-      do ihru = 1, sp_ob%hru
-        write (5001,*) hru(ihru)%hyd
-      end do
-      
-      !! write output to hru_new.cal      
-      write (5000,*) " hru-new.cal developed from soft data calibration"
-      write (5000,501) icvmax
-501   format (i6)
-      write (5000,*) "NAME  CHG_TYP   VAL   CONDS  LYR1  LYR2   YEAR1  YEAR2   DAY1   DAY2  OBJ_TOT"
-     
-      !! write to calibration.upd and use region and land use as conditions
-      !! water balance parms
+      !! write output to hydrology-cal.hyd   
       if (cal_codes%hyd_hru == "y") then
-        do ireg = 1, db_mx%lsu_reg
-          do ilum = 1, region(ireg)%nlum
-            if (abs(lscal(ireg)%lum(ilum)%petco) > 1.e-6) then
-              lscal(ireg)%lum(ilum)%petco = 100. * (lscal(ireg)%lum(ilum)%petco - 1)
-              write (5000,503) "petco     ", "   pctchg     ", lscal(ireg)%lum(ilum)%petco,                 & 
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%cn) > 1.e-6) then
-              write (5000,503) ls_prms(1)%name, ls_prms(1)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn,           & 
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%esco) > 1.e-6) then
-              write (5000,503) ls_prms(2)%name, ls_prms(2)%chg_typ, lscal(ireg)%lum(ilum)%prm%esco,         &
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%lat_len) > 1.e-6) then
-              write (5000,503) ls_prms(3)%name, ls_prms(3)%chg_typ, lscal(ireg)%lum(ilum)%prm%lat_len,      &
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%petco) > 1.e-6) then
-              lscal(ireg)%lum(ilum)%prm%petco = 100. * (lscal(ireg)%lum(ilum)%prm%petco - 1)
-              write (5000,503) ls_prms(4)%name, ls_prms(4)%chg_typ, lscal(ireg)%lum(ilum)%prm%petco,         &
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%slope) > 1.e-6) then
-              write (5000,503) ls_prms(5)%name, ls_prms(5)%chg_typ, lscal(ireg)%lum(ilum)%prm%slope,        &
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%tconc) > 1.e-6) then
-              write (5000,503) ls_prms(6)%name, ls_prms(6)%chg_typ, lscal(ireg)%lum(ilum)%prm%tconc,        &
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%etco) > 1.e-6) then 
-              write (5000,503) "esco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
-              "     0      0      0      0      0      0      0      0      0"
-              !lscal(ireg)%lum(ilum)%prm%etco = 0.5 * lscal(ireg)%lum(ilum)%prm%etco
-              !write (5000,503) "epco            ", ls_prms(7)%chg_typ, lscal(ireg)%lum(ilum)%prm%etco,      &
-              !"     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%perco) > 1.e-6) then
-              write (5000,503) ls_prms(8)%name, ls_prms(8)%chg_typ, lscal(ireg)%lum(ilum)%prm%perco,        &
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-            if (abs(lscal(ireg)%lum(ilum)%prm%cn3_swf) > 1.e-6) then
-              write (5000,503) ls_prms(10)%name, ls_prms(10)%chg_typ, lscal(ireg)%lum(ilum)%prm%cn3_swf,    &
-              "     0      0      0      0      0      0      0      0      0"
-            end if
-          end do
+        write (5001,*) " hydrology-cal.hyd developed from soft data calibration"
+        write (5001,*) " NAME LAT_TTIME LAT_SED CAN_MAX  ESCO  EPCO ORGN_ENRICH ORGP_ENRICH CN3_SWF &
+                                               BIO_MIX PERCO LAT_ORGN LAT_ORGP HARG_PET LATQ_CO"
+        do ihru = 1, sp_ob%hru
+          write (5001,*) hru(ihru)%hyd
         end do
-      end if      ! water balance parms
-          
+      end if
+
       !! plant parms
       if (cal_codes%plt == "y") then
-        do ireg = 1, db_mx%plcal_reg
-          do ilum = 1, plcal(ireg)%lum_num
-            nvar = 2    !current number of plant calibration variables
-            if (abs(plcal(ireg)%lum(ilum)%prm%lai_pot) > 1.e-6) then
-              write (5000,503) pl_prms(ireg)%prm(ilum)%var, pl_prms(ireg)%prm(ilum)%chg_typ, plcal(ireg)%lum(ilum)%prm%lai_pot,          & 
-              "     1      0      0      0      0      0      0      0      0"
-              write (5000,*) "    plant  =      0     ", pl_prms(ireg)%prm(ilum)%name
-            end if
-            if (abs(plcal(ireg)%lum(ilum)%prm%harv_idx) > 1.e-6) then
-              write (5000,503) pl_prms(ireg)%prm(ilum+nvar)%var, pl_prms(ireg)%prm(ilum+nvar)%chg_typ, plcal(ireg)%lum(ilum)%prm%harv_idx,         & 
-              "     1      0      0      0      0      0      0      0      0"
-              write (5000,*) "    plant  =      0     ", pl_prms(ireg)%prm(ilum)%name
-            end if
-          end do
+        call pl_write_parms_cal
+                   
+        !! write perco to hydrology-cal.hyd
+        write (5001,*) " hydrology-cal.hyd developed from soft data calibration"
+        write (5001,*) " NAME LAT_TTIME LAT_SED CAN_MAX  ESCO  EPCO ORGN_ENRICH ORGP_ENRICH CN3_SWF &
+                                               BIO_MIX PERCO LAT_ORGN LAT_ORGP HARG_PET LATQ_CO"
+        do ihru = 1, sp_ob%hru
+          write (5001,*) hru(ihru)%hyd
         end do
       end if      ! plant parms
       
@@ -253,13 +160,9 @@
           end do
         end do
       end if      ! channel sediment parms
-      
-  400 format (2a16,i12,20f12.3)      
+
   500 format (a16,f12.3,i12,f12.3,2(1x,a16,10f12.3),10f12.3)
-  502 format (a16,f12.3,i12,2(1x,a16,4f12.3),4f12.3)
   503 format (2a16,f12.5,a)
-  504 format (2a16,a,i6,a)
-  505 format (a,f12.3,a)
       
       return
       end subroutine calsoft_control

@@ -86,11 +86,19 @@
         !! set parms for each plant
         ilum_mx = pl_prms(i)%lum_num * pl_prms(i)%parms
         do ilum = 1, ilum_mx
+          !! use actual value for epco and not change in value like other parms
+          if (pl_prms(i)%prm(ilum)%var == "epco") then
+            plcal(i)%lum(ilum-pl_prms(i)%lum_num)%prm%epco = pl_prms(i)%prm(ilum)%init_val
+          end if
           do ihru = 1, pl_prms(i)%num_tot
             iihru = pl_prms(i)%num(ihru)
             do ipl = 1, pcom(iihru)%npl
-              if (pl_prms(i)%prm(ilum)%name == pcom(iihru)%plg(ipl)%cpnm) then
+              if (pl_prms(i)%prm(ilum)%name == pcom(iihru)%pl(ipl)) then
                 select case (pl_prms(i)%prm(ilum)%var)
+                case ("epco")
+                  pcom(iihru)%plcur(ipl)%epco = pl_prms(i)%prm(ilum)%init_val
+                case ("pest_stress")
+                  pcom(iihru)%plcur(ipl)%pest_stress = pl_prms(i)%prm(ilum)%init_val
                 case ("lai_pot")
                   pcom(iihru)%plcur(ipl)%lai_pot = pl_prms(i)%prm(ilum)%init_val
                 case ("harv_idx")

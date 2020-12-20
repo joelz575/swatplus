@@ -10,8 +10,8 @@
       call cal_parmchg_read
 
       !! need to read plant parms before calibrating
-      call pl_read_parms_cal
       call pl_read_regions_cal      !soft data for plant parms (lai_pot and harv_idx) calibration
+      call pl_read_parms_cal
       call cal_conditions
             
       !! read update data
@@ -20,7 +20,7 @@
             
       !! read soft calibration parameters
       call calsoft_read_codes
-      call lsu_read_elements        !defining landscape units by hru
+      
       !call reg_read_elements       !defining regions by lsu and/or hru
       call lcu_read_softcal         !soft data for landscape calibration (needs to be renamed)***
       call ls_read_lsparms_cal

@@ -112,8 +112,13 @@
         if (eof < 0) exit 
        
         !! find data at start of simulation
+        if (recall(i)%typ == 0) then
+        iyrs = 1
+        iyr_prev = jday
+        else
         do 
           read (108,*,iostat=eof) jday, mo, day_mo, iyr
+          if (eof < 0) exit
           if (iyr == time%yrc) then
             recall(i)%start_yr = iyr
             select case (recall(i)%typ)
@@ -125,13 +130,14 @@
                 istep = 1
             end select
             exit
-          end if
           if (eof < 0) exit
+          end if
         end do
         
         backspace (108)
         iyr_prev = iyr
         iyrs = 1
+        end if
        
         do
           iyr_prev = iyr
@@ -147,16 +153,16 @@
           !call hyd_convert_mass (rec_om(i)%hd_om(istep,iyrs))
           !check to see when next year
           select case (recall(i)%typ)
-            case (0) !! subdaily
-              if (iyr_prev /= iyr) then
-                iyr_prev = iyr
-                iyrs = iyrs + 1
-                backspace (108)
-                read (108,*,iostat=eof) iyr, istep, recall(i)%hyd_flo(istep,iyrs)
-                !convert m3/s -> m3
-                recall(i)%hyd_flo(istep,iyrs) = recall(i)%hyd_flo(istep,iyrs) * 86400. / time%step
-                recall(i)%hyd_flo(istep,iyrs) = recall(i)%hyd_flo(istep,iyrs) / 35.     !***jga - input test hyd in cfs -> cms
-             end if
+            !case (0) !! subdaily
+            !  if (iyr_prev /= iyr) then
+            !    iyr_prev = iyr
+            !    iyrs = iyrs + 1
+            !    backspace (108)
+            !    read (108,*,iostat=eof) iyr, istep, recall(i)%hyd_flo(istep,iyrs)
+            !    !convert m3/s -> m3
+            !    recall(i)%hyd_flo(istep,iyrs) = recall(i)%hyd_flo(istep,iyrs) * 86400. / time%step
+            !    recall(i)%hyd_flo(istep,iyrs) = recall(i)%hyd_flo(istep,iyrs) / 35.     !***jga - input test hyd in cfs -> cms
+            !  end if
             
             case (1) !! daily
               istep = istep + 1

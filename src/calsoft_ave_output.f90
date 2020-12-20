@@ -28,6 +28,8 @@
                 lscal(ireg)%lum(ilu)%aa%pcr = lscal(ireg)%lum(ilu)%aa%pcr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%etr = lscal(ireg)%lum(ilu)%aa%etr / lscal(ireg)%lum(ilu)%nbyr
                 lscal(ireg)%lum(ilu)%aa%tfr = lscal(ireg)%lum(ilu)%aa%tfr / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%aa%bfr = lscal(ireg)%lum(ilu)%aa%bfr / lscal(ireg)%lum(ilu)%nbyr
+                lscal(ireg)%lum(ilu)%aa%wyr = lscal(ireg)%lum(ilu)%aa%wyr / lscal(ireg)%lum(ilu)%nbyr
                 !lscal(ireg)%lum(ilu)%aa%sed = lscal(ireg)%lum(ilu)%aa%sed / lscal(ireg)%lum(ilu)%nbyr
                 ! add nutrients
               end if
@@ -92,7 +94,8 @@
         end if
         
         !! average channel output for soft data calibration
-        if (cal_codes%chsed == "y" .and. cal_codes%sed == "n" .and. cal_codes%plt == "n" .and. cal_codes%hyd_hru == "n" .and. cal_codes%hyd_hrul == "n") then
+        if (cal_codes%chsed == "y" .and. cal_codes%sed == "n" .and. cal_codes%plt == "n" .and. cal_codes%hyd_hru == "n" .and. &
+            cal_codes%hyd_hrul == "n") then
           do ireg = 1, db_mx%ch_reg
             do ich = 1, chcal(ireg)%ord_num
               if (chcal(ireg)%ord(ich)%nbyr > 0) then

@@ -41,7 +41,7 @@
       real, dimension (5,3) :: beta                                        !              |
       real :: regres                                                       !kg            |amount of constituent removed in surface
                                                                            !              |runoff
-      real :: ulu                                                          !              |
+      integer :: ulu                                                       !              |
       integer :: j                                                         !none          |HRU number
       integer :: ii                                                        !none          |precipitation category
       real, dimension(5,3) :: bcod =                                   &   !none          |regression coefficients for calculating

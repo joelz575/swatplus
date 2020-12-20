@@ -5,6 +5,7 @@
       use hydrology_data_module
       use topography_data_module
       use soil_data_module
+      use plant_module
       
       implicit none
 
@@ -13,12 +14,12 @@
       integer :: isno                 !none       |counter
       integer :: nly                  !           |
       integer :: ifield_db            !           |
-      integer :: isol                 !           |
       integer :: itopohd_db           !           |
       integer :: ihyd_db              !           |
       integer :: itopo_db             !           |
       integer :: isno_db
       integer :: iob                  !           |
+      integer :: ipl                  !           |
       real :: perc_ln_func            !none       |function to convert perco to perc_lim
     
       !!assign topography and hyd parameters
@@ -27,7 +28,6 @@
         itopo_db = hru(ihru)%dbs%topo
         ihyd_db = hru(ihru)%dbs%hyd
         itopohd_db = hru(ihru)%dbs%topo
-        isol = hru(ihru)%dbs%soil
         ifield_db = hru(ihru)%dbs%field
         hru(ihru)%topo%name = topo_db(itopo_db)%name
         hru(ihru)%topo%elev = ob(iob)%elev
@@ -49,15 +49,13 @@
         !! set hru snow paramters
         isno_db = hru(ihru)%dbs%snow
         hru(ihru)%sno = snodb(isno_db)
-         
-        !! try setting for tile  *********************Mike
+
+        !! try setting for tile
         if (hru(ihru)%tiledrain > 0) then
           hru(ihru)%hyd%cn3_swf = 0.95
           hru(ihru)%hyd%perco = 0.1
         end if
-        
-        call curno(cn2(ihru),ihru)
-        
+
         if (hru(ihru)%hyd%perco > 1.e-9) then
           perc_ln_func = 1.0052 * log(-log(hru(ihru)%hyd%perco - 1.e-6)) + 5.6862
           hru(ihru)%hyd%perco_lim = exp(-perc_ln_func)
@@ -73,7 +71,7 @@
         hru(ihru)%hyd%latq_co = hyd_db(ihyd_db)%latq_co
         hru(ihru)%hyd%harg_pet = hyd_db(ihyd_db)%harg_pet
         if (hru(ihru)%hyd%harg_pet < 1.e-6) hru(ihru)%hyd%harg_pet = .0023
-        !hru(ihru)%hyd%harg_pet = .0023
+        hru(ihru)%hyd%harg_pet = .0023
         
         ! set field data
         hru(ihru)%field%length = field_db(ifield_db)%length

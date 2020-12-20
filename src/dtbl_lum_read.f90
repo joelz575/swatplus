@@ -9,6 +9,7 @@
       use input_file_module
       use conditional_module
       use pesticide_data_module
+      use plant_data_module
       use constituent_mass_module
       use hydrograph_module, only : sp_ob
       use hru_module, only : hru
@@ -46,7 +47,7 @@
           if (eof < 0) exit
           read (107,*,iostat=eof)
           if (eof < 0) exit
-          allocate (dtbl_lum(0:mdtbl))
+          allocate (dtbl_lum(1:mdtbl))
 
           do i = 1, mdtbl
             read (107,*,iostat=eof) header
@@ -95,7 +96,16 @@
             !cross walk characters to get array numbers
             do iac = 1, dtbl_lum(i)%acts
                 select case (dtbl_lum(i)%act(iac)%typ)
-                    
+                                     
+                case ("plant")
+                  !xwalk file pointer transplant data base
+                  do idb = 1, db_mx%transplant
+                    if (dtbl_lum(i)%act(iac)%file_pointer == transpl(idb)%name) then
+                      dtbl_lum(i)%act_app(iac) = idb
+                      exit
+                    endif
+                  end do
+                       
                 case ("harvest")
                   do idb = 1, db_mx%harvop_db
                     if (dtbl_lum(i)%act(iac)%file_pointer == harvop_db(idb)%name) then

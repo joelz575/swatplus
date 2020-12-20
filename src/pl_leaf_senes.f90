@@ -33,7 +33,7 @@
       if (pldb(idp)%typ == "warm_annual" .or. pldb(idp)%typ == "cold_annual" .or.  &
              pldb(idp)%typ == "warm_annual_tuber" .or. pldb(idp)%typ == "cold_annual_tuber") then
         if (pcom(j)%plcur(ipl)%phuacc > pldb(idp)%dlai .and. pcom(j)%plcur(ipl)%phuacc < 1.) then
-          rto = (1. - pcom(j)%plcur(ipl)%phuacc) / (1. - pldb(idp)%dlai)
+          rto = (1. - pcom(j)%plcur(ipl)%phuacc) / (1. - pcom(j)%plg(ipl)%dphu)
           pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%olai * rto ** pldb(idp)%dlai_rate
         end if
       end if
@@ -47,7 +47,7 @@
           !! logistic decline rate - Strauch and Volk
           rto = (1. - wst(iwst)%weat%phubase0) / (1. - pldb(idp)%dlai)
           pcom(j)%plg(ipl)%lai = (pcom(j)%plg(ipl)%olai - pldb(idp)%alai_min) /   &
-                (1. + Exp((rto - .5) * -12)) + pldb(idp)%alai_min
+                (1. + Exp((rto - .5) * (-12))) + pldb(idp)%alai_min
                   
           !! compute leaf biomass drop
           lai_drop = lai_init - pcom(j)%plg(ipl)%lai

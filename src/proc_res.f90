@@ -20,8 +20,6 @@
         call res_initial
       end if
 
-      call header_snutc
-        
 	  return
       
       end subroutine proc_res

@@ -166,7 +166,8 @@
             end if
          end do
          
-        if (hru_db(i)%dbs%field == 0 .and. hru_db(i)%dbsc%field /= 'null') write (9001,*) hru_db(i)%dbsc%field, "not found (field.fld)"
+        if (hru_db(i)%dbs%field == 0 .and. hru_db(i)%dbsc%field /= 'null') write (9001,*) &
+          hru_db(i)%dbsc%field, "not found (field.fld)"
 
       end do
       exit

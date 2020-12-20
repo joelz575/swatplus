@@ -122,6 +122,8 @@
         integer :: aqudb = 0
         integer :: aqu2d = 0
         integer :: wro_db = 0
+        integer :: wallo_db = 0
+        integer :: transplant
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
                                  

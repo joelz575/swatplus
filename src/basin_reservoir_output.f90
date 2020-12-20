@@ -36,9 +36,11 @@
         !! daily print - RESERVOIR
         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%res_bsn%d == "y") then
-            write (2100,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_wat_d, bres, bres_in_d, bres_out_d
+            write (2100,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_wat_d, &
+              bres, bres_in_d, bres_out_d
             if (pco%csvout == "y") then
-              write (2104,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_wat_d, bres, bres_in_d, bres_out_d
+              write (2104,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, &
+                bres_wat_d, bres, bres_in_d, bres_out_d
             end if
           end if
         end if
@@ -51,9 +53,11 @@
           bres_wat_m = bres_wat_m // const
           bres_wat_y = bres_wat_y + bres_wat_m
           if (pco%res_bsn%m == "y") then
-           write (2101,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name,  bres_wat_m, bres, bres_in_m, bres_out_m 
+           write (2101,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name,  bres_wat_m, bres, &
+             bres_in_m, bres_out_m 
             if (pco%csvout == "y") then
-              write (2105,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name,  bres_wat_m, bres, bres_in_m, bres_out_m
+              write (2105,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name,  &
+                bres_wat_m, bres, bres_in_m, bres_out_m
             endif
           end if
           bres_in_m = resmz
@@ -68,9 +72,11 @@
           bres_wat_y = bres_wat_y // 12.
           bres_wat_a = bres_wat_a + bres_wat_y
           if (pco%res_bsn%y == "y") then
-            write (2102,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name,  bres_wat_y, bres, bres_in_y, bres_out_y
+            write (2102,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name,  bres_wat_y, &
+              bres, bres_in_y, bres_out_y
             if (pco%csvout == "y") then
-              write (2106,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_wat_y, bres, bres_in_y, bres_out_y 
+              write (2106,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, &
+                bres_wat_y, bres, bres_in_y, bres_out_y 
             end if
           end if
           !! zero yearly variables        
@@ -84,9 +90,11 @@
         bres_in_a = bres_in_a / time%yrs_prt
         bres_out_a = bres_out_a / time%yrs_prt
         bres_wat_a = bres_wat_a / time%yrs_prt
-        write (2103,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_wat_a, bres, bres_in_a, bres_out_a
+        write (2103,100) time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_wat_a, bres, &
+          bres_in_a, bres_out_a
         if (pco%csvout == "y") then 
-          write (2107,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, bres_wat_a, bres, bres_in_a, bres_out_a
+          write (2107,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ires, "     1", bsn%name, &
+            bres_wat_a, bres, bres_in_a, bres_out_a
         end if 
       end if
       

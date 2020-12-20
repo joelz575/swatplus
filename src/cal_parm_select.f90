@@ -32,6 +32,7 @@
       use organic_mineral_mass_module
       use hydrograph_module
       use pesticide_data_module
+      use plant_module
       
       implicit none
 
@@ -45,6 +46,7 @@
       integer, intent (in) :: ly                            !                |
       integer :: nly                                        !                |
       integer :: jj                                         !                |soil layer counter
+      integer :: ipl                                        !                |
       real :: dep_below_soil                                !                |
       real :: alpha                                         !                | 
       real :: exp                                           !                | 
@@ -121,7 +123,11 @@
          
       case ("epco")
         hru(ielem)%hyd%epco = chg_par (hru(ielem)%hyd%epco,             & 
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)             
+        !! set epco parameter for each crop
+        do ipl = 1, pcom(ielem)%npl
+          pcom(ielem)%plcur(ipl)%epco = hru(ielem)%hyd%epco
+        end do
         
       case ("erorgn")
         hru(ielem)%hyd%erorgn = chg_par (hru(ielem)%hyd%erorgn,         & 
@@ -599,34 +605,70 @@
             sd_ch(ielem)%chn = chg_par(sd_ch(ielem)%chn,                  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("cov")
-            sd_ch(ielem)%cov = chg_par(sd_ch(ielem)%cov,                  &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!         case ("chk")
+!            sd_ch(ielem)%chk = chg_par(sd_ch(ielem)%chk,                  &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
          case ("cherod")
             sd_ch(ielem)%cherod = chg_par(sd_ch(ielem)%cherod,            &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("shear_bnk")
-            sd_ch(ielem)%shear_bnk = chg_par(sd_ch(ielem)%shear_bnk,            &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!         case ("cov")
+!            sd_ch(ielem)%cov = chg_par(sd_ch(ielem)%cov,                  &
+!                        ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            
+!         case ("wd_rto")
+!            sd_ch(ielem)%wd_rto = chg_par(sd_ch(ielem)%wd_rto,            &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("hc_erod")
-            sd_ch(ielem)%hc_erod = chg_par(sd_ch(ielem)%hc_erod,              &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!         case ("chseq")
+!            sd_ch(ielem)%chseq = chg_par(sd_ch(ielem)%chseq,              &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("hc_co")
-            sd_ch(ielem)%hc_co = chg_par(sd_ch(ielem)%hc_co,  &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!         case ("d50")
+!            sd_ch(ielem)%d50 = chg_par(sd_ch(ielem)%d50,  &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("hc_len")
-            sd_ch(ielem)%hc_len = chg_par(sd_ch(ielem)%hc_len,            &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+!         case ("clay")
+!            sd_ch(ielem)%clay = chg_par(sd_ch(ielem)%clay,            &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("hc_hgt")
-            sd_ch(ielem)%hc_hgt = chg_par(sd_ch(ielem)%hc_hgt,            &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)     
+!         case ("carbon")
+!            sd_ch(ielem)%carbon = chg_par(sd_ch(ielem)%carbon,            &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)     
  
+!         case ("bd")
+!            sd_ch(ielem)%bd = chg_par(sd_ch(ielem)%bd,                  &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+!         case ("chss")
+!            sd_ch(ielem)%chss = chg_par(sd_ch(ielem)%chss,            &
+!                        ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+!         case ("bedldcoef")
+!            sd_ch(ielem)%bedldcoef = chg_par(sd_ch(ielem)%bedldcoef,                  &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            
+!         case ("fps")
+ !           sd_ch(ielem)%fps = chg_par(sd_ch(ielem)%fps,            &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+!         case ("fpn")
+!            sd_ch(ielem)%fpn = chg_par(sd_ch(ielem)%fpn,              &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+
+!         case ("hc_kh")
+!            sd_ch(ielem)%hc_kh = chg_par(sd_ch(ielem)%hc_kh,            &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+!         case ("hc_hgt")
+!            sd_ch(ielem)%hc_hgt = chg_par(sd_ch(ielem)%hc_hgt,            &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+!         case ("hc_ini")
+!            sd_ch(ielem)%hc_ini = chg_par(sd_ch(ielem)%hc_ini,            &
+!                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            
       !!RES
          case ("esa")
            res_ob(ielem)%esa = chg_par(res_ob(ielem)%esa,             &

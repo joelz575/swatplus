@@ -131,13 +131,22 @@
           
           end do    !nprob
           
+          !output flows in m3/s
+          ob(icmd)%fdc%p_md%mean = ob(icmd)%fdc%p_md%mean / 86400.
+          ob(icmd)%fdc%p_md%p = ob(icmd)%fdc%p_md%p / 86400.
+          ob(icmd)%fdc%p_md%max = ob(icmd)%fdc%p_md%max / 86400.
+          ob(icmd)%fdc%p_md%min = ob(icmd)%fdc%p_md%min / 86400.
+          write (6000,*) ob(icmd)%typ, ob(icmd)%props, ob(icmd)%area_ha, ob(icmd)%fdc%p_md%mean,        &
+              ob(icmd)%fdc%p_md%max, ob(icmd)%fdc%p_md%p, ob(icmd)%fdc%p_md%min
+          
           !convert to mm -- m3 * 1 / ha * ha/ 10,000 m3 * 1,000 mm/m = mm
           !normalize by dividing by mean flow in mm
-          ob(icmd)%fdc%p_md%mean = ob(icmd)%fdc%p_md%mean / ob(icmd)%area_ha / 10.
-          ob(icmd)%fdc%p_md%p = ob(icmd)%fdc%p_md%p / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
-          ob(icmd)%fdc%p_md%max = ob(icmd)%fdc%p_md%max / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
-          ob(icmd)%fdc%p_md%min = ob(icmd)%fdc%p_md%min / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
-          write (6000,*) ob(icmd)%typ, ob(icmd)%props, ob(icmd)%area_ha, ob(icmd)%fdc%p_md%mean, ob(icmd)%fdc%p_md%max, ob(icmd)%fdc%p_md%p, ob(icmd)%fdc%p_md%min
+          !ob(icmd)%fdc%p_md%mean = ob(icmd)%fdc%p_md%mean / ob(icmd)%area_ha / 10.
+          !ob(icmd)%fdc%p_md%p = ob(icmd)%fdc%p_md%p / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
+          !ob(icmd)%fdc%p_md%max = ob(icmd)%fdc%p_md%max / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
+          !ob(icmd)%fdc%p_md%min = ob(icmd)%fdc%p_md%min / ob(icmd)%area_ha / ob(icmd)%fdc%p_md%mean / 10.
+          !write (6000,*) ob(icmd)%typ, ob(icmd)%props, ob(icmd)%area_ha, ob(icmd)%fdc%p_md%mean,        &
+          !    ob(icmd)%fdc%p_md%max, ob(icmd)%fdc%p_md%p, ob(icmd)%fdc%p_md%min
         end if
                
         !master duration curve from annual curves (median)

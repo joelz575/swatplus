@@ -111,10 +111,10 @@
                                             !              |daylength for the area, the plant will go
                                             !              |dormant)     
       integer :: mon                        !none          |monthly counter
-      real :: mdays                         !none          |number of days in the month
-      real :: j                             !none          |counter
-      real :: m1                            !none          |array location (see definition of ndays)
-      real ::  nda                          !julian date   |julian date of last day in the month
+      integer :: mdays                      !none          |number of days in the month
+      integer :: j                          !none          |counter
+      integer :: m1                         !none          |array location (see definition of ndays)
+      integer ::  nda                       !julian date   |julian date of last day in the month
       real :: cli_dstn1                     !              |
       real :: pcp_gen                       !mm H2O        |generated precipitation
       real :: aunif                         !              |

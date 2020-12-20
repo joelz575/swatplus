@@ -27,8 +27,7 @@
       integer :: mo                  !none       |counter 
       integer :: iday                !none       |counter 
       integer :: iplt                !none       |counter 
-      integer :: i                   !none       |counter  
-      integer :: icn                 !none       |counter 
+      integer :: i                   !none       |counter
       integer :: icp                 !none       |counter 
       integer :: ilum                !none       |counter 
       integer :: idb                 !none       |counter 
@@ -103,6 +102,7 @@
         
         pcom(j)%npl = pcomdb(icom)%plants_com
         ipl = pcom(j)%npl
+        allocate (pcom(j)%pl(ipl))
         allocate (pcom(j)%plg(ipl)) 
         allocate (pcom(j)%plm(ipl)) 
         allocate (pl_mass(j)%tot(ipl)) 
@@ -122,7 +122,7 @@
         pcom(j)%rot_yr = 1
         pcom(j)%laimx_sum = 0.
         do ipl = 1, pcom(j)%npl
-          pcom(j)%plg(ipl)%cpnm = pcomdb(icom)%pl(ipl)%cpnm
+          pcom(j)%pl(ipl) = pcomdb(icom)%pl(ipl)%cpnm
           pcom(j)%plcur(ipl)%gro = pcomdb(icom)%pl(ipl)%igro
           pcom(j)%plcur(ipl)%idorm = "y"
           idp = pcomdb(icom)%pl(ipl)%db_num
@@ -208,7 +208,7 @@
                 endif 
                 daylength = 7.6394 * h
                 iday_sh = iday
-                if (daylength - 0.5 > wgn_pms(iwgn)%daylmn) exit
+                if (daylength - bsn_prm%dorm_hr > wgn_pms(iwgn)%daylmn) exit
               end do
             end if
             
@@ -270,7 +270,7 @@
           pcom(j)%plg(ipl)%laimxfr = pcom(j)%plcur(ipl)%phuacc / (pcom(j)%plcur(ipl)%phuacc +     &
               Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc))
           pcom(j)%plg(ipl)%lai = pcomdb(icom)%pl(ipl)%lai
-          pcom(j)%laimx_sum = pcom(j)%laimx_sum + pcom(j)%plg(ipl)%lai
+          pcom(j)%laimx_sum = pcom(j)%laimx_sum + pldb(idp)%blai
           pl_mass(j)%tot(ipl)%m = pcomdb(icom)%pl(ipl)%bioms
           pcom(j)%plcur(ipl)%curyr_mat = int (pcomdb(icom)%pl(ipl)%fr_yrmat * float(pldb(idp)%mat_yrs))
           pcom(j)%plcur(ipl)%curyr_mat = max (1, pcom(j)%plcur(ipl)%curyr_mat)
@@ -307,19 +307,12 @@
         end if   ! icom > 0
 
         ilum = hru(ihru)%land_use_mgt
-        !! set initial curve number parameters
-        icn = lum_str(ilum)%cn_lu
-        select case (sol(isol)%s%hydgrp)
-        case ("A")
-          cn2(j) = cn(icn)%cn(1)
-        case ("B")
-          cn2(j) = cn(icn)%cn(2)
-        case ("C")
-          cn2(j) = cn(icn)%cn(3)
-        case ("D")
-          cn2(j) = cn(icn)%cn(4)
-        end select
-
+                 
+        !! set epco parameter for each crop
+        do ipl = 1, pcom(ihru)%npl
+          pcom(ihru)%plcur(ipl)%epco = hru(ihru)%hyd%epco
+        end do
+        
         !! set p factor and slope length (ls factor)
         icp = lum_str(ilum)%cons_prac
         xm = .6 * (1. - Exp(-35.835 * hru(ihru)%topo%slope))

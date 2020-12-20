@@ -20,6 +20,10 @@
       integer :: icontrib       !none       |counter
       integer :: ipest          !none       |counter
       integer :: ipest_db       !none       |pesticide number from pesticide data base
+      integer :: ipseq          !none       |sequential basin pesticide number
+      integer :: ipdb           !none       |seqential pesticide number of daughter pesticide
+      integer :: imeta          !none       |pesticide metabolite counter
+      real :: mol_wt_rto        !ratio      |molecular weight ratio of duaghter to parent pesticide
       real :: stor_init         !           |
       real :: conc_no3          !           |
       real :: step              !           |
@@ -163,6 +167,15 @@
         if (cs_aqu(iaq)%pest(ipest) > 1.e-12) then
           aqupst_d(iaq)%pest(ipest)%react = cs_aqu(iaq)%pest(ipest) * (1. - pestcp(ipest_db)%decay_s)
           cs_aqu(iaq)%pest(ipest) =  cs_aqu(iaq)%pest(ipest) * pestcp(ipest_db)%decay_s
+          !! add decay to daughter pesticides
+          do imeta = 1, pestcp(ipest_db)%num_metab
+            ipseq = pestcp(ipest_db)%daughter(imeta)%num
+            ipdb = cs_db%pest_num(ipseq)
+            mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(ipest_db)%mol_wt
+            aqupst_d(iaq)%pest(ipseq)%metab = aqupst_d(iaq)%pest(ipseq)%metab + aqupst_d(iaq)%pest(ipest)%react *     &
+                                           pestcp(ipest_db)%daughter(imeta)%soil_fr * mol_wt_rto
+            cs_aqu(iaq)%pest(ipseq) = cs_aqu(iaq)%pest(ipseq) + aqupst_d(iaq)%pest(ipseq)%metab
+          end do
         end if
             
         !! compute pesticide in aquifer flow

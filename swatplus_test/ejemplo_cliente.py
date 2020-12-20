@@ -116,7 +116,7 @@ leer_datos = {
     'lte_awc': np.array([183.539993]),                    #mm/mm        |available water capacity of soil
     'lte_g': np.array([0.0]),
     'lte_hufh': np.array([0.0]),
-    'lte_phu': np.array([2698.91772]),
+    'lte_phu': np.array([500]),
     'lte_por': np.array([532.000000]),
     'lte_sc': np.array([2.29999995]),
     'lte_sw': np.array([91.7699966]),                      #mm/mm         |initial soil water storage
@@ -132,8 +132,8 @@ leer_datos = {
     'lte_gwdeep': np.array([0.0]),                 #mm            |deep aquifer storage
     'lte_aet': np.array([0.0]),                     #mm            |sum of actual et during growing season (for hi water stress)
     'lte_pet': np.array([0.0]),                     #mm            |sum of potential et during growing season (for hi water stress)
-    'lte_start': np.array([0]),
-    'lte_end': np.array([0]),
+    'lte_start': np.array([1]),
+    'lte_end': np.array([2]),
     #"hru_obj_no": np.array([0]),
     #'hru_area_ha': np.array([0.0]),
     #'hru_km': np.array([0.0]),

@@ -31,9 +31,11 @@
        !! daily print
        if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
         if (pco%sd_chan_bsn%d == "y") then
-          write (4900,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_d, bch_stor_d, bch_in_d, bch_out_d
+          write (4900,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_d, &
+          bch_stor_d, bch_in_d, bch_out_d
           if (pco%csvout == "y") then
-            write (4904,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_d, bch_stor_d, bch_in_d, bch_out_d
+            write (4904,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, &
+            bch_wat_d, bch_stor_d, bch_in_d, bch_out_d
           end if 
         end if 
       end if
@@ -47,9 +49,11 @@
         bch_wat_m = bch_wat_m // const            !! // only divides area (daily average values)
 
         if (pco%sd_chan_bsn%m == "y") then
-          write (4901,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_m, bch_stor_d, bch_in_m, bch_out_m
+          write (4901,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_m, &
+            bch_stor_d, bch_in_m, bch_out_m
           if (pco%csvout == "y") then
-            write (4905,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_m, bch_stor_d, bch_in_m, bch_out_m
+            write (4905,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, &
+              bch_wat_m, bch_stor_d, bch_in_m, bch_out_m
           end if
         end if
         bch_in_m = chaz
@@ -66,9 +70,11 @@
         bch_wat_y = bch_wat_y // const      !! // only divides area (daily average values)
 
         if (pco%sd_chan_bsn%y == "y") then 
-          write (4902,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_y, bch_stor_d, bch_in_y, bch_out_y
+          write (4902,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_y, &
+            bch_stor_d, bch_in_y, bch_out_y
           if (pco%csvout == "y") then
-            write (4906,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_y, bch_stor_d, bch_in_y, bch_out_y
+            write (4906,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name,&
+              bch_wat_y, bch_stor_d, bch_in_y, bch_out_y
           end if
         end if
         bch_in_y = chaz
@@ -82,9 +88,11 @@
         bch_out_a = bch_out_a / time%yrs_prt
         bch_wat_a = bch_wat_a / time%yrs_prt        !! all summed variables divided by years
 
-        write (4903,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_a, bch_stor_d, bch_in_a, bch_out_a
+        write (4903,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_a, &
+          bch_stor_d, bch_in_a, bch_out_a
         if (pco%csvout == "y") then
-          write (4907,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, bch_wat_a, bch_stor_d, bch_in_a, bch_out_a
+          write (4907,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "     1", bsn%name, &
+            bch_wat_a, bch_stor_d, bch_in_a, bch_out_a
         end if
       end if
 

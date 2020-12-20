@@ -33,9 +33,11 @@
       !! daily print
         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%pest%d == "y") then
-             write (2808,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_d(j)%pest(ipest)   !! pesticide balance
+             write (2808,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), &
+               chpst_d(j)%pest(ipest)   !! pesticide balance
              if (pco%csvout == "y") then
-               write (2812,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_d(j)%pest(ipest)
+               write (2812,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                 cs_db%pests(ipest), chpst_d(j)%pest(ipest)
              end if
           end if
         end if
@@ -50,9 +52,11 @@
 
           !! monthly print
            if (pco%pest%m == "y") then
-             write (2809,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_m(j)%pest(ipest)
+             write (2809,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), &
+               chpst_m(j)%pest(ipest)
                if (pco%csvout == "y") then
-                 write (2813,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_m(j)%pest(ipest)
+                 write (2813,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                   cs_db%pests(ipest), chpst_m(j)%pest(ipest)
                end if
            end if
           
@@ -67,9 +71,11 @@
 
           !! yearly print
            if (time%end_yr == 1 .and. pco%pest%y == "y") then
-             write (2810,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_y(j)%pest(ipest)
+             write (2810,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), &
+               chpst_y(j)%pest(ipest)
                if (pco%csvout == "y") then
-                 write (2814,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_y(j)%pest(ipest)
+                 write (2814,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                   cs_db%pests(ipest), chpst_y(j)%pest(ipest)
                end if
            end if
            
@@ -79,9 +85,11 @@
          if (time%end_sim == 1 .and. pco%pest%a == "y") then
            chpst_a(j)%pest(ipest) = chpst_a(j)%pest(ipest) / time%yrs_prt
            chpst_a(j)%pest(ipest) = chpst_a(j)%pest(ipest) // time%yrs_prt
-           write (2811,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_a(j)%pest(ipest)
+           write (2811,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), &
+             chpst_a(j)%pest(ipest)
            if (pco%csvout == "y") then
-             write (2815,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, cs_db%pests(ipest), chpst_a(j)%pest(ipest)
+             write (2815,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+               cs_db%pests(ipest), chpst_a(j)%pest(ipest)
            end if
            chpst_a(j)%pest(ipest) = ch_pestbz
          end if
@@ -89,6 +97,6 @@
       end do    !pesticide loop
       return
       
-100   format (4i6,2i8,2x,2a,12e12.4)      
+100   format (4i6,2i8,2x,2a,14e12.4)      
 
       end subroutine cha_pesticide_output

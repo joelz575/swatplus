@@ -1,4 +1,4 @@
-       subroutine mgt_tillfactor(jj,bmix,emix,dtil,sol_thick)
+       subroutine mgt_tillfactor(jj,bmix,emix,dtil)
 	!!!!!!!!!!!!!!!!!!!!!!!
 	! Armen 16 January 2008
 	! This procedure increases tillage factor (tillagef(l,jj) per layer for each operation
@@ -27,7 +27,6 @@
     real :: emix                      !none           |mixing efficiency
     real :: dtil                      !mm             |depth of mixing
     real :: XX                        !varies         |variable to hold calculation results
-	real :: sol_thick(soil(jj)%nly)   !               | 
     integer :: j                      !none           |counter
     real :: zz                        !               |
     real :: yy                        !               |
@@ -43,11 +42,10 @@
 			
 	    if (soil(jj)%phys(l)%d <= dtil) then
 		  emix = emix
-          else if(soil(jj)%phys(l)%d > dtil .AND. soil(jj)%phys(l-1)%d    &
-                 < dtil) then 
-		emix = emix * (dtil - soil(jj)%phys(l-1)%d) / sol_thick(l)
+          else if (soil(jj)%phys(l)%d > dtil .and. soil(jj)%phys(l-1)%d < dtil) then 
+		   emix = emix * (dtil - soil(jj)%phys(l-1)%d) / soil(jj)%phys(l)%thick
 	    else
-		emix = 0.
+		  emix = 0.
 	    end if
 			
 	    ! to save computation time if emix = 0 here then the other layers can be avoided

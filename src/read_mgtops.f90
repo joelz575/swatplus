@@ -52,8 +52,16 @@
               endif
           end do
           if (sched(isched)%mgt_ops(iop)%op1 == 0) then
-            write (9001,*) " mgt schedule", isched, " op numb", iop, sched(isched)%mgt_ops(iop)%op_char, " not found in plants.plt database" 
-          end if  
+            write (9001,*) " mgt schedule", isched, &
+                " op numb", iop, sched(isched)%mgt_ops(iop)%op_char, " not found in plants.plt database" 
+          end if
+          !! xwalk with transplant data file
+          do idb = 1, db_mx%transplant
+              if (sched(isched)%mgt_ops(iop)%op_plant == transpl(idb)%name) then
+                  sched(isched)%mgt_ops(iop)%op4 = idb 
+                  exit
+              endif
+          end do
          
         case ("harv")
           do idb = 1, db_mx%harvop_db

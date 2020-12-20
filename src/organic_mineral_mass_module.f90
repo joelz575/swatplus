@@ -222,6 +222,7 @@
         type (organic_mineral_hydrograph) :: hin_sur                             !inflow hydrograph for surface flow - sum of all surface inflow hyds
         type (organic_mineral_hydrograph) :: hin_lat                             !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
         type (organic_mineral_hydrograph) :: hin_til                             !inflow hydrograph for tile flow - sum of all tile inflow hyds
+        type (organic_mineral_hydrograph) :: hin_aqu                             !inflow hydrograph for aquifer flow - sum of all aquifer inflow hyds
         type (organic_mineral_hydrograph), dimension(:),allocatable :: hd        !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
         type (organic_mineral_hydrograph), dimension(:,:),allocatable :: ts      !subdaily hydrographs
         type (organic_mineral_hydrograph), dimension(:),allocatable :: tsin      !inflow subdaily hydrograph

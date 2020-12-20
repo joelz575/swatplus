@@ -40,7 +40,7 @@
        character(len=25) :: hru_con = "hru.con"
        character(len=25) :: hruez_con = "hru-lte.con"
        character(len=25) :: ru_con = "rout_unit.con"
-       character(len=25) :: modflow_con = "modflow.con"
+       character(len=25) :: gwflow_con = "gwflow.con"
        character(len=25) :: aqu_con = "aquifer.con"
        character(len=25) :: aqu2d_con = "aquifer2d.con"
        character(len=25) :: chan_con = "channel.con"

@@ -7,11 +7,13 @@
         real :: sol_out = 0.            ! kg        !soluble pesticide out of reservoir
         real :: sor_out = 0.            ! kg        !sorbed pesticide out of reservoir
         real :: react = 0.              ! kg        !pesticide lost through reactions in water layer
+        real :: metab = 0.              ! kg        !pesticide metabolized from parent in water layer
         real :: volat = 0.              ! kg        !pesticide lost through volatilization
         real :: settle = 0.             ! kg        !pesticide settling to sediment layer
         real :: resus = 0.              ! kg        !pesticide resuspended into lake water
         real :: difus = 0.              ! kg        !pesticide diffusing from sediment to water
         real :: react_bot = 0.          ! kg        !pesticide lost from benthic sediment by reactions
+        real :: metab_bot = 0.          ! kg        !pesticide metabolized from parent in water layer
         real :: bury = 0.               ! kg        !pesticide lost from benthic sediment by burial
         real :: water = 0.              ! kg        !pesticide in water at end of day
         real :: benthic = 0.            ! kg        !pesticide in benthic sediment at end of day
@@ -45,11 +47,13 @@
           character(len=13) :: sol_out =    "sol_out_kg "           ! (kg)
           character(len=14) :: sor_out =    "sor_out_kg "           ! (kg)
           character(len=13) :: react =      "react_h2o_kg"        	! (kg)
+          character(len=13) :: metab =      "metab_h2o_kg"        	! (kg)
           character(len=10) :: volat =      "volat_kg"        		! (kg)
           character(len=10) :: settle =     "settle_kg"        		! (kg)
           character(len=13) :: resus =      "resuspend_kg"        	! (kg)
           character(len=11) :: difus =      "diffuse_kg "        	! (kg)
           character(len=15) :: react_bot =  "react_benth_kg "       ! (kg)
+          character(len=14) :: metab_bot =  "metab_benth_kg "       ! (kg)
           character(len=14) :: bury =       "bury_benth_kg "        ! (kg)
           character(len=14) :: water =      "water_stor_kg "        ! (kg)
           character(len=13) :: benthic =    "benthic_kg"        	! (kg)
@@ -79,11 +83,13 @@
         res3%sol_out = res1%sol_out + res2%sol_out
         res3%sor_out = res1%sor_out + res2%sor_out
         res3%react = res1%react + res2%react
+        res3%metab = res1%metab + res2%metab
         res3%volat = res1%volat + res2%volat
         res3%settle = res1%settle + res2%settle
         res3%resus = res1%resus + res2%resus
         res3%difus = res1%difus + res2%difus
         res3%react_bot = res1%react_bot + res2%react_bot
+        res3%metab_bot = res1%metab_bot + res2%metab_bot
         res3%bury = res1%bury + res2%bury
         res3%water = res1%water + res2%water
         res3%benthic = res1%benthic + res2%benthic
@@ -97,11 +103,13 @@
           res2%sol_out = res1%sol_out / const
           res2%sor_out = res1%sor_out / const
           res2%react = res1%react / const
+          res2%metab = res1%metab / const
           res2%volat = res1%volat / const
           res2%settle = res1%settle / const
           res2%resus = res1%resus / const
           res2%difus = res1%difus / const
           res2%react_bot = res1%react_bot / const
+          res2%metab_bot = res1%metab_bot / const
           res2%bury = res1%bury / const
           res2%water = res1%water / const
           res2%benthic = res1%benthic / const
@@ -115,11 +123,13 @@
           res2%sol_out = res1%sol_out
           res2%sor_out = res1%sor_out
           res2%react = res1%react
+          res2%metab = res1%metab
           res2%volat = res1%volat
           res2%settle = res1%settle
           res2%resus = res1%resus
           res2%difus = res1%difus
           res2%react_bot = res1%react_bot
+          res2%metab_bot = res1%metab_bot
           res2%bury = res1%bury
           res2%water = res1%water
           res2%benthic = res1%benthic

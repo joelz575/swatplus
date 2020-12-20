@@ -39,6 +39,9 @@
       
       !! tuber yield = harvest index * above ground biomass
       pl_yield = harveff * pl_mass(j)%seed(ipl)
+            
+      !! apply pest stress to harvest index - mass lost due to pests - don't add to residue
+      pl_yield = (1. - pcom(j)%plcur(ipl)%pest_stress) * pl_yield
       
       !! add remaining tuber (seed) mass to slow humus pool of soil - to preserve balances
       harveff1 = 1. - harveff

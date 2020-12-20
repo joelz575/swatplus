@@ -50,7 +50,7 @@
                                                  !              |deficit
       real :: tst                                !mm H2O        |test value for cumulative infiltration
       real :: f1                                 !mm H2O        |test value for cumulative infiltration
-      real :: ulu
+      integer :: ulu
       real :: abstinit
       real, dimension (time%step+1) :: cuminf    !mm H2O        |cumulative infiltration for day
       real, dimension (time%step+1) :: cumr      !mm H2O        |cumulative rainfall for day

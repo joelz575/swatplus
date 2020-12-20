@@ -151,7 +151,8 @@
             end if
           end do
         end if
-        if (hru(i)%dbs%surf_stor == 0 .and. hru(i)%dbsc%surf_stor /= 'null') write (9001,*) hru(i)%dbsc%surf_stor, "not found (wetland.wet)"
+        if (hru(i)%dbs%surf_stor == 0 .and. hru(i)%dbsc%surf_stor /= 'null') & 
+           write (9001,*) hru(i)%dbsc%surf_stor,"not found (wetland.wet)"
       end do
        
       close (105)

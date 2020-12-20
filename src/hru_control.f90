@@ -30,6 +30,7 @@
       use conditional_module
       use constituent_mass_module
       use water_body_module
+      use gwflow_module !rtb gwflow
       
       implicit none
 
@@ -67,6 +68,7 @@
       real :: strsp_av
       real :: strstmp_av
       real :: wet_outflow           !mm             |outflow from wetland
+      integer dum
       
       j = ihru
       !if (pcom(j)%npl > 0) idp = pcom(ihru)%plcur(1)%idplt
@@ -144,7 +146,13 @@
         if (ob(icmd)%hin_til%flo > 1.e-6) then
           call rls_routetile (icmd)
         end if
-
+        
+        !!add aquifer flow to bottom soil layer and redistribute upwards
+        if (ob(icmd)%hin_aqu%flo > 0) then
+          !!Route incoming aquifer flow
+          call rls_routeaqu (icmd)
+        end if
+          
         !! check auto operations
         if (sched(isched)%num_autos > 0) then
           do iauto = 1, sched(isched)%num_autos
@@ -306,6 +314,13 @@
         
         !! compute actual ET for day in HRU
         etday = ep_day + es_day + canev
+
+        !rtb gwflow
+        if (sp_ob%gwflow > 0) then
+          etremain(j) = pet_day - etday
+          etactual(j) = etday
+		end if
+        
 
         !! compute nitrogen and phosphorus mineralization 
         if (bsn_cc%cswat == 0) then
@@ -515,6 +530,9 @@
         hwb_d(j)%latq = latq(j)
         hwb_d(j)%wateryld = qdr(j)
         hwb_d(j)%perc = sepbtm(j)
+        if (sp_ob%gwflow > 0) then
+          gwflow_perc(j) = sepbtm(j)
+        end if
         !! add evap from impounded water (wetland) to et and esoil
         hwb_d(j)%et = etday + hru(j)%water_evap
         hwb_d(j)%tloss = tloss
@@ -565,6 +583,9 @@
 
       ! output_losses
         hls_d(j)%sedyld = sedyld(j) / hru(j)%area_ha
+        if (j == 1087 .and. time%day == 165) then
+          jj = 1
+        end if
         hls_d(j)%sedorgn = sedorgn(j)
         hls_d(j)%sedorgp = sedorgp(j)
         hls_d(j)%surqno3 = surqno3(j)

@@ -19,9 +19,11 @@
 !!!!! daily print   (channel_om_day.txt/csv no opening for files)
        if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
         if (pco%chan%d == "y") then
-          write (2900,100) time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_d(jrch), ch_out_d(jrch)
+          write (2900,100) time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_d(jrch), &
+          ch_out_d(jrch)
           if (pco%csvout == "y") then
-            write (2904,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_d(jrch), ch_out_d(jrch)
+            write (2904,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, &
+            ch_in_d(jrch), ch_out_d(jrch)
           end if 
         end if 
       end if
@@ -31,9 +33,11 @@
         ch_in_y(jrch) = ch_in_y(jrch) + ch_in_m(jrch)
         ch_out_y(jrch) = ch_out_y(jrch) + ch_out_m(jrch)        
         if (pco%chan%m == "y") then
-          write (2901,100) time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_m(jrch), ch_out_m(jrch)
+          write (2901,100) time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_m(jrch), &
+          ch_out_m(jrch)
           if (pco%csvout == "y") then
-            write (2905,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_m(jrch), ch_out_m(jrch)
+            write (2905,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, &
+            ch_in_m(jrch), ch_out_m(jrch)
           end if
         end if
         ch_in_m(jrch) = chomz
@@ -45,9 +49,11 @@
         ch_in_a(jrch) = ch_in_a(jrch) + ch_in_y(jrch)
         ch_out_a(jrch) = ch_out_a(jrch) + ch_out_y(jrch)
         if (pco%chan%y == "y") then 
-          write (2902,100) time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_y(jrch), ch_out_y(jrch)
+          write (2902,100) time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_y(jrch), &
+          ch_out_y(jrch)
           if (pco%csvout == "y") then
-            write (2906,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_y(jrch), ch_out_y(jrch)
+            write (2906,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, &
+            ch_in_y(jrch), ch_out_y(jrch)
           end if
         end if
         
@@ -59,9 +65,11 @@
       if (time%end_sim == 1 .and. pco%chan%a == "y") then
         ch_in_a(jrch) = ch_in_a(jrch) / time%yrs_prt
         ch_out_a(jrch) = ch_out_a(jrch) / time%yrs_prt
-        write (2903,100) time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_a(jrch), ch_out_a(jrch)
+        write (2903,100) time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_a(jrch), &
+        ch_out_a(jrch)
         if (pco%csvout == "y") then
-          write (2907,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, ch_in_a(jrch), ch_out_a(jrch)
+          write (2907,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, jrch, ob(iob)%gis_id, ob(iob)%name, &
+          ch_in_a(jrch), ch_out_a(jrch)
         end if
       end if
 

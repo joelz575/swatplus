@@ -27,6 +27,11 @@
       real :: sedmass_watervol      !kg/L or t/m3  |sediment mass divided by water volume in water and benthic
       real :: pest_init             !mg            |amount of pesticide before decay
       real :: pest_end              !mg            |amount of pesticide after decay
+      real :: mol_wt_rto        !ratio      |molecular weight ratio of duaghter to parent pesticide
+      integer :: ipest_db       !none       |pesticide number from pesticide data base
+      integer :: ipseq          !none       |sequential basin pesticide number
+      integer :: ipdb           !none       |seqential pesticide number of daughter pesticide
+      integer :: imeta          !none       |pesticide metabolite counter
       integer :: jres               !none          |reservoir number  
       integer :: ipst               !none          |counter
       integer :: icmd               !none          |
@@ -73,6 +78,15 @@
           pest_end = tpest1 * pestcp(jpst)%decay_a
           tpest1 = pest_end
           respst_d(jres)%pest(ipst)%react = pest_init - pest_end
+          !! add decay to daughter pesticides
+          do imeta = 1, pestcp(ipest_db)%num_metab
+            ipseq = pestcp(ipest_db)%daughter(imeta)%num
+            ipdb = cs_db%pest_num(ipseq)
+            mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(ipest_db)%mol_wt
+            respst_d(jres)%pest(ipseq)%metab = respst_d(jres)%pest(ipseq)%metab + respst_d(jres)%pest(ipst)%react *     &
+                                           pestcp(ipest_db)%daughter(imeta)%soil_fr * mol_wt_rto
+            res_water(jres)%pest(ipseq) = res_water(jres)%pest(ipseq) + respst_d(jres)%pest(ipseq)%metab
+          end do
         end if
         
         !! determine pesticide lost through volatilization
@@ -137,6 +151,15 @@
           pest_end = tpest2 * pestcp(jpst)%decay_b
           tpest2 = pest_end
           respst_d(jres)%pest(ipst)%react_bot = pest_init - pest_end
+          !! add decay to daughter pesticides
+          do imeta = 1, pestcp(ipest_db)%num_metab
+            ipseq = pestcp(ipest_db)%daughter(imeta)%num
+            ipdb = cs_db%pest_num(ipseq)
+            mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(ipest_db)%mol_wt
+            respst_d(jres)%pest(ipseq)%metab = respst_d(jres)%pest(ipseq)%metab + respst_d(jres)%pest(ipst)%react *     &
+                                           pestcp(ipest_db)%daughter(imeta)%soil_fr * mol_wt_rto
+            res_benthic(jres)%pest(ipseq) = res_benthic(jres)%pest(ipseq) + respst_d(jres)%pest(ipseq)%metab
+          end do
         end if
 
         !! determine pesticide lost from sediment by burial

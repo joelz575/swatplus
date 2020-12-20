@@ -214,7 +214,7 @@
           soil1(j)%mn(1)%no3 = soil1(j)%mn(1)%no3 + no3up
         endif
 
-      end do
+      end do    !layer loop
 
       !! update total soil water content
       soil(j)%sw = 0.

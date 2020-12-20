@@ -80,7 +80,7 @@
       !! compute aeration stress
       if (soil(j)%sw > soil(j)%sumfc) then
         satco = (soil(j)%sw - soil(j)%sumfc) / (soil(j)%sumul - soil(j)%sumfc)
-        pl_aerfac = .85
+        pl_aerfac = .1  !.05
         scparm = 100. * (satco - pl_aerfac) / (1.0001 - pl_aerfac)
         if (scparm > 0.) then
           pcom(j)%plstr(ipl)%strsa = 1. - (scparm / (scparm + Exp(2.9014 - .03867 * scparm)))
@@ -117,7 +117,7 @@
             sum = epmax(ipl) * (1. - Exp(-uptake%water_dis * gx / pcom(j)%plg(ipl)%root_dep)) / uptake%water_norm
           end if
 
-          wuse = sum - sump * (1. - hru(j)%hyd%epco)
+          wuse = sum - sump * (1. - pcom(j)%plcur(ipl)%epco)
           ! adjust for impervious area
           ulu = hru(j)%luse%urb_lu
           !wuse = wuse * urbdb(ulu)%fcimp

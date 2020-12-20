@@ -29,7 +29,6 @@
       real :: a1                      !           |
       real :: a2                      !           |
       integer :: i                    !           | 
-      real :: max                     !           |
       integer :: isd_h                !none       |counter 
       integer :: k                    !           |
       integer :: idb                  !none       |counter

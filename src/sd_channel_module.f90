@@ -3,9 +3,12 @@
       implicit none
 
       integer :: maxint                           !number of intervals in hydrograph for degredation
+      real :: wtemp                             !stream water temperature C
       real :: peakrate, sed_reduc_t, no3_reduc_kg, tp_reduc_kg, tp_reduc, srp_reduc_kg
       real, dimension(:), allocatable :: hyd_rad  !m^2        |hydraulic radius for each hydrograph time step
       real, dimension(:), allocatable :: timeint  !days       |time spent in each hydrograph time step
+      !integer, dimension(:), allocatable :: flood_freq        !rtb floodplain
+
       
       type swatdeg_hydsed_data
         character(len=16) :: name

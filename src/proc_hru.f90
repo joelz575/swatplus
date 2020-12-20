@@ -13,7 +13,7 @@
         call hru_allo
         call hru_read    
         call hrudb_init
-        !call topohyd_init
+        call topohyd_init
         call soils_init
         call soiltest_all_init
         call hru_output_allo
@@ -21,11 +21,9 @@
         if (cs_db%num_paths > 0) call pathogen_init
         if (cs_db%num_salts > 0) call salt_hru_init
         call plant_all_init
-        call topohyd_init
+        call cn2_init
         call hydro_init
       end if
-
-      call hru_lte_read
 
       call ls_link
         

@@ -134,7 +134,8 @@
             
             if (pcom(j)%plg(ipl)%lai > laimax) pcom(j)%plg(ipl)%lai = laimax
             pcom(j)%plg(ipl)%olai = pcom(j)%plg(ipl)%lai
-          end if    ! phu < 1.
+            pcom(j)%plg(ipl)%dphu = pcom(j)%plcur(ipl)%phuacc
+          end if    ! phu < dlai
           
       return
       end subroutine pl_leaf_gro

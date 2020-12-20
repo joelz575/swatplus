@@ -19,11 +19,12 @@
           if (pco%hyd%d == "y") then
              write (2560,*) time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, ob(icmd)%obtyp_in(iin),        &
               ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_d(iin)
-!                          write (2560,*) time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, ob(icmd)%obtyp_in(iin),        &
+!            write (2560,*) time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, ob(icmd)%obtyp_in(iin),        &
 !              ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_d(iin)
               if (pco%csvout == "y") then
-                write (2564,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, ob(icmd)%obtyp_in(iin),        &
-                 ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_d(iin)
+                write (2564,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, &
+                 ob(icmd)%obtyp_in(iin), ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin),     &
+                 ob(icmd)%hin_d(iin)
               end if       
           endif
         end if
@@ -37,8 +38,9 @@
             write (2561,*) time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, ob(icmd)%obtyp_in(iin),        &
              ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_m(iin)
               if (pco%csvout == "y") then
-                write (2565,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, ob(icmd)%obtyp_in(iin),        &
-                 ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_m(iin)
+                write (2565,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, &
+                    ob(icmd)%obtyp_in(iin), ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin),  &
+                    ob(icmd)%hin_m(iin)
               end if
           end if
           ob(icmd)%hin_y(iin) = ob(icmd)%hin_y(iin)+ ob(icmd)%hin_m(iin)
@@ -48,11 +50,11 @@
         !! yearly print
         if (time%end_yr == 1) then
           if (pco%hyd%y == "y") then
-            write (2562,*) time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name,  ob(icmd)%typ, ob(icmd)%obtyp_in(iin),        &
+            write (2562,*) time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name,  ob(icmd)%typ, ob(icmd)%obtyp_in(iin), &
              ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_y(iin)
             if (pco%csvout == "y") then
-              write (2566,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name,  ob(icmd)%typ, ob(icmd)%num, ob(icmd)%obtyp_in(iin),        &
-               ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_y(iin)
+              write (2566,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name,  ob(icmd)%typ, ob(icmd)%num, &
+              ob(icmd)%obtyp_in(iin), ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_y(iin)
             endif
           end if
           ob(icmd)%hin_a(iin) = ob(icmd)%hin_a(iin)+ ob(icmd)%hin_y(iin)
@@ -62,11 +64,11 @@
         !! average annual print
         if (time%end_sim == 1 .and. pco%hyd%a == "y") then
           ob(icmd)%hin_a(iin) = ob(icmd)%hin_a(iin) / time%yrs_prt
-          write (2563,*) time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name,  ob(icmd)%typ,  ob(icmd)%obtyp_in(iin),        &
+          write (2563,*) time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name,  ob(icmd)%typ,  ob(icmd)%obtyp_in(iin), &
              ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_a(iin)
             if (pco%csvout == "y") then
-              write (2567,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ,  ob(icmd)%obtyp_in(iin),        &
-             ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_a(iin)
+              write (2567,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, ob(icmd)%name, ob(icmd)%typ, &
+                ob(icmd)%obtyp_in(iin), ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_a(iin)
             end if
         end if
 

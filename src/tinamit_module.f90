@@ -87,8 +87,8 @@ contains
         real, dimension(shape) :: realBuffer
 
         print *, "Command: ", orden
-
-        if(orden == 'cerrar')then
+        !make this a case statement
+        if(trim(orden) == 'cerrar')then
             call closesock(cliente_obj)
             print *, "The socket was successfully closed"
             dynamic = .false.
@@ -98,10 +98,10 @@ contains
             print *, "Number of Passes: ", nPasos
             !No further action required
 
-        elseif(orden == 'cambiar')then
+        elseif(trim(orden) == 'cambiar')then
             call tomar (var, shape, intBuffer, realBuffer)
 
-        elseif(orden == 'leer') then
+        elseif(trim(orden) == 'leer') then
             call obtener (var)
 
         else
@@ -136,26 +136,21 @@ contains
         select case (trim(variable_Name))
         !-----------SD-Channel Variables----------------------------------------------------------------------------------------
         case("sd_props")
-            !if(.not.allocated(sd_ch%props)) allocate(sd_ch%props(shape))
             sd_ch%props = intBuffer
 
         case("sd_obj_no")
-            !if(.not.allocated(sd_ch%obj_no)) allocate(sd_ch%obj_no(shape))
             sd_ch%obj_no = intBuffer
 
         case("sd_aqu_link")
             !aquifer the channel is linked to
-            !if(.not.allocated(sd_ch%aqu_link)) allocate(sd_ch%aqu_link(shape))
             sd_ch%aqu_link = intBuffer
 
         case("sd_aqu_link_ch")
             !sequential channel number in the aquifer
-            !if(.not.allocated(sd_ch%aqu_link_ch)) allocate(sd_ch%aqu_link_ch(shape))
             sd_ch%aqu_link_ch = intBuffer
 
         case("sd_chw")
             !m          |channel width
-            !if(.not.allocated(sd_ch%chw)) allocate(sd_ch%chw(shape))
             sd_ch%chw = floatBuffer
 
         case("sd_chd")
@@ -434,21 +429,16 @@ contains
 
     subroutine obtener (varNombre)
         character(*) :: varNombre
-        character(len = :), allocatable :: senderBuffer, shapeBuffer
+        character(len = 6), allocatable :: shapeBuffer
         integer, dimension(:), allocatable :: intBuffer
         real, dimension(:), allocatable :: floatBuffer
-        character(len = 16) :: temp_shapeBuffer, temp_senderBuffer
-        senderBuffer = ""
+        character(len = 16) :: temp_shapeBuffer
         shapeBuffer = ""
 
         print *, "Var nombre in obtener: ", varNombre
-        !print *, "size(hru): ", size(hru)
-        !print *, "size(hlt): ", size(hlt)
-        !print *, "size(ch): ", size(ch)
-        !print *, "size(sd_ch)", size(sd_ch)
 
-        if(allocated(intBuffer)) deallocate(intBuffer)
-        if(allocated(floatBuffer)) deallocate(floatBuffer)
+        !if(allocated(intBuffer)) deallocate(intBuffer)
+        !if(allocated(floatBuffer)) deallocate(floatBuffer)
 
         select case (trim(varNombre))
 
@@ -1343,10 +1333,14 @@ contains
             print *, "Sending float buffer: ", floatBuffer
             if(.not.allocated(intBuffer)) allocate(intBuffer(0))
         end if
+
         if(shapeBuffer == "")then
-            shapeBuffer = "  "
+            shapeBuffer = "-1" // char(0)
+        else
+            shapeBuffer = shapeBuffer // char(0)
         end if
-        call sendr(cliente_obj, intBuffer, floatBuffer, trim(shapeBuffer), size(intBuffer), size(floatBuffer), len(shapeBuffer))
+
+        call sendr(cliente_obj, intBuffer, floatBuffer, shapeBuffer, size(intBuffer), size(floatBuffer))
 
         call recibe()
 

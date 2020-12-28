@@ -102,9 +102,9 @@ leer_datos = {
     'lte_soildep': np.array([1330.]),                #mm            |soil profile depth
     'lte_etco': np.array([1.]),                    #              |et coefficient - use with pet and aet (used in calibration)
     'lte_revapc': np.array([0.0]),                  #m/m           |revap from aquifer (used in calibration)
-    'lte_perco': np.array([1]),                  #              |soil percolation coefficient (used in calibration)
+    'lte_perco': np.array([1.0]),                  #              |soil percolation coefficient (used in calibration)
     'lte_tdrain': np.array([0.0]),                  #hr            |design subsurface tile drain time (used in calibration)
-    'lte_stress': np.array([1]),                  #frac          |plant stress - pest, root restriction, soil quality, nutrient,
+    'lte_stress': np.array([1.0]),                  #frac          |plant stress - pest, root restriction, soil quality, nutrient,
     #              |(non water, temp) (used in calibration)
     'lte_uslefac': np.array([0.195745185]),                 #              |USLE slope length factor
     'lte_wrt1': np.array([3.94383001]),
@@ -116,7 +116,7 @@ leer_datos = {
     'lte_awc': np.array([183.539993]),                    #mm/mm        |available water capacity of soil
     'lte_g': np.array([0.0]),
     'lte_hufh': np.array([0.0]),
-    'lte_phu': np.array([500]),
+    'lte_phu': np.array([500.0]),
     'lte_por': np.array([532.000000]),
     'lte_sc': np.array([2.29999995]),
     'lte_sw': np.array([91.7699966]),                      #mm/mm         |initial soil water storage

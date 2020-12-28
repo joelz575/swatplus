@@ -1,7 +1,6 @@
-import tinamit
 from subprocess import Popen
 from unittest import TestCase
-
+import tracemalloc
 import numpy.testing as npt
 
 from swatplus_test.ejemplo_cliente import datos, leer_datos
@@ -17,7 +16,7 @@ class PruebaIDM(TestCase):
         símismo.clientes = []
 
     def _empezar_cliente(símismo, dirección, puerto):
-        cliente = Popen(["/home/joelz/PycharmProjects/swatplus/build/bin/swatplus_exe", str(puerto), dirección],
+        cliente = Popen(["valgrind", "--leak-check=yes", "--track-origins=yes", "/home/joelz/PycharmProjects/swatplus/build/bin/swatplus_exe", str(puerto), dirección],
                         cwd="/home/joelz/modular_swatplus/data/Texas_large_gully")
         #cliente = Popen(["/home/joelz/PycharmProjects/swatplus/build/bin/swatplus_exe", str(puerto), dirección],
         #                cwd="/home/joelz/modular_swatplus/data/saturated_buffer")
@@ -46,29 +45,36 @@ class PruebaIDM(TestCase):
                 npt.assert_almost_equal(dts, recibido, 5)
                 # equal to 5 decimal places
 
-    #def test_mandar_datos_y_correr(símismo):
-    #    npasos = 5
-    #    check_t = 0
-    #    t = 0
+    def test_mandar_datos_y_correr(símismo):
+        npasos = 5
+        check_t = 0
+        t = 0
+        tracemalloc.start()
 
-    #    with IDMEnchufes() as servidor:
-    #        símismo._empezar_cliente(servidor.dirección, servidor.puerto)
-    #        servidor.activar()
-    #        while t < t_final:
-    #            for nmbr_dts, dts in datos.items():
-    #                with símismo.subTest(datos=nmbr_dts):
-    #                    print("going to send this data: ", dts)
-    #                    servidor.cambiar(nmbr_dts, dts)
-    #                    recibido = servidor.recibir(nmbr_dts)
-    #                    # npt.assert_almost_equal(dts, recibido)
-    #                    # equal to 7 decimal places
-    #                    npt.assert_almost_equal(dts, recibido, 5)
-    #                    # equal to 5 decimal places
+        with IDMEnchufes() as servidor:
+            símismo._empezar_cliente(servidor.dirección, servidor.puerto)
+            servidor.activar()
+            while t < t_final:
+                for nmbr_dts, dts in leer_datos.items():
+                    with símismo.subTest(datos=nmbr_dts):
+                        recibido = servidor.recibir(nmbr_dts)
+                        npt.assert_almost_equal(dts, recibido, 1)
+                        # equal to 5 decimal places
+                        print("going to send this data: ", dts)
+                        servidor.cambiar(nmbr_dts, dts)
+                        # npt.assert_almost_equal(dts, recibido)
+                        # equal to 7 decimal places
+                servidor.incrementar(npasos)
+                snapshot = tracemalloc.take_snapshot()
+                top_stats = snapshot.statistics('lineno')
 
-    #            servidor.incrementar(npasos)
-    #            t = servidor.recibir('t')
-    #            check_t = check_t + npasos
-    #            npt.assert_equal(check_t, t)
+                print("[ Top 10 ]")
+                for stat in top_stats[:10]:
+                    print(stat)
+                t = servidor.recibir('t')
+                check_t = check_t + npasos
+                npt.assert_equal(check_t, t)
+
 
 
 

@@ -125,9 +125,9 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	int tmn;
  	int n;
  	int i;
- 	char tipo_contenido;
+ 	char tipo_contenido[5];
 	char blankBuffer;
-	char shapeBuffer[5];
+	char shapeBuffer[6];
  	struct json_object *parsed_json;
  	struct json_object *orden;
  	struct json_object *tamano;
@@ -138,11 +138,14 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	struct json_object *n_pasos;
  	struct json_object *forma;
  	char json_header[2000];
-
+    printf("Line 141\n");
 	n = read(*client, &blankBuffer, 4);
-
+    printf("n = %d\n", n );
  	n = read(*client, &json_header, (int) blankBuffer);
+ 	printf("second time n = %d\n", n );
  #endif
+ 	printf("Line 146\n");
+ 	printf("json header: %s\n", json_header );
  	parsed_json = json_tokener_parse(json_header);
 
  	json_object_object_get_ex(parsed_json, "tipo", &orden);
@@ -171,7 +174,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
 
  		strncpy(tip_con, json_object_get_string(tipo_cont), 5);
  	}
- 	else if(strncmp(command, "incr  ", 4) == 0){
+ 	else if(strncmp(command, "incr", 4) == 0){
  	       printf("incr was received\n");
  	       json_object_object_get_ex(parsed_json, "n_pasos", &n_pasos);
  	       *pasos = atoi(json_object_get_string(n_pasos));
@@ -179,7 +182,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	else if(strncmp(command, "cerrar", 6) == 0){
  	        printf("cerrar was received");
  	}
- 	else if(strncmp(command, "leer  ", 4) == 0){
+ 	else if(strncmp(command, "leer", 4) == 0){
  	        printf("leer was received");
  	        json_object_object_get_ex(parsed_json, "var", &var);
  	        strncpy(var_nombre, "                              ", strlen(var_nombre));
@@ -227,30 +230,29 @@ void recvfloat_(int *client, float *floatCont, int *arraySize){
 void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char shape[], int *intLength, int *floatLength){
  int i,n,y;
  int sendRes;
- char valLen[16];
- char tipo_cont[7];
+ char *valLen[64];
  char jsonEncabezadoString[2048];
  int jsonStringLen;
 
+ strncpy(jsonEncabezadoString, "{\"tamaño\": ", 13);
+
  if(*floatLength != 0){
     sprintf( valLen, "%ld", sizeof(float)* (*floatLength)); // why don't you write?
-    //sprintf(shape, "%d", -1);
-    sprintf( tipo_cont, "%s", "float32");
+    printf("Float length: %d\n", *floatLength);
+    printf("size of float: %d\n", sizeof(float));
     printf("Float ValLen: %s\n", valLen);
+    strcat(jsonEncabezadoString, valLen);
+    strcat(jsonEncabezadoString, ", \"tipo_cont\": \"float32\"");
  }
 
  else{
-    sprintf( tipo_cont, "%s", "int32");
     sprintf( valLen, "%ld", sizeof(int)* (*intLength));
-    //sprintf(shape, "%d", -1);
     printf("Int ValLen: %s\n", valLen);
+    strcat(jsonEncabezadoString, valLen);
+    strcat(jsonEncabezadoString, ", \"tipo_cont\": \"int32\"");
  }
 
- strncpy(jsonEncabezadoString, "{\"tamaño\": ", 13) ;
- strcat(jsonEncabezadoString, valLen);
- strcat(jsonEncabezadoString, ", \"tipo_cont\": \"");
- strcat(jsonEncabezadoString, tipo_cont);
- strcat(jsonEncabezadoString, "\", \"forma\": ");
+ strcat(jsonEncabezadoString, ", \"forma\": ");
  strcat(jsonEncabezadoString, shape);
  strcat(jsonEncabezadoString, "}");
 
@@ -285,7 +287,7 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
 	//printf((char *)WSAGetLastError());
 
 #endif
- if(strncmp(tipo_cont, "float", 5)==0){
+ if(*floatLength != 0){
     sendRes = send(*client, floatSenderBuffer, (sizeof(float)* (*floatLength)), 0);
     }
  else{

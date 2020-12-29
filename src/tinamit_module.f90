@@ -43,6 +43,13 @@ contains
 
         print *, "About to Recieve..."
         tmn_shape = 1
+        print *, "cliente_obj: ", cliente_obj
+        print *, "command: ", command
+        print *, "var: ", var
+        print *, "tipo_contents: ", tipo_contents
+        print *, "nPasos: ", nPasos
+        print *, "shape: ", shape
+
         call receive (cliente_obj, command, var, tipo_contents, nPasos, shape) !charBuffer
 
         print *, "Cliente Obj: ", cliente_obj
@@ -429,7 +436,7 @@ contains
 
     subroutine obtener (varNombre)
         character(*) :: varNombre
-        character(len = 6), allocatable :: shapeBuffer
+        character(len = 6) :: shapeBuffer
         integer, dimension(:), allocatable :: intBuffer
         real, dimension(:), allocatable :: floatBuffer
         character(len = 16) :: temp_shapeBuffer

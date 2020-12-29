@@ -68,6 +68,13 @@ datos = {
     'lte_end': np.array([2]),
 }
 
+pequeno_datos = {
+    'sd_props': np.array([0, 0]),
+    'sd_aqu_link_ch' : np.array([0, 0]),   #sequential channel number in the aquifer
+    'sd_chw' : np.array([3.0, 8.37300014]),       #m          |channel width
+    'sd_chd': np.array([0.5, 3.79999995])  # m          |channel depth
+}
+
 leer_datos = {
     'sd_props': np.array([0, 0]),
     'sd_obj_no': np.array([0, 0]),

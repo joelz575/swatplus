@@ -247,12 +247,6 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
  strcat(jsonEncabezadoString, "}");
 
  printf("Sending encabezado: %s\n", jsonEncabezadoString);
- for (y = 0; y<(sizeof(int)* (*intLength)); y++){
-    if(y > *intLength-1){
-        intSenderBuffer[y] = 0;
-    }
-    printf("intSenderBuffer[y]: %d", intSenderBuffer[y]);
- }
 
  i = strlen(jsonEncabezadoString);
 

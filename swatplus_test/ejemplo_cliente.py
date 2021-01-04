@@ -86,8 +86,8 @@ leer_datos = {
     'sd_chl': np.array([0.100000001, 0.229000002]),        #km         |channel length
     'sd_chn': np.array([1.79366203E-43, 5.00000007E-02]),        #           |channel Manning's n
     'sd_cov': np.array([0.0, 5.00000007E-02]),        #0-1        |channel cover factor
-    'sd_cherod': np.array([0, 0.200000003]),     #           |channel erodibility
-    'sd_shear_bnk': np.array([0, 0]),  #0-1        |bank shear coefficient - fraction of bottom shear
+    'sd_cherod': np.array([float('nan'), 0.200000003]),     #           |channel erodibility
+    'sd_shear_bnk': np.array([float('nan'), float('nan')]),  #0-1        |bank shear coefficient - fraction of bottom shear
     'sd_hc_erod': np.array([1.40129846E-45, 1.40129846E-45]),    #           |headcut erodibility
     'sd_hc_co': np.array([0.0, 7.47151327]),      #m/m        |proportionality coefficient for head cut
     'sd_hc_len': np.array([0.0, 0.0]),     #m          |length of head cut

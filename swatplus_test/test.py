@@ -9,7 +9,7 @@ from tinamit.idm.puertos import IDMEnchufes
 from swatplus_test.ejemplo_cliente import leer_datos, pequeno_datos
 
 t_final = 731
-valgrind = True
+valgrind = False
 BASE_DIR = os.path.split(os.path.split(__file__)[0])[0]
 
 

@@ -113,10 +113,9 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	struct json_object *tipo_cont;
  	char json_header[20000];
 
-	n = recv(*client, &blankBuffer, 2, 0);
-	sendr_(client, "RCVD");
+	recv(*client, &blankBuffer, 2, 0);
 
- 	n = recv(*client, json_header, ((int) blankBuffer), 0);
+ 	recv(*client, json_header, ((int) blankBuffer), 0);
 
  #else
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
@@ -138,14 +137,10 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	struct json_object *n_pasos;
  	struct json_object *forma;
  	char json_header[2000];
-    printf("Line 141\n");
-	n = read(*client, &blankBuffer, 4);
-    printf("n = %d\n", n );
- 	n = read(*client, &json_header, (int) blankBuffer);
- 	printf("second time n = %d\n", n );
+
+	read(*client, &blankBuffer, 4);
+ 	read(*client, &json_header, (int) blankBuffer);
  #endif
- 	printf("Line 146\n");
- 	printf("json header: %s\n", json_header );
  	parsed_json = json_tokener_parse(json_header);
 
  	json_object_object_get_ex(parsed_json, "tipo", &orden);
@@ -163,10 +158,8 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
         strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
 
  	    json_object_object_get_ex(parsed_json, "forma", &forma);
- 	    printf("\n\n\n\nforma: %s\n\n\n\n\n\n\n", json_object_get_string(forma));
  	    strncpy(shapeBuffer, json_object_get_string(forma)+1, strlen(json_object_get_string(forma))-2);
  	    *shape = atoi(shapeBuffer);
- 	    printf("shape: %d", *shape);
 
  	    json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
 
@@ -237,10 +230,7 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
  strncpy(jsonEncabezadoString, "{\"tamaño\": ", 13);
 
  if(*floatLength != 0){
-    sprintf( valLen, "%ld", sizeof(float)* (*floatLength)); // why don't you write?
-    printf("Float length: %d\n", *floatLength);
-    printf("size of float: %d\n", sizeof(float));
-    printf("Float ValLen: %s\n", valLen);
+    sprintf( valLen, "%ld", sizeof(float)* (*floatLength));
     strcat(jsonEncabezadoString, valLen);
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"float32\"");
  }
@@ -261,6 +251,7 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
     if(y > *intLength-1){
         intSenderBuffer[y] = 0;
     }
+    printf("intSenderBuffer[y]: %d", intSenderBuffer[y]);
  }
 
  i = strlen(jsonEncabezadoString);

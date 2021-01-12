@@ -236,7 +236,7 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
  }
 
  else{
-    sprintf( valLen, "%ld", sizeof(int)* (*intLength));
+    sprintf(valLen, "%ld", sizeof(int)* (*intLength));
     printf("Int ValLen: %s\n", valLen);
     strcat(jsonEncabezadoString, valLen);
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"int32\"");
@@ -297,7 +297,7 @@ void closesock_(int *client){
 
  int iWSACleanup;	//print error if it didnt work
  iWSACleanup = WSACleanup();
-#elsefree(): invalid next size (fast)
+#else
  shutdown(*client, 2);
 
 #endif

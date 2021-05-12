@@ -64,7 +64,7 @@ contains
                 allocate(realBuffer(shape))
                 call recvfloat (cliente_obj, realBuffer, shape)
 
-            elseif(tipo_contents=="int".or.tipo_contents=="int64")then
+            elseif(tipo_contents=="int".or.tipo_contents=="int64".or.tipo_contents=="int32")then
                 print *, "about to allocate intBuffer"
                 allocate(intBuffer(shape))
                 call recvint (cliente_obj, intBuffer, shape)

@@ -20,7 +20,7 @@ class PruebaIDM(TestCase):
 
     def _empezar_cliente(símismo, dirección, puerto):
         cwd = os.path.join(BASE_DIR, "Texas_large_gully")
-        swat_exe = os.path.join(BASE_DIR, "build/bin/swatplus_exe")
+        swat_exe = os.path.join(BASE_DIR, "build/bin/swatplus_exe.exe")
         if valgrind:
             cliente = Popen(["valgrind", "--leak-check=yes", "--track-origins=yes", swat_exe, str(puerto), dirección],
                             cwd=cwd)

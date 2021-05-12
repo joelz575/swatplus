@@ -100,10 +100,12 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  #ifdef _WIN32
     //Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	int recvRes;
+ 	int tmn;
  	int n;
-	char blankBuffer;
-	char shapeBuffer[5];
- 	char contBuffer[20000];
+ 	int i;
+ 	char tipo_contenido[5];
+	char blankBuffer[4];
+	char shapeBuffer[6];
  	struct json_object *parsed_json;
  	struct json_object *orden;
  	struct json_object *tamano;
@@ -111,11 +113,14 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	struct json_object *matr;
  	struct json_object *contenido;
  	struct json_object *tipo_cont;
- 	char json_header[20000];
+ 	struct json_object *n_pasos;
+ 	struct json_object *forma;
+ 	char json_header[2000];
 
-	recv(*client, &blankBuffer, 2, 0);
+	recv(*client, &blankBuffer, 4, 0);
 
  	recv(*client, json_header, ((int) blankBuffer), 0);
+
 
  #else
  	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.

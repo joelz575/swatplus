@@ -9,7 +9,7 @@ SET(CMAKE_Fortran_FLAGS  "${CMAKE_Fortran_FLAGS} ${FORTRAN_EXTRA_COMPILE_FLAGS}"
 
 include(FetchContent)
 FetchContent_Declare(json-c
-  GIT_REPOSITORY    https://github.com/json-c/json-c.git
+  GIT_REPOSITORY    https://github.com/joelz575/json-c.git
 )
 
 FetchContent_MakeAvailable(json-c)

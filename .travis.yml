@@ -27,7 +27,7 @@ script:
 
 deploy:
   provider: releases
-  api_key:
+  api_key:if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src; else
     secure: XoC3dvoW3SSUD/D4dspoAtHFFZkI1X5+F6xZTUywYWxg/M/ZrdcNUOSVadI+2pdJlE6TYpiJVZaHvyGrcL38F8vl4D/z56uK4BBwunezZgE3rC9CmN9BKhtmng9UsFrDMw6wQXisqt9LdY3n9Z88H5S1KxYiHuNu3Ob6BHbJ+CX/sEzoJ/nVs4xf0GxHRW97sVAEUsy+0ATRLpqzd8HGOXO+GUe4mFccx1AxaFYoJtAK9KvIE2RYzy9bB92DHP+Wp7oMeD6d9Nbmrb9HfThEGiepJ/q+xFEQniuiH8GROYmcoSjHAKXeV11F7F9oHTWLHHNPium9YmFEHZIyHuuRBiQZxN6DjH2ENH8uitl2uKv0kwD4U5rd3RSr5H6Sa/mFv5kHLELvf20rThYHLBxDRCnMr652hBq7GvOR9kqjsZR95bRFtN6hDjif1PmuRASRi7mEMD5fkSlEwzifNY/pHyo/8rZgA9HQ79ZxPtpgk1kFyNwUaRWMHYT4kXxn5bWcdIOuYdpZeBtq2cjogBuh78RXygqc0ZryNVl7Qznf/X7l3CrrBunZV2JaFU/tzGSfPEXB5i80Exed+Z8HspHDvh7QCGJbQ+WBuCKn3qPTDR/xxpIGGmh2AT9reJRcXzDltBcXeF5vUnsENirW3OzYI7l82diUVxD2YIGDD6/qqyQ=
   file: "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG"
   on:

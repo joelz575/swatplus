@@ -7,8 +7,7 @@ before_install:
     elif [[ $TRAVIS_OS_NAME
     == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user;
     printf '\n' | sudo add-apt-repository ppa:deadsnakes/ppa; sudo apt-get update; sudo apt-get install python3.9;
-    alias python3="python3.9"; python3 -V; ls /usr/lib/python3.9;
-    sudo apt install python3-pip; /usr/bin/python -m pip install --upgrade pip; chmod +x swatplusTest.sh;
+    alias python3="python3.9"; python3 -V; python -V; ls /usr/lib/python3.9; chmod +x swatplusTest.sh;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
       -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
     brew doctor; brew install python3; brew upgrade python@3.9; python3 --version; alias python3="python3.9"; fi

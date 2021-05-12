@@ -2,24 +2,16 @@ language: c
 sudo: true
 os:
   - linux
-  #- osx
-  #- windows
 before_install:
-  - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; choco install python;
-    elif [[ $TRAVIS_OS_NAME
-    == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user;
+  - sudo apt-get install gfortran; pip install cmake --upgrade --user;
     printf '\n' | sudo add-apt-repository ppa:deadsnakes/ppa; sudo apt-get update; sudo apt-get install python3.9;
     alias python3="python3.9"; python3 -V; ls /usr/lib/python3.9; #python3.9;
     sudo apt install python3-pip; /usr/bin/python -m pip install --upgrade pip;
-    elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
-      -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
-    brew doctor; brew install python3; brew upgrade python@3.9; python3 --version; alias python3="python3.9"; fi
   - cmake --version
 install:
   - mkdir build
   - cd build
-  - if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src; else cmake  -G "MinGW Makefiles" DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src;
-    fi
+  - cmake  -G "MinGW Makefiles" DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src;
   - cmake --build .
   - cd ..
 script:

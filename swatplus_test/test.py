@@ -85,7 +85,8 @@ class PruebaIDM(TestCase):
                 recibido = servidor.recibir(nmbr_dts)
                 print("receiving ", nmbr_dts)
                 print("received ", recibido)
-                recibido[np.isnan(recibido)] = 0
+                #nans = np.isnan(recibido)
+                #recibido = np.where(nans, 0, recibido)
                 npt.assert_almost_equal(dts, recibido, 5)
                 # equal to 5 decimal places
 

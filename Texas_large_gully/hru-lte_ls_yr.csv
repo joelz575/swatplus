@@ -1,5 +1,5 @@
  TX_LG_GULLY               SWAT+ Dec 8  2020    MODULAR Rev 2020.60.5.1                                   
   jday,   mon,   day,    yr,   unit , gis_id , name           ,      sedyld,     sedorgn,     sedorgp,     surqno3,     lat3no3,    surqsolp,        usle,      sedmin,     tileno3
       ,      ,      ,      ,        ,        ,                ,         tha,        kgha,        kgha,        kgha,        kgha,        kgha,        tons,        ----,        ----
-366,12,31,1996,1,1,bench           ,9.44,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+366,12,31,1996,1,1,bench           ,8.43,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
 365,12,31,1997,1,1,bench           ,18.6,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00

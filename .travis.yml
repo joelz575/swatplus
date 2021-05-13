@@ -7,7 +7,7 @@ os:
 before_install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; choco install python;
     elif [[ $TRAVIS_OS_NAME
-    == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user;
+    == linux ]]; then sudo apt-get update; sudo apt-get install gfortran; sudo apt-get install cmake;
     python3 -V; chmod +x swatplusTest.sh;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
       -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";

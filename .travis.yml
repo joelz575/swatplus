@@ -9,9 +9,7 @@ os:
 before_install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; choco install python;
     elif [[ $TRAVIS_OS_NAME
-    == linux ]]; then sudo apt-get update; sudo apt-get install gfortran; sudo apt purge cmake;
-    wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5.tar.gz; tar zxvf cmake-3.14.5.tar.gz; cd cmake-3.14.5;
-    sudo ./bootstrap; sudo make; sudo make install; cd ..;
+    == linux ]]; then sudo apt-get update; sudo apt-get install gfortran; sudo apt-get install cmake --system-site-packages;
     python3 -V; chmod +x swatplusTest.sh;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
       -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";

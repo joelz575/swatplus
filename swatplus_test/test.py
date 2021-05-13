@@ -2,7 +2,7 @@ import os
 import tracemalloc
 from subprocess import Popen
 from unittest import TestCase
-
+import numpy as np
 import numpy.testing as npt
 from tinamit.idm.puertos import IDMEnchufes
 
@@ -85,8 +85,7 @@ class PruebaIDM(TestCase):
                 recibido = servidor.recibir(nmbr_dts)
                 print("receiving ", nmbr_dts)
                 print("received ", recibido)
-                # npt.assert_almost_equal(dts, recibido)
-                # equal to 7 decimal places
+                recibido[np.isnan(recibido)] = 0
                 npt.assert_almost_equal(dts, recibido, 5)
                 # equal to 5 decimal places
 

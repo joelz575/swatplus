@@ -1,8 +1,6 @@
 import os
-import tracemalloc
 from subprocess import Popen
 from unittest import TestCase
-import numpy as np
 import numpy.testing as npt
 from tinamit.idm.puertos import IDMEnchufes
 

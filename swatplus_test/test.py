@@ -4,7 +4,7 @@ from unittest import TestCase
 import numpy.testing as npt
 from tinamit.idm.puertos import IDMEnchufes
 
-from swatplus_test.ejemplo_cliente import leer_datos, pequeno_datos
+from swatplus_test.ejemplo_cliente import leer_datos_hru, pequeno_datos
 
 t_final = 731
 valgrind = False
@@ -17,7 +17,7 @@ class PruebaIDM(TestCase):
         símismo.clientes = []
 
     def _empezar_cliente(símismo, dirección, puerto):
-        cwd = os.path.join(BASE_DIR, "Texas_large_gully")
+        cwd = os.path.join(BASE_DIR, "ceap_connectivity test")
         swat_exe = os.path.join(BASE_DIR, "build/bin/swatplus_exe")
         if valgrind:
             cliente = Popen(["valgrind", "--leak-check=yes", "--track-origins=yes", swat_exe, str(puerto), dirección],
@@ -76,7 +76,7 @@ class PruebaIDM(TestCase):
                     npt.assert_equal(check_t, t)
 
     def test_recibir_datos(símismo):
-        for nmbr_dts, dts in leer_datos.items():
+        for nmbr_dts, dts in leer_datos_hru.items():
             with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
                 símismo._empezar_cliente(servidor.dirección, servidor.puerto)
                 servidor.activar()
@@ -86,6 +86,7 @@ class PruebaIDM(TestCase):
                 #nans = np.isnan(recibido)
                 #recibido = np.where(nans, 0, recibido)
                 npt.assert_almost_equal(dts, recibido, 5)
+                print("Done")
                 # equal to 5 decimal places
 
     def test_incrementar(símismo):

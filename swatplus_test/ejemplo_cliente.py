@@ -75,7 +75,7 @@ pequeno_datos = {
     'sd_chd': np.array([0.5, 3.79999995])  # m          |channel depth
 }
 
-leer_datos = {
+leer_datos_lt = {
     'sd_props': np.array([0, 0]),
     'sd_obj_no': np.array([0, 0]),
     'sd_aqu_link': np.array([0, 0]),       #aquifer the channel is linked to
@@ -88,7 +88,7 @@ leer_datos = {
     'sd_cov': np.array([0.0, 5.00000007E-02]),        #0-1        |channel cover factor
     'sd_cherod': np.array([np.nan, 0.200000003]),     #           |channel erodibility
     'sd_shear_bnk': np.array([np.nan, np.nan]),  #0-1        |bank shear coefficient - fraction of bottom shear
-    'sd_hc_erod': np.array([1.40129846E-45, 1.40129846E-45]),    #           |headcut erodibility
+    'sd_hc_erod': np.array([0, 0]),    #           |headcut erodibility
     'sd_hc_co': np.array([0.0, 7.47151327]),      #m/m        |proportionality coefficient for head cut
     'sd_hc_len': np.array([0.0, 0.0]),     #m          |length of head cut
     'sd_hc_hgt': np.array([6.86636248E-44, 1.0]),     #m          |headcut height
@@ -144,3 +144,87 @@ leer_datos = {
     # #type(hru_databases_char):: dbsc  # database pointers
     # #type(hru_parms_db):: parms  # calibration parameters
 }
+leer_datos_hru = {
+        #"hru_obj_no": np.array([-2098603856, 1, 2, 3, 4]), #not good for testing; changes every run
+        "hru_area_ha": np.array([0, 40, 40, 40, 40]),
+        "hru_km": np.array([0, 0.4, 0.4, 0.4, 0.4]),
+        "hru_surf_stor": np.array([1,1,1,1,1]),
+        "hru_land_use_mgt": np.array([0, 1, 3, 1, 3]),
+        "hru_lum_group": np.array([119, 119, 119, 119, 119]),
+        "hru_plant_cov": np.array([-96, 1, 4, 1, 4]),
+        "hru_mgt_ops": np.array([-1, 1, 3, 1, 3]),
+        "hru_tiledrain": np.array([0, 1, 1, 1, 1]),
+        "hru_septic": np.array([0, 0, 0, 0, 0]),
+        "hru_fstrip": np.array([0, 0, 0, 0, 0]),
+        "hru_grassww": np.array([0, 0, 0, 0, 0]),
+        "hru_bmpuser": np.array([0, 0, 0, 0, 0]),
+        "hru_crop_reg": np.array([0, 0, 0, 0, 0]),
+        "hru_cur_op": np.array([1, 0, 0, 0, 0]),
+        #"hru_sno_mm": np.array([0.05924, 0, 0, 0, 0]),   #not good for testing; changes every run -- mm H2O        |amount of water in snow on current day
+        "hru_water_fr": np.array([0, 0, 0, 0, 0]),
+        "hru_water_seep": np.array([0, 0, 0, 0, 0]),
+        "hru_water_evap": np.array([0, 0, 0, 0, 0]),
+        #"hru_ich_flood": np.array([22053, 22093, 21856, 22041, 21870]), #not good for testing; changes every run
+        "cn_luse": np.array([7, 37, 7, 37, -1]),
+        "luse": np.array([1, 3, 0, 0, 0]),
+}
+leer_datos_ch = {
+        "algae": np.array([]),           # mg alg/L      |algal biomass concentration in reach
+        "ammonian": np.array([]),        # mg N/L        |ammonia concentration in reach
+        "bankst": np.array([]),          # m^3 H2O       |bank storage
+        "li": np.array([]),              # km            |initial length of main channel
+        "orgn": np.array([]),            #               |organic nitrogen contribution from channel erosion
+        "orgp": np.array([]),            #               |organic phosphorus contribution from channel erosion
+        "si": np.array([]),              #(m/n)          |slope of main channel
+        "wi": np.array([]),              #(m)            |width of main channel at top of bank
+        "di": np.array([]),              #(m)            |depth of main channel from top of bank to bottom
+        "chlora": np.array([]),          # mg chl-a/L    |chlorophyll-a concentration in reach
+        "pst_conc": np.array([]),        # mg/(m**3)     |initial pesticide concentration in reach
+        "dep_chan": np.array([]),        # m             |average daily water depth in channel
+        "disolvp": np.array([]),         # mg P/L        |dissolved P concentration in reach
+        "drift": np.array([]),           # kg            |amount of pesticide drifting onto main channel in subbasin
+        "flwin": np.array([]),           # m^3 H2O       |flow into reach on previous day
+        "flwout": np.array([]),          # m^3 H2O       |flow out of reach on previous day
+        "nitraten": np.array([]),        # mg N/L        |nitrate concentration in reach
+        "nitriten": np.array([]),        # mg N/L        |nitrite concentration in reach
+        "organicn": np.array([]),        # mg N/L        |organic nitrogen concentration in reach
+        "organicp": np.array([]),        # mg P/L        |organic phosphorus concentration in reach
+        "rch_bactlp": np.array([]),      # cfu/100ml   |less persistent bacteria stored in reach
+        "rch_bactp": np.array([]),       # cfu/100ml   |persistent bacteria stored in reach
+        "rch_cbod": np.array([]),        # mg O2/L       |carbonaceous biochemical oxygen demand in reach
+        "rch_dox": np.array([]),         # mg O2/L       |dissolved oxygen concentration in reach
+        "rchstor": np.array([]),         # m^3 H2O       |water stored in reach
+        "sedst": np.array([]),           # metric tons   |amount of sediment stored in reach
+        "vel_chan": np.array([]),        # m/s           |average flow velocity in channel
+        "bed_san": np.array([]),
+        "bed_sil": np.array([]),
+        "bed_cla": np.array([]),
+        "bed_gra": np.array([]),
+        "bnk_san": np.array([]),
+        "bnk_sil": np.array([]),
+        "bnk_cla": np.array([]),
+        "bnk_gra": np.array([]),
+        "depfp": np.array([]),
+        "depprfp": np.array([]),
+        "depsilfp": np.array([]),
+        "depclafp": np.array([]),
+        "depch": np.array([]),
+        "depprch": np.array([]),
+        "depsanch": np.array([]),
+        "depsilch": np.array([]),
+        "depclach": np.array([]),
+        "depsagch": np.array([]),
+        "deplagch": np.array([]),
+        "depgrach": np.array([]),
+        "sanst": np.array([]),
+        "silst": np.array([]),
+        "clast": np.array([]),
+        "sagst": np.array([]),
+        "lagst": np.array([]),
+        "grast": np.array([]),
+        "wattemp": np.array([]),
+        "bactp": np.array([]),
+        "chfloodvol": np.array([]),
+        "bactlp": np.array([]),
+}
+

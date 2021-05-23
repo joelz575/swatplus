@@ -1,7 +1,7 @@
 module tinamit_module
 
     use landuse_data_module
-    use hru_module, ONLY : hru
+    use hru_module, ONLY : hru, hru_db
     use hru_lte_module, ONLY : hlt
     use channel_module, ONLY : ch
     use sd_channel_module, ONLY : sd_ch
@@ -1316,10 +1316,31 @@ contains
             allocate(floatBuffer(0))
             intBuffer = hru%ich_flood
 
+        case("cn_luse")
+            print *, "HRU cn_luse: "
+            do i= 1,size(hru)
+                print *, hru(i)%luse%cn_lu
+            end do
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                intBuffer(i) = hru(i)%luse%cn_lu
+            end do
+
+        case("luse")
+            print *, "HRU luse: "
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%luse%name
+                print *, hru_db(i)%dbsc%land_use_mgt
+                intBuffer(i) = hru_db(i)%dbs%land_use_mgt
+            end do
+        !type (landuse) :: luse
+
         !type (topography) :: topo
         !type (field) :: field
         !type (hydrology) :: hyd
-        !type (landuse) :: luse
         !type (land_use_mgt_variables) :: lumv
         !type (subsurface_drainage_parameters) :: sdr
         !type (snow_parameters) :: sno

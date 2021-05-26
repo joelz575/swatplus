@@ -426,6 +426,162 @@ contains
             print *, "CH algae before: ", ch%flwin
             ch%flwin = floatBuffer
             print *, "CH algae after: ", ch%flwin
+!-------HRU Variables---------------------------------------------------------------------------------------------------
+            case("hru_obj_no")
+            print *, "HRU obj_no: ", hru%obj_no
+            hru%obj_no = intBuffer
+
+        case("hru_area_ha")
+            print *, "HRU area_ha: ", hru%area_ha
+             hru%area_ha = floatBuffer
+
+        case("hru_km")
+            print *, "HRU km: ", hru%km
+             hru%km = floatBuffer
+
+        case("hru_surf_stor")
+            !points to res() for surface storage
+            print *, "HRU surf_stor: ", hru%surf_stor
+            hru%surf_stor = intBuffer
+
+        case("hru_land_use_mgt")
+            print *, "HRU land_use_mgt: ", hru%land_use_mgt
+            hru%land_use_mgt = intBuffer
+
+        !    character(len=16) :: land_use_mgt_c
+
+        case("hru_lum_group")
+            print *, "HRU lum_group: ", hru%lum_group
+            hru%lum_group = intBuffer
+
+        !    character(len=16) :: lum_group_c        !land use group for soft cal and output
+
+        !    character(len=16) :: region
+
+        case("hru_plant_cov")
+            print *, "HRU plant_cov: ", hru%plant_cov
+            hru%plant_cov = intBuffer
+
+        case("hru_mgt_ops")
+            print *, "HRU mgt_ops: ", hru%mgt_ops
+            hru%mgt_ops = intBuffer
+
+        case("hru_tiledrain")
+            print *, "HRU tiledrain: ", hru%tiledrain
+            hru%tiledrain = intBuffer
+
+        case("hru_septic")
+            print *, "HRU septic: ", hru%septic
+            hru%septic = intBuffer
+
+        case("hru_fstrip")
+            print *, "HRU fstrip: ", hru%fstrip
+            hru%fstrip = intBuffer
+
+        case("hru_grassww")
+            print *, "HRU grassww: ", hru%grassww
+            hru%grassww = intBuffer
+
+        case("hru_bmpuser")
+            print *, "HRU bmpuser: ", hru%bmpuser
+            hru%bmpuser = intBuffer
+
+        case("hru_crop_reg")
+            print *, "HRU crop_reg: ", hru%crop_reg
+            hru%crop_reg = intBuffer
+
+        case("hru_cur_op")
+            print *, "HRU cur_op: ", hru%cur_op
+            hru%cur_op = intBuffer
+
+        case("hru_sno_mm")
+            !mm H2O        |amount of water in snow on current day
+            print *, "HRU sno_mm: ", hru%sno_mm
+            hru%sno_mm = floatBuffer
+
+        case("hru_water_fr")
+            print *, "HRU water_fr: ", hru%water_fr
+            hru%water_fr = floatBuffer
+
+        case("hru_water_seep")
+            print *, "HRU water_seep: ", hru%water_seep
+            hru%water_seep = floatBuffer
+
+        case("hru_water_evap")
+            print *, "HRU water_evap: ", hru%water_evap
+            floatBuffer = hru%water_evap
+
+        case("hru_ich_flood")
+            print *, "HRU ich_flood: ", hru%ich_flood
+            hru%ich_flood= intBuffer
+
+        case("cn_luse")
+            print *, "HRU cn_luse: "
+            do i= 1,size(hru)
+                print *, hru(i)%luse%cn_lu
+                hru(i)%luse%cn_lu = intBuffer(i)
+            end do
+
+        case("luse")
+            print *, "HRU luse: "
+            do i= 1,size(intBuffer)
+                print *, hru(i)%luse%name
+                if(.not.(hru(i)%dbs%land_use_mgt == intBuffer(i))) then
+                    index=0
+                    do f = 1,i-1
+                        if(hru(f)%dbs%land_use_mgt==intBuffer(i)) index = f
+                    end do
+                    if((index==0).and.(.not.(i==size(intBuffer)))) then
+                        do f = i, size(intBuffer)
+                            if(hru(f)%dbs%land_use_mgt==intBuffer(i)) then
+                                index = f
+                                exit
+                            end if
+                        end do
+                    end if
+                    if(.not.(index==0)) then
+                        !Changing landuse in databases
+                        hru(i)%dbs%land_use_mgt = hru(index)%dbs%land_use_mgt
+                        hru(i)%dbsc%land_use_mgt = hru(index)%dbsc%land_use_mgt
+                        !Changing landuse in luse
+                        hru(i)%luse%name = hru(index)%luse%name
+                        hru(i)%luse%cn_lu = hru(index)%luse%cn_lu
+                        hru(i)%luse%cons_prac = hru(index)%luse%cons_prac
+                        hru(i)%luse%usle_p = hru(index)%luse%usle_p
+                        hru(i)%luse%urb_ro = hru(index)%luse%urb_ro
+                        hru(i)%luse%urb_lu = hru(index)%luse%urb_lu
+                        hru(i)%luse%ovn = hru(index)%luse%ovn
+                        !Changing landuse in lumv
+                        hru(i)%lumv%usle_p = hru(index)%lumv%usle_p
+                        hru(i)%lumv%usle_ls = hru(index)%lumv%usle_ls
+                        hru(i)%lumv%usle_mult = hru(index)%lumv%usle_mult
+                        hru(i)%lumv%sdr_dep = hru(index)%lumv%sdr_dep
+                        hru(i)%lumv%ldrain = hru(index)%lumv%ldrain
+                        hru(i)%lumv%tile_ttime = hru(index)%lumv%tile_ttime
+                        hru(i)%lumv%vfsi = hru(index)%lumv%vfsi
+                        hru(i)%lumv%vfsratio = hru(index)%lumv%vfsratio
+                        hru(i)%lumv%vfscon = hru(index)%lumv%vfscon
+                        hru(i)%lumv%vfsch = hru(index)%lumv%vfsch
+                        hru(i)%lumv%ngrwat = hru(index)%lumv%ngrwat
+                        hru(i)%lumv%grwat_i = hru(index)%lumv%grwat_i
+                        hru(i)%lumv%grwat_n = hru(index)%lumv%grwat_n
+                        hru(i)%lumv%grwat_spcon = hru(index)%lumv%grwat_spcon
+                        hru(i)%lumv%grwat_d = hru(index)%lumv%grwat_d
+                        hru(i)%lumv%grwat_w = hru(index)%lumv%grwat_w
+                        hru(i)%lumv%grwat_l = hru(index)%lumv%grwat_l
+                        hru(i)%lumv%grwat_s = hru(index)%lumv%grwat_s
+                        hru(i)%lumv%bmp_flag = hru(index)%lumv%bmp_flag
+                        hru(i)%lumv%bmp_sed = hru(index)%lumv%bmp_sed
+                        hru(i)%lumv%bmp_pp = hru(index)%lumv%bmp_pp
+                        hru(i)%lumv%bmp_sp = hru(index)%lumv%bmp_sp
+                        hru(i)%lumv%bmp_pn = hru(index)%lumv%bmp_pn
+                        hru(i)%lumv%bmp_sn = hru(index)%lumv%bmp_sn
+                        hru(i)%lumv%bmp_bac = hru(index)%lumv%bmp_bac
+                    else
+                        print *, "WARNING: Assignment of Land-use skipped, please assign hru to a landuse that is already used by at least one other hru in the model."
+                    end if
+                end if
+            end do
 
         CASE default
             print *, "Unused variable: ", variable_Name
@@ -1333,8 +1489,9 @@ contains
             allocate(floatBuffer(0))
             do i= 1,size(hru)
                 print *, hru(i)%luse%name
-                print *, hru_db(i)%dbsc%land_use_mgt
-                intBuffer(i) = hru_db(i)%dbs%land_use_mgt
+                print *, hru(i)%dbsc%land_use_mgt
+                print *, hru(i)%dbs%land_use_mgt
+                intBuffer(i) = hru(i)%dbs%land_use_mgt
             end do
         !type (landuse) :: luse
 

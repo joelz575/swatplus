@@ -4,7 +4,7 @@ from unittest import TestCase
 import numpy.testing as npt
 from tinamit.idm.puertos import IDMEnchufes
 
-from swatplus_test.ejemplo_cliente import leer_datos_hru, pequeno_datos
+from swatplus_test.ejemplo_cliente import leer_datos_hru, pequeno_datos, pequeno_datos_hru
 
 t_final = 731
 valgrind = False
@@ -36,7 +36,7 @@ class PruebaIDM(TestCase):
             servidor.cerrar()
 
     def test_mandar_datos(símismo):
-        for nmbr_dts, dts in pequeno_datos.items():
+        for nmbr_dts, dts in pequeno_datos_hru.items():
             with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
                 símismo._empezar_cliente(servidor.dirección, servidor.puerto)
                 servidor.activar()

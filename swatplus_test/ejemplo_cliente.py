@@ -75,6 +75,18 @@ pequeno_datos = {
     'sd_chd': np.array([0.5, 3.79999995])  # m          |channel depth
 }
 
+pequeno_datos_hru = {
+        "hru_area_ha": np.array([0.0, 40.0, 40.0, 40.0, 40.0]),
+        "hru_land_use_mgt": np.array([0, 1, 1, 1, 3]),
+        "hru_lum_group": np.array([119, 119, 119, 119, 119]),
+        "hru_plant_cov": np.array([-96, 1, 1, 1, 4]),
+        "hru_mgt_ops": np.array([-1, 1, 1, 1, 3]),
+        "hru_tiledrain": np.array([0, 1, 1, 1, 1]),
+        "hru_cur_op": np.array([1, 0, 0, 0, 0]),
+        "cn_luse": np.array([7, 37, 37, 37, -1]),
+        "luse": np.array([1, 3, 3, 3, 538976288]),
+}
+
 leer_datos_lt = {
     'sd_props': np.array([0, 0]),
     'sd_obj_no': np.array([0, 0]),
@@ -166,7 +178,7 @@ leer_datos_hru = {
         "hru_water_evap": np.array([0, 0, 0, 0, 0]),
         #"hru_ich_flood": np.array([22053, 22093, 21856, 22041, 21870]), #not good for testing; changes every run
         "cn_luse": np.array([7, 37, 7, 37, -1]),
-        "luse": np.array([1, 3, 0, 0, 0]),
+        "luse": np.array([1, 3, 1, 3, 538976288]),
 }
 leer_datos_ch = {
         "algae": np.array([]),           # mg alg/L      |algal biomass concentration in reach

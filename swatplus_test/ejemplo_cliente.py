@@ -83,8 +83,78 @@ pequeno_datos_hru = {
         "hru_mgt_ops": np.array([-1, 1, 1, 1, 3]),
         "hru_tiledrain": np.array([0, 1, 1, 1, 1]),
         "hru_cur_op": np.array([1, 0, 0, 0, 0]),
-        "cn_luse": np.array([7, 37, 37, 37, -1]),
+        "luse%cn_lu": np.array([7, 37, 37, 37, -1]),
         "luse": np.array([1, 3, 3, 3, 538976288]),
+}
+
+datos_hru_luse = {
+        "hru_obj_no": np.array([0,1,2,3,4]),
+        "hru_land_use_mgt": np.array([0, 1, 3, 3, 3]),
+        "hru_land_use_mgt_c": np.array([0, 1, 3, 3, 3]),
+        "hru_lum_group": np.array([119, 119, 119, 119, 119]),
+        "hru_lum_group_c": np.array([119, 119, 119, 119, 119]), # this variable holds no data
+        "hru_region": np.array([0]),# this variable does not print character data and is only important for calibration it seems
+        "hru_plant_cov": np.array([-96, 1, 4, 4, 4]),
+        "hru_mgt_ops": np.array([-1, 1, 3, 3, 3]),
+        "hru_tiledrain": np.array([0, 1, 1, 1, 1]),
+        "hru_septic": np.array([0, 0, 0, 0, 0]),
+        "hru_fstrip": np.array([0, 0, 0, 0, 0]),
+        "hru_grassww": np.array([0, 0, 0, 0, 0]),
+        "hru_bmpuser": np.array([0, 0, 0, 0, 0]),
+        "hru_crop_reg": np.array([0, 0, 0, 0, 0]),
+        "hru_cur_op": np.array([1, 0, 0, 0, 0]),
+        "hru_strsa": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_ich_flood": np.array([21982, 21982, 21982, 21982, 21982]),
+        "hru_luse%name": np.array([1, 3, 1, 1, 538976288]), #cannot read what the values are supposed to be
+        "hru_luse%cn_lu": np.array([7, 37, 7, 7, -1]),
+        "hru_luse%cons_prac": np.array([1, 1, 1, 1, 12]),
+        "hru_luse%usle_p": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_luse%urb_ro": np.array([1, 3, 1, 1, 538976288]),
+        "hru_luse%urb_lu": np.array([0, 0, 0, 0, 0]),
+        "hru_luse%ovn": np.array([0.01, 0.01, 0.01, 0.01, 0.0]),
+        "hru_dbs%name": np.array([1409366192, 1, 2, 3, 4]),
+        "hru_dbs%topo": np.array([1, 1, 1, 1, 538976288]),
+        "hru_dbs%hyd": np.array([1, 1, 1, 1, 538976288]),
+        "hru_dbs%soil": np.array([1, 1, 1, 1, 538976288]),
+        "hru_dbs%land_use_mgt": np.array([1, 3, 1, 3, 538976288]),
+        "hru_dbs%soil_plant_in": np.array([2, 1, 2, 2, 0]),
+        "hru_dbs%surf_stor": np.array([0, 1, 0, 0, 1]),
+        "hru_dbs%snow": np.array([1, 1, 1, 1, 0]),
+        "hru_dbs%field": np.array([1, 1, 1, 1, 538976288]),
+        "hru_dbsc%name": np.array([-135231312, 1, 2, 3, 4]), #char value is 4x hru0010104 1x illegible
+        "hru_dbsc%topo": np.array([1, 1, 1, 1, 538976288]), #char value is 4x hru00101 1x nothing
+        "hru_dbsc%hyd": np.array([1, 1, 1, 1, 538976288]), #char value is 4x hru0010104 1x illegible
+        "hru_dbsc%soil": np.array([1, 1, 1, 1, 538976288]), #char values is 4x IN025 and 1x nothing
+        "hru_dbsc%land_use_mgt": np.array([1, 3, 1, 1, 538976288]), #char values [corn_soyb_notill, sat_buffer, corn_soyb_notill, sat_buffer, ____]
+        "hru_dbsc%soil_plant_i": np.array([2, 1, 2, 2, 0]),
+        "hru_dbsc%surf_stor": np.array([0, 1, 0, 0, 1]), #char values [null, surf_stor, null, surf_stor, {illegible}]
+        "hru_dbsc%snow": np.array([1, 1, 1, 1, 0]), #char values 4x snow001 1xillegible
+        "hru_dbsc%field": np.array([0, 0, 0, 0, 0]), #char values 4x null 1x illegible
+        "hru_lumv%usle_p": np.array([1.0, 1.0, 1.0, 1.0, 0.0]),
+        "hru_lumv%usle_ls": np.array([0.61949, 0.61949, 0.61949, 0.61949, 0.0]),
+        "hru_lumv%usle_mult": np.array([1.01163, 1.01163, 1.01163, 1.01163, 0.0]),
+        "hru_lumv%sdr_dep": np.array([1000.0, 1000.0, 1000.0, 1000.0, 0.05]),
+        "hru_lumv%ldrain": np.array([4, 4, 4, 4, 0]),
+        "hru_lumv%tile_ttime": np.array([0.22120, 0.22120, 0.22120, 0.22120, 0.0]),
+        "hru_lumv%vfsi": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%vfsratio": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%vfscon": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%vfsch": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%ngrwat": np.array([0, 0, 0, 0, 0]),
+        "hru_lumv%grwat_i": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%grwat_n": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%grwat_spcon": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%grwat_d": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%grwat_w": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%grwat_l": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%grwat_s": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%bmp_flag": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%bmp_sed": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%bmp_pp": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%bmp_sp": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%bmp_pn": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%bmp_sn": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
+        "hru_lumv%bmp_bac": np.array([0.0, 0.0, 0.0, 0.0, 0.0]),
 }
 
 leer_datos_lt = {

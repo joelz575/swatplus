@@ -4,7 +4,7 @@ from unittest import TestCase
 import numpy.testing as npt
 from tinamit.idm.puertos import IDMEnchufes
 
-from swatplus_test.ejemplo_cliente import leer_datos_hru, pequeno_datos, pequeno_datos_hru
+from swatplus_test.ejemplo_cliente import leer_datos_hru, pequeno_datos, pequeno_datos_hru, datos_hru_luse
 
 t_final = 731
 valgrind = False
@@ -98,6 +98,20 @@ class PruebaIDM(TestCase):
             t = servidor.recibir('t')
             print("T is: ", t)
             símismo.assertEqual(t, n_pasos)
+
+    def test_usaDeSuelo(símismo):
+        for nmbr_dts, dts in datos_hru_luse.items():
+            with símismo.subTest(datos=nmbr_dts), IDMEnchufes() as servidor:
+                símismo._empezar_cliente(servidor.dirección, servidor.puerto)
+                servidor.activar()
+                #print("going to send this data: ", dts)
+                servidor.cambiar("luse", [1, 3, 1, 1, 538976288])
+                #servidor.cambiar(nmbr_dts, dts)
+                recibido = servidor.recibir(nmbr_dts)
+                # npt.assert_almost_equal(dts, recibido)
+                # equal to 7 decimal places
+                npt.assert_almost_equal(dts, recibido, 5)
+                # equal to 5 decimal places
 
     def test_finalizar(símismo):
         with IDMEnchufes() as servidor:

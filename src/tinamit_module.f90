@@ -1,10 +1,11 @@
 module tinamit_module
 
-    use landuse_data_module
+    use landuse_data_module, ONLY : lum
     use hru_module, ONLY : hru, hru_db
     use hru_lte_module, ONLY : hlt
     use channel_module, ONLY : ch
     use sd_channel_module, ONLY : sd_ch
+    use hydrograph_module, ONLY : sp_ob1, ob
 
     save
     integer :: MAX_BUFFER_LEN = 20000
@@ -449,14 +450,25 @@ contains
             hru%land_use_mgt = intBuffer
 
         !    character(len=16) :: land_use_mgt_c
+        case("hru_land_use_mgt_c")
+            print *, "HRU land_use_mgt_c: ", hru%land_use_mgt_c
+            hru%land_use_mgt = intBuffer
 
         case("hru_lum_group")
             print *, "HRU lum_group: ", hru%lum_group
             hru%lum_group = intBuffer
 
         !    character(len=16) :: lum_group_c        !land use group for soft cal and output
+        !case("hru_lum_group_c")
+        !    print *, "HRU lum_group_c", hru%lum_group_c
+        !    print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_lum_group instead"
+        !    hru%lum_group = intBuffer
 
         !    character(len=16) :: region
+        case("hru_region")
+            print *, "HRU region", hru%region
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%field "
+            hru%dbs%field = intBuffer
 
         case("hru_plant_cov")
             print *, "HRU plant_cov: ", hru%plant_cov
@@ -494,6 +506,11 @@ contains
             print *, "HRU cur_op: ", hru%cur_op
             hru%cur_op = intBuffer
 
+        case("hru_strsa")
+            print *, "HRU strsa", hru%strsa
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING... "
+            hru%strsa = intBuffer
+
         case("hru_sno_mm")
             !mm H2O        |amount of water in snow on current day
             print *, "HRU sno_mm: ", hru%sno_mm
@@ -515,76 +532,398 @@ contains
             print *, "HRU ich_flood: ", hru%ich_flood
             hru%ich_flood= intBuffer
 
-        case("cn_luse")
+        case("hru_luse%name")
+            print *, "HRU luse%name"
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
+            do i= 1,size(hru)
+                print *, hru(i)%luse%name
+                hru(i)%dbs%land_use_mgt = intBuffer(i)
+            end do
+
+        case("hru_luse%cn_lu")
             print *, "HRU cn_luse: "
             do i= 1,size(hru)
                 print *, hru(i)%luse%cn_lu
                 hru(i)%luse%cn_lu = intBuffer(i)
             end do
 
+        case("hru_luse%cons_prac")
+            print *, "HRU luse%cons_prac"
+            do i= 1,size(hru)
+                print *, hru(i)%luse%cons_prac
+                hru(i)%luse%cons_prac = intBuffer(i)
+            end do
+
+        case("hru_luse%usle_p")
+            print *, "HRU luse%usle_p"
+            do i= 1,size(hru)
+                print *, hru(i)%luse%usle_p
+                hru(i)%luse%usle_p = intBuffer(i)
+            end do
+
+        case("hru_luse%urb_ro")
+            print *, "HRU luse%urb_ro"
+            do i= 1,size(hru)
+                print *, hru(i)%luse%urb_ro
+                hru(i)%dbs%land_use_mgt = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
+
+        case("hru_luse%urb_lu")
+            print *, "HRU luse%urb_lu"
+            do i= 1,size(hru)
+                print *, hru(i)%luse%urb_lu
+                hru(i)%luse%urb_lu = intBuffer(i)
+            end do
+
+        case("hru_luse%ovn")
+            print *, "HRU luse%ovn"
+            do i= 1,size(hru)
+                print *, hru(i)%luse%ovn
+                hru(i)%luse%ovn = intBuffer(i)
+            end do
+
+        case("hru_dbs%name")
+            print *, "HRU dbs%name"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%name
+            end do
+            hru%obj_no = intBuffer(i)
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_obj_no"
+
+
+        case("hru_dbs%topo")
+            print *, "HRU dbs%topo"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%topo
+                hru(i)%dbs%topo = intBuffer(i)
+            end do
+
+        case("hru_dbs%hyd")
+            print *, "HRU dbs%hyd"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%hyd
+                hru(i)%dbs%hyd = intBuffer(i)
+            end do
+
+        case("hru_dbs%soil")
+            print *, "HRU dbs%soil"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%soil
+                hru(i)%dbs%soil = intBuffer(i)
+            end do
+
+        case("hru_dbs%land_use_mgt")
+            print *, "HRU dbs%land_use_mgt"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%land_use_mgt
+                hru(i)%dbs%land_use_mgt = intBuffer(i)
+            end do
+
+        case("hru_dbs%soil_plant_init")
+            print *, "HRU dbs%soil_plant_init"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%soil_plant_init
+                hru(i)%dbs%soil_plant_init = intBuffer(i)
+            end do
+
+        case("hru_dbs%surf_stor")
+            print *, "HRU dbs%surf_stor"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%surf_stor
+                hru(i)%dbs%surf_stor = intBuffer(i)
+            end do
+
+        case("hru_dbs%snow")
+            print *, "HRU dbs%snow"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%snow
+                hru(i)%dbs%snow = intBuffer(i)
+            end do
+
+        case("hru_dbs%field")
+            print *, "HRU dbs%hyd"
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%hyd
+                hru(i)%dbs%hyd = intBuffer(i)
+            end do
+
+        case("hru_dbsc%name")
+            print *, "HRU dbsc%name"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%name
+
+            end do
+
+            hru%obj_no = intBuffer(i)
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_obj_no"
+
+
+        case("hru_dbsc%topo")
+            print *, "HRU dbsc%topo"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%topo
+                hru(i)%dbs%topo = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%topo"
+
+        case("hru_dbsc%hyd")
+            print *, "HRU dbsc%hyd"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%hyd
+                hru(i)%dbs%hyd = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%hyd"
+
+        case("hru_dbsc%soil")
+            print *, "HRU dbsc%soil"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%soil
+                hru(i)%dbs%soil = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%soil"
+
+        case("hru_dbsc%land_use_mgt")
+            print *, "HRU dbsc%land_use_mgt"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%land_use_mgt
+                hru(i)%dbs%land_use_mgt = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
+
+        case("hru_dbsc%soil_plant_init")
+            print *, "HRU dbsc%soil_plant_init"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%soil_plant_init
+                hru(i)%dbs%soil_plant_init = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%soil_plant_init"
+
+        case("hru_dbsc%surf_stor")
+            print *, "HRU dbsc%surf_stor"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%surf_stor
+                hru(i)%dbs%surf_stor = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%surf_stor"
+
+        case("hru_dbsc%snow")
+            print *, "HRU dbsc%snow"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%snow
+                hru(i)%dbs%snow = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%snow"
+
+        case("hru_dbsc%field")
+            print *, "HRU dbsc%field"
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%field
+                hru(i)%dbs%field = intBuffer(i)
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%field"
+
+        case("hru_lumv%usle_p")
+            print *, "HRU lumv%usle_p"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%usle_p
+                hru(i)%lumv%usle_p = intBuffer(i)
+            end do
+
+        case("hru_lumv%usle_ls")
+            print *, "HRU lumv%usle_ls"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%usle_ls
+                hru(i)%lumv%usle_ls = intBuffer(i)
+            end do
+
+        case("hru_lumv%usle_mult")
+            print *, "HRU lumv%usle_mult"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%usle_mult
+                hru(i)%lumv%usle_mult = intBuffer(i)
+            end do
+
+        case("hru_lumv%sdr_dep")
+            print *, "HRU lumv%sdr_dep"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%sdr_dep
+                hru(i)%lumv%sdr_dep = intBuffer(i)
+            end do
+
+        case("hru_lumv%ldrain")
+            print *, "HRU lumv%ldrain"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%ldrain
+                hru(i)%lumv%ldrain = intBuffer(i)
+            end do
+
+        case("hru_lumv%tile_ttime")
+            print *, "HRU lumv%tile_ttime"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%tile_ttime
+                hru(i)%lumv%tile_ttime = intBuffer(i)
+            end do
+
+        case("hru_lumv%vfsi")
+            print *, "HRU lumv%vfsi"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%vfsi
+                hru(i)%lumv%vfsi = intBuffer(i)
+            end do
+
+        case("hru_lumv%vfsratio")
+            print *, "HRU lumv%vfsratio"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%vfsratio
+                hru(i)%lumv%vfsratio = intBuffer(i)
+            end do
+
+        case("hru_lumv%vfscon")
+            print *, "HRU lumv%vfscon"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%vfscon
+                hru(i)%lumv%vfscon = intBuffer(i)
+            end do
+
+        case("hru_lumv%vfsch")
+            print *, "HRU lumv%vfsch"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%vfsch
+                hru(i)%lumv%vfsch = intBuffer(i)
+            end do
+
+        case("hru_lumv%ngrwat")
+            print *, "HRU lumv%ngrwat"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%ngrwat
+                hru(i)%lumv%ngrwat = intBuffer(i)
+            end do
+
+        case("hru_lumv%grwat_i")
+            print *, "HRU lumv%grwat_i"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_i
+                hru(i)%lumv%grwat_i = intBuffer(i)
+            end do
+
+        case("hru_lumv%grwat_n")
+            print *, "HRU lumv%grwat_n"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_n
+                hru(i)%lumv%grwat_n = intBuffer(i)
+            end do
+
+        case("hru_lumv%grwat_spcon")
+            print *, "HRU lumv%grwat_spcon"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_spcon
+                hru(i)%lumv%grwat_spcon = intBuffer(i)
+            end do
+
+        case("hru_lumv%grwat_d")
+            print *, "HRU lumv%grwat_d"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_d
+                hru(i)%lumv%grwat_d = intBuffer(i)
+            end do
+
+        case("hru_lumv%grwat_w")
+            print *, "HRU lumv%grwat_w"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_w
+                hru(i)%lumv%grwat_w = intBuffer(i)
+            end do
+
+        case("hru_lumv%grwat_l")
+            print *, "HRU lumv%grwat_l"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_l
+                hru(i)%lumv%grwat_l = intBuffer(i)
+            end do
+
+        case("hru_lumv%grwat_s")
+            print *, "HRU lumv%grwat_s"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_s
+                hru(i)%lumv%grwat_s = intBuffer(i)
+            end do
+
+        case("hru_lumv%bmp_flag")
+            print *, "HRU lumv%bmp_flag"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_flag
+                hru(i)%lumv%bmp_flag = intBuffer(i)
+            end do
+
+        case("hru_lumv%bmp_sed")
+            print *, "HRU lumv%bmp_sed"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_sed
+                hru(i)%lumv%bmp_sed = intBuffer(i)
+            end do
+
+        case("hru_lumv%bmp_pp")
+            print *, "HRU lumv%bmp_pp"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_pp
+                hru(i)%lumv%bmp_pp = intBuffer(i)
+            end do
+
+        case("hru_lumv%bmp_sp")
+            print *, "HRU lumv%bmp_sp"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_sp
+                hru(i)%lumv%bmp_sp = intBuffer(i)
+            end do
+
+        case("hru_lumv%bmp_pn")
+            print *, "HRU lumv%bmp_pn"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_pn
+                hru(i)%lumv%bmp_pn = intBuffer(i)
+            end do
+
+        case("hru_lumv%bmp_sn")
+            print *, "HRU lumv%bmp_sn"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_sn
+                hru(i)%lumv%bmp_sn = intBuffer(i)
+            end do
+
+        case("hru_lumv%bmp_bac")
+            print *, "HRU lumv%bmp_bac"
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_bac
+                hru(i)%lumv%bmp_bac = intBuffer(i)
+            end do
+
         case("luse")
             print *, "HRU luse: "
             do i= 1,size(intBuffer)
                 print *, hru(i)%luse%name
-                if(.not.(hru(i)%dbs%land_use_mgt == intBuffer(i))) then
-                    index=0
-                    do f = 1,i-1
-                        if(hru(f)%dbs%land_use_mgt==intBuffer(i)) index = f
-                    end do
-                    if((index==0).and.(.not.(i==size(intBuffer)))) then
-                        do f = i, size(intBuffer)
-                            if(hru(f)%dbs%land_use_mgt==intBuffer(i)) then
-                                index = f
-                                exit
-                            end if
-                        end do
-                    end if
-                    if(.not.(index==0)) then
-                        !Changing landuse in databases
-                        hru(i)%dbs%land_use_mgt = hru(index)%dbs%land_use_mgt
-                        hru(i)%dbsc%land_use_mgt = hru(index)%dbsc%land_use_mgt
-                        !Changing landuse in luse
-                        hru(i)%luse%name = hru(index)%luse%name
-                        hru(i)%luse%cn_lu = hru(index)%luse%cn_lu
-                        hru(i)%luse%cons_prac = hru(index)%luse%cons_prac
-                        hru(i)%luse%usle_p = hru(index)%luse%usle_p
-                        hru(i)%luse%urb_ro = hru(index)%luse%urb_ro
-                        hru(i)%luse%urb_lu = hru(index)%luse%urb_lu
-                        hru(i)%luse%ovn = hru(index)%luse%ovn
-                        !Changing landuse in lumv
-                        hru(i)%lumv%usle_p = hru(index)%lumv%usle_p
-                        hru(i)%lumv%usle_ls = hru(index)%lumv%usle_ls
-                        hru(i)%lumv%usle_mult = hru(index)%lumv%usle_mult
-                        hru(i)%lumv%sdr_dep = hru(index)%lumv%sdr_dep
-                        hru(i)%lumv%ldrain = hru(index)%lumv%ldrain
-                        hru(i)%lumv%tile_ttime = hru(index)%lumv%tile_ttime
-                        hru(i)%lumv%vfsi = hru(index)%lumv%vfsi
-                        hru(i)%lumv%vfsratio = hru(index)%lumv%vfsratio
-                        hru(i)%lumv%vfscon = hru(index)%lumv%vfscon
-                        hru(i)%lumv%vfsch = hru(index)%lumv%vfsch
-                        hru(i)%lumv%ngrwat = hru(index)%lumv%ngrwat
-                        hru(i)%lumv%grwat_i = hru(index)%lumv%grwat_i
-                        hru(i)%lumv%grwat_n = hru(index)%lumv%grwat_n
-                        hru(i)%lumv%grwat_spcon = hru(index)%lumv%grwat_spcon
-                        hru(i)%lumv%grwat_d = hru(index)%lumv%grwat_d
-                        hru(i)%lumv%grwat_w = hru(index)%lumv%grwat_w
-                        hru(i)%lumv%grwat_l = hru(index)%lumv%grwat_l
-                        hru(i)%lumv%grwat_s = hru(index)%lumv%grwat_s
-                        hru(i)%lumv%bmp_flag = hru(index)%lumv%bmp_flag
-                        hru(i)%lumv%bmp_sed = hru(index)%lumv%bmp_sed
-                        hru(i)%lumv%bmp_pp = hru(index)%lumv%bmp_pp
-                        hru(i)%lumv%bmp_sp = hru(index)%lumv%bmp_sp
-                        hru(i)%lumv%bmp_pn = hru(index)%lumv%bmp_pn
-                        hru(i)%lumv%bmp_sn = hru(index)%lumv%bmp_sn
-                        hru(i)%lumv%bmp_bac = hru(index)%lumv%bmp_bac
-                    else
-                        print *, "WARNING: Assignment of Land-use skipped, please assign hru to a landuse that is already used by at least one other hru in the model."
-                    end if
-                end if
+
+                !Changing landuse in databases
+                hru(i)%dbs%land_use_mgt = intBuffer(i)
+                hru(i)%dbsc%land_use_mgt = lum(intBuffer(i))%name !from line 72 and 73 in hru_read
+
+                iob = sp_ob1%hru + i - 1
+                ihru_db = ob(iob)%props
+                hru_db(ihru_db)%dbs = hru(i)%dbs
+                hru_db(ihru_db)%dbsc = hru(i)%dbsc
+
+                hru(i)%land_use_mgt = intBuffer(i)
+
+                ihru = i
+                print *, "Dias: ", dias
+                print *, "hru(j)%pLant_cov: ", hru(j)%plant_cov
+                call plant_init(1)
+
             end do
 
         CASE default
             print *, "Unused variable: ", variable_Name
+            error stop
         end select
 
         call recibe()
@@ -1376,6 +1715,12 @@ contains
             intBuffer = hru%land_use_mgt
 
         !    character(len=16) :: land_use_mgt_c
+        case("hru_land_use_mgt_c")
+            print *, "HRU land_use_mgt_c: ", hru%land_use_mgt_c
+            print *, "CANNOT SEND CHARACTER DATA, SENDING hru%land_use_mgt instead"
+            allocate(intBuffer(size(hru%land_use_mgt)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%land_use_mgt
 
         case("hru_lum_group")
             print *, "HRU lum_group: ", hru%lum_group
@@ -1384,8 +1729,21 @@ contains
             intBuffer = hru%lum_group
 
         !    character(len=16) :: lum_group_c        !land use group for soft cal and output
+        case("hru_lum_group_c")
+            print *, "HRU lum_group_c: ", hru%lum_group_c
+            print *, "CANNOT SEND CHARACTER DATA, SENDING hru%lum_group instead"
+            allocate(intBuffer(size(hru%lum_group)))
+            allocate(floatBuffer(0))
+            intBuffer = hru%lum_group
 
         !    character(len=16) :: region
+        case("hru_region")
+            print *, "HRU region: ", hru%region
+            print *, "CANNOT SEND CHARACTER DATA, SENDING 0 instead"
+            allocate(intBuffer(1))
+            allocate(floatBuffer(0))
+            intBuffer = 0
+
 
         case("hru_plant_cov")
             print *, "HRU plant_cov: ", hru%plant_cov
@@ -1441,6 +1799,12 @@ contains
             allocate(floatBuffer(0))
             intBuffer = hru%cur_op
 
+        case("hru_strsa")
+            print *, "HRU strsa: ", hru%strsa
+            allocate(floatBuffer(size(hru%strsa)))
+            allocate(intBuffer(0))
+            floatBuffer = hru%strsa
+
         case("hru_sno_mm")
             !mm H2O        |amount of water in snow on current day
             print *, "HRU sno_mm: ", hru%sno_mm
@@ -1472,15 +1836,469 @@ contains
             allocate(floatBuffer(0))
             intBuffer = hru%ich_flood
 
-        case("cn_luse")
-            print *, "HRU cn_luse: "
+        case("hru_luse%name")
+            print *, "HRU luse%name"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
             do i= 1,size(hru)
-                print *, hru(i)%luse%cn_lu
+                print *, hru(i)%luse%name
+                intBuffer(i) = hru(i)%dbs%land_use_mgt
             end do
+
+        case("hru_luse%cn_lu")
+            print *, "HRU cn_luse: "
             allocate(intBuffer(size(hru)))
             allocate(floatBuffer(0))
             do i= 1,size(hru)
+                print *, hru(i)%luse%cn_lu
                 intBuffer(i) = hru(i)%luse%cn_lu
+            end do
+
+        case("hru_luse%cons_prac")
+            print *, "HRU luse%cons_prac"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%luse%cons_prac
+                intBuffer(i) = hru(i)%luse%cons_prac
+            end do
+
+        case("hru_luse%usle_p")
+            print *, "HRU luse%usle_p"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%luse%usle_p
+                floatBuffer(i) = hru(i)%luse%usle_p
+            end do
+
+        case("hru_luse%urb_ro")
+            print *, "HRU luse%urb_ro"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%luse%urb_ro
+                intBuffer(i) = hru(i)%dbs%land_use_mgt
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
+
+        case("hru_luse%urb_lu")
+            print *, "HRU luse%urb_lu"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%luse%urb_lu
+                intBuffer(i) = hru(i)%luse%urb_lu
+            end do
+
+        case("hru_luse%ovn")
+            print *, "HRU luse%ovn"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%luse%ovn
+                floatBuffer(i) = hru(i)%luse%ovn
+            end do
+
+        case("hru_dbs%name")
+            print *, "HRU dbs%name"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%name
+            end do
+            intBuffer = hru%obj_no
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_obj_no"
+
+
+        case("hru_dbs%topo")
+            print *, "HRU dbs%topo"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%topo
+                intBuffer(i) = hru(i)%dbs%topo
+            end do
+
+        case("hru_dbs%hyd")
+            print *, "HRU dbs%hyd"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%hyd
+                intBuffer(i) = hru(i)%dbs%hyd
+            end do
+
+        case("hru_dbs%soil")
+            print *, "HRU dbs%soil"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%soil
+                intBuffer(i) =hru(i)%dbs%soil
+            end do
+
+        case("hru_dbs%land_use_mgt")
+            print *, "HRU dbs%land_use_mgt"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%land_use_mgt
+                intBuffer(i) = hru(i)%dbs%land_use_mgt
+            end do
+
+        case("hru_dbs%soil_plant_in")
+            print *, "HRU dbs%soil_plant_init"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%soil_plant_init
+                intBuffer(i) = hru(i)%dbs%soil_plant_init
+            end do
+
+        case("hru_dbs%surf_stor")
+            print *, "HRU dbs%surf_stor"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%surf_stor
+                intBuffer(i) =  hru(i)%dbs%surf_stor
+            end do
+
+        case("hru_dbs%snow")
+            print *, "HRU dbs%snow"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%snow
+                intBuffer(i) =hru(i)%dbs%snow
+            end do
+
+        case("hru_dbs%field")
+            print *, "HRU dbs%hyd"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbs%hyd
+                intBuffer(i) = hru(i)%dbs%hyd
+            end do
+
+        case("hru_dbsc%name")
+            print *, "HRU dbsc%name"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%name
+            end do
+
+            intBuffer = hru%obj_no
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_obj_no"
+
+
+        case("hru_dbsc%topo")
+            print *, "HRU dbsc%topo"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%topo
+                intBuffer(i) = hru(i)%dbs%topo
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%topo"
+
+        case("hru_dbsc%hyd")
+            print *, "HRU dbsc%hyd"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%hyd
+                intBuffer(i) = hru(i)%dbs%hyd
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%hyd"
+
+        case("hru_dbsc%soil")
+            print *, "HRU dbsc%soil"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%soil
+                intBuffer(i) = hru(i)%dbs%soil
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%soil"
+
+        case("hru_dbsc%land_use_mgt")
+            print *, "HRU dbsc%land_use_mgt"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%land_use_mgt
+                intBuffer(i) = hru(i)%dbs%land_use_mgt
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
+
+        case("hru_dbsc%soil_plant_i")
+            print *, "HRU dbsc%soil_plant_init"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%soil_plant_init
+                intBuffer(i) = hru(i)%dbs%soil_plant_init
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%soil_plant_init"
+
+        case("hru_dbsc%surf_stor")
+            print *, "HRU dbsc%surf_stor"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%surf_stor
+                intBuffer(i) = hru(i)%dbs%surf_stor
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%surf_stor"
+
+        case("hru_dbsc%snow")
+            print *, "HRU dbsc%snow"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%snow
+                intBuffer(i) = hru(i)%dbs%snow
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%snow"
+
+        case("hru_dbsc%field")
+            print *, "HRU dbsc%field"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%dbsc%field
+                intBuffer(i) = hru(i)%dbs%field
+            end do
+            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%field"
+
+        case("hru_lumv%usle_p")
+            print *, "HRU lumv%usle_p"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%usle_p
+                floatBuffer(i) = hru(i)%lumv%usle_p
+            end do
+
+        case("hru_lumv%usle_ls")
+            print *, "HRU lumv%usle_ls"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%usle_ls
+                floatBuffer(i) =hru(i)%lumv%usle_ls
+            end do
+
+        case("hru_lumv%usle_mult")
+            print *, "HRU lumv%usle_mult"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%usle_mult
+                floatBuffer(i) = hru(i)%lumv%usle_mult
+            end do
+
+        case("hru_lumv%sdr_dep")
+            print *, "HRU lumv%sdr_dep"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%sdr_dep
+                floatBuffer(i) = hru(i)%lumv%sdr_dep
+            end do
+
+        case("hru_lumv%ldrain")
+            print *, "HRU lumv%ldrain"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%ldrain
+                intBuffer(i) = hru(i)%lumv%ldrain
+            end do
+
+        case("hru_lumv%tile_ttime")
+            print *, "HRU lumv%tile_ttime"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%tile_ttime
+                floatBuffer(i) = hru(i)%lumv%tile_ttime
+            end do
+
+        case("hru_lumv%vfsi")
+            print *, "HRU lumv%vfsi"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%vfsi
+                floatBuffer(i) = hru(i)%lumv%vfsi
+            end do
+
+        case("hru_lumv%vfsratio")
+            print *, "HRU lumv%vfsratio"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%vfsratio
+                floatBuffer(i) = hru(i)%lumv%vfsratio
+            end do
+
+        case("hru_lumv%vfscon")
+            print *, "HRU lumv%vfscon"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%vfscon
+                floatBuffer(i) = hru(i)%lumv%vfscon
+            end do
+
+        case("hru_lumv%vfsch")
+            print *, "HRU lumv%vfsch"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%vfsch
+                floatBuffer(i) = hru(i)%lumv%vfsch
+            end do
+
+        case("hru_lumv%ngrwat")
+            print *, "HRU lumv%ngrwat"
+            allocate(intBuffer(size(hru)))
+            allocate(floatBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%ngrwat
+                intBuffer(i) = hru(i)%lumv%ngrwat
+            end do
+
+        case("hru_lumv%grwat_i")
+            print *, "HRU lumv%grwat_i"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_i
+                floatBuffer(i) = hru(i)%lumv%grwat_i
+            end do
+
+        case("hru_lumv%grwat_n")
+            print *, "HRU lumv%grwat_n"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_n
+                floatBuffer(i) = hru(i)%lumv%grwat_n
+            end do
+
+        case("hru_lumv%grwat_spcon")
+            print *, "HRU lumv%grwat_spcon"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_spcon
+                floatBuffer(i) = hru(i)%lumv%grwat_spcon
+            end do
+
+        case("hru_lumv%grwat_d")
+            print *, "HRU lumv%grwat_d"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_d
+                floatBuffer(i) = hru(i)%lumv%grwat_d
+            end do
+
+        case("hru_lumv%grwat_w")
+            print *, "HRU lumv%grwat_w"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_w
+                floatBuffer(i) = hru(i)%lumv%grwat_w
+            end do
+
+        case("hru_lumv%grwat_l")
+            print *, "HRU lumv%grwat_l"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_l
+                floatBuffer(i) = hru(i)%lumv%grwat_l
+            end do
+
+        case("hru_lumv%grwat_s")
+            print *, "HRU lumv%grwat_s"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%grwat_s
+                floatBuffer(i) = hru(i)%lumv%grwat_s
+            end do
+
+        case("hru_lumv%bmp_flag")
+            print *, "HRU lumv%bmp_flag"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_flag
+                floatBuffer(i) = hru(i)%lumv%bmp_flag
+            end do
+
+        case("hru_lumv%bmp_sed")
+            print *, "HRU lumv%bmp_sed"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_sed
+                floatBuffer(i) = hru(i)%lumv%bmp_sed
+            end do
+
+        case("hru_lumv%bmp_pp")
+            print *, "HRU lumv%bmp_pp"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_pp
+                floatBuffer(i) = hru(i)%lumv%bmp_pp
+            end do
+
+        case("hru_lumv%bmp_sp")
+            print *, "HRU lumv%bmp_sp"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_sp
+                floatBuffer(i) = hru(i)%lumv%bmp_sp
+            end do
+
+        case("hru_lumv%bmp_pn")
+            print *, "HRU lumv%bmp_pn"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_pn
+                floatBuffer(i) = hru(i)%lumv%bmp_pn
+            end do
+
+        case("hru_lumv%bmp_sn")
+            print *, "HRU lumv%bmp_sn"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_sn
+                floatBuffer(i) =hru(i)%lumv%bmp_sn
+            end do
+
+        case("hru_lumv%bmp_bac")
+            print *, "HRU lumv%bmp_bac"
+            allocate(floatBuffer(size(hru)))
+            allocate(intBuffer(0))
+            do i= 1,size(hru)
+                print *, hru(i)%lumv%bmp_bac
+                floatBuffer(i) = hru(i)%lumv%bmp_bac
             end do
 
         case("luse")
@@ -1506,8 +2324,8 @@ contains
         !type (hru_parms_db) :: parms            !calibration parameters
 
         CASE default
-            print *, "Unknown variable: ", varNombre, " checking whether it is a testing variable..."
-
+            print *, "Unknown variable: ", varNombre
+            error stop
         end select
 
         if(.not.(SIZE(intBuffer)==0))then

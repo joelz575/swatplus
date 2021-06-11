@@ -902,23 +902,39 @@ contains
             print *, "HRU luse: "
             do i= 1,size(intBuffer)
                 print *, hru(i)%luse%name
+                j = i
+                ihru = i
+                ilu = intBuffer(i)
+                isol = hru(j)%dbs%soil
+
+                if((ilu/=hru(j)%land_use_mgt))then
 
                 !Changing landuse in databases
-                hru(i)%dbs%land_use_mgt = intBuffer(i)
-                hru(i)%dbsc%land_use_mgt = lum(intBuffer(i))%name !from line 72 and 73 in hru_read
+                hru(j)%dbs%land_use_mgt = ilu
+                hru(j)%dbsc%land_use_mgt = lum(ilu)%name !from line 72 and 73 in hru_read
 
                 iob = sp_ob1%hru + i - 1
                 ihru_db = ob(iob)%props
-                hru_db(ihru_db)%dbs = hru(i)%dbs
-                hru_db(ihru_db)%dbsc = hru(i)%dbsc
+                hru_db(ihru_db)%dbs = hru(ihru)%dbs
+                hru_db(ihru_db)%dbsc = hru(ihru)%dbsc
 
-                hru(i)%land_use_mgt = intBuffer(i)
+                hru(j)%land_use_mgt = ilu
 
-                ihru = i
                 print *, "Dias: ", dias
                 print *, "hru(j)%pLant_cov: ", hru(j)%plant_cov
                 call plant_init(1)
 
+                ! How it is done in actions
+                !!land use change
+                !          case ("lu_change")
+                !            j = d_tbl%act(iac)%ob_num
+                !            if (j == 0) j = ob_cur
+                !            ilu = d_tbl%act_typ(iac)
+                !            hru(j)%dbs%land_use_mgt = ilu
+                !            hru(j)%land_use_mgt_c = d_tbl%act(iac)%file_pointer
+                !            isol = hru(j)%dbs%soil
+                !            call plant_init (1)
+                end if
             end do
 
         CASE default

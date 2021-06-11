@@ -18,6 +18,7 @@
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
 
+      ! Initializing tinamit_module
       call get_command_argument(1, arg1)
       call get_command_argument(2, arg2)
       dynamic = ((TRIM(arg1)/='').AND.(TRIM(arg2)/=''))
@@ -78,6 +79,7 @@
 
       ! save initial time settings for soft calibration runs
       time_init = time
+
 
       !! simulate watershed processes
       if (time%step < 0) then

@@ -40,7 +40,7 @@
       real :: xsd                       !             | 
       real :: ch                        !             | 
       real :: tan                       !             | 
-      real :: h                         !             | 
+      real :: hlat                      !             | 
       real :: acos                      !             | 
       real :: ramm                      !MJ/m2        |extraterrestrial radiation  
       real :: pet                       !             | 
@@ -151,12 +151,12 @@
           ch = -hlt(isd)%yls * tan(xsd) / hlt(isd)%ylc 
           IF (ch.lt.1.) THEN 
             IF (ch.le.-1.) THEN 
-              h = 3.1415 
+              hlat = 3.1415 
             ELSE 
-              h = acos(ch) 
+              hlat = acos(ch) 
             END IF 
           ELSE 
-            h = 0. 
+            hlat = 0. 
           END IF 
           
           IF (hlt_db(ihlt_db)%ipet .eq. "harg") THEN

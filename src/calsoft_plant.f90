@@ -47,10 +47,11 @@
           soft = plcal(ireg)%lum(ilum)%meas%yield
           if (soft > 1.e-6) then
           diff = (plcal(ireg)%lum(ilum)%aa%yield - soft) / soft
+          !! if yields are greater than 20% low
           if (diff < -.2) then
             do ihru_s = 1, plcal(ireg)%num_tot
               iihru = plcal(ireg)%num(ihru_s)
-              if (hru(iihru)%tiledrain == 0 .and. hru(iihru)%strsa > 20.) then
+              if (hru(iihru)%tiledrain == 0 .and. hru(iihru)%strsa > 50.) then
                 isim = 1
                 do ipl = 1, pcom(iihru)%npl
                   if (plcal(ireg)%lum(ilum)%meas%name == pcom(iihru)%pl(ipl)) then
@@ -66,24 +67,21 @@
                 hru(iihru)%strsa = 0.
               end if
             end do  !ihru_s
-            plcal(ireg)%lum(ilum)%nbyr = 0
-            plcal(ireg)%lum(ilum)%precip_aa = 0.
-            plcal(ireg)%lum(ilum)%aa = plcal_z
-            plcal(ireg)%lum(ilum)%sim%yield = 0.
             
           end if    !diff > .2
           end if    !soft > 0
-          plcal(ireg)%lum(ilum)%ha = 0.
+          
       end do    !ilum
       end do    !ireg
             
       ! perco adj
       if (isim > 0) then
         cal_sim =  " crop perco adj "
+        call calsoft_plant_zero
         call time_control
       end if
 
-      call time_control
+      !call time_control
         
       do iterall = 1, iter_all
         ! epco adjustment
@@ -142,18 +140,14 @@
                 end if
               end do
             end do
-            plcal(ireg)%lum(ilum)%nbyr = 0
-            plcal(ireg)%lum(ilum)%precip_aa = 0.
-            plcal(ireg)%lum(ilum)%aa = plcal_z
-            plcal(ireg)%lum(ilum)%sim%yield = 0.
             
             end if
-            plcal(ireg)%lum(ilum)%ha = 0.
           end do
         end do
         ! 1st epco adj
         if (isim > 0) then
           cal_sim =  " 1st epco adj "
+          call calsoft_plant_zero
           call time_control
         end if
 
@@ -205,20 +199,17 @@
                 end if
               end do
             end do
-            plcal(ireg)%lum(ilum)%nbyr = 0
-            plcal(ireg)%lum(ilum)%precip_aa = 0.
-            plcal(ireg)%lum(ilum)%aa = plcal_z
-            plcal(ireg)%lum(ilum)%sim%yield = 0.
             
             end if
             end if
-            plcal(ireg)%lum(ilum)%ha = 0.
+            
           end do
           
         end do
         ! plant epco adjustment
         if (isim > 0) then
           cal_sim =  " epco adj "
+          call calsoft_plant_zero
           call time_control
         end if
         end do      
@@ -269,18 +260,15 @@
                 end if
               end do
             end do
-            plcal(ireg)%lum(ilum)%nbyr = 0
-            plcal(ireg)%lum(ilum)%precip_aa = 0.
-            plcal(ireg)%lum(ilum)%aa = plcal_z
-            plcal(ireg)%lum(ilum)%sim%yield = 0.
             
             end if
-            plcal(ireg)%lum(ilum)%ha = 0.
+            
           end do
         end do
         ! 1st and only pest stress adj
         if (isim > 0) then
           cal_sim =  " pest stress adj "
+          call calsoft_plant_zero
           call time_control
         end if
           
@@ -331,18 +319,16 @@
                 end if
               end do
             end do
-            plcal(ireg)%lum(ilum)%nbyr = 0
-            plcal(ireg)%lum(ilum)%precip_aa = 0.
-            plcal(ireg)%lum(ilum)%aa = plcal_z
-            plcal(ireg)%lum(ilum)%sim%yield = 0.
             
             end if
-            plcal(ireg)%lum(ilum)%ha = 0.
+            
           end do
         end do
+        
         ! 1st lai potential adj
         if (isim > 0) then
           cal_sim =  " first lai potential adj "
+          call calsoft_plant_zero
           call time_control
         end if
 
@@ -398,19 +384,17 @@
                 end if
               end do
             end do
-            plcal(ireg)%lum(ilum)%nbyr = 0
-            plcal(ireg)%lum(ilum)%precip_aa = 0.
-            plcal(ireg)%lum(ilum)%aa = plcal_z
-            plcal(ireg)%lum(ilum)%sim%yield = 0.
             
             end if
-            plcal(ireg)%lum(ilum)%ha = 0.
+            
           end do
           
         end do
+          
         ! plant potential lai adjustment
         if (isim > 0) then
           cal_sim =  " lai potential adj "
+          call calsoft_plant_zero
           call time_control
         end if
         end do      ! ist
@@ -462,18 +446,16 @@
                 end if
               end do
             end do
-            plcal(ireg)%lum(ilum)%nbyr = 0
-            plcal(ireg)%lum(ilum)%precip_aa = 0.
-            plcal(ireg)%lum(ilum)%aa = plcal_z
-            plcal(ireg)%lum(ilum)%sim%yield = 0.
             
             end if
-            plcal(ireg)%lum(ilum)%ha = 0.
+            
           end do
         end do
+        
         ! 1st plant harvest index adjustment 
         if (isim > 0) then
           cal_sim = " first harvest index adj "
+          call calsoft_plant_zero
           call time_control
         end if
 
@@ -528,18 +510,16 @@
                 end if
               end do
             end do
-            plcal(ireg)%lum(ilum)%nbyr = 0
-            plcal(ireg)%lum(ilum)%precip_aa = 0.
-            plcal(ireg)%lum(ilum)%aa = plcal_z
-            plcal(ireg)%lum(ilum)%sim%yield = 0.
             
             end if
-            plcal(ireg)%lum(ilum)%ha = 0.
+            
           end do
         end do
+          
         ! plant harvest index adjustment
         if (isim > 0) then
           cal_sim = " harvest index adj "
+          call calsoft_plant_zero
           call time_control
         end if
         end do      ! ist

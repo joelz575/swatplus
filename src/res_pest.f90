@@ -35,7 +35,6 @@
       integer :: jres               !none          |reservoir number  
       integer :: ipst               !none          |counter
       integer :: icmd               !none          |
-      integer :: jpst               !none          |counter
       integer :: jsed               !none          |counter
       integer :: idb                !none          |
 
@@ -44,11 +43,11 @@
       do ipst = 1, cs_db%num_pests
         icmd = res_ob(jres)%ob
         idb = ob(icmd)%props
-        jpst = cs_db%pest_num(ipst)
+        ipest_db = cs_db%pest_num(ipst)
         jsed = res_dat(idb)%sed
         respst_d(jres)%pest(ipst)%tot_in = obcs(icmd)%hin%pest(ipst)
         tpest1 = obcs(icmd)%hin%pest(ipst) + res_water(jres)%pest(ipst)
-        bedvol = 1000. * res_wat_d(jres)%area_ha * pestdb(jpst)%ben_act_dep + .01
+        bedvol = 1000. * res_wat_d(jres)%area_ha * pestdb(ipest_db)%ben_act_dep + .01
         tpest2 = res_benthic(jres)%pest(ipst) * bedvol
 
         !! calculate average depth of reservoir
@@ -57,7 +56,7 @@
         !! -> sor mass/sol mass = Kd * (kg sed)/(L water) --> sol mass/tot mass = 1 / (1 + Kd * (kg sed)/(L water))
         !! water column --> kg sed/L water = t/m3 = t / (m3 - (t * m3/t)) --> sedvol = sed/particle density(2.65)
         sedmass_watervol = (res(jres)%sed) / (res(jres)%flo - (res(jres)%sed / 2.65))
-        kd = pestdb(jpst)%koc * res_sed(jsed)%carbon / 100.
+        kd = pestdb(ipest_db)%koc * res_sed(jsed)%carbon / 100.
         fd1 = 1. / (1. + kd * sedmass_watervol)
         fd1 = amin1 (1., fd1)
         fp1 = 1. - fd1
@@ -75,7 +74,7 @@
         !! determine pesticide lost through reactions in water layer
         pest_init = tpest1
         if (pest_init > 1.e-12) then
-          pest_end = tpest1 * pestcp(jpst)%decay_a
+          pest_end = tpest1 * pestcp(ipest_db)%decay_a
           tpest1 = pest_end
           respst_d(jres)%pest(ipst)%react = pest_init - pest_end
           !! add decay to daughter pesticides
@@ -90,7 +89,7 @@
         end if
         
         !! determine pesticide lost through volatilization
-        volatpst = pestdb(jpst)%aq_volat * fd1 * tpest1 / depth
+        volatpst = pestdb(ipest_db)%aq_volat * fd1 * tpest1 / depth
         if (volatpst > tpest1) then
           volatpst = tpest1
           tpest1 = 0.
@@ -100,7 +99,7 @@
         respst_d(jres)%pest(ipst)%volat = volatpst
 
         !! determine amount of pesticide settling to sediment layer
-        setlpst = pestdb(jpst)%aq_settle * fp1 * tpest1 / depth
+        setlpst = pestdb(ipest_db)%aq_settle * fp1 * tpest1 / depth
         if (setlpst > tpest1) then
           setlpst = tpest1
           tpest1 = 0.
@@ -112,7 +111,7 @@
         respst_d(jres)%pest(ipst)%settle = setlpst
 
         !! determine pesticide resuspended into lake water
-        resuspst = pestdb(jpst)%aq_resus * tpest2 / pestdb(jpst)%ben_act_dep
+        resuspst = pestdb(ipest_db)%aq_resus * tpest2 / pestdb(ipest_db)%ben_act_dep
         if (resuspst > tpest2) then
           resuspst = tpest2
           tpest2 = 0.
@@ -125,7 +124,7 @@
 
         !! determine pesticide diffusing from sediment to water
         difus = res_ob(jres)%aq_mix(ipst) *                                 &                                
-              (fd2 * tpest2 / pestdb(jpst)%ben_act_dep - fd1 * tpest1 / depth)
+              (fd2 * tpest2 / pestdb(ipest_db)%ben_act_dep - fd1 * tpest1 / depth)
         if (difus > 0.) then
           if (difus > tpest2) then
             difus = tpest2
@@ -148,7 +147,7 @@
         !! determine pesticide lost from sediment by reactions
         pest_init = tpest2
         if (pest_init > 1.e-12) then
-          pest_end = tpest2 * pestcp(jpst)%decay_b
+          pest_end = tpest2 * pestcp(ipest_db)%decay_b
           tpest2 = pest_end
           respst_d(jres)%pest(ipst)%react_bot = pest_init - pest_end
           !! add decay to daughter pesticides
@@ -163,7 +162,7 @@
         end if
 
         !! determine pesticide lost from sediment by burial
-        bury = pestdb(jpst)%ben_bury * tpest2 / pestdb(jpst)%ben_act_dep
+        bury = pestdb(ipest_db)%ben_bury * tpest2 / pestdb(ipest_db)%ben_act_dep
         if (bury > tpest2) then
           bury = tpest2
           tpest2 = 0.

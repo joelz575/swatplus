@@ -27,7 +27,7 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : hru, ihru, iwgen, precipday 
+      use hru_module, only : hru, ihru, iwgen 
       use climate_module
       use urban_data_module
       
@@ -74,8 +74,7 @@
       if (k==3) beta = btn
       if (k==4) beta = btp
 
-      regres = 0.
-      regres = beta(1,ii) * (precipday / 25.4) ** beta(2,ii) *           &
+      regres = beta(1,ii) * (w%precip / 25.4) ** beta(2,ii) *           &
               (hru(j)%km * urbdb(ulu)%fimp / 2.589) **beta(3,ii)*       &
               (urbdb(ulu)%fimp * 100. + 1.) ** beta(4,ii) * beta(5,ii)
 

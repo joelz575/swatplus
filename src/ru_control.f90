@@ -11,11 +11,12 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 !!
 
-      use hru_module, only : hhsurfq, ihru, qday 
+      use hru_module, only : hhsurfq, ihru, qday, latq
       use ru_module
       use hydrograph_module
       use time_module
       use constituent_mass_module
+      use output_landscape_module
       
       implicit none 
       
@@ -27,13 +28,15 @@
       integer :: ielem                   !none        |counter
       integer :: ise                     !none        |counter
       integer :: iob                     !            |
+      integer :: iday_cur                !            |
       integer :: isd
       integer :: ihtypno                 !            |
       real :: ef                         !            | 
       real :: cnv_m3                     !            |
+      real :: cnv                        !            |hru conversion from mm to m3 with del ratio applied
       integer :: ii                      !none        |counter
       integer :: iday_prev               !            | 
-      real :: ssq                        !            |
+      real :: ts_flo_mm                  !mm          |total flow during the time step
       integer :: kk                      !            |
       real :: sumflo                     !            |
       integer :: itot                    !            |
@@ -46,7 +49,11 @@
       real :: ratio                      !frac        |fraction change in precipitation due to 
                                          !            |elevation changes
       real :: wtmp                       !deg C       |temperature of water in reach
-      
+      integer :: istep_bak           !none          |counter
+      integer :: day_cur             !none          |counter
+      integer :: day_next            !none          |counter
+      integer :: tinc                !none          |
+      integer :: inext_step
            
       iday = 1
       ihdmx = 2
@@ -136,20 +143,63 @@
           
         end if      !ru_elem(ise)%obtyp == "exc"
   
-        ! sum subdaily hydrographs for each object
-        !if (time%step > 0) then
-        !  select case (ru_elem(ise)%obtyp)
-        !  case ("hru")
-        !    do ii = 1, time%step
-        !      !hyd_flo(ii) = hyd_flo(ii) + hhsurfq(ihru,ii) * ru_elem(ise)%frac * delrto%flo * cnv_m3
-        !    end do
-        !  end select
-        !end if
+        !! sum subdaily hydrographs using subdaily precip and green and ampt runoff
+        if (time%step > 0 .and. bsn_cc%gampt == 1) then
+          select case (ru_elem(ise)%obtyp)
+          case ("hru")
+            do ii = 1, time%step
+              !! conversion from mm to m3 and apply delivery ratio
+              cnv = ru_elem(ise)%frac * ob(icmd)%area_ha * delrto%flo
+              !! assume lateral soil flow and tile flow are uniform throughout day
+              !! save lateral and tile flow for summing incoming total hydrographs
+              ob(icmd)%lat_til_flo = (latq(ihru) + hwb_d(ihru)%qtile)  / time%step
+              ts_flo_mm = cnv * (hhsurfq(ihru,ii) + ob(icmd)%lat_til_flo)
+              iday_cur = ob(icmd)%day_cur
+              !! hru hyd_flo in m3
+              rto = (ru_elem(ise)%frac * ob(icmd)%area_ha) / ob(iob)%area_ha
+              ob(icmd)%hyd_flo(iday_cur,ii) = ob(iob)%hyd_flo(iday_cur,ii) + ts_flo_mm
+            end do
+            case ("res")
+            do ii = 1, time%step
+              !ts_flo_mm = hhsurfq(ihru,ii) + (latq(ihru) + hwb_d(ihru)%qtile)  / time%step
+              !iday_cur = ob(icmd)%day_cur
+              !! res hyd_flo in m3
+              !ob(icmd)%hyd_flo(iday_cur,ii) = ob(iob)%hyd_flo(iday_cur,ii) + ts_flo_mm      &
+              !                                           * ru_elem(ise)%frac * delrto%flo
+            end do
+          end select
+          
+          !! set precious and next days for adding previous and translating to next
+          day_cur = ob(icmd)%day_cur
+          day_next = day_cur + 1
+          if (day_next > ob(icmd)%day_max) day_next = 1
+          
+          !! translate the hydrogrpah by time of concentration - no attenuation
+          ob(icmd)%hyd_flo(day_next,:) = 0.
+          ru_tc(iru) = 2.
+          if (ru_tc(iru) * 60. > time%dtm) then
+            tinc = int (ru_tc(iru) * 60. / time%dtm)
+            !! move to next days hydrograph
+            do istep = 1, tinc
+              inext_step = time%step - tinc + istep
+              ob(icmd)%hyd_flo(day_next,istep) = ob(icmd)%hyd_flo(day_cur,inext_step)
+            end do
+            !! shift current day hydrograph
+            do istep = 1, time%step
+              istep_bak = time%step - istep + 1
+              if (istep_bak <= tinc) then
+                ob(icmd)%hyd_flo(day_cur,istep_bak) = 0.
+              else
+                ob(icmd)%hyd_flo(day_cur,istep_bak) = ob(icmd)%hyd_flo(day_cur,istep_bak-tinc)
+              end if
+            end do
+          end if
+        end if
 
       end do  !element loop
       
-      !! set subdaily hydrographs
-      if (time%step > 0) then
+      !! set subdaily ru hydrographs using daily runoff and ru nit hydrograph
+      if (time%step > 0 .and. bsn_cc%gampt == 0) then
         call flow_hyd_ru_hru (ob(icmd)%day_cur, ob(icmd)%hd(3)%flo, ob(icmd)%hd(4)%flo,     &
                                         ob(icmd)%hd(5)%flo, ob(icmd)%uh, ob(icmd)%hyd_flo)
       end if

@@ -10,7 +10,6 @@
 !!    cvm(:)      |none          |natural log of USLE_C (the minimum value
 !!                               |of the USLE C factor for the land cover)
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
-!!    peakr       |m^3/s         |peak runoff rate
 !!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
 !!    usle_ei     |100(ft-tn in)/(acre-hr)|USLE rainfall erosion index
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

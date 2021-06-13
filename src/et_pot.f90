@@ -10,12 +10,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    albday     |none           |albedo for the day in HRU
 !!    gsi(:)     |m/s            |maximum stomatal conductance
-!!    hru_ra(:)  |MJ/m^2         |solar radiation for the day in HRU
-!!    hru_rmx(:) |MJ/m^2         |maximum possible radiation for the day in HRU
 !!    ihru       |none           |HRU number
-!!    rhd(:)     |none           |relative humidity for the day in HRU
-!!    u10(:)     |m/s            |wind speed (measured at 10 meters above 
-!!                               |surface)
 !!    vpd2(:)    |(m/s)*(1/kPa)  |rate of decline in stomatal conductance per
 !!               |               |unit increase in vapor pressure deficit
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -45,8 +40,7 @@
       use basin_module
       use hydrograph_module
       use climate_module
-      use hru_module, only : hru, u10, ihru, tmpav, rhd, hru_ra, hru_rmx, tmx, tmn,  &
-        albday, epmax, ipl, pet_day, vpd, ep_max
+      use hru_module, only : hru, ihru, albday, epmax, ipl, pet_day, vpd, ep_max
       use plant_module
       
       implicit none
@@ -92,26 +86,26 @@
       !! initialize local variables
       j = ihru
 
-      tk = tmpav(j) + 273.15
+      tk = w%tave + 273.15
 
       !! calculate mean barometric pressure
       pb = 101.3 - hru(j)%topo%elev *                                   &                
                         (0.01152 - 0.544e-6 * hru(j)%topo%elev)
 
       !! calculate latent heat of vaporization
-      xl = 2.501 - 2.361e-3 * tmpav(j)
+      xl = 2.501 - 2.361e-3 * w%tave
 
       !! calculate psychrometric constant
       gma = 1.013e-3 * pb / (0.622 * xl)
 
       !! calculate saturation vapor pressure, actual vapor pressure and
       !! vapor pressure deficit
-      ea = Ee(tmpav(j))
-      ed = ea * rhd(j)
+      ea = Ee(w%tave)
+      ed = ea * w%rhum
       vpd = ea - ed
 
       !!calculate the slope of the saturation vapor pressure curve
-      dlt = 4098. * ea / (tmpav(j) + 237.3)**2
+      dlt = 4098. * ea / (w%tave + 237.3)**2
 	
 !! DETERMINE POTENTIAL ET
 
@@ -122,9 +116,9 @@
        !! net radiation
          !! calculate net short-wave radiation for PET
           if (hru(j)%sno_mm <= .5) then
-            ralb = hru_ra(j) * (1.0 - 0.23)
+            ralb = w%solrad * (1.0 - 0.23)
           else
-            ralb = hru_ra(j) * (1.0 - 0.8)
+            ralb = w%solrad * (1.0 - 0.8)
           end if
 
         !! calculate net long-wave radiation
@@ -133,10 +127,10 @@
           rbo = -(0.34 - 0.139 * Sqrt(ed))
 
           !! cloud cover factor equation 2.2.19
-            if (hru_rmx(j) < 1.e-4) then
+            if (w%solradmx < 1.e-4) then
 		    rto = 0.
             else
-              rto = 0.9 * (hru_ra(j) / hru_rmx(j)) + 0.1
+              rto = 0.9 * (w%solrad / w%solradmx) + 0.1
             end if
 
           !! net long-wave radiation equation 2.2.21
@@ -155,22 +149,22 @@
        !! net radiation
          !! calculate net short-wave radiation for PET
           if (hru(j)%sno_mm <= .5) then
-            ralb = hru_ra(j) * (1.0 - 0.23) 
+            ralb = w%solrad * (1.0 - 0.23) 
           else
-            ralb = hru_ra(j) * (1.0 - 0.8) 
+            ralb = w%solrad * (1.0 - 0.8) 
           end if
          !! calculate net short-wave radiation for max plant ET
-          ralb1 = hru_ra(j) * (1.0 - albday) 
+          ralb1 = w%solrad * (1.0 - albday) 
 
          !! calculate net long-wave radiation
           !! net emissivity  equation 2.2.20 in SWAT manual
           rbo = -(0.34 - 0.139 * Sqrt(ed))
 
           !! cloud cover factor equation 2.2.19
-          if (hru_rmx(j) < 1.e-4) then
+          if (w%solradmx  < 1.e-4) then
             rto = 0.
           else
-            rto = 0.9 * (hru_ra(j) / hru_rmx(j)) + 0.1
+            rto = 0.9 * (w%solrad / w%solradmx) + 0.1
           end if
 
           !! net long-wave radiation equation 2.2.21
@@ -181,12 +175,12 @@
           rn_pet = ralb + rout
           !! net radiation
 
-          rho = 1710. - 6.85 * tmpav(j)
+          rho = 1710. - 6.85 * w%tave
 
-          if (u10(j) < 0.01) u10(j) = 0.01
+          if (w%windsp < 0.01) w%windsp = 0.01
 
            !! potential ET: reference crop alfalfa at 40 cm height
-           rv = 114. / (u10(j) * (170./1000.)**0.2)
+           rv = 114. / (w%windsp * (170./1000.)**0.2)
            rc = 49. / (1.4 - 0.4 * hru(j)%parms%co2 / 330.)
            pet_day = (dlt * rn_pet + gma * rho * vpd / rv) /            &           
                                   (xl * (dlt + gma * (1. + rc / rv)))
@@ -208,7 +202,7 @@
             else
               zz = pcom(j)%cht_mx * 100. + 100.
             end if
-            uzz = u10(j) * (zz/1000.)**0.2
+            uzz = w%windsp * (zz/1000.)**0.2
 
             !! calculate canopy height in cm
             if (pcom(j)%cht_mx < 0.01) then
@@ -266,11 +260,11 @@
         !! extraterrestrial radiation
         !! 37.59 is coefficient in equation 2.2.6 !!extraterrestrial
         !! 30.00 is coefficient in equation 2.2.7 !!max at surface
-        ramm = hru_rmx(j) * 37.59 / 30. 
+        ramm = w%solradmx  * 37.59 / 30. 
 
-        if (tmx(j) > tmn(j)) then
-         pet_day = hru(j)%hyd%harg_pet * (ramm / xl) * (tmpav(j) +      &
-                                  17.8) * (tmx(j) - tmn(j))**0.5
+        if (w%tmax > w%tmin) then
+         pet_day = hru(j)%hyd%harg_pet * (ramm / xl) * (w%tave +      &
+                                  17.8) * (w%tmax - w%tmin)**0.5
          pet_day = Max(0., pet_day)
         else
           pet_day = 0.

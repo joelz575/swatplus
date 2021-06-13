@@ -901,8 +901,10 @@ contains
         case("luse")
             print *, "HRU luse: "
             do i= 1,size(intBuffer)
+                print *, i, " "
                 print *, hru(i)%luse%name
                 j = i
+                jj = i
                 ihru = i
                 ilu = intBuffer(i)
                 isol = hru(j)%dbs%soil
@@ -913,15 +915,14 @@ contains
                 hru(j)%dbs%land_use_mgt = ilu
                 hru(j)%dbsc%land_use_mgt = lum(ilu)%name !from line 72 and 73 in hru_read
 
-                iob = sp_ob1%hru + i - 1
+                iob = hru(j)%obj_no
                 ihru_db = ob(iob)%props
                 hru_db(ihru_db)%dbs = hru(ihru)%dbs
                 hru_db(ihru_db)%dbsc = hru(ihru)%dbsc
 
                 hru(j)%land_use_mgt = ilu
 
-                print *, "Dias: ", dias
-                print *, "hru(j)%pLant_cov: ", hru(j)%plant_cov
+                print *, "Calling plant_init(1)"
                 call plant_init(1)
 
                 ! How it is done in actions

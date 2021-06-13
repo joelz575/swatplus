@@ -3,7 +3,6 @@
       implicit none
       
       integer :: isep                !          |
-      integer :: ith                 !          |
       integer :: ilu                 !          | 
       integer :: ulu                 !          |
       integer :: iwgen               !          |
@@ -66,19 +65,19 @@
            real :: lat_orgn = 0.
            real :: lat_orgp = 0.
            real :: harg_pet  = .0023  
-           real :: latq_co = 0.3    !!               |              |plant ET curve number coefficient
+           real :: latq_co = 0.3    !!               |              |lateral soil flow coefficient - linear adjustment to daily lat flow
            real :: perco_lim = 1.   !!               |              |percolation coefficient-limits perc from bottom layer
       end type hydrology
       
       type snow_parameters
          character (len=16) :: name
          real :: falltmp = 0.     !deg C         |snowfall temp
-         real :: melttmp = 0.     !deg C         |snow melt base temp 
-         real :: meltmx = 0.      !mm/deg C/day  |Max melt rate for snow during year (June 21)
-         real :: meltmn = 0.      !mm/deg C/day  |Min melt rate for snow during year (Dec 21)
-         real :: timp             !none          |snow pack temp lag factor (0-1)
-         real :: covmx = 0.       !mm H20        |Min snow water content
-         real :: cov50 = 0.       !none          |frac of COVMX
+         real :: melttmp = 0.5    !deg C         |snow melt base temp
+         real :: meltmx = 4.5     !mm/deg C/day  |Max melt rate for snow during year (June 21)
+         real :: meltmn = 0.5     !mm/deg C/day  |Min melt rate for snow during year (Dec 21)
+         real :: timp = 0.8       !none          |snow pack temp lag factor (0-1)
+         real :: covmx = 25.0     !mm H20        |Min snow water content
+         real :: cov50 = 0.5      !none          |frac of COVMX
          real :: init_mm = 0.     !mm H20        |initial snow water content at start of simulation
       end type snow_parameters
       type (snow_parameters), dimension (:), allocatable :: snodb
@@ -232,15 +231,11 @@
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
 
-      
-      real :: precipday         !! mm   |daily precip for the hru
+
       real :: precip_eff        !! mm   |daily effective precip for runoff calculations = precipday + ls_overq + snomlt - canstor
                                 !!      |precip_eff = precipday + ls_overq - snofall + snomlt - canstor
       real :: qday              !! mm   |surface runoff that reaches main channel during day in HRU                               
-                                
-!!    change per JGA 8/31/2011 gsm for output.mgt 
-      real :: yield
-      
+
 !!    new/modified arrays for plant competition
       integer :: ipl, isol
 
@@ -254,7 +249,7 @@
       integer, dimension (:), allocatable :: iseptic
      
 !! septic variables for output.std
-      real :: peakr, sw_excess, albday
+      real :: qp_cms, sw_excess, albday
       real :: wt_shall
       real :: sq_rto
       real :: tloss, snomlt, snofall, fixn, qtile
@@ -326,11 +321,9 @@
       real, dimension (:), allocatable :: cnday
       real, dimension (:), allocatable :: tmpav
       real, dimension (:), allocatable :: hru_ra
-      real, dimension (:), allocatable :: tmx,tmn
-      real, dimension (:), allocatable :: tconc,hru_rmx
+      real, dimension (:), allocatable :: tconc
       real, dimension (:), allocatable :: usle_cfac,usle_eifac
       real, dimension (:), allocatable :: t_ov
-      real, dimension (:), allocatable :: u10,rhd
       real, dimension (:), allocatable :: canstor,ovrlnd
 
 !    Drainmod tile equations  08/2006 

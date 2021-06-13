@@ -94,7 +94,7 @@
       sedin = ob(icmd)%hin%sed  + ch(jrch)%sedst
       sedinorg = sedin
 !! initialize reach peak runoff rate
-      peakr = bsn_prm%prf * sdti
+      peakr = sdti
 
 !! calculate flow velocity
       vc = 0.

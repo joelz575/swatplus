@@ -21,6 +21,7 @@
       !! calculate flow duration
       tday = rttime / 24.0
       tday = amin1 (1., tday)
+      rt_delt = 1.
 
       !! calculate temperature in stream Stefan and Preudhomme. 1993.  Stream temperature estimation 
       !! from air temperature.  Water Res. Bull. p. 27-45 SWAT manual equation 2.3.13

@@ -1,6 +1,6 @@
       subroutine plant_init (init)
 
-      use hru_module, only : cn2, cvm_com, hru, ihru, ipl, isol, rsdco_plcom, ilu
+      use hru_module, only : cn2, cvm_com, hru, ihru, ipl, isol, rsdco_plcom
       use soil_module
       use plant_module
       use hydrograph_module
@@ -18,12 +18,12 @@
       implicit none
       
       integer, intent (in) :: init   !           |
-      integer :: icom                !           |
+      integer :: icom                !           |plant community counter
       integer :: idp                 !           |
       integer :: j                   !none       |counter
       integer :: ilug                !none       |counter 
-      integer :: iob                 !           |
-      integer :: iwgn                !           |
+      integer :: iob                 !           |spatial object number
+      integer :: iwgn                !           |weather generator number
       integer :: mo                  !none       |counter 
       integer :: iday                !none       |counter 
       integer :: iplt                !none       |counter 
@@ -56,32 +56,9 @@
       real :: laimx_pop              !           |max lai given plant population
 
       j = ihru
-      
-      !!assign land use pointers for the hru
-        hru(j)%land_use_mgt = ilu
-        pcom(j)%name = lum(ilu)%plant_cov
-        hru(j)%plant_cov = lum_str(ilu)%plant_cov
-        hru(j)%lum_group_c = lum(ilu)%cal_group
-        do ilug = 1, lum_grp%num
-          if (hru(j)%lum_group_c == lum_grp%name(ilum)) then
-            hru(j)%lum_group =  ilug
-          end if
-        end do
-        icom = hru(j)%plant_cov
-        iob = hru(j)%obj_no
-        iwst = ob(iob)%wst
-        iwgn = wst(iwst)%wco%wgn
-        isched = lum_str(ilu)%mgt_ops
-        hru(j)%mgt_ops = lum_str(ilu)%mgt_ops
-        hru(j)%tiledrain = lum_str(ilu)%tiledrain
-        hru(j)%septic = lum_str(ilu)%septic
-        hru(j)%fstrip = lum_str(ilu)%fstrip
-        hru(j)%grassww = lum_str(ilu)%grassww
-        hru(j)%bmpuser = lum_str(ilu)%bmpuser
-        hru(j)%luse%cn_lu = lum_str(ilu)%cn_lu
-        hru(j)%luse%cons_prac = lum_str(ilu)%cons_prac
 
       !! allocate plants
+        icom = hru(j)%plant_cov
         if (icom == 0) then
           pcom(j)%npl = 0
         else
@@ -134,6 +111,9 @@
           
           ! set heat units to maturity
           ! first compute base0 units for entire year
+          iob = hru(ihru)%obj_no
+          iwst = ob(iob)%wst
+          iwgn = wst(iwst)%wco%wgn
           phu0 = 0.
           do iday = 1, 365
             time%day = iday
@@ -243,6 +223,7 @@
           end if
           
           ! set initial operation for date scheduling
+          isched = hru(j)%mgt_ops
           if (sched(isched)%num_ops > 0) then
           if (sched(isched)%mgt_ops(1)%jday > 0) then
             irot = 1

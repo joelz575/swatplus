@@ -78,7 +78,7 @@
       real :: sd
       real :: dd
       real :: sdlat
-      real :: h 
+      real :: hlat 
       real :: daylength
       real :: rock
 
@@ -91,6 +91,8 @@
       rock = Exp(-.053 * soil(j)%phys(1)%rock)
       hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
+      !hru(j)%lumv%usle_mult = 1.586 * (hru(j)%area_ha) ** 0.12 * rock * soil(j)%ly(1)%usle_k *       &
+      !                           hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls
 
       tsoil = (wgn(iwgn)%tmpmx(12) + wgn(iwgn)%tmpmx(12)) / 2.
       !! should be beginning month of simulation and not 12 (December)
@@ -119,13 +121,13 @@
       dd = 1.0 + 0.033 * Cos(Real(time%day) / 58.09)
       sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
       if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
-        h = 0.
+        hlat = 0.
       elseif (sdlat >= -1.) then
-        h = Acos(sdlat)
+        hlat = Acos(sdlat)
       else
-        h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
+        hlat = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
       endif 
-      daylength = 7.6394 * h
+      daylength = 7.6394 * hlat
       do ipl = 1, pcom(j)%npl
         if (pcom(j)%plcur(ipl)%gro == "y" .and. daylength - dormhr(j) < wgn_pms(iwgn)%daylmn) then
           pcom(j)%plcur(ipl)%idorm = "y"

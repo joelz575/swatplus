@@ -22,6 +22,10 @@
       integer :: idb                  !none          |channel data pointer
       integer :: ihyd                 !              |
       integer :: ipest                !              |
+      integer :: ihru                 !              |
+      integer :: iru                  !              |
+      integer :: ise                  !              |
+      integer :: ielem                !              |
       integer :: id
       real :: erode_btm               !cm            |
       real :: erode_bank              !cm            |meander cut on one side
@@ -259,6 +263,20 @@
             do ii = 1, ch_sur(ics)%num
               const = rto * ch_sur(ics)%hd(ii)%flo / ht1%flo
               ch_sur(ics)%hd(ii) = const * ht1
+              !! add overbank to wetland storage of hru(s)
+              if (ch_sur(ics)%obtyp(ii) == "hru") then
+                ihru = ch_sur(ics)%obtypno(ii)
+                wet(ihru) = wet(ihru) + ch_sur(ics)%hd(ii)
+              end if
+              if (ch_sur(ics)%obtyp(ii) == "ru") then
+                iru = ch_sur(ics)%obtypno(ii)
+                do ielem = 1, ru_def(iru)%num_tot
+                  ise = ru_def(iru)%num(ielem)
+                  !! assume the element is an hru
+                  ihru = ru_elem(ise)%obtypno
+                  wet(ihru) = wet(ihru) + ru_elem(ise)%frac * ch_sur(ics)%hd(ii)
+                end do
+              end if
             end do
            end if
            end if
@@ -481,9 +499,10 @@
       !  ch_water(ich) = frac * ch_water(ich) + hcs1
       !else
         !! travel time < timestep -- route all stored and frac of incoming
-        ht2 = scoef * ht1
-        ht2 = ht2 + ch_stor(ich)
-        ch_stor(ich) = frac * ht1
+        ch_stor(ich) = frac * ht2
+        ht2 = scoef * ht2   !ht11 -> ht2 on 1-25-2021  ***jga
+        !ht2 = ht2 + ch_stor(ich)
+        
         hcs2 = scoef * hcs1
         hcs2 = hcs2 + ch_water(ich)
         ch_water(ich) = frac * hcs1
@@ -516,6 +535,7 @@
       chsd_d(ich)%peakr = peakrate 
       chsd_d(ich)%sed_in = ob(icmd)%hin%sed
       chsd_d(ich)%sed_out = sedout
+      chsd_d(ich)%sed_stor = ch_stor(ich)%sed
       if (sedout > 2000.) then      !***jga
         dep = bedld
       end if

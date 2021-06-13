@@ -4,25 +4,33 @@
 !!    this subroutine summarizes data for subbasins with multiple HRUs and
 !!    prints the daily output.hru file
 
-      use hru_module, only : cbodu, chl_a, clayld, doxq, hhsurfq, hru, ihru, itb, lagyld, latq, peakr, percn, qday,  &
+      use hru_module, only : cbodu, chl_a, clayld, doxq, hhsurfq, hru, ihru, itb, lagyld, latq, qp_cms, percn, qday,  &
          sagyld, sanyld, silyld, sedminpa, sedminps, sedorgn, sedorgp, sepbtm, surqno3, surqsolp, tileno3,     &
-         tmpav, sedyld, latno3, qtile
+         sedyld, latno3, qtile, tconc
       use hydrograph_module
       use basin_module
       use time_module
       use constituent_mass_module
       use output_ls_pesticide_module
+      use climate_module
       
       implicit none
 
       integer :: j                   !none          |same as ihru (hru number)
       real :: cnv_m3                 !              |
       real :: cnv_kg                 !              |
+      real :: ssq                    !mm            |lat soil and tile flow during subdaily time step
       integer :: iob                 !              |
       integer :: ihyd                !none          |counter
       integer :: ipest               !none          |counter
       integer :: ipath               !none          |counter 
-
+      integer :: istep               !none          |counter
+      integer :: istep_bak           !none          |counter
+      integer :: day_cur             !none          |counter
+      integer :: day_next            !none          |counter
+      integer :: tinc                !none          |
+      integer :: inext_step
+      
       j = ihru
       cnv_m3 = hru(j)%area_ha * 10.
       cnv_kg = hru(j)%area_ha
@@ -33,8 +41,8 @@
       ob(icmd)%hd(3) = hz
 
       !! surface runoff hydrograph (3)
-      ob(icmd)%peakrate = peakr
-      ob(icmd)%hd(3)%temp = 5. + .75 * tmpav(j)       !!wtmp
+      ob(icmd)%peakrate = qp_cms
+      ob(icmd)%hd(3)%temp = 5. + .75 * w%tave         !!wtmp
       ob(icmd)%hd(3)%flo = qday * cnv_m3              !!qdr m3/d
       ob(icmd)%hd(3)%sed = sedyld(j)                  !!sedyld
       ob(icmd)%hd(3)%orgn = sedorgn(j) * cnv_kg       !!sedorgn
@@ -111,8 +119,41 @@
       
       !! set subdaily hydrographs
       if (time%step > 0) then
-        call flow_hyd_ru_hru (ob(icmd)%day_cur, ob(icmd)%hd(3)%flo, ob(icmd)%hd(4)%flo,     &
+        if (bsn_cc%gampt == 1) then
+          !! set precious and next days for adding previous and translating to next
+          day_cur = ob(icmd)%day_cur
+          day_next = day_cur + 1
+          if (day_next > ob(icmd)%day_max) day_next = 1
+          
+          !! hhsurf1 from sq_greenampt - mm
+          !! subsurface flow = lateral + tile --> assume uniform throughout the day
+          ssq = (latq(j) + qtile)  / time%step
+          ob(icmd)%lat_til_flo = ssq
+          ob(icmd)%hyd_flo(day_cur,:) = ob(icmd)%hyd_flo(day_cur,:) + (hhsurfq(j,:) + ssq) * cnv_m3
+          
+          !! translate the hydrogrpah by time of concentration - no attenuation
+          ob(icmd)%hyd_flo(day_next,:) = 0.
+          if (tconc(j) * 60. > time%dtm) then
+            tinc = int (tconc(j) * 60. / time%dtm)
+            !! move to next days hydrograph
+            do istep = 1, tinc
+              inext_step = time%step - tinc + istep
+              ob(icmd)%hyd_flo(day_next,istep) = ob(icmd)%hyd_flo(day_cur,inext_step)
+            end do
+            !! shift current day hydrograph
+            do istep = 1, time%step
+              istep_bak = time%step - istep + 1
+              if (istep_bak <= tinc) then
+                ob(icmd)%hyd_flo(day_cur,istep_bak) = 0.
+              else
+                ob(icmd)%hyd_flo(day_cur,istep_bak) = ob(icmd)%hyd_flo(day_cur,istep_bak-tinc)
+              end if
+            end do
+          end if  
+        else
+          call flow_hyd_ru_hru (ob(icmd)%day_cur, ob(icmd)%hd(3)%flo, ob(icmd)%hd(4)%flo,     &
                                         ob(icmd)%hd(5)%flo, ob(icmd)%uh, ob(icmd)%hyd_flo)
+        end if
       end if
 
       return   

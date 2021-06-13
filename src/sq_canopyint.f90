@@ -25,8 +25,9 @@
       use basin_module
       use time_module
       use climate_module, only : wst
-      use hru_module, only : hru, canstor,ihru, precipday, precip_eff
+      use hru_module, only : hru, canstor,ihru, precip_eff
       use plant_module
+      use hydrograph_module, only : ob
       
       implicit none
 
@@ -37,18 +38,20 @@
                                  !              |area
       real :: canstori           !mm H2O        |initial canopy storage water content 
       integer :: iwst            !none          |counter
+      integer :: iob
       !real :: precip_eff        !mm            |daily effective precip for runoff calculations = precipday + ls_overq + snomlt - canstor
                                  !     |precip_eff = precipday + ls_overq - snofall + snomlt - canstor
       
       j = ihru
+      iob = hru(j)%obj_no
+      iwst = ob(iob)%wst 
 
       if (pcom(j)%lai_sum < 0.001 .or. pcom(j)%laimx_sum < 0.001) return
 
       if (time%step > 0) then
           canstori = canstor(j)
           canmxl = hru(j)%hyd%canmx * pcom(j)%lai_sum / pcom(j)%laimx_sum
-          do ii = 2, time%step+1
-            xx = 0.
+          do ii = 1, time%step
             xx = wst(iwst)%weat%ts(ii)
             wst(iwst)%weat%ts(ii) = wst(iwst)%weat%ts(ii) - (canmxl - canstor(j))
 

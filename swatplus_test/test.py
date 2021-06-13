@@ -105,7 +105,7 @@ class PruebaIDM(TestCase):
                 símismo._empezar_cliente(servidor.dirección, servidor.puerto)
                 servidor.activar()
                 #print("going to send this data: ", dts)
-                servidor.cambiar("luse", [1, 3, 1, 1, 538976288])
+                #servidor.cambiar("luse", [1, 3, 1, 1, 538976288])
                 #servidor.cambiar(nmbr_dts, dts)
                 recibido = servidor.recibir(nmbr_dts)
                 # npt.assert_almost_equal(dts, recibido)

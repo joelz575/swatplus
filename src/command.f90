@@ -154,25 +154,43 @@
             
             !sum subdaily hydrographs
             if (time%step > 0) then
-              iday = ob(iob)%day_cur
-              !! iob = inflow object number
-              if (ob(icmd)%frac_in(ihyd) < .999) then
-                if (ob(icmd)%obtyp_in(ihyd) == "hru" .or. ob(icmd)%obtyp_in(ihyd) == "ru") then
-                  !! if fraction of an hru/ru - need to calc the flow hydrograph each day
-                  call flow_hyd_ru_hru (ob(iob)%day_cur, ob(iob)%hd(3)%flo, ob(iob)%hd(4)%flo,     &
-                        ob(iob)%hd(5)%flo, ob(icmd)%hin_uh(ihyd)%uh, ob(icmd)%hin_uh(ihyd)%hyd_flo)
-                  hyd_flo = ob(icmd)%hin_uh(ihyd)%hyd_flo(iday,:)
-                else
-                  !! if entire hru/ru or other object - use the flow hydrograph of the entire object
-                  hyd_flo = ob(iob)%hyd_flo(iday,:)
-                end if
-              else
-                !! if fraction in is 1.0 - always use the flow hydrograph of the entire object
-                hyd_flo = ob(iob)%hyd_flo(iday,:)
+              if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "ru") then
+                select case (ob(icmd)%htyp_in(in))
+                case ("tot")   ! total flow
+                  hyd_flo = ob(iob)%hyd_flo(iday,:) + ob(iob)%lat_til_flo / time%step
+                case ("sur")   ! surface runoff
+                  hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+                case ("lat")   ! lateral soil flow
+                  hyd_flo(:) = ob(iob)%hd(ihyd)%flo / time%step
+                case ("til")   ! tile flow
+                  hyd_flo(:) = ob(iob)%hd(ihyd)%flo / time%step
+                case ("aqu")   ! aquifer inflow
+                  hyd_flo(:) = ob(iob)%hd(ihyd)%flo / time%step
+                end select
               end if
-              !! add flow hydrographs for each incoming object
-              ob(icmd)%tsin = ob(icmd)%tsin + hyd_flo
+              if (ob(icmd)%typ == "res" .or. ob(icmd)%typ == "sdc") then
+                
+              end if
             end if
+            !  iday = ob(iob)%day_cur
+            !  !! iob = inflow object number
+            !  if (ob(icmd)%frac_in(ihyd) < .999) then
+            !    if (ob(icmd)%obtyp_in(ihyd) == "hru" .or. ob(icmd)%obtyp_in(ihyd) == "ru") then
+            !      !! if fraction of an hru/ru - need to calc the flow hydrograph each day
+            !      call flow_hyd_ru_hru (ob(iob)%day_cur, ob(iob)%hd(3)%flo, ob(iob)%hd(4)%flo,     &
+            !            ob(iob)%hd(5)%flo, ob(icmd)%hin_uh(ihyd)%uh, ob(icmd)%hin_uh(ihyd)%hyd_flo)
+            !      hyd_flo = ob(icmd)%hin_uh(ihyd)%hyd_flo(iday,:)
+            !    else
+            !      !! if entire hru/ru or other object - use the flow hydrograph of the entire object
+            !      hyd_flo = ob(iob)%hyd_flo(iday,:)
+            !    end if
+            !  else
+            !    !! if fraction in is 1.0 - always use the flow hydrograph of the entire object
+            !    hyd_flo = ob(iob)%hyd_flo(iday,:)
+            !  end if
+            !  !! add flow hydrographs for each incoming object
+            !  ob(icmd)%tsin = ob(icmd)%tsin + hyd_flo
+            !end if
 
           end do    ! in = 1, ob(icmd)%rcv_tot
 

@@ -37,7 +37,8 @@
         real :: latq_ls = 0.          !mm H2O        |lateral soil flow into a landscape element
       end type output_waterbal
        
-      type (output_waterbal), dimension (:), allocatable :: hwb_d
+      type (output_waterbal), pointer :: h
+      type (output_waterbal), dimension (:), allocatable, target :: hwb_d
       type (output_waterbal), dimension (:), allocatable :: hwb_m
       type (output_waterbal), dimension (:), allocatable :: hwb_y
       type (output_waterbal), dimension (:), allocatable :: hwb_a

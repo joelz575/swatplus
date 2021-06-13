@@ -23,10 +23,10 @@
       eof = 0
       imax = 0
       
-      inquire (file="pest_metabolite.pst", exist=i_exist)
+      inquire (file="pest_metabolite.pes", exist=i_exist)
       if (i_exist ) then
       do
-        open (106,file="pest_metabolite.pst")
+        open (106,file="pest_metabolite.pes")
         read (106,*,iostat=eof) titldum
         if (eof < 0) exit
         read (106,*,iostat=eof) header

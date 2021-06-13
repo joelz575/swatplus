@@ -204,7 +204,8 @@
         real :: lat                     !latitude (degrees)
         real :: long                    !longitude (degrees)
         real :: elev = 100.             !elevation (m)
-        real :: area_ha = 80.           !area - ha
+        real :: area_ha = 80.           !input drainag area - ha
+        real :: area_ha_calc = 80.      !calculated drainage area - ha
         integer :: props = 1            !properties number from data base (ie hru.dat, sub.dat) - change props to data
         character (len=50) ::  wst_c    !weather station name
         integer :: wst = 1              !weather station number
@@ -254,6 +255,7 @@
         type (inflow_unit_hyds), dimension(:),allocatable :: hin_uh         !inflow unit hydrographs
         real, dimension(:,:),allocatable :: uh                              !subdaily flow unit hydrograph
         real, dimension(:,:),allocatable :: hyd_flo                         !subdaily flow hydrograph
+        real :: lat_til_flo                                                 !daily lateral+tile flow - add to hyd_flo to get total hyd
         real, dimension(:),allocatable :: tsin                              !inflow subdaily flow hydrograph
         type (hyd_output) :: supply                                         !water supply allocation
         real :: demand                                                      !water irrigation demand (ha-m)
@@ -567,8 +569,8 @@
      type sd_hyd_header_units
         character (len=15) :: flo_in    =  "          m^3/s"        !! m^3/s        |volume of water
         character (len=15) :: flo_out   =  "          m^3/s"        !! m^3/s        |volume of water
-        character (len=15) :: sed_in    =  "          mtons"        !! metric tons  |sediment
-        character (len=15) :: sed_out   =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: sed_in    =  "           tons"        !! metric tons  |sediment
+        character (len=15) :: sed_out   =  "           tons"        !! metric tons  |sediment
         character (len=15) :: orgn_in   =  "            kgN"        !! kg N         |organic N
         character (len=15) :: orgn_out  =  "            kgN"        !! kg N         |organic N
         character (len=15) :: sedp_in   =  "            kgP"        !! kg P         |organic P
@@ -624,7 +626,7 @@
       
       type hyd_header_units1
         character (len=15) :: flo    =  "          m^3/s"        !! m^3/s        |volume of water
-        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: sed    =  "           tons"        !! metric tons  |sediment
         character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
         character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
         character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
@@ -657,7 +659,7 @@
         character (len=12) :: name   =  "            "
         character (len=6) :: otype   =  "      "    
         character (len=17) :: flo    =  "            m^3/s"      !! m^3/s        |volume of water
-        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: sed    =  "           tons"        !! metric tons  |sediment
         character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
         character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
         character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
@@ -689,7 +691,7 @@
         character (len=8) :: hydio   =  "        "
         character (len=8) :: objno   =  "        "
         character (len=17) :: flo    =  "            m^3/s"      !! m^3/s          |volume of water
-        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: sed    =  "           tons"        !! metric tons  |sediment
         character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
         character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
         character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N

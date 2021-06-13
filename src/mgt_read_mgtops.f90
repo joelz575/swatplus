@@ -66,6 +66,15 @@
            allocate(sched(isched)%num_db(m_autos))
            do iauto = 1, m_autos
              read (107,*,iostat=eof)  sched(isched)%auto_name(iauto)
+             
+             !! check to see if generic table - ie. plant-harv for single summer crop
+             if (sched(isched)%auto_name(iauto) == "pl_hv_summer1") then
+               allocate(sched(isched)%auto_crop(1))
+               backspace (107)
+               sched(isched)%auto_crop_num = 1
+               read (107,*,iostat=eof)  sched(isched)%auto_name(iauto), sched(isched)%auto_crop(1)
+             end if
+             
              if (eof < 0) exit
            end do
          end if

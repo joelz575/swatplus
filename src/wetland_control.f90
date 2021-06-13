@@ -3,7 +3,7 @@
       use reservoir_data_module
       use reservoir_module
       use hru_module, only : hru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, grayld, sedminps, sedminpa,   &
-        surqno3, sedorgn, sedorgp, qdr, ihru, pet_day, qday, precipday
+        surqno3, sedorgn, sedorgp, qdr, ihru, pet_day, qday
       use conditional_module
       use climate_module
       use hydrograph_module
@@ -75,7 +75,7 @@
       ht1%solp = sedminps(ihru) + sedminpa(ihru)
                
       !! add precipitation - mm*ha*10.=m3 (used same area for infiltration and soil evap)
-      wet_wat_d(ihru)%precip = precipday * wet_wat_d(ihru)%area_ha * 10.
+      wet_wat_d(ihru)%precip = w%precip * wet_wat_d(ihru)%area_ha * 10.
       wet(ihru)%flo =  wet(ihru)%flo + wet_wat_d(ihru)%precip
       
       !! subtract evaporation and seepage - mm*ha*10.=m3

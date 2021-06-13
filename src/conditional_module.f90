@@ -2,7 +2,7 @@
     
       implicit none
     
-      integer :: rndseed_cond = 748932582   ! random number seed for dtbl conditional
+      !integer :: rndseed_cond = 748932582   ! random number seed for dtbl conditional
 
       type conditions_var
         character(len=16) :: var            ! condition variable (ie volume, flow, sw, time, etc)
@@ -26,7 +26,7 @@
       end type actions_var
        
       type decision_table
-        character (len=16) :: name                                      ! name of the decision table
+        character (len=25) :: name                                      ! name of the decision table
         integer :: conds                                                ! number of conditions
         integer :: alts                                                 ! number of alternatives
         integer :: acts                                                 ! number of actions

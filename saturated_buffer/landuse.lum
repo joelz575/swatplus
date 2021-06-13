@@ -1,5 +1,0 @@
-landuse.lum: General land use properties
-NAME            CAL_GROUP     PLANT_COV         MGT_OPS        CN_LU           CONS_PRAC         URB_LU         URB_RO                OVN       TILEDRAIN    SEPTIC   FSTRIP   GRASSWW   BMPUSER
-corn_soyb_notill  null     corn_sb_cov	    corn_sb_rot    rc_strowres_g    up_down_slope         null           null            fallow_nores   dep1000_24h   null     null      null       null
-corn_notill       null     corn_cov	        con_corn_rot   rc_strowres_g    up_down_slope         null           null            fallow_nores   dep1000_24h   null     null      null       null
-sat_buffer        null     canary_grass     canary_nomgt       pasth        up_down_slope         null           null            fallow_nores   dep1000_24h   null     null      null       null

@@ -37,7 +37,7 @@
 
       use climate_module
       use hydrograph_module
-      use hru_module, only : hru, usle_ei, usle_eifac, ovrlnd, ihru, iwgen, peakr, precipday, snomlt,  &
+      use hru_module, only : hru, usle_ei, usle_eifac, ovrlnd, ihru, iwgen, qp_cms, snomlt,  &
         usle_ei, usle_eifac
       
       implicit none
@@ -53,11 +53,11 @@
       iob = hru(j)%obj_no
       iwst = ob(iob)%wst
 
-      if (precipday > 1.e-4) then
+      if (w%precip > 1.e-4) then
         xb = -2. * Log(1. - wst(iwst)%weat%precip_half_hr)
-        pkrf30 = 2. * precipday * wst(iwst)%weat%precip_half_hr
-        pkrf = xb * precipday
-        usle_ei = precipday * (12.1 + 8.9 * (Log10(pkrf) - .4343)) * pkrf30 / 1000.
+        pkrf30 = 2. * w%precip * wst(iwst)%weat%precip_half_hr
+        pkrf = xb * w%precip
+        usle_ei = w%precip * (12.1 + 8.9 * (Log10(pkrf) - .4343)) * pkrf30 / 1000.
         if (usle_ei < 1.e-4) usle_ei = 0.
         usle_eifac(j) = usle_ei
       endif

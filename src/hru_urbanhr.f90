@@ -93,7 +93,7 @@
               dirto = urbdb(ulu)%dirtmx * twash(j) / (urbdb(ulu)%thalf + twash(j))
 
           !! calculate wash-off of solids
-              urbk = 0.				! peakr -> hhqday for subdaily time steps 6/19/09 JJ
+              urbk = 0.				! qp_cms -> hhqday for subdaily time steps 6/19/09 JJ
               urbk = urbdb(ulu)%urbcoef * qdt  
                                      
               dirt=dirto * Exp (- urbk * real(time%dtm) / 60.)

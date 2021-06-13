@@ -432,12 +432,32 @@
         end if 
    
       
-            !check if all incoming and defining objects have been met
+          !check if all incoming and defining objects have been met
           !if not sum incoming 
           if (rcv_sum(i) == ob(i)%rcv_tot .and.                        & 
                                       dfn_sum(i) == ob(i)%dfn_tot) then
             if (ob(i)%fired == 0) then
             ob(i)%fired = 1
+            
+                !! calculate drainage area to compare to input area - need reservoir surface area
+                do ircv = 1, ob(i)%rcv_tot
+                  if (ob(i)%obtyp_in(ircv) == "hru" .or. ob(i)%obtyp_in(ircv) == "ru" .or.      &
+                        ob(i)%obtyp_in(ircv) == "chandeg" .or. ob(i)%obtyp_in(ircv) == "recall" &
+                        .or. ob(i)%obtyp_in(ircv) == "res" .or. ob(i)%obtyp_in(ircv) == "outlet") then
+                    !if (ircv == 1) then
+                      ob1 = ob(i)%obj_in(ircv)
+                      ob(i)%area_ha_calc = ob(i)%area_ha_calc + ob(ob1)%area_ha_calc * ob(i)%frac_in(ircv)
+                    !else
+                    !  do ob2 = 1, ircv
+                    !    ob1 = ob(i)%obj_in(ircv)
+                    !    if (ob(i)%obj_in(ircv) /= ob(i)%obj_in(ob2)) then
+                    !      ob(i)%area_ha_calc = ob(i)%area_ha_calc + ob(ob1)%area_ha_calc * ob(i)%frac_in(ircv)
+                    !    end if
+                    !  end do
+                    !end if
+                  end if
+                end do
+                    
             iobj_tot = iobj_tot + 1    ! check to see if all objects are done
             if (iobj_tot == sp_ob%objs) idone = 1
             !sum defining units for each subbasin
@@ -514,6 +534,17 @@
         end do
         iord = iord + 1
       end do
+      
+      !! write calculated and input drainage areas for all objects except hru's
+      do iob = 1, sp_ob%objs
+        if (ob(iob)%typ /= "hru" .and. ob(iob)%typ /= "ru") then
+          write (9001, *) iob, ob(iob)%typ, ob(iob)%num, ob(iob)%area_ha, ob(iob)%area_ha_calc,             &
+            ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj), ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj),             &
+            ob(iob)%frac_in(jj), &
+            ob(ob(iob)%obj_in(jj))%area_ha, ob(ob(iob)%obj_in(jj))%area_ha_calc, jj = 1, ob(iob)%rcv_tot)
+        end if 
+      end do
+      
       
 1002  format (5x,/,"ERROR - An infinite loop is detected in the connect file(s)",/, 15x, "the simulation will end",       &
                        /, 9x, "(review diagnostics.out file for more info)",/)

@@ -37,6 +37,7 @@
       real :: targ                            !          |
       integer :: pl_sum                       !none      |number of plants growing
       integer :: days_tot                     !none      |
+      integer :: iwgn          !units         |
       real :: strs_sum                        !none      |sum of stress (water or n) of all growing plants
       real :: prob_cum                        !          |
       real :: prob_apply                      !          |
@@ -229,7 +230,7 @@
           ob_num = d_tbl%cond(ic)%ob_num
           if (ob_num == 0) ob_num = ob_cur
           do iipl = 1, pcom(ob_num)%npl
-            if (d_tbl%cond(ic)%lim_var == pcom(ob_num)%name) then
+            if (d_tbl%cond(ic)%lim_var == pcom(ob_num)%pl(iipl)) then
               ipl = iipl
             end if
           end do
@@ -524,10 +525,9 @@
                    
         !probability
         case ("prob")
-          !call RANDOM_SEED ()
-          !call RANDOM_NUMBER (ran_num)
-          !ran_num = ran1(1)
+          !generate random number
           ran_num = Aunif(rndseed_cond)
+          
           do ialt = 1, d_tbl%alts
             if (d_tbl%alt(ic,ialt) == "<") then
               if (ran_num > d_tbl%cond(ic)%lim_const) then
@@ -557,7 +557,7 @@
               prob_cum = 1. / days_tot
             end if
           end if
-          
+
           ran_num = Aunif(rndseed_cond)
           if (ran_num > prob_cum) then
             do ialt = 1, d_tbl%alts

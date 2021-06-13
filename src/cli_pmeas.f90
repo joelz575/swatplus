@@ -10,7 +10,6 @@
             
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header of file
-      character (len=5) :: hr_min     !           |
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       integer :: iyr                  !none       |number of years 
@@ -89,7 +88,6 @@
           allocate (pcp(i)%ts(366,pcp(i)%nbyr))
         end if
 
-        
         ! read and save start jd and yr
          read (108,*,iostat=eof) iyr, istep
          if (eof < 0) exit        
@@ -114,18 +112,16 @@
        backspace (108)
        iyr_prev = iyr
        iyrs = 1
-       
-       do 
+
+       do
          if (pcp(i)%tstep > 0) then
-           do iss = 1, time%step
-             read (108,*,iostat=eof)iyr, istep, hr_min, pcp(i)%tss(iss,istep,iyrs)
+             read (108,*,iostat=eof)iyr, istep, (pcp(i)%tss(iss,istep,iyrs), iss = 1, pcp(i)%tstep)
              if (eof < 0) exit
-           end do
          else    
            read (108,*,iostat=eof)iyr, istep, pcp(i)%ts(istep,iyrs)
            if (eof < 0) exit
          endif
-         !check to see when next year
+         !! check to see when next year
          if (istep == 365 .or. istep == 366) then
            read (108,*,iostat=eof) iyr, istep
            if (eof < 0) exit
@@ -136,8 +132,9 @@
            end if
          end if
        end do
+       
        close (108)
-             
+                    
        ! save end jd and year
        pcp(i)%end_day = istep
        pcp(i)%end_yr = iyr

@@ -1,4 +1,0 @@
-delratio.con  delivery ratio connect								
-NUMB	NAME	  GIS_ID      AREA_HA     LAT     LONG     ELEV	  DR    WST   CONSTIT    OVERFLOW RULESET  OUT_TOT    OBTYP_OUT  OBTYPNO_OUT	HTYP_OUT   FRAC_OUT
-1	     dr1     1  	8.55     0.0      0.0      0.0	   1      1         0           0       0        1       dr          2                 tot       1.
-2	     dr2     2  	8.55     0.0      0.0      0.0	   2      2         0           0       0

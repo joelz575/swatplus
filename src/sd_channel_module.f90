@@ -110,6 +110,7 @@
         real :: flo_in_mm = 0.          ! (mm)          !ave inflow rate - sum for each time step
         real :: aqu_in_mm = 0.          ! (mm)          !ave aquifer inflow rate - sum for each time step
         real :: flo_mm = 0.             ! (mm)          !ave outflow rate - sum for each time step
+        real :: sed_stor = 0.           ! (tons)        !sed storage at end of timestep 
       end type sd_ch_output
       
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_d
@@ -234,6 +235,7 @@
        cho3%flo_in_mm = cho1%flo_in_mm + cho2%flo_in_mm
        cho3%aqu_in_mm = cho1%aqu_in_mm + cho2%aqu_in_mm
        cho3%flo_mm = cho1%flo_mm + cho2%flo_mm
+       cho3%sed_stor = cho1%sed_stor + cho2%sed_stor
       end function
       
       function chsd_div (ch1,const) result (ch2)
@@ -261,6 +263,7 @@
         ch2%flo_in_mm = ch1%flo_in_mm / const
         ch2%aqu_in_mm = ch1%aqu_in_mm / const
         ch2%flo_mm = ch1%flo_mm / const
+        ch2%sed_stor = ch1%sed_stor / const
       end function chsd_div
             
       function chsd_ave (ch1,const) result (ch2)
@@ -288,6 +291,7 @@
         ch2%flo_in_mm = ch1%flo_in_mm
         ch2%aqu_in_mm = ch1%aqu_in_mm
         ch2%flo_mm = ch1%flo_mm
+        ch2%sed_stor = ch1%sed_stor
       end function chsd_ave
       
       function chsd_mult (const, chn1) result (chn2)
@@ -315,6 +319,7 @@
         chn2%flo_in_mm = const * chn1%flo_in_mm
         chn2%aqu_in_mm = const * chn1%aqu_in_mm
         chn2%flo_mm = const * chn1%flo_mm
+        chn2%sed_stor = const * chn1%sed_stor
       end function chsd_mult
       
       end module sd_channel_module

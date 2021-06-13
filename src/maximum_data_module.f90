@@ -21,7 +21,7 @@
         integer :: plantparm = 0      !! none     |number of total plants in plants.plt
         integer :: fertparm = 0       !! none     |number of total fertilizer in fertilizer.frt
         integer :: tillparm = 0       !! none     |number of total tillages in tillage.til
-        integer :: pestparm = 0       !! none     !number of total pesticides in pesticide.pst
+        integer :: pestparm = 0       !! none     !number of total pesticides in pesticide.pes
         integer :: pestcom = 0        !! none     !number of total pesticides communities in pesticide.com
         integer :: plantcom = 0       !! none     |number of plant communities
         integer :: soiltest = 0       !! none     |number of soiltest 

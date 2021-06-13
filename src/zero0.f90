@@ -7,7 +7,7 @@
        cumeira,cumrai,cumrt,dormhr,filterw,grz_days,  &
        hru,igrz, isep,isep_ly,iseptic,itb,        &
        latno3,orgn_con,orgp_con,par,phubase,ranrns_hru,     &
-       sed_con,sepcrk,sol_sumsolp,soln_con,solp_con,sstmaxd,stmaxd,tmx, wt_shall,yr_skip
+       sed_con,sepcrk,sol_sumsolp,soln_con,solp_con,sstmaxd,stmaxd,wt_shall,yr_skip
 
       implicit none
 

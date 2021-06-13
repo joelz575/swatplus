@@ -33,12 +33,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : ep_max, epmax, hru_ra, htfac, ihru, ipl, par, tmpav, translt
+      use hru_module, only : ep_max, epmax, htfac, ihru, ipl, par, translt
       use soil_module
       use plant_module
       use plant_data_module
       use organic_mineral_mass_module
       use time_module
+      use climate_module
       
       implicit none      
 
@@ -114,7 +115,7 @@
                                                               == "y")then
           idp = pcom(j)%plcur(ip)%idplt
           pl_db => pldb(idp)
-          par(ip) = .5 * hru_ra(j) * (1. - Exp(-pldb(idp)%ext_coef *        &    
+          par(ip) = .5 * w%solrad * (1. - Exp(-pldb(idp)%ext_coef *        &    
                 (pcom(j)%plg(ip)%lai + .05)))
         end if
       else if (npl_gro > 1) then
@@ -157,7 +158,7 @@
             end if
             htfac(ipl) = fi * htfac(ipl)
             htfac(ipl) = 1.
-            par(ipl) = .5 * htfac(ipl) * hru_ra(j) * (1. -                  &              
+            par(ipl) = .5 * htfac(ipl) * w%solrad * (1. -                  &              
               Exp(-pldb(idp)%ext_coef * (pcom(j)%plg(ipl)%lai + .05)))
           end do  
         end if

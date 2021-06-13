@@ -1,3 +1,0 @@
-rout_unit.con connections - lrew2
-NUMB    NAME     GIS_ID   AREA_HA      LAT     LONG       ELEV     SUB     WST   CONSTIT  OVERFLOW  RULESET OUT_TOT OBTYP_OUT1 HTYPNO_OUT1  HTYP_OUT1  FRAC_OUT1 
-   1    sub1      1       493.38   31.734   -83.72        0.0       1       1         0         0        0       1        sdc           1        tot       1.0

@@ -92,7 +92,7 @@
         real :: ffcb = 0.           !! none          |initial soil water cont expressed as a fraction of fc 
         real :: surlag = 4.0        !! days          |surface runoff lag time (days)
         real :: adj_pkr = 1.0       !! none          |peak rate adjustment factor in the subbasin
-        real :: prf = 1.0           !! peak rate adjustment factor for sediment routing in the channel
+        real :: prf = 484.          !! peak rate factor for peak rate equation
         real :: spcon = 0.0001      !! linear parm for calc sed reentrained in channel sed routing
         real :: spexp = 1.0         !! exponent parameter for calc sed reentrained in channel sed routing
         real :: cmn = 0.0003        !! rate factor for mineralization on active org N

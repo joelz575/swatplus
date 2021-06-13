@@ -31,7 +31,6 @@
 !!    chlora(:)    |mg chl-a/L    |chlorophyll-a concentration in reach
 !!    dayl(:)      |hours         |day length for current day
 !!    disolvp(:)   |mg P/L        |dissolved phosphorus concentration in reach
-!!    hru_ra(:)    |MJ/m^2        |solar radiation for the day in HRU
 !!    inum1        |none          |reach number
 !!    inum2        |none          |inflow hydrograph storage location number
 !!    k_l          |MJ/(m2*hr)    |half saturation coefficient for light

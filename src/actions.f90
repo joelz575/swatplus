@@ -4,7 +4,7 @@
       use time_module
       use aquifer_module
       use hru_module, only : hru, cn2, fertno3, fertnh3, fertorgn, fertorgp, fertsolp,   &
-        ihru, ipl, isol, ndeat, phubase, sol_sumno3, sol_sumsolp, hru, yield 
+        ihru, ipl, isol, ndeat, phubase, sol_sumno3, sol_sumsolp, hru 
       use soil_module
       use plant_module
       use plant_data_module
@@ -58,6 +58,7 @@
       integer :: isrc
       integer :: irr_ob
       integer :: iaqdb
+      integer :: isched
       real :: hiad1                        !         |
       real :: irrig_m3                     !         |
       real :: amt_mm                       !         |
@@ -71,6 +72,7 @@
       real :: irr_mm
       real :: vol_avail
       real :: chg_par                      !variable |new parameter value
+      real :: yield 
       character(len=1) :: action           !         |
 
       do iac = 1, d_tbl%acts
@@ -302,6 +304,11 @@
             if (j == 0) j = ob_cur
             icom = pcom(j)%pcomdb
             pcom(j)%days_plant = 1       !reset days since last planting
+            !! check for generic plant-harv and set crops
+            isched = hru(j)%mgt_ops
+            if (sched(isched)%auto_name(idtbl) == "pl_hv_summer1") then
+              d_tbl%act(iac)%option = sched(isched)%auto_crop(1)
+            end if
             
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               do ipl = 1, pcom(j)%npl
@@ -334,6 +341,11 @@
               iharvop = d_tbl%act_typ(iac)
               icom = pcom(j)%pcomdb
               pcom(j)%days_harv = 1       !reset days since last harvest
+              !! check for generic plant-harv and set crops
+              isched = hru(j)%mgt_ops
+              if (sched(isched)%auto_name(idtbl) == "pl_hv_summer1") then
+                d_tbl%act(iac)%option = sched(isched)%auto_crop(1)
+              end if
             
               do ipl = 1, pcom(j)%npl
                 biomass = pl_mass(j)%tot(ipl)%m
@@ -423,6 +435,11 @@
               iharvop = d_tbl%act_typ(iac)
               icom = pcom(j)%pcomdb
               pcom(j)%days_harv = 1       !reset days since last harvest
+              !! check for generic plant-harv and set crops
+              isched = hru(j)%mgt_ops
+              if (sched(isched)%auto_name(idtbl) == "pl_hv_summer1") then
+                d_tbl%act(iac)%option = sched(isched)%auto_crop(1)
+              end if
             
               do ipl = 1, pcom(j)%npl
                 biomass = pl_mass(j)%tot(ipl)%m
@@ -692,6 +709,13 @@
               cn2(j) = chg_par (cn2(j), j, d_tbl%act(iac)%option, d_tbl%act(iac)%const, 35., 95., 0)
               call curno (cn2(j), j)
             end if
+            
+            if (pco%mgtout == "y") then
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "    CNUP", phubase(j),    &
+                pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, rsd1(j)%tot(ipl)%m,        &
+                sol_sumno3(j), sol_sumsolp(j)
+            end if
+           
             pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
               
           !herd management - move the herd

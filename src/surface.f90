@@ -8,7 +8,7 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ovrlnd(:)   |mm H2O        |overland flow onto HRU from upstream
 !!                               |routing unit
-!!    peakr       |mm/hr         |peak runoff rate
+!!    qp_cms      |m3/sec        |peak runoff rate
 !!    surfq(:)    |mm H2O        |surface runoff generated in HRU during
 !!                               |the day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -24,9 +24,10 @@
       use hydrograph_module
       use climate_module, only:  wst
       use hru_module, only : hru, surfq, ovrlnd_dt, ihru, &
-        peakr, precipday, precip_eff, qday
+        qp_cms, precip_eff, qday
       use soil_module
       use urban_data_module
+      use output_landscape_module
       
       implicit none
 
@@ -52,7 +53,7 @@
 
       if (time%step > 0) then
         do ii = 1, time%step
-          wst(iwst)%weat%ts(ii+1) = wst(iwst)%weat%ts(ii+1) + ovrlnd_dt(j,ii)
+          wst(iwst)%weat%ts(ii) = wst(iwst)%weat%ts(ii) ! + ovrlnd_dt(j,ii)
         end do
       end if
 
@@ -76,12 +77,12 @@
       call sq_surfst
       !qday =  surfq(j)
 
-      if (qday > 0.0001) then
-        !! compute peak rate - peakr in m3/s  
+      if (qday > 1.e-6) then
+        !! compute peak rate - qp_cms in m3/s  
         call ero_pkq 
       end if  
 
-      if (qday > 0.0001 .and. peakr > 0.) then
+      if (qday > 1.e-6 .and. qp_cms > 1.e-6) then
         call ero_eiusle
 
 	!! calculate sediment erosion by rainfall and overland flow
@@ -89,7 +90,7 @@
       end if
 
       call ero_cfactor
-      if (surfq(j) > 1.e-6 .and. peakr > 1.e-6) call ero_ysed
+      if (surfq(j) > 1.e-6 .and. qp_cms > 1.e-6) call ero_ysed
 
       if (qday < 0.) qday = 0.
 

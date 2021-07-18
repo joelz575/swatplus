@@ -14,6 +14,7 @@
       integer :: ireg        !none      |counter
       integer :: ilum        !none      |counter
       integer :: icvmax      !          |
+      integer :: nyskip      !          |
       integer :: icond_sum   !          |
       integer :: ihru        !none      |counter
       integer :: isdh        !none      |counter
@@ -24,8 +25,10 @@
       real :: cond1          !          |   
       real :: cond2          !          |   
       
+      nyskip = pco%nyskip
       pco = pco_init
       pco%wb_bsn%a = "y"
+      pco%nyskip = nyskip
       !pco%wb_bsn%y = "y"
       !pco%wb_bsn%m = "y"
       !pco%wb_bsn%d = "y"

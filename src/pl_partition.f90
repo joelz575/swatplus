@@ -49,10 +49,8 @@
         seed_mass_frac = 1. - root_frac - ab_gr_frac
         leaf_mass_frac = leaf_mass_frac_veg * ab_gr_frac
         stem_mass_frac = (1. - leaf_mass_frac_veg) * ab_gr_frac
-      !end if
-      !! partition root and above ground biomass for all other annuals (above groound grain)
       else
-      !if (pldb(idp)%typ == "warm_annual" .or. pldb(idp)%typ == "cold_annual") then
+      !! partition root and above ground biomass for all other annuals (above groound grain)
         root_frac = pcom(j)%plg(ipl)%root_frac
         ab_gr_frac = 1. - root_frac
         seed_mass_frac = pcom(j)%plg(ipl)%hi_adj

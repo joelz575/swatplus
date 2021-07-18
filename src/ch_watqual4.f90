@@ -18,6 +18,7 @@
       real :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
       real :: soxy             !mg O2/L       |saturation concetration of dissolved oxygen
 
+      jrch = isdch
       !! calculate flow duration
       tday = rttime / 24.0
       tday = amin1 (1., tday)

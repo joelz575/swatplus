@@ -18,6 +18,7 @@
       implicit none
       
       integer, intent (in) :: init   !           |
+      integer :: day_mo
       integer :: icom                !           |plant community counter
       integer :: idp                 !           |
       integer :: j                   !none       |counter
@@ -63,6 +64,7 @@
           pcom(j)%npl = 0
         else
           if (init > 0) then
+            deallocate (pcom(j)%pl)
             deallocate (pcom(j)%plg) 
             deallocate (pcom(j)%plm)
             deallocate (pl_mass(j)%tot)
@@ -116,9 +118,7 @@
           iwgn = wst(iwst)%wco%wgn
           phu0 = 0.
           do iday = 1, 365
-            time%day = iday
-            call xmon
-            mo = time%mo
+            call xmon (iday, mo, day_mo)
             tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
             if (tave > 0.) phu0 = phu0 + tave
           end do
@@ -128,9 +128,7 @@
           if (pldb(idp)%days_mat < 1.e-6) then
             phutot = 0.
             do iday = 1, 365
-              time%day = iday
-              call xmon
-              mo = time%mo
+              call xmon (iday, mo, day_mo)
               tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
               phuday = tave - pldb(idp)%t_base
               if (phuday > 0.) then
@@ -146,7 +144,7 @@
               phu0 = 0.15 * phu0    !assume planting at 0.15 base 0 heat units
               do iday = 1, 365
                 if (wgn(iwgn)%lat > 0.) then
-                  time%day = iday
+                  call xmon (iday, mo, day_mo)
                 else
                   ! find Southern Hemisphere day
                   iday_sum = iday_sum + 1
@@ -155,10 +153,8 @@
                   else
                     iday_sh = iday_sum
                   end if
-                  time%day = iday_sh
+                  call xmon (iday_sh, mo, day_mo)
                 end if
-                call xmon
-                mo = time%mo
                 tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
                 phuday = tave
                 if (phuday > 0.) then
@@ -175,20 +171,29 @@
               else
                 igrow = 181
               end if
+              phutot = 0.
+              phu0 = 0.15 * phu0    !assume start accumulating hu at 0.15 base 0 heat units
               do iday = igrow, igrow + 180
+                call xmon (iday, mo, day_mo)
+                tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+                phuday = tave
+                if (phuday > 0.) then
+                  phutot = phutot + phuday
+                end if
+                if (phutot > phu0) exit
                 !! calculate solar declination: equation 2.1.2 in SWAT manual
-                sd = Asin(.4 * Sin((Real(iday) - 82.) / 58.09))  !!365/2pi = 58.09
-                sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
-                if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
-                  h = 0.
-                elseif (sdlat >= -1.) then
-                  h = Acos(sdlat)
-                else
-                  h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
-                endif 
-                daylength = 7.6394 * h
-                iday_sh = iday
-                if (daylength - bsn_prm%dorm_hr > wgn_pms(iwgn)%daylmn) exit
+                !sd = Asin(.4 * Sin((Real(iday) - 82.) / 58.09))  !!365/2pi = 58.09
+                !sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
+                !if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
+                !  h = 0.
+                !elseif (sdlat >= -1.) then
+                !  h = Acos(sdlat)
+                !else
+                !  h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
+                !endif 
+                !daylength = 7.6394 * h
+                !iday_sh = iday
+                !if (daylength - bsn_prm%dorm_hr > wgn_pms(iwgn)%daylmn) exit
               end do
             end if
             
@@ -201,7 +206,7 @@
             phutot = 0.
             do iday = igrow, igrow + pldb(idp)%days_mat
               if (wgn(iwgn)%lat > 0.) then
-                time%day = iday
+                call xmon (iday, mo, day_mo)
               else
                 ! find Southern Hemisphere day
                 if (iday > 365) then
@@ -209,10 +214,8 @@
                 else
                   iday_sh = iday
                 end if
-                time%day = iday_sh
+                call xmon (iday_sh, mo, day_mo)
               end if
-              call xmon
-              mo = time%mo
               tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
               phuday = tave - pldb(idp)%t_base
               if (phuday > 0.) then

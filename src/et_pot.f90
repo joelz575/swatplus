@@ -143,6 +143,7 @@
           pet_alpha = 1.28
           pet_day = pet_alpha * (dlt / (dlt + gma)) * rn_pet / xl
           pet_day = Max(0., pet_day)
+          pet_day = bsn_prm%petco_pmpt * pet_day
 
        case (1)   !! PENMAN-MONTEITH POTENTIAL EVAPOTRANSPIRATION METHOD
 
@@ -186,6 +187,7 @@
                                   (xl * (dlt + gma * (1. + rc / rv)))
 
            pet_day = Max(0., pet_day)
+           pet_day = bsn_prm%petco_pmpt * pet_day
  
         !! maximum plant ET
           igrocom = 0

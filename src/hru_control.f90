@@ -85,6 +85,8 @@
       
       w = wst(iwst)%weat
       precip_eff = w%precip
+      !! adjust precip and temperature for elevation using lapse rates
+      if (bsn_cc%lapse == 1) call cli_lapse (iob, iwst)
       
       hru(ihru)%water_seep = 0.
       irrig(j)%demand = 0.
@@ -156,7 +158,7 @@
             call conditions (jj, iauto)
             call actions (jj, iob, iauto)
             
-            !! if end of year, reset the one time fert application per year
+            !! if end of year, reset the one time operation per year
             if (time%end_yr == 1) then
               do iac = 1, d_tbl%acts
                 pcom(j)%dtbl(iauto)%num_actions(iac) = 1

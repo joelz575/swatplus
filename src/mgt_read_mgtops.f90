@@ -68,11 +68,18 @@
              read (107,*,iostat=eof)  sched(isched)%auto_name(iauto)
              
              !! check to see if generic table - ie. plant-harv for single summer crop
-             if (sched(isched)%auto_name(iauto) == "pl_hv_summer1") then
+             if (sched(isched)%auto_name(iauto) == "pl_hv_summer1" .or.      &
+                 sched(isched)%auto_name(iauto) == "pl_hv_winter1") then
                allocate(sched(isched)%auto_crop(1))
                backspace (107)
                sched(isched)%auto_crop_num = 1
-               read (107,*,iostat=eof)  sched(isched)%auto_name(iauto), sched(isched)%auto_crop(1)
+               read (107,*,iostat=eof)  sched(isched)%auto_name(iauto), sched(isched)%auto_crop
+             end if
+             if (sched(isched)%auto_name(iauto) == "pl_hv_summer2") then
+               allocate(sched(isched)%auto_crop(2))
+               backspace (107)
+               sched(isched)%auto_crop_num = 1
+               read (107,*,iostat=eof)  sched(isched)%auto_name(iauto), sched(isched)%auto_crop
              end if
              
              if (eof < 0) exit

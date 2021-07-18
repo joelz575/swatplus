@@ -120,6 +120,8 @@
               cal_upd(i)%num_elem = sp_ob%res
             case ("sdc")
               cal_upd(i)%num_elem = sp_ob%chandeg
+            case ("rte")
+              cal_upd(i)%num_elem = sp_ob%chandeg
             case ("bsn")
               cal_upd(i)%num_elem = 1
             case ("pcp")

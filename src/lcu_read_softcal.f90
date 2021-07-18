@@ -87,7 +87,7 @@
             end if 
                
             !! if calibrating the entire region - later we can set up for lsu/regional calibrations
-            if (region(ireg)%name == "basin") then
+            if (region(ireg)%name == "basin" .or. db_mx%lsu_reg == 1) then
               region(ireg)%num_tot = sp_ob%hru
               allocate (region(ireg)%num(sp_ob%hru))
               allocate (region(ireg)%hru_ha(sp_ob%hru))

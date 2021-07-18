@@ -61,7 +61,7 @@
       real :: inflo        !m^3           |inflow water volume
       real :: xs_area      !m^2           |cross section area of channel
       real :: dep_flo      !m             |depth of flow
-      real :: perim_wet    !m             |wetted perimeter
+      real :: wet_perim    !m             |wetted perimeter
       real :: ttime        !hr            |travel time through the reach
       real :: t_inc        !hr            |time in routing step - 1/time%step
       real :: outflo       !m^3           |outflow water volume
@@ -84,6 +84,7 @@
       ev = 0.
       outflo = 0.
       outflo_sum = 0.
+      hyd_rad = 0.
       
       !! volume at start of day
       vol = sd_ch(jrch)%stor
@@ -98,7 +99,7 @@
         vol = vol + ob(icmd)%tsin(ii) 
         vol = Max(vol, 1.e-14)
 
-        !! find where flow fits in rating curve (0.1,0.5,1.0,1.2,1.8 * bankfull flow rate)
+        !! find where flow fits in rating curve (0.1,1.0,1.5 * bankfull flow rate)
         do ielev = 1, 3
           if (vol < ch_rcurv(jrch)%elev(ielev)%vol) then
             if (ielev == 1) then
@@ -117,8 +118,13 @@
           if (ielev == 3) then
             rto = 1. + (vol - ch_rcurv(jrch)%elev(ielev)%vol) / ch_rcurv(jrch)%elev(ielev)%vol
             rcurv = ch_rcurv(jrch)%elev(ielev) * rto
+            !! keep max travel time at 1.5 bankfull
+            rcurv%ttime = rcurv%ttime / rto
             exit
           end if
+          hyd_rad(ii) = rcurv%area / rcurv%wet_perim
+          trav_time(ii) = rcurv%ttime
+          flo_dep(ii) = rcurv%dep
           
         end do
 
@@ -129,7 +135,7 @@
           !! interpolated travel time
           ttime = rcurv%ttime
           
-          !! Variable Storage Coefficient - calculate volume of water leaving reach on day
+          !! Variable Storage Coefficient - calculate volume of water leaving reach during timestep
           t_inc = 24. / time%step
           scoef = t_inc / (ttime + t_inc)
           if (scoef > 1.) scoef = 1.
@@ -137,7 +143,7 @@
           if (outflo < 1.e-12) outflo = 0.
 
           !! calculate transmission losses
-          tl = sd_chd(jhyd)%chk * sd_ch(jrch)%chl * rcurv%perim_wet * ttime   !mm/hr * km * mm * hr = m3       
+          tl = sd_ch(jrch)%chk * sd_ch(jrch)%chl * rcurv%wet_perim * 24. / time%step   !mm/hr * km * mm * hr = m3       
           tl = Min(tl, outflo)
           outflo = outflo - tl
           trans_loss = trans_loss + tl
@@ -146,13 +152,13 @@
           if (outflo > 0.) then
             !! calculate width of channel at water level
             if (rcurv%dep <= sd_ch(jrch)%chd) then
-              topw = ch_rcurv(jrch)%wid_btm + 2. * rcurv%dep * sd_chd(jhyd)%chss
+              topw = ch_rcurv(jrch)%wid_btm + 2. * rcurv%dep * sd_ch(jrch)%chss
             else
               topw = 5. * sd_ch(jrch)%chw + 8. * (rcurv%dep - sd_ch(jrch)%chd)
             end if
             
             iwst = 1
-            ev = bsn_prm%evrch * wst(iwst)%weat%pet * sd_ch(jrch)%chl * topw * ttime
+            ev = bsn_prm%evrch * wst(iwst)%weat%pet * sd_ch(jrch)%chl * topw / time%step
             if (ev < 0.) ev = 0.
             ev = Min(ev, outflo)
             outflo = outflo - ev

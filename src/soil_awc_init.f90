@@ -75,6 +75,11 @@
       !! initialize water/drainage coefs for each soil layer
       depth_prev = 0.
       sumpor = 0.
+      soil(isol)%sumfc = 0.
+      soil(isol)%sumul = 0.
+      soil(isol)%sw = 0.
+      soil(isol)%sumwp = 0.
+      
       do ly = 1, nly
         soil(isol)%phys(ly)%thick = soil(isol)%phys(ly)%d - depth_prev
         pormm = soil(isol)%phys(ly)%por * soil(isol)%phys(ly)%thick

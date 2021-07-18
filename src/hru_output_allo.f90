@@ -27,6 +27,16 @@
       allocate (hnb_y(mhru))
       allocate (hnb_a(mhru))
       allocate (hls_d(mhru))
+!!!  new nut carb files
+      allocate (hgl_d(mhru))
+      allocate (hgl_m(mhru))
+      allocate (hgl_y(mhru))
+      allocate (hgl_a(mhru))
+      allocate (hcyl_d(mhru))
+      allocate (hcyl_m(mhru))
+      allocate (hcyl_y(mhru))
+      allocate (hcyl_a(mhru))
+!!!  new nut carb files
       allocate (hls_m(mhru))
       allocate (hls_y(mhru))
       allocate (hls_a(mhru))

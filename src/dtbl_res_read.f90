@@ -8,6 +8,7 @@
       use fertilizer_data_module
       use input_file_module
       use conditional_module
+      use hydrograph_module, only : recall
       
       implicit none
                   
@@ -52,7 +53,7 @@
             allocate (dtbl_res(i)%cond(dtbl_res(i)%conds))
             allocate (dtbl_res(i)%alt(dtbl_res(i)%conds,dtbl_res(i)%alts))
             allocate (dtbl_res(i)%act(dtbl_res(i)%acts))
-            allocate (dtbl_res(i)%act_hit(dtbl_res(i)%alts))
+            allocate (dtbl_res(i)%act_hit(0:dtbl_res(i)%alts))
             allocate (dtbl_res(i)%act_typ(dtbl_res(i)%acts))
             allocate (dtbl_res(i)%act_app(dtbl_res(i)%acts))
             allocate (dtbl_res(i)%act_outcomes(dtbl_res(i)%acts,dtbl_res(i)%alts))
@@ -80,15 +81,24 @@
                 select case (dtbl_res(i)%act(iac)%typ)
                                   
                 case ("release")
-                  do idb = 1, db_mx%res_weir
-                    if (dtbl_res(i)%act(iac)%option == "weir") then
-                    if (dtbl_res(i)%act(iac)%file_pointer == res_weir(idb)%name) then
-                      dtbl_res(i)%act_typ(iac) = idb
-                      exit
-                    end if
-                    end if
-                  end do
+                  select case (dtbl_res(i)%act(iac)%option)
+                    case ("weir")
+                    do idb = 1, db_mx%res_weir
+                      if (dtbl_res(i)%act(iac)%file_pointer == res_weir(idb)%name) then
+                        dtbl_res(i)%act_typ(iac) = idb
+                        exit
+                      end if
+                    end do
             
+                    case ("meas")
+                    do idb = 1, db_mx%recall_max
+                      if (dtbl_res(i)%act(iac)%file_pointer == recall(idb)%name) then
+                        dtbl_res(i)%act_typ(iac) = idb
+                        exit
+                      end if
+                    end do
+                    end select
+                    
                  end select
                 
             end do

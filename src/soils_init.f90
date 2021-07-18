@@ -110,7 +110,7 @@
           end do
         end if
       end do
-
+           
       do isol = 1, msoils
         call soil_phys_init(isol)          !! initialize soil physical parameters
         call soil_nutcarb_init(isol)       !! initialize soil chemical parameters
@@ -182,8 +182,8 @@
       
       do ihru = 1, sp_ob%hru
         if (pco%snutc == "d" .or. pco%snutc == "m" .or. pco%snutc == "y" .or. pco%snutc == "a") then
-          time%day = 0
-          time%yrc = 0
+          !time%day = 0
+          !time%yrc = 0
           call soil_nutcarb_write
         end if
       end do

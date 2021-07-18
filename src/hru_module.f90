@@ -319,8 +319,6 @@
       real, dimension (:), allocatable :: cn2
       real, dimension (:), allocatable :: smx
       real, dimension (:), allocatable :: cnday
-      real, dimension (:), allocatable :: tmpav
-      real, dimension (:), allocatable :: hru_ra
       real, dimension (:), allocatable :: tconc
       real, dimension (:), allocatable :: usle_cfac,usle_eifac
       real, dimension (:), allocatable :: t_ov
@@ -346,7 +344,7 @@
       real, dimension (:), allocatable :: sedorgp,sedyld,sepbtm
       real, dimension (:), allocatable :: surfq,surqno3
       real, dimension (:), allocatable :: phubase
-      real, dimension (:), allocatable :: lai_yrmx,dormhr
+      real, dimension (:), allocatable :: dormhr
       real, dimension (:,:), allocatable :: wrt
       real, dimension (:,:), allocatable :: bss,surf_bs  
       integer, dimension (:), allocatable :: swtrg

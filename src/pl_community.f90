@@ -72,19 +72,19 @@
       end do
 
       !! sum total masses for plant community
-      pl_mass(j)%tot_com%m = 0.
-      pl_mass(j)%ab_gr_com%m = 0.
-      pl_mass(j)%leaf_com%m = 0.
-      pl_mass(j)%stem_com%m = 0.
-      pl_mass(j)%seed_com%m = 0.
-      pl_mass(j)%root_com%m = 0.
+      pl_mass(j)%tot_com = orgz
+      pl_mass(j)%ab_gr_com = orgz
+      pl_mass(j)%leaf_com = orgz
+      pl_mass(j)%stem_com = orgz
+      pl_mass(j)%seed_com = orgz
+      pl_mass(j)%root_com = orgz
       do ipl = 1, pcom(j)%npl
-        pl_mass(j)%tot_com%m = pl_mass(j)%tot_com%m + pl_mass(j)%tot(ipl)%m
-        pl_mass(j)%ab_gr_com%m = pl_mass(j)%ab_gr_com%m + pl_mass(j)%ab_gr(ipl)%m
-        pl_mass(j)%leaf_com%m = pl_mass(j)%leaf_com%m + pl_mass(j)%leaf(ipl)%m
-        pl_mass(j)%stem_com%m = pl_mass(j)%stem_com%m + pl_mass(j)%stem(ipl)%m
-        pl_mass(j)%seed_com%m = pl_mass(j)%seed_com%m + pl_mass(j)%seed(ipl)%m
-        pl_mass(j)%root_com%m = pl_mass(j)%root_com%m + pl_mass(j)%root(ipl)%m
+        pl_mass(j)%tot_com = pl_mass(j)%tot_com + pl_mass(j)%tot(ipl)
+        pl_mass(j)%ab_gr_com = pl_mass(j)%ab_gr_com + pl_mass(j)%ab_gr(ipl)
+        pl_mass(j)%leaf_com = pl_mass(j)%leaf_com + pl_mass(j)%leaf(ipl)
+        pl_mass(j)%stem_com = pl_mass(j)%stem_com + pl_mass(j)%stem(ipl)
+        pl_mass(j)%seed_com = pl_mass(j)%seed_com + pl_mass(j)%seed(ipl)
+        pl_mass(j)%root_com = pl_mass(j)%root_com + pl_mass(j)%root(ipl)
       end do
       
       !! calc max height for penman pet equation
@@ -94,10 +94,10 @@
       end do
       
       !! calc total biomass for plant community
-      pl_mass(j)%tot_com%m = 0.
-      do ipl = 1, pcom(j)%npl
-        pl_mass(j)%tot_com%m = amax1 (pl_mass(j)%tot_com%m, pl_mass(j)%tot(ipl)%m)
-      end do
+      !pl_mass(j)%tot_com%m = 0.
+      !do ipl = 1, pcom(j)%npl
+      !  pl_mass(j)%tot_com%m = amax1 (pl_mass(j)%tot_com%m, pl_mass(j)%tot(ipl)%m)
+      !end do
       
       npl_gro = 0
       do ipl = 1, pcom(j)%npl

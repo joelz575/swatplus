@@ -120,7 +120,7 @@
       !! set subdaily hydrographs
       if (time%step > 0) then
         if (bsn_cc%gampt == 1) then
-          !! set precious and next days for adding previous and translating to next
+          !! set previous and next days for adding previous and translating to next
           day_cur = ob(icmd)%day_cur
           day_next = day_cur + 1
           if (day_next > ob(icmd)%day_max) day_next = 1

@@ -124,7 +124,7 @@
                end if 
            end if
            if (time%end_yr == 1 .and. pco%pw_sd%y == "y") then
-             write (2462,101) time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, hltpw_y(isd)
+             write (2462,102) time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, hltpw_y(isd)
               if (pco%csvout == "y") then 
                 write (2466,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, &
                     hltpw_y(isd)
@@ -179,5 +179,6 @@
      
 100   format (4i6,2i8,2x,a,32f12.3)
 101   format (1x,4i6,i7,i8,2x,a,21f12.3)
+102   format (1x,4i6,i7,i8,2x,a,32f12.3)
  
       end subroutine hru_lte_output

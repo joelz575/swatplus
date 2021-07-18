@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.14.5)
 enable_language(Fortran)
 project(SwatPlus)
 
-SET(FORTRAN_EXTRA_COMPILE_FLAGS "-g -ffree-line-length-none -march=x86-64")
+SET(FORTRAN_EXTRA_COMPILE_FLAGS "-g -O0 -ffixed-line-length-132 -fdefault-double-8 -fno-automatic -fbacktrace -ffpe-trap=invalid,zero,overflow,denormal -static-libgfortran -fbounds-check -fopenmp -ffast-math -funsafe-math-optimizations")
 
 SET(CMAKE_Fortran_FLAGS  "${CMAKE_Fortran_FLAGS} ${FORTRAN_EXTRA_COMPILE_FLAGS}")
 

@@ -109,6 +109,7 @@
       !! set initial soil water and temperature for each layer
       nly = soil(j)%nly
       soil(j)%sw = 0.
+      soil(j)%ffc = sffc
       do k = 1, nly
         soil(j)%phys(k)%tmp = tsoil
         soil(j)%phys(k)%st = sffc * soil(j)%phys(k)%fc

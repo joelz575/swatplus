@@ -155,9 +155,11 @@
       do i=1,grid_nrow
         do j=1,grid_ncol
           if(wt_init_type.eq.3) then
-            read(in_gw,*) gw_cell_id(i,j),dum1,dum2,gw_cell_status(i,j),gw_cell_x(i,j),gw_cell_y(i,j),gw_cell_top(i,j),thickness,K_zone,Sy_zone,n_zone,gw_cell_exdp(i,j),gw_cell_et(i,j),gw_cell_inithead(i,j)
+            read(in_gw,*) gw_cell_id(i,j),dum1,dum2,gw_cell_status(i,j),gw_cell_x(i,j),gw_cell_y(i,j),gw_cell_top(i,j), &
+		thickness,K_zone,Sy_zone,n_zone,gw_cell_exdp(i,j),gw_cell_et(i,j),gw_cell_inithead(i,j)
           else
-            read(in_gw,*) gw_cell_id(i,j),dum1,dum2,gw_cell_status(i,j),gw_cell_x(i,j),gw_cell_y(i,j),gw_cell_top(i,j),thickness,K_zone,Sy_zone,n_zone,gw_cell_exdp(i,j),gw_cell_et(i,j)
+            read(in_gw,*) gw_cell_id(i,j),dum1,dum2,gw_cell_status(i,j),gw_cell_x(i,j),gw_cell_y(i,j),gw_cell_top(i,j),thickness, &
+		K_zone,Sy_zone,n_zone,gw_cell_exdp(i,j),gw_cell_et(i,j)
           endif
           gw_cell_bot(i,j) = gw_cell_top(i,j) - thickness
           if(wt_init_type.lt.3) then
@@ -256,7 +258,8 @@
       read(in_gw,*) bed_change !vertical distance correction for streambed elevation
       read(in_gw,*)
       do i=1,num_rivcells
-        read(in_gw,*) gw_riv_id(i),gw_riv_row(i),gw_riv_col(i),gw_riv_chan(i),gw_riv_gis(i),gw_riv_len(i),gw_riv_elev(i),K_zone,bed_zone
+        read(in_gw,*) gw_riv_id(i),gw_riv_row(i),gw_riv_col(i),gw_riv_chan(i),gw_riv_gis(i),gw_riv_len(i),gw_riv_elev(i),K_zone, &
+	bed_zone
         gw_riv_elev(i) = gw_riv_elev(i) - bed_change
         gw_riv_K(i) = zones_strK(K_zone)
         gw_riv_thick(i) = zones_strbed(bed_zone)
@@ -488,7 +491,8 @@
       !open file to track daily groundwater water balance
       open(out_gwbal,file='gwflow_balance_day')
       write(out_gwbal,*) 'watershed area (m2):',watershed_area
-      write(out_gwbal,*) 'timestep,volume_before,volume_after,rech,et,gw-->sw,sw-->gw,satex,boundary,pump,tile,error,fraction sat,wt_depth_avg'
+      write(out_gwbal,*) 'timestep,volume_before,volume_after,rech,et,gw-->sw,sw-->gw,satex,boundary,pump,tile,error, &
+	fraction sat,wt_depth_avg'
 
       !open file to track yearly groundwater water balance
       open(out_gwbal_yr,file='gwflow_balance_yr')
@@ -687,10 +691,12 @@
       mer_arc = A0 * lat_rad - B0 * Sin(2 * lat_rad) + C0 * Sin(4 * lat_rad) - D0 * Sin(6 * lat_rad) + E0 * Sin(8 * lat_rad)
       K1 = mer_arc * k0
       K2 = r_curve_2 * Sin(lat_rad) * Cos(lat_rad) * (sin1)**2 * k0 * (100000000) / 2
-      K3 = (((sin1)**4 * r_curve_2 * Sin(lat_rad) * (Cos(lat_rad))**3) / 24) * (5 - (Tan(lat_rad))**2 + 9 * e2 * (Cos(lat_rad))**2 + 4 * (e2)**2 * (Cos(lat_rad))**4) * k0 * (1E+16)
+      K3 = (((sin1)**4 * r_curve_2 * Sin(lat_rad) * (Cos(lat_rad))**3) / 24) * (5 - (Tan(lat_rad))**2 + 9 * e2 * &
+	(Cos(lat_rad))**2 + 4 * (e2)**2 * (Cos(lat_rad))**4) * k0 * (1E+16)
       K4 = r_curve_2 * Cos(lat_rad) * sin1 * k0 * 10000
       K5 = (sin1 * Cos(lat_rad))**3 * (r_curve_2 / 6) * (1 - Tan(lat_rad)**2 + e2 * Cos(lat_rad)**2) * k0 * (1000000000000.)
-      A6 = ((delta_long * sin1)**6 * r_curve_2 * Sin(lat_rad) * Cos(lat_rad)**5 / 720) * (61 - 58 * Tan(lat_rad)**2 + Tan(lat_rad)**4 + 270 * e2 * Cos(lat_rad)**2 - 330 * e2 * Sin(lat_rad)**2) * k0 * (1E+24)
+      A6 = ((delta_long * sin1)**6 * r_curve_2 * Sin(lat_rad) * Cos(lat_rad)**5 / 720) * (61 - 58 * Tan(lat_rad)**2 + &
+	Tan(lat_rad)**4 + 270 * e2 * Cos(lat_rad)**2 - 330 * e2 * Sin(lat_rad)**2) * k0 * (1E+24)
       northing_raw = (K1 + K2 * delta_long * delta_long + K3 * (delta_long)**4)
       
       !northing

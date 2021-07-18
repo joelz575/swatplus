@@ -3,35 +3,35 @@
       implicit none 
       
       type output_waterbal
-        real :: precip = 0.           !mm H2O        |prec falling on they HRU during timestep
-        real :: snofall = 0.          !mm H2O        |amt of prec falling as snow, sleet or freezing rain during timestep
-        real :: snomlt = 0.           !mm H2O        |amt of snow or ice melting during timestep
-        real :: surq_gen = 0.         !mm H2O        |amt of surf runoff to main channel
-        real :: latq = 0.             !mm H2O        |amt of lat flow contrib to main channel during HRU during mon
-        real :: wateryld = 0.         !mm H2O        |water yld (tot amt of water entering main channel) from HRU during mon
-        real :: perc = 0.             !mm H2O        |amt of water perc out of the soil profile and into the vadose zone in HRU during mon
-        real :: et = 0.               !mm H2O        |actual ET in HRU during mon
-        real :: tloss = 0.            !mm H2O        |amt of trans losses from trib channels in HRU for mon
-        real :: eplant = 0.           !mm H2O        |actual amt of transpiration that occurs during mon in HRU
-        real :: esoil = 0.            !mm H2O        |actual amt of evap (from soil) that occurs during mon in HRU
-        real :: surq_cont = 0.        !mm H2O        |amt of surf runoff gen during mon in HRU
-        real :: cn = 0.               !none          |CN values during mon in HRU
-        real :: sw_init = 0.          !mm H2O        |initial soil water content of entire profile
-        real :: sw_final = 0.         !mm H2O        |final soil water content of entire profile
-        real :: sw = 0.               !mm H2O        |average soil water content of entire profile
-        real :: sw_300 = 0.           !mm H2O        |soil water content of upper 300 mm
+        real :: precip = 0.           !mm H2O        |precipitation falling as rain and snow
+        real :: snofall = 0.          !mm H2O        |precipitation falling as snow, sleet or freezing rain
+        real :: snomlt = 0.           !mm H2O        |snow or melting ice
+        real :: surq_gen = 0.         !mm H2O        |surface runoff generated from the landscape
+        real :: latq = 0.             !mm H2O        |lateral soil flow
+        real :: wateryld = 0.         !mm H2O        |water yield - sum of surface runoff, lateral soil flow and tile flow
+        real :: perc = 0.             !mm H2O        |amt of water perc out of the soil profile & into the vadose zone
+        real :: et = 0.               !mm H2O        |actual evapotranspiration from the soil
+        real :: tloss = 0.            !mm H2O        |not reported
+        real :: eplant = 0.           !mm H2O        |plant transpiration
+        real :: esoil = 0.            !mm H2O        |soil evaporation
+        real :: surq_cont = 0.        !mm H2O        |surface runoff leaving the landscape
+        real :: cn = 0.               !none          |average curve number value for timestep
+        real :: sw_init = 0.          !mm H2O        |initial soil water content of soil profile at start of time step
+        real :: sw_final = 0.         !mm H2O        |final soil water content of soil profile at end of time step
+        real :: sw = 0.               !mm H2O        |average soil water content of soil profile
+        real :: sw_300 = 0.           !mm H2O        |final soil water content of upper 300 mm at end of time step
         real :: sno_init = 0.         !mm H2O        |initial soil water content of snow pack
         real :: sno_final = 0.        !mm H2O        |final soil water content of snow pack
-        real :: snopack = 0.          !mm H2O        |snow pack
-        real :: pet = 0.              !mm H2O        |pot et on current day in HRU
-        real :: qtile = 0.            !mm H2O        |drainage tile flow contrib to main channel from HRU in mon
-        real :: irr = 0.              !mm H2O        |amount of water applied to HRU
-        real :: surq_runon = 0.       !mm H2O        |surface runoff from upland landscape units
-        real :: latq_runon = 0.       !mm H2O        |lateral soil flow from upland landscape units
+        real :: snopack = 0.          !mm            |water equivalent in snow pack
+        real :: pet = 0.              !mm H2O        |potential evapotranspiration
+        real :: qtile = 0.            !mm H2O        |subsurface tile flow leaving the landscape
+        real :: irr = 0.              !mm H2O        |irrigation water applied
+        real :: surq_runon = 0.       !mm H2O        |surface runoff from upland landscape
+        real :: latq_runon = 0.       !mm H2O        |lateral soil flow from upland landscape
         real :: overbank = 0.         !mm H2O        |overbank flooding from channels
         real :: surq_cha = 0.         !mm H2O        |surface runoff flowing into channels
         real :: surq_res = 0.         !mm H2O        |surface runoff flowing into reservoirs
-        real :: surq_ls = 0.          !mm H2O        |surface runoff flowing into a landscape element
+        real :: surq_ls = 0.          !mm H2O        |surface runoff flowing onto the landscape
         real :: latq_cha = 0.         !mm H2O        |lateral soil flow into channels
         real :: latq_res = 0.         !mm H2O        |lateral soil flow into reservoirs
         real :: latq_ls = 0.          !mm H2O        |lateral soil flow into a landscape element
@@ -69,29 +69,23 @@
       
             
       type output_nutbal
-        real :: grazn = 0.              !kg N/ha        |amt of nit added to soil in grazing on the day in HRU
-        real :: grazp = 0.              !kg P/ha        |amt of phos added to soil in grazing on the day in HRU
-        real :: lab_min_p = 0.          !kg P/ha        |amt of phos moving from the labile min pool to the active min pool
-        !                                                    in the soil profile on the current day in the HRU
-        real :: act_sta_p = 0.          !kg P/ha        |amt of phos moving from the active min pool to the stable min pool
-        !                                                    in the soil profile on the current day in the HRU
-        real :: fertn = 0.              !kg N/ha        |tot amt of nit applied to soil in HRU on day
-        real :: fertp = 0.              !kg P/ha        |tot amt of phos applied to soil in HRU on day
-        real :: fixn = 0.               !kg N/ha        |amt of nit added to plant biomass via fixation on the day in HRU
-        real :: denit = 0.              !kg N/ha        |amt of nit lost from nitrate pool by denit in soil profile
-        !                                                    on current day in HRU
-        real :: act_nit_n = 0.          !kg N/ha        |amt of nit moving from active org to nitrate pool in soil profile
-        !                                                    on current day in HRU 
-        real :: act_sta_n = 0.          !kg N/ha        |amt of nit moving from active org to stable org pool in soil
-        !                                                    profile on current day in HRU
-        real :: org_lab_p = 0.          !kg P/ha        |amt of phos moving from the org to labile pool in soil profile
-        !                                                    on current day in HRU
-        real :: rsd_nitorg_n = 0.       !kg N/ha        |amt of nit moving from the fresh org (residue) to the nitrate(80%)
-        !                                                    and active org(20%) pools in soil profile on current day in HRU
-        real :: rsd_laborg_p = 0.       !kg P/ha        |amt of phos moving from the fresh org (residue) to the labile(80%)
-        !                                                    and org(20%) pools in soil profile on current day in HRU
-        real :: no3atmo = 0.            !kg N/ha        |nitrate added to the soil from atmospheric deposition (rainfall+dry)
-        real :: nh4atmo = 0.            !kg N/ha        |ammonia added to the soil from atmospheric deposition (rainfall+dry)
+        real :: grazn = 0.              !kg N/ha        |total nitrogen added to soil from grazing
+        real :: grazp = 0.              !kg P/ha        |total phophorous added to soil from grazing
+        real :: lab_min_p = 0.          !kg P/ha        |phosphoros moving from the labile mineral pool to the active mineral pool
+        real :: act_sta_p = 0.          !kg P/ha        |phosphorus moving from the active mineral pool to the stable mineral pool
+        real :: fertn = 0.              !kg N/ha        |total nitrogen applied to soil
+        real :: fertp = 0.              !kg P/ha        |total phosphorus applied to soil
+        real :: fixn = 0.               !kg N/ha        |anitrogen added to plant biomass via fixation
+        real :: denit = 0.              !kg N/ha        |nitrogen lost from nitrate pool by denitrification
+        real :: act_nit_n = 0.          !kg N/ha        |nitrogen moving from active organic pool to nitrate pool
+        real :: act_sta_n = 0.          !kg N/ha        |nitrogen moving from active organic pool to stable pool
+        real :: org_lab_p = 0.          !kg P/ha        |phosphorus moving from the organic pool to labile pool
+        real :: rsd_nitorg_n = 0.       !kg N/ha        |nitrogen moving from the fresh organic pool (residue) to the nitrate (80%)
+                                        !                   and active org (20%) pools
+        real :: rsd_laborg_p = 0.       !kg P/ha        |phosphorus moving from the fresh organic pool (residue) to the labile (80%)
+                                        !                   and org (20%) pools
+        real :: no3atmo = 0.            !kg N/ha        |nitrate added to the soil from atmospheric deposition
+        real :: nh4atmo = 0.            !kg N/ha        |ammonia added to the soil from atmospheric deposition
       end type output_nutbal
 
       type (output_nutbal), dimension (:), allocatable :: hnb_d
@@ -122,17 +116,71 @@
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_m
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_y
       type (regional_output_nutbal), dimension (:), allocatable :: rnb_a
+                 
+      type output_nutcarb_cycling
+        real :: lab_min_p = 0.          !kg P/ha        |phosphorus moving from the labile mineral pool to the active mineral pool
+        real :: act_sta_p = 0.          !kg P/ha        |phosphorus moving from the active mineral pool to the stable mineral pool
+        real :: act_nit_n = 0.          !kg N/ha        |nitrogen moving from active organic pool to nitrate pool
+        real :: act_sta_n = 0.          !kg N/ha        |nitrogen moving from active organic pool to stable pool
+        real :: org_lab_p = 0.          !kg P/ha        |phosphorus moving from the organic pool to labile pool
+        real :: rsd_hs_c = 0.           !kg N/ha        |amt of carbon moving from the fresh org (residue) to soil slow humus 
+        real :: rsd_nitorg_n = 0.       !kg P/ha        |phosphorus moving from the organic pool to labile pool
+        real :: rsd_laborg_p = 0.       !kg P/ha        |phosphorus moving from the fresh organic pool (residue) to the labile (80%)
+                                                        !   and org (20%) pools
+      end type output_nutcarb_cycling
+      type (output_nutcarb_cycling), dimension (:), allocatable :: hcyl_d
+      type (output_nutcarb_cycling), dimension (:), allocatable :: hcyl_m
+      type (output_nutcarb_cycling), dimension (:), allocatable :: hcyl_y
+      type (output_nutcarb_cycling), dimension (:), allocatable :: hcyl_a
+      type (output_nutcarb_cycling) :: hycl_z
       
+      type output_nutcarb_gain_loss
+        real :: sedyld = 0.             !metric tons/ha |sediment yield leaving the landscape caused by water erosion
+        real :: usle = 0.               !metric tons/ha |sediment erosion predicted with the USLE equation
+        real :: sedorgc = 0.            !kg N/ha        |orgganic carbon in surface runoff
+        real :: sedorgn = 0.            !kg N/ha        |organic nitrogen transported in surface runoff
+        real :: sedorgp = 0.            !kg P/ha        |organic phosphorus transported in surface runoff
+        real :: surqno3 = 0.            !kg N/ha        |nitrate NO3-N transported in surface runoff
+        real :: latno3 = 0.             !kg N/ha        |nitrate NO3-N transported in lateral runoff
+        real :: surqsolp = 0.           !kg P/ha        |soluble phosphorus transported in surface runoff
+        real :: sedmin = 0.             !kg P/ha        |mineral phosphorus leaving the landscape transported in sediment
+        real :: tileno3 = 0.            !kg N/ha        |nitrate NO3 in tile flow
+        real :: no3atmo = 0.            !kg N/ha        |nitrate added to the soil from atmospheric deposition (rainfall+dry)
+        real :: nh4atmo = 0.            !kg N/ha        |ammonia added to the soil from atmospheric deposition (rainfall+dry)
+        real :: manurec = 0.            !kg N/ha        |amount of carbon applied to soil
+        real :: manuren = 0.            !kg N/ha        |amount of nitrogen applied to soil
+        real :: manurep = 0.            !kg P/ha        |amount of phosphrus applied to soil
+        real :: fertc = 0.              !kg N/ha        |amount of carbon applied to soil
+        real :: fertn = 0.              !kg N/ha        |amount of nitrogen applied to soil
+        real :: fertp = 0.              !kg P/ha        |amount of phophorus applied to soil
+        real :: grazc_eat = 0.          !kg N/ha        |amount of carbon added to soil in grazing
+        real :: grazn_eat = 0.          !kg N/ha        |amount of nitrogen added to soil in grazing
+        real :: grazp_eat = 0.          !kg P/ha        |amount of phosphrus added to soil in grazing
+        real :: grazc_man = 0.          !kg N/ha        |amount of carbon added to soil manually
+        real :: grazn_man = 0.          !kg N/ha        |amount of nitrogen added to soil manually
+        real :: grazp_man = 0.          !kg P/ha        |amount of phosphorus added to soil manually
+        real :: fixn = 0.               !kg N/ha        |amount of nitrogen added to plant biomass via fixation
+        real :: denit = 0.              !kg N/ha        |amount of nitrogen lost from nitrate pool by denit in soil profile
+        real :: yieldc = 0.             !kg N/ha        | 
+        real :: yieldn = 0.             !kg N/ha        |
+        real :: yieldp = 0.             !kg P/ha        |
+      end type output_nutcarb_gain_loss
+      type (output_nutcarb_gain_loss), dimension (:), allocatable :: hgl_d
+      type (output_nutcarb_gain_loss), dimension (:), allocatable :: hgl_m
+      type (output_nutcarb_gain_loss), dimension (:), allocatable :: hgl_y
+      type (output_nutcarb_gain_loss), dimension (:), allocatable :: hgl_a
+      type (output_nutcarb_gain_loss) :: hgl_z
+
       type output_losses
-        real :: sedyld = 0.               !metric tons    | daily soil loss caused by water erosion
-        real :: sedorgn = 0.              !kg N/ha        | amt of org nit in surf runoff in HRU for the day
-        real :: sedorgp = 0.              !kg P/ha        | amt of org phos in surf runoff in HRU for the day
-        real :: surqno3 = 0.              !kg N/ha        | amt of NO3-N in surf runoff in HRU for the day
-        real :: latno3 = 0.               !kg N/ha        | amt of NO3-N in lat flow in HRU for the day
-        real :: surqsolp = 0.             !kg P/ha        | amt of soluble phos in surf runoff in HRU for the day
-        real :: usle = 0.                 !metric tons/ha | daily soil loss predicted with USLE equation
-        real :: sedmin = 0.               !
-        real :: tileno3 = 0.              !kg N/ha        | NO3 in tile flow
+        real :: sedyld = 0.          !metric tons/ha |sediment yield leaving the landscape caused by water erosion
+        real :: sedorgn = 0.         !kg N/ha        |organic nitrogen transported in surface runoff
+        real :: sedorgp = 0.         !kg P/ha        |organic phosphorus transported in surface runoff
+        real :: surqno3 = 0.         !kg N/ha        |nitrate NO3-N transported in surface runoff
+        real :: latno3 = 0.          !kg N/ha        |nitrate NO3-N transported in lateral runoff
+        real :: surqsolp = 0.        !kg P/ha        |soluble phosphorus transported in surface runoff
+        real :: usle = 0.            !metric tons/ha |sediment erosion predicted with the USLE equation
+        real :: sedmin = 0.          !kg P/ha        |mineral phosphorus leaving the landscape transported in sediment
+        real :: tileno3 = 0.         !kg N/ha        |nitrate NO3 in tile flow
       end type output_losses
       
       type (output_losses), dimension (:), allocatable :: hls_d
@@ -165,26 +213,30 @@
       type (regional_output_losses), dimension (:), allocatable :: rls_a
          
       type output_plantweather
-        real :: lai = 0.                   !m**2/m**2     |leaf area index
-        real :: bioms = 0.                 !kg/ha         |land cover/crop biomass 
-        real :: yield = 0.                 !kg/ha         |yield (dry weight) by crop type
-        real :: residue = 0.               !kga/ha        |initial residue cover
-        real :: sol_tmp = 0.               !deg C         |daily average temperature of soil layer
-        real :: strsw = 0.                 !0-1           |water (drought) stress
-        real :: strsa = 0.                 !0-1           |water (aeration) stress
-        real :: strstmp = 0.               !0-1           |temperature stress      
-        real :: strsn = 0.                 !0-1           |nitrogen stress
-        real :: strsp = 0.                 !0-1           |phosphorus stress
-        real :: nplnt = 0.                 !kg N/ha       |plant uptake of nit in HRU for the day
-        real :: percn = 0.                 !kg N/ha       |NO3-N leached from soil profile
-        real :: pplnt = 0.                 !kg P/ha       |plant uptake of phos in HRU for the day
-        real :: tmx = 0.                   !deg C         |maximum temperature for the day in HRU
-        real :: tmn = 0.                   !deg C         |minimum temperature for the day in HRU
-        real :: tmpav = 0.                 !deg C         |average air temperature on current day in HRU
-        real :: solrad = 0.                !MJ/m^2        |solar radiation for the day in HRU
-        real :: wndspd = 0.                !              |windspeed
-        real :: rhum = 0.                  !              |relative humidity
-        real :: phubase0 = 0.              !              |base zero potential heat units
+        real :: lai = 0.                   !m**2/m**2     |average leaf area index during timestep
+        real :: bioms = 0.                 !kg/ha         |average total plant biomass during timestep 
+        real :: yield = 0.                 !kg/ha         |harvested biomass yield (dry weight) during timestep
+        real :: residue = 0.               !kg/ha         |average surface residue cover during timestep
+        real :: sol_tmp = 0.               !deg C         |average temperature of soil layer 2 during timestep
+        real :: strsw = 0.                 !days          |limiting water (drought) stress
+        real :: strsa = 0.                 !days          |excess water (aeration) stress
+        real :: strstmp = 0.               !days          |temperature stress      
+        real :: strsn = 0.                 !days          |nitrogen stress
+        real :: strsp = 0.                 !days          |phosphorus stress
+        real :: nplnt = 0.                 !kg N/ha       |plant uptake of nitrogen
+        real :: percn = 0.                 !kg N/ha       |nitrate NO3-N leached from bottom of soil profile
+        real :: pplnt = 0.                 !kg P/ha       |plant uptake of phosphorus
+        real :: tmx = 0.                   !deg C         |average maximum temperature during timestep
+        real :: tmn = 0.                   !deg C         |average minimum temperature during timestep
+        real :: tmpav = 0.                 !deg C         |average of daily air temperature during timestep
+        real :: solrad = 0.                !MJ/m^2        |average solar radiation during timestep
+        real :: wndspd = 0.                !m/s           |average windspeed during timestep
+        real :: rhum = 0.                  !none          |average relative humidity during timestep
+        real :: phubase0 = 0.              !deg c         |base zero potential heat units
+        real :: lai_max = 0.               !m**2/m**2     |maximum leaf area index during timestep
+        real :: bm_max = 0.                !kg/ha         |maximum total plant biomass during timestep
+        real :: bm_grow = 0.               !kg/ha         |total plant biomass growth during timestep
+        real :: c_gro = 0.                 !kg/ha         |total plant carbon growth during timestep
       end type output_plantweather
       
       type (output_plantweather), dimension (:), allocatable :: hpw_d
@@ -301,8 +353,7 @@
         character (len=12) :: latq_ls    =  "          mm"
       end type output_waterbal_header_units      
       type (output_waterbal_header_units) :: wb_hdr_units
-      
-       
+         
       type output_nutbal_header
          character (len=5) :: day           =    " jday"
          character (len=6) :: mo            =    "   mon"
@@ -394,6 +445,127 @@
         character (len=12)  :: tileno3  =  "        ----"
       end type output_losses_header_units      
       type (output_losses_header_units) :: ls_hdr_units
+      
+!********************************new headers
+      type output_nutcarb_cycling_header
+         character (len=5) :: day           =    " jday"
+         character (len=6) :: mo            =    "   mon"
+         character (len=6) :: day_mo        =    "   day"
+         character (len=6) :: yrc           =    "    yr"
+         character (len=9) :: isd           =    "    unit " 
+         character (len=8) :: id            =    " gis_id "        
+         character (len=9) :: name          =    "    name "          
+         character(len=17) :: lab_min_p     =    "        lab_min_p"     
+         character(len=17) :: act_sta_p     =    "        act_sta_p"
+         character(len=17) :: act_nit_n     =    "        act_nit_n"
+         character(len=17) :: act_sta_n     =    "        act_sta_n"
+         character(len=17) :: org_lab_p     =    "        org_lab_p"
+         character(len=17) :: rsd_hs_c      =    "         rsd_hs_c"
+         character(len=17) :: rsd_nitorg_n  =    "    rsd_nitrorg_n"
+         character(len=17) :: rsd_laborg_p  =    "     rsd_laborg_p"       
+         end type output_nutcarb_cycling_header       
+      type (output_nutcarb_cycling_header) :: nb_hdr1
+      
+      type output_nutbal_header_units1
+         character (len=5) :: day           =    "     "
+         character (len=6) :: mo            =    "      "
+         character (len=6) :: day_mo        =    "      "
+         character (len=6) :: yrc           =    "      "
+         character (len=9) :: isd           =    "         " 
+         character (len=8) :: id            =    "        "        
+         character (len=9) :: name          =    "         "         
+         character(len=17) :: lab_min_p     =    "             kgha"
+         character(len=17) :: act_sta_p     =    "             kgha"         
+         character(len=17) :: act_nit_n     =    "             kgha"     
+         character(len=17) :: act_sta_n     =    "             kgha" 
+         character(len=17) :: org_lab_p     =    "             kgha"        
+         character(len=17) :: rsd_hs_c      =    "             kgha"        
+         character(len=17) :: rsd_nitorg_n  =    "             kgha"        
+         character(len=17) :: rsd_laborg_p  =    "             kgha"  
+      end type output_nutbal_header_units1         
+      type (output_nutbal_header_units1) :: nb_hdr_units1
+      
+      type output_losses_header1
+        character (len=5) :: day        =  "  jday"
+        character (len=6) :: mo         =  "   mon"
+        character (len=6) :: day_mo     =  "   day"
+        character (len=6) :: yrc        =  "    yr"
+        character (len=9) :: isd        =  "   unit "
+        character (len=8) :: id         =  " gis_id "        
+        character (len=9) :: name      =  " name    "        
+        character (len=17) :: sedyld    =  "           sedyld"
+        character (len=17)  :: usle     =  "             usle" 
+        character (len=17) ::  sedorgc  =  "          sedorgc"
+        character (len=17)  :: sedorgn  =  "          sedorgn"
+        character (len=17)  :: sedorgp  =  "          sedorgp"
+        character (len=17)  :: surqno3  =  "          surqno3"
+        character (len=17)  :: latno3   =  "          lat3no3"            
+        character (len=17)  :: surqsolp =  "         surqsolp"   
+        character (len=17)  :: sedmin   =  "           sedmin"
+        character (len=17)  :: tileno3  =  "          tileno3"
+        character (len=17)  :: no3atmo  =  "          no3atmo"
+        character (len=17)  :: nh4atmo  =  "          nh4atmo"
+        character (len=17)  :: manurec  =  "          manurec"
+        character (len=17)  :: manuren  =  "          manuren"
+        character (len=17)  :: manurep  =  "          manurep"
+        character (len=17)  :: fertc    =  "            fertc"
+        character (len=17)  :: fertn    =  "            fertn"
+        character (len=17)  :: fertp    =  "            fertp"
+        character (len=17)  :: grazc_eat=  "        grazc_eat"
+        character (len=17)  :: gracn_eat=  "        grazn_eat"
+        character (len=17)  :: gracp_eat=  "        gracp_eat"
+        character (len=17)  :: grazc_man=  "        grazc_man"
+        character (len=17)  :: gracn_man=  "        grazn_man"
+        character (len=17)  :: gracp_man=  "        gracp_man"
+        character (len=17)  :: fixn     =  "             fixn"
+        character (len=17)  :: denit    =  "            denit"
+        character (len=17)  :: yieldc   =  "           yieldc"
+        character (len=17)  :: yieldn   =  "           yieldn"
+        character (len=17)  :: yieldp   =  "           yieldp"
+      end type output_losses_header1      
+      type (output_losses_header1) :: ls_hdr1
+      
+       type output_losses_header_units1
+        character (len=5) :: day        =  "      "
+        character (len=6) :: mo         =  "      "
+        character (len=6) :: day_mo     =  "      "
+        character (len=6) :: yrc        =  "      "
+        character (len=9) :: isd        =  "        "
+        character (len=8) :: id         =  "        "           
+        character (len=9) :: name      =  "         "        
+        character (len=17) :: sedyld    =  "             tons"
+        character (len=17)  :: usle     =  "              tha"
+        character (len=17)  :: sedorgc  =  "             kgha"
+        character (len=17)  :: sedorgn  =  "             kgha"
+        character (len=17)  :: sedorgp  =  "             kgha"
+        character (len=17)  :: surqno3  =  "             kgha"
+        character (len=17)  :: latno3   =  "             kgha"            
+        character (len=17)  :: surqsolp =  "             kgha"
+        character (len=17)  :: sedmin   =  "             ----"
+        character (len=17)  :: tileno3  =  "             kgha"
+        character (len=17)   :: no3atmo  = "          no3atmo"
+        character (len=17)  :: nh4atmo  =  "             kgha"
+        character (len=17)  :: manurec  =  "             kgha"
+        character (len=17)  :: manuren  =  "             kgha"
+        character (len=17)  :: manurep  =  "             kgha"
+        character (len=17)  :: fertc    =  "             kgha"
+        character (len=17)  :: fertn    =  "             kgha"
+        character (len=17)  :: fertp    =  "             kgha"
+        character (len=17) :: grazc_eat=  "              kgha"
+        character (len=17) :: gracn_eat=  "              kgha"
+        character (len=17) :: gracp_eat=  "              kgha"
+        character (len=17) :: grazc_man=  "              kgha"
+        character (len=17) :: gracn_man=  "              kgha"
+        character (len=17) :: gracp_man=  "              kgha"
+        character (len=17) :: fixn     =  "              kgha"
+        character (len=17) :: denit    =  "              kgha"
+        character (len=17) :: yieldc   =  "              kgha"
+        character (len=17) :: yieldn   =  "              kgha"
+        character (len=17) :: yieldp   =  "              kgha"
+      end type output_losses_header_units1      
+      type (output_losses_header_units1) :: ls_hdr_units1
+
+!********************************new headers      
      
       type output_plantweather_header
         character (len=6) :: day        =  "  jday"
@@ -423,8 +595,11 @@
         character (len=12) :: wndspd    =  "      wndspd"
         character (len=12) :: rhum      =  "        rhum"
         character (len=12) :: phubase0  =  "     phubas0"
-      end type output_plantweather_header
-      
+        character (len=12) :: lai_max   =  "     lai_max"
+        character (len=12) :: bm_max    =  "      bm_max"
+        character (len=12) :: bm_grow   =  "     bm_grow"
+        character (len=12) :: c_gro     =  "       c_gro"
+      end type output_plantweather_header 
       type (output_plantweather_header) :: pw_hdr
       
       type output_plantweather_header_units
@@ -455,8 +630,11 @@
         character (len=12) :: wndspd    =  "         m/s"
         character (len=12) :: rhum      =  "        frac"
         character (len=12) :: phubase0  =  "        degc"
-      end type output_plantweather_header_units
-      
+        character (len=12) :: lai_max   =  "   m**2/m**2"
+        character (len=12) :: bm_max    =  "       kg/ha"
+        character (len=12) :: bm_grow   =  "       kg/ha"
+        character (len=12) :: c_gro     =  "       kg/ha"
+      end type output_plantweather_header_units     
       type (output_plantweather_header_units) :: pw_hdr_units
       
       
@@ -471,7 +649,7 @@
       interface operator (+)
         module procedure hruout_losses_add
       end interface
-            
+               
       interface operator (+)
         module procedure hruout_plantweather_add
       end interface
@@ -491,6 +669,32 @@
       interface operator (/)
         module procedure hruout_nutbal_div
       end interface
+      
+!**********************new     
+      interface operator (+)
+        module procedure hruout_nut_cycling_add
+      end interface
+           
+      interface operator (+)
+        module procedure hruout_nut_gain_loss_add
+      end interface  
+
+      interface operator (/)
+        module procedure hruout_nut_cycling_div
+      end interface
+           
+      interface operator (/)
+        module procedure hruout_nut_gain_loss_div
+      end interface  
+       
+      interface operator (*)
+        module procedure hruout_nut_cycling_mult
+      end interface
+           
+      interface operator (*)
+        module procedure hruout_nut_gain_loss_mult
+      end interface  
+!**********************new
                 
       interface operator (*)
         module procedure hruout_nutbal_mult
@@ -591,6 +795,156 @@
         hru3%sedmin = hru1%sedmin + hru2%sedmin
         hru3%tileno3 = hru1%tileno3 + hru2%tileno3
       end function hruout_losses_add
+      
+!***************************new
+      function hruout_nut_cycling_add (hru1, hru2) result (hru3)
+        type (output_nutcarb_cycling), intent (in) :: hru1
+        type (output_nutcarb_cycling), intent (in) :: hru2
+        type (output_nutcarb_cycling) :: hru3
+        hru3%lab_min_p = hru1%lab_min_p + hru2%lab_min_p
+        hru3%act_sta_p = hru1%act_sta_p + hru2%act_sta_p
+        hru3%act_nit_n = hru1%act_nit_n + hru2%act_nit_n
+        hru3%act_sta_n = hru1%act_sta_p + hru2%act_sta_n
+        hru3%org_lab_p = hru1%org_lab_p + hru2%org_lab_p
+        hru3%rsd_hs_c = hru1%rsd_hs_c + hru2%rsd_hs_c
+        hru3%rsd_nitorg_n = hru1%rsd_nitorg_n + hru2%rsd_nitorg_n
+        hru3%rsd_laborg_p = hru1%rsd_laborg_p + hru2%rsd_laborg_p
+      end function hruout_nut_cycling_add
+      
+      function hruout_nut_gain_loss_add (hru1, hru2) result (hru3)
+        type (output_nutcarb_gain_loss), intent (in) :: hru1
+        type (output_nutcarb_gain_loss), intent (in) :: hru2
+        type (output_nutcarb_gain_loss) :: hru3
+        hru3%sedyld = hru1%sedyld + hru2%sedyld
+        hru3%usle = hru1%usle + hru2%usle
+        hru3%sedorgc = hru1%sedorgc + hru2%sedorgc
+        hru3%sedorgn = hru1%sedorgn + hru2%sedorgn
+        hru3%sedorgp = hru1%sedorgp + hru2%sedorgp
+        hru3%surqno3 = hru1%surqno3 + hru2%surqno3
+        hru3%latno3 = hru1%latno3 + hru2%latno3
+        hru3%surqsolp = hru1%surqsolp + hru2%surqsolp
+        hru3%sedmin = hru1%sedmin + hru2%sedmin
+        hru3%tileno3 = hru1%tileno3 + hru2%tileno3
+        hru3%no3atmo = hru1%no3atmo + hru2%no3atmo
+        hru3%nh4atmo = hru1%nh4atmo + hru2%nh4atmo
+        hru3%manurec = hru1%manurec + hru2%manurec
+        hru3%manuren = hru1%manuren + hru2%manuren
+        hru3%manurep = hru1%manurep + hru2%manurep
+        hru3%fertc = hru1%fertc + hru2%fertc
+        hru3%fertn = hru1%fertn + hru2%fertn
+        hru3%fertp = hru1%fertp + hru2%fertp
+        hru3%grazc_eat = hru1%grazc_eat + hru2%grazc_eat
+        hru3%grazn_eat = hru1%grazn_eat + hru2%grazn_eat
+        hru3%grazp_eat = hru1%grazp_eat + hru2%grazp_eat
+        hru3%grazc_man = hru1%grazc_man + hru2%grazc_man
+        hru3%grazn_man = hru1%grazn_man + hru2%grazn_man
+        hru3%grazp_man = hru1%grazp_man + hru2%grazp_man
+        hru3%fixn = hru1%fixn + hru2%fixn
+        hru3%denit = hru1%denit + hru2%denit
+        hru3%yieldc = hru1%yieldc + hru2%yieldc
+        hru3%yieldn = hru1%yieldn + hru2%yieldn
+        hru3%yieldp = hru1%yieldp + hru2%yieldp
+      end function hruout_nut_gain_loss_add
+    
+      function hruout_nut_cycling_mult (hru1,const) result (hru2)
+        type (output_nutcarb_cycling), intent (in) :: hru1
+        real, intent (in) :: const
+        type (output_nutcarb_cycling) :: hru2     
+        hru2%lab_min_p = hru1%lab_min_p * const
+        hru2%act_sta_p = hru1%act_sta_p * const
+        hru2%act_nit_n = hru1%act_nit_n * const
+        hru2%act_sta_n = hru1%act_sta_p * const
+        hru2%org_lab_p = hru1%org_lab_p * const
+        hru2%rsd_hs_c = hru1%rsd_hs_c * const
+        hru2%rsd_nitorg_n = hru1%rsd_nitorg_n * const
+        hru2%rsd_laborg_p = hru1%rsd_laborg_p * const
+      end function hruout_nut_cycling_mult
+             
+      function hruout_nut_gain_loss_mult (hru1,const) result (hru2)
+        type (output_nutcarb_gain_loss), intent (in) :: hru1
+        real, intent (in) :: const
+        type (output_nutcarb_gain_loss) :: hru2               
+        hru2%sedyld = hru1%sedyld * const
+        hru2%usle = hru1%usle * const
+        hru2%sedorgc = hru1%sedorgc * const
+        hru2%sedorgn = hru1%sedorgn * const
+        hru2%sedorgp = hru1%sedorgp * const
+        hru2%surqno3 = hru1%surqno3 * const
+        hru2%latno3 = hru1%latno3 * const
+        hru2%surqsolp = hru1%surqsolp * const
+        hru2%sedmin = hru1%sedmin * const
+        hru2%tileno3 = hru1%tileno3 * const
+        hru2%no3atmo = hru1%no3atmo * const
+        hru2%nh4atmo = hru1%nh4atmo * const
+        hru2%manurec = hru1%manurec * const
+        hru2%manuren = hru1%manuren * const
+        hru2%manurep = hru1%manurep * const
+        hru2%fertc = hru1%fertc * const
+        hru2%fertn = hru1%fertn * const
+        hru2%fertp = hru1%fertp * const
+        hru2%grazc_eat = hru1%grazc_eat * const
+        hru2%grazn_eat = hru1%grazn_eat * const
+        hru2%grazp_eat = hru1%grazp_eat * const
+        hru2%grazc_man = hru1%grazc_man * const
+        hru2%grazn_man = hru1%grazn_man * const
+        hru2%grazp_man = hru1%grazp_man * const
+        hru2%fixn = hru1%fixn * const
+        hru2%denit = hru1%denit * const
+        hru2%yieldc = hru1%yieldc * const
+        hru2%yieldn = hru1%yieldn * const
+        hru2%yieldp = hru1%yieldp * const
+      end function hruout_nut_gain_loss_mult
+      
+      function hruout_nut_cycling_div (hru1,const) result (hru2)
+        type (output_nutcarb_cycling), intent (in) :: hru1
+        real, intent (in) :: const
+        type (output_nutcarb_cycling) :: hru2     
+        hru2%lab_min_p = hru1%lab_min_p / const
+        hru2%act_sta_p = hru1%act_sta_p / const
+        hru2%act_nit_n = hru1%act_nit_n / const
+        hru2%act_sta_n = hru1%act_sta_p / const
+        hru2%org_lab_p = hru1%org_lab_p / const
+        hru2%rsd_hs_c = hru1%rsd_hs_c / const
+        hru2%rsd_nitorg_n = hru1%rsd_nitorg_n / const
+        hru2%rsd_laborg_p = hru1%rsd_laborg_p / const
+      end function hruout_nut_cycling_div
+             
+      function hruout_nut_gain_loss_div (hru1,const) result (hru2)
+        type (output_nutcarb_gain_loss), intent (in) :: hru1
+        real, intent (in) :: const
+        type (output_nutcarb_gain_loss) :: hru2               
+        hru2%sedyld = hru1%sedyld / const
+        hru2%usle = hru1%usle / const
+        hru2%sedorgc = hru1%sedorgc / const
+        hru2%sedorgn = hru1%sedorgn / const
+        hru2%sedorgp = hru1%sedorgp / const
+        hru2%surqno3 = hru1%surqno3 / const
+        hru2%latno3 = hru1%latno3 / const
+        hru2%surqsolp = hru1%surqsolp / const
+        hru2%sedmin = hru1%sedmin / const
+        hru2%tileno3 = hru1%tileno3 / const
+        hru2%no3atmo = hru1%no3atmo / const
+        hru2%nh4atmo = hru1%nh4atmo / const
+        hru2%manurec = hru1%manurec / const
+        hru2%manuren = hru1%manuren / const
+        hru2%manurep = hru1%manurep / const
+        hru2%fertc = hru1%fertc / const
+        hru2%fertn = hru1%fertn / const
+        hru2%fertp = hru1%fertp / const
+        hru2%grazc_eat = hru1%grazc_eat / const
+        hru2%grazn_eat = hru1%grazn_eat / const
+        hru2%grazp_eat = hru1%grazp_eat / const
+        hru2%grazc_man = hru1%grazc_man / const
+        hru2%grazn_man = hru1%grazn_man / const
+        hru2%grazp_man = hru1%grazp_man / const
+        hru2%fixn = hru1%fixn / const
+        hru2%denit = hru1%denit / const
+        hru2%yieldc = hru1%yieldc / const
+        hru2%yieldn = hru1%yieldn / const
+        hru2%yieldp = hru1%yieldp / const
+      end function hruout_nut_gain_loss_div
+      
+!****************************new
       
       function hruout_plantweather_add (hru1, hru2) result (hru3)
         type (output_plantweather), intent (in) :: hru1

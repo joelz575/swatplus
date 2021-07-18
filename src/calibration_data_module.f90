@@ -41,9 +41,10 @@
       type (update_parameters) :: chg
 
       type update_conditional
-        character(len=16) :: typ        !! type of update schedule (parameter, structure, land_use_mgt)
-        character(len=16) :: name       !! name of update schedule
-        character(len=16) :: cond       !! points to ruleset in conditional.ctl for scheduling the update
+        integer :: max_hits = 0         !! maximum number of times the table will be executed
+        integer :: num_hits = 0         !! current number of times the table will be executed
+        character(len=25) :: name       !! name of update schedule
+        character(len=25) :: cond       !! points to ruleset in conditional.ctl for scheduling the update
         integer :: cond_num             !! integer pointer to d_table in conditional.ctl
       end type update_conditional
       type (update_conditional), dimension (:), allocatable :: upd_cond

@@ -1,6 +1,0 @@
- TX_LG_GULLY               SWAT+ Dec 8  2020    MODULAR Rev 2020.60.5.1                                   
-  jday,   mon,   day,    yr,   unit , gis_id , name           ,          lai,       bioms,       yield,     residue,     sol_tmp,       strsw,       strsa,     strstmp,       strsn,       strsp,        nplt,       percn,       pplnt,         tmx,         tmn,       tmpav,     solarad,      wndspd,        rhum,     phubas0
-      ,      ,      ,      ,        ,        ,                ,    m**2/m**2,        kgha,        kgha,        kgha,        degc,         ---,         ---,         ---,         ---,         ---,        kgha,        kgha,        kgha,        degc,        degc,        degc,      mj/m^2,         m/s,        frac,        degc
-366,12,31,1996,1,1,bench           ,0.150,0.00,0.00,0.00,0.00,366.,0.00,366.,0.00,0.00,0.00,0.00,0.00,24.4,13.9,19.1,18.5,3.76,0.567,-8.83
-365,12,31,1997,1,1,bench           ,0.706,0.200E+4,0.00,0.00,0.00,314.,0.00,268.,0.00,0.00,0.00,0.00,0.00,24.8,14.0,19.4,18.5,3.76,0.544,0.470
-470

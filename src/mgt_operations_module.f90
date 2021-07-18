@@ -203,8 +203,8 @@
         integer :: num_autos = 0
         integer :: first_op = 0
         type (management_ops), dimension (:), allocatable :: mgt_ops
-        character(len=16), dimension (:), allocatable :: auto_name
-        character(len=16), dimension (:), allocatable :: auto_crop
+        character(len=25), dimension (:), allocatable :: auto_name
+        character(len=25), dimension (:), allocatable :: auto_crop
         integer :: auto_crop_num
         integer, dimension (:), allocatable :: num_db
         integer :: irr

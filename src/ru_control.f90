@@ -198,7 +198,7 @@
 
       end do  !element loop
       
-      !! set subdaily ru hydrographs using daily runoff and ru nit hydrograph
+      !! set subdaily ru hydrographs using daily runoff and ru unit hydrograph
       if (time%step > 0 .and. bsn_cc%gampt == 0) then
         call flow_hyd_ru_hru (ob(icmd)%day_cur, ob(icmd)%hd(3)%flo, ob(icmd)%hd(4)%flo,     &
                                         ob(icmd)%hd(5)%flo, ob(icmd)%uh, ob(icmd)%hyd_flo)

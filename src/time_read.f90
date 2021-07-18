@@ -8,6 +8,8 @@
        character (len=80) :: titldum    !           |title of file
        character (len=500) :: header    !           |header of file       
        integer :: eof                   !           |end of file
+       integer :: mo                    !           |
+       integer :: day_mo                !           |
        logical :: i_exist              !none       |check to determine if file exists
        
        eof = 0
@@ -25,8 +27,10 @@
          if (eof < 0) exit
          if (time%day_start <= 0) time%day_start = 1
          time%nbyr = time%yrc_end - time%yrc_start + 1
-         call xmon
-         time%mo_start = time%mo
+         call xmon (time%day_start, mo, day_mo)
+         time%mo = mo
+         time%day_mo = day_mo
+         time%mo_start = mo
          if (eof < 0) exit
          exit
          close (107) 

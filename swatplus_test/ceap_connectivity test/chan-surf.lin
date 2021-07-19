@@ -1,0 +1,7 @@
+chan-surf.lin: Channel Floodplain Linkage - Little River Experimental Watershed
+     1
+NUMB     NAME    NSPU    OBTYP OBTYP_NO  OBTYP  OBTYP_NO
+   1     chan1    1       hru      1
+   2     chan2    1       sub      1
+   8     chan3    2       sub      3      sub      4
+   9     chan4    2       hru      5      hru      6

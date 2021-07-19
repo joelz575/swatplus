@@ -1,0 +1,3 @@
+tiledrain.str: Subsurface drainage properties - Little River Experimental Watershed
+NAME            DEPTH   TIME    LAG  RADIUS   DIST  DRAIN_CO  PUMPCAP  LATKSAT 
+dep1000_24h	1000.0   24.0   96.0   100.0   30.0      10.0      1.0      2.0  

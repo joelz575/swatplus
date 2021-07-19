@@ -1,0 +1,4 @@
+define.sub: Subasin definition file - Little River Experimental Watershed
+NUMB        NAME         NSPU    ELEM1   ELEM2
+   1     Subbasin1        1       1        
+

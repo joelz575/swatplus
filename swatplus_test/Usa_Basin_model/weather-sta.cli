@@ -1,0 +1,5 @@
+weather-sta.cli: written by SWAT+ editor v1.3.0 on 2021-02-03 12:56
+name                           wgn                        pcp                        tmp                        slr                        hmd                        wnd           wnd_dir          atmo_dep  
+sta337s3663e               33s366e             stpcp10001.pcp             sttmp10001.tmp                        sim                        sim                        sim              null              null  
+sta338s3687e               33s369e             stpcp10003.pcp             sttmp10002.tmp                        sim                        sim                        sim              null              null  
+sta342s3707e               33s372e             stpcp10002.pcp             sttmp10002.tmp                        sim                        sim                        sim              null              null  

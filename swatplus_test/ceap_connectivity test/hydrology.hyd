@@ -1,0 +1,3 @@
+hydrology.hyd
+NAME        LAT_TIME LAT_SED  CANMX  ESCO   EPCO  ERORGN  ERORGP CN3_SWF  BIOMIX   PERC_CO LAT_ORGN LAT_ORGP HARG_PET  LATQ_CO
+no_perc            0       0      0  0.95      1       0       0     0.8     0.2      0.50        0        0   0.0023      0.3

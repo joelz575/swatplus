@@ -1,0 +1,31 @@
+file.cio (control input/output) - 2 Stage Ditch input data
+SIMULATION        time.sim          print.prt         object.prt       object.cnt         constituents.cs
+BASIN             codes.bsn         parameters.bsn
+CLIMATE           weather-sta.cli   weather-wgn.cli   null              pcp.cli           tmp.cli           slr.cli             hmd.cli            wnd.cli      atmo_year.dat
+CONNECT           hru.con           null              rout_unit.con     null     null     null     null     res.con	recall.con  exco.con           delratio.con    outlet.con         chandeg.con
+CHANNEL           initial.cha       channel.cha       hydrology.cha     sediment.cha      nutrients.cha     channel-lte.cha	    hyd-sed-lte.cha	   temperature.cha
+RESERVOIR         initial.res	    reservoir.res	  hydrology.res	    sediment.res 	  nutrients.res     weir.res	        wetland.wet        hydrology.wet
+ROUTING_UNIT      rout_unit.def     rout_unit.ele     rout_unit.rtu     null
+HRU               hru-data.hru      null
+EXCO              exco.exc	exco_om.exc	exco_pest.exc	exco_path.exc	exco_hmet.exc	exco_salt.exc
+RECALL            recall.rec    
+DR                delratio.del   dr_om.del    dr_pest.del   dr_path.del   dr_hmet.del   dr_salt.del
+AQUIFER           null     null
+HERD              null     null     null
+WATER_RIGHTS      null     null     null
+LINK              null     null  
+HYDROLOGY         hydrology.hyd     topography.hyd     field.fld
+STRUCTURAL        tiledrain.str     septic.str        filterstrip.str  grassedww.str    bmpuser.str 
+PARM_DB           plants.plt        fertilizer.frt    tillage.til      pesticide.pst    pathogens.pth       null     null     urban.urb        septic.sep         snow.sno
+OPS               harv.ops          null              irr.ops          chem_app.ops     null     null     
+LUM               landuse.lum       management.sch    cntable.lum      cons_practice.lum    ovn_table.lum    
+CHG               null     null     null     null     null     null     null     null     null
+INIT              plant.ini         soil_plant.ini    om_water.ini   pest_hru.ini  pest_water.ini  path_hru.ini     path_water.ini     null   null     salt_hru.ini     salt_water.ini     
+SOILS             soils.sol         nutrients.sol     null
+DECISION_TABLE    lum.dtl           res_rel.dtl       scen_lu.dtl	flo_con.dtl
+REGIONS           ls_unit.ele       ls_unit.def    null     null     null     null     null     null     null     null     null     null     null     null     null     null     null
+PATH_PCP          null
+PATH_TMP          null
+PATH_SLR          null
+PATH_HMD          null
+PATH_WND          null

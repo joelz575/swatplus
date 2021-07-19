@@ -62,49 +62,22 @@ class PruebaIDM(TestCase):
                         npt.assert_almost_equal(dts, recibido, 5)
                         # equal to 5 decimal places
 
-    #def test_ciclo_completo(símismo):
-    #    npasos = 5
-    #    t = 0
-    #    #tracemalloc.start()
-    #    for nmbr_dts, dts in pequeno_datos.items():
-    #        check_t = 0
-    #        for n in range(len(testDirectories)):
-    #            with símismo.subTest(datos=testDirectories[n]+nmbr_dts), IDMEnchufes() as servidor:
-    #                símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
-    #                servidor.activar()
-    #                while t < 20:
-    #                    recibido = servidor.recibir(nmbr_dts)
-    #                    npt.assert_almost_equal(dts, recibido, 5)
-    #                    # equal to 5 decimal places
-    #                    dts = dts+1
-    #                    print("going to send this data: ", dts)
-    #                    servidor.cambiar(nmbr_dts, dts)
-    #                    servidor.incrementar(npasos)
-                        #snapshot = tracemalloc.take_snapshot()
-                        #top_stats = snapshot.statistics('lineno')
-                        #print("[ Top 10 ]")
-                        #for stat in top_stats[:10]:
-                        #    print(stat)
-    #                    t = servidor.recibir('t')
-    #                    check_t = check_t + npasos
-    #                    npt.assert_equal(check_t, t)
-
-    def test_recibir_datos(símismo):
-        for n in range(len(testDirectories)):
-            if test_datos[testDirectories[n]] != "":
-                for nmbr_dts in test_datos.get(testDirectories[n]):
-                    dts = datos[nmbr_dts]
-                    with símismo.subTest(datos=testDirectories[n] + "/" + nmbr_dts), IDMEnchufes() as servidor:
-                        símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
-                        servidor.activar()
-                        recibido = servidor.recibir(nmbr_dts)
-                        print("receiving ", nmbr_dts)
-                        print("received ", recibido)
-                        #nans = np.isnan(recibido)
-                        #recibido = np.where(nans, 0, recibido)
-                        npt.assert_almost_equal(dts, recibido, 5)
-                        print("Done")
-                        # equal to 5 decimal places
+    # def test_recibir_datos(símismo):
+    #     for n in range(len(testDirectories)):
+    #         if test_datos[testDirectories[n]] != "":
+    #             for nmbr_dts in test_datos.get(testDirectories[n]):
+    #                 dts = datos[nmbr_dts]
+    #                 with símismo.subTest(datos=testDirectories[n] + "/" + nmbr_dts), IDMEnchufes() as servidor:
+    #                     símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
+    #                     servidor.activar()
+    #                     recibido = servidor.recibir(nmbr_dts)
+    #                     print("receiving ", nmbr_dts)
+    #                     print("received ", recibido)
+    #                     #nans = np.isnan(recibido)
+    #                     #recibido = np.where(nans, 0, recibido)
+    #                     npt.assert_almost_equal(dts, recibido, 5)
+    #                     print("Done")
+    #                     # equal to 5 decimal places
 
     def test_incrementar(símismo):
         n_pasos = 5
@@ -116,21 +89,6 @@ class PruebaIDM(TestCase):
                 t = servidor.recibir('t')
                 print("T is: ", t)
                 símismo.assertEqual(t, n_pasos)
-
-    def test_usaDeSuelo(símismo):
-        for n in range(len(testDirectories)):
-            with símismo.subTest(datos=testDirectories[n]), IDMEnchufes() as servidor:
-                for nmbr_dts, dts in datos_hru_luse.items():
-                    símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
-                    servidor.activar()
-                    #print("going to send this data: ", dts)
-                    #servidor.cambiar("luse", [1, 3, 1, 1, 538976288])
-                    #servidor.cambiar(nmbr_dts, dts)
-                    recibido = servidor.recibir(nmbr_dts)
-                    # npt.assert_almost_equal(dts, recibido)
-                    # equal to 7 decimal places
-                    npt.assert_almost_equal(dts, recibido, 5)
-                    # equal to 5 decimal places
 
     def test_finalizar(símismo):
         for n in range(len(testDirectories)):

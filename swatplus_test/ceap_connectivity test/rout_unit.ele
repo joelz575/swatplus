@@ -1,0 +1,8 @@
+rout_unit.ele
+        NUMB        NAME       OBTYP     OBTYPNO        FRAC        IDR
+           1        hru1         hru           1         1.0      0.000
+           2        hru2         hru           2         1.0      0.000
+           3        hru3         hru           3         1.0      0.000
+           4        hru4         hru           4         1.0      0.000
+           5        res1         res           1         1.0      0.000
+           6        ru1          ru            1         0.8      0.000

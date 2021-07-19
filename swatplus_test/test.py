@@ -6,7 +6,7 @@ from tinamit.idm.puertos import IDMEnchufes
 
 from swatplus_test.ejemplo_cliente import test_datos, datos
 
-t_final = [3287, 3287, 366, 4018]
+t_final = [3287, 3287, 731, 366, 4018]
 valgrind = False
 BASE_DIR = os.path.split(os.path.split(__file__)[0])[0]
 testDirectories = [
@@ -98,7 +98,7 @@ class PruebaIDM(TestCase):
                 servidor.finalizar()
                 t = servidor.recibir('t')
                 print("T is: ", t)
-                símismo.assertEqual(t, t_final)
+                símismo.assertEqual(t, t_final[n])
 
     def tearDown(símismo):
         for cliente in símismo.clientes:

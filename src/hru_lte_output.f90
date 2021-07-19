@@ -124,7 +124,7 @@
                end if 
            end if
            if (time%end_yr == 1 .and. pco%pw_sd%y == "y") then
-             write (2462,102) time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, hltpw_y(isd)
+             write (2462,101) time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, hltpw_y(isd)
               if (pco%csvout == "y") then 
                 write (2466,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, isd, ob(iob)%gis_id, ob(iob)%name, &
                     hltpw_y(isd)

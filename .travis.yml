@@ -24,12 +24,11 @@ script:
   - if [[ $TRAVIS_OS_NAME == linux ]]; then chmod +x swatplusTest.sh; ./swatplusTest.sh; else sh swatplusTest.sh; fi
   - mkdir dist
   - if [[ $TRAVIS_OS_NAME == windows ]]; then
-     mv ./build/bin/swatplus_exe.exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG";
-     dir dist;
-    else
-     mv ./build/bin/swatplus_exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG";
-     ls dist;
+
     fi
+  -  mv ./build/bin/swatplus_exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+  -  ls dist
+
 
 deploy:
   provider: releases

@@ -23,9 +23,6 @@ install:
 script:
   - if [[ $TRAVIS_OS_NAME == linux ]]; then chmod +x swatplusTest.sh; ./swatplusTest.sh; else sh swatplusTest.sh; fi
   - mkdir dist
-  - if [[ $TRAVIS_OS_NAME == windows ]]; then
-
-    fi
   -  mv ./build/bin/swatplus_exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG"
   -  ls dist
 

@@ -1,0 +1,4 @@
+rout_unit.con	LREW	Landscape																																		
+NUM	NAME	GIS_ID	       AREA	LAT	LONG	ELEV	SUB	WST	CONST_TYPE	OVERFLOW	RULE	OUT_TOT	OBJ_TYP1	OBJ_ID1	HYDRO_TYP1	FRAC1	OBJ_TYP2	OBJ_ID2	HYDRO_TYP2
+1	ru1	        1	103.5	31.744	-83.734	134.818	1	wea1	0	0	0	4	res	  1	tot 	0.10	hru	 3	tot 	0.05	 hru	4	tot 	0.05	    aqu      1       rhg      1.0000
+2	ru2	        2	6.21	31.744	-83.734	126.596	2	wea1	0	0	0	5	sdc	  1	tot 	1.00	sdc	 2	tot 	1.00	 sdc	3	tot 	1.00	    sdc      4       tot      1.0000	    sdc      5       tot      1.0000	

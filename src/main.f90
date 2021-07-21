@@ -9,15 +9,16 @@
       implicit none
       character(len = 32) :: arg1, arg2
 
-      prog = " SWAT+ Dec 8  2020    MODULAR Rev 2020.60.5.1"
+      prog = " SWAT+ Jun 25 2021    MODULAR Rev 2020.60.5.3"
 
       write (*,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "             Revision 60.5.1          ",/,             &
+     &          "             Revision 60.5.3          ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
 
+      ! Initializing tinamit_module
       call get_command_argument(1, arg1)
       call get_command_argument(2, arg2)
       dynamic = ((TRIM(arg1)/='').AND.(TRIM(arg2)/=''))

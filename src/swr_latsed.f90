@@ -25,7 +25,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, ihru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, sedorgn,  &
-         sedorgp, latq 
+         sedorgp, latq, qtile 
       use soil_module
       
       implicit none
@@ -36,7 +36,8 @@
       j = ihru
 
       !! update sediment yield for sediment in lateral flow
-      sedyld(j)=sedyld(j) + latq(j) * hru(j)%km * hru(j)%hyd%lat_sed
+      !! mm * 1 t/m3 * 10,000 m2/ha * mm/1,000 mm * 1/1,000,000 ppm = 1/10,000
+      sedyld(j)=sedyld(j) + (latq(j) + qtile) * hru(j)%hyd%lat_sed / 100000.
       sanyld(j)=sanyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_san
       silyld(j)=silyld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_sil
       clayld(j)=clayld(j)+latq(j) * hru(j)%km * hru(j)%hyd%lat_sed * soil(j)%det_cla

@@ -204,7 +204,8 @@
         real :: lat                     !latitude (degrees)
         real :: long                    !longitude (degrees)
         real :: elev = 100.             !elevation (m)
-        real :: area_ha = 80.           !area - ha
+        real :: area_ha = 80.           !input drainag area - ha
+        real :: area_ha_calc = 80.      !calculated drainage area - ha
         integer :: props = 1            !properties number from data base (ie hru.dat, sub.dat) - change props to data
         character (len=50) ::  wst_c    !weather station name
         integer :: wst = 1              !weather station number
@@ -254,6 +255,7 @@
         type (inflow_unit_hyds), dimension(:),allocatable :: hin_uh         !inflow unit hydrographs
         real, dimension(:,:),allocatable :: uh                              !subdaily flow unit hydrograph
         real, dimension(:,:),allocatable :: hyd_flo                         !subdaily flow hydrograph
+        real :: lat_til_flo                                                 !daily lateral+tile flow - add to hyd_flo to get total hyd
         real, dimension(:),allocatable :: tsin                              !inflow subdaily flow hydrograph
         type (hyd_output) :: supply                                         !water supply allocation
         real :: demand                                                      !water irrigation demand (ha-m)
@@ -452,68 +454,68 @@
       type (hyd_header) :: hyd_hdr
       
        type hyd_stor_header        
-        character (len=17) :: flo_stor  =    "         flo_stor"      !! m^3/s        |volume of water        
-        character (len=15) :: sed_stor  =    "       sed_stor"        !! metric tons  |sediment
-        character (len=15) :: orgn_stor =    "      orgn_stor"        !! kg N         |organic N
-        character (len=15) :: sedp_stor =    "      sedp_stor"        !! kg P         |organic P
-        character (len=15) :: no3_stor  =    "       no3_stor"        !! kg N         |NO3-N
-        character (len=15) :: solp_stor =    "      solp_stor"        !! kg P         |mineral (soluble P)
-        character (len=15) :: chla_stor =    "      chla_stor"        !! kg           |chlorophyll-a
-        character (len=15) :: nh3_stor  =    "       nh3_stor"        !! kg N         |NH3
-        character (len=15) :: no2_stor  =    "       no2_stor"        !! kg N         |NO2
-        character (len=15) :: cbod_stor =    "      cbod_stor"        !! kg           |carbonaceous biological oxygen demand
-        character (len=15) :: dox_stor  =    "       dox_stor"        !! kg           |dissolved oxygen
-        character (len=15) :: san_stor  =    "       san_stor"        !! tons         |detached sand
-        character (len=15) :: sil_stor  =    "       sil_stor"        !! tons         |detached silt
-        character (len=15) :: cla_stor  =    "       cla_stor"        !! tons         |detached clay
-        character (len=15) :: sag_stor  =    "       sag_stor"        !! tons         |detached small ag
-        character (len=15) :: lag_stor  =    "       lag_stor"        !! tons         |detached large ag
-        character (len=15) :: grv_stor  =    "       grv_stor"        !! tons         |gravel
-        character (len=15) :: temp_stor =    "           null"        !! deg c        |temperature
+        character (len=17) :: flo_stor  =    "         flo_stor"      !! m^3/s        |water stored at the end of time period       
+        character (len=15) :: sed_stor  =    "       sed_stor"        !! metric tons  |sediment stored at the end of time period
+        character (len=15) :: orgn_stor =    "      orgn_stor"        !! kg N         |organic N stored at the end of time period
+        character (len=15) :: sedp_stor =    "      sedp_stor"        !! kg P         |organic P stored at the end of time period
+        character (len=15) :: no3_stor  =    "       no3_stor"        !! kg N         |NO3-N stored at the end of time period
+        character (len=15) :: solp_stor =    "      solp_stor"        !! kg P         |mineral (soluble P) stored at end of time period
+        character (len=15) :: chla_stor =    "      chla_stor"        !! kg           |chlorophyll-a stored at end of time period
+        character (len=15) :: nh3_stor  =    "       nh3_stor"        !! kg N         |NH3-N (ammonium) stored at end of time period
+        character (len=15) :: no2_stor  =    "       no2_stor"        !! kg N         |NO2-N (nitrite) stored at end of time period
+        character (len=15) :: cbod_stor =    "      cbod_stor"        !! kg           |carbonaceous biological oxygen demand at end of time period
+        character (len=15) :: dox_stor  =    "       dox_stor"        !! kg           |dissolved oxygen stored at end of time period
+        character (len=15) :: san_stor  =    "       san_stor"        !! tons         |detached sand stored at end of time period
+        character (len=15) :: sil_stor  =    "       sil_stor"        !! tons         |detached silt stored at end of time period
+        character (len=15) :: cla_stor  =    "       cla_stor"        !! tons         |detached clay stored at end of time period
+        character (len=15) :: sag_stor  =    "       sag_stor"        !! tons         |detached small ag stored at end of time period
+        character (len=15) :: lag_stor  =    "       lag_stor"        !! tons         |detached large ag stored at end of time period
+        character (len=15) :: grv_stor  =    "       grv_stor"        !! tons         |gravel stored at end of time period
+        character (len=15) :: temp_stor =    "           null"        !! deg c        |water temperature
       end type hyd_stor_header
       type (hyd_stor_header) :: hyd_stor_hdr
       
       type hyd_in_header        
-        character (len=15) :: flo_in  =    "         flo_in"        !! m^3/s        |volume of water           
-        character (len=15) :: sed_in  =    "         sed_in"        !! metric tons  |sediment
-        character (len=15) :: orgn_in =    "        orgn_in"        !! kg N         |organic N
-        character (len=15) :: sedp_in =    "        sedp_in"        !! kg P         |organic P
-        character (len=15) :: no3_in  =    "         no3_in"        !! kg N         |NO3-N
-        character (len=15) :: solp_in =    "        solp_in"        !! kg P         |mineral (soluble P)
-        character (len=15) :: chla_in =    "        chla_in"        !! kg           |chlorophyll-a
-        character (len=15) :: nh3_in  =    "         nh3_in"        !! kg N         |NH3
-        character (len=15) :: no2_in  =    "         no2_in"        !! kg N         |NO2
-        character (len=15) :: cbod_in =    "        cbod_in"        !! kg           |carbonaceous biological oxygen demand
-        character (len=15) :: dox_in  =    "         dox_in"        !! kg           |dissolved oxygen
-        character (len=15) :: san_in  =    "         san_in"        !! tons         |detached sand
-        character (len=15) :: sil_in  =    "         sil_in"        !! tons         |detached silt
-        character (len=15) :: cla_in  =    "         cla_in"        !! tons         |detached clay
-        character (len=15) :: sag_in  =    "         sag_in"        !! tons         |detached small ag
-        character (len=15) :: lag_in  =    "         lag_in"        !! tons         |detached large ag
-        character (len=15) :: grv_in  =    "         grv_in"        !! tons         |gravel
-        character (len=15) :: temp_in =    "           null"        !! deg c        |temperature
+        character (len=15) :: flo_in  =    "         flo_in"        !! m^3/s        |water in          
+        character (len=15) :: sed_in  =    "         sed_in"        !! metric tons  |sediment in
+        character (len=15) :: orgn_in =    "        orgn_in"        !! kg N         |organic N in
+        character (len=15) :: sedp_in =    "        sedp_in"        !! kg P         |organic P in
+        character (len=15) :: no3_in  =    "         no3_in"        !! kg N         |NO3-N (nitrate) in
+        character (len=15) :: solp_in =    "        solp_in"        !! kg P         |mineral (soluble P) in
+        character (len=15) :: chla_in =    "        chla_in"        !! kg           |chlorophyll-a in
+        character (len=15) :: nh3_in  =    "         nh3_in"        !! kg N         |NH3-N (ammonium) in
+        character (len=15) :: no2_in  =    "         no2_in"        !! kg N         |NO2-N (nitrate) in
+        character (len=15) :: cbod_in =    "        cbod_in"        !! kg           |carbonaceous biological oxygen demand in
+        character (len=15) :: dox_in  =    "         dox_in"        !! kg           |dissolved oxygen in
+        character (len=15) :: san_in  =    "         san_in"        !! tons         |detached sand in
+        character (len=15) :: sil_in  =    "         sil_in"        !! tons         |detached silt in
+        character (len=15) :: cla_in  =    "         cla_in"        !! tons         |detached clay in
+        character (len=15) :: sag_in  =    "         sag_in"        !! tons         |detached small ag in
+        character (len=15) :: lag_in  =    "         lag_in"        !! tons         |detached large ag in
+        character (len=15) :: grv_in  =    "         grv_in"        !! tons         |gravel in
+        character (len=15) :: temp_in =    "           null"        !! deg c        |temperature in
       end type hyd_in_header
       type (hyd_in_header) :: hyd_in_hdr
       
     type hyd_out_header        
-        character (len=15) :: flo_out  =    "        flo_out"        !! m^3/s        |volume of water       
-        character (len=15) :: sed_out  =    "        sed_out"        !! metric tons  |sediment
-        character (len=15) :: orgn_out =    "       orgn_out"        !! kg N         |organic N
-        character (len=15) :: sedp_out =    "       sedp_out"        !! kg P         |organic P
-        character (len=15) :: no3_out  =    "        no3_out"        !! kg N         |NO3-N
-        character (len=15) :: solp_out =    "       solp_out"        !! kg P         |mineral (soluble P)
-        character (len=15) :: chla_out =    "       chla_out"        !! kg           |chlorophyll-a
-        character (len=15) :: nh3_out  =    "        nh3_out"        !! kg N         |NH3
-        character (len=15) :: no2_out  =    "        no2_out"        !! kg N         |NO2
-        character (len=15) :: cbod_out =    "       cbod_out"        !! kg           |carbonaceous biological oxygen demand
-        character (len=15) :: dox_out  =    "        dox_out"        !! kg           |dissolved oxygen
-        character (len=15) :: san_out  =    "        san_out"        !! tons         |detached sand
-        character (len=15) :: sil_out  =    "        sil_out"        !! tons         |detached silt
-        character (len=15) :: cla_out  =    "        cla_out"        !! tons         |detached clay
-        character (len=15) :: sag_out  =    "        sag_out"        !! tons         |detached small ag
-        character (len=15) :: lag_out  =    "        lag_out"        !! tons         |detached large ag
-        character (len=15) :: grv_out  =    "        grv_out"        !! tons         |gravel
-        character (len=15) :: temp_out =    "           null"        !! deg c        |temperature
+        character (len=15) :: flo_out  =    "        flo_out"        !! m^3/s        |water out      
+        character (len=15) :: sed_out  =    "        sed_out"        !! metric tons  |sediment out
+        character (len=15) :: orgn_out =    "       orgn_out"        !! kg N         |organic N out
+        character (len=15) :: sedp_out =    "       sedp_out"        !! kg P         |organic P out
+        character (len=15) :: no3_out  =    "        no3_out"        !! kg N         |NO3-N out
+        character (len=15) :: solp_out =    "       solp_out"        !! kg P         |mineral (soluble P) out
+        character (len=15) :: chla_out =    "       chla_out"        !! kg           |chlorophyll-a out
+        character (len=15) :: nh3_out  =    "        nh3_out"        !! kg N         |NH3-N (ammonium) out
+        character (len=15) :: no2_out  =    "        no2_out"        !! kg N         |NO2-N (nitrite) out
+        character (len=15) :: cbod_out =    "       cbod_out"        !! kg           |carbonaceous biological oxygen demand out
+        character (len=15) :: dox_out  =    "        dox_out"        !! kg           |dissolved oxygen out
+        character (len=15) :: san_out  =    "        san_out"        !! tons         |detached sand out
+        character (len=15) :: sil_out  =    "        sil_out"        !! tons         |detached silt out
+        character (len=15) :: cla_out  =    "        cla_out"        !! tons         |detached clay out
+        character (len=15) :: sag_out  =    "        sag_out"        !! tons         |detached small ag out
+        character (len=15) :: lag_out  =    "        lag_out"        !! tons         |detached large ag out
+        character (len=15) :: grv_out  =    "        grv_out"        !! tons         |gravel out
+        character (len=15) :: temp_out =    "           null"        !! deg c        |temperature out
       end type hyd_out_header
       type (hyd_out_header) :: hyd_out_hdr
       
@@ -567,8 +569,8 @@
      type sd_hyd_header_units
         character (len=15) :: flo_in    =  "          m^3/s"        !! m^3/s        |volume of water
         character (len=15) :: flo_out   =  "          m^3/s"        !! m^3/s        |volume of water
-        character (len=15) :: sed_in    =  "          mtons"        !! metric tons  |sediment
-        character (len=15) :: sed_out   =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: sed_in    =  "           tons"        !! metric tons  |sediment
+        character (len=15) :: sed_out   =  "           tons"        !! metric tons  |sediment
         character (len=15) :: orgn_in   =  "            kgN"        !! kg N         |organic N
         character (len=15) :: orgn_out  =  "            kgN"        !! kg N         |organic N
         character (len=15) :: sedp_in   =  "            kgP"        !! kg P         |organic P
@@ -624,7 +626,7 @@
       
       type hyd_header_units1
         character (len=15) :: flo    =  "          m^3/s"        !! m^3/s        |volume of water
-        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: sed    =  "           tons"        !! metric tons  |sediment
         character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
         character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
         character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
@@ -657,7 +659,7 @@
         character (len=12) :: name   =  "            "
         character (len=6) :: otype   =  "      "    
         character (len=17) :: flo    =  "            m^3/s"      !! m^3/s        |volume of water
-        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: sed    =  "           tons"        !! metric tons  |sediment
         character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
         character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
         character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
@@ -689,7 +691,7 @@
         character (len=8) :: hydio   =  "        "
         character (len=8) :: objno   =  "        "
         character (len=17) :: flo    =  "            m^3/s"      !! m^3/s          |volume of water
-        character (len=15) :: sed    =  "          mtons"        !! metric tons  |sediment
+        character (len=15) :: sed    =  "           tons"        !! metric tons  |sediment
         character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
         character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
         character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
@@ -864,7 +866,43 @@
         character (len=12) :: day2     =   "       day2 "
         character (len=12) :: objtot   =   "    obj_tot "
       end type calibration3_header    
-      type (calibration3_header) :: calb3_hdr	
+      type (calibration3_header) :: calb3_hdr
+      
+      type output_checker_header         
+        character (len=16) :: sname =    "                "
+        character (len=16) :: hydgrp =   "                "        
+        character (len=12) :: zmx    =   "       zmx  "
+        character (len=12) :: usle_k  =  "     usle_k "
+        character (len=12) :: sumfc   =  "      sumfc "
+        character (len=12) :: sumul   =  "      sumul "
+        character (len=12) :: usle_p  =  "     usle_p "     
+        character (len=12) :: usle_ls =  "    usle_ls "
+        character (len=12) :: esco    =  "       esco "
+        character (len=12) :: epco    =  "       epco "
+        character (len=12) :: cn3_swf =  "    cn3_swf "
+        character (len=12) :: perco   =  "      perco "
+        character (len=12) :: latq_co =  "    latq_co "
+        character (len=12) :: tiledrain ="  tiledrain "
+      end type output_checker_header    
+      type (output_checker_header) :: chk_hdr
+      
+  type output_checker_unit         
+        character (len=16) :: sname =    "sname           "
+        character (len=16) :: hydgrp =   "hydgrp          "       
+        character (len=12) :: zmx    =   "       (mm) "
+        character (len=12) :: usle_k  =  "            "
+        character (len=12) :: sumfc   =  "       (mm) "
+        character (len=12) :: sumul   =  "       (mm) "
+        character (len=12) :: usle_p  =  "            "     
+        character (len=12) :: usle_ls =  "            "
+        character (len=12) :: esco    =  "            "
+        character (len=12) :: epco    =  "            "
+        character (len=12) :: cn3_swf =  "            "
+        character (len=12) :: perco   =  "            "
+        character (len=12) :: latq_co =  "            "                                          
+        character (len=16) :: tiledrain ="0=notile;1=tile;"
+      end type output_checker_unit    
+      type (output_checker_unit) :: chk_unit
       
       interface operator (+)
         module procedure hydout_add

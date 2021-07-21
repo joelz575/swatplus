@@ -1,6 +1,6 @@
       subroutine plant_init (init)
 
-      use hru_module, only : cn2, cvm_com, hru, ihru, ipl, isol, rsdco_plcom, ilu
+      use hru_module, only : cn2, cvm_com, hru, ihru, ipl, isol, rsdco_plcom
       use soil_module
       use plant_module
       use hydrograph_module
@@ -18,12 +18,13 @@
       implicit none
       
       integer, intent (in) :: init   !           |
-      integer :: icom                !           |
+      integer :: day_mo
+      integer :: icom                !           |plant community counter
       integer :: idp                 !           |
       integer :: j                   !none       |counter
       integer :: ilug                !none       |counter 
-      integer :: iob                 !           |
-      integer :: iwgn                !           |
+      integer :: iob                 !           |spatial object number
+      integer :: iwgn                !           |weather generator number
       integer :: mo                  !none       |counter 
       integer :: iday                !none       |counter 
       integer :: iplt                !none       |counter 
@@ -56,36 +57,14 @@
       real :: laimx_pop              !           |max lai given plant population
 
       j = ihru
-      
-      !!assign land use pointers for the hru
-        hru(j)%land_use_mgt = ilu
-        pcom(j)%name = lum(ilu)%plant_cov
-        hru(j)%plant_cov = lum_str(ilu)%plant_cov
-        hru(j)%lum_group_c = lum(ilu)%cal_group
-        do ilug = 1, lum_grp%num
-          if (hru(j)%lum_group_c == lum_grp%name(ilum)) then
-            hru(j)%lum_group =  ilug
-          end if
-        end do
-        icom = hru(j)%plant_cov
-        iob = hru(j)%obj_no
-        iwst = ob(iob)%wst
-        iwgn = wst(iwst)%wco%wgn
-        isched = lum_str(ilu)%mgt_ops
-        hru(j)%mgt_ops = lum_str(ilu)%mgt_ops
-        hru(j)%tiledrain = lum_str(ilu)%tiledrain
-        hru(j)%septic = lum_str(ilu)%septic
-        hru(j)%fstrip = lum_str(ilu)%fstrip
-        hru(j)%grassww = lum_str(ilu)%grassww
-        hru(j)%bmpuser = lum_str(ilu)%bmpuser
-        hru(j)%luse%cn_lu = lum_str(ilu)%cn_lu
-        hru(j)%luse%cons_prac = lum_str(ilu)%cons_prac
 
       !! allocate plants
+        icom = hru(j)%plant_cov
         if (icom == 0) then
           pcom(j)%npl = 0
         else
           if (init > 0) then
+            deallocate (pcom(j)%pl)
             deallocate (pcom(j)%plg) 
             deallocate (pcom(j)%plm)
             deallocate (pl_mass(j)%tot)
@@ -134,11 +113,12 @@
           
           ! set heat units to maturity
           ! first compute base0 units for entire year
+          iob = hru(ihru)%obj_no
+          iwst = ob(iob)%wst
+          iwgn = wst(iwst)%wco%wgn
           phu0 = 0.
           do iday = 1, 365
-            time%day = iday
-            call xmon
-            mo = time%mo
+            call xmon (iday, mo, day_mo)
             tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
             if (tave > 0.) phu0 = phu0 + tave
           end do
@@ -148,9 +128,7 @@
           if (pldb(idp)%days_mat < 1.e-6) then
             phutot = 0.
             do iday = 1, 365
-              time%day = iday
-              call xmon
-              mo = time%mo
+              call xmon (iday, mo, day_mo)
               tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
               phuday = tave - pldb(idp)%t_base
               if (phuday > 0.) then
@@ -166,7 +144,7 @@
               phu0 = 0.15 * phu0    !assume planting at 0.15 base 0 heat units
               do iday = 1, 365
                 if (wgn(iwgn)%lat > 0.) then
-                  time%day = iday
+                  call xmon (iday, mo, day_mo)
                 else
                   ! find Southern Hemisphere day
                   iday_sum = iday_sum + 1
@@ -175,10 +153,8 @@
                   else
                     iday_sh = iday_sum
                   end if
-                  time%day = iday_sh
+                  call xmon (iday_sh, mo, day_mo)
                 end if
-                call xmon
-                mo = time%mo
                 tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
                 phuday = tave
                 if (phuday > 0.) then
@@ -195,20 +171,29 @@
               else
                 igrow = 181
               end if
+              phutot = 0.
+              phu0 = 0.15 * phu0    !assume start accumulating hu at 0.15 base 0 heat units
               do iday = igrow, igrow + 180
+                call xmon (iday, mo, day_mo)
+                tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
+                phuday = tave
+                if (phuday > 0.) then
+                  phutot = phutot + phuday
+                end if
+                if (phutot > phu0) exit
                 !! calculate solar declination: equation 2.1.2 in SWAT manual
-                sd = Asin(.4 * Sin((Real(iday) - 82.) / 58.09))  !!365/2pi = 58.09
-                sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
-                if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
-                  h = 0.
-                elseif (sdlat >= -1.) then
-                  h = Acos(sdlat)
-                else
-                  h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
-                endif 
-                daylength = 7.6394 * h
-                iday_sh = iday
-                if (daylength - bsn_prm%dorm_hr > wgn_pms(iwgn)%daylmn) exit
+                !sd = Asin(.4 * Sin((Real(iday) - 82.) / 58.09))  !!365/2pi = 58.09
+                !sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
+                !if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
+                !  h = 0.
+                !elseif (sdlat >= -1.) then
+                !  h = Acos(sdlat)
+                !else
+                !  h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
+                !endif 
+                !daylength = 7.6394 * h
+                !iday_sh = iday
+                !if (daylength - bsn_prm%dorm_hr > wgn_pms(iwgn)%daylmn) exit
               end do
             end if
             
@@ -221,7 +206,7 @@
             phutot = 0.
             do iday = igrow, igrow + pldb(idp)%days_mat
               if (wgn(iwgn)%lat > 0.) then
-                time%day = iday
+                call xmon (iday, mo, day_mo)
               else
                 ! find Southern Hemisphere day
                 if (iday > 365) then
@@ -229,10 +214,8 @@
                 else
                   iday_sh = iday
                 end if
-                time%day = iday_sh
+                call xmon (iday_sh, mo, day_mo)
               end if
-              call xmon
-              mo = time%mo
               tave = (wgn(iwgn)%tmpmx(mo) + wgn(iwgn)%tmpmn(mo)) / 2.
               phuday = tave - pldb(idp)%t_base
               if (phuday > 0.) then
@@ -243,6 +226,7 @@
           end if
           
           ! set initial operation for date scheduling
+          isched = hru(j)%mgt_ops
           if (sched(isched)%num_ops > 0) then
           if (sched(isched)%mgt_ops(1)%jday > 0) then
             irot = 1

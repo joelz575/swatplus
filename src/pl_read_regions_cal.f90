@@ -31,7 +31,8 @@
  
     inquire (file=in_chg%plant_gro_sft, exist=i_exist)
     if (.not. i_exist .or. in_chg%plant_gro_sft == "null" ) then
-      allocate (plcal(0:0))	
+      allocate (plcal(0:0))
+      plcal(0)%lum_num = 0
     else
       do
         open (107,file=in_chg%plant_gro_sft)
@@ -44,7 +45,6 @@
         allocate (plcal(mreg))
 
       do i = 1, mreg
-
         read (107,*,iostat=eof) plcal(i)%name, plcal(i)%lum_num, nspu       
         if (eof < 0) exit
         if (nspu > 0) then
@@ -77,12 +77,12 @@
         !read (107,*,iostat=eof) header
         !if (eof < 0) exit
         if (plcal(i)%lum_num > 0) then
-          ilum_mx = plcal(i)%lum_num
+	  ilum_mx = plcal(i)%lum_num
           read (107,*,iostat=eof) header
           if (eof < 0) exit
           allocate (plcal(i)%lum(ilum_mx))
           do ilum = 1, ilum_mx
-            read (107,*,iostat=eof) plcal(i)%lum(ilum)%meas
+	    read (107,*,iostat=eof) plcal(i)%lum(ilum)%meas
             if (eof < 0) exit
           end do
         end if 

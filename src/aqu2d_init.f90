@@ -18,7 +18,7 @@
       integer :: iob                !none       |counter
       real :: sum_len               !km         |total length of channel in aquifer
       real :: sum_left              !km         |lenght of channels after the baseflow stops
-      real, dimension(:), allocatable :: next   !!next channel to dry up - sorted by drainage area
+      integer, dimension(:), allocatable :: next   !!next channel to dry up - sorted by drainage area
       
       !! set parameters needed to distribute gwflow to channels using geomorphical model
       if (db_mx%aqu2d <= 0) return
@@ -55,7 +55,7 @@
               exit
             end if
             iprv = next1
-            next1 = next(next1)
+            next1 = next(iprv)
           end do
           if (npts > 0 .and. ipts == npts + 1) then
             next(iprv) = icha

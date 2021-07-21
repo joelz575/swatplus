@@ -23,6 +23,12 @@
       real :: evol_m3
 
       iob = res_ob(jres)%ob
+      iwst = ob(iob)%wst
+      
+      !! adjust precip and temperature for elevation using lapse rates
+      w = wst(iwst)%weat
+      if (bsn_cc%lapse == 1) call cli_lapse (iob, iwst)
+      wst(iwst)%weat = w
       
       !! set water body pointer to res
       wbody => res(jres)
@@ -55,7 +61,6 @@
 
         
       !! calculate water balance for day
-      iwst = ob(iob)%wst
       res_wat_d(jres)%evap = 10. * res_hyd(ihyd)%evrsv * wst(iwst)%weat%pet * res_wat_d(jres)%area_ha
       res_wat_d(jres)%seep = 240. * res_hyd(ihyd)%k * res_wat_d(jres)%area_ha
       res_wat_d(jres)%precip = 10. * wst(iwst)%weat%precip * res_wat_d(jres)%area_ha

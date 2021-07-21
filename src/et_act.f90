@@ -37,10 +37,11 @@
  
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, tmpav, canstor, ihru, canev, ep_max,  &
+      use hru_module, only : hru, canstor, ihru, canev, ep_max,  &
          es_day, pet_day, snoev
       use soil_module
       use plant_module
+      use climate_module
       
       implicit none
 
@@ -149,7 +150,7 @@
         esleft = es_max
 
         !! compute sublimation
-        if (tmpav(j) > 0.) then
+        if (w%tave > 0.) then
           if (hru(j)%sno_mm >= esleft) then
             !! take all soil evap from snow cover
             hru(j)%sno_mm = hru(j)%sno_mm - esleft

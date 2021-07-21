@@ -1,0 +1,4 @@
+object.prt: User-defined output files - SB_LS1
+        NUMB       OBTYP     OBTYPNO      HYDTYP    FILENAME
+           1         sdc        1            tot     two_stage.out
+           2         hru        1            sol     soils_st.out		   

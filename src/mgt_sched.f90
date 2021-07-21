@@ -7,7 +7,7 @@
       use hydrograph_module
       use hru_module, only : hru, ihru, cn2, phubase, ndeat, igrz, grz_days,    &
         yr_skip, sol_sumno3, sol_sumsolp, fertnh3, fertno3, fertorgn,  &
-        fertorgp, fertsolp, ipl, sweepeff, yr_skip, yield
+        fertorgp, fertsolp, ipl, sweepeff, yr_skip
       use soil_module
       use plant_module
       use time_module
@@ -71,6 +71,7 @@
               if (mgt%op_char == pcomdb(icom)%pl(ipl)%cpnm) then
                 pcom(j)%plcur(ipl)%gro = "y"
                 pcom(j)%plcur(ipl)%idorm = "n"
+                call mgt_plantop
                 if (mgt%op4 > 0) then
                     call mgt_transplant (mgt%op4)
                   end if
@@ -207,7 +208,7 @@
                 !! sum basin crop yields and area harvested
                 iplt_bsn = pcom(j)%plcur(ipl)%bsn_num
                 bsn_crop_yld(iplt_bsn)%area_ha = bsn_crop_yld(iplt_bsn)%area_ha + hru(j)%area_ha
-                bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + yield * hru(j)%area_ha / 1000.
+                bsn_crop_yld(iplt_bsn)%yield = bsn_crop_yld(iplt_bsn)%yield + pl_yield%m * hru(j)%area_ha / 1000.
                 !! sum regional crop yields for soft calibration
                 ireg = hru(j)%crop_reg
                 do ilum = 1, plcal(ireg)%lum_num

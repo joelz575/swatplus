@@ -79,6 +79,7 @@
       end type plant_stress
       
       type auto_operations
+        integer :: apply_day = 0                                !! day to apply in prob_unif1 condition
         integer, dimension(:), allocatable :: num_actions       !! current number of actions - reset on January 1 
         integer, dimension(:), allocatable :: days_act          !! days since the action specified in lim_const
       end type auto_operations
@@ -89,8 +90,8 @@
        character(len=4), dimension(:), allocatable :: pl       !! N/A              |plant name
        integer :: pcomdb                !! current plant community database number
        integer :: rot_yr = 1            !! rotation year
-       integer :: days_plant = 1        !!               |days since last harvest - for conditional scheduling planting of winter annuals
-       integer :: days_harv = 1         !!               |days since last harvest - for conditional scheduling planting of winter annuals
+       integer :: days_plant = 100000   !!               |days since last planting - for conditional scheduling planting
+       integer :: days_harv = 100000    !!               |days since last harvest - for conditional scheduling planting
        integer :: mseas = 0             !! none          |monsoon season to initiate tropical plant growth
                                         !!               |   0 = outside monsoon period and during monsoon after growth is triggered
                                         !!               |   1 = in monsoon period but new growth not triggered

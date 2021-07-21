@@ -1,0 +1,5 @@
+bacteria.bac: Bacteria properties - Little River Experimental Watershed
+BACTNM	      DO_SOLN  GR_SOLN  DO_SORB  GR_SORB     KD  T_ADJ  WASHOFF  DO_PLNT  GR_PLNT  FR_MANURE  PERCO  DET_THRSHD  DO_STREAM  GR_STREAM  DO_RES  GR_RES   SWF  CONC_MIN
+Example         10.0      5.0     12.0      6.0   0.05   1.05      0.1    100.0      1.0        0.9   10.0       100.0        0.0        0.0     0.0     0.0  0.15     100.0
+e_coli		10.0      5.0     12.0      6.0   0.05   1.05      0.1    100.0      1.0        0.9   10.0       100.0        0.0        0.0     0.0     0.0  0.15     100.0
+fecal_coliform  10.0      5.0     12.0      6.0   0.05   1.05      0.1    100.0      1.0        0.9   10.0       100.0        0.0        0.0     0.0     0.0  0.15     100.0

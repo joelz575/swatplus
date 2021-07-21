@@ -54,7 +54,7 @@
             if (eof < 0) exit
             read (107,*,iostat=eof) dtbl_lum(i)%name, dtbl_lum(i)%conds, dtbl_lum(i)%alts, dtbl_lum(i)%acts
             if (eof < 0) exit
-            allocate (dtbl_lum(i)%cond(dtbl_lum(i)%conds))
+	    allocate (dtbl_lum(i)%cond(dtbl_lum(i)%conds))
             allocate (dtbl_lum(i)%con_act(dtbl_lum(i)%conds))
             allocate (dtbl_lum(i)%alt(dtbl_lum(i)%conds,dtbl_lum(i)%alts))
             allocate (dtbl_lum(i)%act(dtbl_lum(i)%acts))
@@ -69,6 +69,10 @@
             do ic = 1, dtbl_lum(i)%conds
               read (107,*,iostat=eof) dtbl_lum(i)%cond(ic), (dtbl_lum(i)%alt(ic,ial), ial = 1, dtbl_lum(i)%alts)
               if (eof < 0) exit
+              if (dtbl_lum(i)%cond(ic)%var == "prob_unif") then
+                backspace (107)
+                read (107,*,iostat=eof) dtbl_lum(i)%cond(ic)%var, dtbl_lum(i)%frac_app
+              end if
             end do
             
             !if land_use conditional variable, determine number of hru's and areas (used for probabilistic operations)
@@ -131,6 +135,14 @@
                   end do
                 
                 case ("irr_demand")
+                  do idb = 1, db_mx%irrop_db
+                    if (dtbl_lum(i)%act(iac)%option == irrop_db(idb)%name) then
+                      dtbl_lum(i)%act_typ(iac) = idb
+                      exit
+                    end if
+                  end do
+                       
+                case ("irrigate")
                   do idb = 1, db_mx%irrop_db
                     if (dtbl_lum(i)%act(iac)%option == irrop_db(idb)%name) then
                       dtbl_lum(i)%act_typ(iac) = idb

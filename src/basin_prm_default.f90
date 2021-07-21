@@ -48,7 +48,8 @@
          if (bsn_prm%decr_min < 1.e-6) bsn_prm%decr_min = 0.01    !! 
          if (bsn_prm%rsd_covco < 1.e-6) bsn_prm%rsd_covco = 0.30  !! residue cover factor for computing frac of cover         
          if (bsn_prm%vcrit < 1.e-6) bsn_prm%vcrit = 0.            !!
-         if (bsn_prm%res_stlr_co < 1.e-6) bsn_prm%res_stlr_co = 0.184 !! reservoir sediment settling coeff
+         if (bsn_prm%petco_pmpt < 0.5 .and. bsn_prm%petco_pmpt > 0.) bsn_prm%petco_pmpt = 0.0   !! reservoir sediment settling coeff
+         bsn_prm%petco_pmpt = (100. + bsn_prm%petco_pmpt) / 100.    !! convert to fraction
          if (bsn_prm%uhalpha < 1.e-6) bsn_prm%uhalpha = 1.0       !! alpha coeff for est unit hydrograph using gamma func
          if (bsn_prm%eros_spl < 1.e-6) bsn_prm%eros_spl = 0.      !! coeff of splash erosion varing 0.9-3.1 
          if (bsn_prm%rill_mult < 1.e-6) bsn_prm%rill_mult = 0.    !! 

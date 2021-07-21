@@ -75,8 +75,8 @@
       
       !! compute seepage through aquifer and subtract from storage
       aqu_d(iaq)%seep = aqu_d(iaq)%rchrg * aqu_prm(iaq)%seep
-      aqu_d(iaq)%seep = amin1 (aqu_prm(iaq)%seep, aqu_d(iaq)%stor)
-      ob(icmd)%hd(2)%flo = 10. * aqu_prm(iaq)%seep * ob(icmd)%area_ha
+      aqu_d(iaq)%seep = amin1 (aqu_d(iaq)%seep, aqu_d(iaq)%stor)
+      ob(icmd)%hd(2)%flo = 10. * aqu_d(iaq)%seep * ob(icmd)%area_ha
       
       aqu_d(iaq)%stor = aqu_d(iaq)%stor - aqu_d(iaq)%seep
       
@@ -222,16 +222,19 @@
       aqu_d(iaq)%flo_res = 0.
       aqu_d(iaq)%flo_ls = 0.
       do iout = 1, ob(iob_out)%src_tot
-        select case (ob(iob_out)%obtyp_out(iout))
-        case ("cha")
-          aqu_d(iaq)%flo_cha = aqu_d(iaq)%flo_cha + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
-        case ("sdc")
-          aqu_d(iaq)%flo_cha = aqu_d(iaq)%flo_cha + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
-        case ("res")
-          aqu_d(iaq)%flo_res = aqu_d(iaq)%flo_res + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
-        case ("aqu")
-          aqu_d(iaq)%flo_ls = aqu_d(iaq)%flo_ls + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
-        end select
+        !! sum outflow to channels, reservoirs and other aquifers
+        if (ob(iob_out)%htyp_out(iout) == "tot") then
+          select case (ob(iob_out)%obtyp_out(iout))
+          case ("cha")
+            aqu_d(iaq)%flo_cha = aqu_d(iaq)%flo_cha + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
+          case ("sdc")
+            aqu_d(iaq)%flo_cha = aqu_d(iaq)%flo_cha + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
+          case ("res")
+            aqu_d(iaq)%flo_res = aqu_d(iaq)%flo_res + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
+          case ("aqu")
+            aqu_d(iaq)%flo_ls = aqu_d(iaq)%flo_ls + aqu_d(iaq)%flo * ob(iob_out)%frac_out(iout)
+          end select
+        end if
       end do
 
       if (time%step > 0) then

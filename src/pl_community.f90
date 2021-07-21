@@ -33,12 +33,13 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : ep_max, epmax, hru_ra, htfac, ihru, ipl, par, tmpav, translt
+      use hru_module, only : ep_max, epmax, htfac, ihru, ipl, par, translt
       use soil_module
       use plant_module
       use plant_data_module
       use organic_mineral_mass_module
       use time_module
+      use climate_module
       
       implicit none      
 
@@ -71,19 +72,19 @@
       end do
 
       !! sum total masses for plant community
-      pl_mass(j)%tot_com%m = 0.
-      pl_mass(j)%ab_gr_com%m = 0.
-      pl_mass(j)%leaf_com%m = 0.
-      pl_mass(j)%stem_com%m = 0.
-      pl_mass(j)%seed_com%m = 0.
-      pl_mass(j)%root_com%m = 0.
+      pl_mass(j)%tot_com = orgz
+      pl_mass(j)%ab_gr_com = orgz
+      pl_mass(j)%leaf_com = orgz
+      pl_mass(j)%stem_com = orgz
+      pl_mass(j)%seed_com = orgz
+      pl_mass(j)%root_com = orgz
       do ipl = 1, pcom(j)%npl
-        pl_mass(j)%tot_com%m = pl_mass(j)%tot_com%m + pl_mass(j)%tot(ipl)%m
-        pl_mass(j)%ab_gr_com%m = pl_mass(j)%ab_gr_com%m + pl_mass(j)%ab_gr(ipl)%m
-        pl_mass(j)%leaf_com%m = pl_mass(j)%leaf_com%m + pl_mass(j)%leaf(ipl)%m
-        pl_mass(j)%stem_com%m = pl_mass(j)%stem_com%m + pl_mass(j)%stem(ipl)%m
-        pl_mass(j)%seed_com%m = pl_mass(j)%seed_com%m + pl_mass(j)%seed(ipl)%m
-        pl_mass(j)%root_com%m = pl_mass(j)%root_com%m + pl_mass(j)%root(ipl)%m
+        pl_mass(j)%tot_com = pl_mass(j)%tot_com + pl_mass(j)%tot(ipl)
+        pl_mass(j)%ab_gr_com = pl_mass(j)%ab_gr_com + pl_mass(j)%ab_gr(ipl)
+        pl_mass(j)%leaf_com = pl_mass(j)%leaf_com + pl_mass(j)%leaf(ipl)
+        pl_mass(j)%stem_com = pl_mass(j)%stem_com + pl_mass(j)%stem(ipl)
+        pl_mass(j)%seed_com = pl_mass(j)%seed_com + pl_mass(j)%seed(ipl)
+        pl_mass(j)%root_com = pl_mass(j)%root_com + pl_mass(j)%root(ipl)
       end do
       
       !! calc max height for penman pet equation
@@ -93,10 +94,10 @@
       end do
       
       !! calc total biomass for plant community
-      pl_mass(j)%tot_com%m = 0.
-      do ipl = 1, pcom(j)%npl
-        pl_mass(j)%tot_com%m = amax1 (pl_mass(j)%tot_com%m, pl_mass(j)%tot(ipl)%m)
-      end do
+      !pl_mass(j)%tot_com%m = 0.
+      !do ipl = 1, pcom(j)%npl
+      !  pl_mass(j)%tot_com%m = amax1 (pl_mass(j)%tot_com%m, pl_mass(j)%tot(ipl)%m)
+      !end do
       
       npl_gro = 0
       do ipl = 1, pcom(j)%npl
@@ -114,7 +115,7 @@
                                                               == "y")then
           idp = pcom(j)%plcur(ip)%idplt
           pl_db => pldb(idp)
-          par(ip) = .5 * hru_ra(j) * (1. - Exp(-pldb(idp)%ext_coef *        &    
+          par(ip) = .5 * w%solrad * (1. - Exp(-pldb(idp)%ext_coef *        &    
                 (pcom(j)%plg(ip)%lai + .05)))
         end if
       else if (npl_gro > 1) then
@@ -157,7 +158,7 @@
             end if
             htfac(ipl) = fi * htfac(ipl)
             htfac(ipl) = 1.
-            par(ipl) = .5 * htfac(ipl) * hru_ra(j) * (1. -                  &              
+            par(ipl) = .5 * htfac(ipl) * w%solrad * (1. -                  &              
               Exp(-pldb(idp)%ext_coef * (pcom(j)%plg(ipl)%lai + .05)))
           end do  
         end if

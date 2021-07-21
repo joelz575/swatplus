@@ -27,7 +27,8 @@
       real     sat_thick,ts_stable
       real     Q_west,Q_east,Q_north,Q_south,face_K,face_sat,gradient,head_change,sat_thick1,sat_thick2
       real     storage_change,ss_rech,ss_et,ss_gw,ss_sw,ss_satex,ss_pump,ss_Q,ss_tile,mass_error,sum_ss
-      real     gw_cell_Q_total,gw_cell_ss_rech_total,gw_cell_ss_et_total,gw_cell_ss_gwsw_total,gw_cell_ss_swgw_total,gw_cell_ss_satex_total,gw_cell_ss_pump_total,gw_cell_ss_tile_total
+      real     gw_cell_Q_total,gw_cell_ss_rech_total,gw_cell_ss_et_total,gw_cell_ss_gwsw_total,gw_cell_ss_swgw_total
+      real     gw_cell_ss_satex_total,gw_cell_ss_pump_total,gw_cell_ss_tile_total
       real     tile_elev,ksat
       real     gwet_volume,rech_volume,cell_rech_volume,sum
       real     satex_depth,satex_volume,frac_sat,depth_wt_avg
@@ -260,7 +261,8 @@
       do i=1,grid_nrow
         do j=1,grid_ncol
           if(gw_cell_status(i,j).eq.1) then  
-            gw_cell_ss(i,j) = gw_cell_ss_rech(i,j) + gw_cell_ss_et(i,j) + gw_cell_ss_gwsw(i,j) + gw_cell_ss_swgw(i,j) + gw_cell_ss_pump(i,j) + gw_cell_ss_tile(i,j)
+            gw_cell_ss(i,j) = gw_cell_ss_rech(i,j) + gw_cell_ss_et(i,j) + gw_cell_ss_gwsw(i,j) + gw_cell_ss_swgw(i,j) +  &
+              gw_cell_ss_pump(i,j) + gw_cell_ss_tile(i,j)
           endif
         enddo
       enddo     
@@ -408,7 +410,8 @@
                 endif                
                 
                 !calculate change in head
-                head_change = (Q_west + Q_east + Q_north + Q_south + gw_cell_ss(i,j)) * (gw_time_step/(gw_cell_Sy(i,j) * cell_size * cell_size))
+                head_change = (Q_west + Q_east + Q_north + Q_south + gw_cell_ss(i,j)) * (gw_time_step/(gw_cell_Sy(i,j) * &
+                    cell_size * cell_size))
                 
                 !calculate new head value
                 head_new(i,j) = gw_cell_head(i,j) + head_change
@@ -531,7 +534,9 @@
           endif
         enddo
       enddo
-      mass_error = (1-((gw_volume_before + gw_cell_ss_rech_total + gw_cell_ss_et_total + gw_cell_ss_gwsw_total + gw_cell_ss_swgw_total - gw_cell_ss_satex_total + gw_cell_Q_total + gw_cell_ss_pump_total + gw_cell_ss_tile_total)/gw_volume_after)) * 100 
+      mass_error = (1-((gw_volume_before + gw_cell_ss_rech_total + gw_cell_ss_et_total + gw_cell_ss_gwsw_total + &
+           gw_cell_ss_swgw_total - gw_cell_ss_satex_total + gw_cell_Q_total + gw_cell_ss_pump_total +            &
+           gw_cell_ss_tile_total)/gw_volume_after)) * 100 
            
       !print out daily information (time step, water balance) in mm (normalized to watershed area)
       gw_volume_before = (gw_volume_before / watershed_area) * 1000. !m3 --> mm of water
@@ -544,7 +549,8 @@
       ss_Q = (gw_cell_Q_total / watershed_area) * 1000.
       ss_pump = (gw_cell_ss_pump_total / watershed_area) * 1000.
       ss_tile = (gw_cell_ss_tile_total / watershed_area) * 1000.
-      write(out_gwbal,100) gw_time_step,gw_volume_before,gw_volume_after,ss_rech,ss_et,ss_gw,ss_sw,ss_satex,ss_Q,ss_pump,ss_tile,mass_error,frac_sat,depth_wt_avg
+      write(out_gwbal,100) gw_time_step,gw_volume_before,gw_volume_after,ss_rech,ss_et,ss_gw,ss_sw,ss_satex,ss_Q,ss_pump, &
+          ss_tile,mass_error,frac_sat,depth_wt_avg
       
       !add daily water balance volumes to yearly and total values
       vol_change_yr = vol_change_yr + (gw_volume_after-gw_volume_before)
@@ -638,7 +644,8 @@
         write(out_gw_tile,*)
         endif
         !yearly water balance
-        write(out_gwbal_yr,105) time%yrc,vol_change_yr,ss_rech_yr,ss_et_yr,ss_gw_yr,ss_sw_yr,ss_satex_yr,ss_Q_yr,ss_pump_yr,ss_tile_yr
+        write(out_gwbal_yr,105) time%yrc,vol_change_yr,ss_rech_yr,ss_et_yr,ss_gw_yr,ss_sw_yr,ss_satex_yr,ss_Q_yr,ss_pump_yr, &
+           ss_tile_yr
         vol_change_yr = 0.
         ss_rech_yr = 0.
         ss_et_yr = 0.
@@ -685,7 +692,8 @@
         ss_Q_total = ss_Q_total / time%nbyr
         ss_pump_total = ss_pump_total / time%nbyr
         ss_tile_total = ss_tile_total / time%nbyr
-        write(out_gwbal_aa,105) time%yrc,vol_change_total,ss_rech_total,ss_et_total,ss_gw_total,ss_sw_total,ss_satex_total,ss_Q_total,ss_pump_total,ss_tile_total
+        write(out_gwbal_aa,105) time%yrc,vol_change_total,ss_rech_total,ss_et_total,ss_gw_total,ss_sw_total,ss_satex_total, &
+          ss_Q_total,ss_pump_total,ss_tile_total
         
       endif
       
@@ -712,7 +720,3 @@
 
       return
       end subroutine gwflow_simulate
-      
-      
-      
-      

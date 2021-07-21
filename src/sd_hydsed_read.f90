@@ -5,6 +5,7 @@
       use channel_velocity_module
       use maximum_data_module
       use hydrograph_module
+      use time_module
       
       implicit none      
       
@@ -44,6 +45,8 @@
       
       allocate (timeint(10))    !***jga
       allocate (hyd_rad(10))
+      allocate (trav_time(10))
+      allocate (flo_dep(10))
       
       inquire (file=in_cha%hyd_sed, exist=i_exist)
       if (.not. i_exist .or. in_cha%hyd_sed == "null") then

@@ -23,7 +23,7 @@
           ihd = ob_out(itot)%hydno
           iunit = ob_out(itot)%unitno 
           
-          if (iob <= sp_ob%objs .and. iob > 0) then
+          if (iob <= sp_ob%objs) then
             if (ob_out(itot)%hydno /= 6) then
               write (iunit+itot,*) time%day, time%mo, time%day_mo, time%yrc, ob(iob)%typ, ob(iob)%name, ob(iob)%hd(ihd)
             else

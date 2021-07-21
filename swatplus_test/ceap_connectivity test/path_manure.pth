@@ -1,0 +1,4 @@
+path_manure.pth: Pathogen in manure
+NAME    		PLANT	SOIL
+fresh_manure       fecal_coliform     	1.e6	e_coli	 1.e5
+ceap_manure        fecal_coliform     	1.e5	e_coli	 1.e4

@@ -28,7 +28,7 @@
 !!                               |soil (enters soil)
 !!    lat_pst(:)  |kg pst/ha     |amount of pesticide in lateral flow in HRU for
 !!                               |the day
-!!    peakr       |m^3/s         |peak runoff rate for the day in HRU
+!!    qp_cms      |m^3/s         |peak runoff rate for the day in HRU
 !!    pet_day     |mm H2O        |potential evapotranspiration for day in HRU
 !!    qtile       |mm H2O        |drainage tile flow for day in HRU
 !!    sepday      |mm H2O        |percolation from bottom of the soil layer on
@@ -59,7 +59,7 @@
       use time_module
       use hru_module, only : hhqday, ihru, albday,                                      &
         bioday, bsprev, canev, ep_day, ep_max, es_day, fertn, fertp, grazn, grazp,      &
-        hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, peakr, yield,                    &
+        hhsedy, inflpcp, latqrunon, ls_overq, lyrtile, qp_cms,                          &
         pet_day, qday, qtile, sepday, snoev, snofall, snomlt,                           &
         sw_excess, tloss, ubnrunoff, ubntss, uno3d, usle, usle_ei, voltot, vpd, fixn 
       use soil_module
@@ -103,7 +103,7 @@
         if (time%step > 0)  hhqday(j,:) = 0.
         inflpcp = 0.
         lyrtile = 0.
-        peakr = 0.
+        qp_cms = 0.
         pet_day = 0.
         qday = 0.
         qtile = 0.
@@ -128,8 +128,6 @@
 	    irmmdt = 0.
         hhsedy = 0.
         ubntss = 0.
-        
-        yield = 0.
 
        return
        end subroutine varinit

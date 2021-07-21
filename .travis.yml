@@ -1,16 +1,14 @@
-language: c
+language: python
+python:
+  - "3.8"
 sudo: true
 os:
   - linux
-  #- osx
-  #- windows
 before_install:
   - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; choco install python;
     elif [[ $TRAVIS_OS_NAME
-    == linux ]]; then sudo apt-get install gfortran; pip install cmake --upgrade --user;
-    printf '\n' | sudo add-apt-repository ppa:deadsnakes/ppa; sudo apt-get update; sudo apt-get install python3.9;
-    alias python3="python3.9"; python3 -V; ls /usr/lib/python3.9; #python3.9;
-    sudo apt install python3-pip; /usr/bin/python -m pip install --upgrade pip;
+    == linux ]]; then sudo apt-get update; sudo apt-get install gfortran; pip install cmake;
+    python3 -V; chmod +x swatplusTest.sh;
     elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
       -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
     brew doctor; brew install python3; brew upgrade python@3.9; python3 --version; alias python3="python3.9"; fi
@@ -25,18 +23,14 @@ install:
 script:
   - if [[ $TRAVIS_OS_NAME == linux ]]; then chmod +x swatplusTest.sh; ./swatplusTest.sh; else sh swatplusTest.sh; fi
   - mkdir dist
-  - if [[ $TRAVIS_OS_NAME == windows ]]; then
-     mv ./build/bin/swatplus_exe.exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG";
-     dir dist;
-    else
-     mv ./build/bin/swatplus_exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG";
-     ls dist;
-    fi
+  -  mv ./build/bin/swatplus_exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+  -  ls dist
+
 
 deploy:
   provider: releases
   api_key:
-    secure: XoC3dvoW3SSUD/D4dspoAtHFFZkI1X5+F6xZTUywYWxg/M/ZrdcNUOSVadI+2pdJlE6TYpiJVZaHvyGrcL38F8vl4D/z56uK4BBwunezZgE3rC9CmN9BKhtmng9UsFrDMw6wQXisqt9LdY3n9Z88H5S1KxYiHuNu3Ob6BHbJ+CX/sEzoJ/nVs4xf0GxHRW97sVAEUsy+0ATRLpqzd8HGOXO+GUe4mFccx1AxaFYoJtAK9KvIE2RYzy9bB92DHP+Wp7oMeD6d9Nbmrb9HfThEGiepJ/q+xFEQniuiH8GROYmcoSjHAKXeV11F7F9oHTWLHHNPium9YmFEHZIyHuuRBiQZxN6DjH2ENH8uitl2uKv0kwD4U5rd3RSr5H6Sa/mFv5kHLELvf20rThYHLBxDRCnMr652hBq7GvOR9kqjsZR95bRFtN6hDjif1PmuRASRi7mEMD5fkSlEwzifNY/pHyo/8rZgA9HQ79ZxPtpgk1kFyNwUaRWMHYT4kXxn5bWcdIOuYdpZeBtq2cjogBuh78RXygqc0ZryNVl7Qznf/X7l3CrrBunZV2JaFU/tzGSfPEXB5i80Exed+Z8HspHDvh7QCGJbQ+WBuCKn3qPTDR/xxpIGGmh2AT9reJRcXzDltBcXeF5vUnsENirW3OzYI7l82diUVxD2YIGDD6/qqyQ=
+    secure: "nLyL68GHId/ncspsEjvEIY5Wh1fzEdfkbY2Sm/3fMvkvNx0Y1fW8sMtqey+EzurrNzrFDrbIJV4Ds2JvA7FaQZowmqm2LoOaKP03ZIRXrvpgqEocOHc9fq4YXUEk/6DovRrKvhZy76L2q+tO8SmeYZVFqDLMpugxAjD/V8stktC6x16jooJyPrPZx4Oc8i84KTIgT8GnEaITGoL2StFAxu/dsqzQdE8MwH8+prD0iMhp9peN7YmT9kYmeA4BCbbzd2x3XAGEHrOGjdNejlc/jSfF3ruH620LnOH1YpZYq4QGJdMTyJhwELdEdmxGG44UAH5YTHKuBv1fptJ3q26YEnYJF0qawT43pas1cLzd9KH33wIIwxbNOJGUd+1BDpdkKk0HSXyJbm4Pd9u7jJyFua7rLeumHW6SlPtfm0woTGJm9Dd4JTMvtqvxiBw69RYEf2h7PdqHJOc9gq4Xm6CLuyOJwm2/Z7KUMfIltEmpstPpiRre8/Vkp1+MauGSvhAAquZcYW0XCes3gSrecNVxHI1t20v6V1ltfQdNEG2OjJxqq7thUkP+tAMPmoirMperRRuOqmk/zNqEqX8mcsqDv9SWRXTaPjqyB41SSQyAma+CargwSkMNJ4c38aihmzquK5Pl+FrlVQVD6/QEliQfIxBIQhxU8A16KcjdGhVcNZ4="
   file: "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG"
   on:
     repo: joelz575/swatplus

@@ -30,7 +30,6 @@
 !!                                |dissolved P in reach at 20 deg C
 !!    chlora(:)    |mg chl-a/L    |chlorophyll-a concentration in reach
 !!    disolvp(:)   |mg P/L        |dissolved phosphorus concentration in reach
-!!    hru_ra(:)    |MJ/m^2        |solar radiation for the day in HRU
 !!    k_l          |MJ/(m2*hr)    |half saturation coefficient for light
 !!    k_n          |mg N/L        |michaelis-menton half-saturation constant
 !!                                |for nitrogen

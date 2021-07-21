@@ -21,15 +21,15 @@
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    peakr       |m^3/s         |peak runoff rate for the day 
-!!	rcharea     |m^2           |cross-sectional area of flow
+!!    qp_cms      |m^3/s         |peak runoff rate for the day 
+!!	  rcharea     |m^2           |cross-sectional area of flow
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, surfq, sedyld, ihru, clayld, sanyld, silyld, sagyld, lagyld,  &
-        sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, peakr, sdti
+        sedminpa, sedminps, sedorgp, surqsolp, sedorgn, surqno3, tc_gwat, qp_cms, sdti
       use constituent_mass_module
       use channel_velocity_module
       use output_ls_pesticide_module
@@ -78,10 +78,10 @@
 !!		Calculate average flow based on 3 hours of runoff
 		chflow_day = 1000. * surfq(j) * hru(ihru)%km
           chflow_m3 = chflow_day/10800
-          peakr = 2. * chflow_m3 / (1.5 * tc_gwat(j))
+          qp_cms = 2. * chflow_m3 / (1.5 * tc_gwat(j))
 
 !! if peak rate is greater than bankfull discharge
-          if (peakr > grwway_vel(j)%vel_bf) then
+          if (qp_cms > grwway_vel(j)%vel_bf) then
             rcharea = grwway_vel(j)%area
             rchdep = hru(j)%lumv%grwat_d
           else
@@ -91,7 +91,7 @@
             sdti = 0.
             rchdep = 0.
 
-            Do While (sdti < peakr)
+            Do While (sdti < qp_cms)
               rchdep = rchdep + 0.01
               rcharea = (grwway_vel(j)%wid_btm + 8 * rchdep) * rchdep
               p = grwway_vel(j)%wid_btm + 2. * rchdep * Sqrt(1. + 8 * 8)
@@ -140,7 +140,7 @@
 !!        calculate flow velocity
           vc = 0.001
           if (rcharea > 1.e-4) then
-            vc = peakr / rcharea
+            vc = qp_cms / rcharea
             if (vc > grwway_vel(j)%celerity_bf) vc = grwway_vel(j)%celerity_bf
           end if
 

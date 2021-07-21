@@ -122,7 +122,7 @@
       real :: inflo        !m^3           |inflow water volume
       real :: xs_area      !m^2           |cross section area of channel
       real :: dep_flo      !m             |depth of flow
-      real :: perim_wet    !m             |wetted perimeter
+      real :: wet_perim    !m             |wetted perimeter
       real :: ttime        !hr            |travel time through the reach
       real :: t_inc        !hr            |time in routing step - 1/time%step
       real :: outflo       !m^3           |outflow water volume
@@ -242,7 +242,7 @@
         if (rchdep <= sd_ch(jrch)%chd) then
           topw = sd_ch_vel(jrch)%wid_btm + 2. * rchdep * c
         else
-          topw = 5 * sd_ch(jhyd)%chw + 2. *(rchdep - sd_ch(jrch)%chd) * 4.
+          topw = 5 * sd_ch(jrch)%chw + 2. *(rchdep - sd_ch(jrch)%chd) * 4.
         end if
 
         if (sdti > 0) then
@@ -263,7 +263,7 @@
 
           ttime = Min(24., ttime)
           !! calculate transmission losses
-          tl = sd_chd(jhyd)%chk * sd_ch(jrch)%chl * perim_wet * ttime   !mm/hr * km * mm * hr = m3       
+          tl = sd_ch(jrch)%chk * sd_ch(jrch)%chl * wet_perim * ttime   !mm/hr * km * mm * hr = m3       
           tl = Min(tl, outflo)
           outflo = outflo - tl
           trans_loss = trans_loss + tl
@@ -272,7 +272,7 @@
           if (outflo > 0.) then
             !! calculate width of channel at water level
             if (dep_flo <= sd_ch(jrch)%chd) then
-              topw = sd_ch_vel(jrch)%wid_btm + 2. * dep_flo * sd_chd(jhyd)%chss
+              topw = sd_ch_vel(jrch)%wid_btm + 2. * dep_flo * sd_ch(jrch)%chss
             else
               topw = 5. * sd_ch(jrch)%chw + 8. * (dep_flo - sd_ch(jrch)%chd)
             end if

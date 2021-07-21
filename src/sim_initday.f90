@@ -13,23 +13,16 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    frad(:,:)   |none          |fraction of solar radiation occuring during 
 !!                               |hour in day in HRU
-!!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
-!!    hru_rmx(:)  |MJ/m^2        |maximum possible radiation for the day in HRU
-!!    wst(:)%weat%ts(:)  |mm H2O        |precipitation for the time step during the
-!!                               |day in HRU
-!!    rhd(:)      |none          |relative humidity for the day in HRU
-!!    u10(:)      |m/s           |wind speed for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
      
-      use hru_module, only : cbodu,chl_a,clayld,cnday,doxq,etday,grayld,hhsedy,                     &
-         hhsurfq,hru,hru_ra,hru_rmx,lagyld,latno3,latq,nplnt,                             &
-         par,percn,pplnt,qdr,rcn,rhd,sagyld,sanyld,sedminpa,                           &
-         sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,sol_sumno3,sol_sumsolp,            &
-         surfq,                                &
-         surqno3,surqsolp,tileno3,tmn,tmpav,tmx,u10,ubnrunoff,ubntss
+      use hru_module, only : cbodu,chl_a,clayld,cnday,doxq,etday,grayld,hhsedy,         &
+         hhsurfq,hru,lagyld,latno3,latq,nplnt,                             &
+         par,percn,pplnt,qdr,rcn,sagyld,sanyld,sedminpa,                           &
+         sedminps,sedorgn,sedorgp,sedyld,sepbtm,silyld,sol_sumno3,sol_sumsolp, surfq,       &
+         surqno3,surqsolp,tileno3,ubnrunoff,ubntss
       use soil_module
             
       use organic_mineral_mass_module
@@ -57,8 +50,6 @@
       cnday = 0.
       doxq = 0.
       drift = 0.
-      hru_ra = 0.
-      hru_rmx = 0.
       hrupstd = 0.
       latno3 = 0.
       latq = 0.
@@ -66,7 +57,6 @@
       percn = 0.
       pplnt = 0.
       qdr = 0.
-      rhd = 0.
       sedminpa = 0.
       sedminps = 0.
       sedorgn = 0.
@@ -85,10 +75,6 @@
       surqno3 = 0.
       surqsolp = 0.
       tileno3 = 0.    !CB 8/24/09
-      tmn = 0.
-      tmpav = 0.
-      tmx = 0.
-      u10 = 0.
 
 !----------------------------------------------------        
 ! added by J.Jeong for urban modeling 4/29/2008

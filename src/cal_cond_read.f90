@@ -27,44 +27,41 @@
       
       implicit none
 
-      integer, dimension (:), allocatable :: elem_cnt    !           |
       character (len=80) :: titldum                      !           |title of file
       character (len=80) :: header                       !           |header of file
       integer :: eof                                     !           |end of file
-      integer :: imax                                    !none       |determine max number for array (imax) and total number in file
       logical :: i_exist                                 !none       |check to determine if file exists
-      integer :: mchg_sched                              !none       |end of loop
+      integer :: num_dtls                                !none       |end of loop
       integer :: i                                       !none       |counter
       integer :: icond                                   !none       |counter
-      
-      imax = 0
-      mchg_sched = 0
+
+      num_dtls = 0
         
-      !!read parameter change values for calibration
-      inquire (file="conditional.upd", exist=i_exist)
-      if (.not. i_exist .or. "conditional.upd" == "null") then
+      !!read decision tables used for land use scenarios - xwalk with scen_lu.dtl
+      inquire (file="scen_dtl.upd", exist=i_exist)
+      if (.not. i_exist .or. "scen_dtl.upd" == "null") then
         allocate (upd_cond(0:0))
       else
       do
-        open (107,file="conditional.upd")
+        open (107,file="scen_dtl.upd")
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
-        read (107,*,iostat=eof) mchg_sched
+        read (107,*,iostat=eof) num_dtls
         if (eof < 0) exit
         
-        allocate (upd_cond(0:mchg_sched))
-        db_mx%cond_up = mchg_sched
+        allocate (upd_cond(0:num_dtls))
+        db_mx%cond_up = num_dtls
         
         read (107,*,iostat=eof) header
         if (eof < 0) exit
 
-      do i = 1, mchg_sched
-        read (107,*,iostat=eof) upd_cond(i)%typ, upd_cond(i)%name, upd_cond(i)%cond
+      do i = 1, num_dtls
+        read (107,*,iostat=eof) upd_cond(i)%max_hits, upd_cond(i)%name, upd_cond(i)%cond
         if (eof < 0) exit
 
         !! crosswalk parameters with calibration parameter db
-        do icond = 1, db_mx%d_tbl
-          if (upd_cond(i)%cond == d_tbl%name) then
+        do icond = 1, db_mx%dtbl_scen
+          if (upd_cond(i)%cond == dtbl_scen(icond)%name) then
             upd_cond(i)%cond_num = icond
             exit
           end if

@@ -142,14 +142,14 @@
           sedcon = ht1%sed / wtrin * 1.e6
           
           !! set kd
-          kd = pestdb(jpst)%koc * sd_chd(jrch)%carbon / 100.
+          kd = pestdb(jpst)%koc * sd_ch(jrch)%carbon / 100.
 
           !! calculate fraction of soluble and sorbed pesticide
           frsol = 1. / (1. + kd * sedcon)
           frsrb = 1. - frsol
 
           !! ASSUME DENSITY=2.6E6; KD2=KD1
-          por = 1. - sd_chd(jrch)%bd / 2.65
+          por = 1. - sd_ch(jrch)%ch_bd / 2.65
           fd2 = 1. / (por + kd)
 
           !! calculate flow duration

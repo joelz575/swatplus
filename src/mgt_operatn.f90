@@ -57,6 +57,7 @@
         !if (dorm_flag == 1) aphu = 999.
         do while (mgt%husc > 0. .and. aphu > mgt%husc)
           call mgt_sched (isched)
+          if (sched(isched)%num_ops == 1) exit
           ipl = Max(mgt%op2, 1)
           if (pcom(j)%plcur(ipl)%gro == "n") then
             aphu = phubase(j)

@@ -3,9 +3,10 @@
       use pathogen_data_module
       use constituent_mass_module
       use output_ls_pathogen_module
-      use hru_module, only : hru, sol_plt_ini, ihru, precipday, tmpav
+      use hru_module, only : hru, sol_plt_ini, ihru
       use soil_module
       use plant_module
+      use climate_module
       
       implicit none
 
@@ -28,7 +29,7 @@
         ipath_db = sol_plt_ini(isp_ini)%path
       
         !! compute pathogen wash off
-        if (precipday >= 2.54) then
+        if (w%precip >= 2.54) then
           hpath_bal(j)%path(ipath)%wash = path_db(ipath_db)%washoff * cs_pl(j)%path(ipath)
           if (hpath_bal(j)%path(ipath)%wash > cs_pl(j)%path(ipath)) hpath_bal(j)%path(ipath)%wash = cs_pl(j)%path(ipath)
           cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) + hpath_bal(j)%path(ipath)%wash
@@ -38,7 +39,7 @@
         !! compute pathogen die-off and re-growth on foilage
         pl_ini = cs_pl(j)%path(ipath)
         pl_die_gro = path_db(ipath_db)%do_plnt - path_db(ipath_db)%gr_plnt
-        cs_pl(j)%path(ipath) = cs_pl(j)%path(ipath) * Exp(-Theta(pl_die_gro, path_db(ipath_db)%t_adj, tmpav(j))) -     &
+        cs_pl(j)%path(ipath) = cs_pl(j)%path(ipath) * Exp(-Theta(pl_die_gro, path_db(ipath_db)%t_adj, w%tave)) -     &
                                               path_db(ipath_db)%conc_min
         cs_pl(j)%path(ipath) = Max(0., cs_pl(j)%path(ipath))
         if (cs_pl(j)%path(ipath) < path_db(ipath_db)%conc_min) cs_pl(j)%path(ipath) = path_db(ipath_db)%conc_min
@@ -47,7 +48,7 @@
         sol_ini = cs_soil(j)%ly(1)%path(ipath)
         sol_die_gro = path_db(ipath_db)%do_soln - path_db(ipath_db)%gr_soln
         cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) * Exp(-Theta(sol_die_gro, path_db(ipath_db)%t_adj, & 
-            tmpav(j))) - path_db(ipath_db)%conc_min
+            w%tave)) - path_db(ipath_db)%conc_min
         cs_soil(j)%ly(1)%path(ipath) = Max(0., cs_soil(j)%ly(1)%path(ipath))
         if (cs_soil(j)%ly(1)%path(ipath) < path_db(ipath_db)%conc_min) cs_soil(j)%ly(1)%path(ipath) = path_db(ipath_db)%conc_min
 

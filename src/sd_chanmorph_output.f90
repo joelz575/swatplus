@@ -72,6 +72,6 @@
       
       return
 
-100   format (4i6,2i8,2x,a,60e15.4)      
+100   format (4i6,2i8,2x,a,61e15.4)      
        
       end subroutine sd_chanmorph_output

@@ -63,16 +63,27 @@
         sd_ch(i)%chs = sd_chd(idb)%chs
         sd_ch(i)%chl = sd_chd(idb)%chl
         sd_ch(i)%chn = sd_chd(idb)%chn
-        sd_ch(i)%cherod = sd_chd(idb)%cherod
+        sd_ch(i)%chk = sd_chd(idb)%chk
         sd_ch(i)%cov = sd_chd(idb)%cov
-        !sd_ch(i)%shear_bnk = sd_chd(idb)%shear_bnk
-        sd_ch(i)%hc_len = sd_chd(idb)%hc_ini
+        sd_ch(i)%wd_rto = sd_chd(idb)%wd_rto
+        sd_ch(i)%chseq = sd_chd(idb)%chseq
+        sd_ch(i)%d50 = sd_chd(idb)%d50
+        sd_ch(i)%ch_clay = sd_chd(idb)%ch_clay
+        sd_ch(i)%carbon = sd_chd(idb)%carbon
+        sd_ch(i)%ch_bd = sd_chd(idb)%ch_bd
+        sd_ch(i)%chss = sd_chd(idb)%chss
+        sd_ch(i)%bedldcoef = sd_chd(idb)%bedldcoef
+        sd_ch(i)%fps = sd_chd(idb)%fps
+        sd_ch(i)%fpn = sd_chd(idb)%fpn
+        sd_ch(i)%hc_kh = sd_chd(idb)%hc_kh
         sd_ch(i)%hc_hgt = sd_chd(idb)%hc_hgt
+        sd_ch(i)%hc_ini = sd_chd(idb)%hc_ini      
+        sd_ch(i)%cherod = sd_chd(idb)%cherod
           
         !! compute headcut parameters
-        kh = sd_chd(idb)%hc_kh
+        kh = sd_ch(i)%hc_kh
         if (kh > 1.e-6) then
-          sd_ch(i)%hc_co = .37 * (17.83 + 16.56 * kh - 15. * sd_chd(idb)%cov)
+          sd_ch(i)%hc_co = .37 * (17.83 + 16.56 * kh - 15. * sd_ch(i)%cov)
           sd_ch(i)%hc_co = amax1 (0., sd_ch(i)%hc_co)
         else
           sd_ch(i)%hc_co = 0.
@@ -82,7 +93,7 @@
         aa = 1.
         b = 0.
         d = 0.
-        chside = sd_chd(idb)%chss
+        chside = sd_ch(i)%chss
         fps = 4.
         b = sd_ch(i)%chw - 2. * sd_ch(i)%chd * chside
 
@@ -95,75 +106,11 @@
         sd_ch_vel(i)%wid_btm = b
         sd_ch_vel(i)%dep_bf = sd_ch(i)%chd
 
-        !! compute rating curve at 0.1, 0.5 and 1.0 times bankfull depth
-        do i_dep = 1, 2
-          if (i_dep == 1) dep = 0.1 * sd_ch(i)%chd
-          if (i_dep == 2) dep = sd_ch(i)%chd
-          !! c^2=a^2+b^2 - a=dep; a/b=slope; b^2=a^2/slope^2
-          p = b + 2. * Sqrt(dep ** 2 * (1. + 1. / (chside ** 2)))
-          a = b * dep + dep / chside
-          rh = a / p
-          ch_rcurv(i)%elev(i_dep)%dep = dep
-          ch_rcurv(i)%elev(i_dep)%area = a
-          !! save bankfull depth and area for flood plain calculations
-          if (i_dep == 2) then
-            p_bf = p
-            a_bf = a
-          end if
-          ch_rcurv(i)%elev(i_dep)%flo_rate = Qman(a, rh, sd_ch(i)%chn, sd_ch(i)%chs)
-          ch_rcurv(i)%elev(i_dep)%vol = a * sd_ch(i)%chl * 1000.
-          vel = Qman(1., rh, sd_ch(i)%chn, sd_ch(i)%chs)
-          ch_rcurv(i)%elev(i_dep)%celerity = vel * 5. / 3.
-          ch_rcurv(i)%elev(i_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)
-          ch_rcurv(i)%elev(i_dep)%stor_dis = sd_ch(i)%chl / (3.6 * ch_rcurv(i)%elev(i_dep)%celerity)
-        end do
+        !! compute rating curve
+        call sd_rating_curve (i)
         
-        !! compute rating curve at 2 times bankfull depth (flood plain)
-        do i_dep = 1, 1
-          !! dep = depth above bankfull
-          if (i_dep == 1) dep = sd_ch(i)%chd
-          p = p_bf + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_chd(idb)%fps ** 2)))
-          a = a_bf + b * dep + dep / sd_chd(idb)%fps
-          rh = a / p
-          ifp_dep = i_dep + 2
-          ch_rcurv(i)%elev(ifp_dep)%dep = dep
-          ch_rcurv(i)%elev(ifp_dep)%area = a
-          ch_rcurv(i)%elev(ifp_dep)%flo_rate = Qman(a, rh, sd_chd(idb)%fpn, sd_ch(i)%chs)
-          ch_rcurv(i)%elev(ifp_dep)%vol = a * sd_ch(i)%chl * 1000.
-          vel = Qman(1., rh, sd_chd(idb)%fpn, sd_ch(i)%chs)
-          ch_rcurv(i)%elev(ifp_dep)%celerity = vel * 5. / 3.
-          ch_rcurv(i)%elev(ifp_dep)%ttime = sd_ch(i)%chl / (3.6 * vel)
-          ch_rcurv(i)%elev(ifp_dep)%stor_dis = sd_ch(i)%chl / (3.6 * ch_rcurv(i)%elev(ifp_dep)%celerity)
-        end do
-        
-        sd_ch_vel(i)%area = a
-        sd_ch_vel(i)%vel_bf = Qman(a, rh, sd_ch(i)%chn, sd_ch(i)%chs)
-        sd_ch_vel(i)%velav_bf = Qman(aa, rh, sd_ch(i)%chn, sd_ch(i)%chs)
-        sd_ch_vel(i)%celerity_bf = sd_ch_vel(i)%velav_bf * 5. / 3.
-        sd_ch_vel(i)%st_dis = sd_ch(i)%chl / sd_ch_vel(i)%celerity_bf / 3.6
-        tt2 = sd_ch(i)%chl * a / sd_ch_vel(i)%vel_bf
-  
-        !! compute flow and travel time at 1.2 bankfull depth
-        d = 1.2 * sd_ch(i)%chd
-        a = a + (sd_ch(i)%chw * sd_ch(i)%chd + fps * (sd_ch(i)%chd - sd_ch(i)%chd) ** 2)
-        p = p + 4. * sd_ch(i)%chw + (0.4 * sd_ch(i)%chd * Sqrt(fps * fps + 1.))
-        rh = a / p
-        qq1 = Qman(a, rh, sd_ch(i)%chn, sd_ch(i)%chs)
-        tt1 = sd_ch(i)%chl * a / qq1
-
-        !! compute flow and travel time at 0.1 bankfull depth
-        d = 0.1 * sd_ch(i)%chd
-        p = b + 2. * sd_ch(i)%chd * Sqrt(chside * chside + 1.)
-        a = b * sd_ch(i)%chd + chside * sd_ch(i)%chd * sd_ch(i)%chd
-        rh = a / p
-        qq1 = Qman(a, rh, sd_ch(i)%chn, sd_ch(i)%chs)
-        tt1 = sd_ch(i)%chl * a / qq1
-        sd_ch_vel(i)%vel_1bf = Qman(aa, rh, sd_ch(i)%chn, sd_ch(i)%chs)
-        sd_ch_vel(i)%celerity_1bf = sd_ch_vel(i)%vel_1bf * 5. / 3.
-        sd_ch_vel(i)%stor_dis_1bf = sd_ch(i)%chl / sd_ch_vel(i)%celerity_1bf / 3.6 
-      end do
-      
-      
+      end do    !end of channel loop
+ 
       ! initialize organics-minerals in channel water and benthic from input data
       do ich = 1, sp_ob%chandeg
         ! only initialize storage for real channels (length > 1 m)
@@ -200,7 +147,7 @@
           bedvol = sd_ch(ich)%chw *sd_ch(ich)%chl * 1000.* pestdb(ipest_ini)%ben_act_dep
           ch_benthic(ich)%pest(ipest) = pest_water_ini(ipest_ini)%benthic(ipest) * bedvol * 1000.   ! mg = mg/kg * m3*1000.
           !! calculate mixing velocity using molecular weight and porosity
-          sd_ch(ich)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt ** (-.6666) * (1. - sd_chd(ich)%bd / 2.65) * (69.35 / 365)
+          sd_ch(ich)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt ** (-.6666) * (1. - sd_ch(ich)%ch_bd / 2.65) * (69.35 / 365)
         end do
       end do
       

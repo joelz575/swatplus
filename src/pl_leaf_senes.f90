@@ -48,7 +48,9 @@
           rto = (1. - wst(iwst)%weat%phubase0) / (1. - pldb(idp)%dlai)
           pcom(j)%plg(ipl)%lai = (pcom(j)%plg(ipl)%olai - pldb(idp)%alai_min) /   &
                 (1. + Exp((rto - .5) * (-12))) + pldb(idp)%alai_min
-                  
+          !rto = (1. - pcom(j)%plcur(ipl)%phuacc) / (1. - pcom(j)%plg(ipl)%dphu)
+          !pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%olai * rto ** pldb(idp)%dlai_rate
+          
           !! compute leaf biomass drop
           lai_drop = lai_init - pcom(j)%plg(ipl)%lai
           lai_drop = amax1 (0., lai_drop)

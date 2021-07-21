@@ -35,10 +35,11 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use basin_module
-      use hru_module, only : hru, ihru, tmpav, qdr, sedorgn, surqno3, cbodu, doxq, chl_a, sedyld, enratio
+      use hru_module, only : hru, ihru, qdr, sedorgn, surqno3, cbodu, doxq, chl_a, sedyld, enratio
       use soil_module
       use organic_mineral_mass_module
       use carbon_module
+      use climate_module
       
       implicit none
 
@@ -71,8 +72,7 @@
         !! Stefan and Preudhomme. 1993.  Stream temperature estimation
         !!from air temperature.  Water Res. Bull. p. 27-45
         !! SWAT manual 2.3.13
-        wtmp = 0.
-        wtmp = 5.0 + 0.75 * tmpav(j)
+        wtmp = 5.0 + 0.75 * w%tave
         if (wtmp <= 0.1) wtmp = 0.1
         wtmp = wtmp + 273.15    !! deg C to deg K
       

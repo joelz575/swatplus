@@ -81,6 +81,8 @@
       integer :: ipg                 !              |
       integer :: ireg                !              |
       integer :: ilu                 !              |
+      integer :: mo                    !           |
+      integer :: day_mo                !           |
 
       time%yrc = time%yrc_start
 
@@ -93,7 +95,9 @@
 
       time%yrs = 1
       time%day = time%day_start
-      call xmon
+      call xmon (time%day, mo, day_mo)
+      time%mo = mo
+      time%day_mo = day_mo
       call cli_precip_control (0)
 
       do curyr = 1, time%nbyr
@@ -106,8 +110,17 @@
 
         !! determine beginning and ending dates of simulation in current year
         if (Mod(time%yrc,4) == 0) then
+          if (Mod(time%yrc,100) == 0) then
+            if (Mod(time%yrc,400) == 0) then
+              ndays = ndays_leap
+              time%num_leap = time%num_leap + 1
+            else
+              ndays = ndays_noleap
+            end if
+          else
           ndays = ndays_leap
           time%num_leap = time%num_leap + 1
+          end if
         else
           ndays = ndays_noleap
         end if
@@ -137,6 +150,7 @@
         if (pco%sw_init == "n") then
           if (time%yrs > pco%nyskip) then
             call basin_sw_init
+            call aqu_pest_output_init
             pco%sw_init = "y"  !! won't reset again
           end if
         end if
@@ -157,7 +171,9 @@
 
           time%day = julian_day
           !! determine month and day of month - time%mo and time%day_mo
-          call xmon
+          call xmon (time%day, mo, day_mo)
+          time%mo = mo
+          time%day_mo = day_mo
 
           time%yrc_tot = time%yrc_end - time%yrc_start + 1
           !! Uncomment next three lines for DEBUG version only
@@ -220,13 +236,15 @@
 
           !! conditional reset of land use and management
           do iupd = 1, db_mx%cond_up
-            do j = 1, sp_ob%hru
-              iob = sp_ob1%hru + j - 1
               id = upd_cond(iupd)%cond_num
               d_tbl => dtbl_scen(id)
+            if (upd_cond(iupd)%num_hits < upd_cond(iupd)%max_hits) then
+              upd_cond(iupd)%num_hits = upd_cond(iupd)%num_hits + 1
+              do j = 1, sp_ob%hru
               call conditions (j, id)
               call actions (j, iob, id)
             end do
+            end if
           end do
 
           !! allocate water for water rights objects

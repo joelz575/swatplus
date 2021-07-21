@@ -1,0 +1,4 @@
+rout_unit.def: Routing unit definition file - LREW Landscape
+  RTU_NUMB       RTU_NAME       ELEM_TOT          ELEM1          ELEM2
+          1          ru1               2              1            -2
+          2          ru2               2              3            -6

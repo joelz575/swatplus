@@ -52,6 +52,7 @@
             if (eof < 0) exit
             imax = Max(imax,i) 
           end do
+          db_mx%recall_max = imax
           
       allocate (recall(0:imax))
       allocate (rec_d(imax))
@@ -145,7 +146,7 @@
             read (108,*,iostat=eof) iyr, istep, recall(i)%hyd_flo(istep,iyrs)
             !convert m3/s -> m3
             recall(i)%hyd_flo(istep,iyrs) = recall(i)%hyd_flo(istep,iyrs) * 86400. / time%step
-            recall(i)%hyd_flo(istep,iyrs) = recall(i)%hyd_flo(istep,iyrs) / 35.     !***jga - input test hyd in cfs -> cms
+            !recall(i)%hyd_flo(istep,iyrs) = recall(i)%hyd_flo(istep,iyrs) / 35.     !***jga - input test hyd in cfs -> cms
           else
             read (108,*,iostat=eof) jday, mo, day_mo, iyr, ob_typ, ob_name, recall(i)%hd(istep,iyrs)  ! * 86400.  left in m3 for NAM
           end if

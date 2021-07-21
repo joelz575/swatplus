@@ -71,7 +71,6 @@
         hru(ihru)%hyd%latq_co = hyd_db(ihyd_db)%latq_co
         hru(ihru)%hyd%harg_pet = hyd_db(ihyd_db)%harg_pet
         if (hru(ihru)%hyd%harg_pet < 1.e-6) hru(ihru)%hyd%harg_pet = .0023
-        hru(ihru)%hyd%harg_pet = .0023
         
         ! set field data
         hru(ihru)%field%length = field_db(ifield_db)%length

@@ -53,11 +53,11 @@
           
           do ipesti = 1, imax
             read (107,*,iostat=eof) pest_soil_ini(ipesti)%name
-            if (eof < 0) exit
-            read (107,*,iostat=eof) titldum, pest_soil_ini(ipesti)%soil
-            if (eof < 0) exit
-            read (107,*,iostat=eof) titldum, pest_soil_ini(ipesti)%plt
-            if (eof < 0) exit
+            do ipest = 1, cs_db%num_pests
+              read (107,*,iostat=eof) titldum, pest_soil_ini(ipesti)%soil(ipest), &
+                                            pest_soil_ini(ipesti)%plt(ipest)
+              if (eof < 0) exit
+            end do
           end do
           close (107)
           exit

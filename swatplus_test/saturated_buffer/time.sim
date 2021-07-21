@@ -1,0 +1,3 @@
+time.sim: Simulation period and time step - 2-Stage ditch
+DAY_START    YRC_START    DAY_END   YRC_END    STEP 
+   0          2006           0        2014      0

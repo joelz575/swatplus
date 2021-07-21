@@ -22,15 +22,17 @@
       use basin_module
       use channel_data_module 
       use reservoir_data_module
-      use hru_module, only : hru, isol, cn2
+      use hru_module, only : hru, isol, cn2, brt, tconc
       use soil_module
       use channel_module
+      use sd_channel_module
       use reservoir_module
       use aquifer_module
       use hru_lte_module
       use organic_mineral_mass_module
       use hydrograph_module
       use pesticide_data_module
+      use plant_module
       
       implicit none
 
@@ -43,6 +45,8 @@
       integer, intent (in) :: num_db                        !                | 
       integer, intent (in) :: ly                            !                |
       integer :: nly                                        !                |
+      integer :: jj                                         !                |soil layer counter
+      integer :: ipl                                        !                |
       real :: dep_below_soil                                !                |
       real :: alpha                                         !                | 
       real :: exp                                           !                | 
@@ -51,10 +55,10 @@
       real :: abmax                                         !                | 
       real :: chg_par                                       !variable        |new parameter value
       real :: perc_ln_func                                  !none       |function to convert perco to perc_lim
-      
+      real :: rock                                          !                | 
 
       select case (chg_parm)
-          
+
       case ("cn2")
         cn2(ielem) = chg_par (cn2(ielem), ielem, chg_typ, chg_val, absmin, absmax, num_db)
         call curno (cn2(ielem), ielem)
@@ -67,9 +71,9 @@
       case ("cn3_swf")
         !! don't change for tile  *********************Mike
         if (hru(ielem)%tiledrain == 0) then
-        hru(ielem)%hyd%cn3_swf = chg_par (hru(ielem)%hyd%cn3_swf,         &
+          hru(ielem)%hyd%cn3_swf = chg_par (hru(ielem)%hyd%cn3_swf,         &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        call curno (cn2(ielem), ielem)
+          call curno (cn2(ielem), ielem)
         end if
         
       case ("usle_p")
@@ -119,7 +123,11 @@
          
       case ("epco")
         hru(ielem)%hyd%epco = chg_par (hru(ielem)%hyd%epco,             & 
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)             
+        !! set epco parameter for each crop
+        do ipl = 1, pcom(ielem)%npl
+          pcom(ielem)%plcur(ipl)%epco = hru(ielem)%hyd%epco
+        end do
         
       case ("erorgn")
         hru(ielem)%hyd%erorgn = chg_par (hru(ielem)%hyd%erorgn,         & 
@@ -192,12 +200,27 @@
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
                      
       case ("tile_dep")
-        hru(ielem)%sdr%depth = chg_par(hru(ielem)%sdr%depth,           &
+        hru(ielem)%lumv%sdr_dep = chg_par(hru(ielem)%lumv%sdr_dep,      &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        !! define soil layer the drainage tile is in
+        if (hru(ielem)%lumv%sdr_dep > 0) then
+          do jj = 1, soil(ielem)%nly
+            if (hru(ielem)%lumv%sdr_dep < soil(ielem)%phys(jj)%d) hru(ielem)%lumv%ldrain = jj
+            if (hru(ielem)%lumv%sdr_dep < soil(ielem)%phys(jj)%d) exit
+          end do
+        else
+          hru(ielem)%lumv%ldrain = 0
+        end if
                
       case ("tile_dtime")
         hru(ielem)%sdr%time = chg_par(hru(ielem)%sdr%time,             &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        !! setting tile lage time
+        if (hru(ielem)%lumv%ldrain > 0 .and. hru(ielem)%sdr%lag > 0.01) then
+          hru(ielem)%lumv%tile_ttime = 1. - Exp(-24. / hru(ielem)%sdr%lag)
+        else
+          hru(ielem)%lumv%tile_ttime = 0.
+        end if
                
       case ("tile_lag")
         hru(ielem)%sdr%lag = chg_par(hru(ielem)%sdr%lag,               &
@@ -235,18 +258,26 @@
       case ("z")
           soil(ielem)%phys(ly)%d = chg_par(soil(ielem)%phys(ly)%d,     &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          call soil_awc_init (ielem)
+          call curno (cn2(ielem), ielem)
          
       case ("bd")
           soil(ielem)%phys(ly)%bd = chg_par(soil(ielem)%phys(ly)%bd,    &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          call soil_awc_init (ielem)
+          call curno (cn2(ielem), ielem)
          
       case ("awc")
           soil(ielem)%phys(ly)%awc = chg_par(soil(ielem)%phys(ly)%awc,  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-         
+          call soil_awc_init (ielem)
+          call curno (cn2(ielem), ielem)
+        
       case ("k")
           soil(ielem)%phys(ly)%k = chg_par(soil(ielem)%phys(ly)%k,      &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          soil(ielem)%phys(ly)%hk = (soil(ielem)%phys(ly)%ul - soil(ielem)%phys(ly)%fc) / soil(ielem)%phys(ly)%k
+          if (soil(ielem)%phys(ly)%hk < 1.) soil(ielem)%phys(ly)%hk = 1.
          
       case ("cbn")
           soil1(ielem)%tot(ly)%c = chg_par(soil1(ielem)%tot(ly)%c,    &
@@ -255,18 +286,28 @@
       case ("clay")
           soil(ielem)%phys(ly)%clay = chg_par(soil(ielem)%phys(ly)%clay, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          call soil_awc_init (ielem)
+          call soil_text_init (ielem)
+          call curno (cn2(ielem), ielem)
          
       case ("silt")
           soil(ielem)%phys(ly)%silt = chg_par(soil(ielem)%phys(ly)%silt, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          call soil_text_init (ielem)
          
       case ("sand")
           soil(ielem)%phys(ly)%sand = chg_par(soil(ielem)%phys(ly)%sand, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          call soil_text_init (ielem)
          
       case ("rock")
           soil(ielem)%phys(ly)%rock = chg_par(soil(ielem)%phys(ly)%rock, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          if (ly == 1) then
+            rock = Exp(-.053 * soil(ielem)%phys(1)%rock)
+            hru(ielem)%lumv%usle_mult = rock * soil(ielem)%ly(1)%usle_k *       &
+                                 hru(ielem)%lumv%usle_p * hru(ielem)%lumv%usle_ls * 11.8
+          end if
 
       case ("alb")
           soil(ielem)%ly(ly)%alb = chg_par(soil(ielem)%ly(ly)%alb,       &
@@ -275,6 +316,9 @@
       case ("usle_k")
           soil(ielem)%ly(ly)%usle_k = chg_par(soil(ielem)%ly(ly)%usle_k, &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+          rock = Exp(-.053 * soil(ielem)%phys(1)%rock)
+          hru(ielem)%lumv%usle_mult = rock * soil(ielem)%ly(1)%usle_k *       &
+                                 hru(ielem)%lumv%usle_p * hru(ielem)%lumv%usle_ls * 11.8
 
       case ("ec")
           soil(ielem)%ly(ly)%ec = chg_par(soil(ielem)%ly(ly)%ec,         &
@@ -293,6 +337,7 @@
       case ("surlag")
         bsn_prm%surlag = chg_par(bsn_prm%surlag,                         &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        brt(ielem) = 1. - Exp(-bsn_prm%surlag / tconc(ielem))
         
       case ("adj_pkr")
         bsn_prm%adj_pkr = chg_par(bsn_prm%adj_pkr,                      &
@@ -539,95 +584,91 @@
           pestdb(ielem)%ben_act_dep = chg_par(pestdb(ielem)%ben_act_dep,  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-!!      RTE
-         case ("w")
-            ch_hyd(ielem)%w = chg_par(ch_hyd(ielem)%w,                  &
+!!      channel hydrology and sediment parms
+         case ("chw")
+            sd_ch(ielem)%chw = chg_par(sd_ch(ielem)%chw,                  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
        
-         case ("d")
-            ch_hyd(ielem)%d = chg_par(ch_hyd(ielem)%d,                  &
+         case ("chd")
+            sd_ch(ielem)%chd = chg_par(sd_ch(ielem)%chd,                  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("s")
-            ch_hyd(ielem)%s = chg_par(ch_hyd(ielem)%s,                  &
+         case ("chs")
+            sd_ch(ielem)%chs = chg_par(sd_ch(ielem)%chs,                  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("l")
-            ch_hyd(ielem)%l = chg_par(ch_hyd(ielem)%l,                  &
+         case ("chl")
+            sd_ch(ielem)%chl = chg_par(sd_ch(ielem)%chl,                  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("n")
-            ch_hyd(ielem)%n = chg_par(ch_hyd(ielem)%n,                  &
+         case ("chn")
+            sd_ch(ielem)%chn = chg_par(sd_ch(ielem)%chn,                  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("k_ch")
-            ch_hyd(ielem)%k = chg_par(ch_hyd(ielem)%k,                  &
+         case ("chk")
+            sd_ch(ielem)%chk = chg_par(sd_ch(ielem)%chk,                  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("cov1")
-            ch_sed(ielem)%cov1 = chg_par(ch_sed(ielem)%cov1,            &
+         case ("cherod")
+            sd_ch(ielem)%cherod = chg_par(sd_ch(ielem)%cherod,            &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("cov2")
-            ch_sed(ielem)%cov2 = chg_par(ch_sed(ielem)%cov2,            &
+         case ("cov")
+            sd_ch(ielem)%cov = chg_par(sd_ch(ielem)%cov,                  &
+                        ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            
+         case ("wd_rto")
+            sd_ch(ielem)%wd_rto = chg_par(sd_ch(ielem)%wd_rto,            &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("wdr")
-            ch_hyd(ielem)%wdr = chg_par(ch_hyd(ielem)%wdr,              &
+         case ("chseq")
+            sd_ch(ielem)%chseq = chg_par(sd_ch(ielem)%chseq,              &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("alpha_bnk")
-            ch_hyd(ielem)%alpha_bnk = chg_par(ch_hyd(ielem)%alpha_bnk,  &
+         case ("d50")
+            sd_ch(ielem)%d50 = chg_par(sd_ch(ielem)%d50,  &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("onco")
-            ch_nut(ielem)%onco = chg_par(ch_nut(ielem)%onco,            &
+         case ("ch_clay")
+            sd_ch(ielem)%ch_clay = chg_par(sd_ch(ielem)%ch_clay,            &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
         
-         case ("opco")
-            ch_nut(ielem)%opco = chg_par(ch_nut(ielem)%opco,            &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("side")
-            ch_hyd(ielem)%side = chg_par(ch_hyd(ielem)%side,            &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("bnk_bd")
-            ch_sed(ielem)%bnk_bd = chg_par(ch_sed(ielem)%bnk_bd,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("bed_bd")
-            ch_sed(ielem)%bed_bd = chg_par(ch_sed(ielem)%bed_bd,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("bnk_kd")
-            ch_sed(ielem)%bnk_kd = chg_par(ch_sed(ielem)%bnk_kd,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("bed_kd")
-            ch_sed(ielem)%bed_kd = chg_par(ch_sed(ielem)%bed_kd,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("bnk_d50")
-            ch_sed(ielem)%bnk_d50 = chg_par(ch_sed(ielem)%bnk_d50,      &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("bed_d50")
-            ch_sed(ielem)%bed_d50 = chg_par(ch_sed(ielem)%bed_d50,      &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("tc_bnk")
-            ch_sed(ielem)%tc_bnk = chg_par(ch_sed(ielem)%tc_bnk,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("tc_bed")
-            ch_sed(ielem)%tc_bed = chg_par(ch_sed(ielem)%tc_bed,        &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
-        
-         case ("erod(1)")    !! January only    
-            ch_sed(ielem)%erod(1) = chg_par(ch_sed(ielem)%erod(1),      &
-                         ielem, chg_typ, chg_val, absmin, absmax, num_db)       
+         case ("carbon")
+            sd_ch(ielem)%carbon = chg_par(sd_ch(ielem)%carbon,            &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)     
  
+         case ("ch_bd")
+            sd_ch(ielem)%ch_bd = chg_par(sd_ch(ielem)%ch_bd,              &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+         case ("chss")
+            sd_ch(ielem)%chss = chg_par(sd_ch(ielem)%chss,            &
+                        ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+         case ("bedldcoef")
+            sd_ch(ielem)%bedldcoef = chg_par(sd_ch(ielem)%bedldcoef,                  &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            
+         case ("fps")
+            sd_ch(ielem)%fps = chg_par(sd_ch(ielem)%fps,            &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+         case ("fpn")
+            sd_ch(ielem)%fpn = chg_par(sd_ch(ielem)%fpn,              &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+
+         case ("hc_kh")
+            sd_ch(ielem)%hc_kh = chg_par(sd_ch(ielem)%hc_kh,            &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+         case ("hc_hgt")
+            sd_ch(ielem)%hc_hgt = chg_par(sd_ch(ielem)%hc_hgt,            &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+        
+         case ("hc_ini")
+            sd_ch(ielem)%hc_ini = chg_par(sd_ch(ielem)%hc_ini,            &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+            
       !!RES
          case ("esa")
            res_ob(ielem)%esa = chg_par(res_ob(ielem)%esa,             &
@@ -712,7 +753,8 @@
          case ("seccir")
             res_nut(ielem)%seccir = chg_par(res_nut(ielem)%seccir,      &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
-
+            
+      !!AQU
          case ("alpha")
             aqu_prm(ielem)%alpha = chg_par(aqu_prm(ielem)%alpha, ielem, chg_typ, chg_val, absmin, absmax, num_db)
             aqu_prm(ielem)%alpha_e = Exp(-aqu_prm(ielem)%alpha)
@@ -721,15 +763,23 @@
             aqu_prm(ielem)%bf_max = chg_par(aqu_prm(ielem)%bf_max, ielem, chg_typ, chg_val, absmin, absmax, num_db)
 
          case ("flo_min")
-            aqu_prm(ielem)%flo_min = chg_par(aqu_prm(ielem)%flo_min,  &
+            aqu_prm(ielem)%flo_min = chg_par(aqu_prm(ielem)%flo_min,        &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
 
          case ("revap_co")
-            aqu_prm(ielem)%revap_co = chg_par(aqu_prm(ielem)%revap_co,  &
+            aqu_prm(ielem)%revap_co = chg_par(aqu_prm(ielem)%revap_co,      &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
          case ("revap_min")
-            aqu_prm(ielem)%revap_min = chg_par(aqu_prm(ielem)%revap_min,  &
+            aqu_prm(ielem)%revap_min = chg_par(aqu_prm(ielem)%revap_min,    &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+               
+         case ("sp_yld")
+            aqu_prm(ielem)%spyld = chg_par(aqu_prm(ielem)%spyld,            &
+                         ielem, chg_typ, chg_val, absmin, absmax, num_db)
+                           
+         case ("deep_seep")
+            aqu_prm(ielem)%seep = chg_par(aqu_prm(ielem)%seep,              &
                          ielem, chg_typ, chg_val, absmin, absmax, num_db)
             
       !!LTE

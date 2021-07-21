@@ -8,7 +8,7 @@
       use topography_data_module
       use soil_data_module
       use input_file_module
-      use hru_module, only : hru_db, ihru, sol_plt_ini
+      use hru_module, only : hru_db, ihru, sol_plt_ini, snodb
       use constituent_mass_module
       
       implicit none
@@ -27,7 +27,6 @@
       integer :: ithyd                !none       |counter
       integer :: isol                 !none       |counter
       integer :: isolt                !none       |counter
-      integer :: isstor               !none       |counter
       integer :: isno                 !none       |counter
       integer :: ifld                 !none       |counter
       integer :: isp_ini              !none       |counter
@@ -83,8 +82,7 @@
             if (hru_db(i)%dbsc%soil_plant_init == sol_plt_ini(isp_ini)%name) then
               hru_db(i)%dbs%soil_plant_init = isp_ini
               
-            if (hru_db(i)%dbs%soil_plant_init == 0) write (9001,*) hru_db(i)%dbsc%soil_plant_init,&
-                    "not found (plant.ini)"
+            if (hru_db(i)%dbs%soil_plant_init == 0) write (9001,*) hru_db(i)%dbsc%soil_plant_init, "not found (plant.ini)" 
               
               ! initial soil nutrients (soil test)
               do ics = 1, db_mx%soiltest
@@ -151,17 +149,7 @@
          end do
          
          if (hru_db(i)%dbs%soil == 0) write (9001,*) hru_db(i)%dbsc%soil, "not found (soils.sol)"
-         
-         do isstor = 1, db_mx%wet_dat
-            if (hru_db(i)%dbsc%surf_stor == wet_dat_c(isstor)%name) then
-               hru_db(i)%dbs%surf_stor = isstor
-            exit
-            end if
-         end do
-         
-         if (hru_db(i)%dbs%surf_stor == 0 .and. hru_db(i)%dbsc%surf_stor /= 'null') write (9001,*) &
-                 hru_db(i)%dbsc%surf_stor, "not found (wetland.wet)"
-         
+
          do isno = 1, db_mx%sno
             if (hru_db(i)%dbsc%snow == snodb(isno)%name) then
                hru_db(i)%dbs%snow = isno
@@ -169,8 +157,7 @@
             end if
          end do
          
-         if (hru_db(i)%dbs%snow == 0 .and. hru_db(i)%dbsc%snow /= 'null') write (9001,*) hru_db(i)%dbsc%snow,&
-                 "not found (snow.sno)"
+         if (hru_db(i)%dbs%snow == 0 .and. hru_db(i)%dbsc%snow /= 'null') write (9001,*) hru_db(i)%dbsc%snow, "not found (snow.sno)"
          
          do ifld = 1, db_mx%field
              if (hru_db(i)%dbsc%field == field_db(ifld)%name) then
@@ -179,8 +166,8 @@
             end if
          end do
          
-        if (hru_db(i)%dbs%field == 0 .and. hru_db(i)%dbsc%field /= 'null') write (9001,*) hru_db(i)%dbsc%field,&
-                "not found (field.fld)"
+        if (hru_db(i)%dbs%field == 0 .and. hru_db(i)%dbsc%field /= 'null') write (9001,*) &
+          hru_db(i)%dbsc%field, "not found (field.fld)"
 
       end do
       exit

@@ -1,0 +1,190 @@
+lum.dtl
+  17
+
+ NAME   	CONDS	ALTS	ACTS
+irr_str8	  1	 1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR	     LIM_OP	   LIM_CONST	               ALT1
+w_stress 	hru	  0	    null	-	       0.8		 	<
+ ACT_TYP    OBJ OBJ_NUM           NAME         OPTION     CONST    CONST2   FP       OUTCOMES
+irr_demand	hru	  0	 drip_high	drip	   0.        0      null	y
+
+ NAME   	CONDS	ALTS	ACTS
+irr_str8_unlim	  1	 1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR	     LIM_OP	   LIM_CONST	               ALT1
+w_stress 	hru	  0	    null	-	       0.8		 	<
+ ACT_TYP    OBJ OBJ_NUM           NAME         OPTION     CONST    CONST2   FP       OUTCOMES
+irrigate	hru	  0	 drip_high	drip	   0.        0      null	y
+
+ NAME   	CONDS	ALTS	ACTS
+irr_sw75	  1	 1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR	     LIM_OP	   LIM_CONST		       ALT1
+soil_water 	hru	  0	fcap_mm	  	-	       75.		        <
+ ACT_TYP    OBJ OBJ_NUM           NAME         OPTION       CONST  CONST2   FP       OUTCOMES
+irr_demand	hru	  0	 sprinkler   sprinkler_high   0.     0      null	y
+
+ NAME   	CONDS	ALTS	ACTS
+irr_sw75_unlim	  1	 1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR	     LIM_OP	   LIM_CONST		       ALT1
+soil_water 	hru	  0	fcap_mm	  	-	       75.		        <
+ ACT_TYP    OBJ OBJ_NUM           NAME         OPTION       CONST  CONST2   FP       OUTCOMES
+irrigate	hru	  0	 sprinkler   sprinkler_high   0.     0      null	y
+
+ NAME   	   CONDS  ALTS	ACTS
+EnlistDuo_app        3	   2	 2	!apply 2,4-D and roundup for preplant
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      	ALT1	ALT2
+phu_base0 	hru	  0	  null		  -	          0.10		        >	 - 
+prob		null	  0	  null		  -	           .07		 	<	 -
+phu_base0 	hru	  0	  null		  -	          0.15		        -	 >
+ ACT_TYP       OBJ     OBJ_NUM   NAME          OPTION      CONST    CONST2   FP         OUTCOMES
+pest_apply      hru	  0	 preplant	dacamine    1.0	      1     broadcast	y	 y
+pest_apply      hru	  0	 preplant	roundup     2.0	      1     broadcast	y	 y
+
+ NAME   	   CONDS  ALTS	ACTS
+control_drainage     6	    4	 4
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      	ALT1	ALT2	ALT3	ALT4
+jday	 	hru	  0	  null		  -	  	    65		        =	 -	 -	-
+days_harv 	hru	  0	  null		  -	            14		 	-	 >	 -	-
+jday	 	hru	  0	  null		  -	  	   295		        -	 >	 -	-
+phu_plant	hru	  0	  null		  -	  	   0.5		        -	 -	 >	-
+soil_water 	hru	  0	fcap_fr		  *	  	   0.5		 	-	 -	 <	-
+phu_plant	hru	  0	  null		  -	  	   1.0		        -	 -	 -	>
+ ACT_TYP       OBJ     OBJ_NUM   NAME          OPTION      CONST    CONST2   FP         OUTCOMES
+drain_control   hru	  0	 open_spring	 null	    1.0	      1      null	y	 n	 n	n
+drain_control   hru	  0	 close_fall	 null	    0.0	      1      null	n	 y	 n	n
+drain_control   hru	  0	 close_summer	 null	    0.0	      1      null	n	 n	 y	n
+drain_control   hru	  0	 open_summer	 null	    1.0	      1      null	n	 n	 n	y
+
+ NAME   	   CONDS  ALTS	ACTS
+no_tile_drain        1	    1	 1
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP		LIM_CONST	      	ALT1
+day_start 	hru	  0	 null		  -	  	   1.0		        =
+ ACT_TYP       OBJ     OBJ_NUM   NAME          OPTION      CONST    CONST2   FP         OUTCOMES
+drain_control   hru	  0	 close_always	 null	    0.0	      1      null	y
+
+ NAME   	     CONDS	ALTS	ACTS
+pl_hv_wwht	       6         4	  3
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST		               ALT1   ALT2   ALT3     ALT4
+soil_water 	hru	  0	    fc   		  *	    1.50	 		<	<      	-	-
+plant_gro 	hru	  0	    n   		  -	    0   	 		=	-      	-	-
+phu_base0 	hru	  0	    null		  -	    0.85		 	>	-	-	-
+phu_plant 	hru	  0	    phu_mat		  -	    1.15		 	-       >	-	-
+year_rot 	hru	  0	    null		  -	    1		 		=	=	=	>
+days_plant	hru	  0	    null   		  -	    200 		 	-	-       =	-
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2      FP         OUTCOMES
+plant		hru	  0	plant_wwht	wwht            0       1     	null		 y	n	n	n
+harvest_kill    hru       0	grain_harv	wwht            0	1      grain		 n	y	y	n
+rot_reset       hru       0	reset_1 	null	        1	0       null		 n	n	n	y
+
+ NAME   	     CONDS	  ALTS	  ACTS
+pl_hv_corn_sb	       7           7	   5
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST		                ALT1    ALT2  ALT3     ALT4	ALT5   ALT6      ALT7
+soil_water 	hru	  0	    fc   		  *	    1.50	 		  <	 <      <	 <	 -	 -	   -
+plant_gro 	hru	  0	    n   		  -	    0   	 		  =	 =      -	 -	 -	 -	   -
+phu_base0 	hru	  0	    null		  -	    0.15		 	  >	 > 	-	 -	 -	 -	   -
+phu_plant 	hru	  0	    phu_mat		  -	    1.15		 	  -      -	>	 >	 -	 -	   -
+year_rot 	hru	  0	    null		  -	    1		 		  =	 -	=	 -	 =	 -	   -
+year_rot 	hru	  0	    null		  -	    2		 		  -	 =	-	 =	 -	 =	   >
+days_plant	hru	  0	    null   		  -	    200 		 	  -	 -      -	 -	 =	 =	   -
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2   FP               OUTCOMES
+plant		hru	  0	plant_corn	 corn           0        1    null	          y	 n	n	 n	 n	 n	   n
+plant		hru	  0	plant_soyb	 soyb           0	 1    null		  n	 y	n	 n	 n	 n	   n
+harvest_kill    hru       0	grain_harv	 corn           0	 1   grain		  n	 n	y	 n	 y	 n	   n
+harvest_kill    hru       0	grain_harv	 soyb           0	 1   grain		  n	 n	n	 y	 n	 y	   n
+rot_reset       hru       0	reset_2 	 null	        1	 0    null		  n	 n	n	 n	 n	 n	   y
+
+ NAME   	     CONDS	ALTS	ACTS
+pl_hv_corn	       6         4	  3
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST		               ALT1   ALT2   ALT3     ALT4
+soil_water 	hru	  0	    fc   		  *	    1.50	 		<	<      	-	-
+plant_gro 	hru	  0	    n   		  -	    0   	 		=	-      	-	-
+phu_base0 	hru	  0	    null		  -	    0.15		 	>	-	-	-
+phu_plant 	hru	  0	    phu_mat		  -	    1.15		 	-       >	-	-
+year_rot 	hru	  0	    null		  -	    1		 		=	=	=	>
+days_plant	hru	  0	    null   		  -	    200 		 	-	-       =	-
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2      FP         OUTCOMES
+plant		hru	  0	plant_corn	corn           0        1     	null		 y	n	n	n
+harvest_kill    hru       0	grain_harv	corn           0	1      grain		 n	y	y	n
+rot_reset       hru       0	reset_1 	null	       1	0       null		 n	n	n	y
+
+ NAME   	     CONDS	ALTS	ACTS
+pl_hv_soyb	       6         4	  3
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST		               ALT1   ALT2   ALT3     ALT4
+soil_water 	hru	  0	    fc   		  *	    1.50	 		<	<      	-	-
+plant_gro 	hru	  0	    n   		  -	    0   	 		=	-      	-	-
+phu_base0 	hru	  0	    null		  -	    0.15		 	>	-	-	-
+phu_plant 	hru	  0	    phu_mat		  -	    1.15		 	-       >	-	-
+year_rot 	hru	  0	    null		  -	    1		 		=	=	=	>
+days_plant	hru	  0	    null   		  -	    200 		 	-	-       =	-
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2      FP         OUTCOMES
+plant		hru	  0	plant_soyb	soyb            0       1     	null		 y	n	n	n
+harvest_kill    hru       0	grain_harv	soyb            0	1      grain		 n	y	y	n
+rot_reset       hru       0	reset_1 	null	        1	0       null		 n	n	n	y
+
+ NAME   	     CONDS	ALTS	ACTS
+pl_hv_ccsws	       10         11	  7
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST		               ALT1   ALT2   ALT3     ALT4	ALT5    ALT6  ALT7	ALT8	ALT9	ALT10	ALT11
+soil_water 	hru	  0	    fc   		  *	    1.50	 		<	<      	-	<	<	<	<	-	-	-	-
+phu_base0 	hru	  0	    null		  -	    0.15		 	>	>	-	-	-	-	-	-	-	-	-
+days_harv 	hru	  0	    null		  -	    7		 		-	-	=	=	-       -       -       -	-	-	-
+phu_plant 	hru	  0	    phu_mat		  -	    1.15		 	-       -	-	-	>	>	>	-	-	-	-
+year_rot 	hru	  0	    null		  -	    3		 		<	-	-	-	<	-	-	<	-	-	-
+year_rot 	hru	  0	    null		  -	    2		 		-	-	-	-	-	>	-	-	>	-	-
+year_rot 	hru	  0	    null		  -	    3		 		-	=	-	=	-	-	-	-	-	-	-
+year_rot 	hru	  0	    null		  -	    4		 		-	-	=	-	-	-	=	-	-	=	-
+days_plant	hru	  0	    null   		  -	    200 		 	-	-       -	-	-	-	-	=	=	=	-
+year_rot        hru	  0	    null   		  -	    4		 		-	-       -	-	-	-	-	-	-	-	>
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2      FP         OUTCOMES
+plant		hru	  0	plant_corn	 corn           0       1     	null		 y	n	n	n	n	n	n	n	n	n	n
+plant		hru	  0	plant_soyb	 soyb           0	1       null		 n	y	y	n	n	n	n	n	n	n	n
+plant		hru	  0	plant_wwht	 wwht           0	1       null		 n	n	n	y	n	n	n	n	n	n	n
+harvest_kill    hru       0	grain_harv	 corn           0	1      grain		 n	n	n	n	y	n	n	y	n	n	n
+harvest_kill    hru       0	grain_harv	 soyb           0	1      grain		 n	n	n	n	n	y	n	n	y	n	n
+harvest_kill    hru       0	grain_harv	 wwht           0	1      grain		 n	n	n	n	n	n	y	n	n	y	n
+rot_reset       hru       0	reset_4 	 null	        1	0       null		 n	n	n	n	n	n	n	n	n	n	y
+
+ NAME   	     CONDS	ALTS	ACTS
+hay_cutting	       3         1	  1
+ VAR		OBJ	OB_NUM	LIM_VAR			LIM_OP	LIM_CONST		       ALT1 
+soil_water 	hru	  0	    fc   		*	    1.50	 		<
+phu_plant 	hru	  0	    phu_mat		-	    0.50		 	>
+biomass 	hru	  0	    null		  -	  3000.0		 	>
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2      FP         OUTCOMES
+harvest         hru       0	hay_harv	alfa           0	3      biomass  	 y
+
+ NAME   	     CONDS	ALTS	ACTS
+forest_cut	       2         1	  1
+ VAR		OBJ	OB_NUM	LIM_VAR			LIM_OP	LIM_CONST		       ALT1 
+cur_yrs_mat 	hru	  0	    null		  -	     20 		 	=
+jday	 	hru	  0	    null		  -	     295		        =
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2      FP         OUTCOMES
+harvest         hru       0	tree_harv	frsd           0	0      forest_cut	 y
+
+ NAME   	     CONDS	ALTS	ACTS
+graze_winter 	       3         2	  1
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST		       		ALT1 	ALT2
+jday	 	hru	  0	  null		  -	     295		        	 >	 -
+jday	 	hru	  0	  null		  -	      85		        	 -	 <
+biomass 	hru	  0	  null		  -	  3000.0		 		 >	 >
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2      FP         OUTCOMES
+graze           hru       0	winter_low	beef_low        0	0        null   	 y	 y
+
+ NAME   	     CONDS	ALTS	ACTS
+graze_summer 	       3         1	  1
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST		       		ALT1
+jday	 	hru	  0	  null		  -	     120		        	 >
+jday	 	hru	  0	  null		  -	     200		        	 <
+biomass 	hru	  0	  null		  -	  3000.0		 		 >
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION        CONST   CONST2      FP         OUTCOMES
+graze           hru       0	summer_high	beef_high        0	0        null    	 y
+
+ NAME   	     CONDS	ALTS	ACTS
+fert_sprg_side		5          2	  2
+ VAR		OBJ	OB_NUM	LIM_VAR		LIM_OP	LIM_CONST		               ALT1   ALT2
+phu_base0 	hru	  0	    null		  -	    0.12		 	>	-
+year_rot 	hru	  0	    null		  -	    1		 		=	=
+n_stress 	hru	  0	    null		  -	    0.9		 		-	<
+plant_gro 	hru	  0	    y   		  -	    1		        	-	=
+phu_plant 	hru	  0	    phu_mat		  -	    1.05		 	-       <
+ ACT_TYP        OBJ  OBJ_NUM   NAME             OPTION      CONST   CONST2      FP         OUTCOMES
+fertilize	hru	  0  ammonia_spring   anh_nh3	    160.       1      inject      	y     	 n
+fertilize	hru	  0  side_dress	      urea	     50.       2      broadcast	  	n	 y

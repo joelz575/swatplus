@@ -42,6 +42,7 @@
       use climate_module
       use basin_module
       use maximum_data_module
+      use conditional_module
       
       implicit none 
 
@@ -87,6 +88,10 @@
            end do  
            rndseed(j,1) = rndseed10
         end do
+       
+        !! shuffle random number for conditional probablility
+        !! assign random number for decision table conditional
+        rndseed_cond = rndseed10
       
         !! shuffle seeds randomly (Bratley, Fox, Schrage, p34)
         do j = 9, 1, -1

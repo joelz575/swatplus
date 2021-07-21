@@ -39,7 +39,6 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use tiles_data_module
       use basin_module
       use hydrograph_module
       use climate_module, only : wst
@@ -122,7 +121,7 @@
       sum = 0.
       deep = 0.
       do j1=1,nlayer
-        soil(j)%ly(j1)%conk = soil(j)%phys(j1)%k * sdr(isdr)%latksat !Daniel 2/26/09
+        soil(j)%ly(j1)%conk = soil(j)%phys(j1)%k * hru(j)%sdr%latksat !Daniel 2/26/09
         sum = sum + wnan(j1) * soil(j)%ly(j1)%conk
         deep = deep + wnan(j1)
       end do
@@ -141,23 +140,23 @@
       !!	calculate parameters hdrain and gee1
       ad = soil(j)%zmx - hru(j)%lumv%sdr_dep
       ad = Max (10., ad)
-	  ap = 3.55 - ((1.6 * ad) / sdr(isdr)%dist) + 2 *                   &
-                                           ((2 / sdr(isdr)%dist)**2)
-	  if (ad / sdr(isdr)%dist < 0.3) then
-        hdrain= ad / (1 + ((ad / sdr(isdr)%dist) * (((8 / pi) *       &
-     	    Log(ad / sdr(isdr)%radius) - ap))))
+	  ap = 3.55 - ((1.6 * ad) / hru(j)%sdr%dist) + 2 *                   &
+                                           ((2 / hru(j)%sdr%dist)**2)
+	  if (ad / hru(j)%sdr%dist < 0.3) then
+        hdrain= ad / (1 + ((ad / hru(j)%sdr%dist) * (((8 / pi) *       &
+     	    Log(ad / hru(j)%sdr%radius) - ap))))
       else
         hdrain = ad
-          !hdrain = (sdr(isdr)%dist * pi) / (8 * ((log(sdr(isdr)%dist /  &
-          !         sdr(isdr)%radius)/ log(e)) - 1.15))
+          !hdrain = (hru(j)%sdr%dist * pi) / (8 * ((log(hru(j)%sdr%dist /  &
+          !         hru(j)%sdr%radius)/ log(e)) - 1.15))
 	  end if
       !! calculate Kirkham G-Factor, gee
-        k2 = tan((pi * ((2. * ad) -sdr(isdr)%radius)) / (4. * soil(j)%zmx))
-        k3 = tan((pi * sdr(isdr)%radius) / (4. * soil(j)%zmx))
+        k2 = tan((pi * ((2. * ad) - hru(j)%sdr%radius)) / (4. * soil(j)%zmx))
+        k3 = tan((pi * hru(j)%sdr%radius) / (4. * soil(j)%zmx))
       do m=1,2
-         k4 = (pi * m * sdr(isdr)%dist) / (2. * soil(j)%zmx)
-         k5 = (pi *sdr(isdr)%radius) / (2. * soil(j)%zmx)
-         k6 = (pi * (2. * ad - sdr(isdr)%radius)) / (2. * soil(j)%zmx)
+         k4 = (pi * m * hru(j)%sdr%dist) / (2. * soil(j)%zmx)
+         k5 = (pi * hru(j)%sdr%radius) / (2. * soil(j)%zmx)
+         k6 = (pi * (2. * ad - hru(j)%sdr%radius)) / (2. * soil(j)%zmx)
          gee2 = (cosh(k4) + cos(k5)) / (cosh(k4) - cos(k5))
          gee3 = (cosh(k4) - cos(k6)) / (cosh(k4) + cos(k6))
          gee1 = gee1 + Log(gee2 * gee3)
@@ -196,25 +195,24 @@
       endif
       if(hdrain < hdmin) hdrain=hdmin
       if((stor > storro).and.(y1 < 5.0)) then
-        dflux= (12.56637*24.0*cone*(depth-hdrain+stor))/                   &
-            (gee*sdr(isdr)%dist) !eq.10
-        if(dflux > sdr(isdr)%drain_co) dflux = sdr(isdr)%drain_co !eq.11
+        dflux= (12.56637 * 24.0 * cone* (depth - hdrain + stor)) / (gee * hru(j)%sdr%dist) !eq.10
+        if (dflux > hru(j)%sdr%drain_co) dflux = hru(j)%sdr%drain_co !eq.11
       else
 !	subirrigation flux 
-        em=depth-y1-hdrain
+        em = depth - y1 - hdrain
         if(em < -1.0) then
 !!          ddranp=ddrain(j)-1.0
           ddranp = hru(j)%lumv%sdr_dep - 1.0
           dot = hdrain + soil(j)%zmx - depth
-          dflux=4.0*24.0*cone*em*hdrain*(2.0+em/dot)/sdr(isdr)%dist**2 
-          if((depth-hdrain) >= ddranp) dflux=0.
-          if(abs(dflux) > sdr(isdr)%pumpcap) then
-            dflux = - sdr(isdr)%pumpcap * 24.0 
+          dflux = 4.0 * 24.0 * cone * em * hdrain * (2.0 + em / dot) / hru(j)%sdr%dist**2 
+          if ((depth-hdrain) >= ddranp) dflux = 0.
+          if (abs(dflux) > hru(j)%sdr%pumpcap) then
+            dflux = - hru(j)%sdr%pumpcap * 24.0 
           end if
 !	drainage flux - for WT below the surface and for ponded depths < storro (S1)
         else
-        dflux=4.0*24.0*cone*em*(2.0*hdrain+em) / sdr(isdr)%dist**2 !eq.5
-        if(dflux > sdr(isdr)%drain_co) dflux = sdr(isdr)%drain_co !eq.11
+        dflux = 4.0 * 24.0 * cone * em * (2.0 * hdrain + em) / hru(j)%sdr%dist**2 !eq.5
+        if(dflux > hru(j)%sdr%drain_co) dflux = hru(j)%sdr%drain_co !eq.11
         if(dflux < 0.) dflux=0.
         if(em < 0.) dflux=0.
         end if

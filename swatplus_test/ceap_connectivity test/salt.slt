@@ -1,0 +1,6 @@
+salts_input_paramters
+    1020.            !salt_tds_ec   |total dissolved solids to electrical conductivity conversion factor
+Salt_Solubility_Product_Parameters__ksp
+  		CaCO3    		MgCO3   	CaSO4    	MgSO4   	NaCl
+ soil	 	0.0000000030702		0.0000047937	0.0000493	0.007244	37.3
+ aquifer	0.0000000030702		0.0000047937	0.0000493	0.007244	37.3

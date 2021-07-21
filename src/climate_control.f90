@@ -12,19 +12,12 @@
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    elevp(:)    |m             |elevation of precipitation gage station
 !!    elevt(:)    |m             |elevation of temperature gage station
-!!    nstep       |none          |number of lines of rainfall data for each
-!!                               |day
 !!    welev(:)    |m             |elevation of weather station used to compile
 !!                               |weather generator data
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
-!!    hru_rmx(:)  |MJ/m^2        |maximum solar radiation for the day in HRU
-!!    wst(:)%weat%ts(:) |mm H2O        |precipitation for the time step during the
-!!                               |day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~

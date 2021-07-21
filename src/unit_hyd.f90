@@ -1,4 +1,4 @@
-      subroutine unit_hyd
+      subroutine unit_hyd (tc, uh)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    This subroutine computes variables related to the watershed hydrology:
@@ -44,83 +44,103 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : itb, tconc, uh
-    
-      use climate_module
+      !use hru_module, only : itb
       use basin_module
-      use channel_module
       use time_module
       use hydrograph_module, only : sp_ob
       
       implicit none
       
-      integer :: j             !none          |counter
-      real :: ql               !              | 
-      real :: sumq             !              |
-      real :: tb               !              |
-      real :: tp               !              |
-      integer :: int           !              |
-      integer :: i             !none          |counter
-      real :: xi               !              |
-      real :: q                !              |
-      integer :: max           !              |
-      integer :: ij            !              |
- 
-!!    compute unit hydrograph for computing subbasin hydrograph from direct runoff
-      do j = 1, sp_ob%hru
-        ql = 0.
-        sumq = 0.
-        tb = .5 + .6 * tconc(j) + bsn_prm%tb_adj    !baseflow time, hr
-        if (tb > 48.) tb = 48.			   !maximum 48hrs
-        tp = .375 * tb                       ! time to peak flow
-	  !! convert to time step (from hr), J.Jeong March 2009
-	  tb = ceiling(tb * 60./ real(time%dtm))
-	  tp = int(tp * 60./ real(time%dtm))         
-	  
-	  if(tp==0) tp = 1
-	  if(tb==tp) tb = tb + 1
-	  itb(j) = int(tb) 
+      integer :: j              !none       |counter
+      real :: ql                !           | 
+      real :: sumq              !           |
+      real :: tb                !           |
+      real :: tp                !           |
+      integer :: int            !           |
+      integer :: i              !none       |counter
+      real :: xi                !           |
+      real :: q                 !           |
+      integer :: max            !           |
+      integer :: itb            !           |
+      integer :: istep          !none       |time step that corresponds to time%step for routing
+      integer :: iday           !none       |current day in the unit hydrograph
+      real :: t_inc             !hr         |time increment to sum the unit hyd
+      real :: t_tot             !hr         |total time in the hydrograph
+      
+      real, intent (in)  :: tc
+      real, intent (out), dimension(bsn_prm%day_lag_mx,time%step) :: uh
+
+      !! compute unit hydrograph for computing hydrograph from direct runoff
+      ql = 0.
+      sumq = 0.
+      uh = 0.
+      tb = .5 + .6 * tc + bsn_prm%tb_adj    !baseflow time, hr
+      if (tb > 48.) tb = 48.			    !maximum 48hrs
+      tp = .375 * tb                        ! time to peak flow
+
+      !! sum 20 points on the unit hydrograph to get sum for the time%step
+	  itb = 20 
+      t_inc = tb / 20.
+      t_tot = 0.
+      istep = 1
+      iday = 1
         
-	  ! Triangular Unit Hydrograph
+	  !! Triangular Unit Hydrograph
 	  if (bsn_cc%uhyd == 0) then
-	    do i = 1, itb(j)
-          xi = float(i)
- 	      if (xi < tp) then           !! rising limb of hydrograph
-            q = xi / tp
-          else                        !! falling limb of hydrograph
-            q = (tb - xi) / (tb - tp)
+        !! increment for number of points to estimate uh
+	    do i = 1, itb
+          t_tot = t_tot + t_inc
+          if (t_tot > float(istep * time%step / 24)) then
+            istep = istep + 1
+          end if
+          if (t_tot > float(iday * 24)) then
+            iday = iday + 1
+            t_tot = 0
+          end if
+          
+ 	      if (t_tot < tp) then
+            !! rising limb of hydrograph
+            q = t_tot / tp
+          else
+            !! falling limb of hydrograph
+            q = (tb - t_tot) / (tb - tp)
           end if
           q = Max(0.,q)
-          uh(j,i) = (q + ql) / 2.
+          uh(iday,istep) = uh(iday,istep) + (q + ql) / 2.
+          sumq = sumq + (q + ql) / 2.
           ql = q
-          sumq = sumq + uh(j,i)
         end do
-          
-		do i = 1, itb(j)
-            uh(j,i) = uh(j,i) / sumq
-        end do
-	  
+
 	  ! Gamma Function Unit Hydrograph
-	  elseif (bsn_cc%uhyd == 1) then
-          i = 1; q = 1.
+	  else if (bsn_cc%uhyd == 1) then
+        i = 1; q = 1.
 		do while (q > 0.0001)
-            xi = float(i)
-		   q = (xi / tp) ** bsn_prm%uhalpha * exp((1.- xi / tp) *             &    
-                          bsn_prm%uhalpha)
-            q = Max(0.,q)
-            uh(j,i) = (q + ql) / 2.
-            ql = q
-            sumq = sumq + uh(j,i)
+          t_tot = t_tot + t_inc
+          if (t_tot > float(istep * time%step / 24)) then
+            istep = istep + 1
+          end if
+          if (t_tot > float(iday * 24)) then
+            iday = iday + 1
+            t_tot = 0
+          end if
+          
+          xi = float(i)
+          q = (xi / tp) ** bsn_prm%uhalpha * exp((1. - xi / tp) * bsn_prm%uhalpha)
+          q = Max(0.,q)
+          uh(iday,istep) = (q + ql) / 2.
+          ql = q
+          sumq = sumq + uh(iday,istep)
 	      i = i + 1
-	      if (i>3.*time%step) exit
-	    end do
-	    itb(ij) = i - 1
-          do i = 1, itb(j)
-            uh(j,i) = uh(j,i) / sumq
-          end do
-	  endif 
+	      if (i > 3. * time%step) exit
+        end do
 
+	  end if 
+          
+      do i = 1, iday
+        do istep = 1, time%step
+          uh(i,istep) = uh(i, istep) / sumq
+        end do
       end do
-
+	  
       return
       end subroutine unit_hyd

@@ -94,6 +94,68 @@
             end if
         endif
         
+!!!  HRU - NEW Nutrient cycling output
+        if (pco%nb_hru%d == "y") then
+          open (3333,file="hru_ncycle_day.txt", recl = 1500)
+          write (3333,*)  bsn%name, prog
+          write (3333,*) nb_hdr1
+          write (3333,*) nb_hdr_units1
+          write (9000,*) "HRU                       hru_ncycle_day.txt"
+            if (pco%csvout == "y") then
+              open (3334,file="hru_ncycle_day.csv", recl = 1500)
+              write (3334,*)  bsn%name, prog
+              write (3334,'(*(G0.3,:,","))') nb_hdr1
+              write (3334,'(*(G0.3,:,","))') nb_hdr_units1
+              write (9000,*) "HRU                       hru_ncycle_day.csv"
+            end if
+        endif
+        
+        if (pco%nb_hru%m == "y") then
+          open (3335,file="hru_ncycle_mon.txt", recl = 1500)
+          write (3335,*)  bsn%name, prog
+          write (3335,*) nb_hdr1
+          write (3335,*) nb_hdr_units1
+          write (9000,*) "HRU                       hru_ncycle_mon.txt"
+            if (pco%csvout == "y") then
+              open (3336,file="hru_ncycle_mon.csv", recl = 1500)
+              write (3336,*)  bsn%name, prog
+              write (3336,'(*(G0.3,:,","))') nb_hdr1
+              write (3336,'(*(G0.3,:,","))') nb_hdr_units1
+              write (9000,*) "HRU                       hru_ncycle_mon.csv"
+            end if
+        endif
+        
+     if (pco%nb_hru%y == "y") then
+          open (3337,file="hru_ncycle_yr.txt", recl = 1500)
+          write (3337,*)  bsn%name, prog
+          write (3337,*) nb_hdr1
+          write (3337,*) nb_hdr_units1
+          write (9000,*) "HRU                       hru_ncycle_yr.txt"
+            if (pco%csvout == "y") then
+              open (3338,file="hru_ncycle_yr.csv", recl = 1500)
+              write (3338,*)  bsn%name, prog
+              write (3338,'(*(G0.3,:,","))') nb_hdr1
+              write (3338,'(*(G0.3,:,","))') nb_hdr_units1
+              write (9000,*) "HRU                       hru_ncycle_yr.csv"
+            end if
+        endif
+        
+        if (pco%nb_hru%a == "y") then
+          open (3339,file="hru_ncycle_aa.txt", recl = 1500)
+          write (3339,*)  bsn%name, prog
+          write (3339,*) nb_hdr1
+          write (3339,*) nb_hdr_units1
+          write (9000,*) "HRU                       hru_ncycle_aa.txt"
+            if (pco%csvout == "y") then
+              open (3340,file="hru_ncycle_aa.csv", recl = 1500)
+              write (3340,*)  bsn%name, prog
+              write (3340,'(*(G0.3,:,","))') nb_hdr1
+              write (3340,'(*(G0.3,:,","))') nb_hdr_units1
+              write (9000,*) "HRU                       hru_ncycle_aa.csv"
+            end if
+        endif
+!!!  HRU - NEW Nutrient cycling output
+        
        if (pco%nb_hru%m == "y") then
         open (2021,file="hru_nb_mon.txt", recl = 1500)
           write (2021,*) bsn%name, prog
@@ -155,6 +217,69 @@
             end if 
         endif
         
+                
+!!!  HRU - New nutcarb gain loss file
+        if (pco%ls_hru%d == "y") then
+          open (3341,file="hru_nut_carb_gl_day.txt", recl = 1500)
+          write (3341,*) bsn%name, prog
+          write (3341,*) ls_hdr1    !! hru
+          write (3341,*) ls_hdr_units1
+          write (9000,*) "HRU                       hru_nut_carb_gl_day.txt"
+            if (pco%csvout == "y") then
+              open (3342,file="hru_nut_carb_gl_day.csv", recl = 1500)
+              write (3342,*) bsn%name, prog
+              write (3342,'(*(G0.3,:,","))') ls_hdr1    !! hru
+              write (3342,'(*(G0.3,:,","))') ls_hdr_units1
+              write (9000,*) "HRU                       hru_nut_carb_gl_day.csv"
+            end if 
+        endif
+
+        if (pco%ls_hru%m == "y") then
+          open (3343,file="hru_nut_carb_gl_mon.txt", recl = 1500)
+          write (3343,*) bsn%name, prog
+          write (3343,*) ls_hdr1    !! hru
+          write (3343,*) ls_hdr_units1
+          write (9000,*) "HRU                       hru_nut_carb_gl_mon.txt"
+            if (pco%csvout == "y") then
+              open (3344,file="hru_nut_carb_gl_mon.csv", recl = 1500)
+              write (3344,*) bsn%name, prog
+              write (3344,'(*(G0.3,:,","))') ls_hdr1    !! hru
+              write (3344,'(*(G0.3,:,","))') ls_hdr_units1
+              write (9000,*) "HRU                       hru_nut_carb_gl_mon.csv"
+            end if 
+        endif
+        
+        if (pco%ls_hru%y == "y") then
+          open (3345,file="hru_nut_carb_gl_yr.txt", recl = 1500)
+          write (3345,*) bsn%name, prog
+          write (3345,*) ls_hdr1    !! hru
+          write (3345,*) ls_hdr_units1
+          write (9000,*) "HRU                       hru_nut_carb_gl_yr.txt"
+            if (pco%csvout == "y") then
+              open (3346,file="hru_nut_carb_gl_yr.csv", recl = 1500)
+              write (3346,*) bsn%name, prog
+              write (3346,'(*(G0.3,:,","))') ls_hdr1    !! hru
+              write (3346,'(*(G0.3,:,","))') ls_hdr_units1
+              write (9000,*) "HRU                       hru_nut_carb_gl_yr.csv"
+            end if 
+        endif
+        
+        if (pco%ls_hru%a == "y") then
+          open (3347,file="hru_nut_carb_gl_aa.txt", recl = 1500)
+          write (3347,*) bsn%name, prog
+          write (3347,*) ls_hdr1    !! hru
+          write (3347,*) ls_hdr_units1
+          write (9000,*) "HRU                       hru_nut_carb_gl_aa.txt"
+            if (pco%csvout == "y") then
+              open (3348,file="hru_nut_carb_gl_aa.csv", recl = 1500)
+              write (3348,*) bsn%name, prog
+              write (3348,'(*(G0.3,:,","))') ls_hdr1    !! hru
+              write (3348,'(*(G0.3,:,","))') ls_hdr_units1
+              write (9000,*) "HRU                       hru_nut_carb_gl_aa.csv"
+            end if 
+        endif
+!!!  HRU - New nutcarb gain loss file       
+           
        if (pco%ls_hru%m == "y") then
         open (2031,file="hru_ls_mon.txt",recl = 1500)
         write (2031,*) bsn%name, prog

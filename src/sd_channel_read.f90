@@ -23,25 +23,18 @@
       integer :: ichi                   !none      |counter
       integer :: isp_ini                !          |counter
       integer :: ics                    !none      |counter
-      integer :: ich_ini                !none      |counter
-      integer :: ipest_ini              !none      |counter
-      integer :: ipest_db               !none      |counter
-      integer :: ipath_ini              !none      |counter
       integer :: inut                   !none      |counter 
       integer :: ihydsed                !none      |counter
-      integer :: ipest                  !none      |counter
-      integer :: ipath                  !none      |counter
-      integer :: iom_ini                !none      |counter
       integer :: idb                    !none      |counter
       integer :: i                      !none      |counter
       integer :: k                      !none      |counter
-      real :: bedvol                    !m^3       |volume of river bed sediment
-      integer :: icon, iob, ichdat
+
       eof = 0
       imax = 0
             
       !! allocate sd channel variables
       allocate (sd_ch(0:sp_ob%chandeg))
+      allocate (ch_rcurv(0:sp_ob%chandeg))
       allocate (sd_ch_vel(0:sp_ob%chandeg))
       allocate (chsd_d(0:sp_ob%chandeg))
       allocate (chsd_m(0:sp_ob%chandeg))
@@ -207,46 +200,6 @@
       end do
       
       end if
-     
-      ! initialize organics-minerals in channel water and benthic from input data
-      do ich = 1, sp_ob%chandeg
-        iob = sp_ob1%chandeg + ich - 1
-        ichdat = ob(iob)%props
-        ich_ini = sd_dat(ichdat)%init
-        iom_ini = sd_init(ich_ini)%org_min
-        ch_stor(ich) = om_init_water(iom_ini)
-        ch_om_water_init(ich) = ch_stor(ich)
-      end do
-      
-      ! initialize pesticides in channel water and benthic from input data
-      do ich = 1, sp_ob%chandeg
-        iob = sp_ob1%chandeg + ich - 1
-        ichdat = ob(iob)%props
-        ich_ini = sd_dat(ichdat)%init
-        ipest_ini = sd_init(ich_ini)%pest
-        do ipest = 1, cs_db%num_pests
-          ipest_db = cs_db%pest_num(ipest)
-          ! mg = mg/kg * m3*1000. (kg=m3*1000.)
-          ch_water(ich)%pest(ipest) = pest_water_ini(ipest_ini)%water(ipest) * ch_stor(ich)%flo * 1000.
-          !! calculate volume of active river bed sediment layer - m3
-          bedvol = sd_ch(ich)%chw *sd_ch(ich)%chl * 1000.* pestdb(ipest_ini)%ben_act_dep
-          ch_benthic(ich)%pest(ipest) = pest_water_ini(ipest_ini)%benthic(ipest) * bedvol * 1000.   ! mg = mg/kg * m3*1000.
-          !! calculate mixing velocity using molecular weight and porosity
-          sd_ch(ich)%aq_mix(ipest) = pestdb(ipest_db)%mol_wt ** (-.6666) * (1. - sd_chd(ich)%bd / 2.65) * (69.35 / 365)
-        end do
-      end do
-                  
-      ! initialize pathogens in channel water and benthic from input data
-      do ich = 1, sp_ob%chandeg
-        iob = sp_ob1%chandeg + ich - 1
-        ichdat = ob(iob)%props
-        ich_ini = sd_dat(ichdat)%init
-        ipath_ini = sd_init(ich_ini)%path
-        do ipath = 1, cs_db%num_paths
-          ch_water(ich)%path(ipath) = path_water_ini(ipest_ini)%water(ipath)
-          ch_benthic(ich)%path(ipath) = path_water_ini(ipest_ini)%benthic(ipath)
-        end do
-      end do
-      
+
       return    
       end subroutine sd_channel_read

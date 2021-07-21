@@ -165,7 +165,7 @@
       if (qdin > 0.01) then
 
 !! initialize reach peak runoff rate
-      peakr = bsn_prm%prf * sdti
+      peakr = sdti
 
 !! calculate peak flow velocity
       vc = 0.

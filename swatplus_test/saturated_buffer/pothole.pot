@@ -1,0 +1,4 @@
+pothole.dat: Pothole properties - Little River Experimental Watershed  
+   NUMB     NAME    FRAC  TILEMM  VOLXMM  VOLMM   NSED  NO3L  SOLPL     K
+      1 Example1     0.0    10.0   100.0   20.0  500.0  15.0    0.1   0.2
+      2 Example2     1.0    10.0   100.0   20.0  500.0  15.0    0.1   0.2

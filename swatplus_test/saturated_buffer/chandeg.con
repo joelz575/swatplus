@@ -1,0 +1,3 @@
+chandeg.con
+NUMB       NAME    GIS_ID    AREA_HA       LAT      LONG      ELEV     CHA    WST  CONSTIT   OVERFLOW     RULESET   OUT_TOT   OBTYP_out  OBTYPNO_OUT  HTYP_OUT    FRAC_OUT 
+   1  drainage_ditch  1      337.660     0.000     0.000     0.000       1   wea1        0          0          0          0      res          1        tot      1.0000

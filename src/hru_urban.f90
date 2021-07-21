@@ -13,7 +13,7 @@
 !!    ihru         |none           |HRU number
 !!    nsweep(:)    |none           |sequence number of street sweeping operation
 !!                                 |within the year
-!!    peakr        |m^3/s          |peak runoff rate
+!!    qp_cms       |m^3/s          |peak runoff rate
 !!    sedyld(:)    |metric tons    |daily soil loss caused by water erosio
 !!    surfq(:)     |mm H2O         |surface runoff for the day in HRU
 !!    tconc(:)     |hr             |time of concentration
@@ -51,7 +51,7 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, ihru, sedyld, surfq, ulu, sanyld, silyld, clayld, sagyld, lagyld, sedorgn, sedorgp,  &
-        surqno3, surqsolp, twash, tconc, peakr, precipday 
+        surqno3, surqsolp, twash, tconc, qp_cms
       use urban_data_module
       use hydrograph_module
       use climate_module
@@ -60,7 +60,7 @@
 
       real :: cod          !kg            |carbonaceous biological oxygen demand of 
                            !              |surface runoff from urban area
-      real :: sus_sol      !kg            |suspended solid loading in surface runoff
+      real :: sus_sol      !kg/ha         |suspended solid loading in surface runoff
                            !              |from urban area
       real :: tn           !kg            |total nitrogen in surface runoff from
                            !              |urban area
@@ -90,11 +90,7 @@
       select case (hru(j)%luse%urb_ro)
 
         case ("usgs_reg")                         !! USGS regression equations
-        if (precipday > .1 .and. surfq(j) > .1) then
-          cod = 0.
-          sus_sol = 0.
-          tn = 0.
-          tp = 0.
+        if (w%precip > .1 .and. surfq(j) > .1) then
           cod = Regres(1)
           sus_sol = Regres(2)
           tn = Regres(3)
@@ -104,7 +100,7 @@
                                              * (1. - urbdb(ulu)%fimp)
 
           !! The sediment loading from urban imprevious area is assumed 
-	    !! to be all sitly particles
+	      !! to be all sitly particles
           silyld(j) = (.001 * sus_sol) * urbdb(ulu)%fimp                &
                                   + silyld(j) * (1. - urbdb(ulu)%fimp)
           sanyld(j) = sanyld(j) * (1. - urbdb(ulu)%fimp)
@@ -127,20 +123,13 @@
         if (surfq(j) > 0.1) then
           !! rainy day: no build-up, street cleaning allowed
 
-          !! calculate amount of dirt on streets prior to wash-off
-          dirt = 0.
-          dirto = 0.
-          dirt = urbdb(ulu)%dirtmx * twash(j) /                         &                       
-                                   (urbdb(ulu)%thalf + twash(j))
+          !! calculate amount of dirt on streets prior to wash-off 
+          dirt = urbdb(ulu)%dirtmx * twash(j) / (urbdb(ulu)%thalf + twash(j))
           dirto = dirt
 
-          !! calculate wash-off of solids
-          urbk = 0.
-          urbk = urbdb(ulu)%urbcoef * (peakr * 3.6 / hru(j)%km)
-                                     !! expression in () peakr in mm/hr
-          rp1 = 0.
-          durf = 0.
-          turo = 0.
+          !! calculate wash-off of solids 
+          urbk = urbdb(ulu)%urbcoef * (qp_cms * 3.6 / hru(j)%km)
+                                     !! expression in () qp_cms in mm/hr 
           rp1 = -2. * Log(1.- wst(iwst)%weat%precip_half_hr)
           durf = 4.605 / rp1         
           turo = durf + tconc(j)
@@ -150,28 +139,23 @@
           dirt = dirt * Exp (-xx)
           if (dirt < 1.e-6) dirt = 0.0
 
-          !! set time to correspond to lower amount of dirt
-          twash(j) = 0.
+          !! set time to correspond to lower amount of dirt 
           twash(j) = urbdb(ulu)%thalf * dirt / (urbdb(ulu)%dirtmx -dirt)
-
-          sus_sol = 0.
-          tn = 0.
-          tp = 0.
-          tno3 = 0.
+ 
           !! amounts are kg/ha
           sus_sol = Max(0., (dirto - dirt) * urbdb(ulu)%curbden)
           tn = urbdb(ulu)%tnconc * sus_sol / 1.e6
           tp = urbdb(ulu)%tpconc * sus_sol / 1.e6
           tno3 = urbdb(ulu)%tno3conc * sus_sol / 1.e6
 
-          sedyld(j) = (.001 * sus_sol*hru(j)%area_ha)*urbdb(ulu)%fimp+            &
+          !! sus_sol * .001 = t/ha
+          sedyld(j) = (.001 * sus_sol) * urbdb(ulu)%fimp +            &
                                    sedyld(j) * (1. - urbdb(ulu)%fimp)
 
           !! The sediment loading from urban imprevious area is assumed 
-	    !! to be all sitly particles
+	      !! to be all sitly particles
           silyld(j) = (.001 * sus_sol * hru(j)%area_ha) *                         &
-                     urbdb(ulu)%fimp + silyld(j) * (1. -                     &
-                                                     urbdb(ulu)%fimp)
+                     urbdb(ulu)%fimp + silyld(j) * (1. - urbdb(ulu)%fimp)
           sanyld(j) = sanyld(j) * (1. - urbdb(ulu)%fimp)
           clayld(j) = clayld(j) * (1. - urbdb(ulu)%fimp)
           sagyld(j) = sagyld(j) * (1. - urbdb(ulu)%fimp)

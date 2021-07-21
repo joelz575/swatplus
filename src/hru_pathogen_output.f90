@@ -32,11 +32,10 @@
       !! daily print
         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%wb_hru%d == "y") then
-             write (2790,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
-                     hpath_bal(j)%path(ipath)   !! pathogen balance
+             write (2790,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpath_bal(j)%path(ipath)   !! pathogen balance
              if (pco%csvout == "y") then
-               write (2794,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
-                       hpath_bal(j)%path(ipath)
+               write (2794,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                 hpath_bal(j)%path(ipath)
              end if
           end if
         end if
@@ -54,11 +53,10 @@
 
           !! monthly print
            if (pco%wb_hru%m == "y") then
-             write (2791,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
-                     hpathb_m(j)%path(ipath)
+             write (2791,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_m(j)%path(ipath)
                if (pco%csvout == "y") then
-                 write (2795,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id,&
-                         ob(iob)%name, hpathb_m(j)%path(ipath)
+                 write (2795,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                   hpathb_m(j)%path(ipath)
                end if
            end if
           
@@ -77,11 +75,10 @@
 
           !! yearly print
            if (time%end_yr == 1 .and. pco%wb_hru%y == "y") then
-             write (2792,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
-                     hpathb_y(j)%path(ipath)
+             write (2792,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_y(j)%path(ipath)
                if (pco%csvout == "y") then
-                 write (2796,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id,&
-                         ob(iob)%name, hpathb_y(j)%path(ipath)
+                 write (2796,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
+                   hpathb_y(j)%path(ipath)
                end if
            end if
           
@@ -90,11 +87,9 @@
 !!!!! average annual print
          if (time%end_sim == 1 .and. pco%wb_hru%a == "y") then
            hpathb_a(j)%path(ipath) = hpathb_a(j)%path(ipath) / time%yrs_prt
-           write (2793,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
-                   hpathb_a(j)%path(ipath)
+           write (2793,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_a(j)%path(ipath)
            if (pco%csvout == "y") then
-             write (2797,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name,&
-                     hpathb_a(j)%path(ipath)
+             write (2797,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, hpathb_a(j)%path(ipath)
            end if
            hpathb_a(j)%path(ipath) = pathbz
          end if

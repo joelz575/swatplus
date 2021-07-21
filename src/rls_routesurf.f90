@@ -14,7 +14,7 @@
 
       use hru_module, only : hru, ihru, usle_cfac, ls_overq, precip_eff
       use hydrograph_module
-      use topography_data_module
+      !use topography_data_module
       
       implicit none
       
@@ -51,7 +51,7 @@
       sed = ob(iob)%hin_sur%sed / hru(j)%area_ha
       !! use surface runoff (mm) for eiq - m3/(10 * ha) = mm
       trancap = hru(j)%topo%dep_co * usle_cfac(j) * ls_overq *        &
-                hru(j)%topo%slope**1.4 * field_db(ifield)%wid**1.4
+                hru(j)%topo%slope**1.4 * hru(j)%field%wid**1.4
       if (sed > trancap) then
         ht1%sed = (sed - trancap) * hru(j)%area_ha
         ht2%sed = trancap * hru(j)%area_ha

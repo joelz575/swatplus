@@ -100,6 +100,8 @@
             select case (cal_parms(ipar)%ob_typ)
             case ("hru")
               cal_upd(i)%num_elem = sp_ob%hru
+            case ("plt")
+              cal_upd(i)%num_elem = sp_ob%hru
             case ("lyr")
               cal_upd(i)%num_elem = sp_ob%hru
             case ("sol")
@@ -108,15 +110,17 @@
               cal_upd(i)%num_elem = sp_ob%hru_lte
             case ("ru")
               cal_upd(i)%num_elem = sp_ob%ru
-            case ("gw")
+            case ("aqu")
               cal_upd(i)%num_elem = sp_ob%aqu
-            case ("rte")
+            case ("cha")
               cal_upd(i)%num_elem = sp_ob%chan
             case ("swq")
               cal_upd(i)%num_elem = sp_ob%chan
             case ("res")
               cal_upd(i)%num_elem = sp_ob%res
             case ("sdc")
+              cal_upd(i)%num_elem = sp_ob%chandeg
+            case ("rte")
               cal_upd(i)%num_elem = sp_ob%chandeg
             case ("bsn")
               cal_upd(i)%num_elem = 1

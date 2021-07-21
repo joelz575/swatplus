@@ -23,6 +23,12 @@
       real :: evol_m3
 
       iob = res_ob(jres)%ob
+      iwst = ob(iob)%wst
+      
+      !! adjust precip and temperature for elevation using lapse rates
+      w = wst(iwst)%weat
+      if (bsn_cc%lapse == 1) call cli_lapse (iob, iwst)
+      wst(iwst)%weat = w
       
       !! set water body pointer to res
       wbody => res(jres)
@@ -46,7 +52,7 @@
           d_tbl => dtbl_res(irel)
           pvol_m3 = res_ob(jres)%pvol
           evol_m3 = res_ob(jres)%evol
-          call conditions (ihyd)
+          call conditions (jres, irel)
           call res_hydro (jres, irel, ihyd, pvol_m3, evol_m3)
           call res_sediment (jres, ihyd, ised)
 	    else
@@ -55,7 +61,6 @@
 
         
       !! calculate water balance for day
-      iwst = ob(iob)%wst
       res_wat_d(jres)%evap = 10. * res_hyd(ihyd)%evrsv * wst(iwst)%weat%pet * res_wat_d(jres)%area_ha
       res_wat_d(jres)%seep = 240. * res_hyd(ihyd)%k * res_wat_d(jres)%area_ha
       res_wat_d(jres)%precip = 10. * wst(iwst)%weat%precip * res_wat_d(jres)%area_ha
@@ -91,6 +96,11 @@
           res_wat_d(jres)%area_ha = 0.
         end if
 
+        !! subtract sediment leaving from reservoir
+        res(jres)%sed = res(jres)%sed - ht2%sed
+        res(jres)%sil = res(jres)%sil - ht2%sil
+        res(jres)%cla = res(jres)%cla - ht2%cla
+          
         !! perform reservoir nutrient balance
         inut = res_dat(idat)%nut
         call res_nutrient (jres, inut, iob)
@@ -111,11 +121,11 @@
         if (time%yrs > pco%nyskip) then
           res_in_d(jres) = ht1 
           res_out_d(jres) = ht2
-          res_in_d(jres)%flo = res(jres)%flo / 10000.               !m^3 -> ha-m
-          res_out_d(jres)%flo = res(jres)%flo / 10000.              !m^3 -> ha-m
-          res_wat_d(jres)%evap = res_wat_d(jres)%evap / 10000.      !m^3 -> ha-m
-          res_wat_d(jres)%seep = res_wat_d(jres)%seep / 10000.      !m^3 -> ha-m
-          res_wat_d(jres)%precip = res_wat_d(jres)%precip / 10000.    !m^3 -> ha-m
+          !res_in_d(jres)%flo = res_in_d(jres)%flo / 10000.          !m^3 -> ha-m
+          !res_out_d(jres)%flo = res_out_d(jres)%flo / 10000.        !m^3 -> ha-m
+          !res_wat_d(jres)%evap = res_wat_d(jres)%evap / 10000.      !m^3 -> ha-m
+          !res_wat_d(jres)%seep = res_wat_d(jres)%seep / 10000.      !m^3 -> ha-m
+          !res_wat_d(jres)%precip = res_wat_d(jres)%precip / 10000.  !m^3 -> ha-m
         end if             
         
       else

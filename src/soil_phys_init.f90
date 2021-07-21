@@ -41,8 +41,7 @@
       real :: b               !m             |bottom width of channel
       real :: c               !none          |inverse of channel side slope
       real :: d               !m             |depth of flow
-      integer :: isol         !              |
-      real :: anion_excl_bsn  !              |      
+      integer :: isol         !              |   
       real :: drpor           !              |
       real :: sa              !ha            |surface area of impounded water body
       real :: cl              !              |
@@ -51,8 +50,7 @@
       
 
       if (sol(isol)%s%alb < 0.1) sol(isol)%s%alb  = 0.1
-      if (sol(isol)%s%anion_excl<=1.e-6) sol(isol)%s%anion_excl =      &      
-                                        anion_excl_bsn
+      if (sol(isol)%s%anion_excl<=1.e-6) sol(isol)%s%anion_excl = 0.5
       if (sol(isol)%s%anion_excl >= 1.) sol(isol)%s%anion_excl = 0.99
 
       nly = sol(isol)%s%nly
@@ -92,23 +90,18 @@
         if (sol(isol)%ly(j)%cal <= 1.e-6) sol(isol)%ly(j)%cal = 2.8
         if (sol(isol)%ly(j)%ph<= 1.e-6) sol(isol)%ly(j)%ph = 6.5
       end do
-!-------------------------------------------------------------
-  
-      nly = sol(isol)%s%nly
 
-!!    calculate composite usle value
-      sol(isol)%phys(1)%rock = Exp(-.053 * sol(isol)%phys(1)%rock)
+      nly = sol(isol)%s%nly
 
 !!    calculate water content of soil at -1.5 MPa and -0.033 MPa
       do j = 1, nly
-        sol(isol)%phys(j)%wp=0.4 * sol(isol)%phys(j)%clay *                  &
-                                            sol(isol)%phys(j)%bd / 100.
+        sol(isol)%phys(j)%wp = 0.4 * sol(isol)%phys(j)%clay * sol(isol)%phys(j)%bd / 100.
         if (sol(isol)%phys(j)%wp <= 0.) sol(isol)%phys(j)%wp = .005
-         sol(isol)%phys(j)%up=sol(isol)%phys(j)%wp+sol(isol)%phys(j)%awc
-         sol(isol)%phys(j)%por = 1. - sol(isol)%phys(j)%bd / 2.65
+          sol(isol)%phys(j)%up = sol(isol)%phys(j)%wp + sol(isol)%phys(j)%awc
+          sol(isol)%phys(j)%por = 1. - sol(isol)%phys(j)%bd / 2.65
         if (sol(isol)%phys(j)%up >= sol(isol)%phys(j)%por) then
-         sol(isol)%phys(j)%up = sol(isol)%phys(j)%por - .05
-         sol(isol)%phys(j)%wp=sol(isol)%phys(j)%up-sol(isol)%phys(j)%awc
+           sol(isol)%phys(j)%up = sol(isol)%phys(j)%por - .05
+           sol(isol)%phys(j)%wp = sol(isol)%phys(j)%up - sol(isol)%phys(j)%awc
         if (sol(isol)%phys(j)%wp <= 0.) then
           sol(isol)%phys(j)%up = sol(isol)%phys(j)%por * .75
           sol(isol)%phys(j)%wp = sol(isol)%phys(j)%por * .25
@@ -157,7 +150,7 @@
         sol(isol)%phys(j)%thick = sol(isol)%phys(j)%d - depth_prev
         pormm = sol(isol)%phys(j)%por * sol(isol)%phys(j)%thick
         sumpor = sumpor + pormm
-        sol(isol)%phys(j)%ul=(sol(isol)%phys(j)%por -                  &
+        sol(isol)%phys(j)%ul = (sol(isol)%phys(j)%por -                  &
            sol(isol)%phys(j)%wp) * sol(isol)%phys(j)%thick
         sol(isol)%s%sumul = sol(isol)%s%sumul + sol(isol)%phys(j)%ul
         sol(isol)%phys(j)%fc = sol(isol)%phys(j)%thick * (sol(isol)%phys(j)%up -            &

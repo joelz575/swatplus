@@ -1,0 +1,4 @@
+hru-data.hru: HRU properties 																
+NUMB	NAME	     	TOPO	         HYD	SOIL	LAND_USE_MGT        SOIL_PLANT_INIT	 SURF_STOR	     SNOW    FIELD    SCHED_UPD
+1  hru0010104       hru00101	  hru0010104  IN025     corn_soyb_notill       low_init	  	  null             snow001     null         null 
+2  hru0010104       hru00101	  hru0010104  IN025     sat_buffer              no_init	         surf_stor         snow001     null         null

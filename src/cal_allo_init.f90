@@ -48,9 +48,11 @@
         isched = hru(iihru)%mgt_ops
         allocate (pcom_init(iihru)%dtbl(sched(isched)%num_autos))
         do iauto = 1, sched(isched)%num_autos
-               id = sched(isched)%num_db(iauto)
-               allocate (pcom_init(iihru)%dtbl(iauto)%num_actions(dtbl_lum(id)%acts))
-               pcom_init(iihru)%dtbl(iauto)%num_actions = 1
+          id = sched(isched)%num_db(iauto)
+          allocate (pcom_init(iihru)%dtbl(iauto)%num_actions(dtbl_lum(id)%acts))
+          pcom_init(iihru)%dtbl(iauto)%num_actions = 1
+          allocate (pcom_init(iihru)%dtbl(iauto)%days_act(dtbl_lum(id)%acts))
+          pcom_init(iihru)%dtbl(iauto)%days_act = 0
         end do
              
         allocate (rsd1_init(iihru)%tot(nplt))

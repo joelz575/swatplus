@@ -89,7 +89,6 @@
 !            iob = ob(i)%obj_out(ii)
 !            iru = ch_sur(ics)%obtypno(ii)
  !           ith = ru(iru)%dbs%toposub_db
- !           ifld = ru(iru)%dbs%field_db
 
             !set flood plain link and landscape element (1==closest to river)
  !           do iele = 1, ru_def(iru)%num_tot

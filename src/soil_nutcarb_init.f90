@@ -69,7 +69,7 @@
 	        actp = sol1(isol)%mp(j)%act / sol(isol)%phys(j)%conv_wt * 1000000.
 		    solp = sol1(isol)%mp(j)%lab / sol(isol)%phys(j)%conv_wt * 1000000.
             !! estimate Total Mineral P in this soil based on data from sharpley 2004
-		    ssp = 25.044 * (actp + solp)** -0.3833
+		    ssp = 25.044 * (actp + solp)** (-0.3833)
 		    !!limit SSP Range
 		    if (ssp > 7.) ssp = 7.
 		    if (ssp < 1.) ssp = 1.	      	  

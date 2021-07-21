@@ -1,0 +1,6 @@
+ls_unit.ele
+NUMB       NAME   OBTYP  OBTYPNO    BSN_FRAC    SUB_FRAC    REG_FRAC
+1          hru1     hru        1       0.400         0.5           0
+2          hru2     hru        2       0.400         0.5           0
+3          hru3     hru        3       0.400         0.5           0
+4          hru4     hru        4       0.400         0.5           0

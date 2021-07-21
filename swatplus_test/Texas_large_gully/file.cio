@@ -1,0 +1,31 @@
+file.cio (control input/output) - Large gully (Texas)
+SIMULATION        time.sim          print.prt         null     object.cnt        null 
+BASIN             codes.bsn         parameters.bsn
+CLIMATE           weather-sta.cli   weather-wgn.cli   null     pcp.cli           tmp.cli           null     null     null     null
+CONNECT           null              hru-lte.con       null     null     null     null     null     null     null     null     null     null      chandeg.con
+CHANNEL           initial.cha       null     null     null     nutrients.cha     channel-lte.cha   hyd-sed-lte.cha   null
+RESERVOIR         null     null     null     null     null     null     null     null
+ROUTING_UNIT      null     null     null     null
+HRU               null              hru-lte.hru
+EXCO              null     null     null     null     null     null
+RECALL            null 
+DR                null     null     null     null     null     null
+AQUIFER           null     null
+HERD              null     null     null
+WATER_RIGHTS      null     null     null
+LINK              null     null  
+HYDROLOGY         null     null     null 
+STRUCTURAL        null     null     null     null     null     
+HRU_PARM_DB       plants.plt        null     null     null     null     null     null     null     null     null
+OPS               null     null     null     null     null     null
+LUM               null     null     null     null     null
+CHG               null     null     null     null     null     null     null     null     null
+INIT              null     null     om_water.ini      null     null     null     null     null     null     null    null
+SOILS             null     null     soils_lte.sol
+DECISION_TABLE    lum.dtl           res_rel.dtl       scen_lu.dtl       flo_con.dtl 
+REGIONS           ls_unit.ele       ls_unit.def		null     null     null     null     null     null     null     null     null     null     null     null     null     null     null
+PATH_PCP          null
+PATH_TMP          null
+PATH_SLR          null
+PATH_HMD          null
+PATH_WND          null

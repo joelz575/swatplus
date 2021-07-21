@@ -4,7 +4,7 @@
       use mgt_operations_module
       use hydrograph_module
       use hru_module, only : hru
-      use plant_module, only : pcom
+      use plant_module, only : pcom, pcom_init
       
       implicit none
 
@@ -25,6 +25,8 @@
             id = sched(isched)%num_db(iauto)
             allocate (pcom(ihru)%dtbl(iauto)%num_actions(dtbl_lum(id)%acts))
             pcom(ihru)%dtbl(iauto)%num_actions = 1
+            allocate (pcom(ihru)%dtbl(iauto)%days_act(dtbl_lum(id)%acts))
+            pcom(ihru)%dtbl(iauto)%days_act = 0
           end do
         end if
       end do

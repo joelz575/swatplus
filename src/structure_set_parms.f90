@@ -7,9 +7,8 @@
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use tiles_data_module
       use mgt_operations_module
-      use hru_module, only : hru, iseptic, t_ov, tc_gwat
+      use hru_module, only : hru, sdr, iseptic, t_ov, tc_gwat
       use soil_module
       
       implicit none
@@ -24,8 +23,9 @@
       select case(str_name)
 
       case ("tiledrain")
+        hru(j)%sdr = sdr(istr)
         hru(j)%lumv%sdr_dep = sdr(istr)%depth
-        !! define soil layer that the drainage tile is in
+        !! define soil layer the drainage tile is in
         if (sdr(istr)%depth > 0) then
           do jj = 1, soil(j)%nly
             if (hru(j)%lumv%sdr_dep < soil(j)%phys(jj)%d) hru(j)%lumv%ldrain = jj
@@ -33,7 +33,7 @@
           end do
         else
           hru(j)%lumv%ldrain = 0
-        endif
+        end if
         !! setting tile lage time
         if (hru(j)%lumv%ldrain > 0 .and. sdr(istr)%lag > 0.01) then
           hru(j)%lumv%tile_ttime = 1. - Exp(-24. /sdr(istr)%lag)
@@ -41,7 +41,7 @@
           hru(j)%lumv%tile_ttime = 0.
         end if
 
-      case ("filter")
+      case ("fstrip")
         hru(j)%lumv%vfsi = filtstrip_db(istr)%vfsi
         hru(j)%lumv%vfsratio = filtstrip_db(istr)%vfsratio
         hru(j)%lumv%vfscon = filtstrip_db(istr)%vfscon

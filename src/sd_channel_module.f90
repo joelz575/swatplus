@@ -3,34 +3,39 @@
       implicit none
 
       integer :: maxint                           !number of intervals in hydrograph for degredation
+      real :: wtemp                             !stream water temperature C
       real :: peakrate, sed_reduc_t, no3_reduc_kg, tp_reduc_kg, tp_reduc, srp_reduc_kg
-      real, dimension(:), allocatable :: hyd_rad  !m^2        |hydraulic radius for each hydrograph time step
-      real, dimension(:), allocatable :: timeint  !days       |time spent in each hydrograph time step
+      real, dimension(:), allocatable :: hyd_rad    !m^2        |hydraulic radius for each hydrograph time step
+      real, dimension(:), allocatable :: trav_time  !days       |time spent in each hydrograph time step
+      real, dimension(:), allocatable :: flo_dep    !m^2        |hydraulic radius for each hydrograph time step
+      real, dimension(:), allocatable :: timeint    !days       |time spent in each hydrograph time step
+      !integer, dimension(:), allocatable :: flood_freq        !rtb floodplain
+
       
       type swatdeg_hydsed_data
         character(len=16) :: name
         character(len=16) :: order
-        real :: chw             !m         |channel width
-        real :: chd             !m         |channel depth
-        real :: chs             !m/m       |channel slope
-        real :: chl             !km        |channel length
-        real :: chn             !          |channel Manning's n
-        real :: chk             !mm/h      |channel bottom conductivity
-        real :: cherod          !          |channel erodibility
-        real :: cov             !0-1       |channel cover factor
-        real :: hc_cov          !0-1       |head cut cover factor
-        real :: chseq           !m/m       |equilibrium channel slope
-        real :: d50             !mm        |channel median sediment size
-        real :: clay            !%         |clay percent of bank and bed
-        real :: carbon          !%         |cabon percent of bank and bed
-        real :: bd              !t/m3      |dry bulk density
-        real :: chss            !          |channel side slope
-        real :: bedldcoef       !          |percent of sediment entering the channel that is bed material
-        real :: tc              !          |time of concentration
-        real :: shear_bnk       !0-1       |bank shear coefficient - fraction of bottom shear
-        real :: hc_kh           !          |headcut erodibility
-        real :: hc_hgt          !m         |headcut height
-        real :: hc_ini          !km        |initial channel length for gullies
+        real :: chw             !m          |channel width
+        real :: chd             !m          |channel depth
+        real :: chs             !m/m        |channel slope
+        real :: chl             !km         |channel length
+        real :: chn             !           |channel Manning's n
+        real :: chk             !mm/h       |channel bottom conductivity
+        real :: cherod          !           |channel erodibility
+        real :: cov             !0-1        |channel cover factor
+        real :: wd_rto          !0.5-100    |width depth ratio
+        real :: chseq           !m/m        |equilibrium channel slope
+        real :: d50             !mm         |channel median sediment size
+        real :: ch_clay         !%          |clay percent of bank and bed
+        real :: carbon          !%          |cabon percent of bank and bed
+        real :: ch_bd           !t/m3       |dry bulk density
+        real :: chss            !           |channel side slope
+        real :: bedldcoef       !           |percent of sediment entering the channel that is bed material
+        real :: fps             !           |flood plain slope
+        real :: fpn             !           |flood plain Manning's n
+        real :: hc_kh           !           |headcut erodibility
+        real :: hc_hgt          !m          |headcut height
+        real :: hc_ini          !km         |initial channel length for gullies
       end type swatdeg_hydsed_data
       type (swatdeg_hydsed_data), dimension (:), allocatable :: sd_chd
 
@@ -69,13 +74,28 @@
         real :: chd = .5        !m          |channel depth
         real :: chs = .01       !m/m        |channel slope
         real :: chl = .1        !km         |channel length
+        real :: chn             !           |channel Manning's n
+        real :: chk             !mm/h       |channel bottom conductivity
         real :: cov             !0-1        |channel cover factor
+        real :: wd_rto          !0.5-100    |width depth ratio
+        real :: chseq           !m/m        |equilibrium channel slope
+        real :: d50
+        real :: ch_clay
+        real :: carbon
+        real :: ch_bd
+        real :: chss
+        real :: bedldcoef
+        real :: fps
+        real :: fpn
+        real :: hc_kh
+        real :: hc_hgt          !m          |headcut height
+        real :: hc_ini
         real :: cherod          !           |channel erodibility
         real :: shear_bnk       !0-1        |bank shear coefficient - fraction of bottom shear
         real :: hc_erod         !           |headcut erodibility
         real :: hc_co = 0.      !m/m        |proportionality coefficient for head cut
         real :: hc_len = 0.     !m          |length of head cut
-        real :: hc_hgt          !m          |headcut height
+        real :: stor            !m3         |water stored in reach at end of the day
         real, dimension (:), allocatable :: kd      !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
         real, dimension (:), allocatable :: aq_mix  ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
         character (len=2) :: overbank               !           |"ib"=in bank; "ob"=overbank flood
@@ -84,24 +104,28 @@
       type (swatdeg_channel_dynamic), dimension (:), allocatable :: sdch_init  
               
       type sd_ch_output
-        real :: flo_in = 0.             ! (m^3/s)      !ave flow rate
-        real :: aqu_in = 0.             ! (m^3/s)      !ave flow rate
-        real :: flo = 0.                ! (m^3/s)      !ave flow rate
-        real :: peakr = 0.              ! (m^3/s)      |peak runoff rate
-        real :: sed_in = 0.             ! (tons)       !total sed in
-        real :: sed_out = 0.            ! (tons)       !total sed out
-        real :: washld = 0.             ! (tons)       !wash load
-        real :: bedld = 0.              ! (tons)       !bed load
-        real :: dep = 0.                ! (tons)       !deposition
-        real :: deg_btm = 0.            ! (tons)       !bottom erosion
-        real :: deg_bank = 0.           ! (tons)       !bank erosion
-        real :: hc_sed = 0.             ! (tons)       !headcut erosion
-        real :: width = 0.              ! 
-        real :: depth = 0.              !
-        real :: slope = 0.              !
-        real :: deg_btm_m = 0.          ! (m)          !downcutting
-        real :: deg_bank_m = 0.         ! (m)          !widening
-        real :: hc_m = 0.               ! (m)          !headcut retreat
+        real :: flo_in = 0.             !(m^3/s)       |average daily inflow rate during time step
+        real :: aqu_in = 0.             !(m^3/s)       |aveerage daily aquifer inflow rate during timestep
+        real :: flo = 0.                !(m^3/s)       |average daily outflow rate during timestep
+        real :: peakr = 0.              !(m^3/s)       |average peak runoff rate during timestep
+        real :: sed_in = 0.             !(tons)        |sediment in
+        real :: sed_out = 0.            !(tons)        |sediment out
+        real :: washld = 0.             !(tons)        |wash load (suspended) out
+        real :: bedld = 0.              !(tons)        |bed load out
+        real :: dep = 0.                !(tons)        |deposition in channel and flood plain
+        real :: deg_btm = 0.            !(tons)        |erosion of channel bottom 
+        real :: deg_bank = 0.           !(tons)        |erosion of channel bank
+        real :: hc_sed = 0.             !(tons)        |erosion from gully head cut
+        real :: width = 0.              !m             |channel bank full top width at end of time step
+        real :: depth = 0.              !m             |channel bank full depth at end of time step
+        real :: slope = 0.              !m/m           |channel slope
+        real :: deg_btm_m = 0.          !(m)           !downcutting of channel bottom
+        real :: deg_bank_m = 0.         !(m)           |widening of channel banks
+        real :: hc_m = 0.               !(m)           |headcut retreat
+        real :: flo_in_mm = 0.          !(mm)          |inflow rate total sum for each time step
+        real :: aqu_in_mm = 0.          !(mm)          |aquifer inflow rate total sum for each time step
+        real :: flo_mm = 0.             !(mm)          |outflow rate total sum for each time step
+        real :: sed_stor = 0.           !(tons)        |sed storage at end of timestep 
       end type sd_ch_output
       
       type (sd_ch_output), dimension(:), allocatable, save :: chsd_d
@@ -125,10 +149,10 @@
           character (len=6) :: yrc        =  "    yr"
           character (len=8) :: isd        =  "   unit "
           character (len=8) :: id         =  " gis_id "           
-          character (len=16) :: name      =  " name              "        
+          character (len=16) :: name      =  " name          "        
           character(len=16) :: flo_in     =  "         flo_in"        ! (m^3/s)
           character(len=16) :: aqu_in     =  "         aqu_in"        ! (m^3/s)
-          character(len=16) :: flo        =  "         flo_out"       ! (m^3/s)
+          character(len=16) :: flo        =  "        flo_out"        ! (m^3/s)
           character(len=15) :: peakr      =  "          peakr"        ! (m^3/s)
           character(len=15) :: sed_in     =  "         sed_in"        ! (tons)
           character(len=15) :: sed_out    =  "        sed_out"        ! (tons)
@@ -144,6 +168,9 @@
           character(len=15) :: deg_btm_m  =  "        deg_btm"        ! (m)
           character(len=15) :: deg_bank_m =  "       deg_bank"        ! (m)
           character(len=15) :: hc_len     =  "         hc_len"        ! (m)
+          character(len=16) :: flo_in_mm  =  "      flo_in_mm"        ! (mm)
+          character(len=16) :: aqu_in_mm  =  "      aqu_in_mm"        ! (mm)
+          character(len=16) :: flo_mm     =  "     flo_out_mm"        ! (mm)
       end type sdch_header
       type (sdch_header) :: sdch_hdr
       
@@ -154,10 +181,10 @@
           character (len=6) :: yrc        =  "      "
           character (len=8) :: isd        =  "        "
           character (len=8) :: id         =  "        "           
-          character (len=16) :: name      =  "                   "        
-          character(len=16) :: flo_in     =  "           m^3/s"       ! (m^3/s)
-          character(len=16) :: aqu_in     =  "           m^3/s"       ! (m^3/s)      
-          character(len=16) :: flo        =  "           m^3/s"       ! (m^3/s) 
+          character (len=16) :: name      =  "              "        
+          character(len=16) :: flo_in     =  "          m^3/s"       ! (m^3/s)
+          character(len=16) :: aqu_in     =  "          m^3/s"       ! (m^3/s)      
+          character(len=16) :: flo        =  "          m^3/s"       ! (m^3/s) 
           character(len=15) :: peakr      =  "          m^3/s"        ! (m^3/s)
           character(len=15) :: sed_in     =  "           tons"        ! (tons)
           character(len=15) :: sed_out    =  "           tons"        ! (tons)
@@ -173,6 +200,9 @@
           character(len=15) :: deg_btm_m  =  "              m"        ! (m)
           character(len=15) :: deg_bank_m =  "              m"        ! (m)
           character(len=15) :: hc_len     =  "              m"        ! (m)
+          character(len=16) :: flo_in_mm  =  "             mm"        ! (mm)
+          character(len=16) :: aqu_in_mm  =  "             mm"        ! (mm)      
+          character(len=16) :: flo_mm     =  "             mm"        ! (mm) 
       end type sdch_header_units
       type (sdch_header_units) :: sdch_hdr_units
      
@@ -217,15 +247,19 @@
        cho3%deg_btm_m = cho1%deg_btm_m + cho2%deg_btm_m
        cho3%deg_bank_m = cho1%deg_bank_m + cho2%deg_bank_m
        cho3%hc_m = cho1%hc_m + cho2%hc_m
+       cho3%flo_in_mm = cho1%flo_in_mm + cho2%flo_in_mm
+       cho3%aqu_in_mm = cho1%aqu_in_mm + cho2%aqu_in_mm
+       cho3%flo_mm = cho1%flo_mm + cho2%flo_mm
+       cho3%sed_stor = cho1%sed_stor + cho2%sed_stor
       end function
       
       function chsd_div (ch1,const) result (ch2)
         type (sd_ch_output), intent (in) :: ch1
         real, intent (in) :: const
         type (sd_ch_output) :: ch2
-        ch2%flo_in = ch1%flo_in / const
-        ch2%aqu_in = ch1%aqu_in / const
-        ch2%flo = ch1%flo / const
+        ch2%flo_in = ch1%flo_in
+        ch2%aqu_in = ch1%aqu_in
+        ch2%flo = ch1%flo
         ch2%peakr = ch1%peakr
         ch2%sed_in = ch1%sed_in / const
         ch2%sed_out = ch1%sed_out / const
@@ -241,15 +275,19 @@
         ch2%deg_btm_m = ch1%deg_btm_m
         ch2%deg_bank_m = ch1%deg_bank_m
         ch2%hc_m = ch1%hc_m
+        ch2%flo_in_mm = ch1%flo_in_mm / const
+        ch2%aqu_in_mm = ch1%aqu_in_mm / const
+        ch2%flo_mm = ch1%flo_mm / const
+        ch2%sed_stor = ch1%sed_stor / const
       end function chsd_div
             
       function chsd_ave (ch1,const) result (ch2)
         type (sd_ch_output), intent (in) :: ch1
         real, intent (in) :: const
         type (sd_ch_output) :: ch2
-        ch2%flo_in = ch1%flo_in
-        ch2%aqu_in = ch1%aqu_in
-        ch2%flo = ch1%flo
+        ch2%flo_in = ch1%flo_in / const
+        ch2%aqu_in = ch1%aqu_in / const
+        ch2%flo = ch1%flo / const
         ch2%peakr = ch1%peakr / const
         ch2%sed_in = ch1%sed_in
         ch2%sed_out = ch1%sed_out
@@ -265,6 +303,10 @@
         ch2%deg_btm_m = ch1%deg_btm_m / const
         ch2%deg_bank_m = ch1%deg_bank_m / const
         ch2%hc_m = ch1%hc_m / const
+        ch2%flo_in_mm = ch1%flo_in_mm
+        ch2%aqu_in_mm = ch1%aqu_in_mm
+        ch2%flo_mm = ch1%flo_mm
+        ch2%sed_stor = ch1%sed_stor
       end function chsd_ave
       
       function chsd_mult (const, chn1) result (chn2)
@@ -289,6 +331,10 @@
         chn2%deg_btm_m = const * chn1%deg_btm_m
         chn2%deg_bank_m = const * chn1%deg_bank_m
         chn2%hc_m = const * chn1%hc_m
+        chn2%flo_in_mm = const * chn1%flo_in_mm
+        chn2%aqu_in_mm = const * chn1%aqu_in_mm
+        chn2%flo_mm = const * chn1%flo_mm
+        chn2%sed_stor = const * chn1%sed_stor
       end function chsd_mult
       
       end module sd_channel_module

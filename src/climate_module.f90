@@ -18,6 +18,7 @@
       real, dimension (:), allocatable :: rnd3                  !none          |random number between 0.0 and 1.0
       real, dimension (:), allocatable :: rnd8                  !none          |random number between 0.0 and 1.0
       real, dimension (:), allocatable :: rnd9                  !none          |random number between 0.0 and 1.0
+      integer :: rndseed_cond = 748932582   ! random number seed for dtbl conditional
 
       type weather_generator_db      
         real :: lat =  0.0                          !! degrees      |latitude of weather station used to compile data
@@ -94,6 +95,7 @@
         real, dimension(:), allocatable :: ts               !! mm           |subdaily precip
       end type weather_daily
       type (weather_daily) :: weat
+      type (weather_daily) :: w
             
       type weather_codes_station
         integer :: wgn = 1        !!  weather generator station number

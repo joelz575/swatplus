@@ -1,0 +1,3 @@
+res.con (2-stage)
+    NUMB       NAME    GIS_ID  AREA_HA    LAT    LONG    ELEV   OUTLET   WST   CONSTIT   OUTFLOW   RULESET   OUT_TOT   
+       1   belton         1      40.000  0.000   0.000   0.000        1  wea1         0         0         0         0

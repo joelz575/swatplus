@@ -29,7 +29,6 @@
       real :: a1                      !           |
       real :: a2                      !           |
       integer :: i                    !           | 
-      real :: max                     !           |
       integer :: isd_h                !none       |counter 
       integer :: k                    !           |
       integer :: idb                  !none       |counter
@@ -84,7 +83,25 @@
         !assumes data for each hru -> ok since there is only one file
         allocate (hlt_db(0:imax))
         allocate (hlt(sp_ob%hru_lte))
-        
+      !! dimension swatdeg output variables
+      msd_h = sp_ob%hru_lte
+      allocate (hltwb_d(msd_h))
+      allocate (hltwb_m(msd_h))
+      allocate (hltwb_y(msd_h))
+      allocate (hltwb_a(msd_h))
+      allocate (hltnb_d(msd_h))
+      allocate (hltnb_m(msd_h))
+      allocate (hltnb_y(msd_h))
+      allocate (hltnb_a(msd_h))
+      allocate (hltls_d(msd_h))
+      allocate (hltls_m(msd_h))
+      allocate (hltls_y(msd_h))
+      allocate (hltls_a(msd_h))
+      allocate (hltpw_d(msd_h))
+      allocate (hltpw_m(msd_h))
+      allocate (hltpw_y(msd_h))
+      allocate (hltpw_a(msd_h))
+
         rewind (1)
         read (1,*,iostat=eof) titldum
         if (eof < 0) exit
@@ -208,7 +225,8 @@
          hlt(i)%phu = .9 * phutot
          hlt(i)%phu = Max(500., hlt(i)%phu)
          
-         if (pldb(iplt)%typ == "warm_annual" .or. pldb(iplt)%typ == "cold_annual") then
+         if (pldb(iplt)%typ == "warm_annual" .or. pldb(iplt)%typ == "cold_annual" .or.  &
+             pldb(iplt)%typ == "warm_annual_tuber" .or. pldb(iplt)%typ == "cold_annual_tuber") then
            hlt(i)%phu = Min(2000., hlt(i)%phu)
          end if
 
@@ -239,6 +257,7 @@
             hlt(i)%por = soil_lte(itext)%por * hlt_db(idb)%soildep
             hlt(i)%sc = soil_lte(itext)%scon
             hlt(i)%sw = hlt_db(idb)%sw * hlt(i)%awc
+            hltwb_d(i)%sw_init = hlt(i)%sw
             hlt(i)%hk = (hlt(i)%por - hlt(i)%awc) / hlt(i)%sc   
             hlt(i)%hk = Max(2., hlt(i)%hk)
             sumul = hlt(i)%por
@@ -251,30 +270,6 @@
             hlt_db(idb)%tc = hlt_db(idb)%tc * 60.     !!min to seconds
         end do
 
-      !! dimension swatdeg output variables
-      msd_h = sp_ob%hru_lte
-      allocate (hltwb_d(msd_h))
-      allocate (hltwb_m(msd_h))
-      allocate (hltwb_y(msd_h))
-      allocate (hltwb_a(msd_h))
-      allocate (hltnb_d(msd_h))
-      allocate (hltnb_m(msd_h))
-      allocate (hltnb_y(msd_h))
-      allocate (hltnb_a(msd_h))
-      allocate (hltls_d(msd_h))
-      allocate (hltls_m(msd_h))
-      allocate (hltls_y(msd_h))
-      allocate (hltls_a(msd_h))
-      allocate (hltpw_d(msd_h))
-      allocate (hltpw_m(msd_h))
-      allocate (hltpw_y(msd_h))
-      allocate (hltpw_a(msd_h))
-       
-      !allocate(qday(nyrs*366),qfdc(nyrs*366)) !Jaehak Jeong for fdc
-      !allocate(pr(nyrs*366))
-      !allocate(sd_qday(5*366),sd_qfdc(5*366)) !Jaehak Jeong for fdc
-      !allocate(pr(5*366))
-      
       exit
       end do
       endif

@@ -11,8 +11,8 @@
         real :: dep_co = 1.       !!               |              |deposition coefficient
       end type topography_db
       type (topography_db), dimension (:), allocatable :: topo_db
-
-      type fields_db
+      
+     type fields_db
            character(len=16) :: name = "default"
            real :: length = 500. !!               |m             |field length for wind erosion
            real :: wid = 100.    !!               |m             |field width for wind erosion

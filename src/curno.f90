@@ -73,7 +73,7 @@
       sumfc = amax1 (.05, sumfc)
       sumfc = amin1 (sumul-.05, sumfc)
       !! calculate shape parameters
-      call ascrv(rto3,rtos,sumfc,sumul,wrt(1,h),wrt(2,h))
+      call ascrv(rto3, rtos, sumfc, sumul, wrt(1,h), wrt(2,h))
 
       return
       end subroutine curno

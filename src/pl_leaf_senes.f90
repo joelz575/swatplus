@@ -2,7 +2,7 @@
       
       use plant_data_module
       use basin_module
-      use hru_module, only : hru, uapd, uno3d, lai_yrmx, par, bioday, ep_day, es_day,              &
+      use hru_module, only : hru, uapd, uno3d, par, bioday, ep_day, es_day,              &
          ihru, ipl, pet_day, rto_no3, rto_solp, sum_no3, sum_solp, uapd_tot, uno3d_tot, vpd
       use plant_module
       use plant_data_module
@@ -30,9 +30,10 @@
       idp = pcom(j)%plcur(ipl)%idplt
       
       !! lai decline for annuals - if dlai < phuacc < 1
-      if (pldb(idp)%typ == "warm_annual" .or. pldb(idp)%typ == "cold_annual") then
+      if (pldb(idp)%typ == "warm_annual" .or. pldb(idp)%typ == "cold_annual" .or.  &
+             pldb(idp)%typ == "warm_annual_tuber" .or. pldb(idp)%typ == "cold_annual_tuber") then
         if (pcom(j)%plcur(ipl)%phuacc > pldb(idp)%dlai .and. pcom(j)%plcur(ipl)%phuacc < 1.) then
-          rto = (1. - pcom(j)%plcur(ipl)%phuacc) / (1. - pldb(idp)%dlai)
+          rto = (1. - pcom(j)%plcur(ipl)%phuacc) / (1. - pcom(j)%plg(ipl)%dphu)
           pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%olai * rto ** pldb(idp)%dlai_rate
         end if
       end if
@@ -46,8 +47,10 @@
           !! logistic decline rate - Strauch and Volk
           rto = (1. - wst(iwst)%weat%phubase0) / (1. - pldb(idp)%dlai)
           pcom(j)%plg(ipl)%lai = (pcom(j)%plg(ipl)%olai - pldb(idp)%alai_min) /   &
-                (1. + Exp((rto - .5) * -12)) + pldb(idp)%alai_min
-                  
+                (1. + Exp((rto - .5) * (-12))) + pldb(idp)%alai_min
+          !rto = (1. - pcom(j)%plcur(ipl)%phuacc) / (1. - pcom(j)%plg(ipl)%dphu)
+          !pcom(j)%plg(ipl)%lai = pcom(j)%plg(ipl)%olai * rto ** pldb(idp)%dlai_rate
+          
           !! compute leaf biomass drop
           lai_drop = lai_init - pcom(j)%plg(ipl)%lai
           lai_drop = amax1 (0., lai_drop)

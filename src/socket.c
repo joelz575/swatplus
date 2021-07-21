@@ -1,11 +1,15 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <float.h>
+#include <limits.h>
+#include <math.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
 #include <json.h>
 #include <json_tokener.h>
+#include <stdint.h>
 #ifdef _WIN32
 	#include <WinSock2.h> // windows
 #else
@@ -14,14 +18,18 @@
 #endif
 
 
+/*Note for developers:
+    Only variable names with a length of up to 10 characters are supported!
+*/
 
-
+void jsonSTRtoFLTarray_(float floatCont[], int *arraySize, char *jsonString);
+void jsonSTRtoINTarray_(int intCont[], int *arraySize, char *jsonString);
 
 void opensocket_(int *portNum, char *hostNum, int *client){
 #ifdef _WIN32
  printf("C function: Opening socket");
  printf("\nPortNum in C: %i",*portNum);
- printf("\nClient obj in C: %i", *client);
+
  int portNumber = *portNum;
  WSADATA winsockData;
  if (WSAStartup(MAKEWORD(2,2), &winsockData) != 0) {
@@ -29,18 +37,18 @@ void opensocket_(int *portNum, char *hostNum, int *client){
             exit(1);
  }
  printf("\nWSAStartup was done successfully...");
- printf((char *)WSAGetLastError());
+ //printf((char *)WSAGetLastError());
  SOCKET cliente;
 
  cliente = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
  printf("client socket was created successfully...");
- printf((char *)WSAGetLastError());
-
+ //printf((char *)WSAGetLastError());
+ printf("\nClient obj in C: %d", cliente);
  struct sockaddr_in server_address;
  server_address.sin_family  = AF_INET;
  server_address.sin_addr.s_addr = inet_addr(hostNum);
  server_address.sin_port = htons(portNumber);
- printf((char *)WSAGetLastError());
+ //printf((char *)WSAGetLastError());
 
  struct sockaddr_in TCPClientAdd;
  int iTCPClientAdd = sizeof(TCPClientAdd);
@@ -48,152 +56,244 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 
  int connectRes;
  connectRes = connect(cliente, (struct sockaddr *) &server_address, sizeof(server_address));
- printf((char *)WSAGetLastError());
+ //printf((char *)WSAGetLastError());
 
  if (connectRes == -1){
-	printf((char *)WSAGetLastError());
+	//printf((char *)WSAGetLastError());
  	}
+ 	printf("\nConnect Result: %d", connectRes);
  	printf("\nCliente= %i", cliente);
  	*client = (int *)cliente;
 
 #else
-	printf("C function: Opening socket");
+ printf("C function: Opening socket");
  printf("\nPortNum in C: %i",*portNum);
- printf("\nClient obj in C: %i", *client);
  int portNumber = *portNum;
  printf("\nHost Number in C: "); printf(hostNum);
  struct sockaddr_in serv_addr;
+
  if ((*client = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Socket creation error \n");
-        return -1;
+        //return -1;
     }
+ else{
+    printf("This is the client in C: %ls\n", client);
+ }
  serv_addr.sin_family = AF_INET;
  serv_addr.sin_port = htons(portNumber);
- if(inet_pton(AF_INET, hostNum, &serv_addr.sin_addr)<=0)
-    {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
-    }
+ serv_addr.sin_addr.s_addr = inet_addr(hostNum);
+
+
+    printf("Connecting now\n");
+    fflush(stdout);
  if (connect(*client, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         printf("\nConnection Failed \n");
-        return -1;
-    }
 
+    }
 
 #endif
 }
 
-void receive_(int *client, char *contenido, char *var_nombre, int *tamano_con){
+void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *pasos, int *shape){
  #ifdef _WIN32
- //Cuando tenga una connexión exitosa, podemos recibir datos del socket.
- printf("\n Am in receive now...");
- int recvRes;
- //printf("\nLength is: %i", *len);
- int tmn;
- int n;
- char blankBuffer;
- struct json_object *parsed_json;
- struct json_object *tipo;
- struct json_object *tamano;
- struct json_object *var;
- struct json_object *matr;
- char json_header;
+    //Cuando tenga una connexión exitosa, podemos recibir datos del socket.
+ 	int recvRes;
+ 	int tmn;
+ 	int n;
+ 	int i;
+ 	char tipo_contenido[5];
+	char blankBuffer[4];
+	char shapeBuffer[6];
+ 	struct json_object *parsed_json;
+ 	struct json_object *orden;
+ 	struct json_object *tamano;
+ 	struct json_object *var;
+ 	struct json_object *matr;
+ 	struct json_object *contenido;
+ 	struct json_object *tipo_cont;
+ 	struct json_object *n_pasos;
+ 	struct json_object *forma;
+ 	char json_header[2000];
 
- n = tmn = recv(*client, blankBuffer, 4, 0);
+	recv(*client, &blankBuffer, 4, 0);
 
- recv(*client, json_header, tmn, 0);
- parsed_json = json_tokener_parse(json_header);
- json_object_object_get_ex(parsed_json, "tipo", &tipo);
- json_object_object_get_ex(parsed_json, "tamaño", &tamano);
- json_object_object_get_ex(parsed_json, "var", &var);
- json_object_object_get_ex(parsed_json, "matr", &matr);
- tamano_con = json_object_get_int(tamano);
+ 	recv(*client, json_header, ((int) blankBuffer), 0);
 
- if (tamano != 0){
- 	recv(*client, *contenido, tamano_con, 0);
-	}
- else {
- 	*contenido = ' ';
- }
-
- //for(i=0; i<n)
-
- printf((char *)WSAGetLastError());
-
-   // while (tmñ > 0 && n < *len) {
-   //     length = read(*client,&receiveBuffer[n],*len - n);
-		//printf("current receiveBuffer %c", receiveBuffer[n]);
-        /* FIXME: Error checking */
-
-   //     n += length;
-    //}
-
-
-    //for(int i=0; i<*len; i++){
-    //	printf("%c",ntohl(receiveBuffer[i]));
-    //	}
-
- //printf("\n Managed to receive: %i",strlen(receiveBuffer));
- //printf((char *)WSAGetLastError());
- //if (recvRes == -1){
- //		printf("receive failed...");
- //		printf((char *)WSAGetLastError());
- //		}
- //printf("\n%s", receiveBuffer);
 
  #else
-  //Porque tenga una connexión exitosa, podemos recibir datos del socket.
- printf("\n Am in receive now...");
- printf("\nClient obj in C: %i", *client);
- int recvRes;
+ 	//Cuando tenga una connexión exitosa, podemos recibir datos del socket.
 
- int length;
- int n;
- n = length = read(*client,receiveBuffer, *len, 0);
- //printf("\nn= %d", n);
- //printf("\nlength= %d", length);
-    while (length > 0 && n < *len) {
-        length = read(*client,&receiveBuffer[n],*len - n);
-		printf("length %d",length);
-		printf("current receiveBuffer %c", receiveBuffer[n]);
-        /* FIXME: Error checking */
+ 	int recvRes;
+ 	int tmn;
+ 	int n;
+ 	int i;
+ 	char tipo_contenido[5];
+	char blankBuffer;
+	char shapeBuffer[6];
+ 	struct json_object *parsed_json;
+ 	struct json_object *orden;
+ 	struct json_object *tamano;
+ 	struct json_object *var;
+ 	struct json_object *matr;
+ 	struct json_object *contenido;
+ 	struct json_object *tipo_cont;
+ 	struct json_object *n_pasos;
+ 	struct json_object *forma;
+ 	char json_header[2000];
 
-        n += length;
-    }
-
-    for(int i=0; i<*len; i++){
-    	printf("%c",ntohl(receiveBuffer[i]));
-    	}
-
- if (recvRes == -1){
-		printf("receive failed...");
-		}
-
-
- //printf("In C function receive Buffer is...");
- //printf("\n%s", receiveBuffer);
+	read(*client, &blankBuffer, 4);
+ 	read(*client, &json_header, (int) blankBuffer);
  #endif
-	}
+ 	parsed_json = json_tokener_parse(json_header);
 
-void sendr_(int *client, char *senderBuffer){
+ 	json_object_object_get_ex(parsed_json, "tipo", &orden);
+    strncpy(command, "       ", 7);
+	strncpy(command, json_object_get_string(orden), strlen(json_object_get_string(orden)));
 
+ 	if(strncmp(command, "cambiar", 7) == 0){
+ 	    printf("Command: %s\n", json_object_get_string(orden));
+ 	    fflush( stdout );
 
- int iSenderBuffer;
- iSenderBuffer = strlen(senderBuffer);
+ 	    json_object_object_get_ex(parsed_json, "tamaño", &tamano);
+
+ 	    json_object_object_get_ex(parsed_json, "var", &var);
+ 	    strncpy(var_nombre, "                     ", strlen(var_nombre));
+        strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
+
+ 	    json_object_object_get_ex(parsed_json, "forma", &forma);
+ 	    strncpy(shapeBuffer, json_object_get_string(forma)+1, strlen(json_object_get_string(forma))-2);
+ 	    *shape = atoi(shapeBuffer);
+
+ 	    json_object_object_get_ex(parsed_json, "tipo_cont", &tipo_cont);
+
+ 		tmn = atoi((const char *) json_object_get_string(tamano));
+
+ 		strncpy(tip_con, json_object_get_string(tipo_cont), 5);
+ 	}
+ 	else if(strncmp(command, "incr", 4) == 0){
+ 	       printf("incr was received\n");
+ 	       json_object_object_get_ex(parsed_json, "n_pasos", &n_pasos);
+ 	       *pasos = atoi(json_object_get_string(n_pasos));
+ 	}
+ 	else if(strncmp(command, "cerrar", 6) == 0){
+ 	        printf("cerrar was received");
+ 	}
+ 	else if(strncmp(command, "leer", 4) == 0){
+ 	        printf("leer was received");
+ 	        json_object_object_get_ex(parsed_json, "var", &var);
+ 	        strncpy(var_nombre, "                              ", strlen(var_nombre));
+            strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
+ 	}
+}
+
+void recvint_(int *client, int *intCont, int *arraySize){
+    int64_t int64Cont [*arraySize];
+    int n, i;
+    int tmn = *arraySize * sizeof(int64_t);
+    n = recv(*client, &int64Cont, tmn, 0 );
+   for(i = 0; i<*arraySize; i++){
+        if (int64Cont[i]-INT_MIN <= (int64_t)INT_MAX-INT_MIN){
+           intCont[i] = int64Cont[i];
+            }
+        else{
+            printf("Error transferring int values, int values probably out of bounds for C int\n");
+            printf("The error occured in the slot: %d\n", i);
+            printf("The value will be replaced using NaN");
+            intCont[i] = NAN;
+        }
+    }
+}
+
+void recvfloat_(int *client, float *floatCont, int *arraySize){
+
+    double doubleCont [*arraySize];
+    int n, i;
+    int tmn = *arraySize * sizeof(double);
+    n = recv(*client, &doubleCont, tmn, 0 );
+    for(i = 0; i<*arraySize; i++){
+        if (doubleCont[i]-FLT_MIN <= (double)FLT_MAX-FLT_MIN){
+           floatCont[i] = doubleCont[i];
+            }
+        else{
+            printf("Error transferring float values, float values probably out of bounds for C float\n");
+            printf("The error occured in the slot: %d\n", i);
+            printf("The value will be replaced using NaN");
+            floatCont[i] = NAN;
+        }
+    }
+}
+
+void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char shape[], int *intLength, int *floatLength){
+ int i,n,y;
  int sendRes;
- //printf("Sending now....");
- sendRes = send(*client, senderBuffer, iSenderBuffer ,0);
+ char *valLen[64];
+ char jsonEncabezadoString[2048];
+ int jsonStringLen;
+
+ strncpy(jsonEncabezadoString, "{\"tamaño\": ", 13);
+
+ if(*floatLength != 0){
+    sprintf( valLen, "%ld", sizeof(float)* (*floatLength));
+    strcat(jsonEncabezadoString, valLen);
+    strcat(jsonEncabezadoString, ", \"tipo_cont\": \"float32\"");
+ }
+
+ else{
+    sprintf(valLen, "%ld", sizeof(int)* (*intLength));
+    printf("Int ValLen: %s\n", valLen);
+    strcat(jsonEncabezadoString, valLen);
+    strcat(jsonEncabezadoString, ", \"tipo_cont\": \"int32\"");
+ }
+
+ strcat(jsonEncabezadoString, ", \"forma\": ");
+ strcat(jsonEncabezadoString, shape);
+ strcat(jsonEncabezadoString, "}");
+
+ printf("Sending encabezado: %s\n", jsonEncabezadoString);
+
+ i = strlen(jsonEncabezadoString);
+
+ sendRes = send(*client, &i, sizeof (i), 0);
 
  if (sendRes==-1){
 	printf("send failed...");
+    }
 #ifdef _WIN32
-	printf((char *)WSAGetLastError());
-#endif
-		}
 
+	//printf((char *)WSAGetLastError());
+
+#endif
+
+ sendRes = send(*client, (char *)jsonEncabezadoString, strlen(jsonEncabezadoString),0);
+
+ if (sendRes==-1){
+	printf("send failed...");
+	}
+
+#ifdef _WIN32
+
+	//printf((char *)WSAGetLastError());
+
+#endif
+ if(*floatLength != 0){
+    sendRes = send(*client, floatSenderBuffer, (sizeof(float)* (*floatLength)), 0);
+    }
+ else{
+    sendRes = send(*client, intSenderBuffer, (sizeof(int)* (*intLength)), 0);
+ }
+ if (sendRes==-1){
+	printf("send failed...");
+
+#ifdef _WIN32
+
+	//printf((char *)WSAGetLastError());
+
+#endif
+    }
 }
+
 
 void closesock_(int *client){
 #ifdef _WIN32

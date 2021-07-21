@@ -9,6 +9,7 @@
       use hydrograph_module
       use constituent_mass_module
       use pesticide_data_module
+      use hru_module, only : hru
       
       implicit none
 
@@ -28,13 +29,14 @@
       integer :: ipst                    !none       |counter
       integer :: isp_ini                 !none       |counter
       integer :: ics                     !none       |counter
+      integer :: isstor               !none       |counter
 
       real :: lnvol
       
       eof = 0
       imax = 0
             
-      !read reservoir.res
+      !read wetland.wet
       imax = 0
       inquire (file=in_res%wet, exist=i_exist)
       if (.not. i_exist .or. in_res%wet == "null") then
@@ -50,7 +52,8 @@
         do while (eof == 0)
           read (105,*,iostat=eof) i
           if (eof < 0) exit
-          imax = Max(imax,i)
+          !imax = Max(imax,i)
+          imax = imax + 1
         end do
         
       db_mx%wet_dat = imax
@@ -135,9 +138,22 @@
         if (wet_dat(ires)%sed == 0) write (9001,*) wet_dat_c(ires)%sed, " not found (wet-sed)"
         if (wet_dat(ires)%nut == 0) write (9001,*) wet_dat_c(ires)%nut, " not found (wet-nut)"
 
-       end do
+      end do
        
       db_mx%wet_dat = imax
+            
+      do i = 1, sp_ob%hru
+        if (hru(i)%dbsc%surf_stor /= "null") then
+          do isstor = 1, db_mx%wet_dat
+            if (hru(i)%dbsc%surf_stor == wet_dat_c(isstor)%name) then
+              hru(i)%dbs%surf_stor = isstor
+              exit
+            end if
+          end do
+        end if
+        if (hru(i)%dbs%surf_stor == 0 .and. hru(i)%dbsc%surf_stor /= 'null') & 
+           write (9001,*) hru(i)%dbsc%surf_stor,"not found (wetland.wet)"
+      end do
        
       close (105)
       exit

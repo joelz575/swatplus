@@ -10,6 +10,8 @@
         character(len=18) :: typ         !none              |plant category
                                          !                  |warm_annual
                                          !                  |cold_annual
+                                         !                  |warm_annual_tuber
+                                         !                  |cold_annual_tuber
                                          !                  |perennial
         character(len=18) :: trig        !none              |phenology trigger
                                          !                  |moisture_gro
@@ -113,7 +115,7 @@
         real :: bioms = 0.                  !kg/ha      |land cover/crop biomass
         real :: phuacc = 0.                 !           |frac of plant heat unit acc.
         real :: pop = 0.
-        real :: fr_yrmat = 20.              !years      |fraction of current year of growth to years to maturity 
+        real :: fr_yrmat = 1.               !years      |fraction of current year of growth to years to maturity 
         real :: rsdin = 10000.              !kg/ha      |initial residue cover
       end type plant_init_db
       
@@ -124,5 +126,14 @@
         type (plant_init_db), dimension(:), allocatable :: pl
       end type plant_community_db
       type (plant_community_db), dimension(:), allocatable :: pcomdb
-                
+                          
+      type plant_transplant_db
+        character(len=16) :: name = "frsd"
+        real :: lai = 0.                    !m**2/m**2  |leaf area index
+        real :: bioms = 0.                  !kg/ha      |land cover/crop biomass
+        real :: phuacc = 0.                 !           |frac of plant heat unit acc.
+        real :: fr_yrmat = 0.05             !years      |fraction of current year of growth to years to maturity 
+      end type plant_transplant_db
+      type (plant_transplant_db), dimension(:), allocatable :: transpl
+    
       end module plant_data_module 

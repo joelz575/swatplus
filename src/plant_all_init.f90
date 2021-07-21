@@ -29,14 +29,14 @@
       do ihru = 1, sp_ob%hru
         do ipl = 1, pcom(ihru)%npl
           if (basin_plants == 0) then
-            plts_bsn(1) = pcom(ihru)%plg(ipl)%cpnm
+            plts_bsn(1) = pcom(ihru)%pl(ipl)
             basin_plants = 1
           end if
           num_plts_cur = basin_plants
           do iplt = 1, num_plts_cur
-            if (pcom(ihru)%plg(ipl)%cpnm == plts_bsn(iplt)) exit
+            if (pcom(ihru)%pl(ipl) == plts_bsn(iplt)) exit
             if (iplt == num_plts_cur) then
-              plts_bsn(iplt+1) = pcom(ihru)%plg(ipl)%cpnm
+              plts_bsn(iplt+1) = pcom(ihru)%pl(ipl)
               basin_plants = basin_plants + 1
             end if
           end do
@@ -59,12 +59,14 @@
       do ihru = 1, sp_ob%hru
         do ipl = 1, pcom(ihru)%npl
           do ipl_bsn = 1, basin_plants
-            if (pcom(ihru)%plg(ipl)%cpnm == plants_bsn(ipl_bsn)) then
+            if (pcom(ihru)%pl(ipl) == plants_bsn(ipl_bsn)) then
               pcom(ihru)%plcur(ipl)%bsn_num = ipl_bsn
               exit
             end if
           end do
         end do
       end do
+      
+      return
       
       end subroutine plant_all_init

@@ -50,36 +50,41 @@
             soft = chcal(ireg)%ord(iord)%meas%chw
             diff = 0.
             if (soft > 1.e-6) diff = abs((soft - chcal(ireg)%ord(iord)%aa%chw) / soft)
-            if (diff > .02 .and. chcal(ireg)%ord(iord)%length > 1.e-6 .and. chcal(ireg)%ord(iord)%prm_lim%cov < 1.e-6) then
+            if (diff > .02 .and. chcal(ireg)%ord(iord)%length > 1.e-6 .and. chcal(ireg)%ord(iord)%prm_lim%erod < 1.e-6) then
             isim = 1
             
                 chcal(ireg)%ord(iord)%prm_prev = chcal(ireg)%ord(iord)%prm
                 chcal(ireg)%ord(iord)%prev = chcal(ireg)%ord(iord)%aa
 
-                chg_val = - chcal(ireg)%ord(iord)%meas%chw / (chcal(ireg)%ord(iord)%aa%chw + 1.e-6)    !assume same ratio of cover and width change
-                chcal(ireg)%ord(iord)%prm_prev%cov = chcal(ireg)%ord(iord)%prm%cov
-                chcal(ireg)%ord(iord)%prm%cov = chcal(ireg)%ord(iord)%prm%cov + chg_val
+                if (soft < chcal(ireg)%ord(iord)%aa%chw) then
+                  chg_val = 1. / (abs((soft - chcal(ireg)%ord(iord)%aa%chw) / soft) + 1.05)
+                else
+                  chg_val = abs((chcal(ireg)%ord(iord)%aa%chw - soft) / chcal(ireg)%ord(iord)%aa%chw) + 1.05
+                end if
+                chcal(ireg)%ord(iord)%prm_prev%erod = chcal(ireg)%ord(iord)%prm%erod
+                chcal(ireg)%ord(iord)%prm%erod = chg_val
                 chcal(ireg)%ord(iord)%prev%chw = chcal(ireg)%ord(iord)%aa%chw
                 
-                if (chcal(ireg)%ord(iord)%prm%cov >= ch_prms(1)%pos) then
-                  chg_val = ch_prms(1)%pos - chcal(ireg)%ord(iord)%prm_prev%cov
-                  chcal(ireg)%ord(iord)%prm%cov = ch_prms(1)%pos
-                  chcal(ireg)%ord(iord)%prm_lim%cov = 1.
+                if (chcal(ireg)%ord(iord)%prm%erod >= ch_prms(1)%pos) then
+                  chg_val = ch_prms(1)%pos
+                  chcal(ireg)%ord(iord)%prm%erod = ch_prms(1)%pos
+                  chcal(ireg)%ord(iord)%prm_lim%erod = 1.
                 end if
-                if (chcal(ireg)%ord(iord)%prm%cov <= ch_prms(1)%neg) then
-                  chg_val = ch_prms(1)%neg - chcal(ireg)%ord(iord)%prm_prev%cov
-                  chcal(ireg)%ord(iord)%prm%cov = ch_prms(1)%neg
-                  chcal(ireg)%ord(iord)%prm_lim%cov = 1.
+                if (chcal(ireg)%ord(iord)%prm%erod <= ch_prms(1)%neg) then
+                  chg_val = ch_prms(1)%neg
+                  chcal(ireg)%ord(iord)%prm%erod = ch_prms(1)%neg
+                  chcal(ireg)%ord(iord)%prm_lim%erod = 1.
                 end if
 
             !check all channels for proper order
             do ich_s = 1, chcal(ireg)%num_tot
               iich = chcal(ireg)%num(ich_s)
-              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
+              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order .or. chcal(ireg)%ord(iord)%meas%name == "basin") then
                 !set parms for 1st width calibration and rerun
-                sdch_init(iich)%cov = sdch_init(iich)%cov + chg_val
-                sdch_init(iich)%cov = amin1 (sdch_init(iich)%cov, ch_prms(1)%up)
-                sdch_init(iich)%cov = Max (sdch_init(iich)%cov, ch_prms(1)%lo)
+                sd_ch(iich)%cherod = sd_ch(iich)%cherod * chg_val
+                sd_ch(iich)%cherod = amin1 (sd_ch(iich)%cherod, ch_prms(1)%up)
+                sd_ch(iich)%cherod = Max (sd_ch(iich)%cherod, ch_prms(1)%lo)
+                sdch_init(iich)%cherod = sd_ch(iich)%cherod
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -93,52 +98,53 @@
 
         ! 1st cover adjustment 
         if (isim > 0) then
-          write (4601,*) " first cover adj "
+          cal_sim =  " first chan erod adj "
           call time_control
         end if
 
           ! cover adjustment for channel widening
           do icov = 1, iter_ind
           isim = 0
-          do ireg = 1, db_mx%cha_reg
+          do ireg = 1, db_mx%ch_reg
           do iord = 1, chcal(ireg)%ord_num
             soft = chcal(ireg)%ord(iord)%meas%chw
             diff = 0.
             if (soft > 1.e-6) diff = abs((soft - chcal(ireg)%ord(iord)%aa%chw) / soft)
-            if (diff > .02 .and. chcal(ireg)%ord(iord)%length > 1.e-6 .and. chcal(ireg)%ord(iord)%prm_lim%cov < 1.e-6) then
+            if (diff > .02 .and. chcal(ireg)%ord(iord)%length > 1.e-6 .and. chcal(ireg)%ord(iord)%prm_lim%erod < 1.e-6) then
             isim = 1
-            
-                rmeas = chcal(ireg)%ord(iord)%meas%chw
-                denom = chcal(ireg)%ord(iord)%prev%chw - chcal(ireg)%ord(iord)%aa%chw
-                if (abs(denom) > 1.e-6) then
-                  chg_val = - (chcal(ireg)%ord(iord)%prm_prev%cov - chcal(ireg)%ord(iord)%prm%cov)                  &
-                    * (chcal(ireg)%ord(iord)%aa%chw - rmeas) / denom
+
+                chcal(ireg)%ord(iord)%prm_prev = chcal(ireg)%ord(iord)%prm
+                chcal(ireg)%ord(iord)%prev = chcal(ireg)%ord(iord)%aa
+
+                if (soft < chcal(ireg)%ord(iord)%aa%chw) then
+                  chg_val = 1. / (abs((soft - chcal(ireg)%ord(iord)%aa%chw) / soft) + 1.05)
                 else
-                  chg_val = - chcal(ireg)%ord(iord)%meas%chw / chcal(ireg)%ord(iord)%aa%chw
+                  chg_val = abs((chcal(ireg)%ord(iord)%aa%chw - soft) / chcal(ireg)%ord(iord)%aa%chw) + 1.05
                 end if
-                chcal(ireg)%ord(iord)%prm_prev%cov = chcal(ireg)%ord(iord)%prm%cov
-                chcal(ireg)%ord(iord)%prm%cov = chcal(ireg)%ord(iord)%prm%cov + chg_val
+                chcal(ireg)%ord(iord)%prm_prev%erod = chcal(ireg)%ord(iord)%prm%erod
+                chcal(ireg)%ord(iord)%prm%erod = chcal(ireg)%ord(iord)%prm%erod * chg_val
                 chcal(ireg)%ord(iord)%prev%chw = chcal(ireg)%ord(iord)%aa%chw
                                 
-                if (chcal(ireg)%ord(iord)%prm%cov >= ch_prms(1)%pos) then
-                  chg_val = ch_prms(1)%pos - chcal(ireg)%ord(iord)%prm_prev%cov
-                  chcal(ireg)%ord(iord)%prm%cov = ch_prms(1)%pos
-                  chcal(ireg)%ord(iord)%prm_lim%cov = 1.
+                if (chcal(ireg)%ord(iord)%prm%erod >= ch_prms(1)%pos) then
+                  chg_val = ch_prms(1)%pos
+                  chcal(ireg)%ord(iord)%prm%erod = ch_prms(1)%pos
+                  chcal(ireg)%ord(iord)%prm_lim%erod = 1.
                 end if
-                if (chcal(ireg)%ord(iord)%prm%cov <= ch_prms(1)%neg) then
-                  chg_val = chcal(ireg)%ord(iord)%prm_prev%cov - ch_prms(1)%neg
-                  chcal(ireg)%ord(iord)%prm%cov = ch_prms(1)%neg
-                  chcal(ireg)%ord(iord)%prm_lim%cov = 1.
+                if (chcal(ireg)%ord(iord)%prm%erod <= ch_prms(1)%neg) then
+                  chg_val = ch_prms(1)%neg
+                  chcal(ireg)%ord(iord)%prm%erod = ch_prms(1)%neg
+                  chcal(ireg)%ord(iord)%prm_lim%erod = 1.
                 end if
             
             !check all channels for proper order
             do ich_s = 1, chcal(ireg)%num_tot
               iich = chcal(ireg)%num(ich_s)
-              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
+              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order .or. chcal(ireg)%ord(iord)%meas%name == "basin") then
                 !set parms for width calibration and rerun
-                sdch_init(iich)%cov = sdch_init(iich)%cov + chg_val
-                sdch_init(iich)%cov = amin1 (sdch_init(iich)%cov, ch_prms(1)%up)
-                sdch_init(iich)%cov = Max (sdch_init(iich)%cov, ch_prms(1)%lo)
+                sd_ch(iich)%cherod = sd_ch(iich)%cherod * chg_val
+                sd_ch(iich)%cherod = amin1 (sd_ch(iich)%cherod, ch_prms(1)%up)
+                sd_ch(iich)%cherod = Max (sd_ch(iich)%cherod, ch_prms(1)%lo)
+                sdch_init(iich)%cherod = sd_ch(iich)%cherod
               end if
             end do
             chcal(ireg)%ord(iord)%nbyr = 0
@@ -152,11 +158,15 @@
 
         ! cover adjustment
         if (isim > 0) then
-          write (4601,*) " cover adj "
+          cal_sim =  " chan erodibility adj "
           call time_control
         end if
-      end do      ! icov
+          end do      ! icov
 
+    !! finish - but leave code in case i need to add back      
+    go to 777
+          
+          
         ! 1st bank shear coefficient adjustment for channel widening
         isim = 0
         do ireg = 1, db_mx%ch_reg
@@ -189,7 +199,7 @@
             !check all channels for proper order
             do ich_s = 1, chcal(ireg)%num_tot
               iich = chcal(ireg)%num(ich_s)
-              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
+              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order .or. chcal(ireg)%ord(iord)%meas%name == "basin") then
                 !set parms for 1st width calibration and rerun
                 sdch_init(iich)%shear_bnk = sdch_init(iich)%shear_bnk + chg_val
                 sdch_init(iich)%shear_bnk = amin1 (sdch_init(iich)%shear_bnk, ch_prms(3)%up)
@@ -248,7 +258,7 @@
             !check all channels for proper order
             do ich_s = 1, chcal(ireg)%num_tot
               iich = chcal(ireg)%num(ich_s)
-              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
+              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order .or. chcal(ireg)%ord(iord)%meas%name == "basin") then
                 !set parms for width calibration and rerun
                 sdch_init(iich)%shear_bnk = sdch_init(iich)%shear_bnk + chg_val
                 sdch_init(iich)%shear_bnk = amin1 (sdch_init(iich)%shear_bnk, ch_prms(3)%up)
@@ -303,7 +313,7 @@
             !check all channels for proper order
             do ich_s = 1, chcal(ireg)%num_tot
               iich = chcal(ireg)%num(ich_s)
-              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
+              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order .or. chcal(ireg)%ord(iord)%meas%name == "basin") then
                 !set parms for 1st erodibility calibration and rerun
                 sdch_init(iich)%cherod = sdch_init(iich)%cherod / chg_val
                 sdch_init(iich)%cherod = amin1 (sdch_init(iich)%cherod, ch_prms(2)%up)
@@ -362,7 +372,7 @@
             !check all channels for proper order
             do ich_s = 1, chcal(ireg)%num_tot
               iich = chcal(ireg)%num(ich_s)
-              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
+              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order .or. chcal(ireg)%ord(iord)%meas%name == "basin") then
                 !set parms for depth calibration and rerun
                 sdch_init(iich)%cherod = sdch_init(iich)%cherod / chg_val
                 sdch_init(iich)%cherod = amin1 (sdch_init(iich)%cherod, ch_prms(2)%up)
@@ -417,7 +427,7 @@
             !check all channels for proper order
             do ich_s = 1, chcal(ireg)%num_tot
               iich = chcal(ireg)%num(ich_s)
-              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
+              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order .or. chcal(ireg)%ord(iord)%meas%name == "basin") then
                 !if height is 0 - no head cut advance
                   sdch_init(iich)%hc_erod = sdch_init(iich)%hc_erod / chg_val
                   sdch_init(iich)%hc_erod = amin1 (sdch_init(iich)%hc_erod, ch_prms(4)%up)
@@ -478,7 +488,7 @@
             !check all channels for proper order
             do ich_s = 1, chcal(ireg)%num_tot
               iich = chcal(ireg)%num(ich_s)
-              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order) then
+              if (chcal(ireg)%ord(iord)%meas%name == sd_ch(iich)%order .or. chcal(ireg)%ord(iord)%meas%name == "basin") then
                 !if height is 0 - no head cut advance
                 if (sd_ch(iich)%hc_hgt > 1.e-6) then
                   sdch_init(iich)%hc_erod = sdch_init(iich)%hc_erod / chg_val
@@ -503,7 +513,7 @@
         end if
         end do      ! ierod
 
-        end do      ! iter
+777    end do      ! iter
       
 	  return
       end subroutine calsoft_chsed

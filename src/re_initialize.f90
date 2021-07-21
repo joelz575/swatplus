@@ -31,7 +31,7 @@
       
       !! re-initialize channel lte storage and dimensions
       if (sp_ob%chandeg > 0) then
-        sdch_init = sd_ch
+        sd_ch = sdch_init
         ch_stor = ch_om_water_init
       end if
       

@@ -83,7 +83,6 @@
 
       fixn = Min(6., fxr * uno3l)
       fixn = pldb(idp)%nfix_co * fixn + (1. - pldb(idp)%nfix_co) * uno3l
-             !! if bsn_prm%fixco = 0 then fix the entire demand
       fixn = Min(fixn, uno3l)
       fixn = Min(bsn_prm%nfixmx, fixn)
 

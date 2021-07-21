@@ -1,0 +1,7 @@
+chandeg.con
+NUMB       NAME    GIS_ID    AREA_HA       LAT      LONG      ELEV     CHA    WST  CONSTIT   OVERFLOW     RULESET   OUT_TOT   OBTYP_out  OBTYPNO_OUT  HTYP_OUT    FRAC_OUT 
+   1      cha1	      1      100.000     0.000     0.000     0.000       1   wea1        0          0          0          0      res          1        tot      1.0000
+   2      cha2        2      200.000     0.000     0.000     0.000       2   wea1        0          0          0          0      res          1        tot      1.0000
+   3      cha3        3      100.000     0.000     0.000     0.000       3   wea1        0          0          0          0      res          1        tot      1.0000
+   4      cha4        4      500.000     0.000     0.000     0.000       4   wea1        0          0          0          0      res          1        tot      1.0000
+   5      cha5        5      800.000     0.000     0.000     0.000       5   wea1        0          0          0          0

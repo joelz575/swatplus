@@ -8,7 +8,6 @@
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    albday      |none          |albedo of ground for day
-!!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
 !!    tmp_an(:)   |deg C         |average annual air temperature
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -27,7 +26,7 @@
 
       use climate_module
       use septic_data_module
-      use hru_module, only : hru, hru_ra, iseptic, ihru, tmpav, tmx, tmn, i_sep, iwgen, albday, isep 
+      use hru_module, only : hru, iseptic, ihru, i_sep, iwgen, albday, isep 
       use soil_module
       use time_module
       use organic_mineral_mass_module
@@ -103,9 +102,9 @@
       tcov = 0.
       tmp_srf = 0.
       !! SWAT manual equation 2.3.10
-      st0 = (hru_ra(j) * (1. - albday) - 14.) / 20.
+      st0 = (w%solrad * (1. - albday) - 14.) / 20.
       !! SWAT manual equation 2.3.9
-      tbare = tmpav(j) + 0.5 * (tmx(j) - tmn(j)) * st0
+      tbare = w%tave + 0.5 * (w%tmax - w%tmin) * st0
       !! SWAT manual equation 2.3.12
       tcov = bcv * soil(j)%phys(2)%tmp + (1. - bcv) * tbare
 

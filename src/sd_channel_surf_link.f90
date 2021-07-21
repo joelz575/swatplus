@@ -15,8 +15,7 @@
         integer :: i                  !              |
         integer :: iob                !              |   
         integer :: ith                !              |   
-        integer :: ifld               !              | 
- 
+
         ii = 0
         ch_sur(ics)%dep(ii) = sd_chd(isdc)%chd
         ch_sur(ics)%wid(ii) = sd_chd(isdc)%chw
@@ -50,11 +49,9 @@
             
             iru = ch_sur(ics)%obtypno(ii)
 
-            ith = ru(iru)%dbs%toposub_db
-            ifld = ru(iru)%dbs%field_db
             !set depth, width, flood volume max
-            ch_sur(ics)%dep(ii) = ch_sur(ics)%dep(ii-1) + field_db(ifld)%wid * topo_db(ith)%slope
-            ch_sur(ics)%wid(ii) = ch_sur(ics)%wid(ii-1) + 2. * field_db(ifld)%length
+            ch_sur(ics)%dep(ii) = ch_sur(ics)%dep(ii-1) + ru(iru)%field%wid * topo_db(ith)%slope
+            ch_sur(ics)%wid(ii) = ch_sur(ics)%wid(ii-1) + 2. * ru(iru)%field%length
             ch_sur(ics)%flood_volmx(ii)= ch_sur(ics)%flood_volmx(ii-1) +        &
                     (ch_sur(ics)%wid(ii-1) * (ch_sur(ics)%dep(ii) -             & 
                     ch_sur(ics)%dep(ii-1)) + (2. * ch_sur(ics)%wid(ii) ** 2 *   &

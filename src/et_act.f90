@@ -37,10 +37,11 @@
  
       use basin_module
       use organic_mineral_mass_module
-      use hru_module, only : hru, tmpav, canstor, ihru, canev, ep_max,  &
+      use hru_module, only : hru, canstor, ihru, canev, ep_max,  &
          es_day, pet_day, snoev
       use soil_module
       use plant_module
+      use climate_module
       
       implicit none
 
@@ -140,12 +141,16 @@
             ep_max = pet * ep_max / (es_max + ep_max)
           end if
         end if
-
+        
+        !! adjust es_max and ep_max for impervous urban cover
+        !es_max = 0.5 * es_max
+        !ep_max = 0.5 * ep_max
+          
         !! initialize soil evaporation variables
         esleft = es_max
 
         !! compute sublimation
-        if (tmpav(j) > 0.) then
+        if (w%tave > 0.) then
           if (hru(j)%sno_mm >= esleft) then
             !! take all soil evap from snow cover
             hru(j)%sno_mm = hru(j)%sno_mm - esleft
@@ -173,11 +178,11 @@
         endif
         
         if (dep < esd) then
-          !hru(j)%hyd%esco = 0.
+          !hru(j)%hyd%esco = 1.  !***jga
           !! calculate evaporation from soil layer
           evz = eosl * soil(j)%phys(ly)%d / (soil(j)%phys(ly)%d +        &
              Exp(2.374 - .00713 * soil(j)%phys(ly)%d))
-          sev = (evz - evzp) * hru(j)%hyd%esco
+          sev = evz - evzp * (1. - hru(j)%hyd%esco)
           evzp = evz
           !if (soil(j)%phys(ly)%st < soil(j)%phys(ly)%fc) then
           !  xx =  2.5 * (soil(j)%phys(ly)%st - soil(j)%phys(ly)%fc) /    &
@@ -210,7 +215,7 @@
           soil1(j)%mn(1)%no3 = soil1(j)%mn(1)%no3 + no3up
         endif
 
-      end do
+      end do    !layer loop
 
       !! update total soil water content
       soil(j)%sw = 0.

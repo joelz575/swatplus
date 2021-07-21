@@ -10,7 +10,7 @@
 !!    cvm(:)      |none          |natural log of USLE_C (the minimum value
 !!                               |of the USLE C factor for the land cover)
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
-!!    peakr       |m^3/s         |peak runoff rate
+!!    qp_cms      |m^3/s         |peak runoff rate
 !!    surfq(:)    |mm H2O        |surface runoff for the day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -34,22 +34,28 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       use hru_module, only : hru, usle_cfac, cklsp, surfq, sedyld, sanyld, silyld, clayld, lagyld, sagyld,  &
-         ihru, peakr, usle_ei
+         ihru, qp_cms, usle_ei
       use soil_module
       
       implicit none
 
       integer :: j           !none                   |HRU number
       real :: c              !                       |
-      real :: usle           !!metric tons/ha        | daily soil loss predicted with USLE equation
+      real :: usle           !metric tons/ha         | daily soil loss predicted with USLE equation
+      real :: rock           !percent                |rock fragments
 
       j = ihru
       
       !! initialize variables
       cklsp(j) = usle_cfac(j) * hru(j)%lumv%usle_mult
+      rock = Exp(-.053 * soil(j)%phys(1)%rock)
 
       !! compute sediment yield with musle
-      sedyld(j) = (surfq(j) * peakr * 1000. * hru(j)%km) ** .56 * cklsp(j)
+      sedyld(j) = (10. * surfq(j) * qp_cms * hru(j)%area_ha) ** .56 * cklsp(j)
+      qp_cms = qp_cms * 3.6 / hru(j)%km !cms--> mm/h
+      sedyld(j) = 1.586 * rock * (surfq(j) * qp_cms) ** .56 * (hru(j)%area_ha) ** 0.12 * &
+                 usle_cfac(j) * soil(j)%ly(1)%usle_k * hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls
+      !sedyld(j) = (surfq(j) * qp_cms) ** .56 * cklsp(j)
 
       if (sedyld(j) < 0.) sedyld(j) = 0.
 

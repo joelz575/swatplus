@@ -32,13 +32,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : dormhr, hru, i_sep, isep, isep_ly, iseptic
+      use hru_module, only : hru, sdr, dormhr, hru, i_sep, isep, isep_ly, iseptic
       use soil_module
       use plant_module
       use climate_module
       use septic_data_module
       use plant_data_module
-      use tiles_data_module
       use pesticide_data_module
       use basin_module
       use channel_module
@@ -46,6 +45,7 @@
       use organic_mineral_mass_module
       use hydrograph_module, only : sp_ob, ob
       use constituent_mass_module
+      use output_landscape_module
       
       implicit none
 
@@ -78,16 +78,21 @@
       real :: sd
       real :: dd
       real :: sdlat
-      real :: h 
+      real :: hlat 
       real :: daylength
+      real :: rock
 
       do j = 1, sp_ob%hru
        iob = hru(j)%obj_no
        iwst = ob(iob)%wst
        iwgn = wst(iwst)%wco%wgn
        
-       hru(j)%lumv%usle_mult = soil(j)%phys(1)%rock * soil(j)%ly(1)%usle_k *       &
+!!    calculate composite usle value
+      rock = Exp(-.053 * soil(j)%phys(1)%rock)
+      hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
+      !hru(j)%lumv%usle_mult = 1.586 * (hru(j)%area_ha) ** 0.12 * rock * soil(j)%ly(1)%usle_k *       &
+      !                           hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls
 
       tsoil = (wgn(iwgn)%tmpmx(12) + wgn(iwgn)%tmpmx(12)) / 2.
       !! should be beginning month of simulation and not 12 (December)
@@ -104,25 +109,26 @@
       !! set initial soil water and temperature for each layer
       nly = soil(j)%nly
       soil(j)%sw = 0.
+      soil(j)%ffc = sffc
       do k = 1, nly
         soil(j)%phys(k)%tmp = tsoil
         soil(j)%phys(k)%st = sffc * soil(j)%phys(k)%fc
         soil(j)%sw = soil(j)%sw + soil(j)%phys(k)%st
       end do
-      
+     
       !! set day length threshold for dormancy and initial dormancy
       dormhr(j) = wgn_pms(iwgn)%daylth
       sd = Asin(.4 * Sin((Real(time%day) - 82.) / 58.09))  !!365/2pi = 58.09
       dd = 1.0 + 0.033 * Cos(Real(time%day) / 58.09)
       sdlat = -wgn_pms(iwgn)%latsin * Tan(sd) / wgn_pms(iwgn)%latcos
       if (sdlat > 1.) then    !! sdlat will be >= 1. if latitude exceeds +/- 66.5 deg in winter
-        h = 0.
+        hlat = 0.
       elseif (sdlat >= -1.) then
-        h = Acos(sdlat)
+        hlat = Acos(sdlat)
       else
-        h = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
+        hlat = 3.1416         !! latitude exceeds +/- 66.5 deg in summer
       endif 
-      daylength = 7.6394 * h
+      daylength = 7.6394 * hlat
       do ipl = 1, pcom(j)%npl
         if (pcom(j)%plcur(ipl)%gro == "y" .and. daylength - dormhr(j) < wgn_pms(iwgn)%daylmn) then
           pcom(j)%plcur(ipl)%idorm = "y"
@@ -170,6 +176,7 @@
         else
           hru(j)%hyd%lat_ttime = 1. - Exp(-1. / hru(j)%hyd%lat_ttime)
         end if
+        hru(j)%hyd%lat_ttime = .295     !***jga
 
         isdr = hru(j)%tiledrain
         if (hru(j)%lumv%ldrain > 0 .and. sdr(isdr)%lag > 0.01) then

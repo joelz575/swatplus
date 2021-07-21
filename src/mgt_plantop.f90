@@ -24,7 +24,6 @@
 !!         plpet     |mm H2O        |potential ET simulated during life of plant
 !!         laimxfr   | 
 !!         hi_adj    |(kg/ha)/(kg/ha)  |optimal harvest index for current time during growing season
-!!         olai      |
 !!    soil()%zmx     |mm            |maximum depth of soil 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -59,6 +58,7 @@
       pcom(j)%plg(ipl)%laimxfr = 0.
       pcom(j)%plg(ipl)%hi_adj = 0.
       pcom(j)%plg(ipl)%olai = 0.
+      pcom(j)%plg(ipl)%dphu = 0.
       pl_mass(j)%root(ipl)%m = 0.
       pcom(j)%plstr(ipl) = plstrz 
 

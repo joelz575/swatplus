@@ -7,7 +7,8 @@
         real :: sol_flo = 0.            ! kg        !soluble pesticide out of aquifer
         real :: sor_flo = 0.            ! kg        !sorbed pesticide out of aquifer
         real :: sol_perc = 0.           ! kg        !sorbed pesticide out of aquifer
-        real :: react = 0.              ! kg        !pesticide lost through reactions in water layer
+        real :: react = 0.              ! kg        !pesticide lost through reactions
+        real :: metab = 0.              ! kg        !amount of pesticide metabolized from parent
         real :: stor_ave = 0.           ! kg        !average end of day pesticide in aquifer during the time period 
         real :: stor_init = 0.          ! kg        !pesticide in aquifer at the start of the day 
         real :: stor_final = 0.         ! kg        !pesticide in aquifer at the end of the day 
@@ -42,6 +43,7 @@
           character(len=13) :: sor_out =    "  sor_flo_kg"          ! (mg)
           character(len=13) :: sol_perc =   "sol_perc_kg"           ! (mg)
           character(len=13) :: react =      "react_kg"        	    ! (mg)
+          character(len=13) :: metab =      "metab_kg"        	    ! (mg)
           character(len=13) :: stor_ave  =  "stor_ave_kg"           ! (mg)
           character(len=13) :: stor_init =  "stor_init_kg"          ! (mg)
           character(len=13) :: stor_final=  "stor_final_kg"         ! (mg)
@@ -76,6 +78,7 @@
         aqu3%sor_flo = aqu1%sor_flo + aqu2%sor_flo
         aqu3%sol_perc = aqu1%sol_perc + aqu2%sol_perc
         aqu3%react = aqu1%react + aqu2%react
+        aqu3%metab = aqu1%metab + aqu2%metab
         aqu3%stor_ave = aqu1%stor_ave + aqu2%stor_ave
         aqu3%stor_init = aqu1%stor_init
         aqu3%stor_final = aqu1%stor_final
@@ -90,6 +93,7 @@
         aqu3%sor_flo = aqu1%sor_flo + aqu2%sor_flo
         aqu3%sol_perc = aqu1%sol_perc + aqu2%sol_perc
         aqu3%react = aqu1%react + aqu2%react
+        aqu3%metab = aqu1%metab + aqu2%metab
         aqu3%stor_ave = aqu1%stor_ave + aqu2%stor_ave
         aqu3%stor_init = aqu1%stor_init + aqu2%stor_init
         aqu3%stor_final = aqu1%stor_final + aqu2%stor_final
@@ -104,6 +108,7 @@
           aqu2%sor_flo = aqu1%sor_flo / const
           aqu2%sol_perc = aqu1%sol_perc / const
           aqu2%react = aqu1%react / const
+          aqu2%metab = aqu1%metab / const
           aqu2%stor_ave = aqu1%stor_ave
           aqu2%stor_init = aqu1%stor_init
           aqu2%stor_final = aqu1%stor_final
@@ -118,6 +123,7 @@
           aqu2%sor_flo = aqu1%sor_flo
           aqu2%sol_perc = aqu1%sol_perc
           aqu2%react = aqu1%react
+          aqu2%metab = aqu1%metab
           aqu2%stor_ave = aqu1%stor_ave / const
           aqu2%stor_init = aqu1%stor_init
           aqu2%stor_final = aqu1%stor_final

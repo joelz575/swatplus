@@ -1,0 +1,7 @@
+hru-lte.hru
+  NUMB                NAME             DAKM2       CN2  CN3_SWF    TC   SOILDEP  PERCO   SLOPE   SLOPELEN  ETCO    SY	  ABF   REVAPC	PERCC   SW	 GW   GWFLOW	 GWDEEP    SNOW   XLAT      TEXT     TROPICAL     IGROW1          IGROW2    IPLANT    STRESS  IPET    IRR         IRRSC     TDRAIN     USLEK   USLEC   USLEP   USLELS
+	 1	  BcGully_MainTrib	          0.0572	    85.	      0	   60.	   1330	     1	  0.02	      229	  1	 0.05	 0.05	   0	 0.01  0.5	  3	       0	    300	      0	  31.5	 clay_loam	 non_trop   pl_grow_sum   pl_end_sum      berm         1   p_t    no_irr   outside_bsn	     0	     0.37     0.2	   0.6	  0.32
+
+
+
+   

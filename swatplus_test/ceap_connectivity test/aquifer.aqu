@@ -1,0 +1,3 @@
+aquifer.aqu: Aquifer properties
+          id        name      aqu_init	aqu_flo   dep_bot     dep_wt      no3_n      sol_p    carbon   flo_dist     bf_max   alpha_bf      revap    rchg_dp   spec_yld    hl_no3n    flo_min  revap_min
+           1        aqu1      low_init	 0.050    100.000     3.000      0.000      0.000      0.500     50.000      1.000      1.000      0.020      0.060      0.050      0.000      5.000     3.000

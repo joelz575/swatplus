@@ -37,6 +37,9 @@
       
       type soil_profile_mass1
         character (len=16) :: name
+        real :: tot_mn                                              !       |total mineral n pool (no3+nh4) in soil profile
+        real :: tot_mp                                              !       |mineral p pool (wsol+lab+act+sta) in soil profile
+        type (organic_mass) :: tot_org                              !       |total organics in soil profile
         real, dimension(:), allocatable :: sw                       !mm     |soil water dimensioned by layer
         real, dimension(:), allocatable :: cbn                      !%      |percent carbon
         type (sediment), dimension(:), allocatable :: sed           !       |sediment dimensioned by layer
@@ -72,6 +75,11 @@
       type (mineral_phosphorus) :: soil_prof_mp                     !       |active humus pool
       type (mineral_nitrogen) :: soil_mn_z
       type (mineral_phosphorus) :: soil_mp_z
+      type (organic_mass) :: bsn_org_soil                           !       |total soil organics in basin
+      type (organic_mass) :: bsn_org_pl                             !       |total plant organics in basin
+      type (organic_mass) :: bsn_org_rsd                            !       |total residue organics in basin
+      real :: bsn_mn                                                !       |total mineral n pool (no3+nh4) in soil profile
+      real :: bsn_mp                                                !       |mineral p pool (wsol+lab+act+sta) in soil profile
 
       type residue_mass1
         character (len=16) :: name
@@ -222,6 +230,7 @@
         type (organic_mineral_hydrograph) :: hin_sur                             !inflow hydrograph for surface flow - sum of all surface inflow hyds
         type (organic_mineral_hydrograph) :: hin_lat                             !inflow hydrograph for lateral soil flow - sum of all lateral inflow hyds
         type (organic_mineral_hydrograph) :: hin_til                             !inflow hydrograph for tile flow - sum of all tile inflow hyds
+        type (organic_mineral_hydrograph) :: hin_aqu                             !inflow hydrograph for aquifer flow - sum of all aquifer inflow hyds
         type (organic_mineral_hydrograph), dimension(:),allocatable :: hd        !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
         type (organic_mineral_hydrograph), dimension(:,:),allocatable :: ts      !subdaily hydrographs
         type (organic_mineral_hydrograph), dimension(:),allocatable :: tsin      !inflow subdaily hydrograph

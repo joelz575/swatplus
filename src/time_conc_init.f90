@@ -40,14 +40,13 @@
         ru(iru)%da_km2 = ob(iob)%area_ha / 100.
         ru_n(iru) = ru_n(iru) / ru(iru)%da_km2
         ith = ru(iru)%dbs%toposub_db
-        ifld = ru(iru)%dbs%field_db
         !if (ith > 0 .and. ichan > 0) then                  
         ! compute tc for the subbasin
           tov = .0556 * (topo_db(ith)%slope_len * ru_n(iru)) ** .6 /     &
                                               (topo_db(ith)%slope + .0001) ** .3
           ch_slope = .5 * (topo_db(ith)%slope + 0001)
           ch_n = ru_n(iru)
-          ch_l = field_db(ifld)%length / 1000.
+          ch_l = ru(iru)%field%length / 1000.
           t_ch = .62 * ch_l * ch_n**.75 / (ru(iru)%da_km2**.125 * ch_slope**.375)
           ru_tc(iru) = tov + t_ch
         !end if                                             
@@ -61,7 +60,7 @@
            hru(ihru)%luse%ovn) ** .6 / (hru(ihru)%topo%slope + .00001) ** .3
         ch_slope = .5 * topo_db(ith)%slope
         ch_n = hru(ihru)%luse%ovn
-        ch_l = field_db(ifld)%length / 1000.
+        ch_l = hru(ihru)%field%length / 1000.
         t_ch = .62 * ch_l * ch_n**.75 / (hru(ihru)%km**.125 * (ch_slope + .00001)**.375)
         tconc(ihru) = t_ov(ihru) + t_ch
         !! compute fraction of surface runoff that is reaching the main channel

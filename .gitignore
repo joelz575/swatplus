@@ -5,6 +5,8 @@
 json-c
 vcpkg
 
+*.txt
+*.out
 ### Fortran template
 # Prerequisites
 *.d
@@ -97,3 +99,4 @@ executables/
 data/
 .idea/
 json-c-build/
+build/

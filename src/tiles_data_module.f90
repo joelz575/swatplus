@@ -3,7 +3,7 @@
       implicit none
      
         type subsurface_drainage
-        character(len=13) :: name = "default"
+        character(len=13) :: name = "null"
         real :: depth = 0.    !! |mm            |depth of drain tube from the soil surface
         real :: time = 0.     !! |hrs           |time to drain soil to field capacity
         real :: lag = 0.      !! |hours         |drain tile lag time

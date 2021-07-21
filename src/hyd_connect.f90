@@ -11,6 +11,7 @@
       use organic_mineral_mass_module
       use constituent_mass_module
       use ru_module
+      use basin_module
       
       implicit none
       
@@ -82,9 +83,9 @@
         sp_ob1%ru = nspu
         nspu = sp_ob%ru + nspu
       end if
-      if (sp_ob%modflow > 0) then     ! 4==modflow
-        sp_ob1%modflow = nspu
-        nspu = sp_ob%modflow + nspu
+      if (sp_ob%gwflow > 0) then     ! 4==gwflow
+        sp_ob1%gwflow = nspu
+        nspu = sp_ob%gwflow + nspu
       end if
       if (sp_ob%aqu > 0) then         ! 5==aquifer
         sp_ob1%aqu = nspu
@@ -133,35 +134,30 @@
 
       !read connect file for hrus
       if (sp_ob%hru > 0) then
-        call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, hd_tot%hru, 2)     
+        call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, hd_tot%hru, bsn_prm%day_lag_mx)     
       end if
       
       !read connect file for hru_lte"s
       if (sp_ob%hru_lte > 0) then
-        call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, hd_tot%hru_lte, 2) 
+        call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, hd_tot%hru_lte, bsn_prm%day_lag_mx) 
       end if
       
       !read connect file for routing units
       if (sp_ob%ru > 0) then
-        call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, hd_tot%ru, 2)
+        call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, hd_tot%ru, bsn_prm%day_lag_mx)
         call ru_read
         call ru_read_elements
-      end if
-        
-      !read connect file for modflow
-      if (sp_ob%modflow > 0) then
-        call hyd_read_connect(in_con%modflow_con, "modflow ", sp_ob1%modflow, sp_ob%modflow, hd_tot%modflow, 0)
       end if
                      
       !read connect file for aquifer (1-D)
       if (sp_ob%aqu > 0) then
-        call hyd_read_connect(in_con%aqu_con, "aqu     ", sp_ob1%aqu, sp_ob%aqu, hd_tot%aqu, 0)
+        call hyd_read_connect(in_con%aqu_con, "aqu     ", sp_ob1%aqu, sp_ob%aqu, hd_tot%aqu, 1)
         call aqu2d_read
       end if
                   
       !read connect file for channels
       if (sp_ob%chan > 0) then
-        call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, hd_tot%chan, 3) 
+        call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, hd_tot%chan, bsn_prm%day_lag_mx) 
         call overbank_read
         call channel_surf_link
       end if
@@ -173,31 +169,39 @@
                 
       !read connect file for recalls
       if (sp_ob%recall > 0) then
-        call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 0) 
+        call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 1) 
         call recall_read
       end if
                 
       !read connect file for export coefficients
       if (sp_ob%exco > 0) then
-        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 0) 
+        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 1) 
       endif
                   
       !read connect file for delivery ratio
       if (sp_ob%dr > 0) then
-        call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 0) 
+        call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 1) 
         call dr_db_read
       end if
                   
       !read connect file for outlet
       if (sp_ob%outlet > 0) then
-        call hyd_read_connect(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, hd_tot%outlet, 0)
+        call hyd_read_connect(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, hd_tot%outlet, bsn_prm%day_lag_mx)
       end if
           
       !read connect file for swat-deg channels
       if (sp_ob%chandeg > 0) then
-        call hyd_read_connect(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, 3)
+        call hyd_read_connect(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, bsn_prm%day_lag_mx)
         call overbank_read
       end if
+      
+      !read connect file for gwflow
+      if (sp_ob%gwflow > 0) then
+        call hyd_read_connect(in_con%gwflow_con, "gwflow  ", sp_ob1%gwflow, sp_ob%gwflow, hd_tot%gwflow, 1)
+        call gwflow_read
+      end if
+      
+      
 
       !! for each hru or defining unit, set all subbasins that contain it 
         do i = 1, sp_ob%objs
@@ -244,8 +248,8 @@
                 iob = ru_elem(ielem)%obj
                 ob(iob)%rcv_tot = ob(iob)%rcv_tot + 1
               end do
-            case ("mfl")   !modflow
-              ob(i)%obj_out(ii) = sp_ob1%modflow+ob(i)%obtypno_out(ii)-1
+            case ("gwflow")   !gwflow
+              ob(i)%obj_out(ii) = sp_ob1%gwflow+ob(i)%obtypno_out(ii)-1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
             case ("aqu")   !aquifer
@@ -333,6 +337,14 @@
           allocate (ob(i)%htyp_in(nspu))
           allocate (ob(i)%ihtyp_in(nspu))
           allocate (ob(i)%frac_in(nspu))
+          allocate (ob(i)%hin_uh(nspu))
+          !! allocate unit hyd for all incoming hyd's
+          do ii = 1, nspu
+            allocate (ob(i)%hin_uh(ii)%uh(bsn_prm%day_lag_mx,time%step))
+            allocate (ob(i)%hin_uh(ii)%hyd_flo(bsn_prm%day_lag_mx,time%step))
+            ob(i)%hin_uh(ii)%uh = 0.
+            ob(i)%hin_uh(ii)%hyd_flo = 0.
+          end do
           allocate (ob(i)%hin_d(nspu))
           allocate (ob(i)%hin_m(nspu))
           allocate (ob(i)%hin_y(nspu))
@@ -366,6 +378,7 @@
             jj = rcv_sum(kk)                                ! jj=seqential receiving number
             ob(kk)%obj_in(jj) = i                           ! source object number (for receiving unit)
             ob(kk)%obtyp_in(jj) = ob(i)%typ
+            ob(kk)%obtypno_in(jj) = ob(i)%num
             ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
             ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
             ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
@@ -398,7 +411,7 @@
       iord = 1
       dfn_sum = 0
       
-      do while (idone == 0)
+    do while (idone == 0)
         do i = 1, sp_ob%objs
         
         if (iord > 1000) then
@@ -406,24 +419,45 @@
 
             do iob = 1, sp_ob%objs
               if (ob(iob)%fired == 0 .and. ob(iob)%rcv_tot > 0) then
+                  kk=1
                 write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),  &
-                                     ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
+                                    ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
               end if 
             end do
-            write (*,1002) 
-1002        format (5x,/,"ERROR - An infinite loop is detected in the connect file(s)",/, 15x, "the simulation will end",       &
-                       /, 9x, "(review diagnostics.out file for more info)",/)
-            pause   !!! stop the simulation run (ob(i)%fired == 0)
-            stop
+            write (*,1002)
+            !pause   !!! stop the simulation run (ob(i)%fired == 0)
+            !stop
+            call exit(1)
           end if
-
-        end if        
+        end if 
+   
+      
           !check if all incoming and defining objects have been met
           !if not sum incoming 
           if (rcv_sum(i) == ob(i)%rcv_tot .and.                        & 
                                       dfn_sum(i) == ob(i)%dfn_tot) then
             if (ob(i)%fired == 0) then
             ob(i)%fired = 1
+            
+                !! calculate drainage area to compare to input area - need reservoir surface area
+                do ircv = 1, ob(i)%rcv_tot
+                  if (ob(i)%obtyp_in(ircv) == "hru" .or. ob(i)%obtyp_in(ircv) == "ru" .or.      &
+                        ob(i)%obtyp_in(ircv) == "chandeg" .or. ob(i)%obtyp_in(ircv) == "recall" &
+                        .or. ob(i)%obtyp_in(ircv) == "res" .or. ob(i)%obtyp_in(ircv) == "outlet") then
+                    !if (ircv == 1) then
+                      ob1 = ob(i)%obj_in(ircv)
+                      ob(i)%area_ha_calc = ob(i)%area_ha_calc + ob(ob1)%area_ha_calc * ob(i)%frac_in(ircv)
+                    !else
+                    !  do ob2 = 1, ircv
+                    !    ob1 = ob(i)%obj_in(ircv)
+                    !    if (ob(i)%obj_in(ircv) /= ob(i)%obj_in(ob2)) then
+                    !      ob(i)%area_ha_calc = ob(i)%area_ha_calc + ob(ob1)%area_ha_calc * ob(i)%frac_in(ircv)
+                    !    end if
+                    !  end do
+                    !end if
+                  end if
+                end do
+                    
             iobj_tot = iobj_tot + 1    ! check to see if all objects are done
             if (iobj_tot == sp_ob%objs) idone = 1
             !sum defining units for each subbasin
@@ -501,7 +535,18 @@
         iord = iord + 1
       end do
       
-      !! set command orders for parallelization
-      ! allocate (
+      !! write calculated and input drainage areas for all objects except hru's
+      !do iob = 1, sp_ob%objs
+      !  if (ob(iob)%typ /= "hru" .and. ob(iob)%typ /= "ru") then
+      !    write (9001, *) iob, ob(iob)%typ, ob(iob)%num, ob(iob)%area_ha, ob(iob)%area_ha_calc,             &
+      !      ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj), ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj),             &
+      !      ob(iob)%frac_in(jj), &
+      !      ob(ob(iob)%obj_in(jj))%area_ha, ob(ob(iob)%obj_in(jj))%area_ha_calc, jj = 1, ob(iob)%rcv_tot)
+      !  end if 
+      !end do
+      
+      
+1002  format (5x,/,"ERROR - An infinite loop is detected in the connect file(s)",/, 15x, "the simulation will end",       &
+                       /, 9x, "(review diagnostics.out file for more info)",/)
       return
       end subroutine hyd_connect

@@ -36,7 +36,6 @@
 !!    hhtime(:)        |hr            |flow travel time for hour
 !!    hrchwtr(ii)      |m^3 H2O       |water stored in reach at beginning of day
 !!    hrtwtr(:)        |m^3 H2O       |flow out of reach
-!!    hru_ra(:)        |MJ/m^2        |solar radiation for the day in HRU
 !!    inum2            |none          |inflow hydrograph storage location number
 !!    k_l              |MJ/(m2*hr)    |half saturation coefficient for light
 !!    k_n              |mg N/L        |michaelis-menton half-saturation constant

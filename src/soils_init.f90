@@ -84,8 +84,8 @@
             sol(isol)%phys(j)%silt = soildb(isol)%ly(j-1)%silt
             sol(isol)%phys(j)%sand = soildb(isol)%ly(j-1)%sand
             sol(isol)%phys(j)%rock = soildb(isol)%ly(j-1)%rock
-            sol(isol)%ly(1)%alb = soildb(isol)%ly(j-1)%alb
-            sol(isol)%ly(1)%usle_k = soildb(isol)%ly(j-1)%usle_k
+            sol(isol)%ly(j)%alb = soildb(isol)%ly(j-1)%alb
+            sol(isol)%ly(j)%usle_k = soildb(isol)%ly(j-1)%usle_k
             sol(isol)%ly(j)%ec = soildb(isol)%ly(j-1)%ec
             sol(isol)%ly(j)%cal = soildb(isol)%ly(j-1)%cal
             sol(isol)%ly(j)%ph = soildb(isol)%ly(j-1)%ph
@@ -110,7 +110,7 @@
           end do
         end if
       end do
-
+           
       do isol = 1, msoils
         call soil_phys_init(isol)          !! initialize soil physical parameters
         call soil_nutcarb_init(isol)       !! initialize soil chemical parameters
@@ -182,8 +182,8 @@
       
       do ihru = 1, sp_ob%hru
         if (pco%snutc == "d" .or. pco%snutc == "m" .or. pco%snutc == "y" .or. pco%snutc == "a") then
-          time%day = 0
-          time%yrc = 0
+          !time%day = 0
+          !time%yrc = 0
           call soil_nutcarb_write
         end if
       end do

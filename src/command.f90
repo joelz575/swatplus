@@ -24,9 +24,11 @@
       use basin_module
       use maximum_data_module
       use output_landscape_module, only : hnb_d
+      use gwflow_module
       
       implicit none
 
+      real, dimension(time%step) :: hyd_flo     !flow hydrograph
       integer :: in                   !              |
       integer :: ielem                !              |  
       integer :: iob                  !              |
@@ -42,8 +44,15 @@
       integer :: ihyd                 !              |
       integer :: idr                  !              |
       integer :: ifirst               !              |
+      integer :: iwro                 !              |
+      integer :: ob_num               !              |
       real :: conv                    !              |
-      real :: frac_in                 !              |  
+      real :: frac_in                 !              |
+      integer dum
+      integer :: i_mfl !rtb gwflow; counter
+      real :: sum
+            
+      sum = 0.
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
@@ -67,7 +76,7 @@
           obcs(icmd)%hin_til = hin_csz
           hcs1 = hin_csz
           hcs2 = hin_csz
-          if (time%step > 0) ob(icmd)%tsin(:) = hz
+          if (time%step > 0) ob(icmd)%tsin = 0.
           ob(icmd)%peakrate = 0.
           
           if (ob(icmd)%rcv_tot > 0) then
@@ -96,7 +105,7 @@
               else
                 ! if hyd in is not a total hyd from an hru or ru -> add the specified hyd typ 
                 select case (ob(icmd)%htyp_in(in))
-                case ("tot")   ! tile flow
+                case ("tot")   ! total flow
                   ob(icmd)%hin_sur = ob(icmd)%hin_sur + frac_in * ob(iob)%hd(ihyd)
                   !add constituents
                   if (cs_db%num_tot > 0) then
@@ -120,6 +129,12 @@
                   if (cs_db%num_tot > 0) then
                     obcs(icmd)%hin_til = obcs(icmd)%hin_til + frac_in * obcs(iob)%hd(ihyd)
                   end if
+                case ("aqu")   ! aquifer inflow
+                  ob(icmd)%hin_aqu = ob(icmd)%hin_aqu + frac_in * ob(iob)%hd(ihyd)
+                  !add constituents
+                  if (cs_db%num_tot > 0) then
+                    obcs(icmd)%hin_aqu = obcs(icmd)%hin_aqu + frac_in * obcs(iob)%hd(ihyd)
+                  end if
                 end select
               end if
               
@@ -137,26 +152,49 @@
               obcs(icmd)%hcsin_d(in) = hcs1   !for constituent hydrograph output
             end if
             
-            !sum subdaily hydrographs
+            !sum subdaily inflow hydrographs
             if (time%step > 0) then
-              do kk = 1, time%step
-                iday = ob(iob)%day_cur
-                ob(icmd)%tsin(kk) = ob(icmd)%tsin(kk) + ob(iob)%ts(iday,kk)
-              end do
+              iday = ob(iob)%day_cur
+              if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "ru") then
+                select case (ob(icmd)%htyp_in(in))
+                case ("tot")   ! total flow
+                  hyd_flo = ob(iob)%hyd_flo(iday,:) + ob(iob)%lat_til_flo / time%step
+                case ("sur")   ! surface runoff
+                  hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+                case ("lat")   ! lateral soil flow
+                  hyd_flo(:) = ob(iob)%hd(4)%flo / time%step
+                case ("til")   ! tile flow
+                  hyd_flo(:) = ob(iob)%hd(5)%flo / time%step
+                end select
+              end if
+              select case (ob(icmd)%typ)
+              case ("aqu")      ! aquifer inflow
+                hyd_flo(:) = ob(iob)%hd(ihyd)%flo / time%step
+              case ("chandeg")  ! channel inflow
+                hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+              case ("res")      ! reservoir inflow
+                hyd_flo(:) = ob(iob)%hd(ihyd)%flo / time%step
+              end select
+                
+              !! multiply inflow hyd by the fraction of incoming
+              hyd_flo = frac_in * hyd_flo
+              !! add flow hydrographs for each incoming object
+              ob(icmd)%tsin = ob(icmd)%tsin + hyd_flo
+              
             end if
 
           end do    ! in = 1, ob(icmd)%rcv_tot
 
           !convert to per area basis
           if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "ru") then  !only convert hru and subbasin hyds for routing
-            if (ob(icmd)%ru_tot > 0) then
-              !object is in a subbasin
-              ielem = ob(icmd)%elem
-              iru = ob(icmd)%ru(1)  !can only be in one subbasin if routing over
-              conv = 100. * ru(iru)%da_km2  !* ru_elem(ielem)%frac
-            else
+            !if (ob(icmd)%ru_tot > 0) then
+            !  !object is in a subbasin
+            !  ielem = ob(icmd)%elem
+            !  iru = ob(icmd)%ru(1)  !can only be in one subbasin if routing over
+            !  conv = 100. * ru(iru)%da_km2  !* ru_elem(ielem)%frac
+            !else
               conv = ob(icmd)%area_ha
-            end if
+            !end if
             ob(icmd)%hin_sur = ob(icmd)%hin_sur // conv
             ob(icmd)%hin_lat = ob(icmd)%hin_lat // conv
             ob(icmd)%hin_til = ob(icmd)%hin_til // conv
@@ -164,7 +202,6 @@
         end if
 
         ! select the next command type
-
         select case (ob(icmd)%typ)
             
           case ("hru")   ! hru
@@ -182,8 +219,12 @@
             call ru_control
             if (ob(icmd)%rcv_tot > 0) call hyddep_output
 
-          case ("modflow")   ! modflow
-            !! call modflow (daily)  **Ryan**
+          case ("gwflow")   ! gwflow
+            call gwflow_simulate
+            do i_mfl = 1,sp_ob%gwflow
+              icmd = icmd + 1
+            enddo
+            icmd = icmd - 1
             
           case ("aqu")   ! aquifer
             if (ob(icmd)%dfn_tot == 0) then   !1-D use old bf recession
@@ -206,8 +247,14 @@
           case ("recall")   ! recall hydrograph
             irec = ob(icmd)%num
             select case (recall(irec)%typ)
+              case (0)    !subdaily
+                ob(icmd)%hyd_flo(ob(icmd)%day_cur,:) = recall(irec)%hyd_flo(1:time%step,time%yrs)
               case (1)    !daily
-                ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
+                if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then 
+                    ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
+                else
+                    ob(icmd)%hd(1) = hz
+                end if
               case (2)    !monthly
                 if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then 
                     ob(icmd)%hd(1) = recall(irec)%hd(time%mo,time%yrs)
@@ -215,7 +262,7 @@
                     ob(icmd)%hd(1) = hz
                 end if
               case (3)    !annual
-                if (time%yrc < recall(irec)%start_yr .or. time%yrc > recall(irec)%end_yr) then
+                if (time%yrc >= recall(irec)%start_yr .or. time%yrc <= recall(irec)%end_yr) then
                   ob(icmd)%hd(1) = recall(irec)%hd(1,time%yrs)
                 else
                   ob(icmd)%hd(1) = hz
@@ -246,10 +293,41 @@
           case ("chandeg")  !swatdeg channel
             isdch = ob(icmd)%num
             isd_chsur = ob(icmd)%props2
-            call sd_channel_control
+            if (sd_ch(isdch)%chl > 1.e-3) then
+              call sd_channel_control
+            else
+                !! artificial channel - length=0 - no transformations
+                ob(icmd)%hd(1) = ob(icmd)%hin
+                
+                ch_in_d(isdch) = ht1                        !set inflow om hydrograph
+                chsd_d(isdch)%flo_in = ht1%flo / 86400.     !flow for morphology output
+                ch_in_d(isdch)%flo = ht1%flo / 86400.       !flow for om output
+                ch_out_d(isdch) = ht1                       !set inflow om hydrograph
+                ch_out_d(isdch)%flo = ht1%flo / 86400.      !m3 -> m3/s
+                !! output channel morphology
+                chsd_d(isdch)%flo = ht1%flo / 86400.        !adjust if overbank flooding is moved to landscape
+                chsd_d(isdch)%peakr = 0. 
+                chsd_d(isdch)%sed_in = ob(icmd)%hin%sed
+                chsd_d(isdch)%sed_out = ob(icmd)%hin%sed
+                chsd_d(isdch)%washld = 0.
+                chsd_d(isdch)%bedld = 0.
+                chsd_d(isdch)%dep = 0.
+                chsd_d(isdch)%deg_btm = .0
+                chsd_d(isdch)%deg_bank = 0.
+                chsd_d(isdch)%hc_sed = 0.
+                chsd_d(isdch)%width = sd_ch(isdch)%chw
+                chsd_d(isdch)%depth = sd_ch(isdch)%chd
+                chsd_d(isdch)%slope = sd_ch(isdch)%chs
+                chsd_d(isdch)%deg_btm_m = 0.
+                chsd_d(isdch)%deg_bank_m = 0.
+                chsd_d(isdch)%hc_m = 0.
+                if (cs_db%num_tot > 0) then
+                  obcs(icmd)%hd(1) = obcs(icmd)%hin
+                end if
+            end if
             
           end select
-        if (pco%fdcout == "y") call flow_dur_curve
+        if (pco%fdcout == "y" .and. ob(icmd)%typ == "chandeg") call flow_dur_curve
         
         !print all outflow hydrographs
         if (ob(icmd)%src_tot > 0) then
@@ -268,9 +346,25 @@
         icmd = ob(icmd)%cmd_next
         
       end do
-
+      
+      !! set demand requirements for water rights objects
+      !! call water_demand
+      do iwro =1, db_mx%wro_db
+        wro(iwro)%demand = 0.
+        do iob = 1, wro(iwro)%num_objs
+          ob_num = wro(iwro)%field(iob)%ob_num
+          wro(iwro)%demand = irrig(ob_num)%demand + wro(iwro)%demand   
+        end do
+      end do
+    
+      !! print all output files
       if (time%yrs > pco%nyskip .and. time%step == 0) then
         call obj_output
+        
+        !! print water allocation output
+        do iwro =1, db_mx%wallo_db
+          call water_allocation_output (iwro)
+        end do
         
         do isd = 1, sp_ob%hru_lte
           call hru_lte_output (isd)

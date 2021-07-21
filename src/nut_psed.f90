@@ -55,7 +55,7 @@
 
         !! HRU sediment calculations
         sedp_attach = soil1(j)%hp(1)%p + soil1(j)%man(1)%p + rsd1(j)%man%p + soil1(j)%mp(1)%sta + soil1(j)%mp(1)%act
-        if (sedp_attach > 1.e-3) then
+        if (sedp_attach > 1.e-9) then
           fr_orgp = (soil1(j)%hp(1)%p + soil1(j)%man(1)%p  + rsd1(j)%man%p) / sedp_attach
           fr_actmin = soil1(j)%mp(1)%sta / sedp_attach
           fr_stamin = soil1(j)%mp(1)%act / sedp_attach
@@ -72,7 +72,7 @@
         conc = sedp_attach * er / wt1
         sedp = .001 * conc * sedyld(j) / hru(j)%area_ha
         
-        if (sedp > 1.e-6) then
+        if (sedp > 1.e-9) then
           sedorgp(j) = sedp * fr_orgp
           sedminpa(j) = sedp * fr_actmin
           sedminpa(j) = amin1 (sedminpa(j), soil1(j)%mp(1)%act)

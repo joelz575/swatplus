@@ -85,10 +85,14 @@
 
       implicit none
       
-      integer :: ipest          !none          |pesticide counter - sequential
-      integer :: jpst           !none          |pesticide counter from data base
-      real :: pstin             !mg pst        |total pesticide transported into reach during time step
-      real :: kd                !(mg/kg)/(mg/L) |koc * carbon
+      integer :: ipest          !none                   |pesticide counter - sequential
+      integer :: jpst           !none                   |pesticide counter from data base
+      integer :: ipseq          !none                   |sequential basin pesticide number
+      integer :: ipdb           !none                   |seqential pesticide number of daughter pesticide
+      integer :: imeta          !none                   |pesticide metabolite counter
+      real :: mol_wt_rto        !ratio                  |molecular weight ratio of duaghter to parent pesticide
+      real :: pstin             !mg pst                 |total pesticide transported into reach during time step
+      real :: kd                !(mg/kg)/(mg/L)         |koc * carbon
       real :: depth             !m             |depth of water in reach
       real :: chpstmass         !mg pst        |mass of pesticide in reach
       real :: sedpstmass        !mg pst        |mass of pesticide in bed sediment
@@ -138,14 +142,14 @@
           sedcon = ht1%sed / wtrin * 1.e6
           
           !! set kd
-          kd = pestdb(jpst)%koc * sd_chd(jrch)%carbon / 100.
+          kd = pestdb(jpst)%koc * sd_ch(jrch)%carbon / 100.
 
           !! calculate fraction of soluble and sorbed pesticide
           frsol = 1. / (1. + kd * sedcon)
           frsrb = 1. - frsol
 
           !! ASSUME DENSITY=2.6E6; KD2=KD1
-          por = 1. - sd_chd(jrch)%bd / 2.65
+          por = 1. - sd_ch(jrch)%ch_bd / 2.65
           fd2 = 1. / (por + kd)
 
           !! calculate flow duration
@@ -159,6 +163,15 @@
             pest_end = chpstmass * pestcp(jpst)%decay_a
             chpstmass = pest_end
             chpst%pest(ipest)%react = pest_init - pest_end
+            !! add decay to daughter pesticides
+            do imeta = 1, pestcp(jpst)%num_metab
+              ipseq = pestcp(jpst)%daughter(imeta)%num
+              ipdb = cs_db%pest_num(ipseq)
+              mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(jpst)%mol_wt
+              chpst_d(jrch)%pest(ipseq)%metab = chpst_d(jrch)%pest(ipseq)%metab + chpst%pest(ipest)%react *     &
+                                           pestcp(jpst)%daughter(imeta)%aq_fr * mol_wt_rto
+              hcs1%pest(ipseq) = hcs1%pest(ipseq) + chpst_d(jrch)%pest(ipseq)%metab
+            end do
           end if
 
           !! calculate amount of pesticide that volatilizes from reach
@@ -239,6 +252,15 @@
           pest_end = sedpstmass * pestcp(jpst)%decay_b
           sedpstmass = pest_end
           chpst%pest(ipest)%react_bot = pest_init - pest_end
+          !! add decay to daughter pesticides
+          do imeta = 1, pestcp(jpst)%num_metab
+            ipseq = pestcp(jpst)%daughter(imeta)%num
+            ipdb = cs_db%pest_num(ipseq)
+            mol_wt_rto = pestdb(ipdb)%mol_wt / pestdb(jpst)%mol_wt
+            chpst_d(jrch)%pest(ipseq)%metab_bot = chpst_d(jrch)%pest(ipseq)%metab + chpst%pest(ipest)%react_bot *     &
+                                           pestcp(jpst)%daughter(imeta)%ben_fr * mol_wt_rto
+            ch_benthic(jrch)%pest(ipseq) = ch_benthic(jrch)%pest(ipseq) + chpst_d(jrch)%pest(ipseq)%metab
+          end do
         end if
 
         !! set new pesticide mass of (in + store) after processes

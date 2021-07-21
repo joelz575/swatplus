@@ -21,7 +21,7 @@
        eof = 0
        imax = 0
 
-      !! read all measured daily solar radiation data
+      !! read all measured daily wind data
       inquire (file=in_cli%wnd_cli, exist=i_exist)
       if (.not. i_exist .or. in_cli%wnd_cli == "null") then
          allocate (wnd(0:0))
@@ -124,8 +124,8 @@
        close (108)
       
        !save end jd and year
-       hmd(i)%end_day = istep
-       hmd(i)%end_yr = iyr
+       wnd(i)%end_day = istep
+       wnd(i)%end_yr = iyr
        
       end do
       close (107)

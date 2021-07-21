@@ -66,8 +66,8 @@
       read (105,*,iostat=eof) header
       if (eof < 0) exit
       
-       do ires = 1, db_mx%res_dat
-         read (105,*,iostat=eof) i
+       do i = 1, db_mx%res_dat
+         read (105,*,iostat=eof) ires
          if (eof < 0) exit
          backspace (105)
          read (105,*,iostat=eof) k, res_dat_c(ires)

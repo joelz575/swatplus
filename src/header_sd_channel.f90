@@ -11,14 +11,18 @@
         if (pco%sd_chan%d == "y") then
           open (2500,file="channel_sd_day.txt",recl = 1500)
           write (2500,*) bsn%name, prog
-          write (2500,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr
-          write (2500,*) ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1
+          write (2500,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr, wtmp_hdr
+          write (2500,*) ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1, wtmp_units 
+          !write (2500,*) ch_wbod_hdr, sd_hyd_hdr
+          !write (2500,*) ch_wbod_hdr_units, sd_hyd_hdr_units
           write (9000,*) "SWAT-DEG_CHANNEL          channel_sd_day.txt"
           if (pco%csvout == "y") then
             open (2504,file="channel_sd_day.csv",recl = 1500)
             write (2504,*) bsn%name, prog
-            write (2504,'(*(G0.3,:,","))') ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr
-            write (2504,'(*(G0.3,:,","))') ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1
+            write (2504,'(*(G0.3,:,","))') ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr, wtmp_hdr
+            write (2504,'(*(G0.3,:,","))') ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1, wtmp_units 
+            !write (2504,'(*(G0.3,:,","))') ch_wbod_hdr, sd_hyd_hdr
+            !write (2504,'(*(G0.3,:,","))') ch_wbod_hdr_units, sd_hyd_hdr_units
             write (9000,*) "SWAT-DEG_CHANNEL          channel_sd_day.csv"
           end if
         endif
@@ -28,14 +32,18 @@
           if (pco%sd_chan%m == "y") then  
           open (2501,file="channel_sd_mon.txt",recl = 1500)
           write (2501,*) bsn%name, prog
-          write (2501,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr
-          write (2501,*) ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1
+          write (2501,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr, wtmp_hdr
+          write (2501,*) ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1, wtmp_units 
+          !write (2501,*) ch_wbod_hdr, sd_hyd_hdr
+          !write (2501,*) ch_wbod_hdr_units, sd_hyd_hdr_units
           write (9000,*) "SWAT-DEG_CHANNEL          channel_sd_mon.txt"
           if (pco%csvout == "y") then
-            open (2505,file="channel_mon_sd.csv",recl = 1500)
+            open (2505,file="channel_sd_mon.csv",recl = 1500)
             write (2505,*) bsn%name, prog
-            write (2505,'(*(G0.3,:,","))') ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr  
-            write (2505,'(*(G0.3,:,","))') ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1
+            write (2505,'(*(G0.3,:,","))') ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr, wtmp_hdr
+            write (2505,'(*(G0.3,:,","))') ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1, wtmp_units 
+            !write (2505,'(*(G0.3,:,","))') ch_wbod_hdr, sd_hyd_hdr  
+            !write (2505,'(*(G0.3,:,","))') ch_wbod_hdr_units, sd_hyd_hdr_units
             write (9000,*) "SWAT-DEG_CHANNEL          channel_sd_mon.csv"
           end if
           end if
@@ -45,14 +53,18 @@
         if (pco%sd_chan%y == "y") then
           open (2502,file="channel_sd_yr.txt",recl = 1500)
           write (2502,*) bsn%name, prog
-          write (2502,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr
-          write (2502,*) ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1
+          write (2502,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr, wtmp_hdr
+          write (2502,*) ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1, wtmp_units 
+          !write (2502,*) ch_wbod_hdr, sd_hyd_hdr
+          !write (2502,*) ch_wbod_hdr_units, sd_hyd_hdr_units
           write (9000,*) "SWAT-DEG_CHANNEL          channel_sd_yr.txt"
           if (pco%csvout == "y") then
             open (2506,file="channel_sd_yr.csv",recl = 1500)
             write (2506,*) bsn%name, prog
-            write (2506,'(*(G0.3,:,","))') ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr
-            write (2506,'(*(G0.3,:,","))') ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1
+            write (2506,'(*(G0.3,:,","))') ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr, wtmp_hdr
+            write (2506,'(*(G0.3,:,","))') ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1, wtmp_units 
+            !write (2506,'(*(G0.3,:,","))') ch_wbod_hdr, sd_hyd_hdr
+            !write (2506,'(*(G0.3,:,","))') ch_wbod_hdr_units, sd_hyd_hdr_units
             write (9000,*) "SWAT-DEG_CHANNEL          channel_sd_yr.csv"
           end if
         endif
@@ -62,14 +74,18 @@
           if (pco%sd_chan%a == "y") then
           open (2503,file="channel_sd_aa.txt",recl = 1500)
           write (2503,*) bsn%name, prog
-          write (2503,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr
-          write (2503,*) ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1
+          write (2503,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr, wtmp_hdr
+          write (2503,*) ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1, wtmp_units
+          !write (2503,*) ch_wbod_hdr, sd_hyd_hdr
+          !write (2503,*) ch_wbod_hdr_units, sd_hyd_hdr_units
           write (9000,*) "SWAT-DEG_CHANNEL          channel_sd_aa.txt"
           if (pco%csvout == "y") then
             open (2507,file="channel_sd_aa.csv",recl = 1500)
             write (2507,*) bsn%name, prog
-            write (2507,'(*(G0.3,:,","))') ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr   
-            write (2507,'(*(G0.3,:,","))') ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1
+            write (2507,'(*(G0.3,:,","))') ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr, wtmp_hdr
+            write (2507,'(*(G0.3,:,","))') ch_wbod_hdr_units, hyd_hdr_units1, hyd_hdr_units1, hyd_hdr_units1, wtmp_units
+            !write (2507,'(*(G0.3,:,","))') ch_wbod_hdr, sd_hyd_hdr   
+            !write (2507,'(*(G0.3,:,","))') ch_wbod_hdr_units, sd_hyd_hdr_units
             write (9000,*) "SWAT-DEG_CHANNEL          channel_sd_aa.csv"
           end if
           end if

@@ -9,7 +9,10 @@
       use input_file_module
       use conditional_module
       use pesticide_data_module
+      use plant_data_module
       use constituent_mass_module
+      use hydrograph_module, only : sp_ob
+      use hru_module, only : hru
       
       implicit none
                   
@@ -26,6 +29,7 @@
       integer :: idb                  !none       |counter
       integer :: ilum                 !none       |counter
       integer :: iburn                !none       |counter
+      integer :: ihru                 !none       |counter
       
       mdtbl = 0
       eof = 0
@@ -43,14 +47,15 @@
           if (eof < 0) exit
           read (107,*,iostat=eof)
           if (eof < 0) exit
-          allocate (dtbl_lum(0:mdtbl))
+          allocate (dtbl_lum(1:mdtbl))
 
           do i = 1, mdtbl
             read (107,*,iostat=eof) header
             if (eof < 0) exit
             read (107,*,iostat=eof) dtbl_lum(i)%name, dtbl_lum(i)%conds, dtbl_lum(i)%alts, dtbl_lum(i)%acts
             if (eof < 0) exit
-            allocate (dtbl_lum(i)%cond(dtbl_lum(i)%conds))
+	    allocate (dtbl_lum(i)%cond(dtbl_lum(i)%conds))
+            allocate (dtbl_lum(i)%con_act(dtbl_lum(i)%conds))
             allocate (dtbl_lum(i)%alt(dtbl_lum(i)%conds,dtbl_lum(i)%alts))
             allocate (dtbl_lum(i)%act(dtbl_lum(i)%acts))
             allocate (dtbl_lum(i)%act_hit(dtbl_lum(i)%alts))
@@ -64,7 +69,25 @@
             do ic = 1, dtbl_lum(i)%conds
               read (107,*,iostat=eof) dtbl_lum(i)%cond(ic), (dtbl_lum(i)%alt(ic,ial), ial = 1, dtbl_lum(i)%alts)
               if (eof < 0) exit
+              if (dtbl_lum(i)%cond(ic)%var == "prob_unif") then
+                backspace (107)
+                read (107,*,iostat=eof) dtbl_lum(i)%cond(ic)%var, dtbl_lum(i)%frac_app
+              end if
             end do
+            
+            !if land_use conditional variable, determine number of hru's and areas (used for probabilistic operations)
+            dtbl_lum(i)%hru_lu = 0
+            dtbl_lum(i)%ha_lu = 0.
+            do ic = 1, dtbl_lum(i)%conds
+              if (dtbl_lum(i)%cond(ic)%var == "land_use") then
+                do ihru = 1, sp_ob%hru
+                  if (dtbl_lum(i)%cond(ic)%lim_var == hru(ihru)%land_use_mgt_c) then
+                    dtbl_lum(i)%hru_lu = dtbl_lum(i)%hru_lu + 1
+                    dtbl_lum(i)%ha_lu = dtbl_lum(i)%ha_lu + hru(ihru)%area_ha
+                  end if
+                end do
+              end if
+            end do      ! ic
                         
             !read actions and action outcomes
             read (107,*,iostat=eof) header
@@ -77,7 +100,16 @@
             !cross walk characters to get array numbers
             do iac = 1, dtbl_lum(i)%acts
                 select case (dtbl_lum(i)%act(iac)%typ)
-                    
+                                     
+                case ("plant")
+                  !xwalk file pointer transplant data base
+                  do idb = 1, db_mx%transplant
+                    if (dtbl_lum(i)%act(iac)%file_pointer == transpl(idb)%name) then
+                      dtbl_lum(i)%act_app(iac) = idb
+                      exit
+                    endif
+                  end do
+                       
                 case ("harvest")
                   do idb = 1, db_mx%harvop_db
                     if (dtbl_lum(i)%act(iac)%file_pointer == harvop_db(idb)%name) then
@@ -103,6 +135,14 @@
                   end do
                 
                 case ("irr_demand")
+                  do idb = 1, db_mx%irrop_db
+                    if (dtbl_lum(i)%act(iac)%option == irrop_db(idb)%name) then
+                      dtbl_lum(i)%act_typ(iac) = idb
+                      exit
+                    end if
+                  end do
+                       
+                case ("irrigate")
                   do idb = 1, db_mx%irrop_db
                     if (dtbl_lum(i)%act(iac)%option == irrop_db(idb)%name) then
                       dtbl_lum(i)%act_typ(iac) = idb
@@ -159,9 +199,17 @@
                   end do
                 end select
                 
-            end do
+                !xwalk conditions and actions for days since last action
+                do ic = 1, dtbl_lum(i)%conds
+                  if (dtbl_lum(i)%cond(ic)%lim_var == dtbl_lum(i)%act(iac)%name) then
+                    dtbl_lum(i)%con_act(ic) = iac
+                  end if
+                end do      ! ic
+                
+            end do      ! iac
             
-          end do
+          end do        ! mdtbl
+          
           db_mx%dtbl_lum = mdtbl
           exit
         end do

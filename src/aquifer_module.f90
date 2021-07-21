@@ -15,7 +15,7 @@
         real :: bf_max = 0.         !mm         |maximum daily baseflow - when all channels are contributing
         real :: alpha = 0.          !1/days     |lag factor for groundwater recession curve
         real :: revap_co = 0.       !           |revap oefficient - evap=pet*revap_co
-        real :: seep = 0.           !mm         |seepage from aquifer
+        real :: seep = 0.           !frac       |fraction of recharge that seeps from aquifer
         real :: spyld = 0.          !m^3/m^3    |specific yield of aquifer
         real :: hlife_n = 0.        !days       |half-life of nitrogen in groundwater
         real :: flo_min = 0.        !m          |water table depth for return flow to occur
@@ -24,36 +24,38 @@
       type (aquifer_database), dimension(:), allocatable :: aqudb 
       
       type aquifer_data_parameters
-        real :: alpha = 0.      !           |
-        real :: bf_max = 0.     !           |
-        real :: flo_min         !mm         |minimum aquifer storage to allow return flow
-        real :: revap_co        !0-1 frac   |fraction of pet to calculate revap
-        real :: revap_min = 0.  !mm H2O     |threshold depth of water in shallow aquifer required to allow revap to occur
-        real :: alpha_e = 0.    !days       |Exp(-alpha_bf(:))
-        real :: nloss = 0.      !frac       |nloss based on half life
-        real :: rchrg_prev = 0.   !m^3      |previous days recharge
-        real :: rchrgn_prev = 0.  !m^3      |previous days n recharge
+        real :: alpha = 0.       !1/days     |lag factor for groundwater recession curve
+        real :: bf_max = 0.      !m          |maximum daily baseflow - when all channels are contributing
+        real :: flo_min          !m          |water table depth for flow to occur
+        real :: revap_co         !0-1 frac   |fraction of pet to calculate revap
+        real :: revap_min = 0.   !m          |water table for revap to occur
+        real :: seep = 0.        !frac       |fraction of recharge that seeps from aquifer
+        real :: spyld = 0.       !m^3/m^3    |specific yield of aquifer
+        real :: alpha_e = 0.     !days       |Exp(-alpha)
+        real :: nloss = 0.       !frac       |nloss based on half life
+        real :: rchrg_prev = 0.  !m^3        |previous days recharge
+        real :: rchrgn_prev = 0. !m^3        |previous days n recharge
       end type aquifer_data_parameters
       type (aquifer_data_parameters), dimension(:), allocatable :: aqu_prm 
 
       type aquifer_dynamic
-        real :: flo = 0.        !mm         |flow from aquifer in current time step       
-        real :: dep_wt = 0.     !m          |depth to water table
-        real :: stor = 0.       !mm         |total water storage in aquifer
-        real :: rchrg = 0.      !mm         |recharge
-        real :: seep = 0.       !kg N/ha    |seepage to next object
-        real :: revap = 0.      !mm         |revap
-        real :: no3 = 0.        !ppm NO3-N  |nitrate-N concentration in aquifer
-        real :: minp = 0.       !kg         |mineral phosphorus from aquifer on current timestep    
-        real :: cbn = 0.        !percent    |organic carbon in aquifer (initial)  
-        real :: orgn = 0.   
-        real :: rchrg_n = 0.    !           |amount of nitrate getting to the shallow aquifer  
-        real :: nloss = 0. 
+        real :: flo = 0.        !mm         |lateral flow from aquifer      
+        real :: dep_wt = 0.     !m          |average depth from average surface elevation to water table
+        real :: stor = 0.       !mm         |average water storage in aquifer in timestep
+        real :: rchrg = 0.      !mm         |recharge entering aquifer from other objects
+        real :: seep = 0.       !kg N/ha    |seepage from bottom of aquifer
+        real :: revap = 0.      !mm         |plant water uptake and evaporation
+        real :: no3 = 0.        !ppm NO3-N  |average NO3-N flowing into aquifer from another object
+        real :: minp = 0.       !kg         |mineral phosphorus transported in return (lateral) flow 
+        real :: cbn = 0.        !percent    |organic carbon in aquifer - currently static
+        real :: orgn = 0.       !kg/ha      |organic nitrogen in aquifer - currently static
+        real :: rchrg_n = 0.    !kg/NO3-N   |nitrate NO3-N flowing into aquifer from another object  
+        real :: nloss = 0.      !kg/ha      |nitrate NO3-N loss
         real :: no3gw           !kg N/ha    |nitrate loading to reach in groundwater
         real :: seepno3 = 0.    !kg         |seepage of no3 to next object
         real :: flo_cha = 0.    !mm H2O     |surface runoff flowing into channels
         real :: flo_res = 0.    !mm H2O     |surface runoff flowing into reservoirs
-        real :: flo_ls = 0.     !mm H2O     |surface runoff flowing into a landscape element
+        real :: flo_ls = 0.     !mm H2O     |surface runoff flowing into a landscape element (hru or ru)
       end type aquifer_dynamic
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_om_init
       type (aquifer_dynamic), dimension(:), allocatable :: aqu_d
@@ -108,7 +110,7 @@
           character(len=15) :: seep     =      "           seep"        ! (mm)
           character(len=15) :: revap    =      "          revap"        ! (mm)
           character(len=15) :: no3_st   =      "         no3_st"        ! (kg/ha N)
-          character(len=14) :: minp     =      "           minp"        ! (kg)
+          character(len=15) :: minp     =      "           minp"        ! (kg)
           character(len=15) :: orgn     =      "           orgn"        ! (kg/ha N)
           character(len=15) :: orgp     =      "           orgp"        ! (kg/ha P)
           character(len=15) :: rchrgn   =      "         rchrgn"        ! (kg/ha N)

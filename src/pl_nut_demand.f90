@@ -33,11 +33,12 @@
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-      use hru_module, only : ihru, ipl, tmpav, uapd, uapd_tot, uno3d, uno3d_tot, sum_no3, sum_solp
+      use hru_module, only : ihru, ipl, uapd, uapd_tot, uno3d, uno3d_tot, sum_no3, sum_solp
       use soil_module
       use plant_module
       use plant_data_module
       use organic_mineral_mass_module
+      use climate_module
 
       implicit none      
 
@@ -59,7 +60,7 @@
         !! update accumulated heat units for the plant
         delg = 0.
         if (pcom(j)%plcur(ipl)%phumat > 0.1) then
-          delg = (tmpav(j) - pldb(idp)%t_base) / pcom(j)%plcur(ipl)%phumat
+          delg = (w%tave - pldb(idp)%t_base) / pcom(j)%plcur(ipl)%phumat
         end if
         if (delg < 0.) delg = 0.
         pcom(j)%plcur(ipl)%phuacc = pcom(j)%plcur(ipl)%phuacc + delg  

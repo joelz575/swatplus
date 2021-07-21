@@ -1,37 +1,40 @@
-language: c
+language: python
+python:
+  - "3.8"
 sudo: true
-
 os:
   - windows
-
+  
 before_install:
-  - if [[ $TRAVIS_OS_NAME == windows ]]; then
-      choco install make;
-    elif [[ $TRAVIS_OS_NAME == linux ]]; then
-      sudo apt-get install gfortran;
-    fi
-
+  - if [[ $TRAVIS_OS_NAME == windows ]]; then choco install make; choco install python;
+    elif [[ $TRAVIS_OS_NAME
+    == linux ]]; then sudo apt-get update; sudo apt-get install gfortran; pip install cmake;
+    python3 -V; chmod +x swatplusTest.sh;
+    elif [[ $TRAVIS_OS_NAME == osx ]]; then xcode-select --install; ruby -e
+      -"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+    brew doctor; brew install python3; brew upgrade python@3.9; python3 --version; alias python3="python3.9"; fi
+  - cmake --version
 install:
-  - if [[ $TRAVIS_OS_NAME != windows ]]; then
-      git clone https://github.com/json-c/json-c.git;
-      mkdir json-c-build;
-      cd json-c-build;
-      cmake ../json-c;
-      sudo make install;
-    else
-       git clone https://github.com/Microsoft/vcpkg.git;
-       git clone https://github.com/json-c/json-c.git;
-       cd vcpkg;
-       ./bootstrap-vcpkg.bat -disableMetrics;
-       ./vcpkg integrate install;
-        ls;
-       ./vcpkg.exe install json-c;
+  - mkdir build
+  - cd build
+  - if [[ $TRAVIS_OS_NAME != windows ]]; then cmake ../src; else cmake  -G "MinGW Makefiles" DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src;
     fi
+  - cmake --build .
   - cd ..
-  - cd src
-  - make clean
-  - make
-
+  
 script:
-  - echo "Joel all ist gut jetzt wir brauchen dienen Teste"
+  - if [[ $TRAVIS_OS_NAME == linux ]]; then chmod +x swatplusTest.sh; ./swatplusTest.sh; else sh swatplusTest.sh; fi
+  - mkdir dist
+  -  mv ./build/bin/swatplus_exe "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+  -  ls dist
 
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "nLyL68GHId/ncspsEjvEIY5Wh1fzEdfkbY2Sm/3fMvkvNx0Y1fW8sMtqey+EzurrNzrFDrbIJV4Ds2JvA7FaQZowmqm2LoOaKP03ZIRXrvpgqEocOHc9fq4YXUEk/6DovRrKvhZy76L2q+tO8SmeYZVFqDLMpugxAjD/V8stktC6x16jooJyPrPZx4Oc8i84KTIgT8GnEaITGoL2StFAxu/dsqzQdE8MwH8+prD0iMhp9peN7YmT9kYmeA4BCbbzd2x3XAGEHrOGjdNejlc/jSfF3ruH620LnOH1YpZYq4QGJdMTyJhwELdEdmxGG44UAH5YTHKuBv1fptJ3q26YEnYJF0qawT43pas1cLzd9KH33wIIwxbNOJGUd+1BDpdkKk0HSXyJbm4Pd9u7jJyFua7rLeumHW6SlPtfm0woTGJm9Dd4JTMvtqvxiBw69RYEf2h7PdqHJOc9gq4Xm6CLuyOJwm2/Z7KUMfIltEmpstPpiRre8/Vkp1+MauGSvhAAquZcYW0XCes3gSrecNVxHI1t20v6V1ltfQdNEG2OjJxqq7thUkP+tAMPmoirMperRRuOqmk/zNqEqX8mcsqDv9SWRXTaPjqyB41SSQyAma+CargwSkMNJ4c38aihmzquK5Pl+FrlVQVD6/QEliQfIxBIQhxU8A16KcjdGhVcNZ4="
+  file: "./dist/SwatPlus-$TRAVIS_OS_NAME-$TRAVIS_TAG"
+  on:
+    repo: joelz575/swatplus
+    tags: true
+  skip_cleanup: 'true'

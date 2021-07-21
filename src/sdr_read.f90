@@ -2,7 +2,7 @@
       
       use input_file_module
       use maximum_data_module
-      use tiles_data_module
+      use hru_module, only : hru, sdr
       
       implicit none 
       

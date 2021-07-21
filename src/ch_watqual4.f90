@@ -18,9 +18,17 @@
       real :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
       real :: soxy             !mg O2/L       |saturation concetration of dissolved oxygen
 
+      jrch = isdch
       !! calculate flow duration
       tday = rttime / 24.0
       tday = amin1 (1., tday)
+      rt_delt = 1.
+
+      !! calculate temperature in stream Stefan and Preudhomme. 1993.  Stream temperature estimation 
+      !! from air temperature.  Water Res. Bull. p. 27-45 SWAT manual equation 2.3.13
+      wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
+      if (wtmp <= 0.) wtmp = 0.1
+      ht2%temp = wtmp
 
       !! benthic sources/losses in mg   
       rs2_s =  Theta(ch_nut(jnut)%rs2,thrs2,wtmp) * ben_area    !ch_hyd(jhyd)%l *ch_hyd(jhyd)%w * rt_delt
@@ -33,11 +41,6 @@
         disoxin = amax1 (0., disoxin)
         dispin = ht3%solp + rs2_s / ht3%flo 
         ammoin = ht3%nh3 + rs3_s / ht3%flo
-
-        !! calculate temperature in stream Stefan and Preudhomme. 1993.  Stream temperature estimation 
-        !! from air temperature.  Water Res. Bull. p. 27-45 SWAT manual equation 2.3.13
-        wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
-        if (wtmp <= 0.) wtmp = 0.1
 
         !! calculate effective concentration of available nitrogen QUAL2E equation III-15
         cinn = ch_stor(jrch)%nh3 + ch_stor(jrch)%no3
@@ -158,6 +161,8 @@
         !! QUAL2E section 3.3.1 equation III-16
         bc1_k = Theta(ch_nut(jnut)%bc1,thbc1,wtmp)
         bc3_k = Theta(ch_nut(jnut)%bc3,thbc3,wtmp) 
+        bc1_k = bc1_k * 2.
+        bc3_k = bc3_k * 2.
         rs4_k = 0.
         if (rchdep > 0.001)  rs4_k = Theta (ch_nut(jnut)%rs4, thrs4, wtmp) / rchdep   
 

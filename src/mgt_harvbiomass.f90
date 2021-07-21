@@ -41,6 +41,9 @@
       harv_stem = hi_tot * pl_mass(j)%stem(ipl)
       pl_yield = harv_seed + harv_leaf
       pl_yield = pl_yield + harv_stem
+            
+      !! apply pest stress to harvest index - mass lost due to pests - don't add to residue
+      pl_yield = (1. - pcom(j)%plcur(ipl)%pest_stress) * pl_yield
       
       !! update remaining plant organic pools
       pl_mass(j)%seed(ipl) = pl_mass(j)%seed(ipl) - harv_seed

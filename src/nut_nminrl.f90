@@ -134,6 +134,9 @@
           rdc = decr * rsd1(j)%tot(ipl)%m
           rsd1(j)%tot(ipl)%m = rsd1(j)%tot(ipl)%m - rdc
           if (rsd1(j)%tot(ipl)%m < 0.) rsd1(j)%tot(ipl)%m = 0.
+          rsd1(j)%tot(ipl)%c = (1. - decr) * rsd1(j)%tot(ipl)%c
+          if (rsd1(j)%tot(ipl)%c < 0.) rsd1(j)%tot(ipl)%c = 0.
+          soil1(j)%hs(1)%c = soil1(j)%hs(1)%c + decr * rsd1(j)%tot(ipl)%c
           rmn1 = decr * rsd1(j)%tot(ipl)%n 
           rsd1(j)%tot(ipl)%p = Max(1.e-6, rsd1(j)%tot(ipl)%p)
           rmp = decr * rsd1(j)%tot(ipl)%p
@@ -252,17 +255,16 @@
             end if
             decr = Max(bsn_prm%decr_min, decr)
             decr = Min(decr, 1.)
-            soil1(j)%tot(k)%m = Max(1.e-6, soil1(j)%tot(k)%m)
-            rdc = decr * soil1(j)%tot(k)%m
-            soil1(j)%tot(k)%m = soil1(j)%tot(k)%m - rdc
-            if (soil1(j)%tot(k)%m < 0.) soil1(j)%tot(k)%m = 0.
             rmn1 = decr * (soil1(j)%str(k)%n + soil1(j)%lig(k)%n + soil1(j)%meta(k)%n)
-            soil1(j)%tot(k)%p = Max(1.e-6, soil1(j)%tot(k)%p)
             rmp = decr * (soil1(j)%str(k)%p + soil1(j)%lig(k)%p + soil1(j)%meta(k)%p)
 
-            soil1(j)%tot(k)%p = soil1(j)%tot(k)%p - rmp
-            soil1(j)%tot(k)%n  = Max(1.e-6, soil1(j)%tot(k)%n)
-            soil1(j)%tot(k)%n  = soil1(j)%tot(k)%n  - rmn1
+            soil1(j)%str(k)%n = soil1(j)%str(k)%n * (1. - decr)
+            soil1(j)%lig(k)%n = soil1(j)%lig(k)%n * (1. - decr)
+            soil1(j)%meta(k)%n = soil1(j)%meta(k)%n * (1. - decr)
+            soil1(j)%str(k)%p = soil1(j)%str(k)%p * (1. - decr)
+            soil1(j)%lig(k)%p = soil1(j)%lig(k)%p * (1. - decr)
+            soil1(j)%meta(k)%p = soil1(j)%meta(k)%p * (1. - decr)
+
             soil1(j)%mn(k)%no3 = soil1(j)%mn(k)%no3 + .8 * rmn1
             soil1(j)%hs(k)%n = soil1(j)%hs(k)%n + .2 * rmn1
             soil1(j)%mp(k)%lab = soil1(j)%mp(k)%lab + .8 * rmp

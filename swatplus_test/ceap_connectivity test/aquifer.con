@@ -1,0 +1,4 @@
+aquifer.con																			
+
+id     name     gis_id         area      lat      lon     elev        aqu          wst     cst    ovfl    rule out_tot  obj_typ_1   obj_id_1  hyd_typ_1     frac_1 
+1      aqu2          2       400.00    31.744  -83.734  126.596          1        wea1       0       1       0       0        res          1        tot       1.00 

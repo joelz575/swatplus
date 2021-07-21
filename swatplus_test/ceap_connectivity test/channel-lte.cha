@@ -1,0 +1,7 @@
+channel.cha
+  ID   CHA_NAME      CHA_INI     CHA_HYD     CHA_SED     CHA_NUT     	  
+   1    cha1        high_init   First_Ord1  null        midwest_1stord      
+   2    cha2        low_init    Gully_hru2  null        midwest_1stord      
+   3    cha3        high_init   First_Ord1  null        midwest_1stord      
+   4    cha4        low_init    Gully_hru2  null        midwest_1stord      
+   5    cha5        high_init   First_Ord1  null        midwest_1stord      

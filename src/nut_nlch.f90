@@ -71,12 +71,12 @@
         if (hru(j)%lumv%ldrain == jj) vv = vv + qtile
         ww = -vv / ((1. - soil(j)%anion_excl) * soil(j)%phys(jj)%ul)
         vno3 = soil1(j)%mn(jj)%no3 * (1. - Exp(ww))
-        co = Max(vno3 / vv, 0.)
+        co = Max(vno3 / vv, 0.)     !kg/ha/mm (if * 100 = ppm)
 
         !! calculate nitrate in surface runoff
-        cosurf = bsn_prm%nperco * co
+        co = bsn_prm%nperco * co
         if (jj == 1) then
-          surqno3(j) = surfq(j) * cosurf
+          surqno3(j) = surfq(j) * co
           surqno3(j) = Min(surqno3(j), soil1(j)%mn(jj)%no3)
           soil1(j)%mn(jj)%no3 = soil1(j)%mn(jj)%no3 - surqno3(j)
         endif
@@ -92,7 +92,7 @@
 
         !! calculate nitrate in lateral flow
         if (jj == 1) then
-          ssfnlyr = cosurf * soil(j)%ly(jj)%flat
+          ssfnlyr = co * soil(j)%ly(jj)%flat
         else
           ssfnlyr = co * soil(j)%ly(jj)%flat
         end if

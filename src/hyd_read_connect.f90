@@ -116,9 +116,21 @@
                 ob(i)%day_max = ndsave
                 allocate (ob(i)%ts(ob(i)%day_max,time%step))
                 allocate (ob(i)%tsin(time%step))
+                allocate (ob(i)%uh(ob(i)%day_max,time%step))
+                allocate (ob(i)%hyd_flo(ob(i)%day_max,time%step))
+                ob(i)%uh = 0.
+                ob(i)%hyd_flo = 0.
               end if
-              read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, ob(i)%elev,   &
-                ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+              read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
+                ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+              
+              !! intialize area to calcluate drainage areas in hyd_connect
+              if (ob(i)%typ == "hru" .or. ob(i)%typ == "ru" .or. ob(i)%typ == "recall") then
+                ob(i)%area_ha_calc = ob(i)%area_ha
+              else
+                ob(i)%area_ha_calc = 0.
+              end if
+              
               if (eof < 0) exit
 
               if (ob(i)%src_tot > 0) then
@@ -181,7 +193,7 @@
               !if (printcode == 1) then
                 allocate (ob(i)%fdc_ll(366))
                 allocate (ob(i)%fdc_lla(time%nbyr))
-                allocate (ob(i)%fdc%p(time%nbyr))
+                allocate (ob(i)%fdc%yr(time%nbyr))
               !end if
           
             end do

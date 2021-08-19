@@ -1,4 +1,4 @@
  usa_model_update          SWAT+ Jun 25 2021    MODULAR Rev 2020.60.5.3                                   
  jday,   mon,   day,    yr,    unit , gis_id ,    name ,        grzn,        grzp,        lab_min_p,        act_sta_p,            fertn,            fertp,             fixn,            denit,        act_nit_n,        act_sta_n,        org_lab_p,     rsd_nitorg_n,     rsd_laborg_p,          no3atmo,          nh4atmo
      ,      ,      ,      ,         ,        ,         ,        kgha,        kgha,             kgha,             kgha,             kgha,             kgha,             kgha,             kgha,             kgha,             kgha,             kgha,             kgha,             kgha,             kgha,             kgha
-366,12,31,2016,       1,       1,usa_model_update         ,0.00,0.00,0.247E-2,0.131E-2,0.122E-1,0.00,0.00,0.146,0.214,-0.210E-2,0.161E-1,0.537E-2,0.194E-2,0.00,0.00
+366,12,31,2016,       1,       1,usa_model_update         ,0.00,0.00,0.266E-2,0.149E-2,0.122E-1,0.00,0.00,0.139,0.211,-0.237E-2,0.158E-1,0.537E-2,0.227E-2,0.00,0.00

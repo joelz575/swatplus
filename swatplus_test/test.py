@@ -2,7 +2,7 @@ import os
 from subprocess import Popen
 from unittest import TestCase
 import numpy.testing as npt
-from tinamit.idm.puertos import IDMEnchufes
+from tinamit_idm.puertos import IDMEnchufes
 
 from swatplus_test.ejemplo_cliente import test_datos, datos
 
@@ -63,22 +63,22 @@ class PruebaIDM(TestCase):
                         npt.assert_almost_equal(dts, recibido, 5)
                         # equal to 5 decimal places
 
-    # def test_recibir_datos(símismo):
-    #     for n in range(len(testDirectories)):
-    #         if test_datos[testDirectories[n]] != "":
-    #             for nmbr_dts in test_datos.get(testDirectories[n]):
-    #                 dts = datos[nmbr_dts]
-    #                 with símismo.subTest(datos=testDirectories[n] + "/" + nmbr_dts), IDMEnchufes() as servidor:
-    #                     símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
-    #                     servidor.activar()
-    #                     recibido = servidor.recibir(nmbr_dts)
-    #                     print("receiving ", nmbr_dts)
-    #                     print("received ", recibido)
-    #                     #nans = np.isnan(recibido)
-    #                     #recibido = np.where(nans, 0, recibido)
-    #                     npt.assert_almost_equal(dts, recibido, 5)
-    #                     print("Done")
-    #                     # equal to 5 decimal places
+    def test_recibir_datos(símismo):
+         for n in range(len(testDirectories)):
+             if test_datos[testDirectories[n]] != "":
+                 for nmbr_dts in test_datos.get(testDirectories[n]):
+                     dts = datos[nmbr_dts]
+                     with símismo.subTest(datos=testDirectories[n] + "/" + nmbr_dts), IDMEnchufes() as servidor:
+                         símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
+                         servidor.activar()
+                         recibido = servidor.recibir(nmbr_dts)
+                         print("receiving ", nmbr_dts)
+                         print("received ", recibido)
+                         #nans = np.isnan(recibido)
+                         #recibido = np.where(nans, 0, recibido)
+                         npt.assert_almost_equal(dts, recibido, 5)
+                         print("Done")
+                         # equal to 5 decimal places
 
     def test_incrementar(símismo):
         n_pasos = 5

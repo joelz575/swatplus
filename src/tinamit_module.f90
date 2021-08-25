@@ -1,11 +1,15 @@
 module tinamit_module
 
     use landuse_data_module, ONLY : lum
-    use hru_module, ONLY : hru, hru_db
+    use hru_module, ONLY : ihru, isol, hru, hru_db
     use hru_lte_module, ONLY : hlt
     use channel_module, ONLY : ch
     use sd_channel_module, ONLY : sd_ch
     use hydrograph_module, ONLY : sp_ob, ob, sp_ob1
+    use time_module
+    use soil_module
+    use plant_module
+    use plant_data_module
 
     save
     integer :: MAX_BUFFER_LEN = 20000
@@ -111,6 +115,8 @@ contains
         integer, dimension(shape) :: intBuffer
         real, dimension(shape) :: floatBuffer
         integer :: f = 1
+        character(len = 8) :: lu_prev
+        real :: rock
 
         if (sp_ob%hru > 0) then
             print *, "there are full hru's"
@@ -708,26 +714,68 @@ contains
             end do
 
         case("luse")
-            print *, "HRU luse: "
+            print *, "HRU luse registered"
             do i= 1, sp_ob%hru
-                j = i
-                jj = i
                 ihru = i
                 ilu = intBuffer(i)
-                isol = hru(j)%dbs%soil
 
                 !Changing landuse in databases, if necessary
-                if((ilu/=hru(j)%land_use_mgt))then
-                    hru(j)%dbs%land_use_mgt = ilu
-                    hru(j)%dbsc%land_use_mgt = lum(ilu)%name !from line 72 and 73 in hru_read
-                    iob = sp_ob1%hru + ihru - 1
-                    ihru_db = ob(iob)%props
-                    hru_db(ihru_db)%dbs = hru(ihru)%dbs
-                    hru_db(ihru_db)%dbsc = hru(ihru)%dbsc
-                    hru(j)%land_use_mgt = ilu
+                if((ilu/=hru(i)%land_use_mgt))then
+                    hru(i)%dbs%land_use_mgt = ilu
+                    !hru(i)%dbsc%land_use_mgt = lum(ilu)%name !from line 72 and 73 in hru_read
+                    lu_prev = hru(i)%land_use_mgt_c
+                    hru(i)%land_use_mgt_c = lum(ilu)%name
+                    isol = hru(i)%dbs%soil
+                    call hru_lum_init (i)
+
+                    !iob = sp_ob1%hru + ihru - 1
+                    !ihru_db = ob(iob)%props
+                    !hru_db(ihru_db)%dbs = hru(ihru)%dbs
+                    !hru_db(ihru_db)%dbsc = hru(ihru)%dbsc
+
                     call plant_init(1)
+                    call cn2_init (i)
+                !! reset composite usle value - in hydro_init
+                    rock = Exp(-.053 * soil(i)%phys(1)%rock)
+                    hru(i)%lumv%usle_mult = rock * soil(i)%ly(1)%usle_k *       &
+                                 hru(i)%lumv%usle_p * hru(i)%lumv%usle_ls * 11.8
+                !! write to new landuse change file
+                    write (3612,*) i, time%yrc, time%mo, time%day_mo,  "    LU_CHANGE ",        &
+                        lu_prev, hru(i)%land_use_mgt_c, "   0   0"
+
+                    !plants_bsn = plts_bsn(1:basin_plants)
+                    !deallocate (plts_bsn)
+                    do ihru = 1, sp_ob%hru
+                        do ipl = 1, pcom(ihru)%npl
+                            do ipl_bsn = 1, basin_plants
+                                if (pcom(ihru)%pl(ipl) == plants_bsn(ipl_bsn)) then
+                                    pcom(ihru)%plcur(ipl)%bsn_num = ipl_bsn
+                                    exit
+                                end if
+                            end do
+                        end do
+                    end do
+                    hru(i)%land_use_mgt = ilu
                 end if
             end do
+!            j = d_tbl%act(iac)%ob_num
+!            if (j == 0) j = ob_cur
+!            ilu = d_tbl%act_typ(iac)
+!            hru(j)%dbs%land_use_mgt = ilu
+!            lu_prev = hru(j)%land_use_mgt_c
+!            hru(j)%land_use_mgt_c = d_tbl%act(iac)%file_pointer
+!            isol = hru(j)%dbs%soil
+!            call hru_lum_init (j)
+!            call plant_init (1)     ! (1) is to deallocate and reset
+!            call cn2_init (j)
+!            !! reset composite usle value - in hydro_init
+!            rock = Exp(-.053 * soil(j)%phys(1)%rock)
+!            hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
+!                                 hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
+!            !! write to new landuse change file
+!            write (3612,*) j, time%yrc, time%mo, time%day_mo,  "    LU_CHANGE ",        &
+!                    lu_prev, hru(j)%land_use_mgt_c, "   0   0"
+
 
         CASE default
             print *, "Unused variable: ", variable_Name
@@ -1516,7 +1564,6 @@ contains
             allocate(floatBuffer(0))
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
             do i= 1,sp_ob%hru
-                print *, hru(i)%luse%name
                 intBuffer(i) = hru(i)%dbs%land_use_mgt
             end do
 
@@ -1524,7 +1571,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%luse%cn_lu
                 intBuffer(i) = hru(i)%luse%cn_lu
             end do
 
@@ -1532,7 +1578,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%luse%cons_prac
                 intBuffer(i) = hru(i)%luse%cons_prac
             end do
 
@@ -1540,7 +1585,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%luse%usle_p
                 floatBuffer(i) = hru(i)%luse%usle_p
             end do
 
@@ -1548,7 +1592,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%luse%urb_ro
                 intBuffer(i) = hru(i)%dbs%land_use_mgt
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
@@ -1565,16 +1608,12 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%luse%ovn
                 floatBuffer(i) = hru(i)%luse%ovn
             end do
 
         case("hru_dbs%name")
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
-            do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%name
-            end do
             intBuffer = hru%obj_no
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_obj_no"
 
@@ -1583,7 +1622,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%topo
                 intBuffer(i) = hru(i)%dbs%topo
             end do
 
@@ -1591,7 +1629,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%hyd
                 intBuffer(i) = hru(i)%dbs%hyd
             end do
 
@@ -1599,7 +1636,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%soil
                 intBuffer(i) =hru(i)%dbs%soil
             end do
 
@@ -1607,7 +1643,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%land_use_mgt
                 intBuffer(i) = hru(i)%dbs%land_use_mgt
             end do
 
@@ -1615,7 +1650,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%soil_plant_init
                 intBuffer(i) = hru(i)%dbs%soil_plant_init
             end do
 
@@ -1623,7 +1657,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%surf_stor
                 intBuffer(i) =  hru(i)%dbs%surf_stor
             end do
 
@@ -1631,7 +1664,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%snow
                 intBuffer(i) =hru(i)%dbs%snow
             end do
 
@@ -1639,17 +1671,12 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbs%hyd
                 intBuffer(i) = hru(i)%dbs%hyd
             end do
 
         case("hru_dbsc%name")
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
-            do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%name
-            end do
-
             intBuffer = hru%obj_no
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_obj_no"
 
@@ -1658,7 +1685,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%topo
                 intBuffer(i) = hru(i)%dbs%topo
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%topo"
@@ -1667,7 +1693,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%hyd
                 intBuffer(i) = hru(i)%dbs%hyd
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%hyd"
@@ -1676,7 +1701,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%soil
                 intBuffer(i) = hru(i)%dbs%soil
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%soil"
@@ -1685,7 +1709,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%land_use_mgt
                 intBuffer(i) = hru(i)%dbs%land_use_mgt
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
@@ -1694,7 +1717,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%soil_plant_init
                 intBuffer(i) = hru(i)%dbs%soil_plant_init
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%soil_plant_init"
@@ -1703,7 +1725,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%surf_stor
                 intBuffer(i) = hru(i)%dbs%surf_stor
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%surf_stor"
@@ -1712,7 +1733,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%snow
                 intBuffer(i) = hru(i)%dbs%snow
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%snow"
@@ -1721,7 +1741,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%dbsc%field
                 intBuffer(i) = hru(i)%dbs%field
             end do
             print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%field"
@@ -1730,7 +1749,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%usle_p
                 floatBuffer(i) = hru(i)%lumv%usle_p
             end do
 
@@ -1738,7 +1756,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%usle_ls
                 floatBuffer(i) =hru(i)%lumv%usle_ls
             end do
 
@@ -1746,7 +1763,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%usle_mult
                 floatBuffer(i) = hru(i)%lumv%usle_mult
             end do
 
@@ -1754,7 +1770,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%sdr_dep
                 floatBuffer(i) = hru(i)%lumv%sdr_dep
             end do
 
@@ -1762,7 +1777,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%ldrain
                 intBuffer(i) = hru(i)%lumv%ldrain
             end do
 
@@ -1770,7 +1784,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%tile_ttime
                 floatBuffer(i) = hru(i)%lumv%tile_ttime
             end do
 
@@ -1778,7 +1791,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%vfsi
                 floatBuffer(i) = hru(i)%lumv%vfsi
             end do
 
@@ -1786,7 +1798,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%vfsratio
                 floatBuffer(i) = hru(i)%lumv%vfsratio
             end do
 
@@ -1794,7 +1805,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%vfscon
                 floatBuffer(i) = hru(i)%lumv%vfscon
             end do
 
@@ -1802,7 +1812,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%vfsch
                 floatBuffer(i) = hru(i)%lumv%vfsch
             end do
 
@@ -1810,7 +1819,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%ngrwat
                 intBuffer(i) = hru(i)%lumv%ngrwat
             end do
 
@@ -1818,7 +1826,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%grwat_i
                 floatBuffer(i) = hru(i)%lumv%grwat_i
             end do
 
@@ -1826,7 +1833,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%grwat_n
                 floatBuffer(i) = hru(i)%lumv%grwat_n
             end do
 
@@ -1834,7 +1840,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%grwat_spcon
                 floatBuffer(i) = hru(i)%lumv%grwat_spcon
             end do
 
@@ -1842,7 +1847,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%grwat_d
                 floatBuffer(i) = hru(i)%lumv%grwat_d
             end do
 
@@ -1850,7 +1854,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%grwat_w
                 floatBuffer(i) = hru(i)%lumv%grwat_w
             end do
 
@@ -1858,7 +1861,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%grwat_l
                 floatBuffer(i) = hru(i)%lumv%grwat_l
             end do
 
@@ -1866,7 +1868,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%grwat_s
                 floatBuffer(i) = hru(i)%lumv%grwat_s
             end do
 
@@ -1874,7 +1875,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%bmp_flag
                 floatBuffer(i) = hru(i)%lumv%bmp_flag
             end do
 
@@ -1882,7 +1882,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%bmp_sed
                 floatBuffer(i) = hru(i)%lumv%bmp_sed
             end do
 
@@ -1890,7 +1889,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%bmp_pp
                 floatBuffer(i) = hru(i)%lumv%bmp_pp
             end do
 
@@ -1898,7 +1896,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%bmp_sp
                 floatBuffer(i) = hru(i)%lumv%bmp_sp
             end do
 
@@ -1906,7 +1903,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%bmp_pn
                 floatBuffer(i) = hru(i)%lumv%bmp_pn
             end do
 
@@ -1914,7 +1910,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%bmp_sn
                 floatBuffer(i) =hru(i)%lumv%bmp_sn
             end do
 
@@ -1922,7 +1917,6 @@ contains
             allocate(floatBuffer(sp_ob%hru))
             allocate(intBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%lumv%bmp_bac
                 floatBuffer(i) = hru(i)%lumv%bmp_bac
             end do
 
@@ -1931,9 +1925,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%luse%name
-                print *, hru(i)%dbsc%land_use_mgt
-                print *, hru(i)%dbs%land_use_mgt
                 intBuffer(i) = hru(i)%land_use_mgt
             end do
 

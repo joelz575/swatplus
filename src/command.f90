@@ -205,7 +205,7 @@
         select case (ob(icmd)%typ)
             
           case ("hru")   ! hru
-            ihru = ob(icmd)%num
+            ihru = ob(icmd)%num !is this a problem?
             call hru_control
             if (ob(icmd)%rcv_tot > 0) call hyddep_output
                       

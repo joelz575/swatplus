@@ -233,25 +233,21 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
  int jsonStringLen;
 
  strncpy(jsonEncabezadoString, "{\"tamaño\": ", 13);
-
  if(*floatLength != 0){
     sprintf( valLen, "%ld", sizeof(float)* (*floatLength));
     strcat(jsonEncabezadoString, valLen);
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"float32\"");
  }
-
  else{
     sprintf(valLen, "%ld", sizeof(int)* (*intLength));
     printf("Int ValLen: %s\n", valLen);
     strcat(jsonEncabezadoString, valLen);
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"int32\"");
  }
-
+ printf("Sending encabezado: %s\n", jsonEncabezadoString);
  strcat(jsonEncabezadoString, ", \"forma\": ");
  strcat(jsonEncabezadoString, shape);
  strcat(jsonEncabezadoString, "}");
-
- printf("Sending encabezado: %s\n", jsonEncabezadoString);
 
  i = strlen(jsonEncabezadoString);
 
@@ -260,23 +256,12 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
  if (sendRes==-1){
 	printf("send failed...");
     }
-#ifdef _WIN32
-
-	//printf((char *)WSAGetLastError());
-
-#endif
 
  sendRes = send(*client, (char *)jsonEncabezadoString, strlen(jsonEncabezadoString),0);
 
  if (sendRes==-1){
 	printf("send failed...");
 	}
-
-#ifdef _WIN32
-
-	//printf((char *)WSAGetLastError());
-
-#endif
  if(*floatLength != 0){
     sendRes = send(*client, floatSenderBuffer, (sizeof(float)* (*floatLength)), 0);
     }
@@ -285,12 +270,6 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
  }
  if (sendRes==-1){
 	printf("send failed...");
-
-#ifdef _WIN32
-
-	//printf((char *)WSAGetLastError());
-
-#endif
     }
 }
 

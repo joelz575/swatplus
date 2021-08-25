@@ -23,6 +23,7 @@
         if (cs_db%num_pests > 0) call pesticide_init
         if (cs_db%num_paths > 0) call pathogen_init
         if (cs_db%num_salts > 0) call salt_hru_init
+        print *, "calling plant_all_init now"
         call plant_all_init
         call cn2_init_all
         call hydro_init

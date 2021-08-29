@@ -2,10 +2,12 @@ module tinamit_module
 
     use landuse_data_module, ONLY : lum
     use hru_module, ONLY : ihru, isol, hru, hru_db
+    use plant_module, ONLY : bsn_crop_yld_aa
     use hru_lte_module, ONLY : hlt
     use channel_module, ONLY : ch
     use sd_channel_module, ONLY : sd_ch
     use hydrograph_module, ONLY : sp_ob, ob, sp_ob1
+    use aquifer_module, ONLY : aqu_a
     use time_module
     use soil_module
     use plant_module
@@ -66,11 +68,11 @@ contains
 
         elseif (command == "leer")then
 
-            print *, "Variable Name: ", var
+            print *, "Variable Name: ", trim(var)
 
         end if
 
-        call evaluar(command, var, shape, intBuffer, realBuffer, nPasos)
+        call evaluar(command, trim(var), shape, intBuffer, realBuffer, nPasos)
 
     end subroutine recibe
 
@@ -727,12 +729,6 @@ contains
                     hru(i)%land_use_mgt_c = lum(ilu)%name
                     isol = hru(i)%dbs%soil
                     call hru_lum_init (i)
-
-                    !iob = sp_ob1%hru + ihru - 1
-                    !ihru_db = ob(iob)%props
-                    !hru_db(ihru_db)%dbs = hru(ihru)%dbs
-                    !hru_db(ihru_db)%dbsc = hru(ihru)%dbsc
-
                     call plant_init(1)
                     call cn2_init (i)
                 !! reset composite usle value - in hydro_init
@@ -755,7 +751,6 @@ contains
                             end do
                         end do
                     end do
-                    hru(i)%land_use_mgt = ilu
                 end if
             end do
 !            j = d_tbl%act(iac)%ob_num
@@ -765,16 +760,6 @@ contains
 !            lu_prev = hru(j)%land_use_mgt_c
 !            hru(j)%land_use_mgt_c = d_tbl%act(iac)%file_pointer
 !            isol = hru(j)%dbs%soil
-!            call hru_lum_init (j)
-!            call plant_init (1)     ! (1) is to deallocate and reset
-!            call cn2_init (j)
-!            !! reset composite usle value - in hydro_init
-!            rock = Exp(-.053 * soil(j)%phys(1)%rock)
-!            hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
-!                                 hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
-!            !! write to new landuse change file
-!            write (3612,*) j, time%yrc, time%mo, time%day_mo,  "    LU_CHANGE ",        &
-!                    lu_prev, hru(j)%land_use_mgt_c, "   0   0"
 
 
         CASE default
@@ -801,7 +786,22 @@ contains
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
 
 !-----------Landuse Variables-------------------------------------------------------------------------------------------
+        case ("aqu_a%flo_cha")
+            allocate(intBuffer(0))
+            allocate(floatBuffer(size(aqu_a)))
+            print *, "aqu_a%flo_cha: ", aqu_a%flo_cha
+            floatBuffer = aqu_a%flo_cha
 
+        case ("bsn_crop_yld_aa")
+            allocate(intBuffer(0))
+            allocate(floatBuffer(size(bsn_crop_yld_aa)))
+            do i = 1, size(bsn_crop_yld_aa)
+                if (.not.(bsn_crop_yld_aa(i)%area_ha == 0.0))then
+                    floatBuffer(i) = bsn_crop_yld_aa(i)%yield / bsn_crop_yld_aa(i)%area_ha
+                else
+                    floatBuffer(i) = 0
+                end if
+            end do
 
 !-----------Water flow, contaminants, (P o and ao then N, K)------------------------------------------------------------
             !ch(:)%
@@ -1925,7 +1925,7 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                intBuffer(i) = hru(i)%land_use_mgt
+                intBuffer(i) = hru(i)%dbs%land_use_mgt
             end do
 
         !Other possible variables that could be added to this list for hru-objects:

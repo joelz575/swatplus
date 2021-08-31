@@ -2,7 +2,7 @@ module tinamit_module
 
     use landuse_data_module, ONLY : lum
     use hru_module, ONLY : ihru, isol, hru, hru_db
-    use plant_module, ONLY : bsn_crop_yld_aa
+    use plant_module
     use hru_lte_module, ONLY : hlt
     use channel_module, ONLY : ch
     use sd_channel_module, ONLY : sd_ch
@@ -10,15 +10,14 @@ module tinamit_module
     use aquifer_module, ONLY : aqu_a
     use time_module
     use soil_module
-    use plant_module
     use plant_data_module
 
     save
     integer :: MAX_BUFFER_LEN = 20000
     integer cliente_obj
     logical dynamic
-    integer :: dias = 1
-    integer :: t = 0
+    integer :: dias = 0
+    integer :: t = 1
 contains
 
     subroutine abre (arg1, arg2)
@@ -775,7 +774,6 @@ contains
         character(len = 6) :: shapeBuffer
         integer, dimension(:), allocatable :: intBuffer
         real, dimension(:), allocatable :: floatBuffer
-        character(len = 16) :: temp_shapeBuffer
         shapeBuffer = ""
 
         if(allocated(intBuffer))deallocate(intBuffer)
@@ -786,22 +784,21 @@ contains
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
 
 !-----------Landuse Variables-------------------------------------------------------------------------------------------
+        !case ("plcal%lum%aa%yield")
+        !    allocate(intBuffer(0))
+        !    allocate(floatBuffer(size()))
+
         case ("aqu_a%flo_cha")
             allocate(intBuffer(0))
-            allocate(floatBuffer(size(aqu_a)))
-            print *, "aqu_a%flo_cha: ", aqu_a%flo_cha
+            allocate(floatBuffer(size(aqu_a%flo_cha)))
             floatBuffer = aqu_a%flo_cha
 
-        case ("bsn_crop_yld_aa")
+        case ("bsn_crop_yld")
             allocate(intBuffer(0))
-            allocate(floatBuffer(size(bsn_crop_yld_aa)))
-            do i = 1, size(bsn_crop_yld_aa)
-                if (.not.(bsn_crop_yld_aa(i)%area_ha == 0.0))then
-                    floatBuffer(i) = bsn_crop_yld_aa(i)%yield / bsn_crop_yld_aa(i)%area_ha
-                else
-                    floatBuffer(i) = 0
-                end if
-            end do
+            allocate(floatBuffer(basin_plants))
+            do i = 1, basin_plants
+                floatBuffer(i) = bsn_crop_yld(i)%yield
+                end do
 
 !-----------Water flow, contaminants, (P o and ao then N, K)------------------------------------------------------------
             !ch(:)%
@@ -1955,6 +1952,18 @@ contains
         else
             shapeBuffer = shapeBuffer // char(0)
         end if
+
+        !-------------------This is temporary code----------------------------------------------------------------------
+        if(size(intBuffer) == 0)then
+            deallocate(intBuffer)
+            allocate(intBuffer(size(floatBuffer)))
+            do i = 1,size(floatBuffer)
+                intBuffer(i) = ceiling(floatBuffer(i))
+            end do
+            deallocate(floatBuffer)
+            allocate(floatBuffer(0))
+        end if
+        !-------------------This is temporary code----------------------------------------------------------------------
 
         call sendr(cliente_obj, intBuffer, floatBuffer, shapeBuffer, size(intBuffer), size(floatBuffer))
 

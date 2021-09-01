@@ -6,11 +6,12 @@ module tinamit_module
     use hru_lte_module, ONLY : hlt
     use channel_module, ONLY : ch
     use sd_channel_module, ONLY : sd_ch
-    use hydrograph_module, ONLY : sp_ob, ob, sp_ob1
-    use aquifer_module, ONLY : aqu_a
+    use hydrograph_module, ONLY : sp_ob, ob, sp_ob1, ch_out_y
     use time_module
     use soil_module
     use plant_data_module
+    use mgt_operations_module
+    use conditional_module
 
     save
     integer :: MAX_BUFFER_LEN = 20000
@@ -111,7 +112,7 @@ contains
     subroutine tomar (variable_Name, shape, intBuffer, floatBuffer)
         character (*) :: variable_Name
         character(len = :), allocatable :: senderBuffer
-        integer :: index, i
+        integer :: index, i, isched
         integer :: shape
         integer, dimension(shape) :: intBuffer
         real, dimension(shape) :: floatBuffer
@@ -723,9 +724,10 @@ contains
                 !Changing landuse in databases, if necessary
                 if((ilu/=hru(i)%land_use_mgt))then
                     hru(i)%dbs%land_use_mgt = ilu
-                    !hru(i)%dbsc%land_use_mgt = lum(ilu)%name !from line 72 and 73 in hru_read
+                    hru(i)%dbsc%land_use_mgt = lum(ilu)%name !from line 72 and 73 in hru_read
                     lu_prev = hru(i)%land_use_mgt_c
                     hru(i)%land_use_mgt_c = lum(ilu)%name
+                    hru(i)%land_use_mgt = ilu
                     isol = hru(i)%dbs%soil
                     call hru_lum_init (i)
                     call plant_init(1)
@@ -738,16 +740,27 @@ contains
                     write (3612,*) i, time%yrc, time%mo, time%day_mo,  "    LU_CHANGE ",        &
                         lu_prev, hru(i)%land_use_mgt_c, "   0   0"
 
-                    !plants_bsn = plts_bsn(1:basin_plants)
-                    !deallocate (plts_bsn)
-                    do ihru = 1, sp_ob%hru
-                        do ipl = 1, pcom(ihru)%npl
-                            do ipl_bsn = 1, basin_plants
-                                if (pcom(ihru)%pl(ipl) == plants_bsn(ipl_bsn)) then
-                                    pcom(ihru)%plcur(ipl)%bsn_num = ipl_bsn
-                                    exit
-                                end if
-                            end do
+                    !! initialize pcom(ihru)dtbl in case the hru didn't have one before
+                    isched = hru(ihru)%mgt_ops
+                    if (sched(isched)%num_autos > 0) then
+                        if(allocated(pcom(ihru)%dtbl)) deallocate(pcom(ihru)%dtbl)
+                        allocate (pcom(ihru)%dtbl(sched(isched)%num_autos))
+
+                        do iauto = 1, sched(isched)%num_autos
+                            id = sched(isched)%num_db(iauto)
+                            allocate (pcom(ihru)%dtbl(iauto)%num_actions(dtbl_lum(id)%acts))
+                            pcom(ihru)%dtbl(iauto)%num_actions = 1
+                            allocate (pcom(ihru)%dtbl(iauto)%days_act(dtbl_lum(id)%acts))
+                            pcom(ihru)%dtbl(iauto)%days_act = 0
+                        end do
+                    end if
+
+                    do ipl = 1, pcom(ihru)%npl
+                        do ipl_bsn = 1, basin_plants
+                            if (pcom(ihru)%pl(ipl) == plants_bsn(ipl_bsn)) then
+                                pcom(ihru)%plcur(ipl)%bsn_num = ipl_bsn
+                                exit
+                            end if
                         end do
                     end do
                 end if
@@ -784,14 +797,19 @@ contains
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
 
 !-----------Landuse Variables-------------------------------------------------------------------------------------------
-        !case ("plcal%lum%aa%yield")
-        !    allocate(intBuffer(0))
-        !    allocate(floatBuffer(size()))
-
-        case ("aqu_a%flo_cha")
+        case ("total_ch_out_y%no3")
             allocate(intBuffer(0))
-            allocate(floatBuffer(size(aqu_a%flo_cha)))
-            floatBuffer = aqu_a%flo_cha
+            allocate(floatBuffer(1))
+            do i = 1, sp_ob%chandeg
+                floatBuffer(1) = floatBuffer(1) + ch_out_y(i)%no3
+            end do
+
+        case ("total_ch_out_y%flo")
+            allocate(intBuffer(0))
+            allocate(floatBuffer(1))
+            do i = 1, sp_ob%chandeg
+                floatBuffer(1) = floatBuffer(1) + ch_out_y(i)%flo
+            end do
 
         case ("bsn_crop_yld")
             allocate(intBuffer(0))

@@ -1,6 +1,6 @@
 print.prt: written by SWAT+ Toolbox v0.1                                   
 nyskip   day_start    yrc_start   day_end   yrc_end   interval                                     
-2        0            0           0         0         0
+0        0            0           0         0         0
 aa_int_cnt                                                                                         
 0                                                                                                  
 csvout    dbout         cdfout

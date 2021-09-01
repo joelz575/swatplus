@@ -330,7 +330,7 @@
             if (sched(isched)%auto_name(idtbl) == "pl_hv_summer2") then
               d_tbl%act(iac)%option = sched(isched)%auto_crop(pcom(j)%rot_yr)
             end if
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               do ipl = 1, pcom(j)%npl
                 idp = pcomdb(icom)%pl(ipl)%db_num

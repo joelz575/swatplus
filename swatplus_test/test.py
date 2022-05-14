@@ -4,7 +4,7 @@ from unittest import TestCase
 import numpy.testing as npt
 from tinamit_idm.puertos import IDMEnchufes
 
-from swatplus_test.ejemplo_cliente import test_datos, datos
+from swatplus_test.example_client import model_vars, sample_data
 
 t_final = [3287, 3287, 731, 4018]
 valgrind = False
@@ -21,86 +21,66 @@ testDirectories = [
                    "Usa_Basin_model"
                    ]
 
-class PruebaIDM(TestCase):
+class TestIDM(TestCase):
 
-    def setUp(símismo):
-        símismo.clientes = []
+    def setUp(self):
+        self.clients = []
 
-    def _empezar_cliente(símismo, dirección, puerto, n):
+    def start_client(self, host, port, n):
         cwd = os.path.join(BASE_DIR, "swatplus_test/" + testDirectories[n])
         swat_exe = os.path.join(BASE_DIR, "build/bin/swatplus_exe")
 
         if valgrind:
-            cliente = Popen(["valgrind", "--leak-check=yes", "--track-origins=yes", swat_exe, str(puerto), dirección],
+            client = Popen(["valgrind", "--leak-check=yes", "--track-origins=yes", swat_exe, str(port), host],
                             cwd=cwd)
         else:
-            cliente = Popen([swat_exe, str(puerto), dirección], cwd=cwd)
+            client = Popen([swat_exe, str(port), host], cwd=cwd)
 
-        símismo.clientes.append(cliente)
-        return cliente
+        self.clients.append(client)
+        return client
 
-    def test_abrir_cerrar(símismo):
+    def test_opening_closing(self):
+         for n in range(len(testDirectories)):
+               with self.subTest(sample_data=testDirectories[n]), IDMEnchufes() as server:
+                   self.start_client(server.dirección, server.puerto,n)
+                   server.activar()
+                   server.cerrar()
+
+    def test_set_and_send(self):
         for n in range(len(testDirectories)):
-            with símismo.subTest(datos=testDirectories[n]), IDMEnchufes() as servidor:
-                símismo._empezar_cliente(servidor.dirección, servidor.puerto,n)
-                servidor.activar()
-                servidor.cerrar()
+            if model_vars[testDirectories[n]] != "":
+                for var_name in model_vars.get(testDirectories[n]):
+                    dts = sample_data[var_name]
+                    with self.subTest(sample_data=testDirectories[n]+"/"+var_name), IDMEnchufes() as server:
+                        self.start_client(server.dirección, server.puerto, n)
+                        server.activar()
+                        server.cambiar(var_name, dts) if sample_data[var_name].dtype is int else server.cambiar(var_name, dts, precisión=5)
 
-    def test_mandar_datos(símismo):
-        for n in range(len(testDirectories)):
-            if test_datos[testDirectories[n]] != "":
-                for nmbr_dts in test_datos.get(testDirectories[n]):
-                    dts = datos[nmbr_dts]
-                    with símismo.subTest(datos=testDirectories[n]+"/"+nmbr_dts), IDMEnchufes() as servidor:
-                        símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
-                        servidor.activar()
-                        print("going to send this data: ", dts)
-                        servidor.cambiar(nmbr_dts, dts)
-                        servidor.cambiar(nmbr_dts, dts)
-                        recibido = servidor.recibir(nmbr_dts)
-                        # npt.assert_almost_equal(dts, recibido)
-                        # equal to 7 decimal places
-                        npt.assert_almost_equal(dts, recibido, 5)
+                        reply = server.recibir(var_name) if sample_data[var_name].dtype is int else server.recibir(var_name, precisión=5)
+                        npt.assert_almost_equal(dts, reply, 5)
                         # equal to 5 decimal places
 
-    #def test_recibir_datos(símismo):
-         # for n in range(len(testDirectories)):
-         #     if test_datos[testDirectories[n]] != "":
-         #         for nmbr_dts in test_datos.get(testDirectories[n]):
-         #             dts = datos[nmbr_dts]
-         #             with símismo.subTest(datos=testDirectories[n] + "/" + nmbr_dts), IDMEnchufes() as servidor:
-         #                 símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
-         #                 servidor.activar()
-         #                 recibido = servidor.recibir(nmbr_dts)
-         #                 print("receiving ", nmbr_dts)
-         #                 print("received ", recibido)
-         #                 #nans = np.isnan(recibido)
-         #                 #recibido = np.where(nans, 0, recibido)
-         #                 npt.assert_almost_equal(dts, recibido, 5)
-         #                 print("Done")
-         #                 # equal to 5 decimal places
-
-    def test_incrementar(símismo):
-        n_pasos = 5
+    def test_advancing_model(self):
+         n_pasos = 5
+         for n in range(len(testDirectories)):
+             with self.subTest(sample_data=testDirectories[n]), IDMEnchufes() as server:
+                 self.start_client(server.dirección, server.puerto, n)
+                 server.activar()
+                 server.incrementar(n_pasos)
+                 t = server.recibir('t')
+                 print("T is: ", t)
+                 self.assertEqual(t, n_pasos)
+    
+    def test_finalizing_model(self):
         for n in range(len(testDirectories)):
-            with símismo.subTest(datos=testDirectories[n]), IDMEnchufes() as servidor:
-                símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
-                servidor.activar()
-                servidor.incrementar(n_pasos)
-                t = servidor.recibir('t')
+            with self.subTest(sample_data=testDirectories[n]), IDMEnchufes() as server:
+                self.start_client(server.dirección, server.puerto, n)
+                server.activar()
+                server.finalizar()
+                t = server.recibir('t')
                 print("T is: ", t)
-                símismo.assertEqual(t, n_pasos)
+                self.assertEqual(t, t_final[n])
 
-    def test_finalizar(símismo):
-        for n in range(len(testDirectories)):
-            with símismo.subTest(datos=testDirectories[n]), IDMEnchufes() as servidor:
-                símismo._empezar_cliente(servidor.dirección, servidor.puerto, n)
-                servidor.activar()
-                servidor.finalizar()
-                t = servidor.recibir('t')
-                print("T is: ", t)
-                símismo.assertEqual(t, t_final[n])
-
-    def tearDown(símismo):
-        for cliente in símismo.clientes:
-            cliente.wait()
+    def tearDown(self):
+        for client in self.clients:
+            client.wait()

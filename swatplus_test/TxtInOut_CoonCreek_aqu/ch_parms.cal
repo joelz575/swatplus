@@ -1,7 +1,0 @@
-chan_parms.cal  
- 4
-NAME           CHG_TYP		NEG	POS	LO	UP
-cov		abschg		-.4	 .4	0.	1.
-erod		pctchg		-25.	 25.	0.	10.
-shear_bnk       abschg          -.5      .5     .5      1.
-hc_erod		pctchg		-25.     25.	0.	2.

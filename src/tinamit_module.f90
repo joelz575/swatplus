@@ -15,13 +15,13 @@ module tinamit_module
 
     save
     integer :: MAX_BUFFER_LEN = 20000
-    integer cliente_obj
+    integer client_obj
     logical dynamic
-    integer :: dias = 0
-    integer :: t = 1
+    integer :: days_to_run = -1
+    integer :: t = 0
 contains
 
-    subroutine abre (arg1, arg2)
+    subroutine open (arg1, arg2)
 
         character(len = 32), intent(in) :: arg1, arg2
         character(len = 256) :: host_num
@@ -34,82 +34,67 @@ contains
 
         !Opening a socket
         write(*, *) 'Opening Socket now...'
-        CAll opensocket(port_num, host_num, cliente_obj)
-        print *, "cliente_obj=", cliente_obj
+        CAll opensocket(port_num, host_num, client_obj)
+        print *, "client_obj=", client_obj
 
     end subroutine
 
-    subroutine recibe ()
+    subroutine update_tinamit ()
         !character, dimension(:, :), allocatable :: charBuffer
         character(len = 7) :: command
         character(len = 21) :: var = "                     "
-        character(len = 5) :: tipo_contents
-        integer :: tmn_contents, nPasos, i, shape
+        character(len = 5) :: content_type
+        integer :: nPasses, shape, precision, i = 0
         real, allocatable, dimension(:) :: realBuffer(:)
         integer, allocatable, dimension(:) :: intBuffer(:)
 
-        tmn_shape = 1
-
-        call receive (cliente_obj, command, var, tipo_contents, nPasos, shape) !charBuffer
-
-        if (command == "cambiar")then
-
-            if(tipo_contents=="float")then
-                if(allocated(realBuffer)) deallocate(realBuffer)
-                allocate(realBuffer(shape))
-                call recvfloat (cliente_obj, realBuffer, shape)
-
-            elseif(tipo_contents=="int".or.tipo_contents=="int64")then
+        call receive (client_obj, command, var, content_type, nPasses, shape, precision)
+        print *, "content_type: ", content_type
+        if (trim(command) == "cambiar")then
+            if(content_type=="float")then
+                !-----------------------------------Work-around code----------------------------------------------------
                 if(allocated(intBuffer)) deallocate(intBuffer)
                 allocate(intBuffer(shape))
-                call recvint (cliente_obj, intBuffer, shape)
+                call recvfloat (client_obj, intBuffer, shape, 10**precision)
 
+                if(allocated(realBuffer)) deallocate(realBuffer)
+                allocate(realBuffer(shape))
+                do i=1,shape
+                    realBuffer(i) = real(real(intBuffer(i), 8)/(10**precision))
+                    print *, "RealBuffer(", i, "): ", realBuffer(i)
+                end do
+                deallocate(intBuffer)
+                !------------------------------------Work-around code---------------------------------------------------
+            elseif(content_type=="int64")then
+                if(allocated(intBuffer)) deallocate(intBuffer)
+                allocate(intBuffer(shape))
+                call recvint (client_obj, intBuffer, shape)
+                print *, "IntBuffer: ", intBuffer
             end if
 
-        elseif (command == "leer")then
+            call set (trim(var), shape, intBuffer, realBuffer)
 
+        elseif (trim(command) == "leer")then
             print *, "Variable Name: ", trim(var)
+            call get_and_send (trim(var), precision)
 
-        end if
-
-        call evaluar(command, trim(var), shape, intBuffer, realBuffer, nPasos)
-
-    end subroutine recibe
-
-    subroutine evaluar (orden, var, shape, intBuffer, realBuffer, nPasos)
-
-        character(len = :), allocatable :: senderBuffer
-        character(*) :: var, orden
-        integer :: nPasos, t_final
-        integer :: shape
-        integer, dimension(shape) :: intBuffer
-        real, dimension(shape) :: realBuffer
-
-        !make this a case statement
-        if(trim(orden) == 'cerrar')then
-            call closesock(cliente_obj)
+        elseif(trim(command) == 'cerrar')then
+            call closesock(client_obj)
             print *, "The socket was successfully closed"
             dynamic = .false.
 
-        elseif(trim(orden) == 'incr')then
-            dias = nPasos
-            print *, "Number of Passes: ", nPasos
+        elseif(trim(command) == 'incr')then
+            days_to_run = nPasses
             !No further action required
 
-        elseif(trim(orden) == 'cambiar')then
-            call tomar (var, shape, intBuffer, realBuffer)
-
-        elseif(trim(orden) == 'leer') then
-            call obtener (var)
-
         else
-            print *, "The command: ", trim(orden), "is not recognized"
+            print *, "The command: ", trim(command), "is not recognized"
 
         end if
 
-    end subroutine evaluar
+    end subroutine update_tinamit
 
-    subroutine tomar (variable_Name, shape, intBuffer, floatBuffer)
+    subroutine set (variable_Name, shape, intBuffer, floatBuffer)
         character (*) :: variable_Name
         character(len = :), allocatable :: senderBuffer
         integer :: index, i, isched
@@ -147,7 +132,8 @@ contains
 
         case("sd_aqu_link_ch")
             !sequential channel number in the aquifer
-            sd_ch%aqu_link_ch = intBuffer
+            print *, "CANNOT SET CHARACTER VALUE FROM INT" !, "SETTING sd_ch%aqu_link instead"
+            !sd_ch%aqu_link = intBuffer
 
         case("sd_chw")
             !m          |channel width
@@ -381,6 +367,8 @@ contains
             hru%surf_stor = intBuffer
 
         case("hru_land_use_mgt")
+            print *, "size(hru%land_use_mgt): ", size(hru%land_use_mgt)
+            print *, "size(intBuffer): ", size(intBuffer)
             hru%land_use_mgt = intBuffer
 
         !    character(len=16) :: land_use_mgt_c
@@ -392,13 +380,14 @@ contains
 
         !    character(len=16) :: lum_group_c        !land use group for soft cal and output
         case("hru_lum_group_c")
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_lum_group instead"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_lum_group instead"
             hru%lum_group = intBuffer
 
         !    character(len=16) :: region
         case("hru_region")
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%field "
-            hru%dbs%field = intBuffer
+            print *, "CANNOT SET CHARACTER VALUE USING INTEGER! ADDITIONALLY, hru_region is only used in calibration"
+            print *, "NOTHING TO SET"
+            !hru%dbs%field = intBuffer
 
         case("hru_plant_cov")
             hru%plant_cov = intBuffer
@@ -428,7 +417,7 @@ contains
             hru%cur_op = intBuffer
 
         !case("hru_strsa")
-        !    print *, "CANNOT RETURN CHARACTER VALUE, SENDING... "
+        !    print *, "CANNOT SET CHARACTER VALUE, SETTING... "
         !    hru%strsa = intBuffer
 
         case("hru_sno_mm")
@@ -442,13 +431,13 @@ contains
             hru%water_seep = floatBuffer
 
         case("hru_water_evap")
-            floatBuffer = hru%water_evap
+            hru%water_evap = floatBuffer
 
         case("hru_ich_flood")
             hru%ich_flood= intBuffer
 
         case("hru_luse%name")
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%land_use_mgt"
             do i= 1,sp_ob%hru
                 hru(i)%dbs%land_use_mgt = intBuffer(i)
             end do
@@ -472,7 +461,7 @@ contains
             do i= 1,sp_ob%hru
                 hru(i)%dbs%land_use_mgt = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%land_use_mgt"
 
         case("hru_luse%urb_lu")
             do i= 1,sp_ob%hru
@@ -481,7 +470,7 @@ contains
 
         case("hru_luse%ovn")
             do i= 1,sp_ob%hru
-                hru(i)%luse%ovn = intBuffer(i)
+                hru(i)%luse%ovn = floatBuffer(i)
             end do
 
         !case("hru_dbs%name")
@@ -490,7 +479,7 @@ contains
         !        hru%obj_no = intBuffer(i)
         !    end do
 
-        !    print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_obj_no"
+        !    print *, "CANNOT SET CHARACTER VALUE, SETTING hru_obj_no"
 
 
         case("hru_dbs%topo")
@@ -539,75 +528,75 @@ contains
         !    end do
 
         !    hru%obj_no = intBuffer(i)
-        !    print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_obj_no"
+        !    print *, "CANNOT SET CHARACTER VALUE, SETTING hru_obj_no"
 
 
         case("hru_dbsc%topo")
             do i= 1,sp_ob%hru
                 hru(i)%dbs%topo = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%topo"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%topo"
 
         case("hru_dbsc%hyd")
             do i= 1,sp_ob%hru
                 hru(i)%dbs%hyd = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%hyd"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%hyd"
 
         case("hru_dbsc%soil")
             do i= 1,sp_ob%hru
                 hru(i)%dbs%soil = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%soil"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%soil"
 
         case("hru_dbsc%land_use_mgt")
             do i= 1,sp_ob%hru
                 hru(i)%dbs%land_use_mgt = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%land_use_mgt"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%land_use_mgt"
 
         case("hru_dbsc%soil_plant_init")
             do i= 1,sp_ob%hru
                 hru(i)%dbs%soil_plant_init = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%soil_plant_init"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%soil_plant_init"
 
         case("hru_dbsc%surf_stor")
             do i= 1,sp_ob%hru
                 hru(i)%dbs%surf_stor = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%surf_stor"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%surf_stor"
 
         case("hru_dbsc%snow")
             do i= 1,sp_ob%hru
                 hru(i)%dbs%snow = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%snow"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%snow"
 
         case("hru_dbsc%field")
             do i= 1,sp_ob%hru
                 hru(i)%dbs%field = intBuffer(i)
             end do
-            print *, "CANNOT RETURN CHARACTER VALUE, SENDING hru_dbs%field"
+            print *, "CANNOT SET CHARACTER VALUE, SETTING hru_dbs%field"
 
         case("hru_lumv%usle_p")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%usle_p = intBuffer(i)
+                hru(i)%lumv%usle_p = floatBuffer(i)
             end do
 
         case("hru_lumv%usle_ls")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%usle_ls = intBuffer(i)
+                hru(i)%lumv%usle_ls = floatBuffer(i)
             end do
 
         case("hru_lumv%usle_mult")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%usle_mult = intBuffer(i)
+                hru(i)%lumv%usle_mult = floatBuffer(i)
             end do
 
         case("hru_lumv%sdr_dep")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%sdr_dep = intBuffer(i)
+                hru(i)%lumv%sdr_dep = floatBuffer(i)
             end do
 
         case("hru_lumv%ldrain")
@@ -617,27 +606,27 @@ contains
 
         case("hru_lumv%tile_ttime")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%tile_ttime = intBuffer(i)
+                hru(i)%lumv%tile_ttime = floatBuffer(i)
             end do
 
         case("hru_lumv%vfsi")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%vfsi = intBuffer(i)
+                hru(i)%lumv%vfsi = floatBuffer(i)
             end do
 
         case("hru_lumv%vfsratio")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%vfsratio = intBuffer(i)
+                hru(i)%lumv%vfsratio = floatBuffer(i)
             end do
 
         case("hru_lumv%vfscon")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%vfscon = intBuffer(i)
+                hru(i)%lumv%vfscon = floatBuffer(i)
             end do
 
         case("hru_lumv%vfsch")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%vfsch = intBuffer(i)
+                hru(i)%lumv%vfsch = floatBuffer(i)
             end do
 
         case("hru_lumv%ngrwat")
@@ -647,78 +636,80 @@ contains
 
         case("hru_lumv%grwat_i")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%grwat_i = intBuffer(i)
+                hru(i)%lumv%grwat_i = floatBuffer(i)
             end do
 
         case("hru_lumv%grwat_n")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%grwat_n = intBuffer(i)
+                hru(i)%lumv%grwat_n = floatBuffer(i)
             end do
 
         case("hru_lumv%grwat_spcon")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%grwat_spcon = intBuffer(i)
+                hru(i)%lumv%grwat_spcon = floatBuffer(i)
             end do
 
         case("hru_lumv%grwat_d")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%grwat_d = intBuffer(i)
+                hru(i)%lumv%grwat_d = floatBuffer(i)
             end do
 
         case("hru_lumv%grwat_w")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%grwat_w = intBuffer(i)
+                hru(i)%lumv%grwat_w = floatBuffer(i)
             end do
 
         case("hru_lumv%grwat_l")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%grwat_l = intBuffer(i)
+                hru(i)%lumv%grwat_l = floatBuffer(i)
             end do
 
         case("hru_lumv%grwat_s")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%grwat_s = intBuffer(i)
+                hru(i)%lumv%grwat_s = floatBuffer(i)
             end do
 
         case("hru_lumv%bmp_flag")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%bmp_flag = intBuffer(i)
+                hru(i)%lumv%bmp_flag = floatBuffer(i)
             end do
 
         case("hru_lumv%bmp_sed")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%bmp_sed = intBuffer(i)
+                hru(i)%lumv%bmp_sed = floatBuffer(i)
             end do
 
         case("hru_lumv%bmp_pp")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%bmp_pp = intBuffer(i)
+                hru(i)%lumv%bmp_pp = floatBuffer(i)
             end do
 
         case("hru_lumv%bmp_sp")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%bmp_sp = intBuffer(i)
+                hru(i)%lumv%bmp_sp = floatBuffer(i)
             end do
 
         case("hru_lumv%bmp_pn")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%bmp_pn = intBuffer(i)
+                hru(i)%lumv%bmp_pn = floatBuffer(i)
             end do
 
         case("hru_lumv%bmp_sn")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%bmp_sn = intBuffer(i)
+                hru(i)%lumv%bmp_sn = floatBuffer(i)
             end do
 
         case("hru_lumv%bmp_bac")
             do i= 1,sp_ob%hru
-                hru(i)%lumv%bmp_bac = intBuffer(i)
+                hru(i)%lumv%bmp_bac = floatBuffer(i)
             end do
 
         case("luse")
             print *, "HRU luse registered"
             do i= 1, sp_ob%hru
                 ihru = i
+                print *, "ilu: ", ilu
+                print *, "intBuffer (",i,"): ", intBuffer(i)
                 ilu = intBuffer(i)
 
                 !Changing landuse in databases, if necessary
@@ -779,20 +770,25 @@ contains
             error stop
         end select
 
-        call recibe()
-    end subroutine tomar
+        call update_tinamit()
+    end subroutine set
 
-    subroutine obtener (varNombre)
-        character(*) :: varNombre
+    subroutine get_and_send (varName, float_precision)
+        !--------------------------------------------work-around code and variables-------------------------------------
+        integer :: float_precision, precision_factor
+        real :: expanded_float
+        !--------------------------------------------work-around code and variables-------------------------------------
+        character(*) :: varName
         character(len = 6) :: shapeBuffer
         integer, dimension(:), allocatable :: intBuffer
         real, dimension(:), allocatable :: floatBuffer
+
         shapeBuffer = ""
 
         if(allocated(intBuffer))deallocate(intBuffer)
         if(allocated(floatBuffer))deallocate(floatBuffer)
 
-        select case (trim(varNombre))
+        select case (trim(varName))
 
 !--------Calibration/Initialization-------------------------------------------------------------------------------------
 
@@ -818,8 +814,7 @@ contains
                 floatBuffer(i) = bsn_crop_yld(i)%yield
                 end do
 
-!-----------Water flow, contaminants, (P o and ao then N, K)------------------------------------------------------------
-            !ch(:)%
+!-----------Number of Days in Simulation--------------------------------------------------------------------------------
         CASE("t")
             allocate(intBuffer(1))
             allocate(floatBuffer(0))
@@ -1955,7 +1950,7 @@ contains
         !type (hru_parms_db) :: parms            !calibration parameters
 
         CASE default
-            print *, "Unknown variable: ", varNombre
+            print *, "Unknown variable: ", varName
             error stop
         end select
 
@@ -1971,22 +1966,32 @@ contains
             shapeBuffer = shapeBuffer // char(0)
         end if
 
-        !-------------------This is temporary code----------------------------------------------------------------------
+        !-------------------This is work-around code----------------------------------------------------------------------
         if(size(intBuffer) == 0)then
             deallocate(intBuffer)
             allocate(intBuffer(size(floatBuffer)))
+            precision_factor = 10**float_precision
+
             do i = 1,size(floatBuffer)
-                intBuffer(i) = ceiling(floatBuffer(i))
+                print *, "Float buffer (", i,")", floatBuffer(i)
+                expanded_float = floatBuffer(i)*real(precision_factor)
+                intBuffer(i) = nint(expanded_float)
             end do
+
             deallocate(floatBuffer)
             allocate(floatBuffer(0))
+            print *, "Currently incapable of sending float buffers directly."
+            print *, "Will round using 'precisión' argument in recibe(), default is 0, i.e. to the nearest integer"
+
+        else
+            precision_factor = 1
         end if
-        !-------------------This is temporary code----------------------------------------------------------------------
+        !-------------------This is work-around code--------------------------------------------------------------------
+        print *, "Numbers to be sent: ", intBuffer
+        call sendr(client_obj, intBuffer, floatBuffer, shapeBuffer, size(intBuffer), size(floatBuffer), precision_factor)
 
-        call sendr(cliente_obj, intBuffer, floatBuffer, shapeBuffer, size(intBuffer), size(floatBuffer))
+        call update_tinamit()
 
-        call recibe()
-
-    end subroutine obtener
+    end subroutine get_and_send
 
 end module tinamit_module

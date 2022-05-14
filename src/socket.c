@@ -17,14 +17,6 @@
 	#include <arpa/inet.h>
 #endif
 
-
-/*Note for developers:
-    Only variable names with a length of up to 10 characters are supported!
-*/
-
-void jsonSTRtoFLTarray_(float floatCont[], int *arraySize, char *jsonString);
-void jsonSTRtoINTarray_(int intCont[], int *arraySize, char *jsonString);
-
 void opensocket_(int *portNum, char *hostNum, int *client){
 #ifdef _WIN32
  printf("C function: Opening socket");
@@ -96,7 +88,7 @@ void opensocket_(int *portNum, char *hostNum, int *client){
 #endif
 }
 
-void receive_(int *client, char command[], char var_nombre[], char tip_con[], int *pasos, int *shape){
+void receive_(int *client, char command[], char var_name[], char content_type[], int *passes, int *shape, int *precision){
  #ifdef _WIN32
     //Cuando tenga una connexión exitosa, podemos recibir datos del socket.
  	int recvRes;
@@ -115,7 +107,7 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	struct json_object *tipo_cont;
  	struct json_object *n_pasos;
  	struct json_object *forma;
- 	char json_header[2000];
+ 	char json_header[100000];
 
 	recv(*client, &blankBuffer, 4, 0);
 
@@ -141,7 +133,11 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	struct json_object *tipo_cont;
  	struct json_object *n_pasos;
  	struct json_object *forma;
+ 	struct json_object *precisión;
  	char json_header[2000];
+
+    printf("Am in receive now...\n");
+    fflush( stdout );
 
 	read(*client, &blankBuffer, 4);
  	read(*client, &json_header, (int) blankBuffer);
@@ -159,8 +155,8 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
  	    json_object_object_get_ex(parsed_json, "tamaño", &tamano);
 
  	    json_object_object_get_ex(parsed_json, "var", &var);
- 	    strncpy(var_nombre, "                     ", strlen(var_nombre));
-        strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
+ 	    strncpy(var_name, "                     ", strlen(var_name));
+        strncpy(var_name, json_object_get_string(var), strlen(json_object_get_string(var)));
 
  	    json_object_object_get_ex(parsed_json, "forma", &forma);
  	    strncpy(shapeBuffer, json_object_get_string(forma)+1, strlen(json_object_get_string(forma))-2);
@@ -170,21 +166,27 @@ void receive_(int *client, char command[], char var_nombre[], char tip_con[], in
 
  		tmn = atoi((const char *) json_object_get_string(tamano));
 
- 		strncpy(tip_con, json_object_get_string(tipo_cont), 5);
+ 		strncpy(content_type, json_object_get_string(tipo_cont), 5);
+
+ 		json_object_object_get_ex(parsed_json, "precisión", &precisión);
+ 	    *precision = atoi(json_object_get_string(precisión));
  	}
  	else if(strncmp(command, "incr", 4) == 0){
  	       printf("incr was received\n");
  	       json_object_object_get_ex(parsed_json, "n_pasos", &n_pasos);
- 	       *pasos = atoi(json_object_get_string(n_pasos));
+ 	       *passes = atoi(json_object_get_string(n_pasos));
  	}
  	else if(strncmp(command, "cerrar", 6) == 0){
  	        printf("cerrar was received");
  	}
  	else if(strncmp(command, "leer", 4) == 0){
  	        printf("leer was received");
+ 	        fflush( stdout );
  	        json_object_object_get_ex(parsed_json, "var", &var);
- 	        strncpy(var_nombre, "                              ", strlen(var_nombre));
-            strncpy(var_nombre, json_object_get_string(var), strlen(json_object_get_string(var)));
+ 	        strncpy(var_name, "                              ", strlen(var_name));
+            strncpy(var_name, json_object_get_string(var), strlen(json_object_get_string(var)));
+            json_object_object_get_ex(parsed_json, "precisión", &precisión);
+ 	        *precision = atoi(json_object_get_string(precisión));
  	}
 }
 
@@ -206,31 +208,40 @@ void recvint_(int *client, int *intCont, int *arraySize){
     }
 }
 
-void recvfloat_(int *client, float *floatCont, int *arraySize){
+void recvfloat_(int *client, int *intCont, int *arraySize, int *precision_factor){
 
     double doubleCont [*arraySize];
     int n, i;
     int tmn = *arraySize * sizeof(double);
     n = recv(*client, &doubleCont, tmn, 0 );
+    printf("inside recvfloat_()\n");
+    fflush(stdout);
     for(i = 0; i<*arraySize; i++){
         if (doubleCont[i]-FLT_MIN <= (double)FLT_MAX-FLT_MIN){
-           floatCont[i] = doubleCont[i];
+           printf("doubleCont[%d]: %f, precision_factor: %d, (int) doubleCont*precision_factor = %d\n", i, doubleCont[i],
+                   *precision_factor, (int) round(*precision_factor * doubleCont[i]));
+           fflush(stdout);
+           intCont[i] = (int) round(*precision_factor * doubleCont[i]);
+           printf("intCont[%d]: %d\n", i, intCont[i]);
+           fflush(stdout);
             }
         else{
             printf("Error transferring float values, float values probably out of bounds for C float\n");
             printf("The error occured in the slot: %d\n", i);
             printf("The value will be replaced using NaN");
-            floatCont[i] = NAN;
+            intCont[i] = NAN;
         }
     }
 }
 
-void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char shape[], int *intLength, int *floatLength){
- int i,n,y;
+void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char shape[], int *intLength, int *floatLength,
+            int *precision_factor){
+ int i,index;
  int sendRes;
  char *valLen[64];
  char jsonEncabezadoString[2048];
  int jsonStringLen;
+ float int2float_buffer [*intLength];
 
  strncpy(jsonEncabezadoString, "{\"tamaño\": ", 13);
  if(*floatLength != 0){
@@ -238,9 +249,14 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
     strcat(jsonEncabezadoString, valLen);
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"float32\"");
  }
+ else if(*precision_factor > 1){
+    printf("precision_factor was greater than 1\n");
+    sprintf( valLen, "%ld", sizeof(float)* (*intLength));
+    strcat(jsonEncabezadoString, valLen);
+    strcat(jsonEncabezadoString, ", \"tipo_cont\": \"float32\"");
+ }
  else{
     sprintf(valLen, "%ld", sizeof(int)* (*intLength));
-    printf("Int ValLen: %s\n", valLen);
     strcat(jsonEncabezadoString, valLen);
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"int32\"");
  }
@@ -265,6 +281,12 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
  if(*floatLength != 0){
     sendRes = send(*client, floatSenderBuffer, (sizeof(float)* (*floatLength)), 0);
     }
+ else if(*precision_factor > 1) {
+    for(index = 0; index < *intLength; index++){
+        int2float_buffer[index] = (float) intSenderBuffer[index]/ *precision_factor;
+    }
+    sendRes = send(*client, int2float_buffer, (sizeof(float)* (*intLength)), 0);
+ }
  else{
     sendRes = send(*client, intSenderBuffer, (sizeof(int)* (*intLength)), 0);
  }

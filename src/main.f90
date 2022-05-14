@@ -4,7 +4,7 @@
       use hydrograph_module
       use maximum_data_module
       use calibration_data_module
-      use tinamit_module, ONLY : dynamic, cliente_obj, abre, recibe
+      use tinamit_module, ONLY : dynamic, open, update_tinamit
 
       implicit none
       character(len = 32) :: arg1, arg2
@@ -23,7 +23,7 @@
       call get_command_argument(2, arg2)
       dynamic = ((TRIM(arg1)/='').AND.(TRIM(arg2)/=''))
       if (dynamic) then
-        call abre(arg1, arg2)
+        call open(arg1, arg2)
       end if
 
       call proc_bsn
@@ -98,7 +98,7 @@
       end if
 
       if(dynamic)then !<------------------------close sockets if tinamit is still connected
-            call recibe()
+            call update_tinamit()
         end if
 
       write (*,1001)

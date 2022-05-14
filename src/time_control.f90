@@ -156,8 +156,8 @@
         end if
 
         !--------------------------CODE FOR TINAMIT---------------------------------------------------------------------
-        if (dynamic .and. dias==0) then
-                    call recibe()
+        if (dynamic .and. days_to_run==-1) then
+            call update_tinamit()
         end if
         !--------------------------CODE FOR TINAMIT---------------------------------------------------------------------
 
@@ -274,13 +274,13 @@
           end if
 
           !---------------------------------------Code for Tinamit----------------------------------------------------------------
-          if(dynamic .and. dias>0) then
-              dias = dias-1
-              if (dias==0) then
-                    call recibe()
+          t=t+1 !!<-------keeping track of the number of days of the simulation
+          if(dynamic .and. days_to_run>0) then
+              days_to_run = days_to_run-1
+              if (days_to_run==0) then
+                    call update_tinamit()
                 end if
             end if
-          t=t+1 !!<-------------------------------------------keeping track of the number of days of the simulation
           !-----------------------------------------------------------------------------------------------------------------------
         end do              !! end daily loop
 

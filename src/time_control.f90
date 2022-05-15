@@ -155,19 +155,13 @@
           end if
         end if
 
+        !--------------------------CODE FOR TINAMIT---------------------------------------------------------------------
+        if (dynamic .and. days_to_run==-1) then
+            call update_tinamit()
+        end if
+        !--------------------------CODE FOR TINAMIT---------------------------------------------------------------------
+
         do julian_day = time%day_start, time%day_end_yr      !! begin daily loop
-
-            !---------------------------------------Code for Tinamit----------------------------------------------------------------
-          if(dynamic .and. dias>0) then
-              dias = dias-1
-              print *, "Dias in time_control: ", dias
-              if (dias==0) then
-                    call recibe()
-                end if
-            end if
-          t=t+1 !!<-------------------------------------------keeping track of the number of days of the simulation
-            !-----------------------------------------------------------------------------------------------------------------------
-
 
           time%day = julian_day
           !! determine month and day of month - time%mo and time%day_mo
@@ -246,7 +240,6 @@
             end do
             end if
           end do
-
           !! allocate water for water rights objects
           if (db_mx%wallo_db > 0) call water_allocation     !***jga
 
@@ -280,6 +273,15 @@
             end do
           end if
 
+          !---------------------------------------Code for Tinamit----------------------------------------------------------------
+          t=t+1 !!<-------keeping track of the number of days of the simulation
+          if(dynamic .and. days_to_run>0) then
+              days_to_run = days_to_run-1
+              if (days_to_run==0) then
+                    call update_tinamit()
+                end if
+            end if
+          !-----------------------------------------------------------------------------------------------------------------------
         end do              !! end daily loop
 
         !! perform end-of-year processes

@@ -330,7 +330,7 @@
             if (sched(isched)%auto_name(idtbl) == "pl_hv_summer2") then
               d_tbl%act(iac)%option = sched(isched)%auto_crop(pcom(j)%rot_yr)
             end if
-            
+
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               do ipl = 1, pcom(j)%npl
                 idp = pcomdb(icom)%pl(ipl)%db_num
@@ -490,7 +490,6 @@
                   !! sum yield and number of harvests to calc ave yields
                   pl_mass(j)%yield_tot(ipl) = pl_mass(j)%yield_tot(ipl) + pl_yield
                   pcom(j)%plcur(ipl)%harv_num = pcom(j)%plcur(ipl)%harv_num + 1
-                            
                   !! sum basin crop yields and area harvested
                   iplt_bsn = pcom(j)%plcur(ipl)%bsn_num
                   bsn_crop_yld(iplt_bsn)%area_ha = bsn_crop_yld(iplt_bsn)%area_ha + hru(j)%area_ha

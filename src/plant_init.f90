@@ -57,7 +57,6 @@
       real :: laimx_pop              !           |max lai given plant population
 
       j = ihru
-
       !! allocate plants
         icom = hru(j)%plant_cov
         if (icom == 0) then

@@ -133,7 +133,7 @@ void receive_(int *client, char command[], char var_name[], char content_type[],
  	struct json_object *tipo_cont;
  	struct json_object *n_pasos;
  	struct json_object *forma;
- 	struct json_object *precisión;
+ 	struct json_object *precisn;
  	char json_header[2000];
 
     printf("Am in receive now...\n");
@@ -168,8 +168,8 @@ void receive_(int *client, char command[], char var_name[], char content_type[],
 
  		strncpy(content_type, json_object_get_string(tipo_cont), 5);
 
- 		json_object_object_get_ex(parsed_json, "precisión", &precisión);
- 	    *precision = atoi(json_object_get_string(precisión));
+ 		json_object_object_get_ex(parsed_json, "precisión", &precisn);
+ 	    *precision = atoi(json_object_get_string(precisn));
  	}
  	else if(strncmp(command, "incr", 4) == 0){
  	       printf("incr was received\n");
@@ -185,8 +185,8 @@ void receive_(int *client, char command[], char var_name[], char content_type[],
  	        json_object_object_get_ex(parsed_json, "var", &var);
  	        strncpy(var_name, "                              ", strlen(var_name));
             strncpy(var_name, json_object_get_string(var), strlen(json_object_get_string(var)));
-            json_object_object_get_ex(parsed_json, "precisión", &precisión);
- 	        *precision = atoi(json_object_get_string(precisión));
+            json_object_object_get_ex(parsed_json, "precisión", &precisn);
+ 	        *precision = atoi(json_object_get_string(precisn));
  	}
 }
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "swatplus_test"
-version = "0.2.0"
+version = "1.0.0"
 description = ""
 authors = ["joelz575 <joel.harms@mail.mcgill.ca>"]
 

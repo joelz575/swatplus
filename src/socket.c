@@ -136,7 +136,6 @@ void receive_(int *client, char command[], char var_name[], char content_type[],
  	struct json_object *precisn;
  	char json_header[2000];
 
-    printf("Am in receive now...\n");
     fflush( stdout );
 
 	read(*client, &blankBuffer, 4);
@@ -149,9 +148,6 @@ void receive_(int *client, char command[], char var_name[], char content_type[],
 	strncpy(command, json_object_get_string(orden), strlen(json_object_get_string(orden)));
 
  	if(strncmp(command, "cambiar", 7) == 0){
- 	    printf("Command: %s\n", json_object_get_string(orden));
- 	    fflush( stdout );
-
  	    json_object_object_get_ex(parsed_json, "tamaño", &tamano);
 
  	    json_object_object_get_ex(parsed_json, "var", &var);
@@ -172,15 +168,12 @@ void receive_(int *client, char command[], char var_name[], char content_type[],
  	    *precision = atoi(json_object_get_string(precisn));
  	}
  	else if(strncmp(command, "incr", 4) == 0){
- 	       printf("incr was received\n");
  	       json_object_object_get_ex(parsed_json, "n_pasos", &n_pasos);
  	       *passes = atoi(json_object_get_string(n_pasos));
  	}
  	else if(strncmp(command, "cerrar", 6) == 0){
- 	        printf("cerrar was received");
  	}
  	else if(strncmp(command, "leer", 4) == 0){
- 	        printf("leer was received");
  	        fflush( stdout );
  	        json_object_object_get_ex(parsed_json, "var", &var);
  	        strncpy(var_name, "                              ", strlen(var_name));
@@ -214,17 +207,11 @@ void recvfloat_(int *client, int *intCont, int *arraySize, int *precision_factor
     int n, i;
     int tmn = *arraySize * sizeof(double);
     n = recv(*client, &doubleCont, tmn, 0 );
-    printf("inside recvfloat_()\n");
     fflush(stdout);
     for(i = 0; i<*arraySize; i++){
         if (doubleCont[i]-FLT_MIN <= (double)FLT_MAX-FLT_MIN){
-           printf("doubleCont[%d]: %f, precision_factor: %d, (int) doubleCont*precision_factor = %d\n", i, doubleCont[i],
-                   *precision_factor, (int) round(*precision_factor * doubleCont[i]));
-           fflush(stdout);
            intCont[i] = (int) round(*precision_factor * doubleCont[i]);
-           printf("intCont[%d]: %d\n", i, intCont[i]);
-           fflush(stdout);
-            }
+           }
         else{
             printf("Error transferring float values, float values probably out of bounds for C float\n");
             printf("The error occured in the slot: %d\n", i);
@@ -250,7 +237,6 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"float32\"");
  }
  else if(*precision_factor > 1){
-    printf("precision_factor was greater than 1\n");
     sprintf( valLen, "%ld", sizeof(float)* (*intLength));
     strcat(jsonEncabezadoString, valLen);
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"float32\"");
@@ -260,7 +246,6 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
     strcat(jsonEncabezadoString, valLen);
     strcat(jsonEncabezadoString, ", \"tipo_cont\": \"int32\"");
  }
- printf("Sending encabezado: %s\n", jsonEncabezadoString);
  strcat(jsonEncabezadoString, ", \"forma\": ");
  strcat(jsonEncabezadoString, shape);
  strcat(jsonEncabezadoString, "}");
@@ -270,13 +255,13 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
  sendRes = send(*client, &i, sizeof (i), 0);
 
  if (sendRes==-1){
-	printf("send failed...");
+	printf("Message size send failed...");
     }
 
  sendRes = send(*client, (char *)jsonEncabezadoString, strlen(jsonEncabezadoString),0);
 
  if (sendRes==-1){
-	printf("send failed...");
+	printf("Message send failed...");
 	}
  if(*floatLength != 0){
     sendRes = send(*client, floatSenderBuffer, (sizeof(float)* (*floatLength)), 0);
@@ -291,7 +276,7 @@ void sendr_(int *client, int *intSenderBuffer, float *floatSenderBuffer, char sh
     sendRes = send(*client, intSenderBuffer, (sizeof(int)* (*intLength)), 0);
  }
  if (sendRes==-1){
-	printf("send failed...");
+	printf("Data send failed...");
     }
 }
 

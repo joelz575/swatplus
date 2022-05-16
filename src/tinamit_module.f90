@@ -30,12 +30,10 @@ contains
         host_num = arg2
         write (*, *) "host_num= ", host_num
         READ(arg1, '(I5)') port_num
-        print *, "port_Num = ", port_num
+        print *, "Opening Socket on port:", port_num
 
         !Opening a socket
-        write(*, *) 'Opening Socket now...'
         CAll opensocket(port_num, host_num, client_obj)
-        print *, "client_obj=", client_obj
 
     end subroutine
 
@@ -49,7 +47,6 @@ contains
         integer, allocatable, dimension(:) :: intBuffer(:)
 
         call receive (client_obj, command, var, content_type, nPasses, shape, precision)
-        print *, "content_type: ", content_type
         if (trim(command) == "cambiar")then
             if(content_type=="float")then
                 !-----------------------------------Work-around code----------------------------------------------------
@@ -61,7 +58,6 @@ contains
                 allocate(realBuffer(shape))
                 do i=1,shape
                     realBuffer(i) = real(real(intBuffer(i), 8)/(10**precision))
-                    print *, "RealBuffer(", i, "): ", realBuffer(i)
                 end do
                 deallocate(intBuffer)
                 !------------------------------------Work-around code---------------------------------------------------
@@ -69,13 +65,11 @@ contains
                 if(allocated(intBuffer)) deallocate(intBuffer)
                 allocate(intBuffer(shape))
                 call recvint (client_obj, intBuffer, shape)
-                print *, "IntBuffer: ", intBuffer
             end if
 
             call set (trim(var), shape, intBuffer, realBuffer)
 
         elseif (trim(command) == "leer")then
-            print *, "Variable Name: ", trim(var)
             call get_and_send (trim(var), precision)
 
         elseif(trim(command) == 'cerrar')then
@@ -106,15 +100,15 @@ contains
         real :: rock
 
         if (sp_ob%hru > 0) then
-            print *, "there are full hru's"
+            print *, "Full HRU's are defined"
         else
-            print *, "there are only lite hru's"
+            print *, "Lite HRU's are defined"
         end if
 
         if (size(ch) > 0) then
-            print *, "There are full channels defined"
+            print *, "Full channels are defined"
         else
-            print *, "there are only lite channels defined"
+            print *, "SD channels are defined"
 
         end if
 
@@ -367,8 +361,6 @@ contains
             hru%surf_stor = intBuffer
 
         case("hru_land_use_mgt")
-            print *, "size(hru%land_use_mgt): ", size(hru%land_use_mgt)
-            print *, "size(intBuffer): ", size(intBuffer)
             hru%land_use_mgt = intBuffer
 
         !    character(len=16) :: land_use_mgt_c
@@ -705,11 +697,8 @@ contains
             end do
 
         case("luse")
-            print *, "HRU luse registered"
             do i= 1, sp_ob%hru
                 ihru = i
-                print *, "ilu: ", ilu
-                print *, "intBuffer (",i,"): ", intBuffer(i)
                 ilu = intBuffer(i)
 
                 !Changing landuse in databases, if necessary
@@ -766,7 +755,7 @@ contains
 
 
         CASE default
-            print *, "Unused variable: ", variable_Name
+            print *, "Variable: ", variable_Name, "does not exist in the simulation."
             error stop
         end select
 
@@ -1950,7 +1939,7 @@ contains
         !type (hru_parms_db) :: parms            !calibration parameters
 
         CASE default
-            print *, "Unknown variable: ", varName
+            print *, "Variable: ", varName, "does not exist in the simulation."
             error stop
         end select
 
@@ -1973,7 +1962,6 @@ contains
             precision_factor = 10**float_precision
 
             do i = 1,size(floatBuffer)
-                print *, "Float buffer (", i,")", floatBuffer(i)
                 expanded_float = floatBuffer(i)*real(precision_factor)
                 intBuffer(i) = nint(expanded_float)
             end do
@@ -1987,7 +1975,6 @@ contains
             precision_factor = 1
         end if
         !-------------------This is work-around code--------------------------------------------------------------------
-        print *, "Numbers to be sent: ", intBuffer
         call sendr(client_obj, intBuffer, floatBuffer, shapeBuffer, size(intBuffer), size(floatBuffer), precision_factor)
 
         call update_tinamit()

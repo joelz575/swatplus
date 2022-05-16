@@ -68,7 +68,6 @@ class TestIDM(TestCase):
                  server.activar()
                  server.incrementar(n_pasos)
                  t = server.recibir('t')
-                 print("T is: ", t)
                  self.assertEqual(t, n_pasos)
     
     def test_finalizing_model(self):
@@ -78,7 +77,6 @@ class TestIDM(TestCase):
                 server.activar()
                 server.finalizar()
                 t = server.recibir('t')
-                print("T is: ", t)
                 self.assertEqual(t, t_final[n])
 
     def tearDown(self):

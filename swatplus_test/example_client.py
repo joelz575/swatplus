@@ -2,14 +2,17 @@ import numpy as np
 
 model_vars = {
     "07120002_Iroquois_IL": "",
-    "ceap_connectivity test": ['sd_chd', 'hru_luse%ovn'],
+    "ceap_connectivity test": [#'sd_chd',
+                               'hru_luse%ovn'],
     "Chris_George_tx": "",
     "Little_River_Tifton": "",
     "saturated_buffer": ["sd_hc_co"],
     "Texas_large_gully": ['lte_km2'],
     "tropic_dataset": "",
     "TxtInOut_CoonCreek_aqu": "",
-    "Usa_Basin_model": ["luse", "hru_land_use_mgt", "hru_lumv%usle_mult", "sd_chs"]
+    "Usa_Basin_model": ["luse",
+                        #"hru_land_use_mgt", "hru_lumv%usle_mult", "sd_chs"
+                        ]
 }
 
 

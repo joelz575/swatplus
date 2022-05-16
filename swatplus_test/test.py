@@ -9,17 +9,10 @@ from swatplus_test.example_client import model_vars, sample_data
 t_final = [3287, 3287, 731, 4018]
 valgrind = False
 BASE_DIR = os.path.split(os.path.split(__file__)[0])[0]
-testDirectories = [
-                   #"07120002_Iroquois_IL", #Skipped because it fails with only the SWAT+ source code already
-                   "ceap_connectivity test",
-                   #"Chris_George_tx",      #Skipped because the model is too large
-                   #"Little_River_Tifton",  #Skipped because it fails with only the SWAT+ source code already
+testDirectories = ["ceap_connectivity test",
                    "saturated_buffer",
                    "Texas_large_gully",
-                   #"tropic_dataset",       #Skipped because it fails with only the SWAT+ source code already
-                   #"TxtInOut_CoonCreek_aqu", # does not run on travis.yml for some reason, number of days is 366
-                   "Usa_Basin_model"
-                   ]
+                   "Usa_Basin_model"]
 
 class TestIDM(TestCase):
 
@@ -55,7 +48,6 @@ class TestIDM(TestCase):
                         self.start_client(server.dirección, server.puerto, n)
                         server.activar()
                         server.cambiar(var_name, dts) if sample_data[var_name].dtype is int else server.cambiar(var_name, dts, precisión=5)
-
                         reply = server.recibir(var_name) if sample_data[var_name].dtype is int else server.recibir(var_name, precisión=5)
                         npt.assert_almost_equal(dts, reply, 5)
                         # equal to 5 decimal places

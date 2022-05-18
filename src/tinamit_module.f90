@@ -47,8 +47,6 @@ contains
         integer, allocatable, dimension(:) :: intBuffer(:)
 
         call receive (client_obj, command, var, content_type, nPasses, shape, precision)
-        print *, "Variable Name: ", var
-
         if (trim(command) == "cambiar")then
             if(content_type=="float")then
                 !-----------------------------------Work-around code----------------------------------------------------

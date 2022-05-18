@@ -1598,7 +1598,6 @@ contains
             allocate(intBuffer(sp_ob%hru))
             allocate(floatBuffer(0))
             do i= 1,sp_ob%hru
-                print *, hru(i)%luse%urb_lu
                 intBuffer(i) = hru(i)%luse%urb_lu
             end do
 
@@ -1955,8 +1954,8 @@ contains
         end if
 
         !-------------------This is work-around code----------------------------------------------------------------------
-        if(size(intBuffer) == 0)then
-            deallocate(intBuffer)
+        if(size(floatBuffer) > 0)then
+            if(allocated(intBuffer)) deallocate(intBuffer)
             allocate(intBuffer(size(floatBuffer)))
             precision_factor = 10**float_precision
 
@@ -1967,7 +1966,7 @@ contains
 
             deallocate(floatBuffer)
             allocate(floatBuffer(0))
-            print *, "Currently incapable of sending float buffers directly."
+            print *, "For variable ",varName," , currently incapable of sending float buffers directly."
             print *, "Will round using 'precisión' argument in recibe(), default is 0, i.e. to the nearest integer"
 
         else

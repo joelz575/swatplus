@@ -47,6 +47,8 @@ contains
         integer, allocatable, dimension(:) :: intBuffer(:)
 
         call receive (client_obj, command, var, content_type, nPasses, shape, precision)
+        print *, "Variable Name: ", var
+
         if (trim(command) == "cambiar")then
             if(content_type=="float")then
                 !-----------------------------------Work-around code----------------------------------------------------
@@ -1457,10 +1459,10 @@ contains
 
         !    character(len=16) :: land_use_mgt_c
         case("hru_land_use_mgt_c")
-            print *, "CANNOT SEND CHARACTER DATA, SENDING hru%land_use_mgt instead"
-            allocate(intBuffer(size(hru%land_use_mgt)))
+            print *, "CANNOT SEND CHARACTER DATA, USE hru%land_use_mgt instead, SENDING 0"
+            allocate(intBuffer(1))
             allocate(floatBuffer(0))
-            intBuffer = hru%land_use_mgt
+            intBuffer(1) = 0
 
         case("hru_lum_group")
             allocate(intBuffer(size(hru%lum_group)))
@@ -1469,10 +1471,10 @@ contains
 
         !    character(len=16) :: lum_group_c        !land use group for soft cal and output
         case("hru_lum_group_c")
-            print *, "CANNOT SEND CHARACTER DATA, SENDING hru%lum_group instead"
-            allocate(intBuffer(size(hru%lum_group)))
+            print *, "CANNOT SEND CHARACTER DATA, USE hru%lum_group instead, SENDING 0"
+            allocate(intBuffer(1))
             allocate(floatBuffer(0))
-            intBuffer = hru%lum_group
+            intBuffer(1) = 0
 
         !    character(len=16) :: region
         case("hru_region")
@@ -1480,7 +1482,6 @@ contains
             allocate(intBuffer(1))
             allocate(floatBuffer(0))
             intBuffer = 0
-
 
         case("hru_plant_cov")
             allocate(intBuffer(size(hru%plant_cov)))

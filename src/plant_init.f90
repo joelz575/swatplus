@@ -63,9 +63,9 @@
           pcom(j)%npl = 0
         else
           if (init > 0) then
-            deallocate (pcom(j)%pl)
-            deallocate (pcom(j)%plg) 
-            deallocate (pcom(j)%plm)
+            if(allocated(pcom(j)%pl)) deallocate (pcom(j)%pl)
+            if(allocated(pcom(j)%plg)) deallocate (pcom(j)%plg)
+            if(allocated(pcom(j)%plm)) deallocate (pcom(j)%plm)
             deallocate (pl_mass(j)%tot)
             deallocate (pl_mass(j)%ab_gr)
             deallocate (pl_mass(j)%leaf)
@@ -73,8 +73,8 @@
             deallocate (pl_mass(j)%seed)
             deallocate (pl_mass(j)%root)
             deallocate (pl_mass(j)%yield_tot)
-            deallocate (pcom(j)%plstr) 
-            deallocate (pcom(j)%plcur) 
+            if(allocated(pcom(j)%plstr)) deallocate (pcom(j)%plstr)
+            if(allocated(pcom(j)%plcur)) deallocate (pcom(j)%plcur)
             deallocate (rsd1(j)%tot)
           end if
         

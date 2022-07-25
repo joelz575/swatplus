@@ -2,17 +2,14 @@ import numpy as np
 
 model_vars = {
     "07120002_Iroquois_IL": "",
-    "ceap_connectivity test": [#'sd_chd',
-                               'hru_luse%ovn'],
+    "ceap_connectivity test": ['sd_chd','hru_luse%ovn'],
     "Chris_George_tx": "",
     "Little_River_Tifton": "",
     "saturated_buffer": ["sd_hc_co"],
     "Texas_large_gully": ['lte_km2'],
     "tropic_dataset": "",
     "TxtInOut_CoonCreek_aqu": "",
-    "Usa_Basin_model": ["luse",
-                        #"hru_land_use_mgt", "hru_lumv%usle_mult", "sd_chs"
-                        ]
+    "Usa_Basin_model": ["luse", "hru_land_use_mgt", "hru_lumv%usle_mult", "sd_chs"]
 }
 
 
@@ -179,7 +176,7 @@ sample_data = {
     "hru_water_evap": np.array([0, 0, 0, 0, 0]),
   #"hru_ich_flood": np.array([22053, 22093, 21856, 22041, 21870]), #not good for testing; changes every run
     "cn_luse": np.array([7, 37, 7, 37, -1]),
-    "luse": np.array([2, 1, 2, 2, 3, 3,12,12,11,11, 6, 7, 8,10, 1, 9,14,13, 1, 2, 3,11,10, 7,12, 8, 6, 1, 9,13, 1,12, 6,11, 8,10, 7, 2, 3, 9,13, 1,14, 1,12, 2, 9, 6, 8, 7,11, 3,10, 1,13, 1,12, 2, 8,10,11, 6, 9, 3, 7, 1,13, 1, 2,11, 3,12, 7, 9,10, 8, 6, 1,13, 2,11, 6, 8, 9, 3, 7,12,10, 1, 1,13, 1, 3, 2,11,12, 8, 7,10, 6, 1, 9,13,14,12, 6, 8,10, 1, 3,11, 7, 2, 1, 9,11, 1, 7,12,10, 8, 9, 3, 2, 6,13,11,12, 7, 1, 8, 2, 3,10, 6, 9]),
+    "luse": np.array([5, 4, 3, 3, 3, 8,13,10,9,6, 7, 7, 8,10, 1, 9,14,13, 1, 2, 3,11,10, 7,12, 8, 6, 1, 9,13, 1,12, 6,11, 8,10, 7, 2, 3, 9,13, 1,14, 1,12, 2, 9, 6, 8, 7,11, 3,10, 1,13, 1,12, 2, 8,10,11, 6, 9, 3, 7, 1,13, 1, 2,11, 3,12, 7, 9,10, 8, 6, 1,13, 2,11, 6, 8, 9, 3, 7,12,10, 1, 1,13, 1, 3, 2,11,12, 8, 7,10, 6, 1, 9,13,14,12, 6, 8,10, 1, 3,11, 7, 2, 1, 9,11, 1, 7,12,10, 8, 9, 3, 2, 6,13,11,12, 7, 1, 8, 2, 3,10, 6, 9]),
     "algae": np.array([]),     # mg alg/L   |algal biomass concentration in reach
     "ammonian": np.array([]),     # mg N/L     |ammonia concentration in reach
     "bankst": np.array([]),    # m^3 H2O    |bank storage

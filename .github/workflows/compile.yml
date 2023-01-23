@@ -1,0 +1,16 @@
+name: Compile SAHYSMOD
+on:
+  push:
+    branches:
+      - main
+jobs:
+  tests-et-couverture:
+    name: Compile
+    runs-on: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake ../src
+          cmake --build .

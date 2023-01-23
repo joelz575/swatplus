@@ -2,7 +2,7 @@ name: Compile SAHYSMOD
 on:
   push:
     branches:
-      - main
+      - githubActions
 jobs:
   tests-et-couverture:
     name: Compile

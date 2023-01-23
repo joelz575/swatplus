@@ -14,12 +14,28 @@ jobs:
 
     steps:
       - name: Checkout project
-
         uses: actions/checkout@v2
+
       - name: Build
         run: |
           mkdir build
-          ls
           cd build
           cmake ../src
           cmake --build .
+          cd ..
+
+      - name: Permissions
+        run: chmod +x swatplusTest.sh
+        if: runner.os == 'Linux'
+
+      - name: Test
+        run: swatplusTest.sh
+
+      - name: Prepare release
+        run: mv ./build/bin/swatplus_exe "./dist/SwatPlus-$RUNNER_OS-$TRAVIS_TAG"
+
+      - name: Release
+        uses: ncipollo/release-action@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          artifacts: "dist/SwatPlus-*"

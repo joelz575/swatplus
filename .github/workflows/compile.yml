@@ -1,4 +1,4 @@
-name: Compile SAHYSMOD
+name: Compile SWAT+
 on:
   push:
     branches:
@@ -13,6 +13,9 @@ jobs:
       fail-fast: false
 
     steps:
+      - name: Checkout project
+
+        uses: actions/checkout@v2
       - name: Build
         run: |
           mkdir build

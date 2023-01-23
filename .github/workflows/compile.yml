@@ -34,6 +34,15 @@ jobs:
         run: chmod +x swatplusTest.sh
         if: runner.os == 'Linux'
 
+      - name: Set up Python for tests
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Set up Poetry for tests
+        uses: Gr1N/setup-poetry@v8
+      - run: poetry --version
+
       - name: Test
         run: sh swatplusTest.sh
 

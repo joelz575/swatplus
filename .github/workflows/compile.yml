@@ -16,9 +16,11 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v2
 
-      - name: Install gfortran
-        if: runner.os != 'Linux'
-        run: apt install gfortran
+      - uses: awvwgk/setup-fortran@main
+        id: setup-fortran
+        with:
+          compiler: gcc
+          version: 11
 
       - name: Build
         run: |

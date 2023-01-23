@@ -16,6 +16,10 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v2
 
+      - name: Install gfortran
+        if: runner.os != 'Linux'
+        run: apt install gfortran
+
       - name: Build
         run: |
           mkdir build

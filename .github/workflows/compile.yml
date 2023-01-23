@@ -35,7 +35,7 @@ jobs:
         if: runner.os == 'Linux'
 
       - name: Test
-        run: swatplusTest.sh
+        run: sh swatplusTest.sh
 
       - name: Prepare release
         run: mv ./build/bin/swatplus_exe "./dist/SwatPlus-$RUNNER_OS-$TRAVIS_TAG"
